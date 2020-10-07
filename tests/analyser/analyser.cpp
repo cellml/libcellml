@@ -30,8 +30,8 @@ TEST(Analyser, initialisedVariableOfIntegration)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -41,7 +41,7 @@ TEST(Analyser, initialisedVariableOfIntegration)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -56,8 +56,8 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'environment' cannot be both a variable of integration and initialised.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -67,7 +67,7 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -82,8 +82,8 @@ TEST(Analyser, twoVariablesOfIntegration)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be the variable of integration.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -93,7 +93,7 @@ TEST(Analyser, twoVariablesOfIntegration)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -110,10 +110,10 @@ TEST(Analyser, nonFirstOrderOdes)
         "The differential equation for variable 'y' in component 'sub' must be of the first order.",
         "The differential equation for variable 'z' in component 'sub_sub' must be of the first order.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::MATHML,
-        libcellml::CellMLElement::MATHML,
-        libcellml::CellMLElement::MATHML,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::MATH,
+        libcellml::CellmlElementType::MATH,
+        libcellml::CellmlElementType::MATH,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -125,7 +125,7 @@ TEST(Analyser, nonFirstOrderOdes)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -141,9 +141,9 @@ TEST(Analyser, undefinedVariables)
         "MathML ci element has the child text 'a' which does not correspond with any variable names present in component 'my_component'.",
         "MathML ci element has the child text 'b' which does not correspond with any variable names present in component 'my_component'.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::MATHML,
-        libcellml::CellMLElement::MATHML,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::MATH,
+        libcellml::CellmlElementType::MATH,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -154,7 +154,7 @@ TEST(Analyser, undefinedVariables)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -169,8 +169,8 @@ TEST(Analyser, variableInitialisedTwice)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'sub' and variable 'x' in component 'main' are equivalent and cannot therefore both be initialised.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -180,7 +180,7 @@ TEST(Analyser, variableInitialisedTwice)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -195,8 +195,8 @@ TEST(Analyser, nonConstantInitialisingVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'main' is initialised using variable 'k2', but it is not a constant.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -206,7 +206,7 @@ TEST(Analyser, nonConstantInitialisingVariable)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -221,8 +221,8 @@ TEST(Analyser, nonExistingInitialisingVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'main' has an invalid initial value 'k'. Initial values must be a real number string or a variable reference.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -232,7 +232,7 @@ TEST(Analyser, nonExistingInitialisingVariable)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -247,8 +247,8 @@ TEST(Analyser, nonInitialisedState)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is used in an ODE, but it is not initialised.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -259,7 +259,7 @@ TEST(Analyser, nonInitialisedState)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
     EXPECT_EQ(expectedVariableName, analyser->issue(0)->variable()->name());
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
@@ -275,8 +275,8 @@ TEST(Analyser, underconstrained)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is not computed.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -286,7 +286,7 @@ TEST(Analyser, underconstrained)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -301,8 +301,8 @@ TEST(Analyser, overconstrainedOneVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is computed more than once.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -312,7 +312,7 @@ TEST(Analyser, overconstrainedOneVariable)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -328,9 +328,9 @@ TEST(Analyser, overconstrainedTwoVariables)
         "Variable 'x' in component 'my_component' is computed more than once.",
         "Variable 'y' in component 'my_component' is computed more than once.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -341,7 +341,7 @@ TEST(Analyser, overconstrainedTwoVariables)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -358,10 +358,10 @@ TEST(Analyser, overconstrainedThreeVariables)
         "Variable 'y' in component 'my_component' is computed more than once.",
         "Variable 'z' in component 'my_component' is computed more than once.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
-        libcellml::CellMLElement::VARIABLE,
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+        libcellml::CellmlElementType::VARIABLE,
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -373,7 +373,7 @@ TEST(Analyser, overconstrainedThreeVariables)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -389,9 +389,9 @@ TEST(Analyser, unsuitablyConstrained)
         "Variable 'x' in component 'my_component' is not computed.",
         "Variable 'y' in component 'my_component' is computed more than once.",
     };
-    const std::vector<libcellml::CellMLElement> expectedCauses = {
-        libcellml::CellMLElement::VARIABLE,
-        libcellml::CellMLElement::VARIABLE,
+    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
@@ -402,7 +402,7 @@ TEST(Analyser, unsuitablyConstrained)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
 }

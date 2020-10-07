@@ -24,7 +24,7 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The CellML element enum class.
+ * @brief The CellmlElementType enum class.
  *
  * This enum describes CellML elements.
  * A CellML element identifies elements in
@@ -32,7 +32,7 @@ namespace libcellml {
  * The enum also adds an UNDEFINED entry for
  * not specifying an underlying CellML element.
  */
-enum class CellMLElement
+enum class CellmlElementType
 {
     COMPONENT,
     COMPONENT_REF,
@@ -40,7 +40,7 @@ enum class CellMLElement
     ENCAPSULATION,
     IMPORT,
     MAP_VARIABLES,
-    MATHML,
+    MATH,
     MODEL,
     RESET,
     RESET_VALUE,

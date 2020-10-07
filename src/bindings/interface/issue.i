@@ -74,10 +74,10 @@ Level::ERROR will be returned.";
 "Sets the :class`Units` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::unit
-"Get the :class:`UnitItem` relevant to this issue (or ``None``).";
+"Get the :class:`Unit` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setUnit
-"Sets the :class`UnitItem` relevant to this issue (``None`` to unset).";
+"Sets the :class`Unit` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::variable
 "Get the :class:`Variable` relevant to this issue (or ``None``).";
@@ -121,7 +121,7 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::setTestValue
 "Sets the :class:`Reset` containing the test value relevant to this issue (``None`` to unset).";
 
-%feature("docstring") libcellml::Issue::itemType
+%feature("docstring") libcellml::Issue::cellmlElementType
 "Get the type of this issue.";
 
 %feature("docstring") libcellml::Issue::clear
@@ -134,7 +134,7 @@ Level::ERROR will be returned.";
 %pythoncode %{
 # libCellML generated wrapper code starts here.
 
-from libcellml import CellMLElement
+from libcellml import CellmlElementType
 %}
 
 %create_constructor(Issue)
@@ -168,8 +168,8 @@ from libcellml import CellMLElement
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
-    Issue(const UnitItem &unitItem) {
-        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unitItem));
+    Issue(const UnitPtr &unit) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unit));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
@@ -178,73 +178,74 @@ from libcellml import CellMLElement
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
+    Issue(const VariablePairPtr &pair) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(pair));
+        return reinterpret_cast<libcellml::Issue *>(ptr);
+    }
+
     %pythoncode %{
-        def setItem(self, itemType, item):
+        def setItem(self, cellmlElementType, item):
             r"""Set the item by item type related to this issue."""
-            if itemType == CellMLElement.COMPONENT:
+
+            if cellmlElementType == CellmlElementType.COMPONENT:
                 _issue.Issue_setComponent(self, item)
-            elif itemType == CellMLElement.COMPONENT_REF:
+            elif cellmlElementType == CellmlElementType.COMPONENT_REF:
                 _issue.Issue_setComponentRef(self, item)
-            elif itemType == CellMLElement.CONNECTION:
-               _issue.Issue_setConnection(self, item)
-            elif itemType == CellMLElement.ENCAPSULATION:
-               _issue.Issue_setEncapsulation(self, item)
-            elif itemType == CellMLElement.IMPORT:
-               _issue.Issue_setImportSource(self, item)
-            elif itemType == CellMLElement.MAP_VARIABLES:
-               _issue.Issue_setMapVariables(self, item)
-            elif itemType == CellMLElement.MODEL:
-               _issue.Issue_setModel(self, item)
-            elif itemType == CellMLElement.RESET:
-               _issue.Issue_setReset(self, item)
-            elif itemType == CellMLElement.RESET_VALUE:
-               _issue.Issue_setResetValue(self, item)
-            elif itemType == CellMLElement.TEST_VALUE:
+            elif cellmlElementType == CellmlElementType.CONNECTION:
+                _issue.Issue_setConnection(self, item)
+            elif cellmlElementType == CellmlElementType.ENCAPSULATION:
+                _issue.Issue_setEncapsulation(self, item)
+            elif cellmlElementType == CellmlElementType.IMPORT:
+                _issue.Issue_setImportSource(self, item)
+            elif cellmlElementType == CellmlElementType.MAP_VARIABLES:
+                _issue.Issue_setMapVariables(self, item)
+            elif cellmlElementType == CellmlElementType.MODEL:
+                _issue.Issue_setModel(self, item)
+            elif cellmlElementType == CellmlElementType.RESET:
+                _issue.Issue_setReset(self, item)
+            elif cellmlElementType == CellmlElementType.RESET_VALUE:
+                _issue.Issue_setResetValue(self, item)
+            elif cellmlElementType == CellmlElementType.TEST_VALUE:
                 _issue.Issue_setTestValue(self, item)
-            elif itemType == CellMLElement.UNIT:
-               _issue.Issue_setUnit(self, item)
-            elif itemType == CellMLElement.UNITS:
-               _issue.Issue_setUnits(self, item)
-            elif itemType == CellMLElement.VARIABLE:
+            elif cellmlElementType == CellmlElementType.UNIT:
+                _issue.Issue_setUnit(self, item)
+            elif cellmlElementType == CellmlElementType.UNITS:
+                _issue.Issue_setUnits(self, item)
+            elif cellmlElementType == CellmlElementType.VARIABLE:
                 _issue.Issue_setVariable(self, item)
 
         def item(self):
             r"""Get the item relevant to this issue by item type (or ``None``)."""
 
-            itemType = _issue.Issue_itemType(self)
-            if itemType == CellMLElement.COMPONENT:
-                return (itemType, _issue.Issue_component(self))
-            elif itemType == CellMLElement.COMPONENT_REF:
-                return (itemType, _issue.Issue_componentRef(self))
-            elif itemType == CellMLElement.CONNECTION:
-                return (itemType, _issue.Issue_connection(self))
-            elif itemType == CellMLElement.ENCAPSULATION:
-                return (itemType, _issue.Issue_encapsulation(self))
-            elif itemType == CellMLElement.IMPORT:
-                return (itemType, _issue.Issue_importSource(self))
-            elif itemType == CellMLElement.MAP_VARIABLES:
-                return (itemType, _issue.Issue_mapVariables(self))
-            elif itemType == CellMLElement.MODEL:
-                return (itemType, _issue.Issue_model(self))
-            elif itemType == CellMLElement.RESET:
-                return (itemType, _issue.Issue_reset(self))
-            elif itemType == CellMLElement.RESET_VALUE:
-                return (itemType, _issue.Issue_resetValue(self))
-            elif itemType == CellMLElement.TEST_VALUE:
-                return (itemType, _issue.Issue_testValue(self))
-            elif itemType == CellMLElement.UNIT:
-                return (itemType, _issue.Issue_unit(self))
-            elif itemType == CellMLElement.UNITS:
-                return (itemType, _issue.Issue_units(self))
-            elif itemType == CellMLElement.VARIABLE:
-                return (itemType, _issue.Issue_variable(self))
-            return (CellMLElement.UNDEFINED, None)
-
+            cellmlElementType = _issue.Issue_cellmlElementType(self)
+            if cellmlElementType == CellmlElementType.COMPONENT:
+                return (cellmlElementType, _issue.Issue_component(self))
+            elif cellmlElementType == CellmlElementType.COMPONENT_REF:
+                return (cellmlElementType, _issue.Issue_componentRef(self))
+            elif cellmlElementType == CellmlElementType.CONNECTION:
+                return (cellmlElementType, _issue.Issue_connection(self))
+            elif cellmlElementType == CellmlElementType.ENCAPSULATION:
+                return (cellmlElementType, _issue.Issue_encapsulation(self))
+            elif cellmlElementType == CellmlElementType.IMPORT:
+                return (cellmlElementType, _issue.Issue_importSource(self))
+            elif cellmlElementType == CellmlElementType.MAP_VARIABLES:
+                return (cellmlElementType, _issue.Issue_mapVariables(self))
+            elif cellmlElementType == CellmlElementType.MODEL:
+                return (cellmlElementType, _issue.Issue_model(self))
+            elif cellmlElementType == CellmlElementType.RESET:
+                return (cellmlElementType, _issue.Issue_reset(self))
+            elif cellmlElementType == CellmlElementType.RESET_VALUE:
+                return (cellmlElementType, _issue.Issue_resetValue(self))
+            elif cellmlElementType == CellmlElementType.TEST_VALUE:
+                return (cellmlElementType, _issue.Issue_testValue(self))
+            elif cellmlElementType == CellmlElementType.UNIT:
+                return (cellmlElementType, _issue.Issue_unit(self))
+            elif cellmlElementType == CellmlElementType.UNITS:
+                return (cellmlElementType, _issue.Issue_units(self))
+            elif cellmlElementType == CellmlElementType.VARIABLE:
+                return (cellmlElementType, _issue.Issue_variable(self))
+            return (CellmlElementType.UNDEFINED, None)
         %}
     }
 
-%include "libcellml/types.h"
 %include "libcellml/issue.h"
-
-%template(UnitItem) std::pair<libcellml::UnitsPtr, size_t>;
-%template(VariablePair) std::pair<libcellml::VariablePtr, libcellml::VariablePtr>;

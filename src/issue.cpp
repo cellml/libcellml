@@ -43,14 +43,14 @@ struct Issue::IssueImpl
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
     std::any mItem;
-    CellMLElement mItemType = CellMLElement::UNDEFINED;
+    CellmlElementType mCellmlElementType = CellmlElementType::UNDEFINED;
 
     void clearItem();
 };
 
 void Issue::IssueImpl::clearItem()
 {
-    mItemType = CellMLElement::UNDEFINED;
+    mCellmlElementType = CellmlElementType::UNDEFINED;
     mItem = nullptr;
 }
 
@@ -68,49 +68,49 @@ Issue::Issue(const ModelPtr &model)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mItem = std::make_any<ModelPtr>(model);
-    mPimpl->mItemType = CellMLElement::MODEL;
+    mPimpl->mCellmlElementType = CellmlElementType::MODEL;
 }
 
 Issue::Issue(const ComponentPtr &component)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mItem = std::make_any<ComponentPtr>(component);
-    mPimpl->mItemType = CellMLElement::COMPONENT;
+    mPimpl->mCellmlElementType = CellmlElementType::COMPONENT;
 }
 
 Issue::Issue(const ImportSourcePtr &importSource)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mItem = std::make_any<ImportSourcePtr>(importSource);
-    mPimpl->mItemType = CellMLElement::IMPORT;
+    mPimpl->mCellmlElementType = CellmlElementType::IMPORT;
 }
 
 Issue::Issue(const UnitsPtr &units)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mItem = std::make_any<UnitsPtr>(units);
-    mPimpl->mItemType = CellMLElement::UNITS;
+    mPimpl->mCellmlElementType = CellmlElementType::UNITS;
 }
 
 Issue::Issue(const VariablePtr &variable)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mItem = std::make_any<VariablePtr>(variable);
-    mPimpl->mItemType = CellMLElement::VARIABLE;
+    mPimpl->mCellmlElementType = CellmlElementType::VARIABLE;
 }
 
 Issue::Issue(const ResetPtr &reset)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mItem = std::make_any<ResetPtr>(reset);
-    mPimpl->mItemType = CellMLElement::RESET;
+    mPimpl->mCellmlElementType = CellmlElementType::RESET;
 }
 
-Issue::Issue(const UnitItem &unit)
+Issue::Issue(const UnitPtr &unit)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mItem = std::make_any<UnitItem>(unit);
-    mPimpl->mItemType = CellMLElement::UNIT;
+    mPimpl->mItem = std::make_any<UnitPtr>(unit);
+    mPimpl->mCellmlElementType = CellmlElementType::UNIT;
 }
 
 IssuePtr Issue::create() noexcept
@@ -118,11 +118,14 @@ IssuePtr Issue::create() noexcept
     return std::shared_ptr<Issue> {new Issue {}};
 }
 
-IssuePtr Issue::create(const ComponentPtr &component, CellMLElement type) noexcept
+IssuePtr Issue::create(const ComponentPtr &component, CellmlElementType cellmlElementType) noexcept
 {
-    if ((component != nullptr) && ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF) || (type == CellMLElement::MATHML))) {
+    if ((component != nullptr)
+        && ((cellmlElementType == CellmlElementType::COMPONENT)
+            || (cellmlElementType == CellmlElementType::COMPONENT_REF)
+            || (cellmlElementType == CellmlElementType::MATH))) {
         auto issue = std::shared_ptr<Issue> {new Issue {component}};
-        issue->mPimpl->mItemType = type;
+        issue->mPimpl->mCellmlElementType = cellmlElementType;
         return issue;
     }
     return nullptr;
@@ -132,29 +135,34 @@ IssuePtr Issue::create(const ImportSourcePtr &importSource) noexcept
 {
     if (importSource != nullptr) {
         auto issue = std::shared_ptr<Issue> {new Issue {importSource}};
-        issue->mPimpl->mItemType = CellMLElement::IMPORT;
+        issue->mPimpl->mCellmlElementType = CellmlElementType::IMPORT;
         return issue;
     }
     return nullptr;
 }
 
-IssuePtr Issue::create(const ModelPtr &model, CellMLElement type) noexcept
+IssuePtr Issue::create(const ModelPtr &model, CellmlElementType cellmlElementType) noexcept
 {
     // Acceptable type values are: ENCAPSULATION, MODEL.
-    if ((model != nullptr) && ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION))) {
+    if ((model != nullptr)
+        && ((cellmlElementType == CellmlElementType::MODEL)
+            || (cellmlElementType == CellmlElementType::ENCAPSULATION))) {
         auto issue = std::shared_ptr<Issue> {new Issue {model}};
-        issue->mPimpl->mItemType = type;
+        issue->mPimpl->mCellmlElementType = cellmlElementType;
         return issue;
     }
     return nullptr;
 }
 
-IssuePtr Issue::create(const ResetPtr &reset, CellMLElement type) noexcept
+IssuePtr Issue::create(const ResetPtr &reset, CellmlElementType cellmlElementType) noexcept
 {
     // Acceptable type values are: RESET, TEST_VALUE, RESET_VALUE.
-    if ((reset != nullptr) && ((type == CellMLElement::RESET) || (type == CellMLElement::RESET_VALUE) || (type == CellMLElement::TEST_VALUE))) {
+    if ((reset != nullptr)
+        && ((cellmlElementType == CellmlElementType::RESET)
+            || (cellmlElementType == CellmlElementType::RESET_VALUE)
+            || (cellmlElementType == CellmlElementType::TEST_VALUE))) {
         auto issue = std::shared_ptr<Issue> {new Issue {reset}};
-        issue->mPimpl->mItemType = type;
+        issue->mPimpl->mCellmlElementType = cellmlElementType;
         return issue;
     }
     return nullptr;
@@ -164,7 +172,7 @@ IssuePtr Issue::create(const UnitsPtr &units) noexcept
 {
     if (units != nullptr) {
         auto issue = std::shared_ptr<Issue> {new Issue {units}};
-        issue->mPimpl->mItemType = CellMLElement::UNITS;
+        issue->mPimpl->mCellmlElementType = CellmlElementType::UNITS;
         return issue;
     }
     return nullptr;
@@ -174,28 +182,30 @@ IssuePtr Issue::create(const VariablePtr &variable) noexcept
 {
     if (variable != nullptr) {
         auto issue = std::shared_ptr<Issue> {new Issue {variable}};
-        issue->mPimpl->mItemType = CellMLElement::VARIABLE;
+        issue->mPimpl->mCellmlElementType = CellmlElementType::VARIABLE;
         return issue;
     }
     return nullptr;
 }
 
-IssuePtr Issue::create(const UnitItem &unitItem) noexcept
+IssuePtr Issue::create(const UnitPtr &unit) noexcept
 {
-    if (unitItem.first != nullptr) {
-        auto issue = std::shared_ptr<Issue> {new Issue {unitItem}};
-        issue->mPimpl->mItemType = CellMLElement::UNIT;
+    if (unit->isValid()) {
+        auto issue = std::shared_ptr<Issue> {new Issue {unit}};
+        issue->mPimpl->mCellmlElementType = CellmlElementType::UNIT;
         return issue;
     }
     return nullptr;
 }
 
-IssuePtr Issue::create(const VariablePair &variablePair, CellMLElement type) noexcept
+IssuePtr Issue::create(const VariablePairPtr &variablePair, CellmlElementType cellmlElementType) noexcept
 {
-    if ((variablePair.first != nullptr) && (variablePair.second != nullptr) && ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES))) {
+    if (variablePair->isValid()
+        && ((cellmlElementType == CellmlElementType::CONNECTION)
+            || (cellmlElementType == CellmlElementType::MAP_VARIABLES))) {
         auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<VariablePair>(variablePair);
-        issue->mPimpl->mItemType = type;
+        issue->mPimpl->mItem = variablePair;
+        issue->mPimpl->mCellmlElementType = cellmlElementType;
         return issue;
     }
     return nullptr;
@@ -211,9 +221,9 @@ std::string Issue::description() const
     return mPimpl->mDescription;
 }
 
-CellMLElement Issue::itemType() const
+CellmlElementType Issue::cellmlElementType() const
 {
-    return mPimpl->mItemType;
+    return mPimpl->mCellmlElementType;
 }
 
 void Issue::setLevel(Issue::Level level)
@@ -236,42 +246,42 @@ Issue::ReferenceRule Issue::referenceRule() const
     return mPimpl->mReferenceRule;
 }
 
-void Issue::setItem(CellMLElement type, const std::any &item)
+void Issue::setItem(CellmlElementType cellmlElementType, const std::any &item)
 {
-    mPimpl->mItemType = type;
+    mPimpl->mCellmlElementType = cellmlElementType;
     try {
-        switch (type) {
-        case CellMLElement::COMPONENT:
-        case CellMLElement::COMPONENT_REF:
-        case CellMLElement::MATHML:
+        switch (cellmlElementType) {
+        case CellmlElementType::COMPONENT:
+        case CellmlElementType::COMPONENT_REF:
+        case CellmlElementType::MATH:
             mPimpl->mItem = std::any_cast<ComponentPtr>(item);
             break;
-        case CellMLElement::CONNECTION:
-        case CellMLElement::MAP_VARIABLES:
-            mPimpl->mItem = std::any_cast<VariablePair>(item);
+        case CellmlElementType::CONNECTION:
+        case CellmlElementType::MAP_VARIABLES:
+            mPimpl->mItem = std::any_cast<VariablePairPtr>(item);
             break;
-        case CellMLElement::ENCAPSULATION:
-        case CellMLElement::MODEL:
+        case CellmlElementType::ENCAPSULATION:
+        case CellmlElementType::MODEL:
             mPimpl->mItem = std::any_cast<ModelPtr>(item);
             break;
-        case CellMLElement::IMPORT:
+        case CellmlElementType::IMPORT:
             mPimpl->mItem = std::any_cast<ImportSourcePtr>(item);
             break;
-        case CellMLElement::RESET:
-        case CellMLElement::RESET_VALUE:
-        case CellMLElement::TEST_VALUE:
+        case CellmlElementType::RESET:
+        case CellmlElementType::RESET_VALUE:
+        case CellmlElementType::TEST_VALUE:
             mPimpl->mItem = std::any_cast<ResetPtr>(item);
             break;
-        case CellMLElement::UNDEFINED:
+        case CellmlElementType::UNDEFINED:
             mPimpl->clearItem();
             break;
-        case CellMLElement::UNIT:
-            mPimpl->mItem = std::any_cast<UnitItem>(item);
+        case CellmlElementType::UNIT:
+            mPimpl->mItem = std::any_cast<UnitPtr>(item);
             break;
-        case CellMLElement::UNITS:
+        case CellmlElementType::UNITS:
             mPimpl->mItem = std::any_cast<UnitsPtr>(item);
             break;
-        case CellMLElement::VARIABLE:
+        case CellmlElementType::VARIABLE:
             mPimpl->mItem = std::any_cast<VariablePtr>(item);
             break;
         }
@@ -287,240 +297,236 @@ std::any Issue::item() const
 
 void Issue::setComponent(const ComponentPtr &component)
 {
-    if (component != nullptr) {
-        setItem(CellMLElement::COMPONENT, component);
-    } else if (mPimpl->mItemType == CellMLElement::COMPONENT) {
+    if (component == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::COMPONENT, component);
     }
 }
 
 ComponentPtr Issue::component() const
 {
-    if (mPimpl->mItemType != CellMLElement::COMPONENT) {
-        return nullptr;
-    }
-    return std::any_cast<ComponentPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::COMPONENT) ?
+               std::any_cast<ComponentPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setComponentRef(const ComponentPtr &component)
 {
-    if (component != nullptr) {
-        setItem(CellMLElement::COMPONENT_REF, component);
-    } else if (mPimpl->mItemType == CellMLElement::COMPONENT_REF) {
+    if (component == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::COMPONENT_REF, component);
     }
 }
 
 ComponentPtr Issue::componentRef() const
 {
-    if (mPimpl->mItemType != CellMLElement::COMPONENT_REF) {
-        return nullptr;
-    }
-    return std::any_cast<ComponentPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::COMPONENT_REF) ?
+               std::any_cast<ComponentPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setMath(const ComponentPtr &component)
 {
-    if (component != nullptr) {
-        setItem(CellMLElement::MATHML, component);
-    } else if (mPimpl->mItemType == CellMLElement::MATHML) {
+    if (component == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::MATH, component);
     }
 }
 
 ComponentPtr Issue::math() const
 {
-    if (mPimpl->mItemType != CellMLElement::MATHML) {
-        return nullptr;
-    }
-    return std::any_cast<ComponentPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::MATH) ?
+               std::any_cast<ComponentPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
-    if (importSource != nullptr) {
-        setItem(CellMLElement::IMPORT, importSource);
-    } else if (mPimpl->mItemType == CellMLElement::IMPORT) {
+    if (importSource == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::IMPORT, importSource);
     }
 }
 
 ImportSourcePtr Issue::importSource() const
 {
-    if (mPimpl->mItemType != CellMLElement::IMPORT) {
-        return nullptr;
-    }
-    return std::any_cast<ImportSourcePtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::IMPORT) ?
+               std::any_cast<ImportSourcePtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setModel(const ModelPtr &model)
 {
-    if (model != nullptr) {
-        setItem(CellMLElement::MODEL, model);
-    } else if (mPimpl->mItemType == CellMLElement::MODEL) {
+    if (model == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::MODEL, model);
     }
 }
 
 ModelPtr Issue::model() const
 {
-    if (mPimpl->mItemType != CellMLElement::MODEL) {
-        return nullptr;
-    }
-    return std::any_cast<ModelPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::MODEL) ?
+               std::any_cast<ModelPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setEncapsulation(const ModelPtr &model)
 {
-    if (model != nullptr) {
-        setItem(CellMLElement::ENCAPSULATION, model);
-    } else if (mPimpl->mItemType == CellMLElement::ENCAPSULATION) {
+    if (model == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::ENCAPSULATION, model);
     }
 }
 
 ModelPtr Issue::encapsulation() const
 {
-    if (mPimpl->mItemType != CellMLElement::ENCAPSULATION) {
-        return nullptr;
-    }
-    return std::any_cast<ModelPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::ENCAPSULATION) ?
+               std::any_cast<ModelPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setUnits(const UnitsPtr &units)
 {
-    if (units != nullptr) {
-        setItem(CellMLElement::UNITS, units);
-    } else if (mPimpl->mItemType == CellMLElement::UNITS) {
+    if (units == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::UNITS, units);
     }
 }
 
 UnitsPtr Issue::units() const
 {
-    if (mPimpl->mItemType != CellMLElement::UNITS) {
-        return nullptr;
-    }
-    return std::any_cast<UnitsPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::UNITS) ?
+               std::any_cast<UnitsPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
-void Issue::setUnit(const UnitItem &unit)
+void Issue::setUnit(const UnitPtr &unit)
 {
-    if (unit.first != nullptr) {
-        setItem(CellMLElement::UNIT, unit);
-    } else if (mPimpl->mItemType == CellMLElement::UNIT) {
+    if (unit->isValid()) {
+        setItem(CellmlElementType::UNIT, unit);
+    } else {
         mPimpl->clearItem();
     }
 }
 
-UnitItem Issue::unit() const
+UnitPtr Issue::unit() const
 {
-    if (mPimpl->mItemType != CellMLElement::UNIT) {
-        return std::make_pair(nullptr, 0);
-    }
-    return std::any_cast<UnitItem>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::UNIT) ?
+               std::any_cast<UnitPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
-void Issue::setConnection(const VariablePair &pair)
+void Issue::setConnection(const VariablePairPtr &pair)
 {
-    if ((pair.first != nullptr) && (pair.second != nullptr)) {
-        setItem(CellMLElement::CONNECTION, pair);
-    } else if (mPimpl->mItemType == CellMLElement::CONNECTION) {
+    if (pair->isValid()) {
+        setItem(CellmlElementType::CONNECTION, pair);
+    } else {
         mPimpl->clearItem();
     }
 }
 
-VariablePair Issue::connection() const
+void Issue::setConnection(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (mPimpl->mItemType != CellMLElement::CONNECTION) {
-        return std::make_pair(nullptr, nullptr);
-    }
-    return std::any_cast<VariablePair>(mPimpl->mItem);
+    setConnection(VariablePair::create(variable1, variable2));
 }
 
-void Issue::setMapVariables(const VariablePair &pair)
+VariablePairPtr Issue::connection() const
 {
-    if ((pair.first != nullptr) && (pair.second != nullptr)) {
-        setItem(CellMLElement::MAP_VARIABLES, pair);
-    } else if (mPimpl->mItemType == CellMLElement::MAP_VARIABLES) {
+    return (mPimpl->mCellmlElementType == CellmlElementType::CONNECTION) ?
+               std::any_cast<VariablePairPtr>(mPimpl->mItem) :
+               nullptr;
+}
+
+void Issue::setMapVariables(const VariablePairPtr &pair)
+{
+    if (pair->isValid()) {
+        setItem(CellmlElementType::MAP_VARIABLES, pair);
+    } else {
         mPimpl->clearItem();
     }
 }
 
-VariablePair Issue::mapVariables() const
+void Issue::setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (mPimpl->mItemType != CellMLElement::MAP_VARIABLES) {
-        return std::make_pair(nullptr, nullptr);
-    }
-    return std::any_cast<VariablePair>(mPimpl->mItem);
+    setMapVariables(VariablePair::create(variable1, variable2));
+}
+
+VariablePairPtr Issue::mapVariables() const
+{
+    return (mPimpl->mCellmlElementType == CellmlElementType::MAP_VARIABLES) ?
+               std::any_cast<VariablePairPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setVariable(const VariablePtr &variable)
 {
-    if (variable != nullptr) {
-        setItem(CellMLElement::VARIABLE, variable);
-    } else if (mPimpl->mItemType == CellMLElement::VARIABLE) {
+    if (variable == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::VARIABLE, variable);
     }
 }
 
 VariablePtr Issue::variable() const
 {
-    if (mPimpl->mItemType != CellMLElement::VARIABLE) {
-        return nullptr;
-    }
-    return std::any_cast<VariablePtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::VARIABLE) ?
+               std::any_cast<VariablePtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setReset(const ResetPtr &reset)
 {
-    if (reset != nullptr) {
-        setItem(CellMLElement::RESET, reset);
-    } else if (mPimpl->mItemType == CellMLElement::RESET) {
+    if (reset == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::RESET, reset);
     }
 }
 
 ResetPtr Issue::reset() const
 {
-    if (mPimpl->mItemType != CellMLElement::RESET) {
-        return nullptr;
-    }
-    return std::any_cast<ResetPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::RESET) ?
+               std::any_cast<ResetPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setResetValue(const ResetPtr &reset)
 {
-    if (reset != nullptr) {
-        setItem(CellMLElement::RESET_VALUE, reset);
-    } else if (mPimpl->mItemType == CellMLElement::RESET_VALUE) {
+    if (reset == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::RESET_VALUE, reset);
     }
 }
 
 ResetPtr Issue::resetValue() const
 {
-    if (mPimpl->mItemType != CellMLElement::RESET_VALUE) {
-        return nullptr;
-    }
-    return std::any_cast<ResetPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::RESET_VALUE) ?
+               std::any_cast<ResetPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::setTestValue(const ResetPtr &reset)
 {
-    if (reset != nullptr) {
-        setItem(CellMLElement::TEST_VALUE, reset);
-    } else if (mPimpl->mItemType == CellMLElement::TEST_VALUE) {
+    if (reset == nullptr) {
         mPimpl->clearItem();
+    } else {
+        setItem(CellmlElementType::TEST_VALUE, reset);
     }
 }
 
 ResetPtr Issue::testValue() const
 {
-    if (mPimpl->mItemType != CellMLElement::TEST_VALUE) {
-        return nullptr;
-    }
-    return std::any_cast<ResetPtr>(mPimpl->mItem);
+    return (mPimpl->mCellmlElementType == CellmlElementType::TEST_VALUE) ?
+               std::any_cast<ResetPtr>(mPimpl->mItem) :
+               nullptr;
 }
 
 void Issue::clear()

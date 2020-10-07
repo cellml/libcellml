@@ -629,14 +629,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) && (!isStandardUnitName(reference))) {
             IssuePtr issue = Issue::create();
             issue->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
-            issue->setUnit(std::make_pair(units, index));
+            issue->setUnit(Unit::create(units, index));
             issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
             mValidator->addIssue(issue);
         }
     } else {
         IssuePtr issue = Issue::create();
         issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'.");
-        issue->setUnit(std::make_pair(units, index));
+        issue->setUnit(Unit::create(units, index));
         issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
         mValidator->addIssue(issue);
     }
@@ -645,7 +645,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
             if (!isCellMLInteger(prefix)) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
-                issue->setUnit(std::make_pair(units, index));
+                issue->setUnit(Unit::create(units, index));
                 issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                 mValidator->addIssue(issue);
             } else {
@@ -655,7 +655,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                 } catch (std::out_of_range &) {
                     IssuePtr issue = Issue::create();
                     issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
-                    issue->setUnit(std::make_pair(units, index));
+                    issue->setUnit(Unit::create(units, index));
                     issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                     mValidator->addIssue(issue);
                 }
@@ -1088,16 +1088,18 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
             const auto equivalentVariable = variable->equivalentVariable(index);
             auto equivalentComponent = owningComponent(equivalentVariable);
             if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
-                VariablePair reversePair = std::make_pair(equivalentVariable, variable);
-                auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+                auto it = std::find_if(alreadyReported.begin(), alreadyReported.end(),
+                                       [equivalentVariable, variable](const VariablePairPtr &in) {
+                                           return (in->variable1() == equivalentVariable) && (in->variable2() == variable);
+                                       });
                 if (it == alreadyReported.end()) {
-                    VariablePair pair = std::make_pair(variable, equivalentVariable);
+                    VariablePairPtr pair = VariablePair::create(variable, equivalentVariable);
                     alreadyReported.push_back(pair);
                     std::string equivalentComponentName = equivalentComponent->name();
 
                     IssuePtr err = Issue::create();
                     err->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
-                    err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                    err->setMapVariables(VariablePair::create(variable, equivalentVariable));
                     err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE);
                     mValidator->addIssue(err);
                 }
@@ -1131,17 +1133,19 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
         }
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
-            VariablePair reversePair = std::make_pair(equivalentVariable, variable);
-            auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+            auto it = std::find_if(alreadyReported.begin(), alreadyReported.end(),
+                                   [equivalentVariable, variable](const VariablePairPtr &in) {
+                                       return (in->variable1() == equivalentVariable) && (in->variable2() == variable);
+                                   });
             if (it == alreadyReported.end()) {
-                VariablePair pair = std::make_pair(variable, equivalentVariable);
+                VariablePairPtr pair = VariablePair::create(variable, equivalentVariable);
                 ComponentPtr parentComponent = owningComponent(variable);
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
-                err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                err->setMapVariables(VariablePair::create(variable, equivalentVariable));
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
             }
@@ -1158,7 +1162,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
             if (component == nullptr) {
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                err->setMapVariables(VariablePair::create(variable, equivalentVariable));
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mValidator->addIssue(err);
             }

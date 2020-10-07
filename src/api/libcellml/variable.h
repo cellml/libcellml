@@ -40,10 +40,10 @@ class LIBCELLML_EXPORT Variable: public NamedEntity
 #endif
 {
 public:
-    ~Variable() override; /**< Destructor */
-    Variable(const Variable &rhs) = delete; /**< Copy constructor */
-    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor */
-    Variable &operator=(Variable rhs) = delete; /**< Assignment operator */
+    ~Variable() override; /**< Destructor. */
+    Variable(const Variable &rhs) = delete; /**< Copy constructor. */
+    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor. */
+    Variable &operator=(Variable rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Variable object.
@@ -467,11 +467,11 @@ public:
     VariablePtr clone() const;
 
 private:
-    Variable(); /**< Constructor */
+    Variable(); /**< Constructor. */
     explicit Variable(const std::string &name); /**< Constructor with std::string parameter*/
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
-    VariableImpl *mPimpl; /**< Private member to implementation pointer */
+    VariableImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

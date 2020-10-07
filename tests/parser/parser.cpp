@@ -1391,10 +1391,10 @@ TEST(Parser, invalidImportsAndGetIssue)
     EXPECT_EQ(import, importFromIssue);
 }
 
-TEST(Parser, invalidModelWithDifferentCausesOfIssues)
+TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
 {
-    // Check for all causes of issues.
-    std::vector<bool> foundCause(7, false);
+    // Check for all item types of issues.
+    std::vector<bool> foundItemType(7, false);
 
     // Trigger CellML entity issues
     const std::string in =
@@ -1431,34 +1431,34 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 
     for (size_t i = 0; i < parser->issueCount(); ++i) {
-        switch (parser->issue(i)->itemType()) {
-        case libcellml::CellMLElement::COMPONENT:
-            foundCause.at(0) = true;
+        switch (parser->issue(i)->cellmlElementType()) {
+        case libcellml::CellmlElementType::COMPONENT:
+            foundItemType.at(0) = true;
             break;
-        case libcellml::CellMLElement::ENCAPSULATION:
-            foundCause.at(1) = true;
+        case libcellml::CellmlElementType::ENCAPSULATION:
+            foundItemType.at(1) = true;
             break;
-        case libcellml::CellMLElement::IMPORT:
-            foundCause.at(2) = true;
+        case libcellml::CellmlElementType::IMPORT:
+            foundItemType.at(2) = true;
             break;
-        case libcellml::CellMLElement::MODEL:
-            foundCause.at(3) = true;
+        case libcellml::CellmlElementType::MODEL:
+            foundItemType.at(3) = true;
             break;
-        case libcellml::CellMLElement::UNITS:
-            foundCause.at(4) = true;
+        case libcellml::CellmlElementType::UNITS:
+            foundItemType.at(4) = true;
             break;
-        case libcellml::CellMLElement::VARIABLE:
-            foundCause.at(5) = true;
+        case libcellml::CellmlElementType::VARIABLE:
+            foundItemType.at(5) = true;
             break;
-        case libcellml::CellMLElement::COMPONENT_REF:
-        case libcellml::CellMLElement::CONNECTION:
-        case libcellml::CellMLElement::MAP_VARIABLES:
-        case libcellml::CellMLElement::MATHML:
-        case libcellml::CellMLElement::RESET:
-        case libcellml::CellMLElement::RESET_VALUE:
-        case libcellml::CellMLElement::TEST_VALUE:
-        case libcellml::CellMLElement::UNDEFINED:
-        case libcellml::CellMLElement::UNIT:
+        case libcellml::CellmlElementType::COMPONENT_REF:
+        case libcellml::CellmlElementType::CONNECTION:
+        case libcellml::CellmlElementType::MAP_VARIABLES:
+        case libcellml::CellmlElementType::MATH:
+        case libcellml::CellmlElementType::RESET:
+        case libcellml::CellmlElementType::RESET_VALUE:
+        case libcellml::CellmlElementType::TEST_VALUE:
+        case libcellml::CellmlElementType::UNDEFINED:
+        case libcellml::CellmlElementType::UNIT:
             break;
         }
     }
@@ -1469,14 +1469,14 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     libcellml::IssuePtr undefinedIssue = libcellml::Issue::create();
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->itemType() == libcellml::CellMLElement::UNDEFINED) {
-        foundCause.at(6) = true;
+    if (parser2->issue(0)->cellmlElementType() == libcellml::CellmlElementType::UNDEFINED) {
+        foundItemType.at(6) = true;
     }
 
     // Check that we've found all the possible issue types
-    size_t index = 0;
-    for (auto state : foundCause) {
-        SCOPED_TRACE(index++);
+    size_t index = std::numeric_limits<size_t>::max();
+    for (auto state : foundItemType) {
+        SCOPED_TRACE(++index);
         EXPECT_TRUE(state);
     }
 }

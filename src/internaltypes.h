@@ -34,7 +34,7 @@ using NameList = std::vector<std::string>; /**< Type definition for list of name
 using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
 
 // VariableMap
-using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
+using VariableMap = std::vector<VariablePairPtr>; /**< Type definition for vector of VariablePair.*/
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 
 // ComponentMap
@@ -43,6 +43,9 @@ using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector
 using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
 using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
+
+using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
+using UnitsWeakPtr = std::weak_ptr<Units>; /**< Type definition for weak units pointer. */
 
 using IdMap = std::map<std::string, std::pair<int, std::vector<std::string>>>; /**< Type definition for map of IDs in Validator. **/
 using ImportLibrary = std::map<std::string, ModelPtr>; /** Type definition for library map of imported models. */

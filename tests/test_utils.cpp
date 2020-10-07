@@ -55,7 +55,7 @@ int elapsedTime(const std::chrono::steady_clock::time_point &startTime)
     return std::chrono::duration_cast<std::chrono::milliseconds>(timeNow() - startTime).count();
 }
 
-void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
+void printIssues(const libcellml::LoggerPtr &l, bool headings, bool cellmlElementTypes, bool rule)
 {
     int width = int(floor(log10(l->errorCount())));
     for (size_t i = 0; i < l->issueCount(); ++i) {
@@ -79,8 +79,8 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         if (headings) {
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
-        if (causes) {
-            std::cout << ", " << static_cast<int>(l->issue(i)->itemType());
+        if (cellmlElementTypes) {
+            std::cout << ", " << static_cast<int>(l->issue(i)->cellmlElementType());
         }
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
@@ -209,17 +209,17 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
-void expectEqualIssuesCausesLevels(const std::vector<std::string> &issues,
-                                   const std::vector<libcellml::CellMLElement> &causes,
-                                   const std::vector<libcellml::Issue::Level> &levels,
-                                   const libcellml::LoggerPtr &logger)
+void expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &issues,
+                                               const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
+                                               const std::vector<libcellml::Issue::Level> &levels,
+                                               const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
-    EXPECT_EQ(causes.size(), logger->issueCount());
+    EXPECT_EQ(cellmlElementTypes.size(), logger->issueCount());
     EXPECT_EQ(levels.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
-        EXPECT_EQ(causes.at(i), logger->issue(i)->itemType());
+        EXPECT_EQ(cellmlElementTypes.at(i), logger->issue(i)->cellmlElementType());
         EXPECT_EQ(levels.at(i), logger->issue(i)->level());
     }
 }
