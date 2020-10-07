@@ -629,14 +629,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) && (!isStandardUnitName(reference))) {
             IssuePtr issue = Issue::create();
             issue->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
-            issue->setUnit(UnitReference::create(units, index));
+            issue->setUnit(Unit::create(units, index));
             issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
             mValidator->addIssue(issue);
         }
     } else {
         IssuePtr issue = Issue::create();
         issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'.");
-        issue->setUnit(UnitReference::create(units, index));
+        issue->setUnit(Unit::create(units, index));
         issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
         mValidator->addIssue(issue);
     }
@@ -645,7 +645,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
             if (!isCellMLInteger(prefix)) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
-                issue->setUnit(UnitReference::create(units, index));
+                issue->setUnit(Unit::create(units, index));
                 issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                 mValidator->addIssue(issue);
             } else {
@@ -655,7 +655,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                 } catch (std::out_of_range &) {
                     IssuePtr issue = Issue::create();
                     issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
-                    issue->setUnit(UnitReference::create(units, index));
+                    issue->setUnit(Unit::create(units, index));
                     issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                     mValidator->addIssue(issue);
                 }

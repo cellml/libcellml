@@ -74,34 +74,34 @@ using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units p
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
 
-class UnitReference;
-using UnitReferencePtr = std::shared_ptr<UnitReference>;
+class Unit;
+using UnitPtr = std::shared_ptr<Unit>;
 
 /**
- * @brief The UnitReference class
+ * @brief The Unit class
  *
- * The UnitReference class can be used to refer to a unit in a @ref Units.
+ * The Unit class can be used to refer to a unit in a @ref Units.
  */
-class LIBCELLML_EXPORT UnitReference
+class LIBCELLML_EXPORT Unit
 {
 public:
-    ~UnitReference(); /**< Destructor. */
-    UnitReference() = delete; /**< Constructor. */
-    UnitReference(const UnitReference &rhs) = delete; /**< Copy constructor. */
-    UnitReference(UnitReference &&rhs) noexcept = delete; /**< Move constructor. */
-    UnitReference &operator=(UnitReference rhs) = delete; /**< Assignment operator. */
+    ~Unit(); /**< Destructor. */
+    Unit() = delete; /**< Constructor. */
+    Unit(const Unit &rhs) = delete; /**< Copy constructor. */
+    Unit(Unit &&rhs) noexcept = delete; /**< Move constructor. */
+    Unit &operator=(Unit rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a unit reference object.
      *
-     * Factory method to create a @ref UnitReferencePtr.  Create a
-     * unit reference with @ref Units and index with::
+     * Factory method to create a @ref UnitPtr.  Create a unit with @ref Units
+     * and index with::
      *
-     *   UnitReferencePtr UnitReference = libcellml::UnitReferencePtr::create(units, index);
+     *   auto unit = libcellml::UnitPtr::create(units, index);
      *
-     * @return A smart pointer to a @ref UnitReferencePtr object.
+     * @return A smart pointer to a @ref UnitPtr object.
      */
-    static UnitReferencePtr create(const UnitsPtr &units, size_t index) noexcept;
+    static UnitPtr create(const UnitsPtr &units, size_t index) noexcept;
 
     /**
      * @brief Get the unit.
@@ -132,10 +132,10 @@ public:
     bool isValid() const;
 
 private:
-    explicit UnitReference(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
+    explicit Unit(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
 
-    struct UnitReferenceImpl; /**< Forward declaration for pImpl idiom. */
-    UnitReferenceImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct UnitImpl; /**< Forward declaration for pImpl idiom. */
+    UnitImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 class VariablePair;

@@ -23,14 +23,14 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The UnitReference::UnitReferenceImpl struct.
+ * @brief The Unit::UnitImpl struct.
  *
- * The private implementation for the UnitReference class.
+ * The private implementation for the Unit class.
  */
-struct UnitReference::UnitReferenceImpl
+struct Unit::UnitImpl
 {
-    UnitsWeakPtr mUnits; /**< Variable 1 for the pair.*/
-    size_t mIndex = std::numeric_limits<size_t>::max(); /**< Variable 2 for the pair.*/
+    UnitsWeakPtr mUnits; /**< Units that owns this unit.*/
+    size_t mIndex = std::numeric_limits<size_t>::max(); /**< Inded of this unit.*/
 };
 
 /**
@@ -44,34 +44,34 @@ struct VariablePair::VariablePairImpl
     VariableWeakPtr mVariable2; /**< Variable 2 for the pair.*/
 };
 
-UnitReference::UnitReference(const UnitsPtr &units, size_t index)
-    : mPimpl(new UnitReferenceImpl())
+Unit::Unit(const UnitsPtr &units, size_t index)
+    : mPimpl(new UnitImpl())
 {
     mPimpl->mUnits = units;
     mPimpl->mIndex = index;
 }
 
-UnitReference::~UnitReference()
+Unit::~Unit()
 {
     delete mPimpl;
 }
 
-UnitReferencePtr UnitReference::create(const UnitsPtr &units, size_t index) noexcept
+UnitPtr Unit::create(const UnitsPtr &units, size_t index) noexcept
 {
-    return std::shared_ptr<UnitReference> {new UnitReference {units, index}};
+    return std::shared_ptr<Unit> {new Unit {units, index}};
 }
 
-UnitsPtr UnitReference::units() const
+UnitsPtr Unit::units() const
 {
     return mPimpl->mUnits.lock();
 }
 
-size_t UnitReference::index() const
+size_t Unit::index() const
 {
     return mPimpl->mIndex;
 }
 
-bool UnitReference::isValid() const
+bool Unit::isValid() const
 {
     auto units = mPimpl->mUnits.lock();
     if (units != nullptr) {

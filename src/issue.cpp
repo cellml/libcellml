@@ -106,10 +106,10 @@ Issue::Issue(const ResetPtr &reset)
     mPimpl->mCellMLReferenceType = CellMLReferenceType::RESET;
 }
 
-Issue::Issue(const UnitReferencePtr &unit)
+Issue::Issue(const UnitPtr &unit)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mItem = std::make_any<UnitReferencePtr>(unit);
+    mPimpl->mItem = std::make_any<UnitPtr>(unit);
     mPimpl->mCellMLReferenceType = CellMLReferenceType::UNIT;
 }
 
@@ -180,10 +180,10 @@ IssuePtr Issue::create(const VariablePtr &variable) noexcept
     return nullptr;
 }
 
-IssuePtr Issue::create(const UnitReferencePtr &unitItem) noexcept
+IssuePtr Issue::create(const UnitPtr &unit) noexcept
 {
-    if (unitItem->isValid()) {
-        auto issue = std::shared_ptr<Issue> {new Issue {unitItem}};
+    if (unit->isValid()) {
+        auto issue = std::shared_ptr<Issue> {new Issue {unit}};
         issue->mPimpl->mCellMLReferenceType = CellMLReferenceType::UNIT;
         return issue;
     }
@@ -266,7 +266,7 @@ void Issue::setItem(CellMLReferenceType type, const std::any &item)
             mPimpl->clearItem();
             break;
         case CellMLReferenceType::UNIT:
-            mPimpl->mItem = std::any_cast<UnitReferencePtr>(item);
+            mPimpl->mItem = std::any_cast<UnitPtr>(item);
             break;
         case CellMLReferenceType::UNITS:
             mPimpl->mItem = std::any_cast<UnitsPtr>(item);
@@ -355,14 +355,14 @@ UnitsPtr Issue::units() const
     return (mPimpl->mCellMLReferenceType == CellMLReferenceType::UNITS) ? std::any_cast<UnitsPtr>(mPimpl->mItem) : nullptr;
 }
 
-void Issue::setUnit(const UnitReferencePtr &unit)
+void Issue::setUnit(const UnitPtr &unit)
 {
     (unit->isValid()) ? setItem(CellMLReferenceType::UNIT, unit) : mPimpl->clearItem();
 }
 
-UnitReferencePtr Issue::unit() const
+UnitPtr Issue::unit() const
 {
-    return (mPimpl->mCellMLReferenceType == CellMLReferenceType::UNIT) ? std::any_cast<UnitReferencePtr>(mPimpl->mItem) : UnitReference::create(nullptr, 0);
+    return (mPimpl->mCellMLReferenceType == CellMLReferenceType::UNIT) ? std::any_cast<UnitPtr>(mPimpl->mItem) : Unit::create(nullptr, 0);
 }
 
 void Issue::setConnection(const VariablePairPtr &pair)
