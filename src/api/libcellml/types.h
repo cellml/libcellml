@@ -89,6 +89,7 @@ class LIBCELLML_EXPORT UnitReference
 {
 public:
     ~UnitReference(); /**< Destructor. */
+    UnitReference() = delete; /**< Constructor. */
     UnitReference(const UnitReference &rhs) = delete; /**< Copy constructor. */
     UnitReference(UnitReference &&rhs) noexcept = delete; /**< Move constructor. */
     UnitReference &operator=(UnitReference rhs) = delete; /**< Assignment operator. */
@@ -134,7 +135,6 @@ public:
     bool isValid() const;
 
 private:
-    UnitReference(); /**< Constructor. */
     explicit UnitReference(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
 
     struct UnitReferenceImpl; /**< Forward declaration for pImpl idiom. */
@@ -154,6 +154,7 @@ class LIBCELLML_EXPORT VariablePair
 {
 public:
     ~VariablePair(); /**< Destructor. */
+    VariablePair() = delete; /**< Constructor. */
     VariablePair(const VariablePair &rhs) = delete; /**< Copy constructor. */
     VariablePair(VariablePair &&rhs) noexcept = delete; /**< Move constructor. */
     VariablePair &operator=(VariablePair rhs) = delete; /**< Assignment operator. */
@@ -199,7 +200,6 @@ public:
     bool isValid() const;
 
 private:
-    VariablePair(); /**< Constructor. */
     explicit VariablePair(const VariablePtr &variable1, const VariablePtr &variable2); /**< Constructor with two variables as parameters. */
 
     struct VariablePairImpl; /**< Forward declaration for pImpl idiom. */
