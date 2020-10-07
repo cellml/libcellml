@@ -186,6 +186,7 @@ from libcellml import CellMLReferenceType
     %pythoncode %{
         def setItem(self, itemType, item):
             r"""Set the item by item type related to this issue."""
+
             if itemType == CellMLReferenceType.COMPONENT:
                 _issue.Issue_setComponent(self, item)
             elif itemType == CellMLReferenceType.COMPONENT_REF:
@@ -244,7 +245,6 @@ from libcellml import CellMLReferenceType
             elif itemType == CellMLReferenceType.VARIABLE:
                 return (itemType, _issue.Issue_variable(self))
             return (CellMLReferenceType.UNDEFINED, None)
-
         %}
     }
 
