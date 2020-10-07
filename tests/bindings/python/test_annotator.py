@@ -143,8 +143,8 @@ class AnnotatorTestCase(unittest.TestCase):
         model = parser.parseModel(file_contents("annotator/lots_of_duplicate_ids.cellml"))
         annotator.setModel(model)
 
-        self.assertEqual(8, annotator.duplicateCount("duplicateId1"))
-        self.assertEqual(7, annotator.duplicateCount("duplicateId3"))
+        self.assertEqual(8, annotator.itemCount("duplicateId1"))
+        self.assertEqual(7, annotator.itemCount("duplicateId3"))
 
     def test_has_model(self):
         from libcellml import Annotator, Parser
@@ -524,7 +524,7 @@ class AnnotatorTestCase(unittest.TestCase):
     def test_variable_pair_coverage(self):
         from libcellml import Variable
         from libcellml.annotator import VariablePair
-        
+
         v1 = Variable("ray")
         v2 = Variable("charles")
         v_p = VariablePair()
@@ -548,7 +548,7 @@ class AnnotatorTestCase(unittest.TestCase):
             item_list = annotator.items(id)
             for item in item_list:
                 annotator.assignId(item)
-            self.assertEqual(0, annotator.duplicateCount(id))
+            self.assertEqual(0, annotator.itemCount(id))
 
     def test_raise_not_found_issue(self):
         from libcellml import Annotator, Parser

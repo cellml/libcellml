@@ -127,7 +127,7 @@ public:
      *
      * A @c nullptr will be returned if:
      *  - no item with the given @p id exists in the stored model;
-     *  - the given @p index is beyond the range [0, \#duplicateCount(id));
+     *  - the given @p index is beyond the range [0, \#itemCount(id));
      *  - the item stored at the @p index is not a @c ComponentPtr; or
      *  - the annotator does not have a model attached.
      *
@@ -1094,7 +1094,7 @@ public:
      *
      * @return the number of items with the given @p id.
      */
-    size_t duplicateCount(const std::string &id);
+    size_t itemCount(const std::string &id);
 
     /**
      * @brief Test whether the annotator has a stored model.
