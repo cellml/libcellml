@@ -966,31 +966,18 @@ TEST(Annotator, automaticIdAllItemsNoId)
 
     // Expect each have had a change of id.
     EXPECT_EQ("b4da55", annotator->assignId(itemComponent));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da56", annotator->assignId(itemComponentRef));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da57", annotator->assignId(itemConnection));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da58", annotator->assignId(itemImportSource));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da59", annotator->assignId(itemMapVariables));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da5a", annotator->assignId(itemModel));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da5b", annotator->assignId(itemReset));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da5c", annotator->assignId(itemResetValue));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da5d", annotator->assignId(itemTestValue));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da5e", annotator->assignId(itemUnit));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da5f", annotator->assignId(itemUnits));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da60", annotator->assignId(itemVariable));
-    EXPECT_TRUE(annotator->hasModel());
     EXPECT_EQ("b4da61", annotator->assignId(itemEncapsulation));
-    EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("b4da55", model->component(0)->id());
     EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
@@ -1013,8 +1000,6 @@ TEST(Annotator, automaticIdAllItemsNoId)
     libcellml::AnyItem itemMapVariables2 = std::make_pair(libcellml::CellMLElement::MAP_VARIABLES, r2);
     EXPECT_EQ("b4da62", annotator->assignId(itemConnection2));
     EXPECT_EQ("b4da63", annotator->assignId(itemMapVariables2));
-
-    EXPECT_TRUE(annotator->hasModel());
 }
 
 TEST(Annotator, automaticIdResetItemBadInput)

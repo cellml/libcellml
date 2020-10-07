@@ -958,15 +958,13 @@ bool Annotator::assignAllIds()
 
 bool Annotator::assignAllIds(ModelPtr &model)
 {
-    // Helper function so that the users don't have to build a model library when they're
-    // about to overwrite it all anyway.
     if (model == nullptr) {
         auto issue = Issue::create();
         issue->setDescription("The Model supplied is a nullptr. No action has been taken.");
         issue->setLevel(Issue::Level::ERROR);
         return false;
     }
-    mPimpl->mModel = model;
+    setModel(model);
     return assignAllIds();
 }
 
