@@ -135,7 +135,7 @@ TEST(Annotator, getNonEntityFromId)
 
     annotator->setModel(model);
 
-    // Unit items are returned as name string and pair of UnitsPtr parent and index:
+    // Unit items are returned as a CellMLElement enum and a pair of UnitsPtr parent and index:
     EXPECT_EQ(libcellml::CellMLElement::UNIT, annotator->item("unit1_id").first);
     EXPECT_EQ(units, std::any_cast<libcellml::UnitItem>(annotator->item("unit1_id").second).first);
     EXPECT_EQ(size_t(0), std::any_cast<libcellml::UnitItem>(annotator->item("unit1_id").second).second);
@@ -153,15 +153,15 @@ TEST(Annotator, getNonEntityFromId)
     EXPECT_EQ(libcellml::CellMLElement::CONNECTION, annotator->item("connection_id").first);
     EXPECT_TRUE((v1v2 == std::any_cast<libcellml::VariablePair>(annotator->item("connection_id").second) || (v3v4 == std::any_cast<libcellml::VariablePair>(annotator->item("connection_id").second))));
 
-    // Component refs are returned as name string and ComponentPtr:
+    // Component refs are returned as CellMLElement enum and ComponentPtr:
     EXPECT_EQ(libcellml::CellMLElement::COMPONENT_REF, annotator->item("component_ref1_id").first);
     EXPECT_EQ(c1, std::any_cast<libcellml::ComponentPtr>(annotator->item("component_ref1_id").second));
 
-    // Encapsulation is returned as name string and ModelPtr :
+    // Encapsulation is returned as CellMLElement enum and ModelPtr :
     EXPECT_EQ(libcellml::CellMLElement::ENCAPSULATION, annotator->item("encapsulation_id").first);
     EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(annotator->item("encapsulation_id").second));
 
-    // Reset children are returned as name string and reset pointer:
+    // Reset children are returned as CellMLElement enum and reset pointer:
     EXPECT_EQ(libcellml::CellMLElement::RESET_VALUE, annotator->item("reset_value_id").first);
     EXPECT_EQ(reset, std::any_cast<libcellml::ResetPtr>(annotator->item("reset_value_id").second));
     EXPECT_EQ(libcellml::CellMLElement::TEST_VALUE, annotator->item("test_value_id").first);
@@ -1590,7 +1590,7 @@ TEST(Annotator, clearAllIdsModelPresent)
 
 TEST(Annotator, assignIdInvalidType)
 {
-    const std::string e = "The given type 'reset' is invalid for this method.";
+    const std::string e = "The item is internally inconsistent: the enum type 'reset' cannot be used with the stored item.";
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringNoIds);
@@ -1989,10 +1989,10 @@ TEST(Annotator, pythonBindingFunctionsCoverage)
 TEST(Annotator, assignIdInvalidArguments)
 {
     const std::vector<std::string> expectedIssues = {
-        "The given type 'undefined' is invalid for this method.",
-        "The given type 'variable' is invalid for this method.",
-        "The given type 'component' is invalid for this method.",
-        "The given type 'units' is invalid for this method.",
+        "The item is internally inconsistent: the enum type 'undefined' cannot be used with the stored item.",
+        "The item is internally inconsistent: the enum type 'variable' cannot be used with the stored item.",
+        "The item is internally inconsistent: the enum type 'component' cannot be used with the stored item.",
+        "The item is internally inconsistent: the enum type 'units' cannot be used with the stored item.",
     };
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringUniqueIds);
