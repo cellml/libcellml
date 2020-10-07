@@ -21,10 +21,10 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The ItemType enum class.
+ * @brief The CellMLReferenceType enum class.
  *
  */
-enum class ItemType
+enum class CellMLReferenceType
 {
     COMPONENT,
     COMPONENT_REF,

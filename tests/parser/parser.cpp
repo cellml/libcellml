@@ -1432,33 +1432,33 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
 
     for (size_t i = 0; i < parser->issueCount(); ++i) {
         switch (parser->issue(i)->itemType()) {
-        case libcellml::ItemType::COMPONENT:
+        case libcellml::CellMLReferenceType::COMPONENT:
             foundCause.at(0) = true;
             break;
-        case libcellml::ItemType::ENCAPSULATION:
+        case libcellml::CellMLReferenceType::ENCAPSULATION:
             foundCause.at(1) = true;
             break;
-        case libcellml::ItemType::IMPORT:
+        case libcellml::CellMLReferenceType::IMPORT:
             foundCause.at(2) = true;
             break;
-        case libcellml::ItemType::MODEL:
+        case libcellml::CellMLReferenceType::MODEL:
             foundCause.at(3) = true;
             break;
-        case libcellml::ItemType::UNITS:
+        case libcellml::CellMLReferenceType::UNITS:
             foundCause.at(4) = true;
             break;
-        case libcellml::ItemType::VARIABLE:
+        case libcellml::CellMLReferenceType::VARIABLE:
             foundCause.at(5) = true;
             break;
-        case libcellml::ItemType::COMPONENT_REF:
-        case libcellml::ItemType::CONNECTION:
-        case libcellml::ItemType::MAP_VARIABLES:
-        case libcellml::ItemType::MATHML:
-        case libcellml::ItemType::RESET:
-        case libcellml::ItemType::RESET_VALUE:
-        case libcellml::ItemType::TEST_VALUE:
-        case libcellml::ItemType::UNDEFINED:
-        case libcellml::ItemType::UNIT:
+        case libcellml::CellMLReferenceType::COMPONENT_REF:
+        case libcellml::CellMLReferenceType::CONNECTION:
+        case libcellml::CellMLReferenceType::MAP_VARIABLES:
+        case libcellml::CellMLReferenceType::MATHML:
+        case libcellml::CellMLReferenceType::RESET:
+        case libcellml::CellMLReferenceType::RESET_VALUE:
+        case libcellml::CellMLReferenceType::TEST_VALUE:
+        case libcellml::CellMLReferenceType::UNDEFINED:
+        case libcellml::CellMLReferenceType::UNIT:
             break;
         }
     }
@@ -1469,7 +1469,7 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     libcellml::IssuePtr undefinedIssue = libcellml::Issue::create();
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->itemType() == libcellml::ItemType::UNDEFINED) {
+    if (parser2->issue(0)->itemType() == libcellml::CellMLReferenceType::UNDEFINED) {
         foundCause.at(6) = true;
     }
 
