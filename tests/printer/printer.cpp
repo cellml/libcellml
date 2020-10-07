@@ -460,7 +460,7 @@ TEST(Printer, printModelWithAutomaticIdsSomeExistingNoMaths)
 {
     const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model\">\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
+                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
                            "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_2\"/>\n"
                            "  </import>\n"
                            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i_was_skipped_before\">\n"
@@ -518,7 +518,7 @@ TEST(Printer, printModelWithAutomaticIdsSomeExistingNoMaths)
                            "</model>\n";
     const std::string expectedOutString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model\">\n"
-                                          "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
+                                          "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
                                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_2\"/>\n"
                                           "  </import>\n"
                                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i_was_skipped_before\">\n"
