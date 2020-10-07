@@ -86,9 +86,9 @@ void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::s
                                                         const libcellml::LoggerPtr &logger);
 
 void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &issues,
-                                                  const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
-                                                  const std::vector<libcellml::Issue::Level> &levels,
-                                                  const libcellml::LoggerPtr &logger);
+                                                           const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
+                                                           const std::vector<libcellml::Issue::Level> &levels,
+                                                           const libcellml::LoggerPtr &logger);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",

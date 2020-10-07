@@ -196,9 +196,9 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
 }
 
 void expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &issues,
-                                      const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
-                                      const std::vector<libcellml::Issue::Level> &levels,
-                                      const libcellml::LoggerPtr &logger)
+                                               const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
+                                               const std::vector<libcellml::Issue::Level> &levels,
+                                               const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     EXPECT_EQ(cellmlElementTypes.size(), logger->issueCount());
