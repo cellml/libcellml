@@ -1089,7 +1089,7 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
             auto equivalentComponent = owningComponent(equivalentVariable);
             if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
                 auto it = std::find_if(alreadyReported.begin(), alreadyReported.end(),
-                                       [equivalentVariable, variable](VariablePairPtr in) { return (in->variable1() == equivalentVariable && in->variable2() == variable); });
+                                       [equivalentVariable, variable](const VariablePairPtr &in) { return (in->variable1() == equivalentVariable && in->variable2() == variable); });
                 if (it == alreadyReported.end()) {
                     VariablePairPtr pair = VariablePair::create(variable, equivalentVariable);
                     alreadyReported.push_back(pair);
@@ -1132,7 +1132,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
             auto it = std::find_if(alreadyReported.begin(), alreadyReported.end(),
-                                   [equivalentVariable, variable](VariablePairPtr in) { return (in->variable1() == equivalentVariable && in->variable2() == variable); });
+                                   [equivalentVariable, variable](const VariablePairPtr &in) { return (in->variable1() == equivalentVariable && in->variable2() == variable); });
             if (it == alreadyReported.end()) {
                 VariablePairPtr pair = VariablePair::create(variable, equivalentVariable);
                 ComponentPtr parentComponent = owningComponent(variable);
