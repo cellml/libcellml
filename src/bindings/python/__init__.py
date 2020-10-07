@@ -272,7 +272,7 @@ convert(Issue, 'ReferenceRule', [
     'MAP_VARIABLES_VARIABLE2',
     'MAP_VARIABLES_UNIQUE',
     'MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION',
-    'NOT_SPECIFIED'
+    'UNSPECIFIED'
 ])
 convert(Units, 'Prefix', [
     'YOTTA',
