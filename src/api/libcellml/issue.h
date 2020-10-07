@@ -305,6 +305,8 @@ public:
     void setComponent(const ComponentPtr &component);
 
     /**
+     * @brief Get the component relevant to this issue.
+     *
      * Get the component relevant to this issue.
      *
      * @return A @c Component relevant to this issue, or
@@ -322,6 +324,8 @@ public:
     void setImportSource(const ImportSourcePtr &importSource);
 
     /**
+     * @brief Get the import source relevant to this issue.
+     *
      * Get the import source relevant to this issue.
      *
      * @return An @c ImportSourcePtr relevant to this issue, or
@@ -339,6 +343,8 @@ public:
     void setModel(const ModelPtr &model);
 
     /**
+     * @brief Get the model relevant to this issue.
+     *
      * Get the model relevant to this issue.
      *
      * @return A @c ModelPtr relevant to this issue, or
@@ -356,6 +362,8 @@ public:
     void setUnits(const UnitsPtr &units);
 
     /**
+     * @brief Get the units relevant to this issue.
+     *
      * Get the units relevant to this issue.
      *
      * @return A @c UnitsPtr relevant to this issue, or
@@ -373,6 +381,8 @@ public:
     void setVariable(const VariablePtr &variable);
 
     /**
+     * @brief Get the variable relevant to this issue.
+     *
      * Get the variable relevant to this issue.
      *
      * @return A @c VariablePtr relevant to this issue, or
@@ -390,6 +400,8 @@ public:
     void setReset(const ResetPtr &reset);
 
     /**
+     * @brief Get the reset relevant to this issue.
+     *
      * Get the reset relevant to this issue.
      *
      * @return A @c ResetPtr relevant to this issue, or @c nullptr
@@ -407,6 +419,8 @@ public:
     void setMath(const ComponentPtr &component);
 
     /**
+     * @brief Get the component whose MathML is relevant to this issue.
+     *
      * Get the component whose MathML is relevant to this issue.
      *
      * @return A @c ComponentPtr whose MathML is relevant to this issue, or @c nullptr
@@ -435,6 +449,8 @@ public:
     void setConnection(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
+     * @brief Get the connection relevant to this issue.
+     *
      * Get the connection relevant to this issue.
      *
      * @return A @ref VariablePairPtr representing the connection relevant to this issue,
@@ -463,6 +479,8 @@ public:
     void setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
+     * @brief Get the equivalent variable pair relevant to this issue.
+     *
      * Get the equivalent variable pair relevant to this issue.
      *
      * @return A @c VariablePair representing the variable equivalence relevant to this issue,
@@ -480,6 +498,8 @@ public:
     void setResetValue(const ResetPtr &reset);
 
     /**
+     * @brief Get the reset whose reset value is relevant to this issue.
+     *
      * Get the reset whose reset value is relevant to this issue.
      *
      * @return A @c ResetPtr whose reset value is relevant to this issue,
@@ -497,6 +517,8 @@ public:
     void setTestValue(const ResetPtr &reset);
 
     /**
+     * @brief Get the reset whose test value is relevant to this issue.
+     *
      * Get the reset whose test value is relevant to this issue.
      *
      * @return A @c ResetPtr whose test value is relevant to this issue,
@@ -514,6 +536,8 @@ public:
     void setUnit(const UnitReferencePtr &unit);
 
     /**
+     * @brief Get the unit relevant to this issue.
+     *
      * Get the unit relevant to this issue.
      *
      * @return A @c UnitReference relevant to this issue,
@@ -531,6 +555,8 @@ public:
     void setEncapsulation(const ModelPtr &model);
 
     /**
+     * @brief Get the @c ModelPtr whose encapsulation is relevant to this issue.
+     *
      * Get the @c ModelPtr whose encapsulation is relevant to this issue.
      *
      * @return A @c ModelPtr whose encapsulation relevant to this issue,
@@ -548,6 +574,8 @@ public:
     void setComponentRef(const ComponentPtr &component);
 
     /**
+     * @brief Get the @c ComponentPtr whose encapsulation is relevant to this issue.
+     *
      * Get the @c ComponentPtr whose encapsulation is relevant to this issue.
      *
      * @return A @c ComponentPtr whose encapsulation relevant to this issue,
@@ -575,7 +603,7 @@ public:
     void setItem(ItemType type, const std::any &item);
 
     /**
-     * Get the stored item as an @c std::any item.
+     * @brief Get the stored item as an @c std::any item.
      *
      * Get the stored item as an @c std::any item.
      * Note that the stored @ref ItemType can be retrieved using itemType().
