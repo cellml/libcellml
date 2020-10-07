@@ -26,6 +26,10 @@ limitations under the License.
 
 #include "test_resources.h"
 
+#define TEST_UTILS
+#include "../src/commonutils.cpp"
+#undef TEST_UTILS
+
 std::string resourcePath(const std::string &resourceRelativePath)
 {
     return TESTS_RESOURCE_LOCATION + "/" + resourceRelativePath;
@@ -39,6 +43,16 @@ std::string fileContents(const std::string &fileName)
     buffer << file.rdbuf();
 
     return buffer.str();
+}
+
+std::chrono::steady_clock::time_point timeNow()
+{
+    return std::chrono::steady_clock::now();
+}
+
+int elapsedTime(const std::chrono::steady_clock::time_point &startTime)
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(timeNow() - startTime).count();
 }
 
 void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
