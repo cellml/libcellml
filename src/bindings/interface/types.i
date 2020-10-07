@@ -13,6 +13,7 @@ Provides support for shared pointers declared in types.h.
 %shared_ptr(libcellml::AnalyserEquationAst)
 %shared_ptr(libcellml::AnalyserModel)
 %shared_ptr(libcellml::AnalyserVariable)
+%shared_ptr(libcellml::Annotator)
 %shared_ptr(libcellml::Component)
 %shared_ptr(libcellml::ComponentEntity)
 %shared_ptr(libcellml::Entity)
@@ -47,13 +48,13 @@ Provides support for shared pointers declared in types.h.
 "Test if the pair is valid.";
 
 %feature("docstring") libcellml::Unit
-"A class for describing a unit.";
+"A class for describing a unit definition.";
 
 %feature("docstring") libcellml::Unit::units
-"Return the units for the unit reference.";
+"Return the units for the unit definition.";
 
 %feature("docstring") libcellml::Unit::index
-"Return the index for the unit reference.";
+"Return the index for the unit definition.";
 
 %feature("docstring") libcellml::Unit::isValid
 "Test if the unit reference is valid.";
@@ -187,7 +188,6 @@ Provides support for shared pointers declared in types.h.
         auto ptr = new std::shared_ptr<libcellml::Unit>(libcellml::Unit::create(units, index));
         return reinterpret_cast<libcellml::Unit *>(ptr);
     }
-
 }
 
 %extend libcellml::VariablePair {
@@ -195,7 +195,6 @@ Provides support for shared pointers declared in types.h.
         auto ptr = new std::shared_ptr<libcellml::VariablePair>(libcellml::VariablePair::create(variable1, variable2));
         return reinterpret_cast<libcellml::VariablePair *>(ptr);
     }
-
 }
 
 %ignore libcellml::Unit::create;

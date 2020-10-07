@@ -30,7 +30,7 @@ namespace libcellml {
 struct Unit::UnitImpl
 {
     UnitsWeakPtr mUnits; /**< Units that owns this unit.*/
-    size_t mIndex = std::numeric_limits<size_t>::max(); /**< Inded of this unit.*/
+    size_t mIndex = std::numeric_limits<size_t>::max(); /**< Index of this unit.*/
 };
 
 /**

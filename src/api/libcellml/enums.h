@@ -52,13 +52,13 @@ enum class CellmlElementType
 };
 
 /**
- * @brief Convert a CellMLElement enumeration value into its @c std::string form.
+ * @brief Convert a CellmlElementType enumeration value into its @c std::string form.
  *
- * Convert a CellMLElement enumeration value into its @c std::string form.
+ * Convert a CellmlElementType enumeration value into its @c std::string form.
  *
- * @param value A CellMLElement enumeration.
+ * @param value A CellmlElementType enumeration.
  * @return A @c std::string.
  */
-LIBCELLML_EXPORT std::string cellmlElementAsString(CellMLElement value);
+LIBCELLML_EXPORT std::string cellmlElementAsString(CellmlElementType value);
 
 } // namespace libcellml

@@ -22,8 +22,6 @@ limitations under the License.
 #include <utility>
 
 #include "libcellml/enums.h"
-
-#include "libcellml/enums.h"
 #include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
@@ -82,6 +80,8 @@ using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared v
 
 class Unit;
 using UnitPtr = std::shared_ptr<Unit>;
+
+using AnyItem = std::pair<CellmlElementType, std::any>;
 
 /**
  * @brief The Unit class

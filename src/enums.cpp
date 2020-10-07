@@ -20,23 +20,24 @@ limitations under the License.
 
 namespace libcellml {
 
-static const std::map<CellMLElement, std::string> cellMLElementToString = {
-    {CellMLElement::COMPONENT, "component"},
-    {CellMLElement::COMPONENT_REF, "component_ref"},
-    {CellMLElement::CONNECTION, "connection"},
-    {CellMLElement::ENCAPSULATION, "encapsulation"},
-    {CellMLElement::IMPORT, "import"},
-    {CellMLElement::MAP_VARIABLES, "map_variables"},
-    {CellMLElement::MODEL, "model"},
-    {CellMLElement::RESET, "reset"},
-    {CellMLElement::RESET_VALUE, "reset_value"},
-    {CellMLElement::TEST_VALUE, "test_value"},
-    {CellMLElement::UNDEFINED, "undefined"},
-    {CellMLElement::UNIT, "unit"},
-    {CellMLElement::UNITS, "units"},
-    {CellMLElement::VARIABLE, "variable"}};
+static const std::map<CellmlElementType, std::string> cellMLElementToString = {
+    {CellmlElementType::COMPONENT, "component"},
+    {CellmlElementType::COMPONENT_REF, "component_ref"},
+    {CellmlElementType::CONNECTION, "connection"},
+    {CellmlElementType::ENCAPSULATION, "encapsulation"},
+    {CellmlElementType::IMPORT, "import"},
+    {CellmlElementType::MATH, "math"},
+    {CellmlElementType::MAP_VARIABLES, "map_variables"},
+    {CellmlElementType::MODEL, "model"},
+    {CellmlElementType::RESET, "reset"},
+    {CellmlElementType::RESET_VALUE, "reset_value"},
+    {CellmlElementType::TEST_VALUE, "test_value"},
+    {CellmlElementType::UNDEFINED, "undefined"},
+    {CellmlElementType::UNIT, "unit"},
+    {CellmlElementType::UNITS, "units"},
+    {CellmlElementType::VARIABLE, "variable"}};
 
-std::string cellmlElementAsString(CellMLElement value)
+std::string cellmlElementAsString(CellmlElementType value)
 {
     return cellMLElementToString.at(value);
 }
