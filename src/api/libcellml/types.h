@@ -106,11 +106,11 @@ public:
     static UnitReferencePtr create(const UnitsPtr &units, size_t index) noexcept;
 
     /**
-     * @brief Get the first variable in the pair.
+     * @brief Get the unit.
      *
-     * Get the first variable in the pair.
+     * Get the unit in the @ref Units.
      *
-     * @return The first variable in the pair.
+     * @return The unit.
      */
     UnitsPtr units() const;
 
@@ -119,7 +119,7 @@ public:
      *
      * Get the index for the unit in the @ref Units.
      *
-     * @return The second variable in the pair.
+     * @return The index.
      */
     size_t index() const;
 
