@@ -549,15 +549,15 @@ class IssueTestCase(unittest.TestCase):
 
         i = Issue()
         i.clear()
-        self.assertEqual(CellmlElementType.UNDEFINED, i.itemType())
+        self.assertEqual(CellmlElementType.UNDEFINED, i.cellmlElementType())
 
         v1 = Variable("v1")
         i.setVariable(v1)
 
-        self.assertEqual(CellmlElementType.VARIABLE, i.itemType())
+        self.assertEqual(CellmlElementType.VARIABLE, i.cellmlElementType())
 
         i.clear()
-        self.assertEqual(CellmlElementType.UNDEFINED, i.itemType())
+        self.assertEqual(CellmlElementType.UNDEFINED, i.cellmlElementType())
 
     def test_url(self):
         from libcellml import Issue

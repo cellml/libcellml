@@ -1431,7 +1431,7 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 
     for (size_t i = 0; i < parser->issueCount(); ++i) {
-        switch (parser->issue(i)->itemType()) {
+        switch (parser->issue(i)->cellmlElementType()) {
         case libcellml::CellmlElementType::COMPONENT:
             foundItemType.at(0) = true;
             break;
@@ -1469,7 +1469,7 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
     libcellml::IssuePtr undefinedIssue = libcellml::Issue::create();
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->itemType() == libcellml::CellmlElementType::UNDEFINED) {
+    if (parser2->issue(0)->cellmlElementType() == libcellml::CellmlElementType::UNDEFINED) {
         foundItemType.at(6) = true;
     }
 

@@ -590,7 +590,7 @@ public:
      *
      * @return The @ref CellmlElementType enum for the stored item, or @ref CellmlElementType::UNDEFINED if none.
      */
-    CellmlElementType itemType() const;
+    CellmlElementType cellmlElementType() const;
 
     /**
      * @brief Set an @c std::any item relevant to this issue.
@@ -606,7 +606,7 @@ public:
      * @brief Get the stored item as an @c std::any item.
      *
      * Get the stored item as an @c std::any item.
-     * Note that the stored @ref CellmlElementType can be retrieved using itemType().
+     * Note that the stored @ref CellmlElementType can be retrieved using cellmlElementType().
      *
      * @return A @c std::any item related to this issue.
      */

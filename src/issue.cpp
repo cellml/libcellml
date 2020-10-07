@@ -211,7 +211,7 @@ std::string Issue::description() const
     return mPimpl->mDescription;
 }
 
-CellmlElementType Issue::itemType() const
+CellmlElementType Issue::cellmlElementType() const
 {
     return mPimpl->mCellmlElementType;
 }

@@ -41,7 +41,7 @@ TEST(Analyser, initialisedVariableOfIntegration)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -67,7 +67,7 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -93,7 +93,7 @@ TEST(Analyser, twoVariablesOfIntegration)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -125,7 +125,7 @@ TEST(Analyser, nonFirstOrderOdes)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -154,7 +154,7 @@ TEST(Analyser, undefinedVariables)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -180,7 +180,7 @@ TEST(Analyser, variableInitialisedTwice)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -206,7 +206,7 @@ TEST(Analyser, nonConstantInitialisingVariable)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -232,7 +232,7 @@ TEST(Analyser, nonExistingInitialisingVariable)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -259,7 +259,7 @@ TEST(Analyser, nonInitialisedState)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
     EXPECT_EQ(expectedVariableName, analyser->issue(0)->variable()->name());
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
@@ -286,7 +286,7 @@ TEST(Analyser, underconstrained)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -312,7 +312,7 @@ TEST(Analyser, overconstrainedOneVariable)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -341,7 +341,7 @@ TEST(Analyser, overconstrainedTwoVariables)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -373,7 +373,7 @@ TEST(Analyser, overconstrainedThreeVariables)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -402,7 +402,7 @@ TEST(Analyser, unsuitablyConstrained)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
 }

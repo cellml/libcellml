@@ -121,7 +121,7 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::setTestValue
 "Sets the :class:`Reset` containing the test value relevant to this issue (``None`` to unset).";
 
-%feature("docstring") libcellml::Issue::itemType
+%feature("docstring") libcellml::Issue::cellmlElementType
 "Get the type of this issue.";
 
 %feature("docstring") libcellml::Issue::clear
@@ -184,66 +184,66 @@ from libcellml import CellmlElementType
     }
 
     %pythoncode %{
-        def setItem(self, itemType, item):
+        def setItem(self, cellmlElementType, item):
             r"""Set the item by item type related to this issue."""
 
-            if itemType == CellmlElementType.COMPONENT:
+            if cellmlElementType == CellmlElementType.COMPONENT:
                 _issue.Issue_setComponent(self, item)
-            elif itemType == CellmlElementType.COMPONENT_REF:
+            elif cellmlElementType == CellmlElementType.COMPONENT_REF:
                 _issue.Issue_setComponentRef(self, item)
-            elif itemType == CellmlElementType.CONNECTION:
+            elif cellmlElementType == CellmlElementType.CONNECTION:
                 _issue.Issue_setConnection(self, item)
-            elif itemType == CellmlElementType.ENCAPSULATION:
+            elif cellmlElementType == CellmlElementType.ENCAPSULATION:
                 _issue.Issue_setEncapsulation(self, item)
-            elif itemType == CellmlElementType.IMPORT:
+            elif cellmlElementType == CellmlElementType.IMPORT:
                 _issue.Issue_setImportSource(self, item)
-            elif itemType == CellmlElementType.MAP_VARIABLES:
+            elif cellmlElementType == CellmlElementType.MAP_VARIABLES:
                 _issue.Issue_setMapVariables(self, item)
-            elif itemType == CellmlElementType.MODEL:
+            elif cellmlElementType == CellmlElementType.MODEL:
                 _issue.Issue_setModel(self, item)
-            elif itemType == CellmlElementType.RESET:
+            elif cellmlElementType == CellmlElementType.RESET:
                 _issue.Issue_setReset(self, item)
-            elif itemType == CellmlElementType.RESET_VALUE:
+            elif cellmlElementType == CellmlElementType.RESET_VALUE:
                 _issue.Issue_setResetValue(self, item)
-            elif itemType == CellmlElementType.TEST_VALUE:
+            elif cellmlElementType == CellmlElementType.TEST_VALUE:
                 _issue.Issue_setTestValue(self, item)
-            elif itemType == CellmlElementType.UNIT:
+            elif cellmlElementType == CellmlElementType.UNIT:
                 _issue.Issue_setUnit(self, item)
-            elif itemType == CellmlElementType.UNITS:
+            elif cellmlElementType == CellmlElementType.UNITS:
                 _issue.Issue_setUnits(self, item)
-            elif itemType == CellmlElementType.VARIABLE:
+            elif cellmlElementType == CellmlElementType.VARIABLE:
                 _issue.Issue_setVariable(self, item)
 
         def item(self):
             r"""Get the item relevant to this issue by item type (or ``None``)."""
 
-            itemType = _issue.Issue_itemType(self)
-            if itemType == CellmlElementType.COMPONENT:
-                return (itemType, _issue.Issue_component(self))
-            elif itemType == CellmlElementType.COMPONENT_REF:
-                return (itemType, _issue.Issue_componentRef(self))
-            elif itemType == CellmlElementType.CONNECTION:
-                return (itemType, _issue.Issue_connection(self))
-            elif itemType == CellmlElementType.ENCAPSULATION:
-                return (itemType, _issue.Issue_encapsulation(self))
-            elif itemType == CellmlElementType.IMPORT:
-                return (itemType, _issue.Issue_importSource(self))
-            elif itemType == CellmlElementType.MAP_VARIABLES:
-                return (itemType, _issue.Issue_mapVariables(self))
-            elif itemType == CellmlElementType.MODEL:
-                return (itemType, _issue.Issue_model(self))
-            elif itemType == CellmlElementType.RESET:
-                return (itemType, _issue.Issue_reset(self))
-            elif itemType == CellmlElementType.RESET_VALUE:
-                return (itemType, _issue.Issue_resetValue(self))
-            elif itemType == CellmlElementType.TEST_VALUE:
-                return (itemType, _issue.Issue_testValue(self))
-            elif itemType == CellmlElementType.UNIT:
-                return (itemType, _issue.Issue_unit(self))
-            elif itemType == CellmlElementType.UNITS:
-                return (itemType, _issue.Issue_units(self))
-            elif itemType == CellmlElementType.VARIABLE:
-                return (itemType, _issue.Issue_variable(self))
+            cellmlElementType = _issue.Issue_cellmlElementType(self)
+            if cellmlElementType == CellmlElementType.COMPONENT:
+                return (cellmlElementType, _issue.Issue_component(self))
+            elif cellmlElementType == CellmlElementType.COMPONENT_REF:
+                return (cellmlElementType, _issue.Issue_componentRef(self))
+            elif cellmlElementType == CellmlElementType.CONNECTION:
+                return (cellmlElementType, _issue.Issue_connection(self))
+            elif cellmlElementType == CellmlElementType.ENCAPSULATION:
+                return (cellmlElementType, _issue.Issue_encapsulation(self))
+            elif cellmlElementType == CellmlElementType.IMPORT:
+                return (cellmlElementType, _issue.Issue_importSource(self))
+            elif cellmlElementType == CellmlElementType.MAP_VARIABLES:
+                return (cellmlElementType, _issue.Issue_mapVariables(self))
+            elif cellmlElementType == CellmlElementType.MODEL:
+                return (cellmlElementType, _issue.Issue_model(self))
+            elif cellmlElementType == CellmlElementType.RESET:
+                return (cellmlElementType, _issue.Issue_reset(self))
+            elif cellmlElementType == CellmlElementType.RESET_VALUE:
+                return (cellmlElementType, _issue.Issue_resetValue(self))
+            elif cellmlElementType == CellmlElementType.TEST_VALUE:
+                return (cellmlElementType, _issue.Issue_testValue(self))
+            elif cellmlElementType == CellmlElementType.UNIT:
+                return (cellmlElementType, _issue.Issue_unit(self))
+            elif cellmlElementType == CellmlElementType.UNITS:
+                return (cellmlElementType, _issue.Issue_units(self))
+            elif cellmlElementType == CellmlElementType.VARIABLE:
+                return (cellmlElementType, _issue.Issue_variable(self))
             return (CellmlElementType.UNDEFINED, None)
         %}
     }
