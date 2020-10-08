@@ -92,11 +92,11 @@ void TEST_EXPORT expectEqualIssues(const std::vector<std::string> &issues, const
 void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issues,
                                                         const std::vector<std::string> &specificationHeadings,
                                                         const libcellml::LoggerPtr &logger);
-
-void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &issues,
-                                                           const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
-                                                           const std::vector<libcellml::Issue::Level> &levels,
-                                                           const libcellml::LoggerPtr &logger);
+void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevelsReferenceRules(const std::vector<std::string> &issues,
+                                                                         const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
+                                                                         const std::vector<libcellml::Issue::Level> &levels,
+                                                                         const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
+                                                                         const libcellml::LoggerPtr &logger);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",
@@ -118,6 +118,6 @@ void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::Mo
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesSpecificationHeadings(issues, specificationHeadings, logger)
 
-#define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(issues, cellmlElementTypes, levels, logger) \
+#define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(issues, cellmlElementTypes, levels, referenceRules, logger) \
     SCOPED_TRACE("Issue occured here."); \
-    expectEqualIssuesCellmlElementTypesLevels(issues, cellmlElementTypes, levels, logger)
+    expectEqualIssuesCellmlElementTypesLevelsReferenceRules(issues, cellmlElementTypes, levels, referenceRules, logger)

@@ -209,10 +209,11 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
-void expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &issues,
-                                               const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
-                                               const std::vector<libcellml::Issue::Level> &levels,
-                                               const libcellml::LoggerPtr &logger)
+void expectEqualIssuesCellmlElementTypesLevelsReferenceRules(const std::vector<std::string> &issues,
+                                                             const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
+                                                             const std::vector<libcellml::Issue::Level> &levels,
+                                                             const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
+                                                             const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     EXPECT_EQ(cellmlElementTypes.size(), logger->issueCount());
@@ -221,6 +222,7 @@ void expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &i
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
         EXPECT_EQ(cellmlElementTypes.at(i), logger->issue(i)->cellmlElementType());
         EXPECT_EQ(levels.at(i), logger->issue(i)->level());
+        EXPECT_EQ(referenceRules.at(i), logger->issue(i)->referenceRule());
     }
 }
 

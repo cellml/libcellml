@@ -1399,8 +1399,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     issue->setDescription("Variable '" + externalVariable->variable()->name()
                                           + "' in component '" + owningComponent(externalVariable->variable())->name()
                                           + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
-                    issue->setCause(Issue::Cause::VARIABLE);
                     issue->setLevel(Issue::Level::MESSAGE);
+                    issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                    issue->setVariable(externalVariable->variable());
 
                     mAnalyser->addIssue(issue);
                 } else {
@@ -1475,8 +1476,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     auto issue = Issue::create();
 
                     issue->setDescription(description);
-                    issue->setCause(Issue::Cause::VARIABLE);
                     issue->setLevel(Issue::Level::MESSAGE);
+                    issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                    issue->setVariable(primaryExternalVariable.first);
 
                     mAnalyser->addIssue(issue);
                 }
