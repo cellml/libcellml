@@ -84,3 +84,31 @@ TEST(Coverage, entityHasParent)
     EXPECT_TRUE(c2->hasParent());
     EXPECT_FALSE(c3->hasParent());
 }
+
+TEST(Annotator, automaticIdsUndefined)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+
+    annotator->setModel(model);
+
+    annotator->assignIds(libcellml::CellMLElement::UNDEFINED);
+    EXPECT_TRUE(annotator->hasModel());
+
+    EXPECT_EQ("", model->id());
+}
+
+TEST(Annotator, automaticIdUndefined)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+
+    annotator->setModel(model);
+
+    auto pair = std::make_pair(libcellml::CellMLElement::UNDEFINED, nullptr);
+
+    annotator->assignId(pair);
+    EXPECT_TRUE(annotator->hasModel());
+
+    EXPECT_EQ("", model->id());
+}
