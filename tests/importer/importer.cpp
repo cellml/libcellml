@@ -872,7 +872,6 @@ TEST(Importer, clearModelImportsBeforeResolving)
     importer->resolveImports(model, resourcePath("importer/"));
 }
 
-
 TEST(Importer, KRM)
 {
     auto parser = libcellml::Parser::create();
