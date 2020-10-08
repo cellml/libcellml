@@ -854,3 +854,24 @@ TEST(Importer, complicatedHHImportMissingGateModel)
     EXPECT_EQ(e, importer->error(0)->description());
     EXPECT_EQ(e, importer->error(1)->description());
 }
+
+TEST(Importer, clearModelImportsBeforeResolving)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/ImportCircularReferences.cellml"));
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+
+    // Circular import issue generated.
+    EXPECT_EQ(size_t(1), importer->issueCount());
+
+    // Change URL away from circular import to the correct file.
+    model->component("controller")->importSource()->setUrl("NotCircularReference.cellml");
+
+    // Resolve imports again after clearing the issues.
+    importer->removeAllIssues();
+    importer->resolveImports(model, resourcePath("importer/"));
+
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    printIssues(importer);
+}
