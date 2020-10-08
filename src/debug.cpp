@@ -57,6 +57,19 @@ void printEquivalenceMap(const EquivalenceMap &map)
     }
 }
 
+void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model)
+{
+    for (const auto &iter : map) {
+        auto key = iter.first;    Debug(false) << "key: ";
+        printStackWithModelInfo(key, model);
+        auto vector = iter.second;
+        for (const auto &vectorIt : vector) {
+            Debug(false) << "value: ";
+            printStackWithModelInfo(vectorIt, model);
+        }
+    }
+}
+
 void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model)
 {
     bool first = true;
@@ -81,7 +94,7 @@ void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model)
     Debug() << "]";
 }
 
-void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model)
+void printConnectionMap(const ConnectionMap &map)
 {
     for (const auto &iter : map) {
         auto key = iter.first;
