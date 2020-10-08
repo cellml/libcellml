@@ -19,7 +19,6 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "libcellml/exportdefinitions.h"
 #include "libcellml/logger.h"
 #include "libcellml/types.h"
 
