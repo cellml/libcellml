@@ -55,20 +55,20 @@ class IssueTestCase(unittest.TestCase):
         del e9
 
     def test_item_type_enum(self):
-        from libcellml import CellmlElementType
+        from libcellml import CellMLElement
 
-        self.assertIsInstance(CellmlElementType.COMPONENT, int)
-        self.assertIsInstance(CellmlElementType.COMPONENT_REF, int)
-        self.assertIsInstance(CellmlElementType.CONNECTION, int)
-        self.assertIsInstance(CellmlElementType.ENCAPSULATION, int)
-        self.assertIsInstance(CellmlElementType.IMPORT, int)
-        self.assertIsInstance(CellmlElementType.MAP_VARIABLES, int)
-        self.assertIsInstance(CellmlElementType.MATH, int)
-        self.assertIsInstance(CellmlElementType.MODEL, int)
-        self.assertIsInstance(CellmlElementType.UNDEFINED, int)
-        self.assertIsInstance(CellmlElementType.UNITS, int)
-        self.assertIsInstance(CellmlElementType.UNIT, int)
-        self.assertIsInstance(CellmlElementType.VARIABLE, int)
+        self.assertIsInstance(CellMLElement.COMPONENT, int)
+        self.assertIsInstance(CellMLElement.COMPONENT_REF, int)
+        self.assertIsInstance(CellMLElement.CONNECTION, int)
+        self.assertIsInstance(CellMLElement.ENCAPSULATION, int)
+        self.assertIsInstance(CellMLElement.IMPORT, int)
+        self.assertIsInstance(CellMLElement.MAP_VARIABLES, int)
+        self.assertIsInstance(CellMLElement.MATH, int)
+        self.assertIsInstance(CellMLElement.MODEL, int)
+        self.assertIsInstance(CellMLElement.UNDEFINED, int)
+        self.assertIsInstance(CellMLElement.UNITS, int)
+        self.assertIsInstance(CellMLElement.UNIT, int)
+        self.assertIsInstance(CellMLElement.VARIABLE, int)
 
     def test_reference_rule_enum(self):
         from libcellml import Issue
@@ -445,119 +445,119 @@ class IssueTestCase(unittest.TestCase):
 
     def test_item(self):
         from libcellml import Component, Issue, ImportSource, Model, Unit
-        from libcellml import Reset, Units, Variable, CellmlElementType, VariablePair
+        from libcellml import Reset, Units, Variable, CellMLElement, VariablePair
 
         i = Issue()
 
         item = i.item()
-        self.assertEqual(CellmlElementType.UNDEFINED, item[0])
+        self.assertEqual(CellMLElement.UNDEFINED, item[0])
         self.assertIsNone(item[1])
 
-        i.setItem(CellmlElementType.VARIABLE, Variable("v"))
+        i.setItem(CellMLElement.VARIABLE, Variable("v"))
         vItem = i.item()
-        self.assertEqual(CellmlElementType.VARIABLE, vItem[0])
+        self.assertEqual(CellMLElement.VARIABLE, vItem[0])
         self.assertEqual("v", vItem[1].name())
 
-        i.setItem(CellmlElementType.UNITS, Units("u"))
+        i.setItem(CellMLElement.UNITS, Units("u"))
         uItem = i.item()
-        self.assertEqual(CellmlElementType.UNITS, uItem[0])
+        self.assertEqual(CellMLElement.UNITS, uItem[0])
         self.assertEqual("u", uItem[1].name())
 
         u = Units("ui")
         u.addUnit("volt")
         u.addUnit("second")
         u.addUnit("metre")
-        i.setItem(CellmlElementType.UNIT, Unit(u, 2))
+        i.setItem(CellMLElement.UNIT, Unit(u, 2))
         uiItem = i.item()
-        self.assertEqual(CellmlElementType.UNIT, uiItem[0])
+        self.assertEqual(CellMLElement.UNIT, uiItem[0])
         self.assertEqual("ui", uiItem[1].units().name())
         self.assertEqual(2, uiItem[1].index())
 
         v1 = Variable("v1")
         v2 = Variable("v2")
-        i.setItem(CellmlElementType.CONNECTION, VariablePair(v1, v2))
+        i.setItem(CellMLElement.CONNECTION, VariablePair(v1, v2))
         vpItem = i.item()
-        self.assertEqual(CellmlElementType.CONNECTION, vpItem[0])
+        self.assertEqual(CellMLElement.CONNECTION, vpItem[0])
         self.assertEqual("v1", vpItem[1].variable1().name())
         self.assertEqual("v2", vpItem[1].variable2().name())
 
         v3 = Variable("v3")
         v4 = Variable("v4")
-        i.setItem(CellmlElementType.MAP_VARIABLES, VariablePair(v3, v4))
+        i.setItem(CellMLElement.MAP_VARIABLES, VariablePair(v3, v4))
         vpItem = i.item()
-        self.assertEqual(CellmlElementType.MAP_VARIABLES, vpItem[0])
+        self.assertEqual(CellMLElement.MAP_VARIABLES, vpItem[0])
         self.assertEqual("v3", vpItem[1].variable1().name())
         self.assertEqual("v4", vpItem[1].variable2().name())
 
         r = Reset()
         r.setId("r")
-        i.setItem(CellmlElementType.RESET, r)
+        i.setItem(CellMLElement.RESET, r)
         rItem = i.item()
-        self.assertEqual(CellmlElementType.RESET, rItem[0])
+        self.assertEqual(CellMLElement.RESET, rItem[0])
         self.assertEqual("r", rItem[1].id())
 
         r.setId("r1")
-        i.setItem(CellmlElementType.RESET_VALUE, r)
+        i.setItem(CellMLElement.RESET_VALUE, r)
         rItem = i.item()
-        self.assertEqual(CellmlElementType.RESET_VALUE, rItem[0])
+        self.assertEqual(CellMLElement.RESET_VALUE, rItem[0])
         self.assertEqual("r1", rItem[1].id())
 
         r.setId("r2")
-        i.setItem(CellmlElementType.TEST_VALUE, r)
+        i.setItem(CellMLElement.TEST_VALUE, r)
         rItem = i.item()
-        self.assertEqual(CellmlElementType.TEST_VALUE, rItem[0])
+        self.assertEqual(CellMLElement.TEST_VALUE, rItem[0])
         self.assertEqual("r2", rItem[1].id())
 
-        i.setItem(CellmlElementType.MODEL, Model("m"))
+        i.setItem(CellMLElement.MODEL, Model("m"))
         mItem = i.item()
-        self.assertEqual(CellmlElementType.MODEL, mItem[0])
+        self.assertEqual(CellMLElement.MODEL, mItem[0])
         self.assertEqual("m", mItem[1].name())
 
-        i.setItem(CellmlElementType.ENCAPSULATION, Model("e"))
+        i.setItem(CellMLElement.ENCAPSULATION, Model("e"))
         mItem = i.item()
-        self.assertEqual(CellmlElementType.ENCAPSULATION, mItem[0])
+        self.assertEqual(CellMLElement.ENCAPSULATION, mItem[0])
         self.assertEqual("e", mItem[1].name())
 
         iS  = ImportSource()
         iS.setId("is")
-        i.setItem(CellmlElementType.IMPORT, iS)
+        i.setItem(CellMLElement.IMPORT, iS)
         isItem = i.item()
-        self.assertEqual(CellmlElementType.IMPORT, isItem[0])
+        self.assertEqual(CellMLElement.IMPORT, isItem[0])
         self.assertEqual("is", isItem[1].id())
 
-        i.setItem(CellmlElementType.COMPONENT, Component("c"))
+        i.setItem(CellMLElement.COMPONENT, Component("c"))
         cItem = i.item()
-        self.assertEqual(CellmlElementType.COMPONENT, cItem[0])
+        self.assertEqual(CellMLElement.COMPONENT, cItem[0])
         self.assertEqual("c", cItem[1].name())
 
-        i.setItem(CellmlElementType.COMPONENT_REF, Component("c1"))
+        i.setItem(CellMLElement.COMPONENT_REF, Component("c1"))
         cItem = i.item()
-        self.assertEqual(CellmlElementType.COMPONENT_REF, cItem[0])
+        self.assertEqual(CellMLElement.COMPONENT_REF, cItem[0])
         self.assertEqual("c1", cItem[1].name())
 
     def test_item_bad_input(self):
-        from libcellml import Issue, Variable, CellmlElementType
+        from libcellml import Issue, Variable, CellMLElement
 
         i = Issue()
-        self.assertRaises(TypeError, i.setItem, CellmlElementType.COMPONENT_REF, Variable("v1"))
+        self.assertRaises(TypeError, i.setItem, CellMLElement.COMPONENT_REF, Variable("v1"))
         cItem = i.item()
-        self.assertEqual(CellmlElementType.UNDEFINED, cItem[0])
+        self.assertEqual(CellMLElement.UNDEFINED, cItem[0])
         self.assertIsNone(cItem[1])
 
     def test_clear(self):
-        from libcellml import Issue, Variable, CellmlElementType
+        from libcellml import Issue, Variable, CellMLElement
 
         i = Issue()
         i.clear()
-        self.assertEqual(CellmlElementType.UNDEFINED, i.cellmlElementType())
+        self.assertEqual(CellMLElement.UNDEFINED, i.cellmlElementType())
 
         v1 = Variable("v1")
         i.setVariable(v1)
 
-        self.assertEqual(CellmlElementType.VARIABLE, i.cellmlElementType())
+        self.assertEqual(CellMLElement.VARIABLE, i.cellmlElementType())
 
         i.clear()
-        self.assertEqual(CellmlElementType.UNDEFINED, i.cellmlElementType())
+        self.assertEqual(CellMLElement.UNDEFINED, i.cellmlElementType())
 
     def test_url(self):
         from libcellml import Issue

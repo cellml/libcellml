@@ -2491,6 +2491,25 @@ TEST(Units, addUnitsMultipleTimes)
     EXPECT_EQ(size_t(1), model->unitsCount());
 }
 
+TEST(Units, setGetUnitId)
+{
+    auto units = libcellml::Units::create();
+    units->addUnit("second");
+    units->addUnit("metre");
+
+    const std::string id1 = "id1";
+    const std::string id2 = "id2";
+    const std::string oor = "out_of_range";
+
+    EXPECT_TRUE(units->setUnitId(0, id1));
+    EXPECT_TRUE(units->setUnitId(1, id2));
+    EXPECT_FALSE(units->setUnitId(99, oor));
+
+    EXPECT_EQ(id1, units->unitId(0));
+    EXPECT_EQ(id2, units->unitId(1));
+    EXPECT_EQ("", units->unitId(99));
+}
+
 TEST(Units, childUnitsWithIllegalPrefix)
 {
     auto model = libcellml::Model::create("model");

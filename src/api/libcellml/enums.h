@@ -17,14 +17,22 @@ limitations under the License.
 #pragma once
 
 #include <memory>
+#include <string>
+
+#include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
 
 /**
- * @brief The CellmlElementType enum class.
+ * @brief The CellML element enum class.
  *
+ * This enum describes CellML elements.
+ * A CellML element identifies elements in
+ * the underlying CellML specification format.
+ * The enum also adds an UNDEFINED entry for
+ * not specifying an underlying CellML element.
  */
-enum class CellmlElementType
+enum class CellMLElement
 {
     COMPONENT,
     COMPONENT_REF,
@@ -42,5 +50,15 @@ enum class CellmlElementType
     UNITS,
     VARIABLE,
 };
+
+/**
+ * @brief Convert a CellMLElement enumeration value into its @c std::string form.
+ *
+ * Convert a CellMLElement enumeration value into its @c std::string form.
+ *
+ * @param value A CellMLElement enumeration.
+ * @return A @c std::string.
+ */
+LIBCELLML_EXPORT std::string cellmlElementAsString(CellMLElement value);
 
 } // namespace libcellml

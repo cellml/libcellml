@@ -17,7 +17,11 @@ limitations under the License.
 #pragma once
 
 #include <any>
+#include <map>
 #include <memory>
+#include <utility>
+
+#include "libcellml/enums.h"
 
 #include "libcellml/enums.h"
 #include "libcellml/exportdefinitions.h"
@@ -35,6 +39,8 @@ class AnalyserModel; /**< Forward declaration of AnalyserModel class. */
 using AnalyserModelPtr = std::shared_ptr<AnalyserModel>; /**< Type definition for shared analyser model pointer. */
 class AnalyserVariable; /**< Forward declaration of AnalyserVariable class. */
 using AnalyserVariablePtr = std::shared_ptr<AnalyserVariable>; /**< Type definition for shared analyser variable pointer. */
+class Annotator; /**< Forward declaration of Annotator class. */
+using AnnotatorPtr = std::shared_ptr<Annotator>; /**< Type definition for @c std::shared Annotator pointer. */
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
@@ -202,5 +208,50 @@ private:
     struct VariablePairImpl; /**< Forward declaration for pImpl idiom. */
     VariablePairImpl *mPimpl; /**< Private member to implementation pointer. */
 };
+
+/**
+ * @brief Type definition for VariablePtr pair.
+ *
+ * A VariablePair is a pair containing two @ref VariablePtrs.
+ * It may be used to define:
+ *  - a connection between parent components; or
+ *  - an equivalence between two variables;
+ */
+//using VariablePair = std::pair<VariablePtr, VariablePtr>; /**<  */
+
+/**
+ * @brief Type definition for UnitsPtr and Unit index pair.
+ *
+ * A Unit is a pair containing a @ref UnitsPtr to the parent Units item, and
+ * the index to the Unit item within the @ref Units.
+ */
+//using Unit = std::pair<UnitsPtr, size_t>;
+
+/**
+ * @brief Type definition for CellMLElement and a std::any.
+ *
+ * An AnyItem is a @c std::pair containing:
+ *  - a @ref CellMLElement enum, and
+ *  - a @c std::any item.
+ *
+ * Use @c std::any_cast to cast the item to its underlying type.
+ *
+ * Casts to use for the second item in the pair are mapped according to the following statements:
+ *  - CellMLElement::COMPONENT => std::any_cast<ComponentPtr>.
+ *  - CellMLElement::COMPONENT_REF => std::any_cast<ComponentPtr>.
+ *  - CellMLElement::CONNECTION => std::any_cast<VariablePair>.
+ *  - CellMLElement::ENCAPSULATION => std::any_cast<ModelPtr>.
+ *  - CellMLElement::IMPORT => std::any_cast<ImportSourcePtr>.
+ *  - CellMLElement::MAP_VARIABLES => std::any_cast<VariablePair>.
+ *  - CellMLElement::MODEL => std::any_cast<ModelPtr>.
+ *  - CellMLElement::RESET => std::any_cast<ResetPtr>.
+ *  - CellMLElement::RESET_VALUE => std::any_cast<ResetPtr>.
+ *  - CellMLElement::TEST_VALUE => std::any_cast<ResetPtr>.
+ *  - CellMLElement::UNDEFINED => not castable.
+ *  - CellMLElement::UNIT => std::any_cast<Unit>.
+ *  - CellMLElement::UNITS => std::any_cast<UnitsPtr>.
+ *  - CellMLElement::VARIABLE => std::any_cast<VariablePtr>.
+ */
+using AnyItem = std::pair<CellMLElement, std::any>;
 
 } // namespace libcellml

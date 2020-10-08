@@ -88,6 +88,12 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::clone
 "Create a copy of this units.";
 
+%feature("docstring") libcellml::Units::unitId
+"Returns the id string of the Unit item at the given index.";
+
+%feature("docstring") libcellml::Units::setUnitId
+"Sets the id string of the Unit item at the given index.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
@@ -119,5 +125,4 @@ extract the units with the given `name`.";
 %create_constructor(Units)
 %create_name_constructor(Units)
 
-%include "libcellml/types.h"
 %include "libcellml/units.h"
