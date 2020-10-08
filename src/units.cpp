@@ -97,13 +97,13 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
     {Units::StandardUnit::WEBER, "weber"}};
 
 /**
- * @brief The Unit struct.
+ * @brief The UnitDefinition struct.
  *
  * An internal structure to capture a unit definition.  The
  * prefix can be expressed using either an integer or an enum.
  * The enum structure member is given preference if both are set.
  */
-struct Unit
+struct UnitDefinition
 {
     std::string mReference; /**< Reference to the units for the unit.*/
     std::string mPrefix; /**< String expression of the prefix for the unit.*/
@@ -119,9 +119,9 @@ struct Unit
  */
 struct Units::UnitsImpl
 {
-    std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
+    std::vector<UnitDefinition> mUnits; /**< A vector of unit defined for this Units.*/
 
-    std::vector<Unit>::iterator findUnit(const std::string &reference);
+    std::vector<UnitDefinition>::iterator findUnit(const std::string &reference);
 
     /**
      * @brief Test if this units is a standard unit that is a base unit.
@@ -138,10 +138,10 @@ struct Units::UnitsImpl
     bool isBaseUnit(const std::string &name) const;
 };
 
-std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
+std::vector<UnitDefinition>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const Unit &u) -> bool { return u.mReference == reference; });
+                        [=](const UnitDefinition &u) -> bool { return u.mReference == reference; });
 }
 
 bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
@@ -265,29 +265,29 @@ bool Units::isBaseUnit() const
 void Units::addUnit(const std::string &reference, const std::string &prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    Unit u;
-    u.mReference = reference;
+    UnitDefinition ud;
+    ud.mReference = reference;
     // Allow all nonzero user-specified prefixes
     try {
         int prefixInteger = std::stoi(prefix);
         if (prefixInteger != 0.0) {
-            u.mPrefix = prefix;
+            ud.mPrefix = prefix;
         }
     } catch (std::invalid_argument &) {
-        u.mPrefix = prefix;
+        ud.mPrefix = prefix;
     } catch (std::out_of_range &) {
-        u.mPrefix = prefix;
+        ud.mPrefix = prefix;
     }
     if (exponent != 1.0) {
-        u.mExponent = convertToString(exponent);
+        ud.mExponent = convertToString(exponent);
     }
     if (multiplier != 1.0) {
-        u.mMultiplier = convertToString(multiplier);
+        ud.mMultiplier = convertToString(multiplier);
     }
     if (!id.empty()) {
-        u.mId = id;
+        ud.mId = id;
     }
-    mPimpl->mUnits.push_back(u);
+    mPimpl->mUnits.push_back(ud);
 }
 
 void Units::addUnit(const std::string &reference, Prefix prefix, double exponent,
@@ -367,19 +367,19 @@ void Units::unitAttributes(const std::string &reference, std::string &prefix, do
 
 void Units::unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
-    Unit u;
+    UnitDefinition ud;
     if (index < mPimpl->mUnits.size()) {
-        u = mPimpl->mUnits.at(index);
+        ud = mPimpl->mUnits.at(index);
     }
-    reference = u.mReference;
-    prefix = u.mPrefix;
-    if (u.mExponent.empty() || !convertToDouble(u.mExponent, exponent)) {
+    reference = ud.mReference;
+    prefix = ud.mPrefix;
+    if (ud.mExponent.empty() || !convertToDouble(ud.mExponent, exponent)) {
         exponent = 1.0;
     }
-    if (u.mMultiplier.empty() || !convertToDouble(u.mMultiplier, multiplier)) {
+    if (ud.mMultiplier.empty() || !convertToDouble(ud.mMultiplier, multiplier)) {
         multiplier = 1.0;
     }
-    id = u.mId;
+    id = ud.mId;
 }
 
 bool Units::setUnitId(size_t index, const std::string &id) const

@@ -125,5 +125,4 @@ extract the units with the given `name`.";
 %create_constructor(Units)
 %create_name_constructor(Units)
 
-%include "libcellml/types.h"
 %include "libcellml/units.h"

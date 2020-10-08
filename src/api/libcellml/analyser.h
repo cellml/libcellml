@@ -31,10 +31,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Analyser: public Logger
 {
 public:
-    ~Analyser() override; /**< Destructor */
-    Analyser(const Analyser &rhs) = delete; /**< Copy constructor */
-    Analyser(Analyser &&rhs) noexcept = delete; /**< Move constructor */
-    Analyser &operator=(Analyser rhs) = delete; /**< Assignment operator */
+    ~Analyser() override; /**< Destructor. */
+    Analyser(const Analyser &rhs) = delete; /**< Copy constructor. */
+    Analyser(Analyser &&rhs) noexcept = delete; /**< Move constructor. */
+    Analyser &operator=(Analyser rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create an @c Analyser object.
@@ -71,7 +71,7 @@ public:
     AnalyserModelPtr model() const;
 
 private:
-    Analyser(); /**< Constructor */
+    Analyser(); /**< Constructor. */
 
     struct AnalyserImpl;
     AnalyserImpl *mPimpl;

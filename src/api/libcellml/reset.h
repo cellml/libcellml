@@ -31,10 +31,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Reset: public Entity
 {
 public:
-    ~Reset() override; /**< Destructor */
-    Reset(const Reset &rhs) = delete; /**< Copy constructor */
-    Reset(Reset &&rhs) noexcept = delete; /**< Move constructor */
-    Reset &operator=(Reset rhs) = delete; /**< Assignment operator */
+    ~Reset() override; /**< Destructor. */
+    Reset(const Reset &rhs) = delete; /**< Copy constructor. */
+    Reset(Reset &&rhs) noexcept = delete; /**< Move constructor. */
+    Reset &operator=(Reset rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Reset object.
@@ -269,11 +269,11 @@ public:
     ResetPtr clone() const;
 
 private:
-    Reset(); /**< Constructor */
+    Reset(); /**< Constructor. */
     explicit Reset(int order); /**< Constructor with int parameter */
 
     struct ResetImpl; /**< Forward declaration for pImpl idiom. */
-    ResetImpl *mPimpl; /**< Private member to implementation pointer */
+    ResetImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml
