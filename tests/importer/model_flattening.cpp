@@ -737,3 +737,98 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
     EXPECT_EQ("", generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
 }
+
+TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
+{
+    const std::string modelConnectionsParentChild =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" name=\"units\">\n"
+        "  <units name=\"ms\">\n"
+        "    <unit units=\"second\" prefix=\"milli\"/>\n"
+        "  </units>\n"
+        "    <units name=\"per_ms\">\n"
+        "    <unit exponent=\"-1\" prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"gate\">\n"
+        "    <variable name=\"t\" units=\"ms\" interface=\"public_and_private\"/>\n"
+        "    <variable name=\"X\" units=\"dimensionless\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"gateEquations\">\n"
+        "    <variable name=\"t\" units=\"ms\" interface=\"public\"/>\n"
+        "    <variable name=\"alpha_X\" units=\"per_ms\" interface=\"public\"/>\n"
+        "    <variable name=\"X\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"gate\" component_2=\"gateEquations\">\n"
+        "    <map_variables variable_1=\"t\" variable_2=\"t\"/>\n"
+        "    <map_variables variable_1=\"X\" variable_2=\"X\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"gate\">\n"
+        "      <component_ref component=\"gateEquations\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    const std::string importingModel =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model name=\"importer_of_units\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"GateModel.cellml\">\n"
+        "    <component component_ref=\"gateEquations\" name=\"importedGateH\"/>\n"
+        "  </import>\n"
+        "  <component name=\"hGateEquations\">\n"
+        "    <variable name=\"V\" units=\"mV\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"hGateEquations\">\n"
+        "      <component_ref component=\"importedGateH\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"importer_of_units\">\n"
+        "  <units name=\"ms\">\n"
+        "    <unit prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_ms\">\n"
+        "    <unit exponent=\"-1\" prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"hGateEquations\">\n"
+        "    <variable name=\"V\" units=\"mV\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"importedGateH\">\n"
+        "    <variable name=\"t\" units=\"ms\" interface=\"public\"/>\n"
+        "    <variable name=\"alpha_X\" units=\"per_ms\" interface=\"public\"/>\n"
+        "    <variable name=\"X\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"hGateEquations\">\n"
+        "      <component_ref component=\"importedGateH\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+
+    auto modelUsingImports = parser->parseModel(importingModel);
+    auto modelComponentDefinition = parser->parseModel(modelConnectionsParentChild);
+
+    EXPECT_TRUE(modelUsingImports->hasUnresolvedImports());
+
+    auto component = modelUsingImports->component(0)->component(0);
+    auto importSource = component->importSource();
+    importSource->setModel(modelComponentDefinition);
+
+    EXPECT_FALSE(modelUsingImports->hasUnresolvedImports());
+
+    auto importer = libcellml::Importer::create();
+
+    modelUsingImports = importer->flattenModel(modelUsingImports);
+    EXPECT_EQ(size_t(0), modelUsingImports->importSourceCount());
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(modelUsingImports);
+    EXPECT_EQ(e, a);
+}
