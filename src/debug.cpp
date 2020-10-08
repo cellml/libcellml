@@ -17,7 +17,9 @@ limitations under the License.
 #include "debug.h"
 
 #include "libcellml/analyserequationast.h"
+#include "libcellml/component.h"
 #include "libcellml/generator.h"
+#include "libcellml/model.h"
 #include "libcellml/variable.h"
 
 #ifdef NAN
@@ -53,6 +55,43 @@ void printEquivalenceMap(const EquivalenceMap &map)
             printStack(vectorIt);
         }
     }
+}
+
+void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model)
+{
+    for (const auto &iter : map) {
+        auto key = iter.first;    Debug(false) << "key: ";
+        printStackWithModelInfo(key, model);
+        auto vector = iter.second;
+        for (const auto &vectorIt : vector) {
+            Debug(false) << "value: ";
+            printStackWithModelInfo(vectorIt, model);
+        }
+    }
+}
+
+void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model)
+{
+    bool first = true;
+    ComponentPtr entity;
+    Debug(false) << "[";
+    for (auto iter = stack.begin(); iter != stack.end(); ++iter) {
+        if (!first) {
+            Debug(false) << ", ";
+        }
+        auto next = iter;
+        if (first) {
+            entity = model->component(*iter);
+            Debug(false) << entity->name();
+        } else if (++next == stack.end()) {
+            Debug(false) << entity->variable(*iter)->name();
+        } else {
+            entity = entity->component(*iter);
+            Debug(false) << entity->name();
+        }
+        first = false;
+    }
+    Debug() << "]";
 }
 
 void printConnectionMap(const ConnectionMap &map)
