@@ -2642,4 +2642,3 @@ TEST(Units, unknownUnitsScalingFactorIncompatible)
     auto scaling = libcellml::Units::scalingFactor(u1, u1, false);
     EXPECT_EQ(0.0, scaling);
 }
-
