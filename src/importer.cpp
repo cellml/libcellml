@@ -359,6 +359,7 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 {
     std::vector<std::tuple<std::string, std::string, std::string>> history = {};
     bool status = true;
+    clearImports(model);
 
     for (size_t i = 0; i < model->importSourceCount(); ++i) {
         auto imp = model->importSource(i);
@@ -482,7 +483,7 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         std::map<std::string, std::string> unitsNamesToReplace;
         for (const auto &u : requiredUnits) {
             if (!model->hasUnits(u)) {
-                auto orignalName = u->name();
+                auto originalName = u->name();
                 size_t count = 0;
                 while (!model->hasUnits(u) && model->hasUnits(u->name())) {
                     auto name = u->name();
@@ -490,8 +491,8 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
                     u->setName(name);
                 }
                 model->addUnits(u);
-                if (orignalName != u->name()) {
-                    unitsNamesToReplace[orignalName] = u->name();
+                if (originalName != u->name()) {
+                    unitsNamesToReplace[originalName] = u->name();
                 }
             }
         }
