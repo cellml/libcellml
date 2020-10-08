@@ -22,6 +22,7 @@ limitations under the License.
 #include <utility>
 
 #include "libcellml/enums.h"
+#include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
 
@@ -72,54 +73,166 @@ class Model; /**< Forward declaration of Model class. */
 using ModelPtr = std::shared_ptr<Model>; /**< Type definition for shared model pointer. */
 class Reset; /**< Forward declaration of Reset class. */
 using ResetPtr = std::shared_ptr<Reset>; /**< Type definition for shared reset pointer. */
+class Unit; /**< Forward declaration of Unit class. */
+using UnitPtr = std::shared_ptr<Unit>; /**< Type definition for shared unit pointer. */
 class Units; /**< Forward declaration of Units class. */
 using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
+class VariablePair; /**< Forward declaration of VariablePair class. */
+using VariablePairPtr = std::shared_ptr<VariablePair>; /**< Type definition for shared variable pair pointer. */
 
 /**
- * @brief Type definition for VariablePtr pair.
+ * @brief The Unit class
  *
- * A VariablePair is a pair containing two @ref VariablePtrs.
+ * The Unit class contains a @ref Units to the parent Units item, and
+ * the index to the @ref Unit item within the @ref Units.
+ */
+class LIBCELLML_EXPORT Unit
+{
+public:
+    ~Unit(); /**< Destructor. */
+    Unit() = delete; /**< Constructor. */
+    Unit(const Unit &rhs) = delete; /**< Copy constructor. */
+    Unit(Unit &&rhs) noexcept = delete; /**< Move constructor. */
+    Unit &operator=(Unit rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create a unit reference object.
+     *
+     * Factory method to create a @ref UnitPtr.  Create a unit with @ref Units
+     * and index with::
+     *
+     *   auto unit = libcellml::UnitPtr::create(units, index);
+     *
+     * @return A smart pointer to a @ref UnitPtr object.
+     */
+    static UnitPtr create(const UnitsPtr &units, size_t index) noexcept;
+
+    /**
+     * @brief Get the unit.
+     *
+     * Get the unit in the @ref Units.
+     *
+     * @return The unit.
+     */
+    UnitsPtr units() const;
+
+    /**
+     * @brief Get the index.
+     *
+     * Get the index for the unit in the @ref Units.
+     *
+     * @return The index.
+     */
+    size_t index() const;
+
+    /**
+     * @brief Test to see if this unit reference is valid.
+     *
+     * Test to see if the @ref Units used in this unit reference exists and
+     * has a unit at the given index.
+     *
+     * @return @c true if this unit reference is valid, @c false otherwise.
+     */
+    bool isValid() const;
+
+private:
+    explicit Unit(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
+
+    struct UnitImpl; /**< Forward declaration for pImpl idiom. */
+    UnitImpl *mPimpl; /**< Private member to implementation pointer. */
+};
+
+/**
+ * @brief The VariablePair class
+ *
+ * A VariablePair is a class containing two @ref Variable.
  * It may be used to define:
  *  - a connection between parent components; or
  *  - an equivalence between two variables;
  */
-using VariablePair = std::pair<VariablePtr, VariablePtr>; /**<  */
+class LIBCELLML_EXPORT VariablePair
+{
+public:
+    ~VariablePair(); /**< Destructor. */
+    VariablePair() = delete; /**< Constructor. */
+    VariablePair(const VariablePair &rhs) = delete; /**< Copy constructor. */
+    VariablePair(VariablePair &&rhs) noexcept = delete; /**< Move constructor. */
+    VariablePair &operator=(VariablePair rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create a variable pair object.
+     *
+     * Factory method to create a @ref VariablePairPtr.  Create a
+     * variable pair with variable 1 and variable 2 with::
+     *
+     *   VariablePairPtr variablePair = libcellml::VariablePairPtr::create(variable1, variable2);
+     *
+     * @return A smart pointer to a @ref VariablePairPtr object.
+     */
+    static VariablePairPtr create(const VariablePtr &variable1, const VariablePtr &variable2) noexcept;
+
+    /**
+     * @brief Get the first variable in the pair.
+     *
+     * Get the first variable in the pair.
+     *
+     * @return The first variable in the pair.
+     */
+    VariablePtr variable1() const;
+
+    /**
+     * @brief Get the second variable in the pair.
+     *
+     * Get the second variable in the pair.
+     *
+     * @return The second variable in the pair.
+     */
+    VariablePtr variable2() const;
+
+    /**
+     * @brief Test to see if this variable pair is valid.
+     *
+     * Test to see if both the variables in this variable pair are
+     * not @c nullptr.
+     *
+     * @return @c true if this variable pair is valid, @c false otherwise.
+     */
+    bool isValid() const;
+
+private:
+    explicit VariablePair(const VariablePtr &variable1, const VariablePtr &variable2); /**< Constructor with two variables as parameters. */
+
+    struct VariablePairImpl; /**< Forward declaration for pImpl idiom. */
+    VariablePairImpl *mPimpl; /**< Private member to implementation pointer. */
+};
 
 /**
- * @brief Type definition for UnitsPtr and Unit index pair.
- *
- * A UnitItem is a pair containing a @ref UnitsPtr to the parent Units item, and
- * the index to the Unit item within the @ref Units.
- */
-using UnitItem = std::pair<UnitsPtr, size_t>;
-
-/**
- * @brief Type definition for CellMLElement and a std::any.
+ * @brief Type definition for CellmlElementType and a std::any.
  *
  * An AnyItem is a @c std::pair containing:
- *  - a @ref CellMLElement enum, and
+ *  - a @ref CellmlElementType enum, and
  *  - a @c std::any item.
  *
  * Use @c std::any_cast to cast the item to its underlying type.
  *
  * Casts to use for the second item in the pair are mapped according to the following statements:
- *  - CellMLElement::COMPONENT => std::any_cast<ComponentPtr>.
- *  - CellMLElement::COMPONENT_REF => std::any_cast<ComponentPtr>.
- *  - CellMLElement::CONNECTION => std::any_cast<VariablePair>.
- *  - CellMLElement::ENCAPSULATION => std::any_cast<ModelPtr>.
- *  - CellMLElement::IMPORT => std::any_cast<ImportSourcePtr>.
- *  - CellMLElement::MAP_VARIABLES => std::any_cast<VariablePair>.
- *  - CellMLElement::MODEL => std::any_cast<ModelPtr>.
- *  - CellMLElement::RESET => std::any_cast<ResetPtr>.
- *  - CellMLElement::RESET_VALUE => std::any_cast<ResetPtr>.
- *  - CellMLElement::TEST_VALUE => std::any_cast<ResetPtr>.
- *  - CellMLElement::UNDEFINED => not castable.
- *  - CellMLElement::UNIT => std::any_cast<UnitItem>.
- *  - CellMLElement::UNITS => std::any_cast<UnitsPtr>.
- *  - CellMLElement::VARIABLE => std::any_cast<VariablePtr>.
+ *  - CellmlElementType::COMPONENT => std::any_cast<ComponentPtr>.
+ *  - CellmlElementType::COMPONENT_REF => std::any_cast<ComponentPtr>.
+ *  - CellmlElementType::CONNECTION => std::any_cast<VariablePairPtr>.
+ *  - CellmlElementType::ENCAPSULATION => std::any_cast<ModelPtr>.
+ *  - CellmlElementType::IMPORT => std::any_cast<ImportSourcePtr>.
+ *  - CellmlElementType::MAP_VARIABLES => std::any_cast<VariablePairPtr>.
+ *  - CellmlElementType::MODEL => std::any_cast<ModelPtr>.
+ *  - CellmlElementType::RESET => std::any_cast<ResetPtr>.
+ *  - CellmlElementType::RESET_VALUE => std::any_cast<ResetPtr>.
+ *  - CellmlElementType::TEST_VALUE => std::any_cast<ResetPtr>.
+ *  - CellmlElementType::UNDEFINED => not castable.
+ *  - CellmlElementType::UNIT => std::any_cast<UnitPtr>.
+ *  - CellmlElementType::UNITS => std::any_cast<UnitsPtr>.
+ *  - CellmlElementType::VARIABLE => std::any_cast<VariablePtr>.
  */
-using AnyItem = std::pair<CellMLElement, std::any>;
+using AnyItem = std::pair<CellmlElementType, std::any>;
 
 } // namespace libcellml

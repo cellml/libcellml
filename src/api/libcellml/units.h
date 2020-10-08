@@ -49,10 +49,10 @@ class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 #endif
 {
 public:
-    ~Units() override; /**< Destructor */
-    Units(const Units &rhs) = delete; /**< Copy constructor */
-    Units(Units &&rhs) noexcept = delete; /**< Move constructor */
-    Units &operator=(Units rhs) = delete; /**< Assignment operator */
+    ~Units() override; /**< Destructor. */
+    Units(const Units &rhs) = delete; /**< Copy constructor. */
+    Units(Units &&rhs) noexcept = delete; /**< Move constructor. */
+    Units &operator=(Units rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Units object.
@@ -515,7 +515,7 @@ public:
     std::string unitId(size_t index);
 
 private:
-    Units(); /**< Constructor */
+    Units(); /**< Constructor. */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
 
     /**
@@ -530,7 +530,7 @@ private:
     void doSetImportSource(const ImportSourcePtr &importSource) override;
 
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl *mPimpl; /**< Private member to implementation pointer */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

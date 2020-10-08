@@ -39,10 +39,10 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
 #endif
 {
 public:
-    ~Model() override; /**< Destructor */
-    Model(const Model &rhs) = delete; /**< Copy constructor */
-    Model(Model &&rhs) noexcept = delete; /**< Move constructor */
-    Model &operator=(Model rhs) = delete; /**< Assignment operator */
+    ~Model() override; /**< Destructor. */
+    Model(const Model &rhs) = delete; /**< Copy constructor. */
+    Model(Model &&rhs) noexcept = delete; /**< Move constructor. */
+    Model &operator=(Model rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Model object.
@@ -426,13 +426,13 @@ public:
     bool hasImportSource(const ImportSourcePtr &importSrc) const;
 
 private:
-    Model(); /**< Constructor */
+    Model(); /**< Constructor. */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
 
     bool doAddComponent(const ComponentPtr &component) override;
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    ModelImpl *mPimpl; /**< Private member to implementation pointer */
+    ModelImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml
