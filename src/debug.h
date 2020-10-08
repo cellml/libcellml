@@ -98,6 +98,7 @@ void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model);
 void printEquivalenceMap(const EquivalenceMap &map);
 void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model);
 void printStringStringMap(const StringStringMap &map);
+void printConnectionMap(const ConnectionMap &map);
 void printAst(const AnalyserEquationAstPtr &ast);
 
 } // namespace libcellml
