@@ -1781,8 +1781,7 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
             case libcellml::CellmlElementType::TEST_VALUE:
                 EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), std::any_cast<libcellml::ResetPtr>(item.second));
                 break;
-            case libcellml::CellmlElementType::UNIT:
-            {
+            case libcellml::CellmlElementType::UNIT: {
                 auto ue = std::any_cast<libcellml::UnitPtr>(expectedItems[id][index].second);
                 auto ua = std::any_cast<libcellml::UnitPtr>(item.second);
                 EXPECT_EQ(ue->units(), ua->units());
@@ -1903,8 +1902,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
             case libcellml::CellmlElementType::TEST_VALUE:
                 EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), std::any_cast<libcellml::ResetPtr>(item.second));
                 break;
-            case libcellml::CellmlElementType::UNIT:
-            {
+            case libcellml::CellmlElementType::UNIT: {
                 auto ue = std::any_cast<libcellml::UnitPtr>(expectedItems[id][index].second);
                 auto ua = std::any_cast<libcellml::UnitPtr>(item.second);
                 EXPECT_EQ(ue->units(), ua->units());
