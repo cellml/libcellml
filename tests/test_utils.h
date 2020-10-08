@@ -111,11 +111,11 @@ void TEST_EXPORT compareReset(const libcellml::ResetPtr &r1, const libcellml::Re
 void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2);
 
 #define EXPECT_EQ_ISSUES(issues, logger) \
-    SCOPED_TRACE("Issue occured here."); \
+    SCOPED_TRACE("Issue occurred here."); \
     expectEqualIssues(issues, logger)
 
 #define EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(issues, specificationHeadings, logger) \
-    SCOPED_TRACE("Issue occured here."); \
+    SCOPED_TRACE("Issue occurred here."); \
     expectEqualIssuesSpecificationHeadings(issues, specificationHeadings, logger)
 
 #define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(issues, cellmlElementTypes, levels, referenceRules, logger) \
