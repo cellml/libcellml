@@ -73,13 +73,12 @@ class Model; /**< Forward declaration of Model class. */
 using ModelPtr = std::shared_ptr<Model>; /**< Type definition for shared model pointer. */
 class Reset; /**< Forward declaration of Reset class. */
 using ResetPtr = std::shared_ptr<Reset>; /**< Type definition for shared reset pointer. */
+class Unit; /**< Forward declaration of Unit class. */
+using UnitPtr = std::shared_ptr<Unit>; /**< Type definition for shared unit pointer. */
 class Units; /**< Forward declaration of Units class. */
 using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
-
-class Unit;
-using UnitPtr = std::shared_ptr<Unit>;
 
 using AnyItem = std::pair<CellmlElementType, std::any>;
 
