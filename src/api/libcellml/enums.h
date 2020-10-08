@@ -59,6 +59,6 @@ enum class CellmlElementType
  * @param value A CellmlElementType enumeration.
  * @return A @c std::string.
  */
-LIBCELLML_EXPORT std::string cellmlElementAsString(CellmlElementType value);
+LIBCELLML_EXPORT std::string cellmlElementTypeAsString(CellmlElementType value);
 
 } // namespace libcellml
