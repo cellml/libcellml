@@ -23,5 +23,4 @@
 
 %create_constructor(Printer)
 
-%include "libcellml/types.h"
 %include "libcellml/printer.h"

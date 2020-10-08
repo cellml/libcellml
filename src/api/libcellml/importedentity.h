@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT ImportedEntity
 {
 public:
-    virtual ~ImportedEntity(); /**< Destructor */
-    ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor */
-    ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor */
-    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator */
+    virtual ~ImportedEntity(); /**< Destructor. */
+    ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor. */
+    ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor. */
+    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Test if this entity is an imported entity.
@@ -116,7 +116,7 @@ public:
     void setResolved(bool status);
 
 protected:
-    ImportedEntity(); /**< Constructor */
+    ImportedEntity(); /**< Constructor. */
 
     /**
      * @brief Virtual set import source method to be implemented by derived classes.
