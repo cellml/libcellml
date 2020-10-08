@@ -1039,8 +1039,7 @@ TEST(Annotator, assignUnitIdBadInput)
 {
     auto annotator = libcellml::Annotator::create();
     EXPECT_EQ("", annotator->assignUnitId(libcellml::Unit::create(nullptr, 0)));
-
-    // EXPECT_EQ("", annotator->assignId(libcellml::Unit::create(nullptr, -1)));
+    EXPECT_EQ("", annotator->assignId(libcellml::Unit::create(nullptr, 0)));
 
     libcellml::AnyItem itemUnit = std::make_pair(libcellml::CellmlElementType::UNIT, libcellml::Variable::create());
     EXPECT_EQ("", annotator->assignId(itemUnit));
@@ -1121,8 +1120,7 @@ TEST(Annotator, assignUnitId)
 
     EXPECT_EQ("", units->unitId(1));
 
-    auto testUnit = libcellml::Unit::create(units, 0);
-    annotator->assignUnitId(testUnit);
+    annotator->assignUnitId(libcellml::Unit::create(units, 0));
     EXPECT_EQ("b4da55", units->unitId(0));
 }
 
