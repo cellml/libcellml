@@ -16,10 +16,11 @@ limitations under the License.
 
 #include "libcellml/analyserequationast.h"
 
+#include "internaltypes.h"
+
 namespace libcellml {
 
 using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type definition for weak analyser equation AST pointer. */
-using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
 /**
  * @brief The AnalyserEquationAst::AnalyserEquationAstImpl struct.

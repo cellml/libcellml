@@ -1,5 +1,5 @@
 /*
-Copyright 2016 University of Auckland
+Copyright libCellML Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -134,6 +134,13 @@ void Logger::addIssue(const IssuePtr &issue)
     case libcellml::Issue::Level::MESSAGE:
         mPimpl->mMessages.push_back(index);
         break;
+    }
+}
+
+void Logger::addIssues(const std::vector<IssuePtr> &issues)
+{
+    for (auto &issue : issues) {
+        addIssue(issue);
     }
 }
 

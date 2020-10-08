@@ -31,10 +31,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Generator
 {
 public:
-    ~Generator(); /**< Destructor */
-    Generator(const Generator &rhs) = delete; /**< Copy constructor */
-    Generator(Generator &&rhs) noexcept = delete; /**< Move constructor */
-    Generator &operator=(Generator rhs) = delete; /**< Assignment operator */
+    ~Generator(); /**< Destructor. */
+    Generator(const Generator &rhs) = delete; /**< Copy constructor. */
+    Generator(Generator &&rhs) noexcept = delete; /**< Move constructor. */
+    Generator &operator=(Generator rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Generator object.
@@ -106,7 +106,7 @@ public:
     std::string implementationCode() const;
 
 private:
-    Generator(); /**< Constructor */
+    Generator(); /**< Constructor. */
 
     struct GeneratorImpl;
     GeneratorImpl *mPimpl;
