@@ -43,13 +43,15 @@ AnyItem convertToShared(const AnyItem &item)
     AnyItem converted = std::make_pair(CellmlElementType::UNDEFINED, nullptr);
 
     auto type = item.first;
-    if ((type == CellmlElementType::COMPONENT) || (type == CellmlElementType::COMPONENT_REF)) {
+    if ((type == CellmlElementType::COMPONENT)
+        || (type == CellmlElementType::COMPONENT_REF)) {
         auto component = std::any_cast<ComponentWeakPtr>(item.second).lock();
         if (component != nullptr) {
             converted.first = item.first;
             converted.second = component;
         }
-    } else if ((type == CellmlElementType::CONNECTION) || (type == CellmlElementType::MAP_VARIABLES)) {
+    } else if ((type == CellmlElementType::CONNECTION)
+               || (type == CellmlElementType::MAP_VARIABLES)) {
         auto weakVariablePair = std::any_cast<VariableWeakPair>(item.second);
         auto variable1 = weakVariablePair.first.lock();
         auto variable2 = weakVariablePair.second.lock();
@@ -57,7 +59,8 @@ AnyItem convertToShared(const AnyItem &item)
             converted.first = item.first;
             converted.second = std::make_pair(variable1, variable2);
         }
-    } else if ((type == CellmlElementType::ENCAPSULATION) || (type == CellmlElementType::MODEL)) {
+    } else if ((type == CellmlElementType::ENCAPSULATION)
+               || (type == CellmlElementType::MODEL)) {
         auto model = std::any_cast<ModelWeakPtr>(item.second).lock();
         if (model != nullptr) {
             converted.first = item.first;
@@ -69,7 +72,9 @@ AnyItem convertToShared(const AnyItem &item)
             converted.first = item.first;
             converted.second = importSource;
         }
-    } else if ((type == CellmlElementType::RESET) || (type == CellmlElementType::RESET_VALUE) || (type == CellmlElementType::TEST_VALUE)) {
+    } else if ((type == CellmlElementType::RESET)
+               || (type == CellmlElementType::RESET_VALUE)
+               || (type == CellmlElementType::TEST_VALUE)) {
         auto reset = std::any_cast<ResetWeakPtr>(item.second).lock();
         if (reset != nullptr) {
             converted.first = item.first;
