@@ -19,7 +19,6 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/exportdefinitions.h"
-#include <memory>
 
 namespace libcellml {
 
