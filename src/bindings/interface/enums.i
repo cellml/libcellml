@@ -36,4 +36,3 @@ del IntEnum
         $1 = %static_cast(val, $basetype);
     }
 }
-
