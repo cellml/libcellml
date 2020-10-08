@@ -708,6 +708,7 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
             auto vector = entry.second;
             std::vector<IndexStack> rebasedVector;
             for (auto stack : vector) {
+                // Temporarily remove the variable index whilst we rebase the component part of the stack.
                 size_t variableIndex = stack.back();
                 stack.pop_back();
                 auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
