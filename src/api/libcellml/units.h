@@ -494,6 +494,26 @@ public:
      */
     UnitsPtr clone() const;
 
+    /**
+     * @brief Set the id of the unit at the given @p index.
+     *
+     *  The operation will return @c true if the id is assigned, or @c false
+     *  if the @p index is out of range.
+     *
+     * @return @c true if successful, @c false otherwise.
+     */
+    bool setUnitId(size_t index, const std::string &id) const;
+
+    /**
+     * @brief Return the id string of the unit at the given @p index.
+     *
+     * Return the id string of the unit at the given @p index.  If the
+     * given index is out of range then the empty string is returned.
+     *
+     * @return An id string.
+     */
+    std::string unitId(size_t index);
+
 private:
     Units(); /**< Constructor. */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter*/

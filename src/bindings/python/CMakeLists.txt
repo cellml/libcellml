@@ -24,10 +24,11 @@ set(SWIG_INTERFACE_SRCS
     ../interface/analyserequationast.i
     ../interface/analysermodel.i
     ../interface/analyservariable.i
+    ../interface/annotator.i
     ../interface/component.i
     ../interface/componententity.i
     ../interface/entity.i
-    ../interface/enums.i  
+    ../interface/enums.i
     ../interface/generator.i
     ../interface/generatorprofile.i
     ../interface/importer.i

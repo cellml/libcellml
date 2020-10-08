@@ -5,14 +5,18 @@ Provides support for shared pointers declared in types.h.
 
 #define LIBCELLML_EXPORT
 
+%include <std_multimap.i>
 %include <std_pair.i>
 %include <std_shared_ptr.i>
+%include <std_string.i>
+%include <stdint.i>
 
 %shared_ptr(libcellml::Analyser)
 %shared_ptr(libcellml::AnalyserEquation)
 %shared_ptr(libcellml::AnalyserEquationAst)
 %shared_ptr(libcellml::AnalyserModel)
 %shared_ptr(libcellml::AnalyserVariable)
+%shared_ptr(libcellml::Annotator)
 %shared_ptr(libcellml::Component)
 %shared_ptr(libcellml::ComponentEntity)
 %shared_ptr(libcellml::Entity)
@@ -37,6 +41,9 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::VariablePair
 "A class for describing a variable pair.";
 
+%feature("docstring") libcellml::VariablePair::create
+"Create a variable pair object.";
+
 %feature("docstring") libcellml::VariablePair::variable1
 "Return the first variable in the pair of variables.";
 
@@ -48,6 +55,9 @@ Provides support for shared pointers declared in types.h.
 
 %feature("docstring") libcellml::Unit
 "A class for describing a unit.";
+
+%feature("docstring") libcellml::Unit::create
+"Create a Unit object.";
 
 %feature("docstring") libcellml::Unit::units
 "Return the units for the unit reference.";
@@ -65,6 +75,8 @@ Provides support for shared pointers declared in types.h.
 %pythoncode %{
 # libCellML generated wrapper code starts here.
 %}
+
+%template() std::multimap< std::string, libcellml::CellMLElement>;
 
 // Shared typemaps
 
@@ -146,18 +158,6 @@ Provides support for shared pointers declared in types.h.
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
     if (val < %static_cast($type::NONE, int) || %static_cast($type::PUBLIC_AND_PRIVATE, int) < val) {
-      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
-    }
-    $1 = %static_cast(val,$basetype);
-  }
-}
-
-%typemap(in) libcellml::CellmlElementType (int val, int ecode) {
-  ecode = SWIG_AsVal(int)($input, &val);
-  if (!SWIG_IsOK(ecode)) {
-    %argument_fail(ecode, "$type", $symname, $argnum);
-  } else {
-    if (val < %static_cast($type::COMPONENT, int) || %static_cast($type::VARIABLE, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val,$basetype);
