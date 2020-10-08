@@ -49,10 +49,10 @@ class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 #endif
 {
 public:
-    ~Units() override; /**< Destructor */
-    Units(const Units &rhs) = delete; /**< Copy constructor */
-    Units(Units &&rhs) noexcept = delete; /**< Move constructor */
-    Units &operator=(Units rhs) = delete; /**< Assignment operator */
+    ~Units() override; /**< Destructor. */
+    Units(const Units &rhs) = delete; /**< Copy constructor. */
+    Units(Units &&rhs) noexcept = delete; /**< Move constructor. */
+    Units &operator=(Units rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Units object.
@@ -494,8 +494,28 @@ public:
      */
     UnitsPtr clone() const;
 
+    /**
+     * @brief Set the id of the unit at the given @p index.
+     *
+     *  The operation will return @c true if the id is assigned, or @c false
+     *  if the @p index is out of range.
+     *
+     * @return @c true if successful, @c false otherwise.
+     */
+    bool setUnitId(size_t index, const std::string &id) const;
+
+    /**
+     * @brief Return the id string of the unit at the given @p index.
+     *
+     * Return the id string of the unit at the given @p index.  If the
+     * given index is out of range then the empty string is returned.
+     *
+     * @return An id string.
+     */
+    std::string unitId(size_t index);
+
 private:
-    Units(); /**< Constructor */
+    Units(); /**< Constructor. */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
 
     /**
@@ -510,7 +530,7 @@ private:
     void doSetImportSource(const ImportSourcePtr &importSource) override;
 
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl *mPimpl; /**< Private member to implementation pointer */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

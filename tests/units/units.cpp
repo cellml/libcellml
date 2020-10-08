@@ -594,6 +594,27 @@ TEST(Units, cannotLinkUnitsNotAddedToModel)
     EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
+TEST(Units, linkingToUnitsInAnotherModelReturnsUnlinked)
+{
+    auto m1 = libcellml::Model::create("m1");
+    auto m2 = libcellml::Model::create("m2");
+    auto c1 = libcellml::Component::create("c1");
+    auto u1 = libcellml::Units::create("u1");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    m1->addComponent(c1);
+    v1->setUnits(u1);
+    v2->setUnits("second");
+
+    m2->addUnits(u1); // Units assigned to v1 exist in a different model.
+
+    EXPECT_FALSE(m1->linkUnits());
+    EXPECT_TRUE(m1->hasUnlinkedUnits());
+}
+
 TEST(Units, multiply)
 {
     const std::string e =
@@ -2470,6 +2491,25 @@ TEST(Units, addUnitsMultipleTimes)
     EXPECT_EQ(size_t(1), model->unitsCount());
 }
 
+TEST(Units, setGetUnitId)
+{
+    auto units = libcellml::Units::create();
+    units->addUnit("second");
+    units->addUnit("metre");
+
+    const std::string id1 = "id1";
+    const std::string id2 = "id2";
+    const std::string oor = "out_of_range";
+
+    EXPECT_TRUE(units->setUnitId(0, id1));
+    EXPECT_TRUE(units->setUnitId(1, id2));
+    EXPECT_FALSE(units->setUnitId(99, oor));
+
+    EXPECT_EQ(id1, units->unitId(0));
+    EXPECT_EQ(id2, units->unitId(1));
+    EXPECT_EQ("", units->unitId(99));
+}
+
 TEST(Units, childUnitsWithIllegalPrefix)
 {
     auto model = libcellml::Model::create("model");
@@ -2522,6 +2562,20 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModels)
     EXPECT_EQ(1.0, scaling);
 }
 
+TEST(Units, scalingFactorBetweenUnitsSameNameLostChildren)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("oranges");
+    model1->addUnits(u1);
+
+    auto model2 = model1->clone();
+    auto u2 = model2->units(0);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(0.0, scaling);
+}
+
 TEST(Units, scalingFactorBetweenUnitsSameNameDifferentDefinitions)
 {
     auto model1 = libcellml::Model::create("model1");
@@ -2534,6 +2588,19 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentDefinitions)
 
     auto scaling = libcellml::Units::scalingFactor(u1, u2);
     EXPECT_EQ(0.0, scaling);
+}
+
+TEST(Units, scalingFactorBetweenBaseUnitsSameName)
+{
+    auto model = libcellml::Model::create("model");
+    auto u1 = libcellml::Units::create("units");
+    model->addUnits(u1);
+
+    auto u2 = libcellml::Units::create("units");
+    model->addUnits(u2);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(1.0, scaling);
 }
 
 TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModelsDifferentScale)

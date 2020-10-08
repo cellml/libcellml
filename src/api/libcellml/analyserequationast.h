@@ -212,10 +212,10 @@ public:
         NAN
     };
 
-    ~AnalyserEquationAst(); /**< Destructor */
-    AnalyserEquationAst(const AnalyserEquationAst &rhs) = delete; /**< Copy constructor */
-    AnalyserEquationAst(AnalyserEquationAst &&rhs) noexcept = delete; /**< Move constructor */
-    AnalyserEquationAst &operator=(AnalyserEquationAst rhs) = delete; /**< Assignment operator */
+    ~AnalyserEquationAst(); /**< Destructor. */
+    AnalyserEquationAst(const AnalyserEquationAst &rhs) = delete; /**< Copy constructor. */
+    AnalyserEquationAst(AnalyserEquationAst &&rhs) noexcept = delete; /**< Move constructor. */
+    AnalyserEquationAst &operator=(AnalyserEquationAst rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create an @c AnalyserEquationAst object.
@@ -346,7 +346,7 @@ public:
     void setRightChild(const AnalyserEquationAstPtr &rightChild);
 
 private:
-    AnalyserEquationAst(); /**< Constructor */
+    AnalyserEquationAst(); /**< Constructor. */
 
     struct AnalyserEquationAstImpl;
     AnalyserEquationAstImpl *mPimpl;

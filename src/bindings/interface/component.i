@@ -127,9 +127,7 @@ otherwise @c false.";
 # libCellML generated wrapper code starts here.
 %}
 
-%shared_ptr(libcellml::Component);
 %create_constructor(Component)
 %create_name_constructor(Component)
 
-%include "libcellml/types.h"
 %include "libcellml/component.h"

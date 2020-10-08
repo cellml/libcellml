@@ -25,6 +25,7 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "internaltypes.h"
 
 namespace libcellml {
@@ -363,27 +364,6 @@ bool areEqual(double value1, double value2);
 std::string sha1(const std::string &string);
 
 /**
- * @brief Get the @c Model that the entity is owned by.
- *
- * Travel up the entities hierarchy to find the owning model. If
- * the entity doesn't have an owning model return the @c nullptr.
- *
- * @param entity The entity to get the owning model for.
- * @return The owning @c Model or the @c nullptr if no model owns this entity.
- */
-ModelPtr owningModel(const EntityConstPtr &entity);
-
-/**
- * @brief Get the @c Component that the variable is owned by.
- *
- * Return the owning component for this variable.
- *
- * @param entity The entity to get the owning component for.
- * @return The owning @c Component of this entity.
- */
-ComponentPtr owningComponent(const EntityConstPtr &entity);
-
-/**
  * @brief Remove the given component from the given entity.
  *
  * The entity given can be either a @c Model or @c Component and as such is
@@ -597,6 +577,56 @@ IdList listIds(const ModelPtr &model);
  */
 std::string makeUniqueId(IdList &idList);
 
+/**
+ * Function to support linking units names to their corresponding @c Units items.
+ *
+ * @param component The component to check.
+ * @param issueList A vector of @c IssuePtr items in which unlinked units are recorded for reporting.
+ *
+ * @return @c true if all variables have been successfully linked to units, @c false otherwise.
+ */
+bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList);
+
+/**
+ * @overload
+ *
+ * @brief Utility function used when linking units names to their corresponding @c Units items.
+ *
+ * Returns @c true if all variables in the component can be linked to their units, or
+ * @c false otherwise.
+ *
+ * @param componentEntity The component entity to check.
+ *
+ * @return @c true upon success; @c false if not all variables could be linked to units.
+ */
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity);
+
+/**
+ * @overload
+ *
+ *  Utility function used when linking units names to their corresponding @c Units items.
+ *
+ * @param componentEntity The component entity to check.
+ * @param issueList An optional @c std::vector of @c IssuePtr items which is used to record cases of missing units.
+ *
+ * @return @c true upon success; @c false if not all variables could be linked to units.
+ * */
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList);
+
+/**
+ * @brief Test whether a component contains variables naming units which have not yet
+ *        been linked to @c Units items.
+ *
+ * Utility function used when linking units names to their corresponding @c Units items. It
+ * will return a value of @c true when there are variables without linked units, or @c false
+ * otherwise.
+ *
+ * @param component The component to check.
+ *
+ * @return @c true when unlinked variables are found, @c false otherwise.
+ */
+bool areComponentVariableUnitsUnlinked(const ComponentPtr &component);
+
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
 void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
@@ -608,5 +638,30 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 std::string replace(std::string string, const std::string &from, const std::string &to);
+
+/**
+ * @brief Create a connection map for the given variables.
+ *
+ * Create a map of variables that belong to the same connection as
+ * the connection created by the equivalent variables @p variable1 and @p variable2.
+ *
+ * @param variable1 A variable in the connection.
+ * @param variable2 A variable in the connection.
+ *
+ * @return A map of connections.
+ */
+ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePtr &variable2);
+
+/**
+ * @brief Make a list of all variables equivalent to the given variable.
+ *
+ * Collect all the equivalent variables of the given @p variable and return
+ * them as a list of @ref VariablePtr.
+ *
+ * @param variable The variable to find equivalent variables of.
+ *
+ * @return A @c std::vector of @ref VariablePtr.
+ */
+std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
 
 } // namespace libcellml
