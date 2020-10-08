@@ -2640,6 +2640,6 @@ TEST(Units, unknownUnitsScalingFactorIncompatible)
     model->addUnits(u1);
 
     auto scaling = libcellml::Units::scalingFactor(u1, u1, false);
-    EXPECT_EQ(1.0, scaling);
+    EXPECT_EQ(0.0, scaling);
 }
 
