@@ -301,7 +301,7 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     // Expect errors because the annotator library hasn't been built and no model exists.
     EXPECT_EQ(size_t(13), annotator->issueCount());
     EXPECT_EQ(size_t(13), annotator->errorCount());
-    for (size_t i = 0; i < 13; ++i) {
+    for (size_t i = 0; i < annotator->issueCount(); ++i) {
         EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(i)->description());
     }
 
@@ -327,7 +327,7 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
 
     EXPECT_EQ(size_t(13), annotator->issueCount());
     EXPECT_EQ(size_t(13), annotator->warningCount());
-    for (size_t i = 0; i < 13; ++i) {
+    for (size_t i = 0; i < annotator->issueCount(); ++i) {
         EXPECT_EQ("The id 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(i)->description());
     }
 }
@@ -1045,7 +1045,6 @@ TEST(Annotator, assignUnitIdBadInput)
 {
     auto annotator = libcellml::Annotator::create();
     EXPECT_EQ("", annotator->assignUnitId(libcellml::Unit::create(nullptr, 0)));
-
     EXPECT_EQ("", annotator->assignId(libcellml::Unit::create(nullptr, std::numeric_limits<size_t>::max())));
 
     libcellml::AnyItem itemUnit = std::make_pair(libcellml::CellmlElementType::UNIT, libcellml::Variable::create());
@@ -1100,7 +1099,7 @@ TEST(Annotator, assignVariableVariableId)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringNoIds);
 
-    libcellml::VariablePairPtr variablePair = libcellml::VariablePair::create(
+    auto variablePair = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1"),
         model->component("component2")->variable("variable1")->equivalentVariable(0));
 
@@ -1227,13 +1226,13 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     auto model = parser->parseModel(modelStringDuplicateIds);
     auto annotator = libcellml::Annotator::create();
 
-    libcellml::VariablePairPtr connection = libcellml::VariablePair::create(
+    auto connection = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1"),
         model->component("component2")->variable("variable1")->equivalentVariable(0));
-    libcellml::VariablePairPtr mapping = libcellml::VariablePair::create(
+    auto mapping = libcellml::VariablePair::create(
         model->component("component2")->variable("variable2"),
         model->component("component2")->variable("variable2")->equivalentVariable(0));
-    libcellml::UnitPtr unit = libcellml::Unit::create(model->units(1), 0);
+    auto unit = libcellml::Unit::create(model->units(1), 0);
 
     libcellml::AnyItem itemComponent = std::make_pair(libcellml::CellmlElementType::COMPONENT, model->component(0));
     libcellml::AnyItem itemComponentRef = std::make_pair(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
@@ -1292,10 +1291,10 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ("b4da60", model->component("component2")->variable(0)->id());
     EXPECT_EQ("b4da61", model->encapsulationId());
 
-    libcellml::VariablePairPtr connection2 = libcellml::VariablePair::create(
+    auto connection2 = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1")->equivalentVariable(0),
         model->component("component2")->variable("variable1"));
-    libcellml::VariablePairPtr mapping2 = libcellml::VariablePair::create(
+    auto mapping2 = libcellml::VariablePair::create(
         model->component("component4")->variable("variable2")->equivalentVariable(0),
         model->component("component4")->variable("variable2"));
 
@@ -1315,13 +1314,13 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
 
-    libcellml::VariablePairPtr connection = libcellml::VariablePair::create(
+    auto connection = libcellml::VariablePair::create(
         model->component("component2")->variable(0),
         model->component("component2")->variable(0)->equivalentVariable(0));
-    libcellml::VariablePairPtr mapping = libcellml::VariablePair::create(
+    auto mapping = libcellml::VariablePair::create(
         model->component("component2")->variable(1),
         model->component("component2")->variable(1)->equivalentVariable(0));
-    libcellml::UnitPtr unit = libcellml::Unit::create(model->units(1), 0);
+    auto unit = libcellml::Unit::create(model->units(1), 0);
 
     libcellml::AnyItem itemComponent = std::make_pair(libcellml::CellmlElementType::COMPONENT, model->component(0));
     libcellml::AnyItem itemComponentRef = std::make_pair(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
@@ -1373,13 +1372,13 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
 
-    libcellml::VariablePairPtr connection = libcellml::VariablePair::create(
+    auto connection = libcellml::VariablePair::create(
         model->component("component2")->variable(0)->equivalentVariable(0),
         model->component("component2")->variable(0));
-    libcellml::VariablePairPtr mapping = libcellml::VariablePair::create(
+    auto mapping = libcellml::VariablePair::create(
         model->component("component2")->variable(1),
         model->component("component2")->variable(1)->equivalentVariable(0));
-    libcellml::UnitPtr unit = libcellml::Unit::create(model->units(1), 0);
+    auto unit = libcellml::Unit::create(model->units(1), 0);
 
     libcellml::AnyItem itemComponent = std::make_pair(libcellml::CellmlElementType::COMPONENT, model->component(0));
     libcellml::AnyItem itemComponentRef = std::make_pair(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
@@ -1442,13 +1441,13 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     auto model = parser->parseModel(modelStringNoIds);
     auto annotator = libcellml::Annotator::create();
 
-    libcellml::VariablePairPtr connection = libcellml::VariablePair::create(
+    auto connection = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1"),
         model->component("component2")->variable("variable1")->equivalentVariable(0));
-    libcellml::VariablePairPtr mapping = libcellml::VariablePair::create(
+    auto mapping = libcellml::VariablePair::create(
         model->component("component2")->variable("variable2"),
         model->component("component2")->variable("variable2")->equivalentVariable(0));
-    libcellml::UnitPtr unit = libcellml::Unit::create(model->units(1), 0);
+    auto unit = libcellml::Unit::create(model->units(1), 0);
 
     annotator->setModel(model);
 
@@ -1496,10 +1495,10 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     libcellml::Variable::setEquivalenceConnectionId(connection->variable1(), connection->variable2(), "");
     libcellml::Variable::setEquivalenceMappingId(mapping->variable1(), mapping->variable2(), "");
 
-    libcellml::VariablePairPtr connection2 = libcellml::VariablePair::create(
+    auto connection2 = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1")->equivalentVariable(0),
         model->component("component2")->variable("variable1"));
-    libcellml::VariablePairPtr mapping2 = libcellml::VariablePair::create(
+    auto mapping2 = libcellml::VariablePair::create(
         model->component("component2")->variable("variable2")->equivalentVariable(0),
         model->component("component2")->variable("variable2"));
 
@@ -2002,7 +2001,7 @@ TEST(Annotator, assignIdInvalidArguments)
     EXPECT_EQ(size_t(2), annotator->errorCount());
     EXPECT_EQ(expectedIssues[1], annotator->error(1)->description());
 
-    libcellml::VariablePairPtr connection = libcellml::VariablePair::create(
+    auto connection = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1"),
         model->component("component2")->variable("variable1")->equivalentVariable(0));
 
@@ -2071,7 +2070,7 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     EXPECT_EQ("b4da56", annotator->assignId(model->component("component2"), libcellml::CellmlElementType::COMPONENT_REF));
     EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
 
-    libcellml::VariablePairPtr connection = libcellml::VariablePair::create(
+    auto connection = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1"),
         model->component("component2")->variable("variable1")->equivalentVariable(0));
     libcellml::Variable::setEquivalenceConnectionId(connection->variable1(), connection->variable2(), "changed");
@@ -2089,7 +2088,7 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     EXPECT_EQ("b4da59", annotator->assignId(model->importSource(0)));
     EXPECT_EQ("b4da59", model->importSource(0)->id());
 
-    libcellml::VariablePairPtr mapping = libcellml::VariablePair::create(
+    auto mapping = libcellml::VariablePair::create(
         model->component("component2")->variable("variable2"),
         model->component("component2")->variable("variable2")->equivalentVariable(0));
     libcellml::Variable::setEquivalenceMappingId(mapping->variable1(), mapping->variable2(), "changed");
@@ -2117,7 +2116,7 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     EXPECT_EQ("b4da5e", annotator->assignId(model->component("component2")->reset(0), libcellml::CellmlElementType::TEST_VALUE));
     EXPECT_EQ("b4da5e", model->component("component2")->reset(0)->testValueId());
 
-    libcellml::UnitPtr unit = libcellml::Unit::create(model->units(1), 0);
+    auto unit = libcellml::Unit::create(model->units(1), 0);
     model->units(1)->setUnitId(0, "changed");
     EXPECT_EQ("changed", model->units(1)->unitId(0));
     EXPECT_EQ("b4da5f", annotator->assignId(unit));

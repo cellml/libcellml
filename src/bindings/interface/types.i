@@ -187,7 +187,6 @@ Provides support for shared pointers declared in types.h.
         auto ptr = new std::shared_ptr<libcellml::Unit>(libcellml::Unit::create(units, index));
         return reinterpret_cast<libcellml::Unit *>(ptr);
     }
-
 }
 
 %extend libcellml::VariablePair {
@@ -195,7 +194,6 @@ Provides support for shared pointers declared in types.h.
         auto ptr = new std::shared_ptr<libcellml::VariablePair>(libcellml::VariablePair::create(variable1, variable2));
         return reinterpret_cast<libcellml::VariablePair *>(ptr);
     }
-
 }
 
 %ignore libcellml::Unit::create;

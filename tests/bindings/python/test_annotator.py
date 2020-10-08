@@ -1,4 +1,3 @@
-
 #
 # Tests the Component class bindings
 #
@@ -34,7 +33,6 @@ class AnnotatorTestCase(unittest.TestCase):
 
         # For coverage purposes only.
         annotator._itemCellmlElement("not_an_id", 0)
-
 
     def test_type_based_retrieval(self):
         from libcellml import Annotator, Model, Parser
@@ -420,7 +418,8 @@ class AnnotatorTestCase(unittest.TestCase):
                          annotator.assignId(model.component("component2").reset(0), CellmlElementType.RESET_VALUE))
         self.assertEqual("b4da5c", model.component("component2").reset(0).resetValueId())
 
-        self.assertEqual("b4da5d", annotator.assignId(model.component("component2").reset(0), CellmlElementType.TEST_VALUE))
+        self.assertEqual("b4da5d",
+                         annotator.assignId(model.component("component2").reset(0), CellmlElementType.TEST_VALUE))
         self.assertEqual("b4da5d", model.component("component2").reset(0).testValueId())
 
         self.assertEqual("b4da5e", annotator.assignId(Unit(model.units(1), 0)))
@@ -465,7 +464,8 @@ class AnnotatorTestCase(unittest.TestCase):
                 (CellmlElementType.CONNECTION, (c2v1, c3v1)),
                 (CellmlElementType.TEST_VALUE, model.component("component2").reset(0)),
                 (CellmlElementType.COMPONENT_REF, model.component("component2").component("component3")),
-                (CellmlElementType.VARIABLE, model.component("component2").component("component3").variable("variable2")),
+                (CellmlElementType.VARIABLE,
+                 model.component("component2").component("component3").variable("variable2")),
             ),
             "duplicateId2": (
                 (CellmlElementType.MODEL, model),
