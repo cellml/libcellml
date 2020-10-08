@@ -478,7 +478,7 @@ using PublicPrivateRequiredPair = std::pair<bool, bool>;
  * Determine whether a public and/or private interface is required for the given @p variable.  Returns
  * a pair of booleans where the first item in the pair indicates whether a public interface is required,
  * the second item in the pair indicates whether a private interface is required, and if both items
- * in the pair are @c false then this indicates an error has occured and the interface type cannot be
+ * in the pair are @c false then this indicates an error has occurred and the interface type cannot be
  * determined.
  *
  * @param variable The variable to detect the interface type required.

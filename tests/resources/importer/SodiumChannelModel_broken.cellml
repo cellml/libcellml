@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" name="SodiumChannelModel">
   <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="GateModel.cellml">
-    <component component_ref="i_dont_exist" name="importedGateH"/>
     <component component_ref="gateEquations" name="importedGateM"/>
+    <component component_ref="gateEquations" name="importedGateH"/>
   </import>
   <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="CircularControllerReference.cellml">
     <component component_ref="controller" name="controller"/>
@@ -77,7 +77,7 @@
     <variable name="m" units="dimensionless" initial_value="0.05" interface="public"/>
     <variable name="i_am_redundant" units="steradian" interface="public"/>
   </component>
-  <component name="mGateEquations!">
+  <component name="mGateEquations">
     <variable name="alpha_m" units="per_ms" interface="private"/>
     <variable name="V" units="mV" interface="public"/>
     <variable name="beta_m" units="per_ms" interface="private"/>

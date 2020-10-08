@@ -483,7 +483,7 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         std::map<std::string, std::string> unitsNamesToReplace;
         for (const auto &u : requiredUnits) {
             if (!model->hasUnits(u)) {
-                auto orignalName = u->name();
+                auto originalName = u->name();
                 size_t count = 0;
                 while (!model->hasUnits(u) && model->hasUnits(u->name())) {
                     auto name = u->name();
@@ -491,8 +491,8 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
                     u->setName(name);
                 }
                 model->addUnits(u);
-                if (orignalName != u->name()) {
-                    unitsNamesToReplace[orignalName] = u->name();
+                if (originalName != u->name()) {
+                    unitsNamesToReplace[originalName] = u->name();
                 }
             }
         }
