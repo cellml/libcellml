@@ -77,7 +77,7 @@ Provides support for shared pointers declared in types.h.
     if (val < %static_cast($type::ASSIGNMENT, int) || %static_cast($type::NAN, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }
 
@@ -89,7 +89,7 @@ Provides support for shared pointers declared in types.h.
     if (val < %static_cast($type::C, int) || %static_cast($type::PYTHON, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }
 
@@ -101,7 +101,7 @@ Provides support for shared pointers declared in types.h.
     if (val < %static_cast($type::ERROR, int) || %static_cast($type::MESSAGE, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }
 
@@ -113,7 +113,7 @@ Provides support for shared pointers declared in types.h.
     if (val < %static_cast($type::UNDEFINED, int) || %static_cast($type::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }
 
@@ -125,7 +125,7 @@ Provides support for shared pointers declared in types.h.
     if (val < %static_cast($type::YOTTA, int) || %static_cast($type::YOCTO, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }
 
@@ -137,7 +137,7 @@ Provides support for shared pointers declared in types.h.
     if (val < %static_cast($type::AMPERE, int) || %static_cast($type::WEBER, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }
 
@@ -149,7 +149,7 @@ Provides support for shared pointers declared in types.h.
     if (val < %static_cast($type::NONE, int) || %static_cast($type::PUBLIC_AND_PRIVATE, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }
 
@@ -161,7 +161,7 @@ Provides support for shared pointers declared in types.h.
     if (val < %static_cast($type::COMPONENT, int) || %static_cast($type::VARIABLE, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }
 
