@@ -96,15 +96,12 @@ void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model)
 
 void printConnectionMap(const ConnectionMap &map)
 {
+    Debug() << "Print out of connection map";
     for (const auto &iter : map) {
         auto key = iter.first;
-        Debug(false) << "key: ";
-        printStackWithModelInfo(key, model);
-        auto vector = iter.second;
-        for (const auto &vectorIt : vector) {
-            Debug(false) << "value: ";
-            printStackWithModelInfo(vectorIt, model);
-        }
+        auto value = iter.second;
+        Debug() << "first: " << key->name();
+        Debug() << "second: " << value->name();
     }
 }
 
