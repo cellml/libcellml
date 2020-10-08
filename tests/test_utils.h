@@ -93,8 +93,8 @@ void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::s
                                                         const std::vector<std::string> &specificationHeadings,
                                                         const libcellml::LoggerPtr &logger);
 
-void TEST_EXPORT expectEqualIssuesCellMLElementsLevels(const std::vector<std::string> &issues,
-                                                           const std::vector<libcellml::CellMLElement> &cellmlElementTypes,
+void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &issues,
+                                                           const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
                                                            const std::vector<libcellml::Issue::Level> &levels,
                                                            const libcellml::LoggerPtr &logger);
 
@@ -120,4 +120,4 @@ void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::Mo
 
 #define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(issues, cellmlElementTypes, levels, logger) \
     SCOPED_TRACE("Issue occured here."); \
-    expectEqualIssuesCellMLElementsLevels(issues, cellmlElementTypes, levels, logger)
+    expectEqualIssuesCellmlElementTypesLevels(issues, cellmlElementTypes, levels, logger)

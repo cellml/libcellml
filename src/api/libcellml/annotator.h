@@ -75,24 +75,24 @@ public:
      * @brief Retrieves an item with the given id string.
      *
      * The item returned is a @c std::pair containing:
-     *  - a @ref CellMLElement enum, and
+     *  - a @ref CellmlElementType enum, and
      *  - a @c std::any item containing the item.
      *
      * Possible pairs returned returned are:
-     *  - <CellMLElement::COMPONENT, @ref ComponentPtr> - Retrieve id with Component::id().
-     *  - <CellMLElement::COMPONENT_REF, @ref ComponentPtr> - Retrieve id with Component::encapsulationId().
-     *  - <CellMLElement::CONNECTION, @ref VariablePair> - Retrieve id with Variable::equivalenceConnectionId(const VariablePtr &,const VariablePtr &).
-     *  - <CellMLElement::ENCAPSULATION, @ref ModelPtr> - Retrieve id with Model::encapsulationId().
-     *  - <CellMLElement::IMPORT, @ref ImportSourcePtr> - Retrieve id with ImportSource::id().
-     *  - <CellMLElement::MAP_VARIABLES, @ref VariablePair> - Retrieve id with Variable::equivalenceMappingId(const VariablePtr &, const VariablePtr &).
-     *  - <CellMLElement::MODEL, @ref ModelPtr> - Retrieve id with Model::id().
-     *  - <CellMLElement::RESET, @ref ResetPtr> - Retrieve id with Reset::id().
-     *  - <CellMLElement::RESET_VALUE, @ref ResetPtr> - Retrieve id with Reset::resetValueId (const std::string &).
-     *  - <CellMLElement::TEST_VALUE, @ref ResetPtr> - Retrieve id with Reset::testValueId (const std::string &).
-     *  - <CellMLElement::UNDEFINED, @c nullptr>.
-     *  - <CellMLElement::UNIT, @ref Unit> - Retrieve id with Units::unitId(size_t) const.
-     *  - <CellMLElement::UNITS, @ref UnitsPtr> - Retrieve id with Units::id().
-     *  - <CellMLElement::VARIABLE, @ref VariablePtr> - Retrieve id with Variable::id().
+     *  - <CellmlElementType::COMPONENT, @ref ComponentPtr> - Retrieve id with Component::id().
+     *  - <CellmlElementType::COMPONENT_REF, @ref ComponentPtr> - Retrieve id with Component::encapsulationId().
+     *  - <CellmlElementType::CONNECTION, @ref VariablePairPtr> - Retrieve id with Variable::equivalenceConnectionId(const VariablePtr &,const VariablePtr &).
+     *  - <CellmlElementType::ENCAPSULATION, @ref ModelPtr> - Retrieve id with Model::encapsulationId().
+     *  - <CellmlElementType::IMPORT, @ref ImportSourcePtr> - Retrieve id with ImportSource::id().
+     *  - <CellmlElementType::MAP_VARIABLES, @ref VariablePairPtr> - Retrieve id with Variable::equivalenceMappingId(const VariablePtr &, const VariablePtr &).
+     *  - <CellmlElementType::MODEL, @ref ModelPtr> - Retrieve id with Model::id().
+     *  - <CellmlElementType::RESET, @ref ResetPtr> - Retrieve id with Reset::id().
+     *  - <CellmlElementType::RESET_VALUE, @ref ResetPtr> - Retrieve id with Reset::resetValueId (const std::string &).
+     *  - <CellmlElementType::TEST_VALUE, @ref ResetPtr> - Retrieve id with Reset::testValueId (const std::string &).
+     *  - <CellmlElementType::UNDEFINED, @c nullptr>.
+     *  - <CellmlElementType::UNIT, @ref UnitPtr> - Retrieve id with Units::unitId(size_t) const.
+     *  - <CellmlElementType::UNITS, @ref UnitsPtr> - Retrieve id with Units::id().
+     *  - <CellmlElementType::VARIABLE, @ref VariablePtr> - Retrieve id with Variable::id().
      *
      * @param id A @c std::string representing the @p id to retrieve.
      *
@@ -339,7 +339,7 @@ public:
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c UnitsPtr in the @p index position, if it exists.
+     *        this method returns a @ref UnitsPtr in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref Units at that location.
      *
@@ -348,12 +348,12 @@ public:
      * @param id A @c std::string representing the id of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c UnitsPtr on success otherwise @c nullptr.
+     * @return A @ref UnitsPtr on success otherwise @c nullptr.
      */
     UnitsPtr units(const std::string &id, size_t index);
 
     /**
-     * @brief Retrieve a @c UnitsPtr with the given @p id.
+     * @brief Retrieve a @ref UnitsPtr with the given @p id.
      *
      * Returns a @ref Units with the given @p id.
      *
@@ -363,22 +363,22 @@ public:
      *
      * @param id A @c std::string representing the id of the item to retrieve.
      *
-     * @return A @c UnitsPtr on success otherwise @c nullptr.
+     * @return A @ref UnitsPtr on success otherwise @c nullptr.
      */
     UnitsPtr units(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c VariablePair in the @p index position, if it exists.
+     *        this method returns a @ref VariablePairPtr in the @p index position, if it exists.
      *
-     * From a list of all items with the given @p id return the @ref VariablePair at that location.
+     * From a list of all items with the given @p id return the @ref VariablePairPtr at that location.
      *
-     * @see component(const std::string &, size_t) for times when a @c std::pair<nullptr, nullptr> is returned.
+     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
      *
      * @param id A @c std::string representing the id of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c VariablePair on success otherwise @c std::pair<nullptr, nullptr>.
+     * @return A @c VariablePair on success otherwise @c nullptr.
      */
     VariablePairPtr connection(const std::string &id, size_t index);
 
@@ -557,11 +557,11 @@ public:
      *
      * Existing ids will not be changed.
      *
-     * @param type Items of this @c CellMLElement will all be assigned a new id.
+     * @param type Items of this @c CellmlElementType will all be assigned a new id.
      *
      * @return @c true if any ids have been changed, @c false otherwise.
      */
-    bool assignIds(CellMLElement type);
+    bool assignIds(CellmlElementType type);
 
     /**
      * @brief Clear all ids from the model.
@@ -657,8 +657,8 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * Only CellMLElement::MODEL and CellMLElement::ENCAPSULATION are relevant any other
-     * CellMLElement type will not assign an id.  @see errorCount() if and/or error(size_t) for any
+     * Only CellmlElementType::MODEL and CellmlElementType::ENCAPSULATION are relevant any other
+     * CellmlElementType type will not assign an id.  @see errorCount() if and/or error(size_t) for any
      * issues that may have been raised.
      *
      * An id will not be assigned if:
@@ -670,11 +670,11 @@ public:
      * @overload
      *
      * @param model A @c ModelPtr model to which the new id will be assigned.
-     * @param type An @c CellMLElement enumeration.
+     * @param type An @c CellmlElementType enumeration.
      *
      * @return the new id string.
      */
-    std::string assignId(const ModelPtr &model, CellMLElement type = CellMLElement::MODEL);
+    std::string assignId(const ModelPtr &model, CellmlElementType type = CellmlElementType::MODEL);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p component.
@@ -684,20 +684,20 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * Only CellMLElement::COMPONENT and CellMLElement::COMPONENT_REF are relevant any other
-     * CellMLElement type will not assign an id.
+     * Only CellmlElementType::COMPONENT and CellmlElementType::COMPONENT_REF are relevant any other
+     * CellmlElementType type will not assign an id.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
      *
      * @param component A @c ComponentPtr item.
-     * @param type An @c CellMLElement enumeration.
+     * @param type An @c CellmlElementType enumeration.
      *
      * @return the new id string.
      */
-    std::string assignId(const ComponentPtr &component, CellMLElement type = CellMLElement::COMPONENT);
+    std::string assignId(const ComponentPtr &component, CellmlElementType type = CellmlElementType::COMPONENT);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p importSource.
@@ -706,13 +706,13 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
      *
      * @param importSource An @c ImportSourcePtr to which the new id will be assigned.
-     * @param type An @c CellMLElement enum.
+     * @param type An @c CellmlElementType enum.
      *
      * @return the new id string.
      */
@@ -728,20 +728,20 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * Only CellMLElement::RESET, CellMLElement::RESET_VALUE, and CellMLElement::TEST_VALUE are relevant any other
-     * CellMLElement type will not assign an id.
+     * Only CellmlElementType::RESET, CellmlElementType::RESET_VALUE, and CellmlElementType::TEST_VALUE are relevant any other
+     * CellmlElementType type will not assign an id.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
      *
      * @param reset A @ref ResetPtr.
-     * @param type An @c CellMLElement enumeration.
+     * @param type An @c CellmlElementType enumeration.
      *
      * @return the new id string.
      */
-    std::string assignId(const ResetPtr &reset, CellMLElement type = CellMLElement::RESET);
+    std::string assignId(const ResetPtr &reset, CellmlElementType type = CellmlElementType::RESET);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p units.
@@ -750,7 +750,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -768,7 +768,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -786,7 +786,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -805,20 +805,20 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * Only CellMLElement::MAP_VARIABLES, and CellMLElement::CONNECTION are relevant any other
-     * CellMLElement type will not assign an id.
+     * Only CellmlElementType::MAP_VARIABLES, and CellmlElementType::CONNECTION are relevant any other
+     * CellmlElementType type will not assign an id.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
      *
      * @param pair A @c VariablePair item.
-     * @param type A @c CellMLElement enumeration.
+     * @param type A @c CellmlElementType enumeration.
      *
      * @return the new id string.
      */
-    std::string assignId(const VariablePairPtr &pair, CellMLElement type = CellMLElement::MAP_VARIABLES);
+    std::string assignId(const VariablePairPtr &pair, CellmlElementType type = CellmlElementType::MAP_VARIABLES);
 
     /**
      * @overload
@@ -830,21 +830,21 @@ public:
      * if the operation failed.
      * The default is to assign an id to a MAP_VARIABLES item.
      *
-     * Only CellMLElement::MAP_VARIABLES, and CellMLElement::CONNECTION are relevant any other
-     * CellMLElement type will not assign an id.
+     * Only CellmlElementType::MAP_VARIABLES, and CellmlElementType::CONNECTION are relevant any other
+     * CellmlElementType type will not assign an id.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
      *
      * @param variable1 A @c VariablePtr item defining to the first item in a connection or equivalence.
      * @param variable2 A @c VariablePtr item defining to the second item in a connection or equivalence.
-     * @param type A @c CellMLElement enumeration.
+     * @param type A @c CellmlElementType enumeration.
      *
      * @return the new id string.
      */
-    std::string assignId(const VariablePtr &variable1, const VariablePtr &variable2, CellMLElement type = CellMLElement::MAP_VARIABLES);
+    std::string assignId(const VariablePtr &variable1, const VariablePtr &variable2, CellmlElementType type = CellmlElementType::MAP_VARIABLES);
 
     /**
      * @brief Assign an automatically generated, unique id to the unit item at index @p index
@@ -855,7 +855,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -874,7 +874,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param component The @c ComponentPtr which will be assigned the new id.
@@ -892,7 +892,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param component The @c ComponentPtr whose encapsulation id will be assigned the new id.
@@ -910,7 +910,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the connection
@@ -929,7 +929,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param model A @c ModelPtr whose encapsulation will be assigned the new id.
@@ -945,7 +945,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param importSource An @c ImportSourcePtr which will be assigned the new id.
@@ -963,7 +963,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the equivalence
@@ -980,7 +980,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param model The @c ModelPtr which will be assigned the new id.
@@ -996,7 +996,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr which will be assigned the new id.
@@ -1012,7 +1012,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr whose reset value will be assigned the new id.
@@ -1028,7 +1028,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr whose test value will be assigned the new id.
@@ -1044,7 +1044,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param unitItem The @c Unit which will be assigned the new id.
@@ -1060,7 +1060,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param units The @c UnitsPtr which will be assigned the new id.
@@ -1076,7 +1076,7 @@ public:
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
+     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param variable The @c VariablePtr which will be assigned the new id.

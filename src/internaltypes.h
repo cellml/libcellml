@@ -58,9 +58,6 @@ using ResetWeakPtr = std::weak_ptr<Reset>; /**< Type definition for weak reset p
 using UnitsWeakPtr = std::weak_ptr<Units>; /**< Type definition for weak units pointer. */
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
-using UnitWeakPtr = std::weak_ptr<Unit>;
-//using VariableWeakPair = std::weak_ptr<VariablePair>; /**< Type definition for VariablePtr pair.*/
-
-using ConnectionMap = std::map<VariablePtr, VariablePtr>;
+using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
 } // namespace libcellml
