@@ -143,20 +143,16 @@
 %pythoncode %{
 # libCellML generated wrapper code starts here.
 
-from libcellml.enums import CellMLElement
+from libcellml.enums import CellmlElementType
 %}
 
 %template() std::vector<std::string>;
 
-%include "libcellml/types.h"
 %include "libcellml/annotator.h"
-
-//%template(Unit) std::pair< libcellml::UnitsPtr, size_t >;
-//%template(VariablePair) std::pair< libcellml::VariablePtr, libcellml::VariablePtr >;
 
 %extend libcellml::Annotator {
 
-    CellMLElement _itemCellmlElement(const std::string &id, size_t index)
+    CellmlElementType _itemCellmlElement(const std::string &id, size_t index)
     {
         auto itemInfo = $self->item(id, index);
         return itemInfo.first;
@@ -165,7 +161,7 @@ from libcellml.enums import CellMLElement
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::ModelPtr const &item, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::ModelPtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item, type);
     }
@@ -173,7 +169,7 @@ from libcellml.enums import CellMLElement
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::ComponentPtr const &item, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::ComponentPtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item, type);
     }
@@ -185,11 +181,11 @@ from libcellml.enums import CellMLElement
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::ImportSourcePtr const &item, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::ImportSourcePtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::ResetPtr const &item, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::ResetPtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item, type);
     }
@@ -205,7 +201,7 @@ from libcellml.enums import CellMLElement
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::UnitPtr const &item, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::UnitPtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item);
     }
@@ -213,11 +209,11 @@ from libcellml.enums import CellMLElement
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::VariablePtr const &item, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::VariablePtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::VariablePairPtr const &item, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::VariablePairPtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item, type);
     }
@@ -225,7 +221,7 @@ from libcellml.enums import CellMLElement
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::VariablePtr const &item1, libcellml::VariablePtr const &item2, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::VariablePtr const &item1, libcellml::VariablePtr const &item2, libcellml::CellmlElementType type)
     {
         return $self->assignId(item1, item2, type);
     }
@@ -237,7 +233,7 @@ from libcellml.enums import CellMLElement
     {
         return $self->assignId(item, index);
     }
-    std::string _assignId(libcellml::UnitsPtr const &item, libcellml::CellMLElement type)
+    std::string _assignId(libcellml::UnitsPtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item);
     }
@@ -261,7 +257,7 @@ from libcellml.enums import CellMLElement
                 issue.setDescription("The id '" + id + "' occurs " + str(num) + " times in the model so a unique item cannot be located.")
                 issue.setLevel(Issue.Level.WARNING)
                 self.addIssue(issue)
-                return (CellMLElement.UNDEFINED, None)
+                return (CellmlElementType.UNDEFINED, None)
 
             if num == 0:
                 from libcellml import Issue
@@ -269,39 +265,39 @@ from libcellml.enums import CellMLElement
                 issue.setDescription("Could not find an item with an id of '" + id + "' in the model.")
                 issue.setLevel(Issue.Level.WARNING)
                 self.addIssue(issue)
-                return (CellMLElement.UNDEFINED, None)
+                return (CellmlElementType.UNDEFINED, None)
 
         if index == -1:
             index = 0
 
         type = _annotator.Annotator__itemCellmlElement(self, id, index)
-        if type == CellMLElement.COMPONENT:
+        if type == CellmlElementType.COMPONENT:
             return (type, _annotator.Annotator_component(self, id, index))
-        elif type == CellMLElement.COMPONENT_REF:
+        elif type == CellmlElementType.COMPONENT_REF:
             return (type, _annotator.Annotator_componentRef(self, id, index))
-        elif type == CellMLElement.CONNECTION:
+        elif type == CellmlElementType.CONNECTION:
             return (type, _annotator.Annotator_connection(self, id, index))
-        elif type == CellMLElement.ENCAPSULATION:
+        elif type == CellmlElementType.ENCAPSULATION:
             return (type, _annotator.Annotator_encapsulation(self, id, index))
-        elif type == CellMLElement.IMPORT:
+        elif type == CellmlElementType.IMPORT:
             return (type, _annotator.Annotator_importSource(self, id, index))
-        elif type == CellMLElement.MAP_VARIABLES:
+        elif type == CellmlElementType.MAP_VARIABLES:
             return (type, _annotator.Annotator_mapVariables(self, id, index))
-        elif type == CellMLElement.MODEL:
+        elif type == CellmlElementType.MODEL:
             return (type, _annotator.Annotator_model(self, id, index))
-        elif type == CellMLElement.RESET:
+        elif type == CellmlElementType.RESET:
             return (type, _annotator.Annotator_reset(self, id, index))
-        elif type == CellMLElement.RESET_VALUE:
+        elif type == CellmlElementType.RESET_VALUE:
             return (type, _annotator.Annotator_resetValue(self, id, index))
-        elif type == CellMLElement.TEST_VALUE:
+        elif type == CellmlElementType.TEST_VALUE:
             return (type, _annotator.Annotator_testValue(self, id, index))
-        elif type == CellMLElement.UNIT:
+        elif type == CellmlElementType.UNIT:
             return (type, _annotator.Annotator_unit(self, id, index))
-        elif type == CellMLElement.UNITS:
+        elif type == CellmlElementType.UNITS:
             return (type, _annotator.Annotator_units(self, id, index))
-        elif type == CellMLElement.VARIABLE:
+        elif type == CellmlElementType.VARIABLE:
             return (type, _annotator.Annotator_variable(self, id, index))
-        return (CellMLElement.UNDEFINED, None)
+        return (CellmlElementType.UNDEFINED, None)
 
     def items(self, id):
         r"""Returns everything with the given id as as list of (type, item) tuples."""

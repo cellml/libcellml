@@ -209,8 +209,8 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
-void expectEqualIssuesCellMLElementsLevels(const std::vector<std::string> &issues,
-                                               const std::vector<libcellml::CellMLElement> &cellmlElementTypes,
+void expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &issues,
+                                               const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
                                                const std::vector<libcellml::Issue::Level> &levels,
                                                const libcellml::LoggerPtr &logger)
 {

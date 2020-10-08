@@ -22,8 +22,6 @@ limitations under the License.
 #include <utility>
 
 #include "libcellml/enums.h"
-
-#include "libcellml/enums.h"
 #include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
@@ -75,18 +73,20 @@ class Model; /**< Forward declaration of Model class. */
 using ModelPtr = std::shared_ptr<Model>; /**< Type definition for shared model pointer. */
 class Reset; /**< Forward declaration of Reset class. */
 using ResetPtr = std::shared_ptr<Reset>; /**< Type definition for shared reset pointer. */
+class Unit; /**< Forward declaration of Unit class. */
+using UnitPtr = std::shared_ptr<Unit>; /**< Type definition for shared unit pointer. */
 class Units; /**< Forward declaration of Units class. */
 using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
-
-class Unit;
-using UnitPtr = std::shared_ptr<Unit>;
+class VariablePair; /**< Forward declaration of VariablePair class. */
+using VariablePairPtr = std::shared_ptr<VariablePair>; /**< Type definition for shared variable pair pointer. */
 
 /**
  * @brief The Unit class
  *
- * The Unit class can be used to refer to a unit in a @ref Units.
+ * A Unit is a class containing a @ref UnitsPtr to the parent Units item, and
+ * the index to the Unit item within the @ref Units.
  */
 class LIBCELLML_EXPORT Unit
 {
@@ -144,14 +144,13 @@ private:
     UnitImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-class VariablePair;
-using VariablePairPtr = std::shared_ptr<VariablePair>;
-
 /**
  * @brief The VariablePair class
  *
- * The VariablePair class can be used to describe connections
- * or map variables in CellML.
+ * A VariablePair is a class containing two @ref VariablePtrs.
+ * It may be used to define:
+ *  - a connection between parent components; or
+ *  - an equivalence between two variables;
  */
 class LIBCELLML_EXPORT VariablePair
 {
@@ -210,48 +209,30 @@ private:
 };
 
 /**
- * @brief Type definition for VariablePtr pair.
- *
- * A VariablePair is a pair containing two @ref VariablePtrs.
- * It may be used to define:
- *  - a connection between parent components; or
- *  - an equivalence between two variables;
- */
-//using VariablePair = std::pair<VariablePtr, VariablePtr>; /**<  */
-
-/**
- * @brief Type definition for UnitsPtr and Unit index pair.
- *
- * A Unit is a pair containing a @ref UnitsPtr to the parent Units item, and
- * the index to the Unit item within the @ref Units.
- */
-//using Unit = std::pair<UnitsPtr, size_t>;
-
-/**
- * @brief Type definition for CellMLElement and a std::any.
+ * @brief Type definition for CellmlElementType and a std::any.
  *
  * An AnyItem is a @c std::pair containing:
- *  - a @ref CellMLElement enum, and
+ *  - a @ref CellmlElementType enum, and
  *  - a @c std::any item.
  *
  * Use @c std::any_cast to cast the item to its underlying type.
  *
  * Casts to use for the second item in the pair are mapped according to the following statements:
- *  - CellMLElement::COMPONENT => std::any_cast<ComponentPtr>.
- *  - CellMLElement::COMPONENT_REF => std::any_cast<ComponentPtr>.
- *  - CellMLElement::CONNECTION => std::any_cast<VariablePair>.
- *  - CellMLElement::ENCAPSULATION => std::any_cast<ModelPtr>.
- *  - CellMLElement::IMPORT => std::any_cast<ImportSourcePtr>.
- *  - CellMLElement::MAP_VARIABLES => std::any_cast<VariablePair>.
- *  - CellMLElement::MODEL => std::any_cast<ModelPtr>.
- *  - CellMLElement::RESET => std::any_cast<ResetPtr>.
- *  - CellMLElement::RESET_VALUE => std::any_cast<ResetPtr>.
- *  - CellMLElement::TEST_VALUE => std::any_cast<ResetPtr>.
- *  - CellMLElement::UNDEFINED => not castable.
- *  - CellMLElement::UNIT => std::any_cast<Unit>.
- *  - CellMLElement::UNITS => std::any_cast<UnitsPtr>.
- *  - CellMLElement::VARIABLE => std::any_cast<VariablePtr>.
+ *  - CellmlElementType::COMPONENT => std::any_cast<ComponentPtr>.
+ *  - CellmlElementType::COMPONENT_REF => std::any_cast<ComponentPtr>.
+ *  - CellmlElementType::CONNECTION => std::any_cast<VariablePairPtr>.
+ *  - CellmlElementType::ENCAPSULATION => std::any_cast<ModelPtr>.
+ *  - CellmlElementType::IMPORT => std::any_cast<ImportSourcePtr>.
+ *  - CellmlElementType::MAP_VARIABLES => std::any_cast<VariablePairPtr>.
+ *  - CellmlElementType::MODEL => std::any_cast<ModelPtr>.
+ *  - CellmlElementType::RESET => std::any_cast<ResetPtr>.
+ *  - CellmlElementType::RESET_VALUE => std::any_cast<ResetPtr>.
+ *  - CellmlElementType::TEST_VALUE => std::any_cast<ResetPtr>.
+ *  - CellmlElementType::UNDEFINED => not castable.
+ *  - CellmlElementType::UNIT => std::any_cast<UnitPtr>.
+ *  - CellmlElementType::UNITS => std::any_cast<UnitsPtr>.
+ *  - CellmlElementType::VARIABLE => std::any_cast<VariablePtr>.
  */
-using AnyItem = std::pair<CellMLElement, std::any>;
+using AnyItem = std::pair<CellmlElementType, std::any>;
 
 } // namespace libcellml

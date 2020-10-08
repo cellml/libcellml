@@ -1,5 +1,5 @@
 /*
-Copyright 2016 University of Auckland
+Copyright libCellML Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -47,15 +47,15 @@ public:
      *
      * or an issue with one of the following types as a parameter::
      *
-     *   - libcellml::ComponentPtr (defaults the item type to CellMLElement::COMPONENT);
-     *   - libcellml::ImportSourcePtr (defaults the item type to CellMLElement::IMPORT);
-     *   - libcellml::ModelPtr (defaults the item type to CellMLElement::MODEL);
-     *   - libcellml::ResetPtr (defaults the item type to CellMLElement::RESET);
-     *   - libcellml::UnitPtr (defaults the item type to CellMLElement::UNIT);
-     *   - libcellml::UnitsPtr (defaults the item type to CellMLElement::UNITS);
-     *   - libcellml::VariablePairPtr (defaults the item type to CellMLElement::MAP_VARIABLES);
-     *   - libcellml::VariablePtr (defaults the item type to CellMLElement::VARIABLE); or
-     *   - libcellml::CellMLElement, std::any.
+     *   - libcellml::ComponentPtr (defaults the item type to CellmlElementType::COMPONENT);
+     *   - libcellml::ImportSourcePtr (defaults the item type to CellmlElementType::IMPORT);
+     *   - libcellml::ModelPtr (defaults the item type to CellmlElementType::MODEL);
+     *   - libcellml::ResetPtr (defaults the item type to CellmlElementType::RESET);
+     *   - libcellml::UnitPtr (defaults the item type to CellmlElementType::UNIT);
+     *   - libcellml::UnitsPtr (defaults the item type to CellmlElementType::UNITS);
+     *   - libcellml::VariablePairPtr (defaults the item type to CellmlElementType::MAP_VARIABLES);
+     *   - libcellml::VariablePtr (defaults the item type to CellmlElementType::VARIABLE); or
+     *   - libcellml::CellmlElementType, std::any.
      *
      * The default values for the enumerations are::
      *
@@ -69,7 +69,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const ComponentPtr &component, CellMLElement cellmlElementType = CellMLElement::COMPONENT) noexcept;
+    static IssuePtr create(const ComponentPtr &component, CellmlElementType cellmlElementType = CellmlElementType::COMPONENT) noexcept;
 
     /**
      * @overload
@@ -79,12 +79,12 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const ModelPtr &model, CellMLElement cellmlElementType = CellMLElement::MODEL) noexcept;
+    static IssuePtr create(const ModelPtr &model, CellmlElementType cellmlElementType = CellmlElementType::MODEL) noexcept;
 
     /**
      * @overload
      */
-    static IssuePtr create(const ResetPtr &reset, CellMLElement cellmlElementType = CellMLElement::RESET) noexcept;
+    static IssuePtr create(const ResetPtr &reset, CellmlElementType cellmlElementType = CellmlElementType::RESET) noexcept;
 
     /**
      * @overload
@@ -99,7 +99,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const VariablePairPtr &variablePair, CellMLElement cellmlElementType = CellMLElement::MAP_VARIABLES) noexcept;
+    static IssuePtr create(const VariablePairPtr &variablePair, CellmlElementType cellmlElementType = CellmlElementType::MAP_VARIABLES) noexcept;
 
     /**
      * @overload
@@ -298,7 +298,7 @@ public:
     /**
      * @brief Set the component relevant to this issue.
      *
-     * The internal type will be set to @c CellMLElement::COMPONENT.
+     * The internal type will be set to @c CellmlElementType::COMPONENT.
      *
      * @param component A @c ComponentPtr relevant to this issue.
      */
@@ -310,14 +310,14 @@ public:
      * Get the component relevant to this issue.
      *
      * @return A @c Component relevant to this issue, or
-     *         a @c nullptr if the internal type is not @c CellMLElement::COMPONENT.
+     *         a @c nullptr if the internal type is not @c CellmlElementType::COMPONENT.
      */
     ComponentPtr component() const;
 
     /**
      * @brief Set the import source for this issue.
      *
-     * The internal type will be set to @c CellMLElement::IMPORT.
+     * The internal type will be set to @c CellmlElementType::IMPORT.
      *
      * @param importSource A @c ImportSourcePtr relevant to this issue.
      */
@@ -329,14 +329,14 @@ public:
      * Get the import source relevant to this issue.
      *
      * @return An @c ImportSourcePtr relevant to this issue, or
-     *         a @c nullptr if the internal type is not @c CellMLElement::IMPORT.
+     *         a @c nullptr if the internal type is not @c CellmlElementType::IMPORT.
      */
     ImportSourcePtr importSource() const;
 
     /**
      * @brief Set the model for this issue.
      *
-     * The internal type will be set to @c CellMLElement::MODEL.
+     * The internal type will be set to @c CellmlElementType::MODEL.
      *
      * @param model A @c ModelPtr relevant to this issue.
      */
@@ -348,14 +348,14 @@ public:
      * Get the model relevant to this issue.
      *
      * @return A @c ModelPtr relevant to this issue, or
-     *         a @c nullptr if the internal type is not @c CellMLElement::MODEL.
+     *         a @c nullptr if the internal type is not @c CellmlElementType::MODEL.
      */
     ModelPtr model() const;
 
     /**
      * @brief Set the units for this issue.
      *
-     * The internal type will be set to @c CellMLElement::UNITS.
+     * The internal type will be set to @c CellmlElementType::UNITS.
      *
      * @param units A @c UnitsPtr relevant to this issue.
      */
@@ -367,14 +367,14 @@ public:
      * Get the units relevant to this issue.
      *
      * @return A @c UnitsPtr relevant to this issue, or
-     *         a @c nullptr if the internal type is not @c CellMLElement::UNITS.
+     *         a @c nullptr if the internal type is not @c CellmlElementType::UNITS.
      */
     UnitsPtr units() const;
 
     /**
      * @brief Set the variable for this issue.
      *
-     * The internal type will be set to @c CellMLElement::VARIABLE.
+     * The internal type will be set to @c CellmlElementType::VARIABLE.
      *
      * @param variable A @c VariablePtr relevant to this issue.
      */
@@ -386,14 +386,14 @@ public:
      * Get the variable relevant to this issue.
      *
      * @return A @c VariablePtr relevant to this issue, or
-     *         a @c nullptr if the internal type is not @c CellMLElement::VARIABLE.
+     *         a @c nullptr if the internal type is not @c CellmlElementType::VARIABLE.
      */
     VariablePtr variable() const;
 
     /**
      * @brief Set the reset for this issue.
      *
-     * The internal type will be set to @c CellMLElement::RESET.
+     * The internal type will be set to @c CellmlElementType::RESET.
      *
      * @param reset A @c ResetPtr relevant to this issue.
      */
@@ -405,14 +405,14 @@ public:
      * Get the reset relevant to this issue.
      *
      * @return A @c ResetPtr relevant to this issue, or @c nullptr
-     *         if the internal type is not @c CellMLElement::RESET.
+     *         if the internal type is not @c CellmlElementType::RESET.
      */
     ResetPtr reset() const;
 
     /**
      * @brief Set the component whose MathML is relevant to this issue.
      *
-     * The internal type will be set to @c CellMLElement::MATH.
+     * The internal type will be set to @c CellmlElementType::MATH.
      *
      * @param component The @c ComponentPtr whose MathML is relevant to this issue.
      */
@@ -424,7 +424,7 @@ public:
      * Get the component whose MathML is relevant to this issue.
      *
      * @return A @c ComponentPtr whose MathML is relevant to this issue, or @c nullptr
-     *         if the internal type is not @c CellMLElement::MATH.
+     *         if the internal type is not @c CellmlElementType::MATH.
      */
     ComponentPtr math() const;
 
@@ -432,7 +432,7 @@ public:
      * @brief Set the connection relevant to this issue.
      *
      * Set the connection for this issue defined by the variable pair.
-     * The internal type will be set to @ref CellMLElement::CONNECTION.
+     * The internal type will be set to @ref CellmlElementType::CONNECTION.
      *
      * @param pair The @ref VariablePair whose connection is relevant to this issue.
      */
@@ -442,7 +442,7 @@ public:
      * @brief Set the connection relevant to this issue.
      *
      * Set the connection for this issue defined by the given variables.
-     * The item type will be set to @ref CellMLElement::CONNECTION.
+     * The item type will be set to @ref CellmlElementType::CONNECTION.
      *
      * @param pair The @ref VariablePair whose connection is relevant to this issue.
      */
@@ -454,7 +454,7 @@ public:
      * Get the connection relevant to this issue.
      *
      * @return A @ref VariablePairPtr representing the connection relevant to this issue,
-     *         or @c nullptr if the internal type is not @c CellMLElement::CONNECTION.
+     *         or @c nullptr if the internal type is not @c CellmlElementType::CONNECTION.
      */
     VariablePairPtr connection() const;
 
@@ -462,7 +462,7 @@ public:
      * @brief Set the variable mapping relevant to this issue.
      *
      * Set the variable mapping for this issue defined by the variable pair.
-     * The item type will be set to @ref CellMLElement::MAP_VARIABLES.
+     * The item type will be set to @ref CellmlElementType::MAP_VARIABLES.
      *
      * @param pair The @ref VariablePair whose equivalence is relevant to this issue.
      */
@@ -472,7 +472,7 @@ public:
      * @brief Set the variable mapping relevant to this issue.
      *
      * Set the variable mapping for this issue defined by the given variables.
-     * The item type will be set to @ref CellMLElement::MAP_VARIABLES.
+     * The item type will be set to @ref CellmlElementType::MAP_VARIABLES.
      *
      * @param pair The @ref VariablePair whose connection is relevant to this issue.
      */
@@ -484,14 +484,14 @@ public:
      * Get the equivalent variable pair relevant to this issue.
      *
      * @return A @c VariablePair representing the variable equivalence relevant to this issue,
-     *         or @c nullptr if the internal type is not @c CellMLElement::MAP_VARIABLES.
+     *         or @c nullptr if the internal type is not @c CellmlElementType::MAP_VARIABLES.
      */
     VariablePairPtr mapVariables() const;
 
     /**
      * @brief Set the reset whose reset value is relevant to this issue.
      *
-     * The internal type will be set to @c CellMLElement::RESET_VALUE.
+     * The internal type will be set to @c CellmlElementType::RESET_VALUE.
      *
      * @param reset A @c ResetPtr whose reset value is relevant to this issue.
      */
@@ -503,14 +503,14 @@ public:
      * Get the reset whose reset value is relevant to this issue.
      *
      * @return A @c ResetPtr whose reset value is relevant to this issue,
-     *         or @c nullptr if the internal type is not @c CellMLElement::RESET_VALUE.
+     *         or @c nullptr if the internal type is not @c CellmlElementType::RESET_VALUE.
      */
     ResetPtr resetValue() const;
 
     /**
      * @brief Set the reset whose test value is relevant to this issue.
      *
-     * The internal type will be set to @c CellMLElement::TEST_VALUE.
+     * The internal type will be set to @c CellmlElementType::TEST_VALUE.
      *
      * @param reset A @c ResetPtr whose test value is relevant to this issue.
      */
@@ -522,14 +522,14 @@ public:
      * Get the reset whose test value is relevant to this issue.
      *
      * @return A @c ResetPtr whose test value is relevant to this issue,
-     *         or @c nullptr if the internal type is not @c CellMLElement::MAP_VARIABLES.
+     *         or @c nullptr if the internal type is not @c CellmlElementType::MAP_VARIABLES.
      */
     ResetPtr testValue() const;
 
     /**
      * @brief Set the @c Unit whose relevant to this issue.
      *
-     * The internal type will be set to @c CellMLElement::UNIT.
+     * The internal type will be set to @c CellmlElementType::UNIT.
      *
      * @param unit A @c Unit relevant to this issue.
      */
@@ -541,14 +541,14 @@ public:
      * Get the unit relevant to this issue.
      *
      * @return A @c Unit relevant to this issue,
-     *         or @c nullptr if the internal type is not @c CellMLElement::UNIT.
+     *         or @c nullptr if the internal type is not @c CellmlElementType::UNIT.
      */
     UnitPtr unit() const;
 
     /**
      * @brief Set the @c ModelPtr whose encapsulation is relevant to this issue.
      *
-     * The internal type will be set to @c CellMLElement::ENCAPSULATION.
+     * The internal type will be set to @c CellmlElementType::ENCAPSULATION.
      *
      * @param model A @c ModelPtr whose encapsulation is relevant to this issue.
      */
@@ -560,14 +560,14 @@ public:
      * Get the @c ModelPtr whose encapsulation is relevant to this issue.
      *
      * @return A @c ModelPtr whose encapsulation relevant to this issue,
-     *         or @c nullptr if the internal type is not @c CellMLElement::ENCAPSULATION.
+     *         or @c nullptr if the internal type is not @c CellmlElementType::ENCAPSULATION.
      */
     ModelPtr encapsulation() const;
 
     /**
      * @brief Set the @c ComponentPtr whose encapsulation position is relevant to this issue.
      *
-     * The internal type will be set to @c CellMLElement::COMPONENT_REF.
+     * The internal type will be set to @c CellmlElementType::COMPONENT_REF.
      *
      * @param component A @c ComponentPtr whose encapsulation position is relevant to this issue.
      */
@@ -579,34 +579,34 @@ public:
      * Get the @c ComponentPtr whose encapsulation is relevant to this issue.
      *
      * @return A @c ComponentPtr whose encapsulation relevant to this issue,
-     *         or @c nullptr if the internal type is not @c CellMLElement::COMPONENT_REF.
+     *         or @c nullptr if the internal type is not @c CellmlElementType::COMPONENT_REF.
      */
     ComponentPtr componentRef() const;
 
     /**
-     * @brief Get the @ref CellMLElement enum for the stored item.
+     * @brief Get the @ref CellmlElementType enum for the stored item.
      *
-     * Get the @ref CellMLElement enum for the stored item.
+     * Get the @ref CellmlElementType enum for the stored item.
      *
-     * @return The @ref CellMLElement enum for the stored item, or @ref CellMLElement::UNDEFINED if none.
+     * @return The @ref CellmlElementType enum for the stored item, or @ref CellmlElementType::UNDEFINED if none.
      */
-    CellMLElement cellmlElementType() const;
+    CellmlElementType cellmlElementType() const;
 
     /**
      * @brief Set an @c std::any item relevant to this issue.
      *
      * Set an @c std::any item relevant to this issue.
      *
-     * @param cellmlElementType A @c CellMLElement enum.
+     * @param cellmlElementType A @c CellmlElementType enum.
      * @param item An @c std::any item relevant to this issue.
      */
-    void setItem(CellMLElement cellmlElementType, const std::any &item);
+    void setItem(CellmlElementType cellmlElementType, const std::any &item);
 
     /**
      * @brief Get the stored item as an @c std::any item.
      *
      * Get the stored item as an @c std::any item.
-     * Note that the stored @ref CellMLElement can be retrieved using cellmlElementType().
+     * Note that the stored @ref CellmlElementType can be retrieved using cellmlElementType().
      *
      * @return A @c std::any item related to this issue.
      */
