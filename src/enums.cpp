@@ -20,7 +20,7 @@ limitations under the License.
 
 namespace libcellml {
 
-static const std::map<CellmlElementType, std::string> cellMLElementTypeToString = {
+static const std::map<CellmlElementType, std::string> cellmlElementTypeToString = {
     {CellmlElementType::COMPONENT, "component"},
     {CellmlElementType::COMPONENT_REF, "component_ref"},
     {CellmlElementType::CONNECTION, "connection"},
@@ -39,7 +39,7 @@ static const std::map<CellmlElementType, std::string> cellMLElementTypeToString 
 
 std::string cellmlElementTypeAsString(CellmlElementType value)
 {
-    return cellMLElementTypeToString.at(value);
+    return cellmlElementTypeToString.at(value);
 }
 
 } // namespace libcellml

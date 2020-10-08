@@ -108,15 +108,18 @@ AnyItem convertToWeak(const AnyItem &item)
     AnyItem converted = std::make_pair(item.first, nullptr);
 
     auto type = item.first;
-    if ((type == CellmlElementType::COMPONENT) || (type == CellmlElementType::COMPONENT_REF)) {
+    if ((type == CellmlElementType::COMPONENT)
+        || (type == CellmlElementType::COMPONENT_REF)) {
         ComponentWeakPtr weakComponent = std::any_cast<ComponentPtr>(item.second);
         converted.second = weakComponent;
-    } else if ((type == CellmlElementType::CONNECTION) || (type == CellmlElementType::MAP_VARIABLES)) {
+    } else if ((type == CellmlElementType::CONNECTION)
+               || (type == CellmlElementType::MAP_VARIABLES)) {
         // We don'te store a weak pointer for connections or map variables because the
         // map is the owner of these objects.
         // VariableWeakPair variablePair = std::any_cast<VariablePairPtr>(item.second);
         converted.second = item.second;
-    } else if ((type == CellmlElementType::ENCAPSULATION) || (type == CellmlElementType::MODEL)) {
+    } else if ((type == CellmlElementType::ENCAPSULATION)
+               || (type == CellmlElementType::MODEL)) {
         auto model = std::any_cast<ModelPtr>(item.second);
         ModelWeakPtr weakModel = model;
         converted.second = weakModel;
@@ -124,7 +127,9 @@ AnyItem convertToWeak(const AnyItem &item)
         auto importSource = std::any_cast<ImportSourcePtr>(item.second);
         ImportSourceWeakPtr weakImportSource = importSource;
         converted.second = weakImportSource;
-    } else if ((type == CellmlElementType::RESET) || (type == CellmlElementType::RESET_VALUE) || (type == CellmlElementType::TEST_VALUE)) {
+    } else if ((type == CellmlElementType::RESET)
+               || (type == CellmlElementType::RESET_VALUE)
+               || (type == CellmlElementType::TEST_VALUE)) {
         auto reset = std::any_cast<ResetPtr>(item.second);
         ResetWeakPtr weakReset = reset;
         converted.second = weakReset;
@@ -1435,7 +1440,7 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyItem &itemWeak, const AnyItem
         // Variable pairs are not stored as a weak pointer so we can compare shared pointers directly.
         auto pair1 = std::any_cast<VariablePairPtr>(itemWeak.second);
         auto pair2 = std::any_cast<VariablePairPtr>(item.second);
-        itemsEqual = (pair1 == pair2);
+        itemsEqual = pair1 == pair2;
     }
     return itemsEqual;
 }

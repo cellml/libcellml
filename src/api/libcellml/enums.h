@@ -23,7 +23,7 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The CellmlElementType element enum class.
+ * @brief The CellmlElementType enum class.
  *
  * This enum describes CellML elements.
  * A CellML element identifies elements in

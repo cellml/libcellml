@@ -388,13 +388,13 @@ public:
      *
      * Returns a @ref VariablePair with the given @p id.
      *
-     * @see component(const std::string &) for times when a @c std::pair<nullptr, nullptr> is returned.
+     * @see component(const std::string &) for times when a @c nullptr is returned.
      *
      * @overload
      *
      * @param id A @c std::string representing the id of the item to retrieve.
      *
-     * @return A @c VariablePair on success otherwise @c std::pair<nullptr, nullptr>.
+     * @return A @c VariablePair on success otherwise @c nullprt.
      */
     VariablePairPtr connection(const std::string &id);
 
@@ -404,12 +404,12 @@ public:
      *
      * From a list of all items with the given @p id return the @ref VariablePair at that location.
      *
-     * @see component(const std::string &, size_t) for times when a @c std::pair<nullptr, nullptr> is returned.
+     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
      *
      * @param id A @c std::string representing the id of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c VariablePair on success otherwise @c std::pair<nullptr, nullptr>.
+     * @return A @c VariablePair on success otherwise @c nullptr.
      */
     VariablePairPtr mapVariables(const std::string &id, size_t index);
 
@@ -419,13 +419,13 @@ public:
      *
      * Returns a @ref VariablePair with the given @p id.
      *
-     * @see component(const std::string &) for times when a @c std::pair<nullptr, nullptr> is returned.
+     * @see component(const std::string &) for times when a @c nullptr is returned.
      *
      * @overload
      *
      * @param id A @c std::string representing the id of the item to retrieve.
      *
-     * @return A @c VariablePair on success otherwise @c std::pair<nullptr, nullptr>.
+     * @return A @c VariablePair on success otherwise @c nullptr.
      */
     VariablePairPtr mapVariables(const std::string &id);
 
@@ -435,12 +435,12 @@ public:
      *
      * From a list of all items with the given @p id return the @ref Unit at that location.
      *
-     * @see component(const std::string &, size_t) for times when a @c std::pair<nullptr, 0> is returned.
+     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
      *
      * @param id A @c std::string representing the id of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Unit on success otherwise @c std::pair<nullptr, 0>.
+     * @return A @c Unit on success otherwise @c nullptr.
      */
     UnitPtr unit(const std::string &id, size_t index);
 
@@ -517,9 +517,9 @@ public:
     ResetPtr resetValue(const std::string &id);
 
     /**
-     * @brief Assign an id to every non-idied item in the model.
+     * @brief Assign an id to every item without one in the model.
      *
-     * Assing an id to every item in the model which do not already have an
+     * Assign an id to every item in the model which do not already have an
      * id assigned.  Newly assigned ids will be unique within the model.
      * No ids will be added to MathML items.
      *
@@ -532,7 +532,7 @@ public:
     bool assignAllIds();
 
     /**
-     * @brief Assign an id to every non-idied item in the given @p model.
+     * @brief Assign an id to every item without one in the given @p model.
      *
      * Assign a unique, automatic id to every item in the given @p model,
      * excluding its MathML items.

@@ -85,8 +85,8 @@ using VariablePairPtr = std::shared_ptr<VariablePair>; /**< Type definition for 
 /**
  * @brief The Unit class
  *
- * A Unit is a class containing a @ref UnitsPtr to the parent Units item, and
- * the index to the Unit item within the @ref Units.
+ * The Unit class contains a @ref Units to the parent Units item, and
+ * the index to the @ref Unit item within the @ref Units.
  */
 class LIBCELLML_EXPORT Unit
 {
@@ -147,7 +147,7 @@ private:
 /**
  * @brief The VariablePair class
  *
- * A VariablePair is a class containing two @ref VariablePtrs.
+ * A VariablePair is a class containing two @ref Variable.
  * It may be used to define:
  *  - a connection between parent components; or
  *  - an equivalence between two variables;
