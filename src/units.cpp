@@ -196,6 +196,9 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
                 auto model = owningModel(units);
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
+                    if (refUnits == nullptr) {
+                        return false;
+                    }
                     double branchMult = 0.0;
                     // Return false when we can't find a valid prefix.
                     if (!updateUnitMultiplier(refUnits, 1, branchMult)) {
