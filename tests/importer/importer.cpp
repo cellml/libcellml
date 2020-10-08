@@ -862,7 +862,7 @@ TEST(Importer, clearModelImportsBeforeResolving)
     auto importer = libcellml::Importer::create();
     importer->resolveImports(model, resourcePath("importer/"));
 
-    // Circular import warning generated.
+    // Circular import issue generated.
     EXPECT_EQ(size_t(1), importer->issueCount());
 
     // Change URL away from circular import to the correct file.
