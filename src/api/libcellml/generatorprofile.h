@@ -44,10 +44,10 @@ public:
         PYTHON
     };
 
-    ~GeneratorProfile(); /**< Destructor */
-    GeneratorProfile(const GeneratorProfile &rhs) = delete; /**< Copy constructor */
-    GeneratorProfile(GeneratorProfile &&rhs) noexcept = delete; /**< Move constructor */
-    GeneratorProfile &operator=(GeneratorProfile rhs) = delete; /**< Assignment operator */
+    ~GeneratorProfile(); /**< Destructor. */
+    GeneratorProfile(const GeneratorProfile &rhs) = delete; /**< Copy constructor. */
+    GeneratorProfile(GeneratorProfile &&rhs) noexcept = delete; /**< Move constructor. */
+    GeneratorProfile &operator=(GeneratorProfile rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c GeneratorProfile object.
@@ -3392,7 +3392,7 @@ public:
     void setCommandSeparatorString(const std::string &commandSeparatorString);
 
 private:
-    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
+    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor. */
 
     struct GeneratorProfileImpl;
     GeneratorProfileImpl *mPimpl;

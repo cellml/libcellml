@@ -41,8 +41,8 @@ using XmlNamespaceMap = std::map<std::string, std::string>;
 class XmlNode
 {
 public:
-    XmlNode(); /**< Constructor */
-    ~XmlNode(); /**< Destructor */
+    XmlNode(); /**< Constructor. */
+    ~XmlNode(); /**< Destructor. */
 
     /**
      * @brief Set the internal @c xmlNode for this @c XmlNode wrapper.
@@ -301,7 +301,7 @@ public:
 
 private:
     struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */
-    XmlNodeImpl *mPimpl; /**< Private member to implementation pointer */
+    XmlNodeImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

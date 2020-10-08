@@ -8,7 +8,6 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 import libcellml
-from libcellml.enums import CellMLElement
 
 from libcellml.analyser import Analyser
 from libcellml.analyserequation import AnalyserEquation
@@ -17,6 +16,7 @@ from libcellml.analysermodel import AnalyserModel
 from libcellml.analyservariable import AnalyserVariable
 from libcellml.annotator import Annotator
 from libcellml.component import Component
+from libcellml.enums import CellmlElementType
 from libcellml.generator import Generator
 from libcellml.generatorprofile import GeneratorProfile
 from libcellml.importer import Importer
@@ -26,6 +26,7 @@ from libcellml.model import Model
 from libcellml.parser import Parser
 from libcellml.printer import Printer
 from libcellml.reset import Reset
+from libcellml.types import Unit, VariablePair
 from libcellml.units import Units
 from libcellml.validator import Validator
 from libcellml.variable import Variable
@@ -210,6 +211,7 @@ convert(Issue, 'ReferenceRule', [
     'MODEL_NAME',
     'MODEL_CHILD',
     'MODEL_MORE_THAN_ONE_ENCAPSULATION',
+    'IMPORT_ATTRIBUTE',
     'IMPORT_HREF',
     'IMPORT_CHILD',
     'IMPORT_EQUIVALENT',
@@ -219,24 +221,30 @@ convert(Issue, 'ReferenceRule', [
     'IMPORT_COMPONENT_NAME',
     'IMPORT_COMPONENT_NAME_UNIQUE',
     'IMPORT_COMPONENT_COMPONENT_REF',
+    'UNITS_ATTRIBUTE',
     'UNITS_NAME',
     'UNITS_NAME_UNIQUE',
     'UNITS_STANDARD',
     'UNITS_CHILD',
+    'UNIT_ATTRIBUTE',
     'UNIT_UNITS_REF',
     'UNIT_CIRCULAR_REF',
     'UNIT_OPTIONAL_ATTRIBUTE',
     'UNIT_PREFIX',
     'UNIT_MULTIPLIER',
     'UNIT_EXPONENT',
+    'COMPONENT_ATTRIBUTE',
     'COMPONENT_NAME',
     'COMPONENT_NAME_UNIQUE',
     'COMPONENT_CHILD',
+    'VARIABLE_ATTRIBUTE',
+    'VARIABLE_CHILD',
     'VARIABLE_NAME',
     'VARIABLE_NAME_UNIQUE',
     'VARIABLE_UNITS',
     'VARIABLE_INTERFACE',
     'VARIABLE_INITIAL_VALUE',
+    'RESET_ATTRIBUTE',
     'RESET_VARIABLE_REF',
     'RESET_TEST_VARIABLE_REF',
     'RESET_ORDER',
@@ -250,17 +258,21 @@ convert(Issue, 'ReferenceRule', [
     'MATH_CN_BASE10',
     'MATH_CN_FORMAT',
     'ENCAPSULATION_CHILD',
+    'ENCAPSULATION_ATTRIBUTE',
     'COMPONENT_REF_COMPONENT',
     'COMPONENT_REF_CHILD',
+    'CONNECTION_ATTRIBUTE',
     'CONNECTION_COMPONENT1',
     'CONNECTION_COMPONENT2',
     'CONNECTION_EXCLUDE_SELF',
     'CONNECTION_UNIQUE',
     'CONNECTION_CHILD',
+    'MAP_VARIABLES_ATTRIBUTE',
     'MAP_VARIABLES_VARIABLE1',
     'MAP_VARIABLES_VARIABLE2',
     'MAP_VARIABLES_UNIQUE',
     'MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION',
+    'UNSPECIFIED'
 ])
 convert(Units, 'Prefix', [
     'YOTTA',
@@ -323,4 +335,5 @@ convert(Variable, 'InterfaceType', [
     'PUBLIC',
     'PUBLIC_AND_PRIVATE',
 ])
-del (convert, libcellml)
+
+del [convert, libcellml]

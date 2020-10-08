@@ -40,10 +40,10 @@ class LIBCELLML_EXPORT ImportSource: public Entity
 #endif
 {
 public:
-    ~ImportSource() override; /**< Destructor */
-    ImportSource(const ImportSource &rhs) = delete; /**< Copy constructor */
-    ImportSource(ImportSource &&rhs) noexcept = delete; /**< Move constructor */
-    ImportSource &operator=(ImportSource rhs) = delete; /**< Assignment operator */
+    ~ImportSource() override; /**< Destructor. */
+    ImportSource(const ImportSource &rhs) = delete; /**< Copy constructor. */
+    ImportSource(ImportSource &&rhs) noexcept = delete; /**< Move constructor. */
+    ImportSource &operator=(ImportSource rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c ImportSource object.
@@ -273,7 +273,7 @@ public:
     UnitsPtr units(size_t index) const;
 
 private:
-    ImportSource(); /**< Constructor */
+    ImportSource(); /**< Constructor. */
 
     struct ImportSourceImpl; /**< Forward declaration for pImpl idiom. */
     ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */

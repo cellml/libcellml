@@ -119,7 +119,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(3, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
-        self.assertIsNotNone(av.equation())
+        self.assertIsNone(av.equation())
 
         # Ensure coverage for AnalyserEquation.
 
