@@ -862,20 +862,23 @@ TEST(Importer, clearModelImportsBeforeResolving)
     auto importer = libcellml::Importer::create();
     importer->resolveImports(model, resourcePath("importer/"));
 
-    EXPECT_EQ(size_t(1), importer->errorCount());
-    EXPECT_EQ(size_t(1), importer->warningCount());
+    // Circular import warning generated.
+    EXPECT_EQ(size_t(1), importer->issueCount());
 
+    // Change URL away from circular import to the correct file.
     model->component("controller", true)->importSource()->setUrl("SodiumChannelController.cellml");
 
-    // This will segfault because the URL has been changed, but the model associated with it in the
-    // resolved import source has not.
+    // Resolve imports again after clearing the issues.
+    importer->removeAllIssues();
     importer->resolveImports(model, resourcePath("importer/"));
+
+    EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
-TEST(Importer, KRM)
+TEST(Importer, flattenCorrectlyLinksEquivalentVariables)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importer/KRM/SodiumChannelModel_unflattened.cellml"));
+    auto model = parser->parseModel(fileContents("importer/flatten/SodiumChannelModel_unflattened.cellml"));
     EXPECT_NE(model, nullptr);
 
     printIssues(parser);
@@ -887,7 +890,7 @@ TEST(Importer, KRM)
     EXPECT_EQ(size_t(0), validator->issueCount());
 
     auto importer = libcellml::Importer::create();
-    importer->resolveImports(model, resourcePath("importer/KRM/"));
+    importer->resolveImports(model, resourcePath("importer/flatten/"));
     printIssues(importer);
     EXPECT_EQ(size_t(0), importer->issueCount());
 
