@@ -707,9 +707,12 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
         if (!rebasedKey.empty()) {
             auto vector = entry.second;
             std::vector<IndexStack> rebasedVector;
-            for (const auto &stack : vector) {
+            for (auto stack : vector) {
+                size_t variableIndex = stack.back();
+                stack.pop_back();
                 auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
                 if (!rebasedTarget.empty()) {
+                    rebasedTarget.push_back(variableIndex);
                     rebasedVector.push_back(rebasedTarget);
                 }
             }

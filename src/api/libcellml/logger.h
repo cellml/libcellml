@@ -33,10 +33,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Logger
 {
 public:
-    virtual ~Logger(); /**< Destructor */
-    Logger(const Logger &rhs) = delete; /**< Copy constructor */
-    Logger(Logger &&rhs) noexcept = delete; /**< Move constructor */
-    Logger &operator=(Logger rhs) = delete; /**< Assignment operator */
+    virtual ~Logger(); /**< Destructor. */
+    Logger(const Logger &rhs) = delete; /**< Copy constructor. */
+    Logger(Logger &&rhs) noexcept = delete; /**< Move constructor. */
+    Logger &operator=(Logger rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Clear the issues from the logger.
@@ -173,11 +173,11 @@ public:
     IssuePtr message(size_t index) const;
 
 protected:
-    Logger(); /**< Constructor */
+    Logger(); /**< Constructor. */
 
 private:
     struct LoggerImpl; /**< Forward declaration for pImpl idiom. */
-    LoggerImpl *mPimpl; /**< Private member to implementation pointer */
+    LoggerImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml
