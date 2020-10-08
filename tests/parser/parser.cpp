@@ -1394,7 +1394,7 @@ TEST(Parser, invalidImportsAndGetIssue)
 TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
 {
     // Check for all item types of issues.
-    std::vector<bool> foundItemType(7, false);
+    std::vector<bool> foundCellmlElementType(7, false);
 
     // Trigger CellML entity issues
     const std::string in =
@@ -1433,22 +1433,22 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
     for (size_t i = 0; i < parser->issueCount(); ++i) {
         switch (parser->issue(i)->cellmlElementType()) {
         case libcellml::CellmlElementType::COMPONENT:
-            foundItemType.at(0) = true;
+            foundCellmlElementType.at(0) = true;
             break;
         case libcellml::CellmlElementType::ENCAPSULATION:
-            foundItemType.at(1) = true;
+            foundCellmlElementType.at(1) = true;
             break;
         case libcellml::CellmlElementType::IMPORT:
-            foundItemType.at(2) = true;
+            foundCellmlElementType.at(2) = true;
             break;
         case libcellml::CellmlElementType::MODEL:
-            foundItemType.at(3) = true;
+            foundCellmlElementType.at(3) = true;
             break;
         case libcellml::CellmlElementType::UNITS:
-            foundItemType.at(4) = true;
+            foundCellmlElementType.at(4) = true;
             break;
         case libcellml::CellmlElementType::VARIABLE:
-            foundItemType.at(5) = true;
+            foundCellmlElementType.at(5) = true;
             break;
         case libcellml::CellmlElementType::COMPONENT_REF:
         case libcellml::CellmlElementType::CONNECTION:
@@ -1470,12 +1470,12 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
     if (parser2->issue(0)->cellmlElementType() == libcellml::CellmlElementType::UNDEFINED) {
-        foundItemType.at(6) = true;
+        foundCellmlElementType.at(6) = true;
     }
 
-    // Check that we've found all the possible issue types
+    // Check that we've found all the possible issue types.
     size_t index = std::numeric_limits<size_t>::max();
-    for (auto state : foundItemType) {
+    for (auto state : foundCellmlElementType) {
         SCOPED_TRACE(++index);
         EXPECT_TRUE(state);
     }
