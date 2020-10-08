@@ -858,7 +858,7 @@ TEST(Importer, complicatedHHImportMissingGateModel)
 TEST(Importer, clearModelImportsBeforeResolving)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importer/SodiumChannelModel_broken.cellml"));
+    auto model = parser->parseModel(fileContents("importer/ImportCircularReferences.cellml"));
     auto importer = libcellml::Importer::create();
     importer->resolveImports(model, resourcePath("importer/"));
 
@@ -866,44 +866,12 @@ TEST(Importer, clearModelImportsBeforeResolving)
     EXPECT_EQ(size_t(1), importer->issueCount());
 
     // Change URL away from circular import to the correct file.
-    model->component("controller", true)->importSource()->setUrl("SodiumChannelController.cellml");
+    model->component("controller")->importSource()->setUrl("NotCircularReference.cellml");
 
     // Resolve imports again after clearing the issues.
     importer->removeAllIssues();
     importer->resolveImports(model, resourcePath("importer/"));
 
     EXPECT_EQ(size_t(0), importer->issueCount());
-}
-
-TEST(Importer, flattenCorrectlyLinksEquivalentVariables)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importer/flatten/SodiumChannelModel_unflattened.cellml"));
-    EXPECT_NE(model, nullptr);
-
-    printIssues(parser);
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    auto validator = libcellml::Validator::create();
-    validator->validateModel(model);
-    printIssues(validator);
-    EXPECT_EQ(size_t(0), validator->issueCount());
-
-    auto importer = libcellml::Importer::create();
-    importer->resolveImports(model, resourcePath("importer/flatten/"));
     printIssues(importer);
-    EXPECT_EQ(size_t(0), importer->issueCount());
-
-    auto clonedModel = model->clone();
-    validator->validateModel(clonedModel);
-    printIssues(validator);
-    EXPECT_EQ(size_t(0), validator->issueCount());
-
-    auto flatModel = importer->flattenModel(model);
-    printIssues(importer);
-    EXPECT_EQ(size_t(0), importer->issueCount());
-
-    validator->validateModel(flatModel);
-    printIssues(validator);
-    EXPECT_EQ(size_t(0), validator->issueCount());
 }
