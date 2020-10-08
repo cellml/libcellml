@@ -4,6 +4,8 @@
 
 %include <std_shared_ptr.i>
 
+%import "types.i"
+
 %feature("docstring") libcellml::AnalyserVariable
 "Creates an :class:`AnalyserVariable` object.";
 

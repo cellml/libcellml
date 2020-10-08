@@ -51,10 +51,10 @@ public:
         EXTERNAL
     };
 
-    ~AnalyserEquation(); /**< Destructor */
-    AnalyserEquation(const AnalyserEquation &rhs) = delete; /**< Copy constructor */
-    AnalyserEquation(AnalyserEquation &&rhs) noexcept = delete; /**< Move constructor */
-    AnalyserEquation &operator=(AnalyserEquation rhs) = delete; /**< Assignment operator */
+    ~AnalyserEquation(); /**< Destructor. */
+    AnalyserEquation(const AnalyserEquation &rhs) = delete; /**< Copy constructor. */
+    AnalyserEquation(AnalyserEquation &&rhs) noexcept = delete; /**< Move constructor. */
+    AnalyserEquation &operator=(AnalyserEquation rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Get the @c Type of this @c AnalyserEquation.
@@ -106,7 +106,7 @@ public:
     AnalyserVariablePtr variable() const;
 
 private:
-    AnalyserEquation(); /**< Constructor */
+    AnalyserEquation(); /**< Constructor. */
 
     struct AnalyserEquationImpl;
     AnalyserEquationImpl *mPimpl;

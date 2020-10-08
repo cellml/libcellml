@@ -938,7 +938,8 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                   + "' and variable '" + internalVariable->mVariable->name()
                                   + "' in component '" + trackedVariableComponent->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
-            issue->setCause(Issue::Cause::VARIABLE);
+            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+            issue->setVariable(variable);
 
             mAnalyser->addIssue(issue);
         }
@@ -964,6 +965,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                       + "' in component '" + component->name()
                                       + "' is initialised using variable '" + internalVariable->mVariable->initialValue()
                                       + "', but it is not a constant.");
+                issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
                 issue->setVariable(variable);
 
                 mAnalyser->addIssue(issue);
@@ -1048,6 +1050,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                             issue->setDescription("Variable '" + voiEquivalentVariable->name()
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
                                                   + "' cannot be both a variable of integration and initialised.");
+                            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
                             issue->setVariable(voiEquivalentVariable);
 
                             mAnalyser->addIssue(issue);
@@ -1074,7 +1077,8 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                   + "' and variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' cannot both be the variable of integration.");
-            issue->setCause(Issue::Cause::VARIABLE);
+            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+            issue->setVariable(variable);
 
             mAnalyser->addIssue(issue);
         }
@@ -1095,7 +1099,8 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' must be of the first order.");
-            issue->setCause(Issue::Cause::MATHML);
+            issue->setMath(owningComponent(variable));
+            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
 
             mAnalyser->addIssue(issue);
         }
@@ -1324,6 +1329,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 issue->setDescription("Variable '" + realVariable->name()
                                       + "' in component '" + owningComponent(realVariable)->name()
                                       + "' " + issueType + ".");
+                issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
                 issue->setVariable(realVariable);
 
                 mAnalyser->addIssue(issue);

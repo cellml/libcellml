@@ -54,10 +54,10 @@ public:
         UNSUITABLY_CONSTRAINED
     };
 
-    ~AnalyserModel(); /**< Destructor */
-    AnalyserModel(const AnalyserModel &rhs) = delete; /**< Copy constructor */
-    AnalyserModel(AnalyserModel &&rhs) noexcept = delete; /**< Move constructor */
-    AnalyserModel &operator=(AnalyserModel rhs) = delete; /**< Assignment operator */
+    ~AnalyserModel(); /**< Destructor. */
+    AnalyserModel(const AnalyserModel &rhs) = delete; /**< Copy constructor. */
+    AnalyserModel(AnalyserModel &&rhs) noexcept = delete; /**< Move constructor. */
+    AnalyserModel &operator=(AnalyserModel rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Test to determine if @c AnalyserModel is a valid model.
@@ -473,7 +473,7 @@ public:
     bool needAcothFunction() const;
 
 private:
-    AnalyserModel(); /**< Constructor */
+    AnalyserModel(); /**< Constructor. */
 
     struct AnalyserModelImpl;
     AnalyserModelImpl *mPimpl;
