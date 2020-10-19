@@ -675,22 +675,30 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addIssue(issue);
     }
     // Check for a valid units attribute.
-    std::string unitsName = variable->units() != nullptr ? variable->units()->name() : "";
-    if (!isCellmlIdentifier(unitsName)) {
+    if (variable->units() == nullptr) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid units attribute. The attribute given is '" + unitsName + "'.");
+        issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have any units specified.");
         issue->setVariable(variable);
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
-    } else if (!isStandardUnitName(unitsName)) {
-        ComponentPtr component = owningComponent(variable);
-        ModelPtr model = owningModel(component);
-        if ((model != nullptr) && !model->hasUnits(unitsName)) {
+    } else {
+        std::string unitsName = variable->units()->name();
+        if (!isCellmlIdentifier(unitsName)) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
+            issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid units attribute. The attribute given is '" + unitsName + "'.");
             issue->setVariable(variable);
             issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
             mValidator->addIssue(issue);
+        } else if (!isStandardUnitName(unitsName)) {
+            ComponentPtr component = owningComponent(variable);
+            ModelPtr model = owningModel(component);
+            if ((model != nullptr) && !model->hasUnits(unitsName)) {
+                IssuePtr issue = Issue::create();
+                issue->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
+                issue->setVariable(variable);
+                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
+                mValidator->addIssue(issue);
+            }
         }
     }
     // Check for a valid interface attribute.
