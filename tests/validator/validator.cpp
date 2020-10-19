@@ -173,10 +173,10 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
         "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "CellML identifiers must not begin with a European numeric character [0-9].",
         "Variable '2cold' in component 'fargo' does not have a valid name attribute.",
-        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Variable 'margie' in component 'fargo' does not have a valid units attribute. The attribute given is ''.",
+        "Variable 'margie' in component 'fargo' does not have any units specified.",
         "Variable 'ransom' in component 'fargo' has a units reference 'dollars' which is neither standard nor defined in the parent model.",
-    };
+        "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
+        "Variable 'mullah' in component 'fargo' does not have a valid units attribute. The attribute given is '$$'."};
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -185,11 +185,13 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     libcellml::VariablePtr v2 = libcellml::Variable::create();
     libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::VariablePtr v4 = libcellml::Variable::create();
+    libcellml::VariablePtr v5 = libcellml::Variable::create();
     model->addComponent(c1);
     c1->addVariable(v1);
     c1->addVariable(v2);
     c1->addVariable(v3);
     c1->addVariable(v4);
+    c1->addVariable(v5);
 
     model->setName("minnesota");
     c1->setName("fargo");
@@ -200,6 +202,8 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     v3->setName("margie");
     v4->setName("ransom");
     v4->setUnits("dollars");
+    v5->setName("mullah");
+    v5->setUnits("$$");
     validator->validateModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
@@ -2010,10 +2014,8 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 TEST(Validator, unitIllDefinedEquivalentUnits)
 {
     const std::vector<std::string> expectedIssues = {
-        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Variable 'v1' in component 'c1' does not have a valid units attribute. The attribute given is ''.",
-        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Variable 'v2' in component 'c2' does not have a valid units attribute. The attribute given is ''.",
+        "Variable 'v1' in component 'c1' does not have any units specified.",
+        "Variable 'v2' in component 'c2' does not have any units specified.",
         "Variable 'v1' in component 'c1' has units of '' and an equivalent variable 'v2' in component 'c2' with non-matching units of ''. The mismatch is: ",
     };
 
