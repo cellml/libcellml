@@ -84,16 +84,34 @@ IssuePtr makeIssueIllegalIdentifier(const std::string &name);
 /**
  * @brief Check if the provided @p name is a valid CellML identifier.
  *
- * Checks if the provided @p name is a valid CellML identifier according
- * to the CellML 2.0 specification. This requires a non-zero length Unicode
- * character sequence containing basic Latin alphanumeric characters or
- * underscores that does not begin with a number.
+ * Test if the given name is a valid CellML identifier according to
+ * the CellML 2.0 specification.
  *
  * @param name The @c std::string identifier to check.
  *
  * @return @c true if @name is a valid CellML identifier and @c false otherwise.
  */
 bool isCellmlIdentifier(const std::string &name);
+
+/**
+ * @brief Validate the provided @p name is a valid CellML identifier.
+ *
+ * Checks if the provided @p name is a valid CellML identifier according
+ * to the CellML 2.0 specification. This requires a non-zero length Unicode
+ * character sequence containing basic Latin alphanumeric characters or
+ * underscores that does not begin with a number.  Returns the rule in the
+ * specification that the given @p name violates.  If the name is a valid
+ * name then Issue::ReferenceRule::UNDEFINED is returned.
+ *
+ * @param name The @c std::string identifier to check.
+ *
+ * @return Returns UNDEFINED if the name is a valid CellML identifier
+ * otherwise one of:
+ *  - DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM,
+ *  - DATA_REPR_IDENTIFIER_LATIN_ALPHANUM,
+ *  - DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM;
+ */
+Issue::ReferenceRule validateCellmlIdentifier(const std::string &name);
 
 /**
  * @brief The Validator::ValidatorImpl struct.
@@ -259,8 +277,38 @@ struct Validator::ValidatorImpl
      */
     void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
 
+    /**
+     * @brief Validate and clean the @cn node.
+     *
+     * Validate the @cn node and clear any CellML namespace from the node.
+     *
+     * @param node The node @cn element.
+     * @param component The component the @p node is a part of.
+     */
     void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component) const;
+
+    /**
+     * @brief Validate that the @c ci node has a reference to a variable.
+     *
+     * Validate that the @c ci node has a reference to a variable.
+     *
+     * @param node The node @ci element from the document.
+     * @param component The component the @p node is a part of.
+     * @param variableNames A list of variable names.
+     */
     void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const;
+
+    /**
+     * @brief Validate the text of a @c cn element.
+     *
+     * Validates that the @c cn element has a units attached.
+     *
+     * @param component The component that the cn element belongs to.
+     * @param unitsName The name of the units.
+     * @param textNode The text of the cn element.
+     *
+     * @return  @c true if the @c cn units is valid, @c false otherwise.
+     */
     bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode) const;
 
     /**
@@ -1218,46 +1266,49 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
 }
 
-bool isCellmlIdentifier(const std::string &name)
+Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
 {
     // One or more alphabetic characters.
     if (!name.empty()) {
         // Does not start with numeric character.
         if (isdigit(name[0]) != 0) {
-            return false;
+            return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM;
         }
         // Basic Latin alphanumeric characters and underscores.
         if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos) {
-            return false;
+            return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM;
         }
     } else {
         // Empty string.
-        return false;
+        return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM;
     }
-    return true;
+    return Issue::ReferenceRule::UNDEFINED;
+
+}
+
+bool isCellmlIdentifier(const std::string &name)
+{
+    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
+    return isValid == Issue::ReferenceRule::UNDEFINED;
 }
 
 IssuePtr makeIssueIllegalIdentifier(const std::string &name)
 {
-    IssuePtr issue = nullptr;
+    IssuePtr issue = Issue::create();
+    auto referenceRule = validateCellmlIdentifier(name);
+    issue->setReferenceRule(referenceRule);
 
-    // One or more alphabetic characters.
-    if (name.empty()) {
-        issue = Issue::create();
+    if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM) {
+        // One or more alphabetic characters.
         issue->setDescription("CellML identifiers must contain one or more basic Latin alphabetic characters.");
-        issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
     }
-    // Does not start with numeric character.
-    else if (isdigit(name[0]) != 0) {
-        issue = Issue::create();
+    else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM) {
+        // Does not start with numeric character.
         issue->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");
-        issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);
     }
-    // Basic Latin alphanumeric characters and underscores.
-    else if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos) {
-        issue = Issue::create();
+    else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM) {
+        // Basic Latin alphanumeric characters and underscores.
         issue->setDescription("CellML identifiers must not contain any characters other than [a-zA-Z0-9_].");
-        issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);
     }
 
     return issue;
