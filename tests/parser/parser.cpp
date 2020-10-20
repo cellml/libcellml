@@ -35,8 +35,8 @@ TEST(Parser, invalidXMLElements)
         "  <Elf>\n"
         "</fellows>\n";
 
-    // Depending on the libXML2 used by different Ubuntu installations, the error messages differ.
-    const std::vector<std::string> expectedIssuesU18 = {
+    // Depending on the libXML2 version the error messages differ.
+    const std::vector<std::string> expectedIssues_2_2 = {
         "LibXml2 error: Specification mandate value for attribute bearded.",
         "LibXml2 error: Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
         "LibXml2 error: Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
@@ -45,7 +45,7 @@ TEST(Parser, invalidXMLElements)
         "LibXml2 error: Premature end of data in tag fellowship line 2.",
         "Could not get a valid XML root node from the provided input.",
     };
-    const std::vector<std::string> expectedIssuesU20 = {
+    const std::vector<std::string> expectedIssues_2_9_10 = {
         "LibXml2 error: Specification mandates value for attribute bearded.",
         "LibXml2 error: Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.",
         "LibXml2 error: Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.",
@@ -58,11 +58,11 @@ TEST(Parser, invalidXMLElements)
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
 
-    EXPECT_EQ(expectedIssuesU18.size(), p->issueCount());
+    EXPECT_EQ(expectedIssues_2_2.size(), p->issueCount());
 
     for (size_t i = 0; i < p->issueCount(); ++i) {
         auto message = p->issue(i)->description();
-        EXPECT_TRUE((expectedIssuesU18.at(i) == message) || (expectedIssuesU20.at(i) == message));
+        EXPECT_TRUE((expectedIssues_2_2.at(i) == message) || (expectedIssues_2_9_10.at(i) == message));
     }
 }
 
