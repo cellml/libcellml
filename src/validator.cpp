@@ -1283,7 +1283,6 @@ Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
         return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM;
     }
     return Issue::ReferenceRule::UNDEFINED;
-
 }
 
 bool isCellmlIdentifier(const std::string &name)
@@ -1301,12 +1300,10 @@ IssuePtr makeIssueIllegalIdentifier(const std::string &name)
     if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM) {
         // One or more alphabetic characters.
         issue->setDescription("CellML identifiers must contain one or more basic Latin alphabetic characters.");
-    }
-    else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM) {
+    } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM) {
         // Does not start with numeric character.
         issue->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");
-    }
-    else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM) {
+    } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM) {
         // Basic Latin alphanumeric characters and underscores.
         issue->setDescription("CellML identifiers must not contain any characters other than [a-zA-Z0-9_].");
     }
