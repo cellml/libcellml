@@ -70,13 +70,13 @@ void updateBaseUnitCount(const ModelPtr &model,
                          double uExp, double logMult, int direction);
 
 /**
- * @brief Utility function to construct an @c Issue if required for a given CellML identifier string. 
- * 
- * Utility function to construct an @c Issue with the appropriate description for 
- * a given identity string.
- * 
+ * @brief Utility function to construct an @c Issue if required for a given CellML identifier string.
+ *
+ * Utility function to construct an @c Issue with the appropriate description for
+ * a given CellML identifier string.
+ *
  * @param name The @c std::string identifier to check.
- * 
+ *
  * @return An @c IssuePtr if the @p name is illegal, @c nullptr otherwise.
  */
 IssuePtr makeIssueIllegalIdentifier(const std::string &name);
@@ -107,9 +107,9 @@ bool isCellmlIdentifier(const std::string &name);
  *
  * @return Returns UNDEFINED if the name is a valid CellML identifier
  * otherwise one of:
- *  - DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM,
- *  - DATA_REPR_IDENTIFIER_LATIN_ALPHANUM,
- *  - DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM;
+ *  - DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM;
+ *  - DATA_REPR_IDENTIFIER_LATIN_ALPHANUM; or
+ *  - DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM.
  */
 Issue::ReferenceRule validateCellmlIdentifier(const std::string &name);
 
@@ -280,9 +280,9 @@ struct Validator::ValidatorImpl
     /**
      * @brief Validate and clean the @cn node.
      *
-     * Validate the @cn node and clear any CellML namespace from the node.
+     * Validate the @c cn node and clear any CellML namespace from the node.
      *
-     * @param node The node @cn element.
+     * @param node The node @c cn element.
      * @param component The component the @p node is a part of.
      */
     void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component) const;
@@ -292,7 +292,7 @@ struct Validator::ValidatorImpl
      *
      * Validate that the @c ci node has a reference to a variable.
      *
-     * @param node The node @ci element from the document.
+     * @param node The node @c ci element from the document.
      * @param component The component the @p node is a part of.
      * @param variableNames A list of variable names.
      */
@@ -303,9 +303,9 @@ struct Validator::ValidatorImpl
      *
      * Validates that the @c cn element has a units attached.
      *
-     * @param component The component that the cn element belongs to.
+     * @param component The component that the @c cn element belongs to.
      * @param unitsName The name of the units.
-     * @param textNode The text of the cn element.
+     * @param textNode The text of the @c cn element.
      *
      * @return  @c true if the @c cn units is valid, @c false otherwise.
      */
