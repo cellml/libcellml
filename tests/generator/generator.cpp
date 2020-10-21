@@ -1828,7 +1828,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"
 
-double externalVariable(double, double *, double *, double *, size_t index)
+double externalVariable(double /* unused */, double * /* unused */,
+                        double * /* unused */, double * /* unused */,
+                        size_t index)
 {
     return 123.0 + double(index);
 }
