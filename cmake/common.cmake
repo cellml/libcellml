@@ -129,6 +129,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
           -bugprone-exception-escape
         )
         set(_DISABLED_CPPCOREGUIDELINES_CHECKS
+          -cppcoreguidelines-avoid-non-const-global-variables
           -cppcoreguidelines-pro-bounds-pointer-arithmetic
           -cppcoreguidelines-pro-type-vararg
         )
@@ -175,6 +176,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -llvm-header-guard
       misc-*
       -misc-non-private-member-variables-in-classes
+      -misc-no-recursion
       modernize-*
       -modernize-make-shared
       -modernize-pass-by-value
