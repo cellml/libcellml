@@ -34,9 +34,10 @@ TEST(Parser, invalidXMLElements)
         "  <Wizard>Gandalf</SomeGuyWithAStaff>\n"
         "  <Elf>\n"
         "</fellows>\n";
-    const std::vector<std::string> expectedIssues = {
-        "Specification mandate value for attribute bearded.",
-        "Specification mandates value for attribute bearded.",
+
+    // Depending on the libXML2 version the error messages differ.
+    const std::vector<std::string> expectedIssues_2_2 = {
+        "LibXml2 error: Specification mandate value for attribute bearded.",
         "LibXml2 error: Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
         "LibXml2 error: Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
         "LibXml2 error: Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
@@ -44,18 +45,24 @@ TEST(Parser, invalidXMLElements)
         "LibXml2 error: Premature end of data in tag fellowship line 2.",
         "Could not get a valid XML root node from the provided input.",
     };
+    const std::vector<std::string> expectedIssues_2_9_10 = {
+        "LibXml2 error: Specification mandates value for attribute bearded.",
+        "LibXml2 error: Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Wizard line 2 and SomeGuyWithAStaff.",
+        "LibXml2 error: Opening and ending tag mismatch: Elf line 2 and fellows.",
+        "LibXml2 error: EndTag: '</' not found.",
+        "Could not get a valid XML root node from the provided input.",
+    };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
 
-    EXPECT_EQ(expectedIssues.size() - 1, p->issueCount());
+    EXPECT_EQ(expectedIssues_2_2.size(), p->issueCount());
+
     for (size_t i = 0; i < p->issueCount(); ++i) {
-        if (i == 0) {
-            EXPECT_TRUE((p->issue(i)->description() != expectedIssues.at(0))
-                        || (p->issue(i)->description() != expectedIssues.at(1)));
-        } else {
-            EXPECT_EQ(expectedIssues.at(i + 1), p->issue(i)->description());
-        }
+        auto message = p->issue(i)->description();
+        EXPECT_TRUE((expectedIssues_2_2.at(i) == message) || (expectedIssues_2_9_10.at(i) == message));
     }
 }
 
