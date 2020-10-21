@@ -70,6 +70,50 @@ void updateBaseUnitCount(const ModelPtr &model,
                          double uExp, double logMult, int direction);
 
 /**
+ * @brief Utility function to construct an @c Issue if required for a given CellML identifier string.
+ *
+ * Utility function to construct an @c Issue with the appropriate description for
+ * a given CellML identifier string.
+ *
+ * @param name The @c std::string identifier to check.
+ *
+ * @return An @c IssuePtr if the @p name is illegal, @c nullptr otherwise.
+ */
+IssuePtr makeIssueIllegalIdentifier(const std::string &name);
+
+/**
+ * @brief Check if the provided @p name is a valid CellML identifier.
+ *
+ * Test if the given name is a valid CellML identifier according to
+ * the CellML 2.0 specification.
+ *
+ * @param name The @c std::string identifier to check.
+ *
+ * @return @c true if @name is a valid CellML identifier and @c false otherwise.
+ */
+bool isCellmlIdentifier(const std::string &name);
+
+/**
+ * @brief Validate the provided @p name is a valid CellML identifier.
+ *
+ * Checks if the provided @p name is a valid CellML identifier according
+ * to the CellML 2.0 specification. This requires a non-zero length Unicode
+ * character sequence containing basic Latin alphanumeric characters or
+ * underscores that does not begin with a number.  Returns the rule in the
+ * specification that the given @p name violates.  If the name is a valid
+ * name then Issue::ReferenceRule::UNDEFINED is returned.
+ *
+ * @param name The @c std::string identifier to check.
+ *
+ * @return Returns UNDEFINED if the name is a valid CellML identifier
+ * otherwise one of:
+ *  - DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM;
+ *  - DATA_REPR_IDENTIFIER_LATIN_ALPHANUM; or
+ *  - DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM.
+ */
+Issue::ReferenceRule validateCellmlIdentifier(const std::string &name);
+
+/**
  * @brief The Validator::ValidatorImpl struct.
  *
  * The private implementation for the Validator class.
@@ -178,20 +222,6 @@ struct Validator::ValidatorImpl
     void validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported) const;
 
     /**
-     * @brief Check if the provided @p name is a valid CellML identifier.
-     *
-     * Checks if the provided @p name is a valid CellML identifier according
-     * to the CellML 2.0 specification. This requires a non-zero length Unicode
-     * character sequence containing basic Latin alphanumeric characters or
-     * underscores that does not begin with a number.
-     *
-     * @param name The @c std::string name to check the validity of.
-     *
-     * @return @c true if @name is a valid CellML identifier and @c false otherwise.
-     */
-    bool isCellmlIdentifier(const std::string &name) const;
-
-    /**
      * @brief Validate the @c unit at index @c index from @p units using the CellML 2.0 Specification.
      *
      * Validate the @c unit at index @c index from @p units using
@@ -247,8 +277,38 @@ struct Validator::ValidatorImpl
      */
     void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
 
+    /**
+     * @brief Validate and clean the @cn node.
+     *
+     * Validate the @c cn node and clear any CellML namespace from the node.
+     *
+     * @param node The node @c cn element.
+     * @param component The component the @p node is a part of.
+     */
     void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component) const;
+
+    /**
+     * @brief Validate that the @c ci node has a reference to a variable.
+     *
+     * Validate that the @c ci node has a reference to a variable.
+     *
+     * @param node The node @c ci element from the document.
+     * @param component The component the @p node is a part of.
+     * @param variableNames A list of variable names.
+     */
     void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const;
+
+    /**
+     * @brief Validate the text of a @c cn element.
+     *
+     * Validates that the @c cn element has a units attached.
+     *
+     * @param component The component that the @c cn element belongs to.
+     * @param unitsName The name of the units.
+     * @param textNode The text of the @c cn element.
+     *
+     * @return  @c true if the @c cn units is valid, @c false otherwise.
+     */
     bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode) const;
 
     /**
@@ -305,8 +365,8 @@ struct Validator::ValidatorImpl
      * @param model The model to be checked.
      * @return An IdMap of the items in the model with id fields.
      */
-
     IdMap buildModelIdMap(const ModelPtr &model);
+
     /** @brief Utility function called recursively to construct a map of ids in a component.
      *
      * @param component The component to check.
@@ -360,11 +420,11 @@ void Validator::validateModel(const ModelPtr &model)
     // Clear any pre-existing issues in ths validator instance.
     removeAllIssues();
     // Check for a valid name attribute.
-    if (!mPimpl->isCellmlIdentifier(model->name())) {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Model '" + model->name() + "' does not have a valid name attribute.");
+    if (!isCellmlIdentifier(model->name())) {
+        auto issue = makeIssueIllegalIdentifier(model->name());
         issue->setModel(model);
         issue->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
+        issue->setDescription("Model '" + model->name() + "' does not have a valid name attribute. " + issue->description());
         addIssue(issue);
     }
     // Check for components in this model.
@@ -389,9 +449,9 @@ void Validator::validateModel(const ModelPtr &model)
                     std::string unitsRef = units->importReference();
                     std::string importSource = units->importSource()->url();
                     bool foundImportIssue = false;
-                    if (!mPimpl->isCellmlIdentifier(unitsRef)) {
-                        IssuePtr issue = Issue::create();
-                        issue->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute.");
+                    if (!isCellmlIdentifier(unitsRef)) {
+                        auto issue = makeIssueIllegalIdentifier(unitsRef);
+                        issue->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
                         issue->setUnits(units);
                         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                         addIssue(issue);
@@ -498,9 +558,9 @@ void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, cons
 void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &component) const
 {
     if (!isCellmlIdentifier(component->name())) {
-        IssuePtr issue = Issue::create();
+        auto issue = makeIssueIllegalIdentifier(component->name());
         issue->setComponent(component);
-        issue->setDescription("Imported component '" + component->name() + "' does not have a valid name attribute.");
+        issue->setDescription("Imported component '" + component->name() + "' does not have a valid name attribute. " + issue->description());
         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
@@ -511,9 +571,9 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
     std::string componentName = component->name();
 
     if (!isCellmlIdentifier(componentRef)) {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
-        issue->setComponent(component);
+        auto issue = makeIssueIllegalIdentifier(componentRef);
+        issue->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute. " + issue->description());
+        issue->setComponentRef(component);
         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
         mValidator->addIssue(issue);
     }
@@ -542,9 +602,9 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(component->name())) {
-        IssuePtr issue = Issue::create();
+        auto issue = makeIssueIllegalIdentifier(component->name());
         issue->setComponent(component);
-        issue->setDescription("Component '" + component->name() + "' does not have a valid name attribute.");
+        issue->setDescription("Component '" + component->name() + "' does not have a valid name attribute. " + issue->description());
         issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
@@ -588,13 +648,13 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
 {
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(units->name())) {
-        IssuePtr issue = Issue::create();
+        auto issue = makeIssueIllegalIdentifier(units->name());
         issue->setUnits(units);
         if (units->isImport()) {
-            issue->setDescription("Imported units '" + units->name() + "' does not have a valid name attribute.");
+            issue->setDescription("Imported units '" + units->name() + "' does not have a valid name attribute. " + issue->description());
             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_NAME);
         } else {
-            issue->setDescription("Units '" + units->name() + "' does not have a valid name attribute.");
+            issue->setDescription("Units '" + units->name() + "' does not have a valid name attribute. " + issue->description());
             issue->setReferenceRule(Issue::ReferenceRule::UNITS_NAME);
         }
         mValidator->addIssue(issue);
@@ -634,8 +694,8 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
             mValidator->addIssue(issue);
         }
     } else {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'.");
+        auto issue = makeIssueIllegalIdentifier(reference);
+        issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'. " + issue->description());
         issue->setUnit(Unit::create(units, index));
         issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
         mValidator->addIssue(issue);
@@ -668,29 +728,37 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
 {
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(variable->name())) {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid name attribute.");
+        auto issue = makeIssueIllegalIdentifier(variable->name());
+        issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid name attribute. " + issue->description());
         issue->setVariable(variable);
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
         mValidator->addIssue(issue);
     }
     // Check for a valid units attribute.
-    std::string unitsName = variable->units() != nullptr ? variable->units()->name() : "";
-    if (!isCellmlIdentifier(unitsName)) {
+    if (variable->units() == nullptr) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid units attribute. The attribute given is '" + unitsName + "'.");
+        issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have any units specified.");
         issue->setVariable(variable);
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
-    } else if (!isStandardUnitName(unitsName)) {
-        ComponentPtr component = owningComponent(variable);
-        ModelPtr model = owningModel(component);
-        if ((model != nullptr) && !model->hasUnits(unitsName)) {
-            IssuePtr issue = Issue::create();
-            issue->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
+    } else {
+        std::string unitsName = variable->units()->name();
+        if (!isCellmlIdentifier(unitsName)) {
+            auto issue = makeIssueIllegalIdentifier(unitsName);
+            issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid units attribute. The attribute given is '" + unitsName + "'. " + issue->description());
             issue->setVariable(variable);
             issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
             mValidator->addIssue(issue);
+        } else if (!isStandardUnitName(unitsName)) {
+            ComponentPtr component = owningComponent(variable);
+            ModelPtr model = owningModel(component);
+            if ((model != nullptr) && !model->hasUnits(unitsName)) {
+                IssuePtr issue = Issue::create();
+                issue->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
+                issue->setVariable(variable);
+                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
+                mValidator->addIssue(issue);
+            }
         }
     }
     // Check for a valid interface attribute.
@@ -910,8 +978,8 @@ bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, co
         return true;
     }
 
-    IssuePtr issue = Issue::create();
-    issue->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
+    IssuePtr issue = makeIssueIllegalIdentifier(unitsName);
+    issue->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute. " + issue->description());
     issue->setMath(component);
     issue->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS);
     mValidator->addIssue(issue);
@@ -1198,36 +1266,49 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
 }
 
-bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name) const
+Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
 {
-    bool result = true;
     // One or more alphabetic characters.
     if (!name.empty()) {
         // Does not start with numeric character.
         if (isdigit(name[0]) != 0) {
-            result = false;
-            IssuePtr issue = Issue::create();
-            issue->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");
-            issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);
-            mValidator->addIssue(issue);
-        } else {
-            // Basic Latin alphanumeric characters and underscores.
-            if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos) {
-                result = false;
-                IssuePtr issue = Issue::create();
-                issue->setDescription("CellML identifiers must not contain any characters other than [a-zA-Z0-9_].");
-                issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);
-                mValidator->addIssue(issue);
-            }
+            return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM;
+        }
+        // Basic Latin alphanumeric characters and underscores.
+        if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos) {
+            return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM;
         }
     } else {
-        result = false;
-        IssuePtr issue = Issue::create();
-        issue->setDescription("CellML identifiers must contain one or more basic Latin alphabetic characters.");
-        issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
-        mValidator->addIssue(issue);
+        // Empty string.
+        return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM;
     }
-    return result;
+    return Issue::ReferenceRule::UNDEFINED;
+}
+
+bool isCellmlIdentifier(const std::string &name)
+{
+    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
+    return isValid == Issue::ReferenceRule::UNDEFINED;
+}
+
+IssuePtr makeIssueIllegalIdentifier(const std::string &name)
+{
+    IssuePtr issue = Issue::create();
+    auto referenceRule = validateCellmlIdentifier(name);
+    issue->setReferenceRule(referenceRule);
+
+    if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM) {
+        // One or more alphabetic characters.
+        issue->setDescription("CellML identifiers must contain one or more basic Latin alphabetic characters.");
+    } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM) {
+        // Does not start with numeric character.
+        issue->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");
+    } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM) {
+        // Basic Latin alphanumeric characters and underscores.
+        issue->setDescription("CellML identifiers must not contain any characters other than [a-zA-Z0-9_].");
+    }
+
+    return issue;
 }
 
 bool unitsAreEquivalent(const ModelPtr &model,
