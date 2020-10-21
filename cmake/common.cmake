@@ -127,6 +127,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
     if(NOT "${_TARGET}" STREQUAL "cellml")
         set(_DISABLED_BUGPRONE_CHECKS
           -bugprone-exception-escape
+          -bugprone-suspicious-include
         )
         set(_DISABLED_CPPCOREGUIDELINES_CHECKS
           -cppcoreguidelines-avoid-non-const-global-variables
