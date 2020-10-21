@@ -125,6 +125,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
   if(CLANG_TIDY_AVAILABLE)
     if(NOT "${_TARGET}" STREQUAL "cellml")
         set(_NO_BUGPRONE_EXCEPTION_ESCAPE -bugprone-exception-escape)
+        set(_NO_CPPCOREGUIDELINES_AVOID_NON_CONST_GLOBAL_VARIABLES -cppcoreguidelines-avoid-non-const-global-variables)
         set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
         set(_NO_HICPP_VARARG -hicpp-vararg)
     endif()
@@ -143,6 +144,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -cppcoreguidelines-init-variables
       -cppcoreguidelines-owning-memory
       -cppcoreguidelines-pro-type-reinterpret-cast
+      ${_NO_CPPCOREGUIDELINES_AVOID_NON_CONST_GLOBAL_VARIABLES}
       ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
       -cppcoreguidelines-slicing
       -cppcoreguidelines-special-member-functions
@@ -164,6 +166,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -llvm-header-guard
       misc-*
       -misc-non-private-member-variables-in-classes
+      -misc-no-recursion
       modernize-*
       -modernize-make-shared
       -modernize-pass-by-value
