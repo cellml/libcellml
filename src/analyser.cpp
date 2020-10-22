@@ -964,8 +964,8 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                 issue->setDescription("Variable '" + variable->name()
                                       + "' in component '" + component->name()
                                       + "' is initialised using variable '" + internalVariable->mVariable->initialValue()
-                                      + "', but it is not a constant.");
                 issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                                      + "', which is not a constant.");
                 issue->setVariable(variable);
 
                 mAnalyser->addIssue(issue);
@@ -1315,7 +1315,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             std::string issueType;
 
             if (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN) {
-                issueType = "is not computed";
+                issueType = "is unused";
             } else if (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE) {
                 issueType = "is used in an ODE, but it is not initialised";
             } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
