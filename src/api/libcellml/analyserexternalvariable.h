@@ -70,7 +70,7 @@ public:
      *
      * @param variable The @c Variable to add as a dependency.
      *
-     * @return True if the variable was added, false otherwise.
+     * @return @c true if the variable was added, @c false otherwise.
      */
     bool addDependency(const VariablePtr &variable);
 
@@ -82,7 +82,7 @@ public:
      *
      * @param index The index of the dependency to remove.
      *
-     * @return True if the dependency was removed, false otherwise.
+     * @return @c true if the dependency was removed, @c false otherwise.
      */
     bool removeDependency(size_t index);
 
@@ -101,7 +101,7 @@ public:
      * dependency to remove.
      * @param variableName The name of the dependency to remove.
      *
-     * @return True if the dependency was removed, false otherwise.
+     * @return @c true if the dependency was removed, @c false otherwise.
      */
     bool removeDependency(const ModelPtr &model,
                           const std::string &componentName,
@@ -116,7 +116,7 @@ public:
      *
      * @param variable The pointer to the dependency to remove.
      *
-     * @return True if the dependency was removed, false otherwise.
+     * @return @c true if the dependency was removed, @c false otherwise.
      */
     bool removeDependency(const VariablePtr &variable);
 

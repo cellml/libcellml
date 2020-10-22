@@ -67,7 +67,7 @@ public:
      *
      * @param variable The @c AnalyserExternalVariable to add.
      *
-     * @return True if the variable was added, false otherwise.
+     * @return @c true if the variable was added, @c false otherwise.
      */
     bool addExternalVariable(const AnalyserExternalVariablePtr &externalVariable);
 
@@ -79,7 +79,7 @@ public:
      *
      * @param index The index of the @c AnalyserExternalVariable to remove.
      *
-     * @return True if the @c AnalyserExternalVariable was removed, false
+     * @return @c true if the @c AnalyserExternalVariable was removed, @c false
      * otherwise.
      */
     bool removeExternalVariable(size_t index);
@@ -102,7 +102,7 @@ public:
      * @param variableName The name of the @c AnalyserExternalVariable to
      * remove.
      *
-     * @return True if the @c AnalyserExternalVariable was removed, false
+     * @return @c true if the @c AnalyserExternalVariable was removed, @c false
      * otherwise.
      */
     bool removeExternalVariable(const ModelPtr &model,
@@ -119,7 +119,7 @@ public:
      *
      * @param variable The pointer to the @c AnalyserExternalVariable to remove.
      *
-     * @return True if the @c AnalyserExternalVariable was removed, false
+     * @return @c true if the @c AnalyserExternalVariable was removed, @c false
      * otherwise.
      */
     bool removeExternalVariable(const AnalyserExternalVariablePtr &externalVariable);
