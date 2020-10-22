@@ -938,7 +938,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                   + "' and variable '" + internalVariable->mVariable->name()
                                   + "' in component '" + trackedVariableComponent->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
-            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE);
             issue->setVariable(variable);
 
             mAnalyser->addIssue(issue);
@@ -964,8 +964,8 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                 issue->setDescription("Variable '" + variable->name()
                                       + "' in component '" + component->name()
                                       + "' is initialised using variable '" + internalVariable->mVariable->initialValue()
-                issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
                                       + "', which is not a constant.");
+                issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
                 issue->setVariable(variable);
 
                 mAnalyser->addIssue(issue);
@@ -1050,7 +1050,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                             issue->setDescription("Variable '" + voiEquivalentVariable->name()
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
                                                   + "' cannot be both a variable of integration and initialised.");
-                            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_INITIALISED);
                             issue->setVariable(voiEquivalentVariable);
 
                             mAnalyser->addIssue(issue);
@@ -1077,7 +1077,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                   + "' and variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' cannot both be the variable of integration.");
-            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
             issue->setVariable(variable);
 
             mAnalyser->addIssue(issue);
@@ -1100,7 +1100,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' must be of the first order.");
             issue->setMath(owningComponent(variable));
-            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
 
             mAnalyser->addIssue(issue);
         }
@@ -1313,13 +1313,17 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         for (const auto &internalVariable : mInternalVariables) {
             std::string issueType;
+            Issue::ReferenceRule referenceRule = Issue::ReferenceRule::UNSPECIFIED;
 
             if (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN) {
                 issueType = "is unused";
+                referenceRule = Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED;
             } else if (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE) {
                 issueType = "is used in an ODE, but it is not initialised";
+                referenceRule = Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED;
             } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
                 issueType = "is computed more than once";
+                referenceRule = Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE;
             }
 
             if (!issueType.empty()) {
@@ -1329,7 +1333,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 issue->setDescription("Variable '" + realVariable->name()
                                       + "' in component '" + owningComponent(realVariable)->name()
                                       + "' " + issueType + ".");
-                issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                issue->setReferenceRule(referenceRule);
                 issue->setVariable(realVariable);
 
                 mAnalyser->addIssue(issue);
@@ -1400,7 +1404,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                           + "' in component '" + owningComponent(externalVariable->variable())->name()
                                           + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
                     issue->setLevel(Issue::Level::MESSAGE);
-                    issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                    issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
                     issue->setVariable(externalVariable->variable());
 
                     mAnalyser->addIssue(issue);
@@ -1448,6 +1452,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                        + "'";
                     }
 
+                    Issue::ReferenceRule referenceRule;
+
                     if (isVoi) {
                         description += (equivalentVariableCount == 1) ?
                                            " is marked as an external variable, but it is" :
@@ -1456,6 +1462,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                            " the" :
                                            " equivalent to the primary";
                         description += " variable of integration which cannot be used as an external variable.";
+
+                        referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI;
                     } else {
                         description += (equivalentVariableCount == 1) ?
                                            " is marked as an external variable, but it is not a primary variable." :
@@ -1471,13 +1479,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                            " its corresponding" :
                                            " their corresponding";
                         description += " primary variable and will therefore be the one used as an external variable.";
+
+                        referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE;
                     }
 
                     auto issue = Issue::create();
 
                     issue->setDescription(description);
                     issue->setLevel(Issue::Level::MESSAGE);
-                    issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                    issue->setReferenceRule(referenceRule);
                     issue->setVariable(primaryExternalVariable.first);
 
                     mAnalyser->addIssue(issue);
