@@ -1458,9 +1458,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         description += (equivalentVariableCount == 1) ?
                                            " is marked as an external variable, but it is" :
                                            " are marked as external variables, but they are";
-                        description += ((equivalentVariableCount == 1) && hasPrimaryVariable) ?
-                                           " the" :
-                                           " equivalent to the primary";
+
+                        if ((equivalentVariableCount == 1) && hasPrimaryVariable) {
+                            description += " the";
+                        } else {
+                            description += " equivalent to variable '" + primaryExternalVariable.first->name()
+                                           + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
+                                           + "', the primary";
+                        }
+
                         description += " variable of integration which cannot be used as an external variable.";
 
                         referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI;
