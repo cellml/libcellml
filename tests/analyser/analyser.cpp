@@ -37,7 +37,7 @@ TEST(Analyser, initialisedVariableOfIntegration)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VOI_INITIALISED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -66,7 +66,7 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VOI_INITIALISED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -95,7 +95,7 @@ TEST(Analyser, twoVariablesOfIntegration)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VOI_SEVERAL,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -130,9 +130,9 @@ TEST(Analyser, nonFirstOrderOdes)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER,
+        libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER,
+        libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -194,7 +194,7 @@ TEST(Analyser, variableInitialisedTwice)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -223,7 +223,7 @@ TEST(Analyser, nonConstantInitialisingVariable)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -281,7 +281,7 @@ TEST(Analyser, nonInitialisedState)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED,
     };
     const std::string expectedVariableName = "x";
 
@@ -312,7 +312,7 @@ TEST(Analyser, underconstrained)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -341,7 +341,7 @@ TEST(Analyser, overconstrainedOneVariable)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -373,8 +373,8 @@ TEST(Analyser, overconstrainedTwoVariables)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -409,9 +409,9 @@ TEST(Analyser, overconstrainedThreeVariables)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -443,8 +443,8 @@ TEST(Analyser, unsuitablyConstrained)
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -496,7 +496,7 @@ TEST(Analyser, addExternalVariableFromDifferentModels)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -709,7 +709,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -739,7 +739,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -769,7 +769,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -800,7 +800,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -847,7 +847,7 @@ TEST(Analyser, oneNonPrimaryExternalVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -876,7 +876,7 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -906,7 +906,7 @@ TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -936,7 +936,7 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -967,7 +967,7 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
         libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::UNSPECIFIED,
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
     };
 
     auto analyser = libcellml::Analyser::create();
