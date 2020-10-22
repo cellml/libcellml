@@ -214,7 +214,7 @@ TEST(Analyser, nonConstantInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' is initialised using variable 'k2', but it is not a constant.",
+        "Variable 'x' in component 'main' is initialised using variable 'k2', which is not a constant.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
@@ -303,7 +303,7 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is not computed.",
+        "Variable 'x' in component 'my_component' is unused.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
@@ -431,7 +431,7 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is not computed.",
+        "Variable 'x' in component 'my_component' is unused.",
         "Variable 'y' in component 'my_component' is computed more than once.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
