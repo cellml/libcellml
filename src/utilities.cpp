@@ -1,3 +1,4 @@
+#include <iostream>
 /*
 Copyright libCellML Contributors
 
@@ -454,9 +455,36 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
 }
 
 bool isSameOrEquivalentVariable(const VariablePtr &variable1,
-                                const VariablePtr &variable2)
+                                const VariablePtr &variable2,
+                                EquivalentVariableMap &cache,
+                                size_t &cacheCounter)
 {
+//#define OLD_ALGO
+#ifdef OLD_ALGO
+    (void)cache;
+    (void)cacheCounter;
+
     return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
+#else
+    if (variable1 == variable2) {
+        return true;
+    }
+
+    auto key = reinterpret_cast<intptr_t>(variable1.get()) * reinterpret_cast<intptr_t>(variable2.get());
+    auto cacheKey = cache.find(key);
+
+    if (cacheKey != cache.end()) {
+        return cacheKey->second;
+    }
+
+    bool res = variable1->hasEquivalentVariable(variable2, true);
+
+    cache[key] = res;
+
+    ++cacheCounter;
+
+    return res;
+#endif
 }
 
 bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
