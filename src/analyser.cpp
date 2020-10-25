@@ -1,4 +1,3 @@
-#include <iostream>
 /*
 Copyright libCellML Contributors
 
@@ -161,7 +160,7 @@ struct AnalyserInternalEquation
     static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
 
     bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex,
-               EquivalentVariableMap &cache, size_t &cacheCounter);
+               EquivalentVariableMap &cache);
 };
 
 AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
@@ -217,8 +216,7 @@ bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<Analyse
 
 bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
                                      size_t &variableIndex,
-                                     EquivalentVariableMap &cache,
-                                     size_t &cacheCounter)
+                                     EquivalentVariableMap &cache)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine).
@@ -276,7 +274,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
             auto localVariable = mComponent->variable(i);
 
-            if (isSameOrEquivalentVariable(variable->mVariable, localVariable, cache, cacheCounter)) {
+            if (isSameOrEquivalentVariable(variable->mVariable, localVariable, cache)) {
                 variable->setVariable(localVariable, false);
 
                 break;
@@ -332,7 +330,6 @@ struct Analyser::AnalyserImpl
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
 
     EquivalentVariableMap mCache;
-    size_t mCacheCounter = 0;
 
     explicit AnalyserImpl(Analyser *analyser);
 
@@ -480,7 +477,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     AnalyserInternalVariablePtr res = nullptr;
 
     for (const auto &internalVariable : mInternalVariables) {
-        if (isSameOrEquivalentVariable(variable, internalVariable->mVariable, mCache, mCacheCounter)) {
+        if (isSameOrEquivalentVariable(variable, internalVariable->mVariable, mCache)) {
             res = internalVariable;
 
             break;
@@ -510,7 +507,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto componentVariable = component->variable(i);
 
-        if (isSameOrEquivalentVariable(variable, componentVariable, mCache, mCacheCounter)) {
+        if (isSameOrEquivalentVariable(variable, componentVariable, mCache)) {
             return componentVariable;
         }
     }
@@ -1062,7 +1059,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                     break;
                 }
             }
-        } else if (!isSameOrEquivalentVariable(variable, mModel->mPimpl->mVoi->variable(), mCache, mCacheCounter)) {
+        } else if (!isSameOrEquivalentVariable(variable, mModel->mPimpl->mVoi->variable(), mCache)) {
             auto issue = Issue::create();
 
             issue->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
@@ -1291,7 +1288,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             relevantCheck = false;
 
             for (const auto &internalEquation : mInternalEquations) {
-                relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex, mCache, mCacheCounter)
+                relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex, mCache)
                                 || relevantCheck;
             }
         } while (relevantCheck);
@@ -1520,10 +1517,8 @@ void Analyser::analyseModel(const ModelPtr &model)
     }
 
     // Analyse the model.
-//std::cout << ">>> [OLD] Cache counter: " << mPimpl->mCacheCounter << std::endl;
 
     mPimpl->analyseModel(model);
-//std::cout << ">>> [NEW] Cache counter: " << mPimpl->mCacheCounter << std::endl;
 }
 
 AnalyserModelPtr Analyser::model() const

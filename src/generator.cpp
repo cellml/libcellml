@@ -1,4 +1,3 @@
-#include <iostream>
 /*
 Copyright libCellML Contributors
 
@@ -60,7 +59,6 @@ struct Generator::GeneratorImpl
     GeneratorProfilePtr mLockedProfile;
 
     EquivalentVariableMap mCache;
-    size_t mCacheCounter = 0;
 
     bool retrieveLockedModelAndProfile();
     void resetLockedModelAndProfile();
@@ -174,11 +172,11 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
     auto modelVoi = mLockedModel->voi();
 
     if ((modelVoi != nullptr)
-        && isSameOrEquivalentVariable(variable, modelVoi->variable(), mCache, mCacheCounter)) {
+        && isSameOrEquivalentVariable(variable, modelVoi->variable(), mCache)) {
         res = modelVoi;
     } else {
         for (const auto &modelState : mLockedModel->states()) {
-            if (isSameOrEquivalentVariable(variable, modelState->variable(), mCache, mCacheCounter)) {
+            if (isSameOrEquivalentVariable(variable, modelState->variable(), mCache)) {
                 res = modelState;
 
                 break;
@@ -187,7 +185,7 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 
         if (res == nullptr) {
             for (const auto &modelVariable : mLockedModel->variables()) {
-                if (isSameOrEquivalentVariable(variable, modelVariable->variable(), mCache, mCacheCounter)) {
+                if (isSameOrEquivalentVariable(variable, modelVariable->variable(), mCache)) {
                     res = modelVariable;
 
                     break;
@@ -2198,7 +2196,6 @@ std::string Generator::implementationCode() const
 
         return {};
     }
-//std::cout << ">>> [OLD] Cache counter: " << mPimpl->mCacheCounter << std::endl;
 
     // Add code for the origin comment.
 
@@ -2272,7 +2269,6 @@ std::string Generator::implementationCode() const
     mPimpl->addImplementationComputeVariablesMethodCode(remainingEquations);
 
     mPimpl->resetLockedModelAndProfile();
-//std::cout << ">>> [NEW] Cache counter: " << mPimpl->mCacheCounter << std::endl;
 
     return mPimpl->mCode;
 }

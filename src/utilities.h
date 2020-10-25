@@ -448,8 +448,7 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
  */
 bool isSameOrEquivalentVariable(const VariablePtr &variable1,
                                 const VariablePtr &variable2,
-                                EquivalentVariableMap &cache,
-                                size_t &cacheCounter);
+                                EquivalentVariableMap &cache);
 
 /**
  * @brief Test to determine if @p entity1 is a child of @p entity2.
