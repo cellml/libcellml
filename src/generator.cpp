@@ -58,14 +58,12 @@ struct Generator::GeneratorImpl
     GeneratorProfileWeakPtr mProfile;
     GeneratorProfilePtr mLockedProfile;
 
-    EquivalentVariableMap mCache;
-
     bool retrieveLockedModelAndProfile();
     void resetLockedModelAndProfile();
 
-    AnalyserVariablePtr analyserVariable(const VariablePtr &variable);
+    AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
-    double scalingFactor(const VariablePtr &variable);
+    double scalingFactor(const VariablePtr &variable) const;
 
     bool isRelationalOperator(const AnalyserEquationAstPtr &ast) const;
     bool isAndOperator(const AnalyserEquationAstPtr &ast) const;
@@ -122,9 +120,9 @@ struct Generator::GeneratorImpl
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
     std::string generateDoubleCode(const std::string &value) const;
-    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable);
+    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
     std::string generateVariableNameCode(const VariablePtr &variable,
-                                         const AnalyserEquationAstPtr &ast = nullptr);
+                                         const AnalyserEquationAstPtr &ast = nullptr) const;
 
     std::string generateOperatorCode(const std::string &op,
                                      const AnalyserEquationAstPtr &ast);
@@ -138,7 +136,7 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value) const;
     std::string generateCode(const AnalyserEquationAstPtr &ast);
 
-    std::string generateInitializationCode(const AnalyserVariablePtr &variable);
+    std::string generateInitializationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
@@ -164,7 +162,7 @@ void Generator::GeneratorImpl::resetLockedModelAndProfile()
     mLockedProfile = nullptr;
 }
 
-AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable)
+AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable) const
 {
     // Find and return the analyser variable associated with the given variable.
 
@@ -172,11 +170,11 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
     auto modelVoi = mLockedModel->voi();
 
     if ((modelVoi != nullptr)
-        && isSameOrEquivalentVariable(variable, modelVoi->variable(), mCache)) {
+        && mLockedModel->isSameOrEquivalentVariable(variable, modelVoi->variable())) {
         res = modelVoi;
     } else {
         for (const auto &modelState : mLockedModel->states()) {
-            if (isSameOrEquivalentVariable(variable, modelState->variable(), mCache)) {
+            if (mLockedModel->isSameOrEquivalentVariable(variable, modelState->variable())) {
                 res = modelState;
 
                 break;
@@ -185,7 +183,7 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 
         if (res == nullptr) {
             for (const auto &modelVariable : mLockedModel->variables()) {
-                if (isSameOrEquivalentVariable(variable, modelVariable->variable(), mCache)) {
+                if (mLockedModel->isSameOrEquivalentVariable(variable, modelVariable->variable())) {
                     res = modelVariable;
 
                     break;
@@ -197,7 +195,7 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
     return res;
 }
 
-double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
+double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) const
 {
     // Return the scaling factor for the given variable.
 
@@ -1160,7 +1158,7 @@ std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &valu
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
-std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(const VariablePtr &variable)
+std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const
 {
     if (isCellMLReal(variable->initialValue())) {
         return generateDoubleCode(variable->initialValue());
@@ -1176,7 +1174,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
-                                                               const AnalyserEquationAstPtr &ast)
+                                                               const AnalyserEquationAstPtr &ast) const
 {
     auto analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
 
@@ -1931,7 +1929,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     return code;
 }
 
-std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserVariablePtr &variable)
+std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserVariablePtr &variable) const
 {
     std::string scalingFactorCode;
     auto scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());

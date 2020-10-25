@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "libcellml/analysermodel.h"
+#include "libcellml/variable.h"
 
 #include "analysermodel_p.h"
 
@@ -346,6 +347,27 @@ bool AnalyserModel::needAcothFunction() const
     }
 
     return mPimpl->mNeedAcothFunction;
+}
+
+bool AnalyserModel::isSameOrEquivalentVariable(const VariablePtr &variable1,
+                                               const VariablePtr &variable2)
+{
+    if (variable1 == variable2) {
+        return true;
+    }
+
+    auto key = reinterpret_cast<intptr_t>(variable1.get()) * reinterpret_cast<intptr_t>(variable2.get());
+    auto cacheKey = mPimpl->mCachedEquivalentVariables.find(key);
+
+    if (cacheKey != mPimpl->mCachedEquivalentVariables.end()) {
+        return cacheKey->second;
+    }
+
+    bool res = variable1->hasEquivalentVariable(variable2, true);
+
+    mPimpl->mCachedEquivalentVariables[key] = res;
+
+    return res;
 }
 
 } // namespace libcellml

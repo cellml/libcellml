@@ -160,7 +160,7 @@ struct AnalyserInternalEquation
     static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
 
     bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex,
-               EquivalentVariableMap &cache);
+               const AnalyserModelPtr &model);
 };
 
 AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
@@ -216,7 +216,7 @@ bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<Analyse
 
 bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
                                      size_t &variableIndex,
-                                     EquivalentVariableMap &cache)
+                                     const AnalyserModelPtr &model)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine).
@@ -274,7 +274,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
             auto localVariable = mComponent->variable(i);
 
-            if (isSameOrEquivalentVariable(variable->mVariable, localVariable, cache)) {
+            if (model->isSameOrEquivalentVariable(variable->mVariable, localVariable)) {
                 variable->setVariable(localVariable, false);
 
                 break;
@@ -328,8 +328,6 @@ struct Analyser::AnalyserImpl
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
-
-    EquivalentVariableMap mCache;
 
     explicit AnalyserImpl(Analyser *analyser);
 
@@ -477,7 +475,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     AnalyserInternalVariablePtr res = nullptr;
 
     for (const auto &internalVariable : mInternalVariables) {
-        if (isSameOrEquivalentVariable(variable, internalVariable->mVariable, mCache)) {
+        if (mModel->isSameOrEquivalentVariable(variable, internalVariable->mVariable)) {
             res = internalVariable;
 
             break;
@@ -507,7 +505,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto componentVariable = component->variable(i);
 
-        if (isSameOrEquivalentVariable(variable, componentVariable, mCache)) {
+        if (mModel->isSameOrEquivalentVariable(variable, componentVariable)) {
             return componentVariable;
         }
     }
@@ -1059,7 +1057,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                     break;
                 }
             }
-        } else if (!isSameOrEquivalentVariable(variable, mModel->mPimpl->mVoi->variable(), mCache)) {
+        } else if (!mModel->isSameOrEquivalentVariable(variable, mModel->mPimpl->mVoi->variable())) {
             auto issue = Issue::create();
 
             issue->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
@@ -1288,7 +1286,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             relevantCheck = false;
 
             for (const auto &internalEquation : mInternalEquations) {
-                relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex, mCache)
+                relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex, mModel)
                                 || relevantCheck;
             }
         } while (relevantCheck);
