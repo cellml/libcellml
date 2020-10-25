@@ -456,8 +456,7 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
 
 bool isSameOrEquivalentVariable(const VariablePtr &variable1,
                                 const VariablePtr &variable2,
-                                EquivalentVariableMap &cache,
-                                size_t &cacheCounter)
+                                EquivalentVariableMap &cache)
 {
 //#define OLD_ALGO
 #ifdef OLD_ALGO
@@ -480,8 +479,6 @@ bool isSameOrEquivalentVariable(const VariablePtr &variable1,
     bool res = variable1->hasEquivalentVariable(variable2, true);
 
     cache[key] = res;
-
-    ++cacheCounter;
 
     return res;
 #endif
