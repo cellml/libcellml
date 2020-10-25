@@ -57,8 +57,4 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
-// Utilities
-
-using EquivalentVariableMap = std::map<intptr_t, bool>; /**< Type definition for an equivalent variable map. */
-
 } // namespace libcellml
