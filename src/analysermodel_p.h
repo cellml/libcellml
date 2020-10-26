@@ -60,6 +60,10 @@ struct AnalyserModel::AnalyserModelImpl
     bool mNeedAcothFunction = false;
 
     std::map<intptr_t, bool> mCachedEquivalentVariables;
+
+    bool haveEquivalentVariables(const Variable *variable1,
+                                 const Variable *variable2,
+                                 std::vector<const Variable *> &testedVariables);
 };
 
 } // namespace libcellml
