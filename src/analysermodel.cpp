@@ -377,8 +377,8 @@ bool AnalyserModel::needAcothFunction() const
     return mPimpl->mNeedAcothFunction;
 }
 
-bool AnalyserModel::isSameOrEquivalentVariable(const VariablePtr &variable1,
-                                               const VariablePtr &variable2)
+bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
+                                           const VariablePtr &variable2)
 {
     if (variable1 == variable2) {
         return true;

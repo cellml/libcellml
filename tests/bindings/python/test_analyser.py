@@ -111,7 +111,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertFalse(am.needAcschFunction())
         self.assertFalse(am.needAcothFunction())
 
-        self.assertTrue(am.isSameOrEquivalentVariable(am.voi().variable(), am.voi().variable()))
+        self.assertTrue(am.areEquivalentVariables(am.voi().variable(), am.voi().variable()))
 
         # Ensure coverage for AnalyserVariable.
 

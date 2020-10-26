@@ -170,11 +170,11 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
     auto modelVoi = mLockedModel->voi();
 
     if ((modelVoi != nullptr)
-        && mLockedModel->isSameOrEquivalentVariable(variable, modelVoi->variable())) {
+        && mLockedModel->areEquivalentVariables(variable, modelVoi->variable())) {
         res = modelVoi;
     } else {
         for (const auto &modelState : mLockedModel->states()) {
-            if (mLockedModel->isSameOrEquivalentVariable(variable, modelState->variable())) {
+            if (mLockedModel->areEquivalentVariables(variable, modelState->variable())) {
                 res = modelState;
 
                 break;
@@ -183,7 +183,7 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 
         if (res == nullptr) {
             for (const auto &modelVariable : mLockedModel->variables()) {
-                if (mLockedModel->isSameOrEquivalentVariable(variable, modelVariable->variable())) {
+                if (mLockedModel->areEquivalentVariables(variable, modelVariable->variable())) {
                     res = modelVariable;
 
                     break;
