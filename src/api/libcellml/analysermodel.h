@@ -462,24 +462,23 @@ public:
     bool needAcothFunction() const;
 
     /**
-     * @brief Test to determine if @p variable1 and @p variable2 are the same or
-     * (directly or indirectly) equivalent.
+     * @brief Test to determine if @p variable1 and @p variable2 are
+     * equivalents.
      *
      * Test to see if @p variable1 is the same or (directly or indirectly)
-     * equivalent to @p variable2. Returns @c true if @p variable1 is the same
-     * or (directly or indirectly) equivalent to @p variable2 and @c false
-     * otherwise.
+     * equivalent to @p variable2. Returns @c true if @p variable1 is equivalent
+     * to @p variable2 and @c false otherwise.
      *
-     * @param variable1 The @c Variable to test if it is the same or (directly
-     * or indirectly) equivalent to @p variable2.
-     * @param variable2 The @c Variable that is potentially the same or
-     * (directly or indirectly) equivalent to @p variable1.
+     * @param variable1 The @c Variable to test if it is equivalent to
+     * @p variable2.
+     * @param variable2 The @c Variable that is potentially equivalent to
+     * @p variable1.
      *
-     * @return @c true if @p variable1 is the same or (directly or indirectly)
-     * equivalent to @p variable2 and @c false otherwise.
+     * @return @c true if @p variable1 is equivalent to @p variable2 and
+     * @c false otherwise.
      */
-    bool isSameOrEquivalentVariable(const VariablePtr &variable1,
-                                    const VariablePtr &variable2);
+    bool areEquivalentVariables(const VariablePtr &variable1,
+                                const VariablePtr &variable2);
 
 private:
     AnalyserModel(); /**< Constructor. */

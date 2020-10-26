@@ -274,7 +274,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
             auto localVariable = mComponent->variable(i);
 
-            if (model->isSameOrEquivalentVariable(variable->mVariable, localVariable)) {
+            if (model->areEquivalentVariables(variable->mVariable, localVariable)) {
                 variable->setVariable(localVariable, false);
 
                 break;
@@ -475,7 +475,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     AnalyserInternalVariablePtr res = nullptr;
 
     for (const auto &internalVariable : mInternalVariables) {
-        if (mModel->isSameOrEquivalentVariable(variable, internalVariable->mVariable)) {
+        if (mModel->areEquivalentVariables(variable, internalVariable->mVariable)) {
             res = internalVariable;
 
             break;
@@ -505,7 +505,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto componentVariable = component->variable(i);
 
-        if (mModel->isSameOrEquivalentVariable(variable, componentVariable)) {
+        if (mModel->areEquivalentVariables(variable, componentVariable)) {
             return componentVariable;
         }
     }
@@ -1057,7 +1057,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                     break;
                 }
             }
-        } else if (!mModel->isSameOrEquivalentVariable(variable, mModel->mPimpl->mVoi->variable())) {
+        } else if (!mModel->areEquivalentVariables(variable, mModel->mPimpl->mVoi->variable())) {
             auto issue = Issue::create();
 
             issue->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
