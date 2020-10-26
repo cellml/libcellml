@@ -16,7 +16,7 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
-#include <vector>
+#include <algorithm>
 
 #include "libcellml/variable.h"
 
