@@ -74,8 +74,8 @@ public:
     /**
      * @brief Remove the @c AnalyserExternalVariable at the given @p index.
      *
-     * Remove the @c AnalyserExternalVariable with the given @p index. @p index
-     * must be in the range [0, \#externalVariables).
+     * Remove the @c AnalyserExternalVariable with the given @p index. The
+     * @p index must be in the range [0, \#externalVariables).
      *
      * @param index The index of the @c AnalyserExternalVariable to remove.
      *
