@@ -133,12 +133,13 @@ public:
     /**
      * @brief Test to see if the dependency with the given @p variableName in
      * the @c Component with the given @p componentName in the given @p model is
-     * contained within this @AnalyserExternalVariable.
+     * contained within this @AnalyserExternalVariable's list of dependencies.
      *
      * Test to see if the dependency with the the given @p variableName in the
      * @c Component with the given @p componentName in the given @p model is
-     * contained within this @AnalyserExternalVariable. Returns @c true if the
-     * dummy is in this @AnalyserExternalVariable and @c false otherwise.
+     * contained within this @AnalyserExternalVariable's list of dependencies.
+     * Return @c true if the dependency is in this @AnalyserExternalVariable's
+     * list of dependencies and @c false otherwise.
      *
      * @param model The pointer to the @c Model which contains the dependency to
      * test.
@@ -146,8 +147,8 @@ public:
      * dependency to test.
      * @param variableName The name of the dependency to test.
      *
-     * @return @c true if the dependency is in this @AnalyserExternalVariable
-     * and @c false otherwise.
+     * @return @c true if the dependency is in this @AnalyserExternalVariable's
+     * list of dependencies and @c false otherwise.
      */
     bool containsDependency(const ModelPtr &model,
                             const std::string &componentName,
@@ -157,16 +158,17 @@ public:
      * @overload
      *
      * @brief Test to see if the dependency with the given pointer is contained
-     * within this @AnalyserExternalVariable.
+     * within this @AnalyserExternalVariable's list of dependencies.
      *
      * Test to see if the dependency with the given pointer is contained within
-     * this @AnalyserExternalVariable. Returns @c true if the dependency is in
-     * the @AnalyserExternalVariable and @c false otherwise.
+     * this @AnalyserExternalVariable's list of dependencies. Return @c true if
+     * the dependency is in this @AnalyserExternalVariable's list of
+     * dependencies and @c false otherwise.
      *
      * @param variable The pointer to the dependency to remove.
      *
-     * @return @c true if the dependency is in this @AnalyserExternalVariable
-     * and @c false otherwise.
+     * @return @c true if the dependency is in this @AnalyserExternalVariable's
+     * list of dependencies and @c false otherwise.
      */
     bool containsDependency(const VariablePtr &variable) const;
 
