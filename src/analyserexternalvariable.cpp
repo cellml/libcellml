@@ -74,9 +74,9 @@ bool AnalyserExternalVariable::addDependency(const VariablePtr &variable)
     auto pimplVariable = AnalyserExternalVariable::variable();
 
     if ((pimplVariable != nullptr)
-        && !isSameOrEquivalentVariable(variable, pimplVariable)
         && (owningModel(variable) == owningModel(pimplVariable))
-        && (mPimpl->findDependency(variable) == mPimpl->mDependencies.end())) {
+        && (mPimpl->findDependency(variable) == mPimpl->mDependencies.end())
+        && !isSameOrEquivalentVariable(variable, pimplVariable)) {
         mPimpl->mDependencies.push_back(variable);
 
         return true;
