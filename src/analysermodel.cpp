@@ -380,6 +380,15 @@ bool AnalyserModel::needAcothFunction() const
 bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
                                            const VariablePtr &variable2)
 {
+    // We used to have a utilities method which implementation was:
+    //
+    //     return (variable1 == variable2)
+    //            || variable1->hasEquivalentVariable(variable2, true);
+    //
+    // However, a call to Variable::hasEquivalentVariable() can be time
+    // consuming. So, here, we stripped down the implementation of that method
+    // (and of others that it calls) and cache its results for future re-use.
+
     if (variable1 == variable2) {
         return true;
     }
