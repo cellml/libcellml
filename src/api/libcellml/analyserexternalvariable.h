@@ -56,7 +56,7 @@ public:
      * @brief Get the @c Variable associated with this
      * @c AnalyserExternalVariable.
      *
-     * Returns a reference to the @c Variable associated with this
+     * Return a reference to the @c Variable associated with this
      * @c AnalyserExternalVariable.
      *
      * @return The @c Variable associated with this @c AnalyserExternalVariable.
@@ -125,17 +125,17 @@ public:
     /**
      * @brief Remove all dependencies from this @AnalyserExternalVariable.
      *
-     * Clears all dependencies that have been added to this
+     * Clear all dependencies that have been added to this
      * @AnalyserExternalVariable.
      */
     void removeAllDependencies();
 
     /**
-     * @brief Tests to see if the dependency with the given @p variableName in
+     * @brief Test to see if the dependency with the given @p variableName in
      * the @c Component with the given @p componentName in the given @p model is
      * contained within this @AnalyserExternalVariable.
      *
-     * Tests to see if the dependency with the the given @p variableName in the
+     * Test to see if the dependency with the the given @p variableName in the
      * @c Component with the given @p componentName in the given @p model is
      * contained within this @AnalyserExternalVariable. Returns @c true if the
      * dummy is in this @AnalyserExternalVariable and @c false otherwise.
@@ -156,10 +156,10 @@ public:
     /**
      * @overload
      *
-     * @brief Tests to see if the dependency with the given pointer is contained
+     * @brief Test to see if the dependency with the given pointer is contained
      * within this @AnalyserExternalVariable.
      *
-     * Tests to see if the dependency with the given pointer is contained within
+     * Test to see if the dependency with the given pointer is contained within
      * this @AnalyserExternalVariable. Returns @c true if the dependency is in
      * the @AnalyserExternalVariable and @c false otherwise.
      *
@@ -173,7 +173,7 @@ public:
     /**
      * @brief Get the dependency at the given @p index.
      *
-     * Returns a reference to the dependency at the given @p index. @p index
+     * Return a reference to the dependency at the given @p index. @p index
      * must be in the range [0, \#dependencies).
      *
      * @param index The index of the dependency to return.
@@ -188,7 +188,7 @@ public:
      *
      * @brief Get the dependency with the given @p name.
      *
-     * Returns the dependency with the given @p variableName in the @c Component
+     * Return the dependency with the given @p variableName in the @c Component
      * with the given @p componentName in the given @p model. If no such
      * dependency is contained withing the @AnalyserExternalVariable, a
      * @c nullptr is returned.
