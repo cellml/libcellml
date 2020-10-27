@@ -220,7 +220,7 @@ public:
     std::vector<VariablePtr> dependencies() const;
 
     /**
-     * @brief Get the number of dependencies in this @AnalyserExternalVariable.
+     * @brief Get the number of dependencies of this @AnalyserExternalVariable.
      *
      * Return the number of dependencies this @AnalyserExternalVariable
      * contains.
