@@ -29,7 +29,7 @@ namespace libcellml {
  *
  * The AnalyserExternalVariable class is for representing an external variable
  * in the context of a CellML Analyser, i.e. a variable which is not set or
- * computed by a model, but set externally.
+ * computed by this model, but set externally.
  */
 class LIBCELLML_EXPORT AnalyserExternalVariable
 {
