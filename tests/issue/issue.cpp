@@ -328,7 +328,6 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE:
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL:
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI:
-    case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_PRIMARY_VARIABLE:
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE:
     case libcellml::Issue::ReferenceRule::UNSPECIFIED:
         EXPECT_EQ("", e->referenceHeading());
