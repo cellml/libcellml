@@ -77,8 +77,8 @@ public:
     /**
      * @brief Remove the dependency at the given @p index.
      *
-     * Remove the dependency with the given @p index. @p index must be in the
-     * range [0, \#dependencies).
+     * Remove the dependency with the given @p index. The @p index must be in
+     * the range [0, \#dependencies).
      *
      * @param index The index of the dependency to remove.
      *
