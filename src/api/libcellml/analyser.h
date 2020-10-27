@@ -128,17 +128,17 @@ public:
      * @brief Remove all @c AnalyserExternalVariable items from this
      * @c Analyser.
      *
-     * Clears all @c AnalyserExternalVariable items that have been added to this
+     * Clear all @c AnalyserExternalVariable items that have been added to this
      * @c Analyser.
      */
     void removeAllExternalVariables();
 
     /**
-     * @brief Tests to see if the @c AnalyserExternalVariable with the given
+     * @brief Test to see if the @c AnalyserExternalVariable with the given
      * @p variableName in the @c Component with the given @p componentName in
      * the given @p model is contained within this @c Analyser.
      *
-     * Tests to see if the @c AnalyserExternalVariable with the the given
+     * Test to see if the @c AnalyserExternalVariable with the the given
      * @p variableName in the @c Component with the given @p componentName in
      * the given @p model is contained within this @c Analyser. Returns @c true
      * if the @c AnalyserExternalVariable is in the @c Analyser and @c false
@@ -160,10 +160,10 @@ public:
     /**
      * @overload
      *
-     * @brief Tests to see if the @c AnalyserExternalVariable with the given
+     * @brief Test to see if the @c AnalyserExternalVariable with the given
      * pointer is contained within this @c Analyser.
      *
-     * Tests to see if the @c AnalyserExternalVariable with the given pointer is
+     * Test to see if the @c AnalyserExternalVariable with the given pointer is
      * contained within this @c Analyser. Returns @c true if the
      * @c AnalyserExternalVariable is in the @c Analyser and @c false otherwise.
      *
@@ -177,7 +177,7 @@ public:
     /**
      * @brief Get the @c AnalyserExternalVariable at the given @p index.
      *
-     * Returns a reference to the @c AnalyserExternalVariable at the given
+     * Return a reference to the @c AnalyserExternalVariable at the given
      * @p index. @p index must be in the range [0, \#externalVariables).
      *
      * @param index The index of the @c AnalyserExternalVariable to return.
@@ -192,7 +192,7 @@ public:
      *
      * @brief Get the @c AnalyserExternalVariable with the given @p name.
      *
-     * Returns the @c AnalyserExternalVariable with the given @p variableName in
+     * Return the @c AnalyserExternalVariable with the given @p variableName in
      * the @c Component with the given @p componentName in the given @p model.
      * If no such @c AnalyserExternalVariable is contained withing the
      * @c Analyser, a @c nullptr is returned.
@@ -216,7 +216,7 @@ public:
      * @brief Get the number of @c AnalyserExternalVariable items in this
      * @c Analyser.
      *
-     * Returns the number of @c AnalyserExternalVariable items the @c Analyser
+     * Return the number of @c AnalyserExternalVariable items the @c Analyser
      * contains.
      *
      * @return The number of @c AnalyserExternalVariable items.
