@@ -53,11 +53,13 @@ public:
     static AnalyserExternalVariablePtr create(const VariablePtr &variable) noexcept;
 
     /**
-     * @brief Get the variable.
+     * @brief Get the @c Variable associated with this
+     * @c AnalyserExternalVariable.
      *
-     * Returns a reference to the variable.
+     * Returns a reference to the @c Variable associated with this
+     * @c AnalyserExternalVariable.
      *
-     * @return The variable.
+     * @return The @c Variable associated with this @c AnalyserExternalVariable.
      */
     VariablePtr variable() const;
 
