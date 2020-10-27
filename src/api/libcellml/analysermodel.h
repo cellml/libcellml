@@ -80,9 +80,9 @@ public:
     Type type() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel has external variables.
+     * @brief Test to determine if this @c AnalyserModel has external variables.
      *
-     * Test to determine if @c AnalyserModel has external variables, return
+     * Test to determine if this @c AnalyserModel has external variables, return
      * @c true if it does and @c false otherwise.
      *
      * @return @c true if @c AnalyserModel has external variables, @c false
