@@ -45,8 +45,8 @@ public:
      * Factory method to create an @c AnalyserExternalVariable. Create an
      * analyser external variable with::
      *
-     *   VariablePtr variable = libcellml::Variable::create();
-     *   AnalyserExternalVariablePtr analyserExternalVariable = libcellml::AnalyserExternalVariable::create(variable);
+     *   auto variable = libcellml::Variable::create();
+     *   auto analyserExternalVariable = libcellml::AnalyserExternalVariable::create(variable);
      *
      * @return A smart pointer to a @c AnalyserExternalVariable object.
      */
