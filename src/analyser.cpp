@@ -1397,21 +1397,27 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             std::map<VariablePtr, std::vector<VariablePtr>> primaryExternalVariables;
 
             for (const auto &externalVariable : mExternalVariables) {
-                if (owningModel(externalVariable->variable()) != model) {
+                auto variable = externalVariable->variable();
+
+                if (variable == nullptr) {
+                    continue;
+                }
+
+                if (owningModel(variable) != model) {
                     auto issue = Issue::create();
 
-                    issue->setDescription("Variable '" + externalVariable->variable()->name()
-                                          + "' in component '" + owningComponent(externalVariable->variable())->name()
+                    issue->setDescription("Variable '" + variable->name()
+                                          + "' in component '" + owningComponent(variable)->name()
                                           + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
                     issue->setLevel(Issue::Level::MESSAGE);
                     issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
-                    issue->setVariable(externalVariable->variable());
+                    issue->setVariable(variable);
 
                     mAnalyser->addIssue(issue);
                 } else {
-                    auto internalVariable = AnalyserImpl::internalVariable(externalVariable->variable());
+                    auto internalVariable = AnalyserImpl::internalVariable(variable);
 
-                    primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable->variable());
+                    primaryExternalVariables[internalVariable->mVariable].push_back(variable);
 
                     if (((mModel->mPimpl->mVoi == nullptr)
                          || (internalVariable->mVariable != mModel->mPimpl->mVoi->variable()))
@@ -1669,9 +1675,12 @@ std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findE
                                                                                                 const std::string &variableName)
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
-        return (owningModel(ev->variable()) == model)
-               && (owningComponent(ev->variable())->name() == componentName)
-               && (ev->variable()->name() == variableName);
+        auto v = ev->variable();
+
+        return (v != nullptr)
+               && (owningModel(v) == model)
+               && (owningComponent(v)->name() == componentName)
+               && (v->name() == variableName);
     });
 }
 
