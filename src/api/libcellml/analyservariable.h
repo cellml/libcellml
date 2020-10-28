@@ -97,15 +97,15 @@ public:
     VariablePtr initialisingVariable() const;
 
     /**
-     * @brief Get the @c Variable for this @c AnalyserVariable.
+     * @brief Get the (primary) @c Variable for this @c AnalyserVariable.
      *
-     * Return the @c Variable for this @c AnalyserVariable. Its @c Component is
-     * the one in which the @c Variable is first defined (in the case of the
-     * variable of integration), initialised (in the case of a constant) or
-     * computed (in the case of a state, computed constant or algebraic
-     * variable). It may or may not be the same @c Variable as the one returned
-     * by @sa initialisingVariable (e.g., a state variable is initialised in one
-     * component and computed in another).
+     * Return the (primary) @c Variable for this @c AnalyserVariable. Its
+     * @c Component is the one in which the @c Variable is first defined (in the
+     * case of the variable of integration), initialised (in the case of a
+     * constant) or computed (in the case of a state, computed constant or
+     * algebraic variable). It may or may not be the same @c Variable as the one
+     * returned by @sa initialisingVariable (e.g., a state variable is
+     * initialised in one component and computed in another).
      *
      * @sa initialisingVariable
      *
