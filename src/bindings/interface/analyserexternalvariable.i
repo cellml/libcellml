@@ -28,7 +28,7 @@
 
 %feature("docstring") libcellml::AnalyserExternalVariable::containsDependency
 "Tests if a dependency, specified by 1) a :class:`Model` object, component name and variable name, or 2) a
-:class:`Variable` object.";
+:class:`Variable` object is contained within this external variable's list of dependencies.;"
 
 %feature("docstring") libcellml::AnalyserExternalVariable::dependency
 "Returns the dependency, specified by 1) an index, or 2) a :class:`Model` object, component name and variable
