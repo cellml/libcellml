@@ -62,8 +62,7 @@ public:
      * @brief Add an @c AnalyserExternalVariable to this @c Analyser.
      *
      * Add the given @c AnalyserExternalVariable to this @c Analyser, but only
-     * if the given @c AnalyserExternalVariable or its primary equivalent has
-     * not already been added.
+     * if the given @c AnalyserExternalVariable has not already been added.
      *
      * @param variable The @c AnalyserExternalVariable to add.
      *
