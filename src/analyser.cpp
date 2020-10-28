@@ -1399,36 +1399,34 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             for (const auto &externalVariable : mExternalVariables) {
                 auto variable = externalVariable->variable();
 
-                if (variable == nullptr) {
-                    continue;
-                }
+                if (variable != nullptr) {
+                    if (owningModel(variable) != model) {
+                        auto issue = Issue::create();
 
-                if (owningModel(variable) != model) {
-                    auto issue = Issue::create();
+                        issue->setDescription("Variable '" + variable->name()
+                                              + "' in component '" + owningComponent(variable)->name()
+                                              + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
+                        issue->setLevel(Issue::Level::MESSAGE);
+                        issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
+                        issue->setVariable(variable);
 
-                    issue->setDescription("Variable '" + variable->name()
-                                          + "' in component '" + owningComponent(variable)->name()
-                                          + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
-                    issue->setLevel(Issue::Level::MESSAGE);
-                    issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
-                    issue->setVariable(variable);
+                        mAnalyser->addIssue(issue);
+                    } else {
+                        auto internalVariable = AnalyserImpl::internalVariable(variable);
 
-                    mAnalyser->addIssue(issue);
-                } else {
-                    auto internalVariable = AnalyserImpl::internalVariable(variable);
+                        primaryExternalVariables[internalVariable->mVariable].push_back(variable);
 
-                    primaryExternalVariables[internalVariable->mVariable].push_back(variable);
+                        if (((mModel->mPimpl->mVoi == nullptr)
+                             || (internalVariable->mVariable != mModel->mPimpl->mVoi->variable()))
+                            && (externalVariables.count(internalVariable) == 0)) {
+                            std::vector<VariablePtr> dependencies;
 
-                    if (((mModel->mPimpl->mVoi == nullptr)
-                         || (internalVariable->mVariable != mModel->mPimpl->mVoi->variable()))
-                        && (externalVariables.count(internalVariable) == 0)) {
-                        std::vector<VariablePtr> dependencies;
+                            for (const auto &dependency : externalVariable->dependencies()) {
+                                dependencies.push_back(AnalyserImpl::internalVariable(dependency)->mVariable);
+                            }
 
-                        for (const auto &dependency : externalVariable->dependencies()) {
-                            dependencies.push_back(AnalyserImpl::internalVariable(dependency)->mVariable);
+                            externalVariables[internalVariable] = dependencies;
                         }
-
-                        externalVariables[internalVariable] = dependencies;
                     }
                 }
             }
