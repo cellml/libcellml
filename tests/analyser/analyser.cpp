@@ -560,6 +560,7 @@ TEST(Analyser, removeExternalVariableByPointer)
     analyser->addExternalVariable(externalVariable);
 
     EXPECT_TRUE(analyser->removeExternalVariable(externalVariable));
+    EXPECT_FALSE(analyser->removeExternalVariable(externalVariable));
     EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
 }
 
