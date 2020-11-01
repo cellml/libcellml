@@ -197,8 +197,6 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 
 double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) const
 {
-    // Return the scaling factor for the given variable.
-
     return Units::scalingFactor(variable->units(), analyserVariable(variable)->variable()->units());
 }
 

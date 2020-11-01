@@ -1114,8 +1114,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
 double Analyser::AnalyserImpl::scalingFactor(const VariablePtr &variable)
 {
-    // Return the scaling factor for the given variable.
-
     return Units::scalingFactor(variable->units(), internalVariable(variable)->mVariable->units());
 }
 
