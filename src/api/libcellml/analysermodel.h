@@ -465,9 +465,9 @@ public:
      * @brief Test to determine if @p variable1 and @p variable2 are
      * equivalents.
      *
-     * Test to see if @p variable1 is the same or (directly or indirectly)
-     * equivalent to @p variable2. Returns @c true if @p variable1 is equivalent
-     * to @p variable2 and @c false otherwise.
+     * Test to see if @p variable1 is the same or equivalent to @p variable2.
+     * Returns @c true if @p variable1 is equivalent to @p variable2 and
+     * @c false otherwise.
      *
      * @param variable1 The @c Variable to test if it is equivalent to
      * @p variable2.
