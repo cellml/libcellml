@@ -21,33 +21,9 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "analysermodel_p.h"
+#include "utilities.h"
 
 namespace libcellml {
-
-bool AnalyserModel::AnalyserModelImpl::areEquivalentVariables(const Variable *variable1,
-                                                              const Variable *variable2,
-                                                              std::vector<const Variable *> &testedVariables)
-{
-    if (variable1 == variable2) {
-        return true;
-    }
-
-    testedVariables.push_back(variable2);
-
-    auto testedVariablesBegin = testedVariables.begin();
-    auto testedVariablesEnd = testedVariables.end();
-
-    for (size_t i = 0; i < variable2->equivalentVariableCount(); ++i) {
-        Variable *equivalentVariable2 = variable2->equivalentVariable(i).get();
-
-        if ((std::find(testedVariablesBegin, testedVariablesEnd, equivalentVariable2) == testedVariablesEnd)
-            && areEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
-            return true;
-        }
-    }
-
-    return false;
-}
 
 AnalyserModel::AnalyserModel()
     : mPimpl(new AnalyserModelImpl())
@@ -380,19 +356,6 @@ bool AnalyserModel::needAcothFunction() const
 bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
                                            const VariablePtr &variable2)
 {
-    // We used to have a utilities method which implementation was:
-    //
-    //     return (variable1 == variable2)
-    //            || variable1->hasEquivalentVariable(variable2, true);
-    //
-    // However, a call to Variable::hasEquivalentVariable() can be time
-    // consuming. So, here, we stripped down the implementation of that method
-    // (and of others that it calls) and cache its results for future re-use.
-
-    if (variable1 == variable2) {
-        return true;
-    }
-
     auto key = reinterpret_cast<intptr_t>(variable1.get()) * reinterpret_cast<intptr_t>(variable2.get());
     auto cacheKey = mPimpl->mCachedEquivalentVariables.find(key);
 
@@ -400,8 +363,7 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
         return cacheKey->second;
     }
 
-    std::vector<const Variable *> testedVariables;
-    bool res = mPimpl->areEquivalentVariables(variable1.get(), variable2.get(), testedVariables);
+    bool res = libcellml::areEquivalentVariables(variable1, variable2);
 
     mPimpl->mCachedEquivalentVariables[key] = res;
 
