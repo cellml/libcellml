@@ -463,7 +463,7 @@ public:
 
     /**
      * @brief Test to determine if @p variable1 and @p variable2 are
-     * equivalents.
+     * equivalent.
      *
      * Test to see if @p variable1 is the same or equivalent to @p variable2.
      * Returns @c true if @p variable1 is equivalent to @p variable2 and
