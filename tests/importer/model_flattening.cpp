@@ -832,3 +832,20 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
     auto a = printer->printModel(modelUsingImports);
     EXPECT_EQ(e, a);
 }
+
+TEST(ModelFlattening, KRM)
+{
+    auto parser = libcellml::Parser::create();
+    auto originalModel = parser->parseModel(fileContents("modelflattening/segfault/importExample2b.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    // Resolve the imports.
+    importer->resolveImports(originalModel, resourcePath("modelflattening/segfault/"));
+
+    // Check for issues: expect one reporting the circular import.
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    printIssues(importer);
+
+    // Create a flattened version to demonstrate the diagnostics.
+    auto flatModel = importer->flattenModel(originalModel); // segfaults
+}
