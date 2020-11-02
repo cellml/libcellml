@@ -24,9 +24,9 @@ limitations under the License.
 
 namespace libcellml {
 
-bool AnalyserModel::AnalyserModelImpl::haveEquivalentVariables(const Variable *variable1,
-                                                               const Variable *variable2,
-                                                               std::vector<const Variable *> &testedVariables)
+bool AnalyserModel::AnalyserModelImpl::areEquivalentVariables(const Variable *variable1,
+                                                              const Variable *variable2,
+                                                              std::vector<const Variable *> &testedVariables)
 {
     if (variable1 == variable2) {
         return true;
@@ -41,7 +41,7 @@ bool AnalyserModel::AnalyserModelImpl::haveEquivalentVariables(const Variable *v
         Variable *equivalentVariable2 = variable2->equivalentVariable(i).get();
 
         if ((std::find(testedVariablesBegin, testedVariablesEnd, equivalentVariable2) == testedVariablesEnd)
-            && haveEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
+            && areEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
             return true;
         }
     }
@@ -401,7 +401,7 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     }
 
     std::vector<const Variable *> testedVariables;
-    bool res = mPimpl->haveEquivalentVariables(variable1.get(), variable2.get(), testedVariables);
+    bool res = mPimpl->areEquivalentVariables(variable1.get(), variable2.get(), testedVariables);
 
     mPimpl->mCachedEquivalentVariables[key] = res;
 
