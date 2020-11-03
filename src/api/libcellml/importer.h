@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include <set>
 #include <string>
 
 #include "libcellml/logger.h"
@@ -156,6 +157,15 @@ public:
      * Clear the links with other models from all import sources.
      */
     void clearImports(ModelPtr &model);
+
+    /**
+     * @brief Return a vector of @c Model items which are import requirements of the given @p model.
+     * Return a vector of @c Model items which are import requirements of the given @p model.
+     * @param model A @c Model which imports other models.  
+     * 
+     * @return A @c std::vector of @c ModelPtr objects.
+     */
+    std::set<std::pair<ModelPtr,std::string>> requirements(const ModelPtr &model);
 
 private:
     Importer(); /**< Constructor. */

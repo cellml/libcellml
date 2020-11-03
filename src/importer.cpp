@@ -20,6 +20,7 @@ limitations under the License.
 #include <cmath>
 #include <fstream>
 #include <libxml/uri.h>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 
@@ -612,6 +613,88 @@ std::string Importer::key(const size_t &index)
         ++i;
     }
     return it->first;
+}
+
+void getUnitsRequirements(const UnitsPtr &units, std::set<std::pair<ModelPtr, std::string>> &requirementsList)
+{
+    // The given units is imported, and has a model attached to it. We need to check that anything that this Units
+    // item depends on is also listed in the requirements list.
+    auto importedModel = units->importSource()->model();
+    auto importedUnits = importedModel->units(units->name());
+
+    if (units->isImport()) {
+        requirementsList.insert(std::make_pair(importedModel, units->importSource()->url()));
+        getUnitsRequirements(importedUnits, requirementsList);
+    }
+
+    for (size_t u = 0; u < importedUnits->unitCount(); u++) {
+        // Check that the units item with this name in the imported model are listed
+        std::string id;
+        std::string childUnitsName;
+        std::string prefix;
+        double exponent;
+        double multiplier;
+        importedUnits->unitAttributes(u, childUnitsName, prefix, exponent, multiplier, id);
+        if (!isStandardUnitName(childUnitsName) && importedModel->units(childUnitsName)->requiresImports()) {
+            getUnitsRequirements(importedModel->units(childUnitsName), requirementsList);
+        }
+    }
+}
+
+void getComponentRequirements(const ComponentPtr &component, std::set<std::pair<ModelPtr, std::string>> &requirementsList)
+{
+    if (component->isImport()) {
+        requirementsList.insert(std::make_pair(component->importSource()->model(), component->importSource()->url()));
+
+        auto importedModel = component->importSource()->model();
+        auto importedComponent = importedModel->component(component->importReference(), true);
+
+        getComponentRequirements(importedComponent, requirementsList);
+    }
+
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        auto childComponent = component->component(c);
+        if (childComponent->requiresImports()) {
+            getComponentRequirements(component, requirementsList);
+        }
+    }
+}
+
+std::set<std::pair<ModelPtr, std::string>> Importer::requirements(const ModelPtr &model)
+{
+    std::set<std::pair<ModelPtr, std::string>> requirementsList;
+    if (model->hasUnresolvedImports()) {
+        auto issue = Issue::create();
+        issue->setDescription("The model has unresolved imports.  Please resolve the imports before calling for a requirements list.");
+        issue->setModel(model);
+        issue->setLevel(Issue::Level::HINT);
+        addIssue(issue);
+        return requirementsList;
+    }
+
+    for (size_t i = 0; i < model->importSourceCount(); ++i) {
+        auto import = model->importSource(i);
+        auto importedModel = import->model();
+
+        // Add pointer to imported model which are used:
+        if ((import->unitsCount() != 0) || (import->componentCount() != 0)) {
+            requirementsList.insert(std::make_pair(importedModel, import->url()));
+
+            for (size_t u = 0; u < import->unitsCount(); ++u) {
+                auto importedUnits = import->units(u);
+                if (importedUnits->requiresImports()) {
+                    getUnitsRequirements(import->units(u), requirementsList);
+                }
+            }
+            for (size_t c = 0; c < import->componentCount(); ++c) {
+                auto importedComponent = import->component(c);
+                if (importedComponent->requiresImports()) {
+                    getComponentRequirements(import->component(c), requirementsList);
+                }
+            }
+        }
+    }
+    return requirementsList;
 }
 
 } // namespace libcellml
