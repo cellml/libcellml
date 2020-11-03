@@ -19,7 +19,7 @@ limitations under the License->
 #include <libcellml>
 
 #include "test_utils.h"
-
+#if 0
 TEST(Importer, create)
 {
     auto importer = libcellml::Importer::create();
@@ -874,4 +874,48 @@ TEST(Importer, clearModelImportsBeforeResolving)
 
     EXPECT_EQ(size_t(0), importer->issueCount());
     printIssues(importer);
+}
+#endif
+TEST(Importer, requirementsComponents)
+{
+    std::vector<std::string> expectedKeys = {
+        "diamond_point.cellml",
+        "diamond_left.cellml",
+        "diamond_right.cellml"};
+    std::string e1 = "The model has unresolved imports.  Please resolve the imports before calling for a requirements list.";
+    std::string e2 = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n - component 'myUnits' is imported from 'importedUnits' in 'importExample2units.cellml';\n - component 'importedUnits' is imported from 'myUnits' in 'importExample3.cellml';\n - component 'myComponent' is imported from 'importedComponent' in 'importExample2components.cellml';\n - component 'importedComponent' is imported from 'myComponent' in 'importExample3.cellml';\n - component 'circular' is imported from 'circular1' in 'circularImport1.cellml';\n - component 'circular1' is imported from 'circular2' in 'circularImport2.cellml';\n - component 'circular2' is imported from 'circular1' in 'circularImport1.cellml'; and\n - component 'circular1' is imported from 'circular2' in 'circularImport2.cellml'.";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/requirements/importExample1.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    // Pass model to the importer for requirements list before the imports are resolved,
+    // expect empty set returned.
+    EXPECT_EQ(size_t(0), importer->requirements(model).size());
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e1, importer->issue(0)->description());
+    printIssues(importer);
+
+    // Resolve imports and repeat, expect circular reference warning.
+    importer->removeAllIssues();
+    importer->resolveImports(model, resourcePath("importer/requirements/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    printIssues(importer);
+    EXPECT_EQ(e2, importer->issue(0)->description());
+
+    // Fix circular reference by removing component which calls it.
+    model->removeComponent("circular");
+    importer->removeAllIssues();
+    importer->resolveImports(model, resourcePath("importer/requirements/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    // Get requirements, and expect that it's not including the unneeded circular ones now.
+    auto requirements = importer->requirements(model);
+    EXPECT_EQ(size_t(3), requirements.size());
+    EXPECT_EQ(size_t(5), importer->libraryCount());
+
+    for (auto &key : expectedKeys) {
+        auto r = std::make_pair(importer->library(resourcePath("importer/requirements/") + key), key);
+        EXPECT_TRUE(requirements.find(r) != requirements.end());
+    }
 }
