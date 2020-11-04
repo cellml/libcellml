@@ -624,3 +624,50 @@ TEST(Model, removeComponentInsensitiveToOrder)
     EXPECT_EQ(size_t(0), modelParsed->componentCount());
     EXPECT_EQ(size_t(2), modelApi->componentCount());
 }
+
+TEST(Model, removeImportedUnitsByNameOrReference) {
+    
+    auto model = libcellml::Model::create();
+    auto myConcreteUnits1 = libcellml::Units::create("myConcreteUnits1");
+    auto myImportedUnits1 = libcellml::Units::create("myImportedUnits1");
+    auto myConcreteUnits2 = libcellml::Units::create("myConcreteUnits2");
+    auto myImportedUnits2 = libcellml::Units::create("myImportedUnits2");
+    auto myConcreteUnits3 = libcellml::Units::create("myConcreteUnits3");
+    auto myImportedUnits3 = libcellml::Units::create("myImportedUnits3");
+
+    auto import = libcellml::ImportSource::create();
+    import->setUrl("import.cellml");
+    myImportedUnits1->setImportSource(import);
+    myImportedUnits2->setImportSource(import);
+    myImportedUnits3->setImportSource(import);
+
+    model->addUnits(myConcreteUnits1);
+    model->addUnits(myImportedUnits1);
+    model->addUnits(myConcreteUnits2);
+    model->addUnits(myImportedUnits2);
+    model->addUnits(myConcreteUnits3);
+    model->addUnits(myImportedUnits3);
+
+    EXPECT_TRUE(model->units("myImportedUnits1")->isImport());
+    EXPECT_FALSE(model->units("myConcreteUnits1")->isImport());
+    EXPECT_TRUE(model->units("myImportedUnits2")->isImport());
+    EXPECT_FALSE(model->units("myConcreteUnits2")->isImport());
+    EXPECT_TRUE(model->units("myImportedUnits3")->isImport());
+    EXPECT_FALSE(model->units("myConcreteUnits3")->isImport());
+
+    EXPECT_EQ(size_t(6), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(3), import->unitsCount());
+
+    EXPECT_TRUE(model->removeUnits(myConcreteUnits1));
+    EXPECT_TRUE(model->removeUnits(myImportedUnits1));
+    EXPECT_TRUE(model->removeUnits("myConcreteUnits2"));
+    EXPECT_TRUE(model->removeUnits("myImportedUnits2"));
+    EXPECT_TRUE(model->removeUnits(0));
+    EXPECT_TRUE(model->removeUnits(0));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(0), import->unitsCount());
+
+}
