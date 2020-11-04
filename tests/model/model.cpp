@@ -668,4 +668,5 @@ TEST(Model, removeImportedUnitsByNameOrReference)
 
     EXPECT_EQ(size_t(0), model->unitsCount());
     EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(0), import->unitsCount());
 }
