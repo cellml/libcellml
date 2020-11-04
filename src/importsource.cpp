@@ -232,8 +232,15 @@ bool ImportSource::removeUnits(UnitsPtr &units, bool setEmpty)
     }
 
     auto import = std::dynamic_pointer_cast<ImportedEntity>(units);
-    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](std::weak_ptr<ImportedEntity> &p) {
-        return p.lock() == import;
+    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import, &units](std::weak_ptr<ImportedEntity> &p) {
+        auto testImport = p.lock();
+        if (testImport == import) {
+            return true;
+        }
+        // KRM Also test name and units contents; mimics how findUnits works in the Model class .. except ...
+        // since these are - by implication - imported units, we can't test for equivalence, only name.
+        auto testUnits = std::dynamic_pointer_cast<Units>(testImport);
+        return testUnits->name() == units->name();
     });
 
     if (it == mPimpl->mImports.end()) {
