@@ -625,8 +625,8 @@ TEST(Model, removeComponentInsensitiveToOrder)
     EXPECT_EQ(size_t(2), modelApi->componentCount());
 }
 
-TEST(Model, removeImportedUnitsByNameOrReference) {
-    
+TEST(Model, removeImportedUnitsByNameOrReference)
+{
     auto model = libcellml::Model::create();
     auto myConcreteUnits1 = libcellml::Units::create("myConcreteUnits1");
     auto myImportedUnits1 = libcellml::Units::create("myImportedUnits1");
@@ -668,6 +668,4 @@ TEST(Model, removeImportedUnitsByNameOrReference) {
 
     EXPECT_EQ(size_t(0), model->unitsCount());
     EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(size_t(0), import->unitsCount());
-
 }
