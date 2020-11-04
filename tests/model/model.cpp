@@ -661,12 +661,14 @@ TEST(Model, removeImportedUnitsByNameOrReference)
 
     EXPECT_TRUE(model->removeUnits(myConcreteUnits1));
     EXPECT_TRUE(model->removeUnits(myImportedUnits1));
+    EXPECT_EQ(size_t(2), import->unitsCount());
     EXPECT_TRUE(model->removeUnits("myConcreteUnits2"));
     EXPECT_TRUE(model->removeUnits("myImportedUnits2"));
+    EXPECT_EQ(size_t(1), import->unitsCount());
     EXPECT_TRUE(model->removeUnits(0));
     EXPECT_TRUE(model->removeUnits(0));
+    EXPECT_EQ(size_t(0), import->unitsCount());
 
     EXPECT_EQ(size_t(0), model->unitsCount());
     EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(size_t(0), import->unitsCount());
 }
