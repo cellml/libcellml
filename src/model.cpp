@@ -61,6 +61,10 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
 {
+    auto result = std::find(mUnits.begin(), mUnits.end(), units);
+    if (result != mUnits.end()) {
+        return result;
+    }
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::equivalent(u, units); });
 }
