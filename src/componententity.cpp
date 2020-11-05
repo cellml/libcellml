@@ -21,7 +21,10 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/model.h"
 #include "libcellml/units.h"
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -83,6 +86,11 @@ bool ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
     bool status = false;
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
+        // KRM
+        if ((*result)->isImport()) {
+            auto copy = (*result);
+            (*result)->importSource()->removeComponent(copy);
+        }
         (*result)->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
@@ -100,6 +108,12 @@ bool ComponentEntity::removeComponent(size_t index)
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
         auto component = mPimpl->mComponents[index];
+        // KRM
+        if (component->isImport()) {
+            auto copy = component;
+            component->importSource()->removeComponent(copy);
+        }
+
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
         component->removeParent();
         status = true;
@@ -113,7 +127,12 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     bool status = false;
     auto result = mPimpl->findComponent(component);
     if (result != mPimpl->mComponents.end()) {
-        (*result)->removeParent();
+        // KRM
+        if (component->isImport()) {
+            auto copy = component;
+            component->importSource()->removeComponent(copy);
+        }
+        component->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
@@ -127,7 +146,10 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
 
 void ComponentEntity::removeAllComponents()
 {
-    for (const auto &component : mPimpl->mComponents) {
+    for (auto &component : mPimpl->mComponents) {
+        if (component->isImport()) {
+            component->importSource()->removeComponent(component);
+        }
         component->removeParent();
     }
     mPimpl->mComponents.clear();
@@ -198,6 +220,9 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     ComponentPtr component = nullptr;
     if (index < mPimpl->mComponents.size()) {
         component = mPimpl->mComponents.at(index);
+        if (component->isImport()) {
+            component->importSource()->removeComponent(component);
+        }
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
         component->removeParent();
     }
@@ -211,6 +236,10 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
+        if (foundComponent->isImport()) {
+            // Remove from this model's import source list.
+            foundComponent->importSource()->removeComponent(foundComponent);
+        }
         mPimpl->mComponents.erase(result);
         foundComponent->removeParent();
     } else if (searchEncapsulated) {
@@ -222,17 +251,25 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     return foundComponent;
 }
 
-bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &component)
+bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &newComponent)
 {
     bool status = false;
-    ComponentEntityPtr oldComponent = ComponentEntity::component(index);
+    auto oldComponent = component(index);
     EntityPtr parent = nullptr;
     if (oldComponent != nullptr && oldComponent->hasParent()) {
         parent = oldComponent->parent();
     }
+    if (newComponent->isImport()) {
+        auto model = owningModel(oldComponent);
+        if (model != nullptr) {
+            model->addImportSource(newComponent->importSource());
+        }
+    }
+
     if (removeComponent(index)) {
-        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), component);
-        component->setParent(parent);
+        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), newComponent);
+        newComponent->setParent(parent);
+
         status = true;
     }
 
@@ -254,6 +291,7 @@ bool ComponentEntity::replaceComponent(const std::string &name, const ComponentP
 bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated)
 {
     bool status = replaceComponent(size_t(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin()), newComponent);
+
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
             status = component(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
