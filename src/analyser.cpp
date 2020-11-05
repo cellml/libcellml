@@ -282,7 +282,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
         if (variable->mType == AnalyserInternalVariable::Type::UNKNOWN) {
             variable->mType = mComputedTrueConstant ?
                                   AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT :
-                              mComputedVariableBasedConstant ?
+                                  mComputedVariableBasedConstant ?
                                   AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT :
                                   AnalyserInternalVariable::Type::ALGEBRAIC;
         }
@@ -298,9 +298,9 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
             mOrder = ++equationOrder;
             mType = (variable->mType == AnalyserInternalVariable::Type::STATE) ?
                         Type::RATE :
-                    (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
+                        (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
                         Type::TRUE_CONSTANT :
-                    (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
+                        (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
                         Type::VARIABLE_BASED_CONSTANT :
                         Type::ALGEBRAIC;
 
