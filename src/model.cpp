@@ -142,7 +142,7 @@ bool Model::removeUnits(size_t index)
         auto units = *(mPimpl->mUnits.begin() + int64_t(index));
 
         // KRM
-        if(units->isImport()) {
+        if (units->isImport()) {
             units->importSource()->removeUnits(units);
         }
 
@@ -159,10 +159,9 @@ bool Model::removeUnits(const std::string &name)
     bool status = false;
     auto result = mPimpl->findUnits(name);
     if (result != mPimpl->mUnits.end()) {
-
         // KRM
         auto units = (*result);
-        if(units->isImport()) {
+        if (units->isImport()) {
             units->importSource()->removeUnits(units);
         }
 
@@ -179,22 +178,12 @@ bool Model::removeUnits(const UnitsPtr &units)
     bool status = false;
     auto result = mPimpl->findUnits(units);
     if (result != mPimpl->mUnits.end()) {
-
         // KRM
-        if(units->isImport()) {
+        if (units->isImport()) {
             // Creating a copy of the units: the units to be removed can be
-            // found using the name and definition, so we don't need to alter
+            // found using the name or reference, so we don't need to alter
             // the const state of the argument.
             auto copy = Units::create(units->name());
-            std::string reference;
-            std::string prefix;
-            std::string id;
-            double exponent;
-            double multiplier;
-            for (size_t index = 0; index < units->unitCount(); ++index) {
-                units->unitAttributes(index, reference, prefix, exponent, multiplier, id);
-                copy->addUnit(reference, prefix, exponent, multiplier, id);
-            }
             units->importSource()->removeUnits(copy);
         }
 
@@ -267,6 +256,10 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
     bool status = false;
     if (removeUnits(index)) {
         mPimpl->mUnits.insert(mPimpl->mUnits.begin() + int64_t(index), units);
+
+        if (units->isImport()) {
+            addImportSource(units->importSource());
+        }
         status = true;
     }
 

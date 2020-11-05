@@ -443,14 +443,14 @@ void Units::doSetImportSource(const ImportSourcePtr &importSource)
 
     auto oldImportSource = units->importSource();
 
-    if (model != nullptr) {
-        model->addImportSource(importSource);
-    }
     if (importSource != nullptr) {
+        if (model != nullptr) {
+            model->addImportSource(importSource);
+        }
         importSource->addUnits(units);
-    }
-    if (oldImportSource != nullptr) {
-        oldImportSource->removeUnits(units, false);
+        if (oldImportSource != nullptr) {
+            oldImportSource->removeUnits(units, false);
+        }
     }
     ImportedEntity::doSetImportSource(importSource);
 }
