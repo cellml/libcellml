@@ -52,7 +52,7 @@ std::chrono::steady_clock::time_point timeNow()
 
 int elapsedTime(const std::chrono::steady_clock::time_point &startTime)
 {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(timeNow() - startTime).count();
+    return int(std::chrono::duration_cast<std::chrono::milliseconds>(timeNow() - startTime).count());
 }
 
 void printIssues(const libcellml::LoggerPtr &l, bool headings, bool cellmlElementTypes, bool rule)
