@@ -968,3 +968,54 @@ TEST(Model, replaceImportedComponentByNameIndexOrReference)
     EXPECT_EQ(size_t(6), model->importSourceCount());
     EXPECT_EQ(import6, model->importSource(5));
 }
+
+TEST(Model, mergeImportSource)
+{
+    auto model = libcellml::Model::create();
+    auto importSource1 = libcellml::ImportSource::create();
+    auto importSource2 = libcellml::ImportSource::create();
+    importSource1->setUrl("myUrl.com");
+    importSource2->setUrl("myUrl.com");
+
+    model->addImportSource(importSource1);
+    model->addImportSource(importSource2);
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    model->removeAllImportSources();
+
+    model->addImportSource(importSource1, true);
+    model->addImportSource(importSource2, true);
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    model->removeAllImportSources();
+
+    auto u1 = libcellml::Units::create("u1");
+    auto u2 = libcellml::Units::create("u2");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    u1->setImportSource(importSource1);
+    c1->setImportSource(importSource1);
+    u2->setImportSource(importSource2);
+    c2->setImportSource(importSource2);
+
+    model->addImportSource(importSource1);
+    model->addImportSource(importSource2, true);
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(2), model->importSource(0)->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSource(0)->componentCount());
+}
+
+TEST(Model, removeAllComponentsImportedChild)
+{
+    auto model = libcellml::Model::create();
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto import = libcellml::ImportSource::create();
+    c2->setImportSource(import);
+    model->addComponent(c2);
+    model->addComponent(c1);
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    model->removeAllComponents();
+    EXPECT_EQ(size_t(0), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+}

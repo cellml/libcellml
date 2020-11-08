@@ -86,7 +86,6 @@ bool ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
     bool status = false;
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
-        // KRM
         if ((*result)->isImport()) {
             auto copy = (*result);
             (*result)->importSource()->removeComponent(copy);
@@ -108,7 +107,6 @@ bool ComponentEntity::removeComponent(size_t index)
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
         auto component = mPimpl->mComponents[index];
-        // KRM
         if (component->isImport()) {
             auto copy = component;
             component->importSource()->removeComponent(copy);
@@ -127,7 +125,6 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     bool status = false;
     auto result = mPimpl->findComponent(component);
     if (result != mPimpl->mComponents.end()) {
-        // KRM
         if (component->isImport()) {
             auto copy = component;
             component->importSource()->removeComponent(copy);
@@ -236,12 +233,16 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
+        ImportSourcePtr import;
         if (foundComponent->isImport()) {
+            import = foundComponent->importSource()->clone();
             // Remove from this model's import source list.
             foundComponent->importSource()->removeComponent(foundComponent);
         }
         mPimpl->mComponents.erase(result);
         foundComponent->removeParent();
+        // Add import source back *after* removing parent to prevent duplication.
+        foundComponent->setImportSource(import);
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
             foundComponent = component(i)->takeComponent(name, searchEncapsulated);
