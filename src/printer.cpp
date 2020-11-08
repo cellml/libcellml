@@ -308,7 +308,7 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, IdL
     std::string name = variable->name();
     std::string id = variable->id();
     std::string units = variable->units() != nullptr ? variable->units()->name() : "";
-    std::string intial_value = variable->initialValue();
+    std::string initial_value = variable->initialValue();
     std::string interface_type = variable->interfaceType();
     if (!name.empty()) {
         repr += " name=\"" + name + "\"";
@@ -316,8 +316,8 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, IdL
     if (!units.empty()) {
         repr += " units=\"" + units + "\"";
     }
-    if (!intial_value.empty()) {
-        repr += " initial_value=\"" + intial_value + "\"";
+    if (!initial_value.empty()) {
+        repr += " initial_value=\"" + initial_value + "\"";
     }
     if (!interface_type.empty()) {
         repr += " interface=\"" + interface_type + "\"";
