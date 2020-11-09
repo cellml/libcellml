@@ -59,7 +59,7 @@ struct AnalyserModel::AnalyserModelImpl
     bool mNeedAcschFunction = false;
     bool mNeedAcothFunction = false;
 
-    std::map<intptr_t, bool> mCachedEquivalentVariables;
+    std::map<uint_fast64_t, bool> mCachedEquivalentVariables;
 };
 
 } // namespace libcellml
