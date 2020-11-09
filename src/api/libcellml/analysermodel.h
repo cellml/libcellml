@@ -462,8 +462,7 @@ public:
     bool needAcothFunction() const;
 
     /**
-     * @brief Test to determine if @p variable1 and @p variable2 are
-     * equivalent.
+     * @brief Test to determine if @p variable1 and @p variable2 are equivalent.
      *
      * Test to see if @p variable1 is the same as or equivalent to @p variable2.
      * Returns @c true if @p variable1 is equivalent to @p variable2 and
