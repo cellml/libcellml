@@ -669,3 +669,32 @@ TEST(Model, removeImportedUnitsByNameOrReference)
     EXPECT_EQ(size_t(0), model->unitsCount());
     EXPECT_EQ(size_t(1), model->importSourceCount());
 }
+
+TEST(Units, removeUnitsObjectIdentical)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    m->addUnits(u1);
+
+    EXPECT_EQ(size_t(1), m->unitsCount());
+
+    m->removeUnits(u1);
+    EXPECT_EQ(size_t(0), m->unitsCount());
+}
+
+TEST(Units, removeUnitsObjectEquivalent)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
+    m->addUnits(u1);
+
+    EXPECT_EQ(size_t(1), m->unitsCount());
+
+    m->removeUnits(u2);
+    EXPECT_EQ(size_t(0), m->unitsCount());
+}
