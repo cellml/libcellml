@@ -349,7 +349,7 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
     }
     auto issue = Issue::create();
     issue->setDescription(msg);
-    issue->setLevel(Issue::Level::WARNING);
+    issue->setLevel(Issue::Level::ERROR);
     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
     std::vector<std::tuple<std::string, std::string, std::string>>().swap(history);
     return issue;
