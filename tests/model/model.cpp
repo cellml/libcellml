@@ -624,3 +624,33 @@ TEST(Model, removeComponentInsensitiveToOrder)
     EXPECT_EQ(size_t(0), modelParsed->componentCount());
     EXPECT_EQ(size_t(2), modelApi->componentCount());
 }
+
+TEST(Model, cleanModel)
+{
+    // Make a model with empty components, unrequired units, empty import sources.
+    auto e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" name=\"dirtyModel\">\n"
+             "    <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"importedModel.cellml\">\n"
+             "        <component component_ref=\"importMe\" name=\"importedComponent\"/>\n"
+             "    </import>\n"
+             "    <units name=\"requiredUnits\"/>\n"
+             "    <component name=\"nonEmptyComponent\">\n"
+             "        <variable name=\"x\" units=\"requiredUnits\"/>\n"
+             "    </component>\n"
+             "</model>";
+    auto parser = libcellml::Parser::create();
+    auto dirty = parser->parseModel(fileContents("dirty_model.cellml"));
+
+    EXPECT_EQ(size_t(2), dirty->importSourceCount());
+    EXPECT_EQ(size_t(2), dirty->componentCount());
+    EXPECT_EQ(size_t(2), dirty->unitsCount());
+
+    // Call the Model::clean() function to remove them.
+    auto clean = dirty->clean();
+
+    EXPECT_EQ(size_t(1), clean->importSourceCount());
+    EXPECT_EQ(size_t(1), clean->componentCount());
+    EXPECT_EQ(size_t(1), clean->unitsCount());
+
+    EXPECT_EQ(e, printer->printModel(clean));
+}
