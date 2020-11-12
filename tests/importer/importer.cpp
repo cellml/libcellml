@@ -55,10 +55,10 @@ TEST(Importer, noWarningDiamondImport)
 TEST(Importer, warningCircularImportReferencesComponent)
 {
     std::string errorMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
-                                 " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
-                                 " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
-                                 " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
-                                 " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml'.";
+                               " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
+                               " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
+                               " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
+                               " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml'.";
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/circularImport_1.cellml"));
@@ -73,10 +73,10 @@ TEST(Importer, warningCircularImportReferencesComponent)
 TEST(Importer, warningCircularImportReferencesUnits)
 {
     std::string errorMessage = "Cyclic dependencies were found when attempting to resolve units in model 'circularImport1'. The dependency loop is:\n"
-                                 " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml';\n"
-                                 " - units 'u2' is imported from 'u3' in 'circularUnits_3.cellml';\n"
-                                 " - units 'u3' is imported from 'i_am_cyclic' in 'circularUnits_1.cellml'; and\n"
-                                 " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml'.";
+                               " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml';\n"
+                               " - units 'u2' is imported from 'u3' in 'circularUnits_3.cellml';\n"
+                               " - units 'u3' is imported from 'i_am_cyclic' in 'circularUnits_1.cellml'; and\n"
+                               " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml'.";
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/circularUnits_1.cellml"));

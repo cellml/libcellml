@@ -649,9 +649,7 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model = importer->flattenModel(model);
-
     auto printer = libcellml::Printer::create();
-
     auto a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
@@ -833,19 +831,131 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
     EXPECT_EQ(e, a);
 }
 
-TEST(ModelFlattening, KRM)
+TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 {
+    std::string resolveError = "Cyclic dependencies were found when attempting to resolve components in model 'importExample2b'. The dependency loop is:\n"
+                               " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
+                               " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
+                               " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
+                               " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml'.";
+    std::string flattenError = "Cyclic dependencies were found when attempting to flatten components in model 'importExample2b'. The dependency loop is:\n"
+                               " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
+                               " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
+                               " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
+                               " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml'.";
+
     auto parser = libcellml::Parser::create();
-    auto originalModel = parser->parseModel(fileContents("modelflattening/segfault/importExample2b.cellml"));
+    auto originalModel = parser->parseModel(fileContents("modelflattening/importExample2b.cellml"));
     auto importer = libcellml::Importer::create();
 
+    auto printer = libcellml::Printer::create();
+    std::cout << printer->printModel(originalModel) << std::endl;
+
     // Resolve the imports.
-    importer->resolveImports(originalModel, resourcePath("modelflattening/segfault/"));
+    importer->resolveImports(originalModel, resourcePath("modelflattening/"));
 
     // Check for issues: expect one reporting the circular import.
     EXPECT_EQ(size_t(1), importer->issueCount());
-    printIssues(importer);
+    EXPECT_EQ(resolveError, importer->issue(0)->description());
 
     // Create a flattened version to demonstrate the diagnostics.
-    auto flatModel = importer->flattenModel(originalModel); // segfaults
+    importer->removeAllIssues();
+    auto flatModel = importer->flattenModel(originalModel);
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(flattenError, importer->issue(0)->description());
+    EXPECT_EQ(nullptr, flatModel);
+}
+
+TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
+{
+    std::string resolveError = "Cyclic dependencies were found when attempting to resolve units in model 'importExampleUnits'. The dependency loop is:\n"
+                               " - units 'sideB' is imported from 'myChildIsCircular' in 'circularImport1units.cellml';\n"
+                               " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml';\n"
+                               " - units 'circular2' is imported from 'shared' in 'circularImport1units.cellml'; and\n"
+                               " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml'.";
+    std::string flattenError = "Cyclic dependencies were found when attempting to flatten units in model 'importExampleUnits'. The dependency loop is:\n"
+                               " - units 'sideB' is imported from 'myChildIsCircular' in 'circularImport1units.cellml';\n"
+                               " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml';\n"
+                               " - units 'circular2' is imported from 'shared' in 'circularImport1units.cellml'; and\n"
+                               " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml'.";
+
+    auto parser = libcellml::Parser::create();
+    auto originalModel = parser->parseModel(fileContents("modelflattening/importExampleUnits.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    // Resolve the imports.
+    importer->resolveImports(originalModel, resourcePath("modelflattening/"));
+
+    // Check for issues: expect one reporting the circular import.
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(resolveError, importer->issue(0)->description());
+
+    // Create a flattened version to demonstrate the diagnostics.
+    importer->removeAllIssues();
+    auto flatModel = importer->flattenModel(originalModel);
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(flattenError, importer->issue(0)->description());
+    EXPECT_EQ(nullptr, flatModel);
+}
+
+TEST(ModelFlattening, resolveFlattenMissingModel)
+{
+    auto e = "Component 'left' requires a model imported from 'diamond_point.cellml' which is not available in the importer.";
+    auto parser = libcellml::Parser::create();
+    auto originalModel = parser->parseModel(fileContents("importer/diamond.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    // Resolve imports.
+    importer->resolveImports(originalModel, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    // Corrupt the importer library by removing a model that's required.
+    importer->replaceModel(nullptr, importer->key(1));
+
+    // Attempt to flatten the model.
+    auto flatModel = importer->flattenModel(originalModel);
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(ModelFlattening, resolveFlattenMissingComponent)
+{
+    auto e = "Component 'left' imports a component named 'pointyBit' from the model imported from 'diamond_point.cellml'. The component could not be found.";
+    auto parser = libcellml::Parser::create();
+    auto originalModel = parser->parseModel(fileContents("importer/diamond.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    // Resolve imports.
+    importer->resolveImports(originalModel, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    // Corrupt the importer library by removing a component from a model that's required.
+    auto pointModel = importer->library(1);
+    pointModel->removeComponent("pointyBit");
+
+    // Attempt to flatten the model.
+    auto flatModel = importer->flattenModel(originalModel);
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(ModelFlattening, resolveFlattenMissingUnits)
+{
+    auto e = "Units 'units1_imported' imports units named 'units1' from the model imported from 'units_source.cellml'. The units could not be found.";
+    auto parser = libcellml::Parser::create();
+    auto originalModel = parser->parseModel(fileContents("importer/units_imported.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    // Resolve imports.
+    importer->resolveImports(originalModel, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    // Corrupt the importer library by renaming units from a model that's required.
+    auto importedModel = importer->library(0);
+    importedModel->units(0)->setName("someOtherName");
+
+    // Attempt to flatten the model.
+    auto flatModel = importer->flattenModel(originalModel);
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
 }

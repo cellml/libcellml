@@ -318,6 +318,15 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE:
         EXPECT_EQ("3.10.8", e->referenceHeading());
         break;
+    case libcellml::Issue::ReferenceRule::IMPORTER_NULL_MODEL:
+        EXPECT_EQ("", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT:
+        EXPECT_EQ("", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_UNITS:
+        EXPECT_EQ("", e->referenceHeading());
+        break;
     case libcellml::Issue::ReferenceRule::UNSPECIFIED:
         EXPECT_EQ("", e->referenceHeading());
         break;
