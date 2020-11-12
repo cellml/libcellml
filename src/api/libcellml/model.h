@@ -425,6 +425,8 @@ public:
      */
     bool hasImportSource(const ImportSourcePtr &importSrc) const;
 
+    void clean(); // KRM
+
 private:
     Model(); /**< Constructor. */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
