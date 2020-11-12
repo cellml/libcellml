@@ -3,7 +3,7 @@
   <component name="emptyComponent"/>
   <component name="emptyChildComponent"/>
   <component name="nonEmptyComponent">
-    <variable name="x" units="requiredUnits"/>
+    <variable name="x" units="dimensionless"/>
   </component>
   <encapsulation>
     <component_ref component="emptyComponent">
