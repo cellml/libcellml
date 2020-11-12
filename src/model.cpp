@@ -551,12 +551,13 @@ bool Model::fixVariableInterfaces()
 
 bool isComponentEmpty(const ComponentPtr &component)
 {
-    for (size_t c = 0; c < component->componentCount(); ++c) {
-        if (!isComponentEmpty(component->component(c))) {
-            return false;
+    for (int i = int(component->componentCount() - 1); i >= 0; --i) {
+        if (isComponentEmpty(component->component(size_t(i)))) {
+            component->removeComponent(size_t(i));
         }
     }
-    return (component->variableCount() + component->resetCount()) == 0
+
+    return (component->variableCount() + component->resetCount() + component->componentCount()) == 0
            && component->math().empty()
            && !component->isImport();
 }
