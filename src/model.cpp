@@ -18,7 +18,11 @@ limitations under the License.
 
 #include <algorithm>
 #include <fstream>
+
+#include <iostream> // KRM
+
 #include <map>
+#include <set>
 #include <sstream>
 #include <stack>
 #include <utility>
@@ -46,11 +50,15 @@ namespace libcellml {
  */
 struct Model::ModelImpl
 {
+    Model *mModel = nullptr;
+
     std::vector<UnitsPtr> mUnits;
     std::vector<ImportSourcePtr> mImports;
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
+
+    std::vector<UnitsPtr> buildUnusedUnitsList();
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -68,11 +76,13 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &unit
 Model::Model()
     : mPimpl(new ModelImpl())
 {
+    mPimpl->mModel = this;
 }
 
 Model::Model(const std::string &name)
     : mPimpl(new ModelImpl())
 {
+    mPimpl->mModel = this;
     setName(name);
 }
 
@@ -537,6 +547,72 @@ bool Model::fixVariableInterfaces()
     }
 
     return allOk;
+}
+
+bool isComponentEmpty(const ComponentPtr &component)
+{
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        if (!isComponentEmpty(component->component(c))) {
+            return false;
+        }
+    }
+    return (component->variableCount() + component->resetCount()) == 0
+           && component->math().empty()
+           && !component->isImport();
+}
+
+void checkUnits(const ComponentPtr &component, std::vector<UnitsPtr> &unused)
+{
+    std::set<UnitsPtr> testUnits;
+
+    for (size_t v = 0; v < component->variableCount(); ++v) {
+        auto u = component->variable(v)->units();
+        if (u != nullptr) {
+            testUnits.insert(u);
+        }
+    }
+
+    std::vector<UnitsPtr> result;
+    std::set_difference(unused.begin(), unused.end(), testUnits.begin(), testUnits.end(),
+                        std::inserter(result, result.end()));
+
+    unused = result;
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        checkUnits(component->component(c), unused);
+    }
+}
+
+std::vector<UnitsPtr> Model::ModelImpl::buildUnusedUnitsList()
+{
+    // Copy the existing units list.
+    auto unused = mUnits;
+
+    for (size_t c = 0; c < mModel->componentCount(); ++c) {
+        checkUnits(mModel->component(c), unused);
+    }
+    return unused;
+}
+
+void Model::clean()
+{
+    // Remove empty import sources.
+    for (int i = int(importSourceCount() - 1); i >= 0; --i) {
+        auto import = importSource(size_t(i));
+        if (import->componentCount() + import->unitsCount() == 0) {
+            removeImportSource(import);
+        }
+    }
+
+    // Remove empty components.
+    for (int i = int(componentCount() - 1); i >= 0; --i) {
+        if (isComponentEmpty(component(size_t(i)))) {
+            removeComponent(size_t(i));
+        }
+    }
+    auto unusedUnits = mPimpl->buildUnusedUnitsList();
+    for (auto &u : unusedUnits) {
+        removeUnits(u);
+    }
 }
 
 } // namespace libcellml
