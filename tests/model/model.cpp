@@ -639,18 +639,18 @@ TEST(Model, cleanModel)
              "    </component>\n"
              "</model>";
     auto parser = libcellml::Parser::create();
-    auto dirty = parser->parseModel(fileContents("dirty_model.cellml"));
+    auto model = parser->parseModel(fileContents("dirty_model.cellml"));
 
-    EXPECT_EQ(size_t(2), dirty->importSourceCount());
-    EXPECT_EQ(size_t(2), dirty->componentCount());
-    EXPECT_EQ(size_t(2), dirty->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(2), model->unitsCount());
 
     // Call the Model::clean() function to remove them.
-    auto clean = dirty->clean();
+    model->clean();
 
-    EXPECT_EQ(size_t(1), clean->importSourceCount());
-    EXPECT_EQ(size_t(1), clean->componentCount());
-    EXPECT_EQ(size_t(1), clean->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
+    EXPECT_EQ(size_t(1), model->unitsCount());
 
-    EXPECT_EQ(e, printer->printModel(clean));
+    EXPECT_EQ(e, printer->printModel(model));
 }
