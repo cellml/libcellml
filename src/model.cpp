@@ -18,9 +18,6 @@ limitations under the License.
 
 #include <algorithm>
 #include <fstream>
-
-#include <iostream> // KRM
-
 #include <map>
 #include <set>
 #include <sstream>
@@ -50,15 +47,11 @@ namespace libcellml {
  */
 struct Model::ModelImpl
 {
-    Model *mModel = nullptr;
-
     std::vector<UnitsPtr> mUnits;
     std::vector<ImportSourcePtr> mImports;
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
-
-    std::vector<UnitsPtr> buildUnusedUnitsList();
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -76,13 +69,11 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &unit
 Model::Model()
     : mPimpl(new ModelImpl())
 {
-    mPimpl->mModel = this;
 }
 
 Model::Model(const std::string &name)
     : mPimpl(new ModelImpl())
 {
-    mPimpl->mModel = this;
     setName(name);
 }
 
@@ -583,13 +574,14 @@ void checkUnits(const ComponentPtr &component, std::vector<UnitsPtr> &unused)
     }
 }
 
-std::vector<UnitsPtr> Model::ModelImpl::buildUnusedUnitsList()
+std::vector<UnitsPtr> buildUnusedUnitsList(const ModelPtr &model)
 {
-    // Copy the existing units list.
-    auto unused = mUnits;
-
-    for (size_t c = 0; c < mModel->componentCount(); ++c) {
-        checkUnits(mModel->component(c), unused);
+    std::vector<UnitsPtr> unused;
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        unused.push_back(model->units(u));
+    }
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        checkUnits(model->component(c), unused);
     }
     return unused;
 }
@@ -610,8 +602,7 @@ void Model::clean()
             removeComponent(size_t(i));
         }
     }
-    auto unusedUnits = mPimpl->buildUnusedUnitsList();
-    for (auto &u : unusedUnits) {
+    for (auto &u : buildUnusedUnitsList(shared_from_this())) {
         removeUnits(u);
     }
 }
