@@ -18,9 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <fstream>
-#include <iterator>
 #include <map>
-#include <set>
 #include <sstream>
 #include <stack>
 #include <utility>
@@ -556,20 +554,19 @@ bool isComponentEmpty(const ComponentPtr &component)
 
 void checkUnits(const ComponentPtr &component, std::vector<UnitsPtr> &unused)
 {
-    std::set<UnitsPtr> testUnits;
-
     for (size_t v = 0; v < component->variableCount(); ++v) {
         auto u = component->variable(v)->units();
         if (u != nullptr) {
-            testUnits.insert(u);
+            auto it = std::find_if(unused.begin(), unused.end(), [=](const UnitsPtr &t) -> bool {
+                // KRM Not sure whether including names is a good idea or not.  They should be linked by
+                //     pointers only anyway, but the findUnits function is still testing names and equivalence ...
+                return t == u || u->name() == t->name();
+            });
+            if (it != unused.end()) {
+                unused.erase(it);
+            }
         }
     }
-
-    std::vector<UnitsPtr> result;
-    std::set_difference(unused.begin(), unused.end(), testUnits.begin(), testUnits.end(),
-                        std::inserter(result, result.end()));
-
-    unused = result;
     for (size_t c = 0; c < component->componentCount(); ++c) {
         checkUnits(component->component(c), unused);
     }

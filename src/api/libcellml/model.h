@@ -431,7 +431,7 @@ public:
      * 
      *  Remove any empty import sources, empty components, and unused units from the model.
      */
-    void clean(); 
+    void clean();
 
 private:
     Model(); /**< Constructor. */
