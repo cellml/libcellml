@@ -379,6 +379,46 @@ class ModelTestCase(unittest.TestCase):
 
         self.assertEqual(0, m.importSourceCount())
 
+    def test_clean(self):
+
+        from libcellml import Component, Model, ImportSource, Units, Variable
+
+        model = Model()
+        c1 = Component('c1')
+        c2 = Component('c2')
+        c3 = Component('c3')
+        u1 = Units('used')
+        u2 = Units('not_used')
+        v = Variable('x')
+
+        empty_import_source = ImportSource()
+        nonempty_import_source = ImportSource()
+
+        model.addComponent(c1)
+        model.addComponent(c2)
+        model.addComponent(c3)
+        model.addUnits(u1)
+        model.addUnits(u2)
+        
+        c3.setImportSource(nonempty_import_source)
+
+        v.setUnits(u1)
+        c1.addVariable(v)
+
+        model.addImportSource(empty_import_source)
+        model.addImportSource(nonempty_import_source)
+
+        self.assertEqual(2, model.importSourceCount())
+        self.assertEqual(3, model.componentCount())
+        self.assertEqual(2, model.unitsCount())
+
+        # Call the Model.clean() function to remove unneeded items.
+        model.clean()
+
+        self.assertEqual(1, model.importSourceCount())
+        self.assertEqual(2, model.componentCount())
+        self.assertEqual(1, model.unitsCount())
+
 
 if __name__ == '__main__':
     unittest.main()
