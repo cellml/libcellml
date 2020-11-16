@@ -231,10 +231,14 @@ bool ImportSource::removeUnits(UnitsPtr &units, bool setEmpty)
         return false;
     }
 
-    auto import = std::dynamic_pointer_cast<ImportedEntity>(units);
-    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](std::weak_ptr<ImportedEntity> &p) {
-        return p.lock() == import;
-    });
+    auto it = mPimpl->mImports.begin();
+    for (auto i : mPimpl->mUnits) {
+        auto test = std::dynamic_pointer_cast<Units>(mPimpl->mImports.at(i).lock());
+        if ((test == units) || (test->name() == units->name())) {
+            std::advance(it, int(i));
+            break;
+        }
+    }
 
     if (it == mPimpl->mImports.end()) {
         return false;
@@ -256,18 +260,15 @@ bool ImportSource::removeUnits(size_t index, bool setEmpty)
         return false;
     }
 
-    auto u = units(index);
-
-    auto import = std::dynamic_pointer_cast<ImportedEntity>(u);
-    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](std::weak_ptr<ImportedEntity> &p) {
-        return p.lock() == import;
-    });
+    auto u = mPimpl->mUnits[index];
+    auto it = mPimpl->mImports.begin() + int(u);
+    auto units = std::dynamic_pointer_cast<Units>((*it).lock());
 
     mPimpl->removeItem(it);
 
     if (setEmpty) {
         ImportSourcePtr empty = nullptr;
-        u->setImportSource(empty);
+        units->setImportSource(empty);
     }
 
     return true;
