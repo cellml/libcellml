@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <fstream>
+
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
@@ -767,4 +769,138 @@ TEST(Printer, noChangeToManualIds)
     auto model = parser->parseModel(in);
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(in, printer->printModel(model, true));
+}
+
+TEST(Printer, prettyPrint)
+{
+    auto printer = libcellml::Printer::create();
+
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathFooter = "</math>\n";
+
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component1 = libcellml::Component::create("component1");
+    model->addComponent(component1);
+    std::string equation1 =
+        "  <apply><eq/>\n"
+        "    <apply><diff/>\n"
+        "      <bvar><ci>t</ci></bvar>\n"
+        "      <ci>X</ci>\n"
+        "    </apply>\n"
+        "    <apply><minus/>\n"
+        "      <apply><times/>\n"
+        "        <ci>alpha_X</ci>\n"
+        "        <apply><minus/>\n"
+        "          <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "          <ci>X</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "      <apply><times/>\n"
+        "        <ci>beta_X</ci>\n"
+        "        <ci>X</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n";
+    component1->setMath(mathHeader);
+    component1->appendMath(equation1);
+    component1->appendMath(mathFooter);
+
+    auto component2 = libcellml::Component::create("component2");
+    model->addComponent(component2);
+    std::string equation2 =
+        "<apply><eq/>\n"
+        "<apply><diff/>\n"
+        "<bvar><ci>t</ci></bvar>\n"
+        "<ci>X</ci>\n"
+        "</apply>\n"
+        "<apply><minus/>\n"
+        "<apply><times/>\n"
+        "<ci>alpha_X</ci>\n"
+        "<apply><minus/>\n"
+        "<cn cellml:units=\"dimensionless\">1</cn>\n"
+        "<ci>X</ci>\n"
+        "</apply>\n"
+        "</apply>\n"
+        "<apply><times/>\n"
+        "<ci>beta_X</ci>\n"
+        "<ci>X</ci>\n"
+        "</apply>\n"
+        "</apply>\n"
+        "</apply>\n";
+
+    component2->setMath(mathHeader);
+    component2->appendMath(equation2);
+    component2->appendMath(mathFooter);
+
+    auto component3 = libcellml::Component::create("component3");
+    model->addComponent(component3);
+    std::string equation3 =
+        "<apply><eq/>"
+        "<apply><diff/>"
+        "<bvar><ci>t</ci></bvar>"
+        "<ci>X</ci>"
+        "</apply>"
+        "<apply><minus/>"
+        "<apply><times/>"
+        "<ci>alpha_X</ci>"
+        "<apply><minus/>"
+        "<cn cellml:units=\"dimensionless\">1</cn>"
+        "<ci>X</ci>"
+        "</apply>"
+        "</apply>"
+        "<apply><times/>"
+        "<ci>beta_X</ci>"
+        "<ci>X</ci>"
+        "</apply>"
+        "</apply>"
+        "</apply>";
+    component3->setMath(mathHeader);
+    component3->appendMath(equation3);
+    component3->appendMath(mathFooter);
+
+    auto component4 = libcellml::Component::create("component4");
+    model->addComponent(component4);
+    std::string equation4 =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"><apply><eq/><apply><diff/><bvar><ci>t</ci></bvar><ci>X</ci></apply><apply><minus/><apply><times/><ci>alpha_X</ci><apply><minus/><cn cellml:units=\"dimensionless\">1</cn><ci>X</ci></apply></apply><apply><times/><ci>beta_X</ci><ci>X</ci></apply></apply></apply></math>";
+    component4->setMath(equation4);
+
+    auto component5 = libcellml::Component::create("component5");
+    model->addComponent(component5);
+    std::string equation5 =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"><apply>          "
+        "<eq/><apply><diff/><bvar><ci>t</ci></bvar>\n\n<ci>X</ci></apply>"
+        "<apply><minus/><apply><times/><ci>     alpha_X</ci>             \n<apply><minus/>\n\n\n"
+        "<cn cellml:units=\"dimensionless\">1</cn><ci>X</ci></apply></apply><apply><times/>"
+        "<ci>beta_X</ci><ci>X</ci></apply>\n\n\n</apply></apply></math>";
+    component5->setMath(equation5);
+
+    auto component6 = libcellml::Component::create("component6");
+    model->addComponent(component6);
+    std::string equation6 =
+        "<apply><eq/>\n"
+        "  <apply><diff/>\n"
+        "    <bvar><ci>t</ci></bvar>\n"
+        "    <ci>X</ci>\n"
+        "  </apply>\n"
+        "  <apply><minus/>\n"
+        "    <apply><times/>\n"
+        "      <ci>alpha_X</ci>\n"
+        "      <apply><minus/>\n"
+        "        <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "        <ci>X</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "    <apply><times/>\n"
+        "      <ci>beta_X</ci>\n"
+        "      <ci>X</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</apply>\n";
+    component6->setMath(mathHeader);
+    component6->appendMath(equation6);
+    component6->appendMath(mathFooter);
+
+    std::cout << printer->printModel(model) << std::endl;
 }
