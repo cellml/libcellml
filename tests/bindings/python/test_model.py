@@ -77,7 +77,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertFalse(m.removeUnits(u1))
         m.addUnits(u1)
         self.assertFalse(m.removeUnits(u2))
-        self.assertFalse(m.removeUnits(u1))
+        self.assertTrue(m.removeUnits(u1))
         del [m, u1, u2]
 
     def test_remove_all_units(self):
@@ -207,8 +207,8 @@ class ModelTestCase(unittest.TestCase):
         m.addUnits(a)
         b = Units()
         self.assertFalse(m.replaceUnits(b, a))
-        self.assertFalse(m.replaceUnits(a, b))
-        self.assertFalse(m.replaceUnits(b, a))
+        self.assertTrue(m.replaceUnits(a, b))
+        self.assertTrue(m.replaceUnits(b, a))
         del [m, a, b]
 
     def test_units_count(self):

@@ -2249,3 +2249,50 @@ TEST(Parser, parserDoesNotDeleteChildrenOfInvalidEncapsulation)
     EXPECT_EQ(size_t(2), parser->errorCount());
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 }
+
+TEST(Parser, incorrectNumberOfImportSources)
+{
+    std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import.cellml\">\n"
+        "    <component component_ref=\"myComponent\" name=\"myImportedComponent\"/>\n"
+        "  </import>\n"
+        "  <component name=\"myConcreteComponent\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"myConcreteComponent\">\n"
+        "      <component_ref component=\"myImportedComponent\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+    EXPECT_EQ(size_t(1), model->importSourceCount()); // <<< model->importSourceCount() = 2!!
+}
+
+TEST(Parser, importComponentMadeConcrete)
+{
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"importMe\" name=\"importedComponent\"/>\n"
+        "  </import>\n"
+        "  <component name=\"parentComponent\"/>\n"
+        "  <component name=\"childComponent\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parentComponent\">\n"
+        "      <component_ref component=\"childComponent\">\n"
+        "        <component_ref component=\"importedComponent\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+    printIssues(parser);
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_TRUE(model->component("importedComponent")->isImport()); // Fails, false
+}

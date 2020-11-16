@@ -61,6 +61,10 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
 {
+    auto result = std::find(mUnits.begin(), mUnits.end(), units);
+    if (result != mUnits.end()) {
+        return result;
+    }
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::equivalent(u, units); });
 }
@@ -136,6 +140,10 @@ bool Model::removeUnits(size_t index)
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
         auto units = *(mPimpl->mUnits.begin() + int64_t(index));
+        if (units->isImport()) {
+            units->importSource()->removeUnits(units);
+        }
+
         units->removeParent();
         mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
         status = true;
@@ -149,6 +157,11 @@ bool Model::removeUnits(const std::string &name)
     bool status = false;
     auto result = mPimpl->findUnits(name);
     if (result != mPimpl->mUnits.end()) {
+        auto units = (*result);
+        if (units->isImport()) {
+            units->importSource()->removeUnits(units);
+        }
+
         (*result)->removeParent();
         mPimpl->mUnits.erase(result);
         status = true;
@@ -162,6 +175,14 @@ bool Model::removeUnits(const UnitsPtr &units)
     bool status = false;
     auto result = mPimpl->findUnits(units);
     if (result != mPimpl->mUnits.end()) {
+        if (units->isImport()) {
+            // Creating a copy of the units: the units to be removed can be
+            // found using the name or reference, so we don't need to alter
+            // the const state of the argument.
+            auto copy = Units::create(units->name());
+            units->importSource()->removeUnits(copy);
+        }
+
         units->removeParent();
         mPimpl->mUnits.erase(result);
         status = true;
@@ -231,6 +252,10 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
     bool status = false;
     if (removeUnits(index)) {
         mPimpl->mUnits.insert(mPimpl->mUnits.begin() + int64_t(index), units);
+
+        if (units->isImport()) {
+            addImportSource(units->importSource());
+        }
         status = true;
     }
 
@@ -257,7 +282,7 @@ bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
     return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc) != mPimpl->mImports.end();
 }
 
-bool Model::addImportSource(const ImportSourcePtr &importSrc)
+bool Model::addImportSource(const ImportSourcePtr &importSrc, bool merge)
 {
     if (importSrc == nullptr) {
         return false;
@@ -270,7 +295,33 @@ bool Model::addImportSource(const ImportSourcePtr &importSrc)
         otherModel->removeImportSource(importSrc);
     }
     importSrc->setParent(shared_from_this());
-    mPimpl->mImports.push_back(importSrc);
+    if (!merge) {
+        // Add an entirely separate copy to the model's list.
+        mPimpl->mImports.push_back(importSrc);
+        return true;
+    }
+    // Otherwise, see whether an import source with the same attributes exists and add to that instead.
+    // NB: This doesn't counteract the "hasImportSource" test above - we're only testing attributes here, not
+    // stored pointers.
+    auto url = importSrc->url();
+    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
+                           [=](const ImportSourcePtr &imp) -> bool { return imp->url() == url; });
+    if (it == mPimpl->mImports.end()) {
+        mPimpl->mImports.push_back(importSrc);
+        return true;
+    }
+    auto existingImportSource = (*it);
+    // Add contents of the given import source into the found one.
+    while (importSrc->componentCount() > 0) {
+        auto component = importSrc->component(0);
+        component->setImportSource(existingImportSource);
+        importSrc->removeComponent(0);
+    }
+    while (importSrc->unitsCount() > 0) {
+        auto units = importSrc->units(0);
+        units->setImportSource(existingImportSource);
+        importSrc->removeUnits(0);
+    }
     return true;
 }
 
