@@ -615,54 +615,55 @@ std::string Importer::key(const size_t &index)
     return it->first;
 }
 
-void getUnitsRequirements(const UnitsPtr &units, std::set<std::pair<ModelPtr, std::string>> &requirementsList)
+void getUnitsRequirements(const UnitsPtr &units, std::set<std::pair<std::string, ModelPtr>> &requirementsList)
 {
     // The given units is imported, and has a model attached to it. We need to check that anything that this Units
     // item depends on is also listed in the requirements list.
-    auto importedModel = units->importSource()->model();
-    auto importedUnits = importedModel->units(units->name());
 
     if (units->isImport()) {
-        requirementsList.insert(std::make_pair(importedModel, units->importSource()->url()));
+        auto importedModel = units->importSource()->model();
+        auto importedUnits = importedModel->units(units->importReference());
+        requirementsList.insert(std::make_pair(units->importSource()->url(), importedModel));
         getUnitsRequirements(importedUnits, requirementsList);
     }
 
-    for (size_t u = 0; u < importedUnits->unitCount(); u++) {
+    auto parent = owningModel(units);
+    for (size_t u = 0; u < units->unitCount(); u++) {
         // Check that the units item with this name in the imported model are listed
         std::string id;
         std::string childUnitsName;
         std::string prefix;
         double exponent;
         double multiplier;
-        importedUnits->unitAttributes(u, childUnitsName, prefix, exponent, multiplier, id);
-        if (!isStandardUnitName(childUnitsName) && importedModel->units(childUnitsName)->requiresImports()) {
-            getUnitsRequirements(importedModel->units(childUnitsName), requirementsList);
+        units->unitAttributes(u, childUnitsName, prefix, exponent, multiplier, id);
+        if (!isStandardUnitName(childUnitsName) && parent->units(childUnitsName)->requiresImports()) {
+            getUnitsRequirements(parent->units(childUnitsName), requirementsList);
         }
     }
 }
 
-void getComponentRequirements(const ComponentPtr &component, std::set<std::pair<ModelPtr, std::string>> &requirementsList)
+void getComponentRequirements(const ComponentPtr &component, std::set<std::pair<std::string, ModelPtr>> &requirementsList)
 {
     if (component->isImport()) {
-        requirementsList.insert(std::make_pair(component->importSource()->model(), component->importSource()->url()));
-
         auto importedModel = component->importSource()->model();
         auto importedComponent = importedModel->component(component->importReference(), true);
-
-        getComponentRequirements(importedComponent, requirementsList);
+        if (importedComponent->requiresImports()) {
+            getComponentRequirements(importedComponent, requirementsList);
+        }
+        requirementsList.insert(std::make_pair(component->importSource()->url(), component->importSource()->model()));
     }
 
     for (size_t c = 0; c < component->componentCount(); ++c) {
         auto childComponent = component->component(c);
         if (childComponent->requiresImports()) {
-            getComponentRequirements(component, requirementsList);
+            getComponentRequirements(childComponent, requirementsList);
         }
     }
 }
 
-std::set<std::pair<ModelPtr, std::string>> Importer::requirements(const ModelPtr &model)
+std::set<std::pair<std::string, ModelPtr>> Importer::requirements(const ModelPtr &model)
 {
-    std::set<std::pair<ModelPtr, std::string>> requirementsList;
+    std::set<std::pair<std::string, ModelPtr>> requirementsList;
     if (model->hasUnresolvedImports()) {
         auto issue = Issue::create();
         issue->setDescription("The model has unresolved imports.  Please resolve the imports before calling for a requirements list.");
@@ -678,13 +679,11 @@ std::set<std::pair<ModelPtr, std::string>> Importer::requirements(const ModelPtr
 
         // Add pointer to imported model which are used:
         if ((import->unitsCount() != 0) || (import->componentCount() != 0)) {
-            requirementsList.insert(std::make_pair(importedModel, import->url()));
+            requirementsList.insert(std::make_pair(import->url(), importedModel));
 
             for (size_t u = 0; u < import->unitsCount(); ++u) {
                 auto importedUnits = import->units(u);
-                if (importedUnits->requiresImports()) {
-                    getUnitsRequirements(import->units(u), requirementsList);
-                }
+                getUnitsRequirements(importedUnits, requirementsList);
             }
             for (size_t c = 0; c < import->componentCount(); ++c) {
                 auto importedComponent = import->component(c);

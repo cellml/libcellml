@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="units2">
+  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="units2.cellml">
+    <units units_ref="u2" name="u2"/>
+  </import>
+  <units name="u1">
+    <unit units="metre"/>
+    <unit units="u2"/>
+  </units>
+</model>
