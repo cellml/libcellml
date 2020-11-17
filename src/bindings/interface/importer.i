@@ -4,6 +4,7 @@
 
 %include <std_pair.i>
 %include <std_string.i>
+%include <std_set.i>
 
 %import "createconstructor.i"
 %import "logger.i"
@@ -45,6 +46,8 @@ and False if the URL key does not exist."
 %feature("docstring") libcellml::Importer::key
 "Returns a string corresponding to the key at which a model is stored in the 
 library by index, or an empty string if the index is out of range."
+
+%ignore libcellml::Importer::requirements;
 
 %{
 #include "libcellml/importer.h"

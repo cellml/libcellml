@@ -44,6 +44,17 @@ struct VariablePair::VariablePairImpl
     VariableWeakPtr mVariable2; /**< Variable 2 for the pair.*/
 };
 
+/**
+ * @brief The ImportRequirement::ImportRequirementImpl struct.
+ *
+ * The private implementation for the ImportRequirement class.
+ */
+struct ImportRequirement::ImportRequirementImpl
+{
+    ModelWeakPtr mModel; /**< Model used to resolve this requirement.*/
+    std::string mUrl; /**< URL that the model was found at, relative to the importing model.*/
+};
+
 Unit::Unit(const UnitsPtr &units, size_t index)
     : mPimpl(new UnitImpl())
 {
@@ -111,6 +122,47 @@ VariablePtr VariablePair::variable2() const
 bool VariablePair::isValid() const
 {
     return (mPimpl->mVariable1.lock() != nullptr) && (mPimpl->mVariable2.lock() != nullptr);
+}
+
+ImportRequirement::ImportRequirement(const std::string &url, const ModelPtr &model)
+    : mPimpl(new ImportRequirementImpl())
+{
+    if (model == nullptr) {
+        mPimpl->mModel.reset();
+    } else {
+        mPimpl->mModel = model;
+    }
+    mPimpl->mUrl = url;
+}
+
+ImportRequirement::~ImportRequirement()
+{
+    delete mPimpl;
+}
+
+// bool ImportRequirement::operator<(ImportRequirementPtr &ir)
+// {
+//     std::string left = mPimpl->mUrl;
+//     std::string right = ir->url();
+//     return (left < right);
+// }
+
+ImportRequirementPtr ImportRequirement::create(const std::string &url, const ModelPtr &model) noexcept
+{
+    return std::shared_ptr<ImportRequirement> {new ImportRequirement {url, model}};
+}
+
+ModelPtr ImportRequirement::model() const
+{
+    if (mPimpl->mModel.expired()) {
+        return nullptr;
+    }
+    return mPimpl->mModel.lock();
+}
+
+std::string ImportRequirement::url() const
+{
+    return mPimpl->mUrl;
 }
 
 } // namespace libcellml
