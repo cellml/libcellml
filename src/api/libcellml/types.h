@@ -138,23 +138,6 @@ private:
 };
 
 /**
- * @brief Comparison function supplied to the @c std::set operator for import requirements
- *        in the @ref Importer class.
- * 
- * Comparison function supplied to the std::set operator for import requirements
- * in the @ref Importer class.  The @ref ImportRequirement pointer is compared by its 
- * @c url() only.
- * 
- */
-struct CompareImportRequirements
-{
-    bool operator()(const ImportRequirementPtr &a, const ImportRequirementPtr &b) const
-    {
-        return a->url() < b->url();
-    }
-};
-
-/**
  * @brief The Unit class
  *
  * The Unit class contains a @ref Units to the parent Units item, and
