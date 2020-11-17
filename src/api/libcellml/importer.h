@@ -165,7 +165,7 @@ public:
      * 
      * @return A @c std::vector of @c ModelPtr objects.
      */
-    std::set<std::pair<ModelPtr,std::string>> requirements(const ModelPtr &model);
+    std::set<std::pair<std::string, ModelPtr>> requirements(const ModelPtr &model);
 
 private:
     Importer(); /**< Constructor. */
