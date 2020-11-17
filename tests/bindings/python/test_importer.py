@@ -181,6 +181,7 @@ class ValidatorTestCase(unittest.TestCase):
         i = 0
         for r in requirements:
             self.assertEqual(keys[i], r.url())
+            self.assertEqual(importer.library(resource_path('importer/requirements/'+keys[i])).name(), r.model().name())
             i += 1
 
 

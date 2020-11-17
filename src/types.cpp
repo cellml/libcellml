@@ -140,13 +140,6 @@ ImportRequirement::~ImportRequirement()
     delete mPimpl;
 }
 
-// bool ImportRequirement::operator<(ImportRequirementPtr &ir)
-// {
-//     std::string left = mPimpl->mUrl;
-//     std::string right = ir->url();
-//     return (left < right);
-// }
-
 ImportRequirementPtr ImportRequirement::create(const std::string &url, const ModelPtr &model) noexcept
 {
     return std::shared_ptr<ImportRequirement> {new ImportRequirement {url, model}};
