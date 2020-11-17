@@ -879,9 +879,9 @@ TEST(Importer, clearModelImportsBeforeResolving)
 TEST(Importer, requirementsFixCircularRef)
 {
     std::vector<std::string> expectedKeys = {
-        "importExample2components.cellml",
         "importExample2units.cellml",
-        "importExample3.cellml"};
+        "importExample3.cellml",
+        "importExample2components.cellml"};
 
     std::string e1 = "The model has unresolved imports.  Please resolve the imports before calling for a requirements list.";
     std::string e2 = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n - component 'myUnits' is imported from 'importedUnits' in 'importExample2units.cellml';\n - component 'importedUnits' is imported from 'myUnits' in 'importExample3.cellml';\n - component 'myComponent' is imported from 'importedComponent' in 'importExample2components.cellml';\n - component 'importedComponent' is imported from 'myComponent' in 'importExample3.cellml';\n - component 'circular' is imported from 'circular1' in 'circularImport1.cellml';\n - component 'circular1' is imported from 'circular2' in 'circularImport2.cellml';\n - component 'circular2' is imported from 'circular1' in 'circularImport1.cellml'; and\n - component 'circular1' is imported from 'circular2' in 'circularImport2.cellml'.";
@@ -927,8 +927,8 @@ TEST(Importer, requirementsEncapsulationUnitsWithChildren)
 {
     std::vector<std::string> expectedKeys = {
         "complicatedComponents.cellml",
-        "complicatedUnits.cellml",
         "components.cellml",
+        "complicatedUnits.cellml",
         "units1.cellml",
         "units2.cellml"};
 

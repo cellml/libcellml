@@ -47,6 +47,9 @@ and False if the URL key does not exist."
 "Returns a string corresponding to the key at which a model is stored in the 
 library by index, or an empty string if the index is out of range."
 
+// %feature("docstring") libcellml::Importer::requirements
+// "Returns a list of keys which are the import requirements of the given model."
+
 %ignore libcellml::Importer::requirements;
 
 %{

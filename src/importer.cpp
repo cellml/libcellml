@@ -616,7 +616,18 @@ std::string Importer::key(const size_t &index)
     return it->first;
 }
 
-void getUnitsRequirements(const UnitsPtr &units, std::set<const ImportRequirementPtr, CompareImportRequirements> &requirementsList)
+void addRequirement(std::vector<ImportRequirementPtr> &reqs, const ImportRequirementPtr &req)
+{
+    if (std::find_if(reqs.begin(), reqs.end(),
+                     [&req](ImportRequirementPtr &i) {
+                         return req->url() == i->url();
+                     })
+        == reqs.end()) {
+        reqs.push_back(req);
+    }
+}
+
+void getUnitsRequirements(const UnitsPtr &units, std::vector<ImportRequirementPtr> &requirementsList)
 {
     // The given units is imported, and has a model attached to it. We need to check that anything that this Units
     // item depends on is also listed in the requirements list.
@@ -624,7 +635,7 @@ void getUnitsRequirements(const UnitsPtr &units, std::set<const ImportRequiremen
     if (units->isImport()) {
         auto importedModel = units->importSource()->model();
         auto importedUnits = importedModel->units(units->importReference());
-        requirementsList.insert(ImportRequirement::create(units->importSource()->url(), importedModel));
+        addRequirement(requirementsList, ImportRequirement::create(units->importSource()->url(), importedModel));
         getUnitsRequirements(importedUnits, requirementsList);
     }
 
@@ -643,7 +654,7 @@ void getUnitsRequirements(const UnitsPtr &units, std::set<const ImportRequiremen
     }
 }
 
-void getComponentRequirements(const ComponentPtr &component, std::set<const ImportRequirementPtr, CompareImportRequirements> &requirementsList)
+void getComponentRequirements(const ComponentPtr &component, std::vector<ImportRequirementPtr> &requirementsList)
 {
     if (component->isImport()) {
         auto importedModel = component->importSource()->model();
@@ -651,7 +662,7 @@ void getComponentRequirements(const ComponentPtr &component, std::set<const Impo
         if (importedComponent->requiresImports()) {
             getComponentRequirements(importedComponent, requirementsList);
         }
-        requirementsList.insert(ImportRequirement::create(component->importSource()->url(), component->importSource()->model()));
+        addRequirement(requirementsList, ImportRequirement::create(component->importSource()->url(), component->importSource()->model()));
     }
 
     for (size_t c = 0; c < component->componentCount(); ++c) {
@@ -662,9 +673,9 @@ void getComponentRequirements(const ComponentPtr &component, std::set<const Impo
     }
 }
 
-std::set<const ImportRequirementPtr, CompareImportRequirements> Importer::requirements(const ModelPtr &model)
+std::vector<ImportRequirementPtr> Importer::requirements(const ModelPtr &model)
 {
-    std::set<const ImportRequirementPtr, CompareImportRequirements> requirementsList;
+    std::vector<ImportRequirementPtr> requirementsList;
     if (model->hasUnresolvedImports()) {
         auto issue = Issue::create();
         issue->setDescription("The model has unresolved imports.  Please resolve the imports before calling for a requirements list.");
@@ -680,7 +691,7 @@ std::set<const ImportRequirementPtr, CompareImportRequirements> Importer::requir
 
         // Add pointer to imported model which are used:
         if ((import->unitsCount() != 0) || (import->componentCount() != 0)) {
-            requirementsList.insert(ImportRequirement::create(import->url(), importedModel));
+            addRequirement(requirementsList, ImportRequirement::create(import->url(), importedModel));
 
             for (size_t u = 0; u < import->unitsCount(); ++u) {
                 auto importedUnits = import->units(u);
@@ -694,6 +705,7 @@ std::set<const ImportRequirementPtr, CompareImportRequirements> Importer::requir
             }
         }
     }
+
     return requirementsList;
 }
 
