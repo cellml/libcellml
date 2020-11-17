@@ -13,7 +13,7 @@ class ImportRequirementTestCase(unittest.TestCase):
         from libcellml import Model
         m = Model()
         url = 'i-am-a-url'
-        x = ImportRequirement.create(url, m)
+        x = ImportRequirement(url, m)
         del x
 
     def test_url_model(self):
@@ -23,9 +23,10 @@ class ImportRequirementTestCase(unittest.TestCase):
         m = Model()
         m.setName('my_model_name')
         url = 'i-am-a-url'
-        x = ImportRequirement.create(url, m)
+        x = ImportRequirement(url, m)
         self.assertEquals(url, x.url())
         self.assertEquals('my_model_name', x.model().name())
+        del x
 
     def test_requirements(self):
         from libcellml import Parser, Importer
