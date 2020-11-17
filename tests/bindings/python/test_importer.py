@@ -157,31 +157,31 @@ class ValidatorTestCase(unittest.TestCase):
         importer.clearImports(model)
         self.assertTrue(model.hasUnresolvedImports())
 
-    # def test_requirements(self):
-    #     from libcellml import Parser, Importer
-    #     keys = [
-    #         'complicatedComponents.cellml',
-    #         'complicatedUnits.cellml',
-    #         'components.cellml',
-    #         'units1.cellml',
-    #         'units2.cellml'
-    #     ]
+    def test_requirements(self):
+        from libcellml import Parser, Importer
+        keys = [
+            'complicatedComponents.cellml',
+            'components.cellml',
+            'complicatedUnits.cellml',
+            'units1.cellml',
+            'units2.cellml'
+        ]
 
-    #     parser = Parser()
-    #     model = parser.parseModel(
-    #         file_contents('importer/requirements/complicatedExample.cellml'))
-    #     self.assertEqual(0, parser.issueCount())
+        parser = Parser()
+        model = parser.parseModel(
+            file_contents('importer/requirements/complicatedExample.cellml'))
+        self.assertEqual(0, parser.issueCount())
 
-    #     importer = Importer()
-    #     importer.resolveImports(model, resource_path('importer/requirements/'))
-    #     self.assertEqual(0, importer.issueCount())
+        importer = Importer()
+        importer.resolveImports(model, resource_path('importer/requirements/'))
+        self.assertEqual(0, importer.issueCount())
 
-    #     requirements = importer.requirements(model)
+        requirements = importer.requirements(model)
 
-    #     i = 0
-    #     for r, m in requirements:
-    #         self.assertEqual(keys[i], r)
-    #         i += 1
+        i = 0
+        for r in requirements:
+            self.assertEqual(keys[i], r.url())
+            i += 1
 
 
 if __name__ == '__main__':
