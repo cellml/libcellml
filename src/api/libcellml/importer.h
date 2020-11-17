@@ -159,13 +159,15 @@ public:
     void clearImports(ModelPtr &model);
 
     /**
-     * @brief Return a vector of @c Model items which are import requirements of the given @p model.
-     * Return a vector of @c Model items which are import requirements of the given @p model.
+     * @brief Return a set of strings which are the import requirements of the given @p model.
+     * 
+     * Return a set of strings which are import requirements of the given @p model.
+     * 
      * @param model A @c Model which imports other models.  
      * 
-     * @return A @c std::vector of @c ModelPtr objects.
+     * @return A @c std::set of strings.
      */
-    std::set<std::pair<std::string, ModelPtr>> requirements(const ModelPtr &model);
+    std::set<const ImportRequirementPtr, CompareImportRequirements> requirements(const ModelPtr &model);
 
 private:
     Importer(); /**< Constructor. */

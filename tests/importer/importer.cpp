@@ -910,12 +910,15 @@ TEST(Importer, requirementsFixCircularRef)
 
     // Get requirements, and expect that it's not including the unneeded circular ones now.
     auto requirements = importer->requirements(model);
+    for (auto &r : requirements) {
+        std::cout << r->url() << std::endl;
+    }
     EXPECT_EQ(size_t(3), requirements.size());
     EXPECT_EQ(size_t(5), importer->libraryCount());
 
     size_t i = 0;
     for (auto &r : requirements) {
-        EXPECT_EQ(expectedKeys[i], r.first);
+        EXPECT_EQ(expectedKeys[i], r->url());
         i++;
     }
 }
@@ -942,7 +945,7 @@ TEST(Importer, requirementsEncapsulationUnitsWithChildren)
 
     size_t i = 0;
     for (auto &r : requirements) {
-        EXPECT_EQ(expectedKeys.at(i), r.first);
+        EXPECT_EQ(expectedKeys.at(i), r->url());
         i++;
     }
 }

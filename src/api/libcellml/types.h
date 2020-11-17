@@ -67,6 +67,8 @@ using EntityPtr = std::shared_ptr<Entity>; /**< Type definition for shared entit
 using EntityConstPtr = std::shared_ptr<const Entity>; /**< Type definition for shared entity const pointer. */
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
 using ImportedEntityPtr = std::shared_ptr<ImportedEntity>; /**< Type definition for shared imported entity pointer. */
+class ImportRequirement; /**< Forward declaration of the ImportRequirement class. */
+using ImportRequirementPtr = std::shared_ptr<ImportRequirement>; /**< Type definition for shared import requirement pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
 using ImportSourcePtr = std::shared_ptr<ImportSource>; /**< Type definition for shared import source pointer. */
 class Model; /**< Forward declaration of Model class. */
@@ -81,6 +83,76 @@ class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
 class VariablePair; /**< Forward declaration of VariablePair class. */
 using VariablePairPtr = std::shared_ptr<VariablePair>; /**< Type definition for shared variable pair pointer. */
+
+/**
+ * @brief The ImportRequirement class
+ * 
+ * This class contains two pieces of information:
+ *  - the URL at which this import dependency was found, relative to the importing file; and
+ *  - the @c ModelPtr which is created by parsing the URL.
+ */
+class LIBCELLML_EXPORT ImportRequirement
+{
+public:
+    ~ImportRequirement(); /**< Destructor. */
+    ImportRequirement() = delete; /**< Constructor. */
+    ImportRequirement(const ImportRequirement &rhs) = delete; /**< Copy constructor. */
+    ImportRequirement(ImportRequirement &&rhs) noexcept = delete; /**< Move constructor. */
+    ImportRequirement &operator=(ImportRequirement rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create an ImportRequirement object.
+     *
+     * Factory method to create an @ref ImportRequirement.  Create a requirement item with url
+     * and @ref Model with::
+     *
+     *   auto req = libcellml::ImportRequirementPtr::create(url, model);
+     *
+     * @return A smart pointer to an @ref ImportRequirement object.
+     */
+    static ImportRequirementPtr create(const std::string &url, const ModelPtr &model) noexcept;
+
+    /**
+     * @brief Get the URL string.
+     *
+     * Get the URL string.
+     *
+     * @return The URL string.
+     */
+    std::string url() const;
+
+    /**
+     * @brief Get the model.
+     *
+     * Get the @c ModelPtr which is used to resolve the imports.
+     *
+     * @return The model.
+     */
+    ModelPtr model() const;
+
+private:
+    explicit ImportRequirement(const std::string &url, const ModelPtr &model); /**< Constructor with two variables as parameters. */
+
+    struct ImportRequirementImpl; /**< Forward declaration for pImpl idiom. */
+    ImportRequirementImpl *mPimpl; /**< Private member to implementation pointer. */
+};
+
+/**
+ * @brief Comparison function supplied to the @c std::set operator for import requirements
+ *        in the @ref Importer class.
+ * 
+ * Comparison function supplied to the std::set operator for import requirements
+ * in the @ref Importer class.  The @ref ImportRequirement pointer is compared by its 
+ * @c url() only.
+ * 
+ */
+struct CompareImportRequirements
+{
+    bool operator()(const ImportRequirementPtr &a, const ImportRequirementPtr &b) const
+    {
+        return a->url() < b->url();
+    }
+};
 
 /**
  * @brief The Unit class

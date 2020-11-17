@@ -29,6 +29,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/parser.h"
 #include "libcellml/reset.h"
+#include "libcellml/types.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
@@ -615,7 +616,7 @@ std::string Importer::key(const size_t &index)
     return it->first;
 }
 
-void getUnitsRequirements(const UnitsPtr &units, std::set<std::pair<std::string, ModelPtr>> &requirementsList)
+void getUnitsRequirements(const UnitsPtr &units, std::set<const ImportRequirementPtr, CompareImportRequirements> &requirementsList)
 {
     // The given units is imported, and has a model attached to it. We need to check that anything that this Units
     // item depends on is also listed in the requirements list.
@@ -623,7 +624,7 @@ void getUnitsRequirements(const UnitsPtr &units, std::set<std::pair<std::string,
     if (units->isImport()) {
         auto importedModel = units->importSource()->model();
         auto importedUnits = importedModel->units(units->importReference());
-        requirementsList.insert(std::make_pair(units->importSource()->url(), importedModel));
+        requirementsList.insert(ImportRequirement::create(units->importSource()->url(), importedModel));
         getUnitsRequirements(importedUnits, requirementsList);
     }
 
@@ -642,7 +643,7 @@ void getUnitsRequirements(const UnitsPtr &units, std::set<std::pair<std::string,
     }
 }
 
-void getComponentRequirements(const ComponentPtr &component, std::set<std::pair<std::string, ModelPtr>> &requirementsList)
+void getComponentRequirements(const ComponentPtr &component, std::set<const ImportRequirementPtr, CompareImportRequirements> &requirementsList)
 {
     if (component->isImport()) {
         auto importedModel = component->importSource()->model();
@@ -650,7 +651,7 @@ void getComponentRequirements(const ComponentPtr &component, std::set<std::pair<
         if (importedComponent->requiresImports()) {
             getComponentRequirements(importedComponent, requirementsList);
         }
-        requirementsList.insert(std::make_pair(component->importSource()->url(), component->importSource()->model()));
+        requirementsList.insert(ImportRequirement::create(component->importSource()->url(), component->importSource()->model()));
     }
 
     for (size_t c = 0; c < component->componentCount(); ++c) {
@@ -661,9 +662,9 @@ void getComponentRequirements(const ComponentPtr &component, std::set<std::pair<
     }
 }
 
-std::set<std::pair<std::string, ModelPtr>> Importer::requirements(const ModelPtr &model)
+std::set<const ImportRequirementPtr, CompareImportRequirements> Importer::requirements(const ModelPtr &model)
 {
-    std::set<std::pair<std::string, ModelPtr>> requirementsList;
+    std::set<const ImportRequirementPtr, CompareImportRequirements> requirementsList;
     if (model->hasUnresolvedImports()) {
         auto issue = Issue::create();
         issue->setDescription("The model has unresolved imports.  Please resolve the imports before calling for a requirements list.");
@@ -679,7 +680,7 @@ std::set<std::pair<std::string, ModelPtr>> Importer::requirements(const ModelPtr
 
         // Add pointer to imported model which are used:
         if ((import->unitsCount() != 0) || (import->componentCount() != 0)) {
-            requirementsList.insert(std::make_pair(import->url(), importedModel));
+            requirementsList.insert(ImportRequirement::create(import->url(), importedModel));
 
             for (size_t u = 0; u < import->unitsCount(); ++u) {
                 auto importedUnits = import->units(u);
