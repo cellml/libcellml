@@ -529,6 +529,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
 
     // Generate a pretty-print version of the model using libxml2.
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
+    xmlKeepBlanksDefault(0); // see: http://www.xmlsoft.org/html/libxml-tree.html#xmlDocDumpFormatMemoryEnc
     xmlDoc->parse(repr);
     return xmlDoc->prettyPrint();
 }
