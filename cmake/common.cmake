@@ -124,9 +124,16 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
 
   if(CLANG_TIDY_AVAILABLE)
     if(NOT "${_TARGET}" STREQUAL "cellml")
-        set(_NO_BUGPRONE_EXCEPTION_ESCAPE -bugprone-exception-escape)
-        set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
-        set(_NO_HICPP_VARARG -hicpp-vararg)
+        set(_DISABLED_BUGPRONE_CHECKS
+          -bugprone-exception-escape
+        )
+        set(_DISABLED_CPPCOREGUIDELINES_CHECKS
+          -cppcoreguidelines-avoid-non-const-global-variables
+          -cppcoreguidelines-pro-type-vararg
+        )
+        set(_DISABLED_HICPP_CHECKS
+          -hicpp-vararg
+        )
     endif()
 
     # The full list of Clang-Tidy checks can be found at
@@ -135,7 +142,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -*
       bugprone-*
       -bugprone-branch-clone
-      ${_NO_BUGPRONE_EXCEPTION_ESCAPE}
+      ${_DISABLED_BUGPRONE_CHECKS}
       cert-*
       -cert-err58-cpp
       cppcoreguidelines-*
@@ -143,9 +150,9 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -cppcoreguidelines-init-variables
       -cppcoreguidelines-owning-memory
       -cppcoreguidelines-pro-type-reinterpret-cast
-      ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
       -cppcoreguidelines-slicing
       -cppcoreguidelines-special-member-functions
+      ${_DISABLED_CPPCOREGUIDELINES_CHECKS}
       fuchsia-*
       -fuchsia-default-arguments
       -fuchsia-default-arguments-calls
@@ -158,12 +165,13 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -google-runtime-references
       hicpp-*
       -hicpp-special-member-functions
-      ${_NO_HICPP_VARARG}
+      ${_DISABLED_HICPP_CHECKS}
       llvm-*
       -llvm-qualified-auto
       -llvm-header-guard
       misc-*
       -misc-non-private-member-variables-in-classes
+      -misc-no-recursion
       modernize-*
       -modernize-make-shared
       -modernize-pass-by-value
