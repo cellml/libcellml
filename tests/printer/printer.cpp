@@ -769,6 +769,8 @@ TEST(Printer, noChangeToManualIds)
     EXPECT_EQ(in, printer->printModel(model, true));
 }
 
+const std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+const std::string mathFooter = "</math>\n";
 const std::string prettyModelString =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
@@ -808,10 +810,6 @@ const std::string prettyModelString =
 TEST(Printer, prettyPrintSpacesNewlines)
 {
     auto printer = libcellml::Printer::create();
-
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
-    std::string mathFooter = "</math>\n";
-
     auto model = libcellml::Model::create();
     model->setName("model");
 
@@ -847,10 +845,6 @@ TEST(Printer, prettyPrintSpacesNewlines)
 TEST(Printer, prettyPrintNoSpacesNewlines)
 {
     auto printer = libcellml::Printer::create();
-
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
-    std::string mathFooter = "</math>\n";
-
     auto model = libcellml::Model::create();
     model->setName("model");
 
@@ -887,10 +881,6 @@ TEST(Printer, prettyPrintNoSpacesNewlines)
 TEST(Printer, prettyPrintNoSpacesNoNewlines)
 {
     auto printer = libcellml::Printer::create();
-
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
-    std::string mathFooter = "</math>\n";
-
     auto model = libcellml::Model::create();
     model->setName("model");
 
@@ -925,10 +915,6 @@ TEST(Printer, prettyPrintNoSpacesNoNewlines)
 TEST(Printer, prettyPrintOneString)
 {
     auto printer = libcellml::Printer::create();
-
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
-    std::string mathFooter = "</math>\n";
-
     auto model = libcellml::Model::create();
     model->setName("model");
     auto component4 = libcellml::Component::create("component");
@@ -943,10 +929,6 @@ TEST(Printer, prettyPrintOneString)
 TEST(Printer, prettyPrintRandom)
 {
     auto printer = libcellml::Printer::create();
-
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
-    std::string mathFooter = "</math>\n";
-
     auto model = libcellml::Model::create();
     model->setName("model");
 
@@ -966,10 +948,6 @@ TEST(Printer, prettyPrintRandom)
 TEST(Printer, prettyPrintSpacesWrongPlaceNewlines)
 {
     auto printer = libcellml::Printer::create();
-
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
-    std::string mathFooter = "</math>\n";
-
     auto model = libcellml::Model::create();
     model->setName("model");
 
