@@ -614,4 +614,9 @@ std::string Importer::key(const size_t &index)
     return it->first;
 }
 
+void Importer::removeAllModels()
+{
+    mPimpl->mLibrary.clear();
+}
+
 } // namespace libcellml

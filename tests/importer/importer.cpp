@@ -885,7 +885,7 @@ TEST(Importer, removeAllModels)
 
     EXPECT_EQ(size_t(3), importer->libraryCount());
 
-    // importer->removeAllModels();
+    importer->removeAllModels();
 
     EXPECT_EQ(size_t(0), importer->libraryCount());
 }

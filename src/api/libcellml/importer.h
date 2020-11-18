@@ -157,6 +157,13 @@ public:
      */
     void clearImports(ModelPtr &model);
 
+    /**
+     * @brief Remove all models from the library.
+     * 
+     * Remove all models from the library.
+     */
+    void removeAllModels();
+
 private:
     Importer(); /**< Constructor. */
     explicit Importer(const std::string &name); /**< Constructor with std::string parameter*/
