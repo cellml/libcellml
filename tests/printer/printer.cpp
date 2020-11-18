@@ -880,7 +880,7 @@ TEST(Printer, prettyPrintNoSpacesNewlines)
     component2->setMath(mathHeader);
     component2->appendMath(equation2);
     component2->appendMath(mathFooter);
-    
+
     EXPECT_EQ(prettyModelString, printer->printModel(model));
 }
 
@@ -937,7 +937,7 @@ TEST(Printer, prettyPrintOneString)
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"><apply><eq/><apply><diff/><bvar><ci>t</ci></bvar><ci>X</ci></apply><apply><minus/><apply><times/><ci>alpha_X</ci><apply><minus/><cn cellml:units=\"dimensionless\">1</cn><ci>X</ci></apply></apply><apply><times/><ci>beta_X</ci><ci>X</ci></apply></apply></apply></math>";
     component4->setMath(equation4);
 
-        EXPECT_EQ(prettyModelString, printer->printModel(model));
+    EXPECT_EQ(prettyModelString, printer->printModel(model));
 }
 
 TEST(Printer, prettyPrintRandom)
@@ -959,7 +959,6 @@ TEST(Printer, prettyPrintRandom)
         "<cn cellml:units=\"dimensionless\">1</cn><ci>X     </ci></apply></apply><apply><times/>"
         "<ci>beta_X</ci><ci>X</ci></apply>\n\n\n</apply></apply></math>";
     component5->setMath(equation5);
-
 
     EXPECT_EQ(prettyModelString, printer->printModel(model));
 }
