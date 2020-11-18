@@ -37,6 +37,9 @@ limitations under the License.
 
 namespace libcellml {
 
+static const std::regex before(">[\\s\n\t]*");
+static const std::regex after("[\\s\n\t]*<");
+
 /**
  * @brief The Printer::PrinterImpl struct.
  *
@@ -129,8 +132,6 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
 
 std::string printMath(const std::string &math)
 {
-    std::regex before(">[\\s\n\t]*");
-    std::regex after("[\\s\n\t]*<");
     auto temp = std::regex_replace(math, before, ">");
     return std::regex_replace(temp, after, "<");
 }
