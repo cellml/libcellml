@@ -4,6 +4,7 @@
 
 %include <std_pair.i>
 %include <std_string.i>
+%include <std_vector.i>
 
 %import "createconstructor.i"
 %import "logger.i"
