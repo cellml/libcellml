@@ -769,7 +769,43 @@ TEST(Printer, noChangeToManualIds)
     EXPECT_EQ(in, printer->printModel(model, true));
 }
 
-TEST(Printer, prettyPrint)
+const std::string prettyModelString =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+    "  <component name=\"component\">\n"
+    "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+    "      <apply>\n"
+    "        <eq/>\n"
+    "        <apply>\n"
+    "          <diff/>\n"
+    "          <bvar>\n"
+    "            <ci>t</ci>\n"
+    "          </bvar>\n"
+    "          <ci>X</ci>\n"
+    "        </apply>\n"
+    "        <apply>\n"
+    "          <minus/>\n"
+    "          <apply>\n"
+    "            <times/>\n"
+    "            <ci>alpha_X</ci>\n"
+    "            <apply>\n"
+    "              <minus/>\n"
+    "              <cn cellml:units=\"dimensionless\">1</cn>\n"
+    "              <ci>X</ci>\n"
+    "            </apply>\n"
+    "          </apply>\n"
+    "          <apply>\n"
+    "            <times/>\n"
+    "            <ci>beta_X</ci>\n"
+    "            <ci>X</ci>\n"
+    "          </apply>\n"
+    "        </apply>\n"
+    "      </apply>\n"
+    "    </math>\n"
+    "  </component>\n"
+    "</model>\n";
+
+TEST(Printer, prettyPrintSpacesNewlines)
 {
     auto printer = libcellml::Printer::create();
 
@@ -779,7 +815,7 @@ TEST(Printer, prettyPrint)
     auto model = libcellml::Model::create();
     model->setName("model");
 
-    auto component1 = libcellml::Component::create("component1");
+    auto component1 = libcellml::Component::create("component");
     model->addComponent(component1);
     std::string equation1 =
         "  <apply><eq/>\n"
@@ -805,7 +841,20 @@ TEST(Printer, prettyPrint)
     component1->appendMath(equation1);
     component1->appendMath(mathFooter);
 
-    auto component2 = libcellml::Component::create("component2");
+    EXPECT_EQ(prettyModelString, printer->printModel(model));
+}
+
+TEST(Printer, prettyPrintNoSpacesNewlines)
+{
+    auto printer = libcellml::Printer::create();
+
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathFooter = "</math>\n";
+
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component2 = libcellml::Component::create("component");
     model->addComponent(component2);
     std::string equation2 =
         "<apply><eq/>\n"
@@ -831,8 +880,21 @@ TEST(Printer, prettyPrint)
     component2->setMath(mathHeader);
     component2->appendMath(equation2);
     component2->appendMath(mathFooter);
+    
+    EXPECT_EQ(prettyModelString, printer->printModel(model));
+}
 
-    auto component3 = libcellml::Component::create("component3");
+TEST(Printer, prettyPrintNoSpacesNoNewlines)
+{
+    auto printer = libcellml::Printer::create();
+
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathFooter = "</math>\n";
+
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component3 = libcellml::Component::create("component");
     model->addComponent(component3);
     std::string equation3 =
         "<apply><eq/>"
@@ -857,24 +919,62 @@ TEST(Printer, prettyPrint)
     component3->setMath(mathHeader);
     component3->appendMath(equation3);
     component3->appendMath(mathFooter);
+    EXPECT_EQ(prettyModelString, printer->printModel(model));
+}
 
-    auto component4 = libcellml::Component::create("component4");
+TEST(Printer, prettyPrintOneString)
+{
+    auto printer = libcellml::Printer::create();
+
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathFooter = "</math>\n";
+
+    auto model = libcellml::Model::create();
+    model->setName("model");
+    auto component4 = libcellml::Component::create("component");
     model->addComponent(component4);
     std::string equation4 =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"><apply><eq/><apply><diff/><bvar><ci>t</ci></bvar><ci>X</ci></apply><apply><minus/><apply><times/><ci>alpha_X</ci><apply><minus/><cn cellml:units=\"dimensionless\">1</cn><ci>X</ci></apply></apply><apply><times/><ci>beta_X</ci><ci>X</ci></apply></apply></apply></math>";
     component4->setMath(equation4);
 
-    auto component5 = libcellml::Component::create("component5");
+        EXPECT_EQ(prettyModelString, printer->printModel(model));
+}
+
+TEST(Printer, prettyPrintRandom)
+{
+    auto printer = libcellml::Printer::create();
+
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathFooter = "</math>\n";
+
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component5 = libcellml::Component::create("component");
     model->addComponent(component5);
     std::string equation5 =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"><apply>          "
-        "<eq/><apply><diff/><bvar><ci>t</ci></bvar>\n\n<ci>X</ci></apply>"
+        "<eq/><apply><diff/><bvar><ci>   t\n\n\t\t</ci></bvar>\n\n<ci>X</ci></apply>"
         "<apply><minus/><apply><times/><ci>     alpha_X</ci>             \n<apply><minus/>\n\n\n"
-        "<cn cellml:units=\"dimensionless\">1</cn><ci>X</ci></apply></apply><apply><times/>"
+        "<cn cellml:units=\"dimensionless\">1</cn><ci>X     </ci></apply></apply><apply><times/>"
         "<ci>beta_X</ci><ci>X</ci></apply>\n\n\n</apply></apply></math>";
     component5->setMath(equation5);
 
-    auto component6 = libcellml::Component::create("component6");
+
+    EXPECT_EQ(prettyModelString, printer->printModel(model));
+}
+
+TEST(Printer, prettyPrintSpacesWrongPlaceNewlines)
+{
+    auto printer = libcellml::Printer::create();
+
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathFooter = "</math>\n";
+
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component6 = libcellml::Component::create("component");
     model->addComponent(component6);
     std::string equation6 =
         "<apply><eq/>\n"
@@ -899,7 +999,5 @@ TEST(Printer, prettyPrint)
     component6->setMath(mathHeader);
     component6->appendMath(equation6);
     component6->appendMath(mathFooter);
-
-    std::string expectedOutput = fileContents("printer/pretty_print_mathml.cellml");
-    EXPECT_EQ(expectedOutput, printer->printModel(model));
+    EXPECT_EQ(prettyModelString, printer->printModel(model));
 }
