@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="model">
+  <component name="component1">
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>X</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_X</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>X</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_X</ci>
+            <ci>X</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="component2">
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>X</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_X</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>X</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_X</ci>
+            <ci>X</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="component3">
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>X</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_X</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>X</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_X</ci>
+            <ci>X</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="component4">
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>X</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_X</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>X</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_X</ci>
+            <ci>X</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="component5">
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>X</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>     alpha_X</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>X</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_X</ci>
+            <ci>X</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="component6">
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>X</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_X</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>X</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_X</ci>
+            <ci>X</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>

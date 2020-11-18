@@ -902,5 +902,6 @@ TEST(Printer, prettyPrint)
     component6->appendMath(equation6);
     component6->appendMath(mathFooter);
 
-    std::cout << printer->printModel(model) << std::endl;
+    std::string expectedOutput = fileContents("printer/pretty_print_mathml.cellml");
+    EXPECT_EQ(expectedOutput, printer->printModel(model));
 }
