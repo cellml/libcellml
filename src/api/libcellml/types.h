@@ -39,6 +39,10 @@ class AnalyserVariable; /**< Forward declaration of AnalyserVariable class. */
 using AnalyserVariablePtr = std::shared_ptr<AnalyserVariable>; /**< Type definition for shared analyser variable pointer. */
 class Annotator; /**< Forward declaration of Annotator class. */
 using AnnotatorPtr = std::shared_ptr<Annotator>; /**< Type definition for @c std::shared Annotator pointer. */
+
+class AnyItemNew; /**< Forward declaration of AnyItemNew class. */
+using AnyItemNewPtr = std::shared_ptr<AnyItemNew>; /**< Type definition for @c std::shared AnyItemNew pointer. */
+
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
@@ -234,5 +238,59 @@ private:
  *  - CellmlElementType::VARIABLE => std::any_cast<VariablePtr>.
  */
 using AnyItem = std::pair<CellmlElementType, std::any>;
+
+/**
+ * @brief The AnyItemNew class
+ *
+ * The AnyItemNew class contains a @c std::any item, and
+ * the @ref CellmlElementType enum that describes which type is stored.
+ */
+class LIBCELLML_EXPORT AnyItemNew
+{
+public:
+    ~AnyItemNew(); /**< Destructor. */
+    AnyItemNew(const Unit &rhs) = delete; /**< Copy constructor. */
+    AnyItemNew(AnyItemNew &&rhs) noexcept = delete; /**< Move constructor. */
+    AnyItemNew &operator=(AnyItemNew rhs) = delete; /**< Assignment operator. */
+
+
+    static AnyItemNewPtr create() noexcept;
+    /**
+     * @brief Create an AnyItemNew object.
+     *
+     * Factory method to create a @ref AnyItemNewPtr.  Create with @c std::any item
+     * and type with::
+     *
+     *   auto anyItem = libcellml::AnyItemNew::create(item, type);
+     *
+     * @return A smart pointer to a @ref AnyItemNew object.
+     */
+    static AnyItemNewPtr create(const std::any &item, CellmlElementType type) noexcept;
+
+    /**
+     * @brief Get the @c std::any item.
+     *
+     * Get the @c std::any item.
+     *
+     * @return The @c std::any item.
+     */
+    std::any item() const;
+
+    /**
+     * @brief Get the @ref CellmlElementType.
+     *
+     * Get the @ref CellmlElementType.
+     *
+     * @return The type.
+     */
+    CellmlElementType type() const;
+
+private:
+    AnyItemNew();
+    explicit AnyItemNew(const std::any &item, CellmlElementType type); /**< Constructor with two variables as parameters. */
+
+    struct AnyItemNewImpl; /**< Forward declaration for pImpl idiom. */
+    AnyItemNewImpl *mPimpl; /**< Private member to implementation pointer. */
+};
 
 } // namespace libcellml
