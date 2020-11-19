@@ -10,6 +10,7 @@ Provides support for shared pointers declared in types.h.
 %include <std_shared_ptr.i>
 %include <std_string.i>
 %include <stdint.i>
+%include "enums.i"
 
 %shared_ptr(libcellml::Analyser)
 %shared_ptr(libcellml::AnalyserEquation)
@@ -17,6 +18,7 @@ Provides support for shared pointers declared in types.h.
 %shared_ptr(libcellml::AnalyserModel)
 %shared_ptr(libcellml::AnalyserVariable)
 %shared_ptr(libcellml::Annotator)
+%shared_ptr(libcellml::AnyItem)
 %shared_ptr(libcellml::Component)
 %shared_ptr(libcellml::ComponentEntity)
 %shared_ptr(libcellml::Entity)
@@ -67,6 +69,19 @@ Provides support for shared pointers declared in types.h.
 
 %feature("docstring") libcellml::Unit::isValid
 "Test if the unit reference is valid.";
+
+%feature("docstring") libcellml::AnyItem::type
+"Get the type of the stored item.";
+
+%feature("docstring") libcellml::AnyItem::item
+"Get the stored item.";
+
+%feature("docstring") libcellml::AnyItem::setType
+"Set the type of the item.";
+
+%feature("docstring") libcellml::AnyItem::setItem
+"Set the item to store.";
+
 
 %{
 #include "libcellml/types.h"
@@ -182,6 +197,16 @@ Provides support for shared pointers declared in types.h.
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__VariablePair_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
 }
 
+
+%typemap(out) libcellml::AnyItem *AnyItem() {
+  /*
+  Here we take the returned value from the Constructor for this object and cast it
+  to the pointer that it actually is.  Once that is done we can set the required resultobj.
+  */
+  std::shared_ptr<  libcellml::AnyItem > *smartresult = reinterpret_cast<std::shared_ptr<  libcellml::AnyItem > *>(result);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__AnyItem_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
+}
+
 %extend libcellml::Unit {
     Unit(const UnitsPtr &units, size_t index) {
         auto ptr = new std::shared_ptr<libcellml::Unit>(libcellml::Unit::create(units, index));
@@ -196,7 +221,15 @@ Provides support for shared pointers declared in types.h.
     }
 }
 
+%extend libcellml::AnyItem {
+    AnyItem(libcellml::CellmlElementType type, const std::any &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
+        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    }
+}
+
 %ignore libcellml::Unit::create;
 %ignore libcellml::VariablePair::create;
+%ignore libcellml::AnyItem::create;
 
 %include "libcellml/types.h"
