@@ -33,17 +33,6 @@ struct Unit::UnitImpl
     size_t mIndex = std::numeric_limits<size_t>::max(); /**< Index of this unit.*/
 };
 
-/**
- * @brief The VariablePair::VariablePairImpl struct.
- *
- * The private implementation for the VariablePair class.
- */
-struct VariablePair::VariablePairImpl
-{
-    VariableWeakPtr mVariable1; /**< Variable 1 for the pair.*/
-    VariableWeakPtr mVariable2; /**< Variable 2 for the pair.*/
-};
-
 Unit::Unit(const UnitsPtr &units, size_t index)
     : mPimpl(new UnitImpl())
 {
@@ -81,6 +70,17 @@ bool Unit::isValid() const
     return false;
 }
 
+/**
+ * @brief The VariablePair::VariablePairImpl struct.
+ *
+ * The private implementation for the VariablePair class.
+ */
+struct VariablePair::VariablePairImpl
+{
+    VariableWeakPtr mVariable1; /**< Variable 1 for the pair.*/
+    VariableWeakPtr mVariable2; /**< Variable 2 for the pair.*/
+};
+
 VariablePair::VariablePair(const VariablePtr &variable1, const VariablePtr &variable2)
     : mPimpl(new VariablePairImpl())
 {
@@ -114,51 +114,61 @@ bool VariablePair::isValid() const
 }
 
 /**
- * @brief The AnyItemNew::AnyItemNewImpl struct.
+ * @brief The AnyItem::AnyItemImpl struct.
  *
- * The private implementation for the AnyItemNew class.
+ * The private implementation for the AnyItem class.
  */
-struct AnyItemNew::AnyItemNewImpl
+struct AnyItem::AnyItemImpl
 {
     std::any mItem = nullptr; /**< std::any item cast for the item.*/
     CellmlElementType mType = CellmlElementType::UNDEFINED; /**< Type for the item.*/
 };
 
-AnyItemNew::AnyItemNew()
-    : mPimpl(new AnyItemNewImpl())
+AnyItem::AnyItem()
+    : mPimpl(new AnyItemImpl())
 {
 }
 
-AnyItemNew::AnyItemNew(const std::any &item, CellmlElementType type)
-    : mPimpl(new AnyItemNewImpl())
+AnyItem::AnyItem(CellmlElementType type, const std::any &item)
+    : mPimpl(new AnyItemImpl())
 {
     mPimpl->mItem = item;
     mPimpl->mType = type;
 }
 
-AnyItemNew::~AnyItemNew()
+AnyItem::~AnyItem()
 {
     delete mPimpl;
 }
 
-AnyItemNewPtr AnyItemNew::create() noexcept
+AnyItemPtr AnyItem::create() noexcept
 {
-    return std::shared_ptr<AnyItemNew> {new AnyItemNew {}};
+    return std::shared_ptr<AnyItem> {new AnyItem {}};
 }
 
-AnyItemNewPtr AnyItemNew::create(const std::any &item, CellmlElementType type) noexcept
+AnyItemPtr AnyItem::create(CellmlElementType type, const std::any &item) noexcept
 {
-    return std::shared_ptr<AnyItemNew> {new AnyItemNew {item, type}};
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
 }
 
-std::any AnyItemNew::item() const
+std::any AnyItem::item() const
 {
     return mPimpl->mItem;
 }
 
-CellmlElementType AnyItemNew::type() const
+CellmlElementType AnyItem::type() const
 {
     return mPimpl->mType;
+}
+
+void AnyItem::setItem(const std::any &item)
+{
+    mPimpl->mItem = item;
+}
+
+void AnyItem::setType(CellmlElementType type)
+{
+    mPimpl->mType = type;
 }
 
 } // namespace libcellml

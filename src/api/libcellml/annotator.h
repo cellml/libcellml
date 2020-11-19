@@ -95,9 +95,9 @@ public:
      *
      * @param id A @c std::string representing the @p id to retrieve.
      *
-     * @return An @c AnyItem item (as described above).
+     * @return An @c AnyItemPtr item (as described above).
      */
-    AnyItem item(const std::string &id);
+    AnyItemPtr item(const std::string &id);
 
     /**
      * @brief Return the item at @p index with the @p id.
@@ -105,7 +105,7 @@ public:
      * From a list of items in the stored model with the given @p id string,
      * this method returns the item in the @p index position.
      *
-     * See item(const std::string &) for a full breakdown of the @ref AnyItem return value.
+     * See item(const std::string &) for a full breakdown of the @ref AnyItemPtr return value.
      *
      * @overload
      *
@@ -114,9 +114,9 @@ public:
      * @param id A @c std::string representing the @p id to retrieve.
      * @param index The index of the item to return from the list of items with @p id.
      *
-     * @return An @c AnyItem item as described in item(const std::string &).
+     * @return An @c AnyItemPtr item as described in item(const std::string &).
      */
-    AnyItem item(const std::string &id, size_t index);
+    AnyItemPtr item(const std::string &id, size_t index);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -592,7 +592,7 @@ public:
     bool isUnique(const std::string &id);
 
     /**
-     * @brief Return a @c std::vector of @c AnyItem items which have the given @p id.
+     * @brief Return a @c std::vector of @c AnyItemPtr items which have the given @p id.
      *
      * Return all items with the given @p id.
      *
@@ -601,9 +601,9 @@ public:
      *
      * @param id A @c std::string used to identify the items to retrieve.
      *
-     * @return a @c std::vector of @ref AnyItem items.
+     * @return a @c std::vector of @ref AnyItemPtr items.
      */
-    std::vector<AnyItem> items(const std::string &id);
+    std::vector<AnyItemPtr> items(const std::string &id);
 
     /**
      * @brief Return a @c std::vector of @c std::strings representing all id
@@ -642,11 +642,11 @@ public:
      *   - the given @p item is not a member of the stored model; or
      *   - the given @p item is @c nullptr.
      *
-     * @param item An @c AnyItem to which a new id will be assigned.
+     * @param item An @c AnyItemPtr to which a new id will be assigned.
      *
      * @return the new id.
      */
-    std::string assignId(const AnyItem &item);
+    std::string assignId(const AnyItemPtr &item);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p model.

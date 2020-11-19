@@ -155,9 +155,9 @@ from libcellml.enums import CellmlElementType
     CellmlElementType _itemCellmlElement(const std::string &id, size_t index)
     {
         auto itemInfo = $self->item(id, index);
-        return itemInfo.first;
+        return itemInfo->type();
     }
-    std::string _assignId(const AnyItem &item)
+    std::string _assignId(const AnyItemPtr &item)
     {
         return $self->assignId(item);
     }
