@@ -113,4 +113,52 @@ bool VariablePair::isValid() const
     return (mPimpl->mVariable1.lock() != nullptr) && (mPimpl->mVariable2.lock() != nullptr);
 }
 
+/**
+ * @brief The AnyItemNew::AnyItemNewImpl struct.
+ *
+ * The private implementation for the AnyItemNew class.
+ */
+struct AnyItemNew::AnyItemNewImpl
+{
+    std::any mItem = nullptr; /**< std::any item cast for the item.*/
+    CellmlElementType mType = CellmlElementType::UNDEFINED; /**< Type for the item.*/
+};
+
+AnyItemNew::AnyItemNew()
+    : mPimpl(new AnyItemNewImpl())
+{
+}
+
+AnyItemNew::AnyItemNew(const std::any &item, CellmlElementType type)
+    : mPimpl(new AnyItemNewImpl())
+{
+    mPimpl->mItem = item;
+    mPimpl->mType = type;
+}
+
+AnyItemNew::~AnyItemNew()
+{
+    delete mPimpl;
+}
+
+AnyItemNewPtr AnyItemNew::create() noexcept
+{
+    return std::shared_ptr<AnyItemNew> {new AnyItemNew {}};
+}
+
+AnyItemNewPtr AnyItemNew::create(const std::any &item, CellmlElementType type) noexcept
+{
+    return std::shared_ptr<AnyItemNew> {new AnyItemNew {item, type}};
+}
+
+std::any AnyItemNew::item() const
+{
+    return mPimpl->mItem;
+}
+
+CellmlElementType AnyItemNew::type() const
+{
+    return mPimpl->mType;
+}
+
 } // namespace libcellml

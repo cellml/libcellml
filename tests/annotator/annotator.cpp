@@ -78,6 +78,7 @@ TEST(Annotator, getEntityFromId)
 
     EXPECT_EQ(libcellml::CellmlElementType::MODEL, annotator->item("model_id").first);
     EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(annotator->item("model_id").second));
+    
     EXPECT_EQ(libcellml::CellmlElementType::COMPONENT, annotator->item("component_id").first);
     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(annotator->item("component_id").second));
     EXPECT_EQ(libcellml::CellmlElementType::VARIABLE, annotator->item("variable_id").first);
