@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <list>
 #include <map>
+#include <regex>
 #include <sstream>
 #include <stack>
 #include <utility>
@@ -128,13 +129,10 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
 
 std::string printMath(const std::string &math)
 {
-    std::string repr;
-    std::istringstream lines(math);
-    std::string line;
-    while (std::getline(lines, line)) {
-        repr += line;
-    }
-    return repr;
+    static const std::regex before(">[\\s\n\t]*");
+    static const std::regex after("[\\s\n\t]*<");
+    auto temp = std::regex_replace(math, before, ">");
+    return std::regex_replace(temp, after, "<");
 }
 
 void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap)
@@ -528,7 +526,12 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
     }
 
     // Generate a pretty-print version of the model using libxml2.
+    // The xmlKeepBlanksDefault is turned off so that the pretty print can adjust
+    // the spacing in the user-supplied MathML.
+    // See http://www.xmlsoft.org/html/libxml-tree.html#xmlDocDumpFormatMemoryEnc
+    // for details.
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
+    xmlKeepBlanksDefault(0);
     xmlDoc->parse(repr);
     return xmlDoc->prettyPrint();
 }
