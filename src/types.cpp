@@ -136,6 +136,62 @@ AnyItem::AnyItem(CellmlElementType type, const std::any &item)
     mPimpl->mType = type;
 }
 
+AnyItem::AnyItem(CellmlElementType type, const ComponentPtr &item)
+    : mPimpl(new AnyItemImpl())
+{
+    mPimpl->mItem = std::any(item);
+    mPimpl->mType = type;
+}
+
+AnyItem::AnyItem(CellmlElementType type, const ImportSourcePtr &item)
+    : mPimpl(new AnyItemImpl())
+{
+    mPimpl->mItem = std::any(item);
+    mPimpl->mType = type;
+}
+
+AnyItem::AnyItem(CellmlElementType type, const ModelPtr &item)
+    : mPimpl(new AnyItemImpl())
+{
+    mPimpl->mItem = std::any(item);
+    mPimpl->mType = type;
+}
+
+AnyItem::AnyItem(CellmlElementType type, const ResetPtr &item)
+    : mPimpl(new AnyItemImpl())
+{
+    mPimpl->mItem = std::any(item);
+    mPimpl->mType = type;
+}
+
+AnyItem::AnyItem(CellmlElementType type, const UnitPtr &item)
+    : mPimpl(new AnyItemImpl())
+{
+    mPimpl->mItem = std::any(item);
+    mPimpl->mType = type;
+}
+
+AnyItem::AnyItem(CellmlElementType type, const UnitsPtr &item)
+    : mPimpl(new AnyItemImpl())
+{
+    mPimpl->mItem = std::any(item);
+    mPimpl->mType = type;
+}
+
+AnyItem::AnyItem(CellmlElementType type, const VariablePairPtr &item)
+    : mPimpl(new AnyItemImpl())
+{
+    mPimpl->mItem = std::any(item);
+    mPimpl->mType = type;
+}
+
+AnyItem::AnyItem(CellmlElementType type, const VariablePtr &item)
+    : mPimpl(new AnyItemImpl())
+{
+    mPimpl->mItem = std::any(item);
+    mPimpl->mType = type;
+}
+
 AnyItem::~AnyItem()
 {
     delete mPimpl;
@@ -147,6 +203,45 @@ AnyItemPtr AnyItem::create() noexcept
 }
 
 AnyItemPtr AnyItem::create(CellmlElementType type, const std::any &item) noexcept
+{
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
+}
+
+AnyItemPtr AnyItem::create(CellmlElementType type, const ComponentPtr &item) noexcept
+{
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
+}
+
+AnyItemPtr AnyItem::create(CellmlElementType type, const ImportSourcePtr &item) noexcept
+{
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
+}
+
+AnyItemPtr AnyItem::create(CellmlElementType type, const VariablePtr &item) noexcept
+{
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
+}
+
+AnyItemPtr AnyItem::create(CellmlElementType type, const VariablePairPtr &item) noexcept
+{
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
+}
+
+AnyItemPtr AnyItem::create(CellmlElementType type, const ModelPtr &item) noexcept
+{
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
+}
+
+AnyItemPtr AnyItem::create(CellmlElementType type, const UnitsPtr &item) noexcept
+{
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
+}
+
+AnyItemPtr AnyItem::create(CellmlElementType type, const UnitPtr &item) noexcept
+{
+    return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
+}
+AnyItemPtr AnyItem::create(CellmlElementType type, const ResetPtr &item) noexcept
 {
     return std::shared_ptr<AnyItem> {new AnyItem {type, item}};
 }

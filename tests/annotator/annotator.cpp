@@ -1010,7 +1010,7 @@ TEST(Annotator, automaticIdResetItemBadInput)
 {
     auto annotator = libcellml::Annotator::create();
 
-    auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, nullptr);
+    auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, std::any(nullptr));
     EXPECT_EQ("", annotator->assignId(itemReset));
 }
 
