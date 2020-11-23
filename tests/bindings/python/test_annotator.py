@@ -27,9 +27,9 @@ class AnnotatorTestCase(unittest.TestCase):
         model = parser.parseModel(model_string)
         annotator.setModel(model)
 
-        self.assertEqual(CellmlElementType.UNDEFINED, annotator.item("not_an_id")[0])
-        self.assertEqual(CellmlElementType.UNDEFINED, annotator.item("not_an_id", 3)[0])
-        self.assertEqual(CellmlElementType.MAP_VARIABLES, annotator.item("map_variables_2")[0])
+        self.assertEqual(CellmlElementType.UNDEFINED, annotator.item("not_an_id").type())
+        self.assertEqual(CellmlElementType.UNDEFINED, annotator.item("not_an_id", 3).type())
+        self.assertEqual(CellmlElementType.MAP_VARIABLES, annotator.item("map_variables_2").type())
 
         # For coverage purposes only.
         annotator._itemCellmlElement("not_an_id", 0)
@@ -500,7 +500,7 @@ class AnnotatorTestCase(unittest.TestCase):
             items_with_id = annotator.items(id)
             count = 0
             for item in items_with_id:
-                self.assertEqual(item[0], expected_items[id][count][0])
+                self.assertEqual(item.type(), expected_items[id][count][0])
                 # SWIG copies the pointers so can't expect a comparison to be true. Not sure how to
                 # compare these ...
                 # self.assertEqual(item[1], expected_items[id][count][1])
@@ -535,6 +535,68 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator.item('duplicateId')
         self.assertEqual(1, annotator.issueCount())
         self.assertEqual(non_unique_message, annotator.issue(0).description())
+
+    def test_any_item(self):
+        from libcellml import Annotator, Parser
+        from libcellml.enums import CellmlElementType 
+
+        parser = Parser()
+        model = parser.parseModel(file_contents('annotator/unique_ids.cellml'))
+
+        annotator = Annotator()
+        annotator.setModel(model)
+
+        item = annotator.item('component_1')
+        self.assertEqual(CellmlElementType.COMPONENT, item.type())
+        self.assertEqual('component1', item.item().name())
+
+        item = annotator.item('component_ref_1')
+        self.assertEqual(CellmlElementType.COMPONENT_REF, item.type())
+        self.assertEqual('component2', item.item().name())
+
+        item = annotator.item('connection_1')
+        self.assertEqual(CellmlElementType.CONNECTION, item.type())
+        self.assertEqual('variable1', item.item().variable1().name())
+        self.assertEqual('variable1', item.item().variable2().name())
+
+        item = annotator.item('encapsulation_1')
+        self.assertEqual(CellmlElementType.ENCAPSULATION, item.type())
+        self.assertEqual('everything', item.item().name())
+
+        item = annotator.item('import_1')
+        self.assertEqual(CellmlElementType.IMPORT, item.type())
+        self.assertEqual('some-other-model.xml', item.item().url())
+
+        item = annotator.item('map_variables_1')
+        self.assertEqual(CellmlElementType.MAP_VARIABLES, item.type())
+        self.assertEqual('variable1', item.item().variable1().name())
+        self.assertEqual('variable1', item.item().variable2().name())
+
+        item = annotator.item('model_1')
+        self.assertEqual(CellmlElementType.MODEL, item.type())
+        self.assertEqual('everything', item.item().name())
+
+        item = annotator.item('reset_1')
+        self.assertEqual(CellmlElementType.RESET, item.type())
+        self.assertEqual(1, item.item().order())
+
+        item = annotator.item('reset_value_1')
+        self.assertEqual(CellmlElementType.RESET_VALUE, item.type())
+        
+        item = annotator.item('test_value_1')
+        self.assertEqual(CellmlElementType.TEST_VALUE, item.type())
+
+        item = annotator.item('unit_1')
+        self.assertEqual(CellmlElementType.UNIT, item.type())
+        self.assertEqual('units2', item.item().units().name())
+
+        item = annotator.item('units_1')
+        self.assertEqual(CellmlElementType.UNITS, item.type())
+        self.assertEqual('units1', item.item().name())
+
+        item = annotator.item('variable_1')
+        self.assertEqual(CellmlElementType.VARIABLE, item.type())
+        self.assertEqual('variable1', item.item().name())
 
 
 if __name__ == '__main__':

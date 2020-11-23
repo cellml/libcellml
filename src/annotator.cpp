@@ -105,7 +105,7 @@ AnyItemPtr convertToShared(const AnyItemPtr &item)
 
 AnyItemPtr convertToWeak(const AnyItemPtr &item)
 {
-    auto converted = AnyItem::create(item->type(), nullptr);
+    auto converted = AnyItem::create(item->type(), std::any(nullptr));
 
     auto type = item->type();
     if ((type == CellmlElementType::COMPONENT)
@@ -285,9 +285,9 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
                         if (it->second->type() == CellmlElementType::MAP_VARIABLES) {
                             auto testPair = std::any_cast<VariablePairPtr>(it->second->item());
                             if (testPair) {
-                                VariableWeakPtr varaible1Weak = testPair->variable1();
-                                VariableWeakPtr varaible2Weak = testPair->variable2();
-                                if (equals(varaible1Weak, weakEquivalentVariable) && equals(varaible2Weak, weakVariable)) {
+                                VariableWeakPtr variable1Weak = testPair->variable1();
+                                VariableWeakPtr variable2Weak = testPair->variable2();
+                                if (equals(variable1Weak, weakEquivalentVariable) && equals(variable2Weak, weakVariable)) {
                                     found = true;
                                 }
                             }
@@ -483,7 +483,7 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
 
 AnyItemPtr Annotator::item(const std::string &id)
 {
-    AnyItemPtr retrieved = AnyItem::create(CellmlElementType::UNDEFINED, nullptr);
+    AnyItemPtr retrieved = AnyItem::create(CellmlElementType::UNDEFINED, std::any(nullptr));
     auto num = itemCount(id);
     if (num == 1) {
         retrieved = item(id, 0);
@@ -497,7 +497,7 @@ AnyItemPtr Annotator::item(const std::string &id)
 
 AnyItemPtr Annotator::item(const std::string &id, size_t index)
 {
-    return mPimpl->exists(id, index) ? std::move(items(id)[index]) : AnyItem::create(CellmlElementType::UNDEFINED, nullptr);
+    return mPimpl->exists(id, index) ? std::move(items(id)[index]) : AnyItem::create(CellmlElementType::UNDEFINED, std::any(nullptr));
 }
 
 bool Annotator::isUnique(const std::string &id)

@@ -144,11 +144,13 @@
 # libCellML generated wrapper code starts here.
 
 from libcellml.enums import CellmlElementType
+from libcellml.types import AnyItem
 %}
 
 %template() std::vector<std::string>;
 
 %include "libcellml/annotator.h"
+%include "libcellml/types.h"
 
 %extend libcellml::Annotator {
 
@@ -248,7 +250,27 @@ from libcellml.enums import CellmlElementType
         return _annotator.Annotator__assignId(self, args[0], args[1])
 
     def item(self, id, index=-1):
+
         r"""Retrieve a unique item with the given id."""
+
+        from libcellml.types import AnyItem
+
+        type_dict = {
+            CellmlElementType.COMPONENT: _annotator.Annotator_component,
+            CellmlElementType.COMPONENT_REF: _annotator.Annotator_componentRef,
+            CellmlElementType.CONNECTION: _annotator.Annotator_connection,
+            CellmlElementType.ENCAPSULATION: _annotator.Annotator_encapsulation,
+            CellmlElementType.IMPORT: _annotator.Annotator_importSource,
+            CellmlElementType.MAP_VARIABLES: _annotator.Annotator_mapVariables,
+            CellmlElementType.MODEL: _annotator.Annotator_model,
+            CellmlElementType.RESET: _annotator.Annotator_reset,
+            CellmlElementType.RESET_VALUE: _annotator.Annotator_resetValue,
+            CellmlElementType.TEST_VALUE: _annotator.Annotator_testValue,
+            CellmlElementType.UNIT: _annotator.Annotator_unit,
+            CellmlElementType.UNITS: _annotator.Annotator_units,
+            CellmlElementType.VARIABLE: _annotator.Annotator_variable,
+        }
+
         if index == -1:
             num = _annotator.Annotator_itemCount(self, id)
             if num > 1:
@@ -257,7 +279,7 @@ from libcellml.enums import CellmlElementType
                 issue.setDescription("The id '" + id + "' occurs " + str(num) + " times in the model so a unique item cannot be located.")
                 issue.setLevel(Issue.Level.WARNING)
                 self.addIssue(issue)
-                return (CellmlElementType.UNDEFINED, None)
+                return AnyItem()
 
             if num == 0:
                 from libcellml import Issue
@@ -265,39 +287,15 @@ from libcellml.enums import CellmlElementType
                 issue.setDescription("Could not find an item with an id of '" + id + "' in the model.")
                 issue.setLevel(Issue.Level.WARNING)
                 self.addIssue(issue)
-                return (CellmlElementType.UNDEFINED, None)
+                return AnyItem()
 
         if index == -1:
             index = 0
 
         type = _annotator.Annotator__itemCellmlElement(self, id, index)
-        if type == CellmlElementType.COMPONENT:
-            return (type, _annotator.Annotator_component(self, id, index))
-        elif type == CellmlElementType.COMPONENT_REF:
-            return (type, _annotator.Annotator_componentRef(self, id, index))
-        elif type == CellmlElementType.CONNECTION:
-            return (type, _annotator.Annotator_connection(self, id, index))
-        elif type == CellmlElementType.ENCAPSULATION:
-            return (type, _annotator.Annotator_encapsulation(self, id, index))
-        elif type == CellmlElementType.IMPORT:
-            return (type, _annotator.Annotator_importSource(self, id, index))
-        elif type == CellmlElementType.MAP_VARIABLES:
-            return (type, _annotator.Annotator_mapVariables(self, id, index))
-        elif type == CellmlElementType.MODEL:
-            return (type, _annotator.Annotator_model(self, id, index))
-        elif type == CellmlElementType.RESET:
-            return (type, _annotator.Annotator_reset(self, id, index))
-        elif type == CellmlElementType.RESET_VALUE:
-            return (type, _annotator.Annotator_resetValue(self, id, index))
-        elif type == CellmlElementType.TEST_VALUE:
-            return (type, _annotator.Annotator_testValue(self, id, index))
-        elif type == CellmlElementType.UNIT:
-            return (type, _annotator.Annotator_unit(self, id, index))
-        elif type == CellmlElementType.UNITS:
-            return (type, _annotator.Annotator_units(self, id, index))
-        elif type == CellmlElementType.VARIABLE:
-            return (type, _annotator.Annotator_variable(self, id, index))
-        return (CellmlElementType.UNDEFINED, None)
+        if type in type_dict:
+            return AnyItem(type, type_dict[type](self, id, index))
+        return AnyItem(CellmlElementType.UNDEFINED, None)
 
     def items(self, id):
         r"""Returns everything with the given id as as list of (type, item) tuples."""

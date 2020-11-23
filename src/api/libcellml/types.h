@@ -254,6 +254,15 @@ public:
      * @return A smart pointer to a @ref AnyItem object.
      */
     static AnyItemPtr create(CellmlElementType type, const std::any &item) noexcept;
+    // KRM
+    static AnyItemPtr create(CellmlElementType type, const ComponentPtr &item) noexcept;
+    static AnyItemPtr create(CellmlElementType type, const ImportSourcePtr &item) noexcept;
+    static AnyItemPtr create(CellmlElementType type, const ModelPtr &item) noexcept;
+    static AnyItemPtr create(CellmlElementType type, const ResetPtr &item) noexcept;
+    static AnyItemPtr create(CellmlElementType type, const UnitPtr &item) noexcept;
+    static AnyItemPtr create(CellmlElementType type, const UnitsPtr &item) noexcept;
+    static AnyItemPtr create(CellmlElementType type, const VariablePtr &item) noexcept;
+    static AnyItemPtr create(CellmlElementType type, const VariablePairPtr &item) noexcept;
 
     /**
      * @brief Get the @c std::any item.
@@ -294,6 +303,14 @@ public:
 private:
     AnyItem();
     explicit AnyItem(CellmlElementType type, const std::any &item); /**< Constructor with two variables as parameters. */
+    explicit AnyItem(CellmlElementType type, const ComponentPtr &item);
+    explicit AnyItem(CellmlElementType type, const ImportSourcePtr &item);
+    explicit AnyItem(CellmlElementType type, const ModelPtr &item);
+    explicit AnyItem(CellmlElementType type, const ResetPtr &item);
+    explicit AnyItem(CellmlElementType type, const UnitPtr &item);
+    explicit AnyItem(CellmlElementType type, const UnitsPtr &item);
+    explicit AnyItem(CellmlElementType type, const VariablePairPtr &item);
+    explicit AnyItem(CellmlElementType type, const VariablePtr &item);
 
     struct AnyItemImpl; /**< Forward declaration for pImpl idiom. */
     AnyItemImpl *mPimpl; /**< Private member to implementation pointer. */
