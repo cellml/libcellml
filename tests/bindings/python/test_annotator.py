@@ -536,6 +536,67 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(1, annotator.issueCount())
         self.assertEqual(non_unique_message, annotator.issue(0).description())
 
+    def test_set_any_item(self):
+        
+        from libcellml import Parser
+        from libcellml.enums import CellmlElementType
+        from libcellml.types import AnyItem, VariablePair, Unit
+
+        parser = Parser()
+        model = parser.parseModel(file_contents('annotator/unique_ids.cellml'))
+
+        component = model.component('component2', True)
+        reset = component.reset(0)
+        variable = component.variable('variable1')
+        units = model.units('units2')
+        unit = Unit(units, 0)
+        pair = VariablePair(
+            model.component('component2', True).variable('variable1'),
+            model.component('component3', True).variable('variable1')
+            )
+
+        any_model = AnyItem(CellmlElementType.MODEL, model)
+        any_encapsulation = AnyItem(CellmlElementType.ENCAPSULATION, model)
+        any_component = AnyItem(CellmlElementType.COMPONENT, component)
+        any_component_ref = AnyItem(CellmlElementType.COMPONENT_REF, component)
+        any_reset = AnyItem(CellmlElementType.RESET, reset)
+        any_reset_value = AnyItem(CellmlElementType.RESET_VALUE, reset)
+        any_test_value = AnyItem(CellmlElementType.TEST_VALUE, reset)
+        any_variable = AnyItem(CellmlElementType.VARIABLE, variable)
+        any_units = AnyItem(CellmlElementType.UNITS, units)
+        any_unit = AnyItem(CellmlElementType.UNIT, unit)
+        any_connection = AnyItem(CellmlElementType.CONNECTION, pair)
+        any_mapping = AnyItem(CellmlElementType.MAP_VARIABLES, pair)
+
+        self.assertEqual(CellmlElementType.MODEL, any_model.type())
+        self.assertEqual(CellmlElementType.ENCAPSULATION, any_encapsulation.type())
+        self.assertEqual(CellmlElementType.COMPONENT, any_component.type())
+        self.assertEqual(CellmlElementType.COMPONENT_REF, any_component_ref.type())
+        self.assertEqual(CellmlElementType.RESET, any_reset.type())
+        self.assertEqual(CellmlElementType.RESET_VALUE, any_reset_value.type())
+        self.assertEqual(CellmlElementType.TEST_VALUE, any_test_value.type())
+        self.assertEqual(CellmlElementType.VARIABLE, any_variable.type())
+        self.assertEqual(CellmlElementType.UNITS, any_units.type())
+        self.assertEqual(CellmlElementType.UNIT, any_unit.type())
+        self.assertEqual(CellmlElementType.CONNECTION, any_connection.type())
+        self.assertEqual(CellmlElementType.MAP_VARIABLES, any_mapping.type())
+
+        self.assertEqual(model.name(), any_model.item().name())
+        self.assertEqual(model.name(), any_encapsulation.item().name())
+        self.assertEqual(component.name(), any_component.item().name())
+        self.assertEqual(component.name(), any_component_ref.item().name())
+        self.assertEqual(reset.order(), any_reset.item().order())
+        self.assertEqual(reset.resetValue(), any_reset_value.item().resetValue())
+        self.assertEqual(reset.testValue(), any_test_value.item().testValue())
+        self.assertEqual(variable.name(), any_variable.item().name())
+        self.assertEqual(units.name(), any_units.item().name())
+        self.assertEqual(unit.units().name(), any_unit.item().units().name())
+        self.assertEqual('variable1', any_connection.item().variable1().name())
+        self.assertEqual('variable1', any_connection.item().variable2().name())
+        self.assertEqual('variable1', any_mapping.item().variable1().name())
+        self.assertEqual('variable1', any_mapping.item().variable2().name())
+
+
     def test_any_item(self):
         from libcellml import Annotator, Parser
         from libcellml.enums import CellmlElementType 
