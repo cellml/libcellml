@@ -62,6 +62,15 @@ ImportSourcePtr ImportSource::create() noexcept
     return std::shared_ptr<ImportSource> {new ImportSource {}};
 }
 
+bool ImportSource::doEqual(const EntityPtr &other) const
+{
+    auto importSource = std::dynamic_pointer_cast<ImportSource>(other);
+    if (importSource) {
+        return this->url() == importSource->url();
+    }
+    return false;
+}
+
 std::string ImportSource::url() const
 {
     return mPimpl->mUrl;

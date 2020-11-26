@@ -55,6 +55,16 @@ std::string Entity::id() const
     return mPimpl->mId;
 }
 
+bool Entity::equal(const EntityPtr &entity) const
+{
+    return doEqual(entity);
+}
+
+bool Entity::doEqual(const EntityPtr &) const
+{
+    return false;
+}
+
 EntityPtr Entity::parent() const
 {
     return mPimpl->mParent.lock();

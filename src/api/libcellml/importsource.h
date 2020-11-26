@@ -272,6 +272,10 @@ public:
      */
     UnitsPtr units(size_t index) const;
 
+protected:
+
+    bool doEqual(const EntityPtr &other) const override;
+
 private:
     ImportSource(); /**< Constructor. */
 

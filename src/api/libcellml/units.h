@@ -529,6 +529,8 @@ private:
      */
     void doSetImportSource(const ImportSourcePtr &importSource) override;
 
+    bool doEqual(const EntityPtr &other) const override;
+
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
     UnitsImpl *mPimpl; /**< Private member to implementation pointer. */
 };
