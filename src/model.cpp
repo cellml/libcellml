@@ -344,23 +344,13 @@ bool Model::hasUnlinkedUnits()
     return unlinkedUnits;
 }
 
-bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
-{
-    bool unresolvedImport = false;
-    if (importedEntity->isImport()) {
-        ImportSourcePtr importedSource = importedEntity->importSource();
-        unresolvedImport = !importedSource->hasModel();
-    }
-    return unresolvedImport;
-}
-
 bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponentEntity);
 
 bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 {
     bool unresolvedImports = false;
     if (component->isImport()) {
-        unresolvedImports = isUnresolvedImport(component);
+        unresolvedImports = !component->isResolved();
         if (!unresolvedImports) {
             // Check that the imported component can import all it needs from its model.
             auto importedSource = component->importSource();
@@ -393,7 +383,7 @@ bool Model::hasUnresolvedImports() const
     bool unresolvedImports = false;
     for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
         libcellml::UnitsPtr units = Model::units(n);
-        unresolvedImports = isUnresolvedImport(units);
+        unresolvedImports = !units->isResolved();
     }
     if (!unresolvedImports) {
         unresolvedImports = hasUnresolvedComponentImports(shared_from_this());
