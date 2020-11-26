@@ -714,7 +714,7 @@ TEST(Importer, importSourceGetSetModel)
     importsource->setModel(model);
     EXPECT_EQ(model, importsource->model());
 
-    importsource->setModel(nullptr);
+    importsource->removeModel();
     EXPECT_EQ(nullptr, importsource->model());
 }
 

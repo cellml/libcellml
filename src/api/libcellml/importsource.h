@@ -97,6 +97,13 @@ public:
     void setModel(const ModelPtr &model);
 
     /**
+     * @brief Removes the model from this import source.
+     *
+     * Remove the reference to a model from this import source.
+     */
+    void removeModel();
+
+    /**
      * @brief Test if this @c ImportSource is resolved.
      *
      * Method to test if this @c ImportSource has been resolved, i.e. the source @c Model has

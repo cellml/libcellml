@@ -419,111 +419,119 @@ void Validator::validateModel(const ModelPtr &model)
 {
     // Clear any pre-existing issues in ths validator instance.
     removeAllIssues();
-    // Check for a valid name attribute.
-    if (!isCellmlIdentifier(model->name())) {
-        auto issue = makeIssueIllegalIdentifier(model->name());
-        issue->setModel(model);
-        issue->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
-        issue->setDescription("Model '" + model->name() + "' does not have a valid name attribute. " + issue->description());
-        addIssue(issue);
-    }
-    // Check for components in this model.
-    if (model->componentCount() > 0) {
-        std::vector<std::string> componentNames;
-        for (size_t i = 0; i < model->componentCount(); ++i) {
-            ComponentPtr component = model->component(i);
-            mPimpl->validateComponentTree(model, component, componentNames);
+
+    if (model) {
+        // Check for a valid name attribute.
+        if (!isCellmlIdentifier(model->name())) {
+            auto issue = makeIssueIllegalIdentifier(model->name());
+            issue->setModel(model);
+            issue->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
+            issue->setDescription("Model '" + model->name() + "' does not have a valid name attribute. " + issue->description());
+            addIssue(issue);
         }
-    }
-    // Check for units in this model.
-    if (model->unitsCount() > 0) {
-        std::vector<std::string> unitsNames;
-        std::vector<std::string> unitsRefs;
-        std::vector<std::string> unitsImportSources;
-        for (size_t i = 0; i < model->unitsCount(); ++i) {
-            UnitsPtr units = model->units(i);
-            std::string unitsName = units->name();
-            if (!unitsName.empty()) {
-                if (units->isImport()) {
-                    // Check for a units_ref.
-                    std::string unitsRef = units->importReference();
-                    std::string importSource = units->importSource()->url();
-                    bool foundImportIssue = false;
-                    if (!isCellmlIdentifier(unitsRef)) {
-                        auto issue = makeIssueIllegalIdentifier(unitsRef);
-                        issue->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
-                        issue->setUnits(units);
-                        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
-                        addIssue(issue);
-                        foundImportIssue = true;
-                    }
-                    // Check for a xlink:href and its format.
-                    if (importSource.empty()) {
-                        IssuePtr issue = Issue::create();
-                        issue->setDescription("Import of units '" + unitsName + "' does not have a valid locator xlink:href attribute.");
-                        issue->setImportSource(units->importSource());
-                        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
-                        addIssue(issue);
-                        foundImportIssue = true;
-                    } else {
-                        xmlURIPtr uri = xmlParseURI(importSource.c_str());
-                        if (uri == nullptr) {
+        // Check for components in this model.
+        if (model->componentCount() > 0) {
+            std::vector<std::string> componentNames;
+            for (size_t i = 0; i < model->componentCount(); ++i) {
+                ComponentPtr component = model->component(i);
+                mPimpl->validateComponentTree(model, component, componentNames);
+            }
+        }
+        // Check for units in this model.
+        if (model->unitsCount() > 0) {
+            std::vector<std::string> unitsNames;
+            std::vector<std::string> unitsRefs;
+            std::vector<std::string> unitsImportSources;
+            for (size_t i = 0; i < model->unitsCount(); ++i) {
+                UnitsPtr units = model->units(i);
+                std::string unitsName = units->name();
+                if (!unitsName.empty()) {
+                    if (units->isImport()) {
+                        // Check for a units_ref.
+                        std::string unitsRef = units->importReference();
+                        std::string importSource = units->importSource()->url();
+                        bool foundImportIssue = false;
+                        if (!isCellmlIdentifier(unitsRef)) {
+                            auto issue = makeIssueIllegalIdentifier(unitsRef);
+                            issue->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
+                            issue->setUnits(units);
+                            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+                            addIssue(issue);
+                            foundImportIssue = true;
+                        }
+                        // Check for a xlink:href and its format.
+                        if (importSource.empty()) {
                             IssuePtr issue = Issue::create();
-                            issue->setDescription("Import of units '" + unitsName + "' has an invalid URI in the xlink:href attribute.");
+                            issue->setDescription("Import of units '" + unitsName + "' does not have a valid locator xlink:href attribute.");
                             issue->setImportSource(units->importSource());
                             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
                             addIssue(issue);
+                            foundImportIssue = true;
                         } else {
-                            xmlFreeURI(uri);
+                            xmlURIPtr uri = xmlParseURI(importSource.c_str());
+                            if (uri == nullptr) {
+                                IssuePtr issue = Issue::create();
+                                issue->setDescription("Import of units '" + unitsName + "' has an invalid URI in the xlink:href attribute.");
+                                issue->setImportSource(units->importSource());
+                                issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+                                addIssue(issue);
+                            } else {
+                                xmlFreeURI(uri);
+                            }
                         }
-                    }
-                    // Check if we already have another import from the same source with the same units_ref.
-                    // (This looks for matching entries at the same position in the source and ref vectors).
-                    if (!unitsImportSources.empty() && (!foundImportIssue)) {
-                        auto usedImportSource = std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource);
-                        auto usedImportSourceAt = usedImportSource - unitsImportSources.begin();
-                        auto usedUnitsRefs = std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef);
-                        auto usedUnitsRefsAt = usedUnitsRefs - unitsRefs.begin();
-                        if ((usedImportSource != unitsImportSources.end()) && (usedUnitsRefs != unitsRefs.end()) && (usedUnitsRefsAt == usedImportSourceAt)) {
-                            IssuePtr issue = Issue::create();
-                            issue->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
-                            issue->setModel(model);
-                            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
-                            addIssue(issue);
+                        // Check if we already have another import from the same source with the same units_ref.
+                        // (This looks for matching entries at the same position in the source and ref vectors).
+                        if (!unitsImportSources.empty() && (!foundImportIssue)) {
+                            auto usedImportSource = std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource);
+                            auto usedImportSourceAt = usedImportSource - unitsImportSources.begin();
+                            auto usedUnitsRefs = std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef);
+                            auto usedUnitsRefsAt = usedUnitsRefs - unitsRefs.begin();
+                            if ((usedImportSource != unitsImportSources.end()) && (usedUnitsRefs != unitsRefs.end()) && (usedUnitsRefsAt == usedImportSourceAt)) {
+                                IssuePtr issue = Issue::create();
+                                issue->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
+                                issue->setModel(model);
+                                issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+                                addIssue(issue);
+                            }
                         }
+                        // Push back the unique sources and refs.
+                        unitsImportSources.push_back(importSource);
+                        unitsRefs.push_back(unitsRef);
                     }
-                    // Push back the unique sources and refs.
-                    unitsImportSources.push_back(importSource);
-                    unitsRefs.push_back(unitsRef);
+                    // Check for duplicate units names in this model.
+                    if (std::find(unitsNames.begin(), unitsNames.end(), unitsName) != unitsNames.end()) {
+                        IssuePtr issue = Issue::create();
+                        issue->setDescription("Model '" + model->name() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.");
+                        issue->setModel(model);
+                        issue->setReferenceRule(Issue::ReferenceRule::UNITS_NAME_UNIQUE);
+                        addIssue(issue);
+                    }
+                    unitsNames.push_back(unitsName);
                 }
-                // Check for duplicate units names in this model.
-                if (std::find(unitsNames.begin(), unitsNames.end(), unitsName) != unitsNames.end()) {
-                    IssuePtr issue = Issue::create();
-                    issue->setDescription("Model '" + model->name() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.");
-                    issue->setModel(model);
-                    issue->setReferenceRule(Issue::ReferenceRule::UNITS_NAME_UNIQUE);
-                    addIssue(issue);
-                }
-                unitsNames.push_back(unitsName);
+            }
+            for (size_t i = 0; i < model->unitsCount(); ++i) {
+                // Validate units.
+                UnitsPtr units = model->units(i);
+                mPimpl->validateUnits(units, unitsNames);
             }
         }
-        for (size_t i = 0; i < model->unitsCount(); ++i) {
-            // Validate units.
-            UnitsPtr units = model->units(i);
-            mPimpl->validateUnits(units, unitsNames);
+
+        // Check that unit relationships are not cyclical.
+        if (model->unitsCount() > 0) {
+            mPimpl->validateNoUnitsAreCyclic(model);
         }
+
+        // Validate any connections / variable equivalence networks in the model.
+        mPimpl->validateConnections(model);
+
+        // Check ids across the model are unique.
+        mPimpl->checkUniqueIds(model);
+    } else {
+        auto issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::MODEL_INVALID);
+        issue->setDescription("The given model is invalid.");
+        addIssue(issue);
     }
-
-    // Check that unit relationships are not cyclical.
-    if (model->unitsCount() > 0) {
-        mPimpl->validateNoUnitsAreCyclic(model);
-    }
-
-    // Validate any connections / variable equivalence networks in the model.
-    mPimpl->validateConnections(model);
-
-    // Check ids across the model are unique.
-    mPimpl->checkUniqueIds(model);
 }
 
 void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const

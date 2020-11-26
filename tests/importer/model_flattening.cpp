@@ -20,6 +20,16 @@ limitations under the License.
 
 #include "test_utils.h"
 
+TEST(ModelFlattening, invalidInput)
+{
+    auto importer = libcellml::Importer::create();
+
+    auto flatModel = importer->flattenModel(nullptr);
+
+    EXPECT_EQ(nullptr, flatModel);
+    EXPECT_EQ(size_t(1), importer->issueCount());
+}
+
 TEST(ModelFlattening, modelWithoutImports)
 {
     const std::string e =
