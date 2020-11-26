@@ -265,6 +265,19 @@ bool Units::isBaseUnit() const
     return unitCount() == 0 && standardUnitCheck;
 }
 
+bool Units::doEqual(const EntityPtr &other) const
+{
+    if (NamedEntity::doEqual(other)) {
+        auto units = std::dynamic_pointer_cast<Units>(other);
+        if (units &&
+                this->unitCount() == units->unitCount() &&
+                this->importEqual(units)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Units::addUnit(const std::string &reference, const std::string &prefix, double exponent,
                     double multiplier, const std::string &id)
 {

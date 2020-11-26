@@ -27,6 +27,8 @@ limitations under the License.
 
 #include "utilities.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
@@ -211,6 +213,19 @@ VariablePtr Variable::create() noexcept
 VariablePtr Variable::create(const std::string &name) noexcept
 {
     return std::shared_ptr<Variable> {new Variable {name}};
+}
+
+bool Variable::doEqual(const EntityPtr &other) const
+{
+    if (NamedEntity::doEqual(other)) {
+        auto variable = std::dynamic_pointer_cast<libcellml::Variable>(other);
+        if (variable &&
+                this->initialValue() == variable->initialValue() &&
+                this->interfaceType() == variable->interfaceType()) {
+            return this->units() ? this->units()->equal(variable->units()) : true;
+        }
+    }
+    return false;
 }
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)

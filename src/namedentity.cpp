@@ -41,6 +41,15 @@ NamedEntity::~NamedEntity()
     delete mPimpl;
 }
 
+bool NamedEntity::doEqual(const EntityPtr &other) const
+{
+    auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(other);
+    if (namedEntity) {
+        return name() == namedEntity->name();
+    }
+    return false;
+}
+
 void NamedEntity::setName(const std::string &name)
 {
     mPimpl->mName = name;

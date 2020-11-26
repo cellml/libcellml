@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/importedentity.h"
 
+#include "libcellml/importsource.h"
+
 namespace libcellml {
 
 /**
@@ -38,6 +40,26 @@ ImportedEntity::ImportedEntity()
 ImportedEntity::~ImportedEntity()
 {
     delete mPimpl;
+}
+
+bool ImportedEntity::importEqual(const ImportedEntityPtr &other) const
+{
+    if (other) {
+        bool importMatches = this->isImport() == other->isImport();
+        if (this->isImport() &&
+                importMatches &&
+                this->importReference() == other->importReference()) {
+            auto importSource = this->importSource();
+            if (mPimpl->mImportSource) {
+                return mPimpl->mImportSource->equal(other->importSource());
+            } else if (other->importSource()) {
+                return false;
+            }
+            return true;
+        }
+        return importMatches;
+    }
+    return false;
 }
 
 bool ImportedEntity::isImport() const

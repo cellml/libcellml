@@ -59,6 +59,8 @@ public:
 protected:
     NamedEntity(); /**< Constructor. */
 
+    bool doEqual(const EntityPtr &other) const override;
+
 private:
     struct NamedEntityImpl; /**< Forward declaration for pImpl idiom. */
     NamedEntityImpl *mPimpl; /**< Private member to implementation pointer. */

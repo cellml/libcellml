@@ -109,8 +109,12 @@ public:
      */
     bool hasAncestor(const EntityPtr &entity) const;
 
+    bool equal(const EntityPtr &entity) const;
+
 protected:
     Entity(); /**< Constructor. */
+
+    virtual bool doEqual(const EntityPtr &entity) const;
 
 private:
     struct EntityImpl;

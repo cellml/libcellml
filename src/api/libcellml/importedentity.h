@@ -128,6 +128,8 @@ protected:
      */
     virtual void doSetImportSource(const ImportSourcePtr &importSource);
 
+    bool importEqual(const ImportedEntityPtr &other) const;
+
 private:
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
     ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
