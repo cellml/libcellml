@@ -984,3 +984,20 @@ TEST(Importer, isResolvedComponentOverTwoLevelsUnresolved)
 
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
+
+TEST(Importer, isResolvedReferncedUnitsMissing)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/main_referenced_units_missing.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+
+    auto units = model->units(0);
+
+    EXPECT_FALSE(units->isResolved());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+}
