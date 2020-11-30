@@ -429,9 +429,9 @@ public:
 
 private:
     Component(); /**< Constructor @private*/
-    explicit Component(const std::string &name); /**< Constructor named @private */
+    explicit Component(const std::string &name); /**< Constructor named @private. */
 
-    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private */
+    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private. */
 
     /**
      * @brief Set the import source of this component.
@@ -442,8 +442,10 @@ private:
      */
     void doSetImportSource(const ImportSourcePtr &importSource) override;
 
-    struct ComponentImpl; /**< Forward declaration for pImpl idiom. @private */
-    ComponentImpl *mPimpl; /**< Private member to implementation pointer. @private */
+    bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
+
+    struct ComponentImpl; /**< Forward declaration for pImpl idiom. @private. */
+    ComponentImpl *mPimpl; /**< Private member to implementation pointer. @private. */
 };
 
 } // namespace libcellml

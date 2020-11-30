@@ -35,7 +35,7 @@ public:
     virtual ~ImportedEntity(); /**< Destructor. */
     ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor. */
     ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor. */
-    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator. */
+//    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Test if this entity is an imported entity.
@@ -121,6 +121,16 @@ protected:
      * @param importSource The import source to set.
      */
     virtual void doSetImportSource(const ImportSourcePtr &importSource);
+
+    /**
+     * @brief Virtual is resolved method to be implemented by derived classes.
+     *
+     * Virtual isResolved method to allow the units and component classes to
+     * implement their own versions.
+     *
+     * @return @c true if this imported entity is resolved and @c false otherwise.
+     */
+    virtual bool doIsResolved() const = 0;
 
 private:
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
