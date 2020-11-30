@@ -348,23 +348,37 @@ bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponen
 
 bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 {
-    bool unresolvedImports = false;
-    if (component->isImport()) {
-        unresolvedImports = !component->isResolved();
-        if (!unresolvedImports) {
-            // Check that the imported component can import all it needs from its model.
+    bool unresolvedImports = !component->isResolved();
+    if (!unresolvedImports) {
+        if (component->isImport()) {
             auto importedSource = component->importSource();
             auto importedModel = importedSource->model();
             auto importedComponent = importedModel->component(component->importReference());
-            if (importedComponent == nullptr) {
-                unresolvedImports = true;
+            if (importedComponent) {
+                unresolvedImports = hasUnresolvedComponentImports(importedComponent);
             } else {
-                unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
+                unresolvedImports = true;
             }
+        } else {
+            unresolvedImports = hasUnresolvedComponentImports(component);
         }
-    } else {
-        unresolvedImports = hasUnresolvedComponentImports(component);
     }
+//    if (component->isImport()) {
+//        unresolvedImports = !component->isResolved();
+//        if (!unresolvedImports) {
+//            // Check that the imported component can import all it needs from its model.
+//            auto importedSource = component->importSource();
+//            auto importedModel = importedSource->model();
+//            auto importedComponent = importedModel->component(component->importReference());
+//            if (importedComponent == nullptr) {
+//                unresolvedImports = true;
+//            } else {
+//                unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
+//            }
+//        }
+//    } else {
+//        unresolvedImports = hasUnresolvedComponentImports(component);
+//    }
     return unresolvedImports;
 }
 

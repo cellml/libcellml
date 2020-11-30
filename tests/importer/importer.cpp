@@ -875,3 +875,85 @@ TEST(Importer, clearModelImportsBeforeResolving)
     EXPECT_EQ(size_t(0), importer->issueCount());
     printIssues(importer);
 }
+
+TEST(Importer, isResolvedOverOneLevel)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/units_definition_level_1.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+    EXPECT_EQ(resourcePath("importer/units_source.cellml"), importer->key(0));
+
+    auto units1 = model->units(0);
+    auto units2 = model->units(1);
+
+    EXPECT_TRUE(units1->isResolved());
+    EXPECT_FALSE(units2->isResolved());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, isResolvedOverTwoLevels)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/master_units.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(2), importer->libraryCount());
+    EXPECT_EQ(resourcePath("importer/units_definition_level_1.cellml"), importer->key(0));
+    EXPECT_EQ(resourcePath("importer/units_source.cellml"), importer->key(1));
+
+    printModel(model);
+
+    auto units1 = model->units(0);
+
+    EXPECT_TRUE(units1->isResolved());
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, isResolvedOverTwoLevelsUnresolved)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/master_units_unresolved.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(2), importer->libraryCount());
+    EXPECT_EQ(resourcePath("importer/units_definition_level_1_unresolved.cellml"), importer->key(0));
+    EXPECT_EQ(resourcePath("importer/units_source.cellml"), importer->key(1));
+
+    printModel(model);
+
+    auto units1 = model->units(0);
+
+    EXPECT_FALSE(units1->isResolved());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, isResolvedUnitsChildUnresolved)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/importing_units_with_unresolved_children.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+    EXPECT_EQ(resourcePath("importer/units_children.cellml"), importer->key(0));
+
+    printModel(model);
+
+    auto units1 = model->units(0);
+
+    EXPECT_FALSE(units1->isResolved());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+}
