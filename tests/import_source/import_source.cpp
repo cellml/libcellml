@@ -313,18 +313,18 @@ TEST(ImportSource, createLinkedMultiple)
 TEST(ImportSource, addImportComponentBeforeAddingToModel)
 {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"this_place.cellml\">\n"
-            "    <component component_ref=\"c_other\" name=\"c2\"/>\n"
-            "  </import>\n"
-            "  <component name=\"c1\"/>\n"
-            "  <encapsulation>\n"
-            "    <component_ref component=\"c1\">\n"
-            "      <component_ref component=\"c2\"/>\n"
-            "    </component_ref>\n"
-            "  </encapsulation>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"this_place.cellml\">\n"
+        "    <component component_ref=\"c_other\" name=\"c2\"/>\n"
+        "  </import>\n"
+        "  <component name=\"c1\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"c1\">\n"
+        "      <component_ref component=\"c2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     auto printer = libcellml::Printer::create();
     auto model = libcellml::Model::create();
