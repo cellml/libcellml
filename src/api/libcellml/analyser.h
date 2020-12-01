@@ -177,7 +177,7 @@ public:
      * @brief Get the @c AnalyserExternalVariable at the given @p index.
      *
      * Return a reference to the @c AnalyserExternalVariable at the given
-     * @p index. @p index must be in the range [0, \#externalVariables).
+     * @p index. The @p index must be in the range [0, \#externalVariables).
      *
      * @param index The index of the @c AnalyserExternalVariable to return.
      *
