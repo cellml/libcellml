@@ -16,13 +16,6 @@ limitations under the License.
 
 #include "libcellml/importedentity.h"
 
-#include "libcellml/component.h"
-#include "libcellml/importsource.h"
-#include "libcellml/model.h"
-#include "libcellml/units.h"
-
-#include "utilities.h"
-
 namespace libcellml {
 
 /**
