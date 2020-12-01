@@ -309,3 +309,37 @@ TEST(ImportSource, createLinkedMultiple)
     EXPECT_FALSE(c1->isImport());
     EXPECT_FALSE(u1->isImport());
 }
+
+TEST(ImportSource, addImportComponentBeforeAddingToModel)
+{
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"this_place.cellml\">\n"
+            "    <component component_ref=\"c_other\" name=\"c2\"/>\n"
+            "  </import>\n"
+            "  <component name=\"c1\"/>\n"
+            "  <encapsulation>\n"
+            "    <component_ref component=\"c1\">\n"
+            "      <component_ref component=\"c2\"/>\n"
+            "    </component_ref>\n"
+            "  </encapsulation>\n"
+            "</model>\n";
+
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create();
+    auto importSource = libcellml::ImportSource::create();
+
+    importSource->setUrl("this_place.cellml");
+
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+
+    c2->setImportSource(importSource);
+    c2->setImportReference("c_other");
+
+    c1->addComponent(c2);
+    model->addComponent(c1);
+
+    EXPECT_EQ(e, printer->printModel(model));
+}
