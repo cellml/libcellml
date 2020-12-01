@@ -175,7 +175,7 @@ public:
     /**
      * @brief Get the dependency at the given @p index.
      *
-     * Return a reference to the dependency at the given @p index. @p index
+     * Return a reference to the dependency at the given @p index. The @p index
      * must be in the range [0, \#dependencies).
      *
      * @param index The index of the dependency to return.
