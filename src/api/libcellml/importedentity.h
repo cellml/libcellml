@@ -35,7 +35,6 @@ public:
     virtual ~ImportedEntity(); /**< Destructor. */
     ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor. */
     ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor. */
-//    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Test if this entity is an imported entity.
@@ -98,12 +97,9 @@ public:
     /**
      * @brief Test whether this imported entity has been resolved.
      *
-     * Returns @c true if this entity is not an imported entity or if it is
-     * an imported entity that the import can be resolved, otherwise it
+     * Returns @c true if this entity is not an imported entity or if this entity is
+     * an imported entity then it tests that the import can be resolved, otherwise it
      * returns @c false.
-     *
-     * This test does not test whether dependencies of this imported entity have
-     * been resolved.
      *
      * @return @c true if the import is resolved, @c false otherwise.
      */
@@ -125,7 +121,7 @@ protected:
     /**
      * @brief Virtual is resolved method to be implemented by derived classes.
      *
-     * Virtual isResolved method to allow the units and component classes to
+     * Virtual isResolved method to allow the @ref Units and @ref Component classes to
      * implement their own versions.
      *
      * @return @c true if this imported entity is resolved and @c false otherwise.
