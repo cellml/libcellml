@@ -33,7 +33,8 @@ find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profd
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
 if(Python_Interpreter_FOUND)
-  if(NOT DEFINED TEST_COVERAGE_RESULT)
+  if(NOT DEFINED TEST_COVERAGE_RESULT OR RERUN_DISCOVERY)
+    unset(RERUN_DISCOVERY CACHE)
     set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
     message(STATUS "Performing Test HAVE_COVERAGE")
     get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
