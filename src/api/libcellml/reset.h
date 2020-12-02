@@ -16,12 +16,11 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/entity.h"
 #include "libcellml/exportdefinitions.h"
-#include "libcellml/orderedentity.h"
 #include "libcellml/types.h"
-
-#include <string>
 
 namespace libcellml {
 
@@ -29,13 +28,13 @@ namespace libcellml {
  * @brief The Reset class.
  * The Reset class is for describing a CellML reset.
  */
-class LIBCELLML_EXPORT Reset: public OrderedEntity
+class LIBCELLML_EXPORT Reset: public Entity
 {
 public:
-    ~Reset() override; /**< Destructor */
-    Reset(const Reset &rhs) = delete; /**< Copy constructor */
-    Reset(Reset &&rhs) noexcept = delete; /**< Move constructor */
-    Reset &operator=(Reset rhs) = delete; /**< Assignment operator */
+    ~Reset() override; /**< Destructor. */
+    Reset(const Reset &rhs) = delete; /**< Copy constructor. */
+    Reset(Reset &&rhs) noexcept = delete; /**< Move constructor. */
+    Reset &operator=(Reset rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Reset object.
@@ -57,6 +56,40 @@ public:
      * @overload
      */
     static ResetPtr create(int order) noexcept;
+
+    /**
+     * @brief Set the order of this reset.
+     *
+     * Sets the order for this reset.
+     *
+     * @param order The order to set.
+     */
+    void setOrder(int order);
+
+    /**
+     * @brief Get the order of this reset.
+     *
+     * Returns the order of this reset.
+     *
+     * @return The order.
+     */
+    int order() const;
+
+    /**
+     * @brief Mark the order as unset.
+     *
+     * Marks the order value as unset .
+     */
+    void unsetOrder();
+
+    /**
+     * @brief Test to determine whether the order is set or unset.
+     *
+     * Returns whether the order value is in a set state or not.
+     *
+     * @return @c true if the order is set, @c false otherwise.
+     */
+    bool isOrderSet();
 
     /**
      * @brief Set the @c Variable for this @c Reset.
@@ -236,11 +269,11 @@ public:
     ResetPtr clone() const;
 
 private:
-    Reset(); /**< Constructor */
+    Reset(); /**< Constructor. */
     explicit Reset(int order); /**< Constructor with int parameter */
 
     struct ResetImpl; /**< Forward declaration for pImpl idiom. */
-    ResetImpl *mPimpl; /**< Private member to implementation pointer */
+    ResetImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

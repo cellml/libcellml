@@ -20,6 +20,8 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
@@ -110,10 +112,39 @@ bool Component::doAddComponent(const ComponentPtr &component)
         return false;
     }
     component->setParent(shared_from_this());
+
+    if (component->isImport()) {
+        auto model = owningModel(shared_from_this());
+        if (model != nullptr) {
+            model->addImportSource(component->importSource());
+        }
+    }
+
     return ComponentEntity::doAddComponent(component);
 }
 
-void Component::setSourceComponent(const ImportSourcePtr &importSource, const std::string &name)
+void Component::doSetImportSource(const ImportSourcePtr &importSource)
+{
+    auto component = shared_from_this();
+    auto oldImportSource = component->importSource();
+
+    if (importSource != nullptr) {
+        importSource->addComponent(component);
+    }
+
+    auto model = owningModel(component);
+    if (model != nullptr) {
+        model->addImportSource(importSource);
+    }
+
+    if (oldImportSource != nullptr) {
+        oldImportSource->removeComponent(component, false);
+    }
+
+    ImportedEntity::doSetImportSource(importSource);
+}
+
+void Component::setSourceComponent(ImportSourcePtr &importSource, const std::string &name)
 {
     setImportSource(importSource);
     setImportReference(name);
@@ -139,10 +170,27 @@ void Component::removeMath()
     mPimpl->mMath.clear();
 }
 
-void Component::addVariable(const VariablePtr &variable)
+bool Component::addVariable(const VariablePtr &variable)
 {
+    // Prevent adding null pointer.
+    if (variable == nullptr) {
+        return false;
+    }
+
+    // Prevent adding multiple times to list.
+    if (hasVariable(variable)) {
+        return false;
+    }
+
+    // Prevent adding to multiple components.
+    if (variable->hasParent()) {
+        auto otherParent = std::dynamic_pointer_cast<Component>(variable->parent());
+        otherParent->removeVariable(variable);
+    }
+
     mPimpl->mVariables.push_back(variable);
     variable->setParent(shared_from_this());
+    return true;
 }
 
 bool Component::removeVariable(size_t index)
@@ -210,10 +258,14 @@ VariablePtr Component::variable(const std::string &name) const
 
 VariablePtr Component::takeVariable(size_t index)
 {
-    VariablePtr res = variable(index);
-    removeVariable(index);
+    VariablePtr variable = nullptr;
+    if (index < mPimpl->mVariables.size()) {
+        variable = mPimpl->mVariables.at(index);
+        removeVariable(index);
+        variable->removeParent();
+    }
 
-    return res;
+    return variable;
 }
 
 VariablePtr Component::takeVariable(const std::string &name)
@@ -239,18 +291,35 @@ bool Component::hasVariable(const std::string &name) const
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
 }
 
-void Component::addReset(const ResetPtr &reset)
+bool Component::addReset(const ResetPtr &reset)
 {
+    // Prevent adding null pointer.
+    if (reset == nullptr) {
+        return false;
+    }
+
+    // Prevent adding multiple times to list.
+    if (hasReset(reset)) {
+        return false;
+    }
+
+    // Prevent adding to multiple components.
+    if (reset->hasParent()) {
+        auto otherParent = std::dynamic_pointer_cast<Component>(reset->parent());
+        otherParent->removeReset(reset);
+    }
+    reset->setParent(shared_from_this());
     mPimpl->mResets.push_back(reset);
+    return true;
 }
 
 bool Component::removeReset(size_t index)
 {
     if (index < mPimpl->mResets.size()) {
+        mPimpl->mResets.at(index)->removeParent();
         mPimpl->mResets.erase(mPimpl->mResets.begin() + int64_t(index));
         return true;
     }
-
     return false;
 }
 
@@ -258,16 +327,31 @@ bool Component::removeReset(const ResetPtr &reset)
 {
     auto result = mPimpl->findReset(reset);
     if (result != mPimpl->mResets.end()) {
+        (*result)->removeParent();
         mPimpl->mResets.erase(result);
         return true;
     }
-
     return false;
 }
 
 void Component::removeAllResets()
 {
+    for (const auto &reset : mPimpl->mResets) {
+        reset->removeParent();
+    }
     mPimpl->mResets.clear();
+}
+
+ResetPtr Component::takeReset(size_t index)
+{
+    ResetPtr reset = nullptr;
+    if (index < mPimpl->mResets.size()) {
+        reset = mPimpl->mResets.at(index);
+        removeReset(index);
+        reset->removeParent();
+    }
+
+    return reset;
 }
 
 ResetPtr Component::reset(size_t index) const
@@ -312,7 +396,11 @@ ComponentPtr Component::clone() const
     c->setName(name());
     c->setMath(math());
 
-    c->setImportSource(importSource());
+    if (isImport()) {
+        auto imp = importSource()->clone();
+        c->setImportSource(imp);
+    }
+
     c->setImportReference(importReference());
 
     for (size_t index = 0; index < variableCount(); ++index) {
@@ -342,6 +430,24 @@ ComponentPtr Component::clone() const
     }
 
     return c;
+}
+
+bool doRequiresImport(const ComponentPtr &thisComponent)
+{
+    if (thisComponent->isImport()) {
+        return true;
+    }
+    for (size_t c = 0; c < thisComponent->componentCount(); ++c) {
+        if (doRequiresImport(thisComponent->component(c))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Component::requiresImports()
+{
+    return doRequiresImport(shared_from_this());
 }
 
 } // namespace libcellml

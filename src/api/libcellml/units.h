@@ -16,19 +16,25 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
 #include "libcellml/types.h"
-
-#include <string>
-#include <vector>
 
 // MSVC (and some other compilers?) may define PASCAL as __stdcall, resulting in
 // some compilation errors for our StandardUnit enum class below. However, that
 // macro gets defined for backward compatibility, so we can safely undefine it.
 // (See https://stackoverflow.com/questions/2774171/what-is-far-pascal for more
 // information.)
-#undef PASCAL
+#ifdef PASCAL
+#    undef PASCAL
+#endif
+
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Units>;
+#endif
 
 namespace libcellml {
 
@@ -37,12 +43,16 @@ namespace libcellml {
  * Class for Units.
  */
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
+#ifndef SWIG
+    ,
+                              public std::enable_shared_from_this<Units>
+#endif
 {
 public:
-    ~Units() override; /**< Destructor */
-    Units(const Units &rhs) = delete; /**< Copy constructor */
-    Units(Units &&rhs) noexcept = delete; /**< Move constructor */
-    Units &operator=(Units rhs) = delete; /**< Assignment operator */
+    ~Units() override; /**< Destructor. */
+    Units(const Units &rhs) = delete; /**< Copy constructor. */
+    Units(Units &&rhs) noexcept = delete; /**< Move constructor. */
+    Units &operator=(Units rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Units object.
@@ -401,12 +411,13 @@ public:
      * @brief Set the source of the units for this Units.
      *
      * Make this Units an imported units by defining an import model
-     * from which to extract the named Units from.
+     * from which to extract the named Units.  This Units will be added to the
+     * importSource's list of dependent entities.
      *
      * @param importSource The import source from which the named Units originates.
      * @param name The name of the Units in the imported model to use.
      */
-    void setSourceUnits(const ImportSourcePtr &importSource, const std::string &name);
+    void setSourceUnits(ImportSourcePtr &importSource, const std::string &name);
 
     /**
      * @brief Get the number of units that compose this units.
@@ -420,8 +431,10 @@ public:
     /**
      * @brief Check whether there are any imported child @c Units.
      *
-     * @return @c true when these @c Units rely on @c Units which are imported,
-     * or @c false otherwise.
+     * Test to determine whether this units has any imported units.
+     *
+     * @return @c true when this @c Units relies on @c Units which are imported,
+     * @c false otherwise.
      */
     bool requiresImports() const;
 
@@ -433,10 +446,10 @@ public:
      *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
-     * @param checkCompatibility Set @c true for compatibility checking, or @c false to ignore base units. 
+     * @param checkCompatibility Set @c true for compatibility checking, or @c false to ignore base units.
      * The default is @c true.
      *
-     * @return The factor units2/units1.  Where the units are incompatible and @p checkCompatibility 
+     * @return The factor units2/units1.  Where the units are incompatible and @p checkCompatibility
      * is @c true then the factor returned is 0.0.
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool checkCompatibility = true);
@@ -481,12 +494,43 @@ public:
      */
     UnitsPtr clone() const;
 
+    /**
+     * @brief Set the id of the unit at the given @p index.
+     *
+     *  The operation will return @c true if the id is assigned, or @c false
+     *  if the @p index is out of range.
+     *
+     * @return @c true if successful, @c false otherwise.
+     */
+    bool setUnitId(size_t index, const std::string &id) const;
+
+    /**
+     * @brief Return the id string of the unit at the given @p index.
+     *
+     * Return the id string of the unit at the given @p index.  If the
+     * given index is out of range then the empty string is returned.
+     *
+     * @return An id string.
+     */
+    std::string unitId(size_t index);
+
 private:
-    Units(); /**< Constructor */
+    Units(); /**< Constructor. */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
 
+    /**
+     * @brief Set the import source of this units.
+     *
+     * Virtual method implementing ImportedEntity::setImportSource, @private.
+     * If these units are already located in a Model instance, then the
+     * import source is added to the Model too.
+     *
+     * @param importSource The @c ImportSourcePtr to add to this @ref Units.
+     */
+    void doSetImportSource(const ImportSourcePtr &importSource) override;
+
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl *mPimpl; /**< Private member to implementation pointer */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

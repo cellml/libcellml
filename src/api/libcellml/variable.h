@@ -16,13 +16,13 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/namedentity.h"
 #include "libcellml/types.h"
 
-#include <string>
-
-#ifndef SWIG
+#if defined(_WIN32) && !defined(SWIG)
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
 #endif
 
@@ -40,10 +40,10 @@ class LIBCELLML_EXPORT Variable: public NamedEntity
 #endif
 {
 public:
-    ~Variable() override; /**< Destructor */
-    Variable(const Variable &rhs) = delete; /**< Copy constructor */
-    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor */
-    Variable &operator=(Variable rhs) = delete; /**< Assignment operator */
+    ~Variable() override; /**< Destructor. */
+    Variable(const Variable &rhs) = delete; /**< Copy constructor. */
+    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor. */
+    Variable &operator=(Variable rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Variable object.
@@ -430,6 +430,29 @@ public:
     bool hasInterfaceType(InterfaceType interfaceType) const;
 
     /**
+     * @brief Test if this variable permits access through the @p interfaceType.
+     *
+     * Test if this variable permits access through the @p interfaceType. The results
+     * will be given according to this truth table:
+     * 
+     *    Parameter (right) /
+     *   Stored value (below) | none | public | private | public_and_private  
+     *   ---------------------+------+--------+---------+-------------------
+     *                   none | T    | F      | F       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *                 public | T    | T      | F       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *                private | T    | F      | T       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *     public_and_private | T    | T      | T       | T
+     *
+     * @param interfaceType The interface type to test for.
+     *
+     * @return @c true if the interface type is permitted, @c false otherwise.
+     */
+    bool permitsInterfaceType(InterfaceType interfaceType) const;
+
+    /**
      * @brief Create a clone of this variable.
      *
      * Creates a full separate copy of this variable without copying
@@ -444,11 +467,11 @@ public:
     VariablePtr clone() const;
 
 private:
-    Variable(); /**< Constructor */
+    Variable(); /**< Constructor. */
     explicit Variable(const std::string &name); /**< Constructor with std::string parameter*/
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
-    VariableImpl *mPimpl; /**< Private member to implementation pointer */
+    VariableImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

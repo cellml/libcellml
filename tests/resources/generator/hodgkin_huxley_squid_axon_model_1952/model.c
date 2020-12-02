@@ -26,16 +26,16 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"E_R", "millivolt", "membrane", CONSTANT},
     {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
     {"g_Na", "milliS_per_cm2", "sodium_channel", CONSTANT},
-    {"E_L", "millivolt", "leakage_current", COMPUTED_CONSTANT},
-    {"E_Na", "millivolt", "sodium_channel", COMPUTED_CONSTANT},
-    {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
     {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
+    {"E_L", "millivolt", "leakage_current", COMPUTED_CONSTANT},
     {"i_L", "microA_per_cm2", "leakage_current", ALGEBRAIC},
+    {"E_Na", "millivolt", "sodium_channel", COMPUTED_CONSTANT},
     {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
     {"alpha_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"beta_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"alpha_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
     {"beta_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
+    {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
     {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
     {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
@@ -56,17 +56,17 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initializeStatesAndConstants(double *states, double *variables)
+void initialiseStatesAndConstants(double *states, double *variables)
 {
-    states[0] = 0.05;
-    states[1] = 0.6;
-    states[2] = 0.325;
-    states[3] = 0.0;
     variables[0] = 0.3;
     variables[1] = 1.0;
     variables[2] = 0.0;
     variables[3] = 36.0;
     variables[4] = 120.0;
+    states[0] = 0.05;
+    states[1] = 0.6;
+    states[2] = 0.325;
+    states[3] = 0.0;
 }
 
 void computeComputedConstants(double *variables)

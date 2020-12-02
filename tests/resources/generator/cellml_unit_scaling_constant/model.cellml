@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Define 'k' as a constant expressed in mM in component 'constants'. Then:
+ - Use 'k' as-is (i.e. expressed in mM) to compute a variable; and
+ - Use a scaled version of 'k' (here, expressed in M) to compute another variable. -->
+    <units name="ms">
+        <unit prefix="milli" units="second"/>
+    </units>
+    <units name="M">
+        <unit units="mole"/>
+        <unit exponent="-1" units="litre"/>
+    </units>
+    <units name="mM">
+        <unit prefix="milli" units="M"/>
+    </units>
+    <component name="constants">
+        <variable initial_value="123" interface="public" name="k" units="mM"/>
+    </component>
+    <component name="main">
+        <variable name="x" units="mM"/>
+        <variable name="y" units="M"/>
+        <variable interface="public" name="k_x" units="mM"/>
+        <variable interface="public" name="k_y" units="M"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>x</ci>
+                <apply>
+                    <plus/>
+                    <ci>k_x</ci>
+                    <ci>k_x</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>y</ci>
+                <apply>
+                    <plus/>
+                    <ci>k_y</ci>
+                    <ci>k_y</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <connection component_1="main" component_2="constants">
+        <map_variables variable_1="k_x" variable_2="k"/>
+        <map_variables variable_1="k_y" variable_2="k"/>
+    </connection>
+</model>

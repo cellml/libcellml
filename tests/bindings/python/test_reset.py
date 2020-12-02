@@ -1,6 +1,5 @@
 #
-# Tests the bindings for OrderedEntity, which is the base class for all
-# entities that can be ordered relative to one another.
+# Tests the Reset class bindings
 #
 import unittest
 
@@ -11,7 +10,7 @@ class ResetTestCase(unittest.TestCase):
         from libcellml import Reset
 
         x = Reset()
-        del(x)
+        del x
 
     def test_set_get_variable(self):
         from libcellml import Reset
@@ -67,27 +66,65 @@ class ResetTestCase(unittest.TestCase):
         x.unsetOrder()
         self.assertFalse(x.isOrderSet())
 
-    def test_set_get_test_value(self):
+    def test_test_value(self):
         from libcellml import Reset
 
         x = Reset()
         self.assertEqual("", x.testValue())
 
         x.setTestValue("A MathML string.")
-
         self.assertEqual("A MathML string.", x.testValue())
 
-    def test_set_get_reset_value(self):
+        x.appendTestValue(" More MathML.")
+        self.assertEqual("A MathML string. More MathML.", x.testValue())
+
+        self.assertEqual("", x.testValueId())
+        x.setTestValueId("my_test_value")
+        self.assertEqual("my_test_value", x.testValueId())
+
+        x.removeTestValue()
+        self.assertEqual("", x.testValue())
+
+        x.removeTestValueId()
+        self.assertEqual("", x.testValueId())
+
+    def test_reset_value(self):
         from libcellml import Reset
 
         x = Reset()
         self.assertEqual("", x.resetValue())
 
-        x.setResetValue("A value MathML string.")
+        x.setResetValue("A reset MathML string.")
 
-        self.assertEqual("A value MathML string.", x.resetValue())
+        self.assertEqual("A reset MathML string.", x.resetValue())
+
+        x.appendResetValue(" More MathML.")
+        self.assertEqual("A reset MathML string. More MathML.", x.resetValue())
+
+        self.assertEqual("", x.resetValueId())
+        x.setResetValueId("my_reset_value")
+        self.assertEqual("my_reset_value", x.resetValueId())
+
+        x.removeResetValue()
+        self.assertEqual("", x.resetValue())
+
+        x.removeResetValueId()
+        self.assertEqual("", x.resetValueId())
+
+    def test_clone(self):
+        from libcellml import Reset
+
+        x = Reset()
+        self.assertEqual("", x.resetValue())
+
+        x.setResetValue("A reset MathML string.")
+        x.setTestValue("A test MathML string.")
+
+        rCloned = x.clone()
+
+        self.assertEqual("A reset MathML string.", rCloned.resetValue())
+        self.assertEqual("A test MathML string.", rCloned.testValue())
 
 
 if __name__ == '__main__':
     unittest.main()
-

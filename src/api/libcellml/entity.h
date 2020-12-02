@@ -16,10 +16,10 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"
-
-#include <string>
 
 namespace libcellml {
 
@@ -31,10 +31,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Entity
 {
 public:
-    virtual ~Entity(); /**< Destructor */
-    Entity(const Entity &rhs) = delete; /**< Copy constructor */
-    Entity(Entity &&rhs) noexcept = delete; /**< Move constructor */
-    Entity &operator=(Entity rhs) = delete; /**< Assignment operator */
+    virtual ~Entity(); /**< Destructor. */
+    Entity(const Entity &rhs) = delete; /**< Copy constructor. */
+    Entity(Entity &&rhs) noexcept = delete; /**< Move constructor. */
+    Entity &operator=(Entity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Set the @p id document identifier for this entity.
@@ -110,7 +110,7 @@ public:
     bool hasAncestor(const EntityPtr &entity) const;
 
 protected:
-    Entity(); /**< Constructor */
+    Entity(); /**< Constructor. */
 
 private:
     struct EntityImpl;

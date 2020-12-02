@@ -4,75 +4,39 @@
 
 %include <std_string.i>
 
+%import "analysermodel.i"
 %import "createconstructor.i"
-%import "logger.i"
-%import "types.i"
-
-#ifdef SWIGPYTHON
 %import "generatorprofile.i"
-#endif
-
-%feature("docstring") libcellml::GeneratorVariable
-"Defines a variable created by processing a :class:`Model` with the :class:`Generator`.";
-
-%feature("docstring") libcellml::GeneratorVariable::variable
-"Return the :class:`Variable`.";
-
-%feature("docstring") libcellml::GeneratorVariable::component
-"Return the :class:`Component`.";
-
-%feature("docstring") libcellml::GeneratorVariable::type
-"Return the :enum:`GeneratorVariable::Type`.";
 
 %feature("docstring") libcellml::Generator
-"Can generate code from a :class:`Model` according to a code generation profile.";
+"Creates a :class:`Generator` object.";
 
 %feature("docstring") libcellml::Generator::profile
-"Returns the :enum:`Profile` type.";
+"Returns the profile used for code generation.";
 
 %feature("docstring") libcellml::Generator::setProfile
-"Sets this :class:`Generator`'s profile.";
+"Sets the profile to use for code generation.";
 
-%feature("docstring") libcellml::Generator::processModel
-"Process the :class:`Model` given, analysing, and
-preparing for code generation.";
+%feature("docstring") libcellml::Generator::model
+"Returns the model used for code generation.";
 
-%feature("docstring") libcellml::Generator::modelType
-"Return the :enum:`ModelType` of the :class:`Model` that has been processed.";
-
-%feature("docstring") libcellml::Generator::stateCount
-"Return the number of states found in the processed :class:`Model`.";
-
-%feature("docstring") libcellml::Generator::variableCount
-"Return the number of variables found in the processed :class:`Model`.";
-
-%feature("docstring") libcellml::Generator::voi
-"Return the variable of integration found in the processed :class:`Model`.";
-
-%feature("docstring") libcellml::Generator::state
-"Return the state at the given index from the state array.";
-
-%feature("docstring") libcellml::Generator::variable
-"Return the variable at the given index from the variable array.";
+%feature("docstring") libcellml::Generator::setModel
+"Sets the model to use for code generation.";
 
 %feature("docstring") libcellml::Generator::interfaceCode
-"Return the interface code for the :class:`Model` processed.";
+"Returns the interface code.";
 
 %feature("docstring") libcellml::Generator::implementationCode
-"Return the implementation code for the :class:`Model` processed.";
+"Returns the implementation code.";
 
 %{
 #include "libcellml/generator.h"
 %}
 
-%pythonappend libcellml::Generator::Generator %{
-from libcellml import GeneratorProfile
-profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
-self.setProfile(profile)
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
-%create_constructor(GeneratorVariable)
 %create_constructor(Generator)
 
-%include "libcellml/types.h"
 %include "libcellml/generator.h"

@@ -40,7 +40,7 @@ TEST(Coverage, connectionComment)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
-    EXPECT_EQ(size_t(4), p->errorCount());
+    EXPECT_EQ(size_t(4), p->issueCount());
 }
 
 TEST(Coverage, importWithNonHrefXlink)
@@ -63,7 +63,7 @@ TEST(Coverage, importWithNonHrefXlink)
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(e);
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 }
 
 TEST(Coverage, entityHasParent)
@@ -83,4 +83,32 @@ TEST(Coverage, entityHasParent)
     EXPECT_TRUE(c1->hasParent());
     EXPECT_TRUE(c2->hasParent());
     EXPECT_FALSE(c3->hasParent());
+}
+
+TEST(Annotator, automaticIdsUndefined)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+
+    annotator->setModel(model);
+
+    annotator->assignIds(libcellml::CellmlElementType::UNDEFINED);
+    EXPECT_TRUE(annotator->hasModel());
+
+    EXPECT_EQ("", model->id());
+}
+
+TEST(Annotator, automaticIdUndefined)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+
+    annotator->setModel(model);
+
+    auto pair = std::make_pair(libcellml::CellmlElementType::UNDEFINED, nullptr);
+
+    annotator->assignId(pair);
+    EXPECT_TRUE(annotator->hasModel());
+
+    EXPECT_EQ("", model->id());
 }

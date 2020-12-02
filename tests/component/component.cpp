@@ -542,3 +542,42 @@ TEST(Component, onlyOneParentAtAnyGivenTime)
     EXPECT_EQ(size_t(2), parent->componentCount());
     EXPECT_EQ(size_t(1), child2->componentCount());
 }
+
+TEST(Component, addVariableMultipleTimes)
+{
+    auto model = libcellml::Model::create("model");
+    auto tomato = libcellml::Component::create("tomato");
+    auto apple = libcellml::Component::create("apple");
+    auto pip = libcellml::Variable::create("pip");
+
+    EXPECT_TRUE(model->addComponent(tomato));
+    EXPECT_TRUE(model->addComponent(apple));
+
+    // Adding a pip to the tomato.
+    EXPECT_TRUE(tomato->addVariable(pip));
+
+    // Try to add the same pip again.
+    EXPECT_FALSE(tomato->addVariable(pip));
+
+    EXPECT_EQ(size_t(1), tomato->variableCount());
+
+    // Add the pip to the apple, which will effectively move it from the tomato
+    // to the apple.
+    EXPECT_TRUE(apple->addVariable(pip));
+    EXPECT_EQ(size_t(0), tomato->variableCount());
+    EXPECT_EQ(size_t(1), apple->variableCount());
+}
+
+TEST(Component, preventSegfaultInAddSomething)
+{
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+
+    // Tests to show segfaults fixed when dodgy things are added to other things,
+    // now they return false instead of segfault.
+    EXPECT_FALSE(component->addVariable(nullptr));
+    EXPECT_FALSE(component->addReset(nullptr));
+    EXPECT_FALSE(component->addComponent(nullptr));
+    EXPECT_FALSE(model->addComponent(nullptr));
+    EXPECT_FALSE(model->addUnits(nullptr));
+}

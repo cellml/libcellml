@@ -16,11 +16,11 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/logger.h"
-#include "libcellml/types.h"
-
 #include <string>
 #include <vector>
+
+#include "libcellml/logger.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Validator: public Logger
 {
 public:
-    ~Validator() override; /**< Destructor */
-    Validator(const Validator &rhs) = delete; /**< Copy constructor */
-    Validator(Validator &&rhs) noexcept = delete; /**< Move constructor */
-    Validator &operator=(Validator rhs) = delete; /**< Assignment operator */
+    ~Validator() override; /**< Destructor. */
+    Validator(const Validator &rhs) = delete; /**< Copy constructor. */
+    Validator(Validator &&rhs) noexcept = delete; /**< Move constructor. */
+    Validator &operator=(Validator rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Validator object.
@@ -60,7 +60,7 @@ public:
     void validateModel(const ModelPtr &model);
 
 private:
-    Validator(); /**< Constructor */
+    Validator(); /**< Constructor. */
 
     struct ValidatorImpl; /**< Forward declaration for pImpl idiom. */
     ValidatorImpl *mPimpl; /**< Private member to implementation pointer. */

@@ -82,12 +82,12 @@ VARIABLE_INFO = [
     {"name": "g_f_Na_Periphery_0DCapable", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.CONSTANT},
     {"name": "g_f_Na_Periphery_1DCapable", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.CONSTANT},
     {"name": "g_f_Na_Periphery_Published", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.CONSTANT},
-    {"name": "Ca_i", "units": "millimolar", "component": "sodium_calcium_exchanger", "type": VariableType.CONSTANT},
-    {"name": "Ca_o", "units": "millimolar", "component": "sodium_calcium_exchanger", "type": VariableType.CONSTANT},
+    {"name": "Ca_i", "units": "millimolar", "component": "ionic_concentrations", "type": VariableType.CONSTANT},
+    {"name": "Ca_o", "units": "millimolar", "component": "ionic_concentrations", "type": VariableType.CONSTANT},
     {"name": "K_i", "units": "millimolar", "component": "ionic_concentrations", "type": VariableType.CONSTANT},
-    {"name": "K_o", "units": "millimolar", "component": "sodium_potassium_pump", "type": VariableType.CONSTANT},
-    {"name": "Na_i", "units": "millimolar", "component": "sodium_calcium_exchanger", "type": VariableType.CONSTANT},
-    {"name": "Na_o", "units": "millimolar", "component": "sodium_calcium_exchanger", "type": VariableType.CONSTANT},
+    {"name": "K_o", "units": "millimolar", "component": "ionic_concentrations", "type": VariableType.CONSTANT},
+    {"name": "Na_i", "units": "millimolar", "component": "ionic_concentrations", "type": VariableType.CONSTANT},
+    {"name": "Na_o", "units": "millimolar", "component": "ionic_concentrations", "type": VariableType.CONSTANT},
     {"name": "CmCentre", "units": "microF", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "CmPeriphery", "units": "microF", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "F", "units": "coulomb_per_mole", "component": "membrane", "type": VariableType.CONSTANT},
@@ -154,7 +154,9 @@ VARIABLE_INFO = [
     {"name": "g_b_K", "units": "microS", "component": "potassium_background_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "g_b_Ca", "units": "microS", "component": "calcium_background_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "k_NaCa", "units": "nanoA", "component": "sodium_calcium_exchanger", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "i_NaCa", "units": "nanoA", "component": "sodium_calcium_exchanger", "type": VariableType.ALGEBRAIC},
     {"name": "i_p_max", "units": "nanoA", "component": "sodium_potassium_pump", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "i_p", "units": "nanoA", "component": "sodium_potassium_pump", "type": VariableType.ALGEBRAIC},
     {"name": "i_Ca_p_max", "units": "nanoA", "component": "persistent_calcium_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_Ca_p", "units": "nanoA", "component": "persistent_calcium_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "E_Na", "units": "millivolt", "component": "reversal_and_equilibrium_potentials", "type": VariableType.COMPUTED_CONSTANT},
@@ -162,17 +164,6 @@ VARIABLE_INFO = [
     {"name": "E_Ca", "units": "millivolt", "component": "reversal_and_equilibrium_potentials", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "E_K_s", "units": "millivolt", "component": "reversal_and_equilibrium_potentials", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "g_Na", "units": "microlitre_per_second", "component": "sodium_current", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_Ca_L", "units": "microS", "component": "L_type_Ca_channel", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_Ca_T", "units": "microS", "component": "T_type_Ca_channel", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_to", "units": "microS", "component": "four_AP_sensitive_currents", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_sus", "units": "microS", "component": "four_AP_sensitive_currents", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_K_r", "units": "microS", "component": "rapid_delayed_rectifying_potassium_current", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "tau_P_i", "units": "second", "component": "rapid_delayed_rectifying_potassium_current_P_i_gate", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_K_s", "units": "microS", "component": "slow_delayed_rectifying_potassium_current", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_f_Na", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "g_f_K", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "i_NaCa", "units": "nanoA", "component": "sodium_calcium_exchanger", "type": VariableType.ALGEBRAIC},
-    {"name": "i_p", "units": "nanoA", "component": "sodium_potassium_pump", "type": VariableType.ALGEBRAIC},
     {"name": "m_infinity", "units": "dimensionless", "component": "sodium_current_m_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_m", "units": "second", "component": "sodium_current_m_gate", "type": VariableType.ALGEBRAIC},
     {"name": "F_Na", "units": "dimensionless", "component": "sodium_current_h_gate", "type": VariableType.ALGEBRAIC},
@@ -181,6 +172,7 @@ VARIABLE_INFO = [
     {"name": "h2_infinity", "units": "dimensionless", "component": "sodium_current_h_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_h1", "units": "second", "component": "sodium_current_h_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_h2", "units": "second", "component": "sodium_current_h_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "g_Ca_L", "units": "microS", "component": "L_type_Ca_channel", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_Ca_L", "units": "nanoA", "component": "L_type_Ca_channel", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_d_L", "units": "per_second", "component": "L_type_Ca_channel_d_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_d_L", "units": "per_second", "component": "L_type_Ca_channel_d_gate", "type": VariableType.ALGEBRAIC},
@@ -190,6 +182,7 @@ VARIABLE_INFO = [
     {"name": "beta_f_L", "units": "per_second", "component": "L_type_Ca_channel_f_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_f_L", "units": "second", "component": "L_type_Ca_channel_f_gate", "type": VariableType.ALGEBRAIC},
     {"name": "f_L_infinity", "units": "dimensionless", "component": "L_type_Ca_channel_f_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "g_Ca_T", "units": "microS", "component": "T_type_Ca_channel", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_Ca_T", "units": "nanoA", "component": "T_type_Ca_channel", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_d_T", "units": "per_second", "component": "T_type_Ca_channel_d_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_d_T", "units": "per_second", "component": "T_type_Ca_channel_d_gate", "type": VariableType.ALGEBRAIC},
@@ -199,22 +192,29 @@ VARIABLE_INFO = [
     {"name": "beta_f_T", "units": "per_second", "component": "T_type_Ca_channel_f_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_f_T", "units": "second", "component": "T_type_Ca_channel_f_gate", "type": VariableType.ALGEBRAIC},
     {"name": "f_T_infinity", "units": "dimensionless", "component": "T_type_Ca_channel_f_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "g_to", "units": "microS", "component": "four_AP_sensitive_currents", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "g_sus", "units": "microS", "component": "four_AP_sensitive_currents", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_to", "units": "nanoA", "component": "four_AP_sensitive_currents", "type": VariableType.ALGEBRAIC},
     {"name": "i_sus", "units": "nanoA", "component": "four_AP_sensitive_currents", "type": VariableType.ALGEBRAIC},
     {"name": "q_infinity", "units": "dimensionless", "component": "four_AP_sensitive_currents_q_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_q", "units": "second", "component": "four_AP_sensitive_currents_q_gate", "type": VariableType.ALGEBRAIC},
     {"name": "r_infinity", "units": "dimensionless", "component": "four_AP_sensitive_currents_r_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_r", "units": "second", "component": "four_AP_sensitive_currents_r_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "g_K_r", "units": "microS", "component": "rapid_delayed_rectifying_potassium_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "P_a", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current", "type": VariableType.ALGEBRAIC},
     {"name": "P_af_infinity", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_P_af", "units": "second", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate", "type": VariableType.ALGEBRAIC},
     {"name": "P_as_infinity", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate", "type": VariableType.ALGEBRAIC},
     {"name": "tau_P_as", "units": "second", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "tau_P_i", "units": "second", "component": "rapid_delayed_rectifying_potassium_current_P_i_gate", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "P_i_infinity", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_i_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "g_K_s", "units": "microS", "component": "slow_delayed_rectifying_potassium_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_K_s", "units": "nanoA", "component": "slow_delayed_rectifying_potassium_current", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_xs", "units": "per_second", "component": "slow_delayed_rectifying_potassium_current_xs_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_xs", "units": "per_second", "component": "slow_delayed_rectifying_potassium_current_xs_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "g_f_Na", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_f_Na", "units": "nanoA", "component": "hyperpolarisation_activated_current", "type": VariableType.ALGEBRAIC},
+    {"name": "g_f_K", "units": "microS", "component": "hyperpolarisation_activated_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_f_K", "units": "nanoA", "component": "hyperpolarisation_activated_current", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_y", "units": "per_second", "component": "hyperpolarisation_activated_current_y_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_y", "units": "per_second", "component": "hyperpolarisation_activated_current_y_gate", "type": VariableType.ALGEBRAIC},
@@ -242,22 +242,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialize_states_and_constants(states, variables):
-    states[0] = 0.092361701692
-    states[1] = 0.015905380261
-    states[2] = 0.01445216109
-    states[3] = 0.04804900895
-    states[4] = 0.48779845203
-    states[5] = 0.42074047435
-    states[6] = 0.038968420558
-    states[7] = 0.29760539675
-    states[8] = 0.064402950262
-    states[9] = 0.13034201158
-    states[10] = 0.46960956028
-    states[11] = 0.87993375273
-    states[12] = 0.082293827208
-    states[13] = 0.03889291759
-    states[14] = -39.013558536
+def initialise_states_and_constants(states, variables):
     variables[0] = 46.4
     variables[1] = 0.0057938
     variables[2] = 0.0082
@@ -368,6 +353,21 @@ def initialize_states_and_constants(states, variables):
     variables[107] = 0.1551936
     variables[108] = 0.16
     variables[109] = 0.16
+    states[0] = 0.092361701692
+    states[1] = 0.015905380261
+    states[2] = 0.01445216109
+    states[3] = 0.04804900895
+    states[4] = 0.48779845203
+    states[5] = 0.42074047435
+    states[6] = 0.038968420558
+    states[7] = 0.29760539675
+    states[8] = 0.064402950262
+    states[9] = 0.13034201158
+    states[10] = 0.46960956028
+    states[11] = 0.87993375273
+    states[12] = 0.082293827208
+    states[13] = 0.03889291759
+    states[14] = -39.013558536
 
 
 def compute_computed_constants(variables):

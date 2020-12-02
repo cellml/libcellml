@@ -89,7 +89,7 @@ TEST(Generator, isolatedFirstOrderModel)
 
     //  2.b   Add the maths to the component. Note that there is only one maths
     //        string stored, so parts which are appended must create a viable
-    //        MathML string when concantenated. To clear any string, which is
+    //        MathML string when concatenated. To clear any string, which is
     //        already stored, simply call setMath("") with an empty string.
     component->setMath(mathHeader);
     component->appendMath(equation1);
@@ -195,19 +195,16 @@ TEST(Generator, isolatedFirstOrderModel)
     // units added to the model.
     model->linkUnits();
 
-    //  4.c   Validate the final arrangement. No errors are expected at this stage.
+    //  4.c   Validate the final arrangement. No issues are expected at this stage.
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 
-    //  5.a   Create a Generator instance. By default the options set in the
-    //        generator constructor are:
-    //          - profile() return "C" (cf "PYTHON"); and
-    //          - modelType() returns "ODE".
+    //  5.a   Create an Analyser instance and analyse the model.
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-    generator->processModel(model);
+    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    analyser->analyseModel(model);
 
-    //  5.b   Check whether the generator has encountered any errors.
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    //  5.b   Check whether the analyser has encountered any issues.
+    EXPECT_EQ(size_t(0), analyser->issueCount());
 }
