@@ -16,11 +16,11 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/entity.h"
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"
-
-#include <string>
 
 namespace libcellml {
 
@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT NamedEntity: public Entity
 {
 public:
-    ~NamedEntity() override; /**< Destructor */
-    NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor */
-    NamedEntity(NamedEntity &&rhs) noexcept = delete; /**< Move constructor */
-    NamedEntity &operator=(NamedEntity rhs) = delete; /**< Assignment operator */
+    ~NamedEntity() override; /**< Destructor. */
+    NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor. */
+    NamedEntity(NamedEntity &&rhs) noexcept = delete; /**< Move constructor. */
+    NamedEntity &operator=(NamedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Set the name for the Entity.
@@ -57,7 +57,7 @@ public:
     std::string name() const;
 
 protected:
-    NamedEntity(); /**< Constructor */
+    NamedEntity(); /**< Constructor. */
 
 private:
     struct NamedEntityImpl; /**< Forward declaration for pImpl idiom. */

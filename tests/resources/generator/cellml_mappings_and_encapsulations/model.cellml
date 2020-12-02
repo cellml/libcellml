@@ -10,7 +10,7 @@
  - Check a variable source can have no maths in its own component
    (see circle_x_source)
  - Check we can export a variable both sideways and upwards
-   (see circle_x_sibling)    
+   (see circle_x_sibling)
  - Check connection handling using a purely pass-through component
    (see circle_y)
  - Check connecting a private=in, public=out (y) variable
@@ -25,9 +25,9 @@
     <units name="milli_mole">
         <unit prefix="milli" units="mole"/>
     </units>
-	<units name="per_ms">
-		<unit prefix="milli" exponent="-1" units="second"/>
-	</units>
+    <units name="per_ms">
+        <unit exponent="-1" units="ms"/>
+    </units>
     <component name="environment">
         <variable interface="public" name="t" units="ms"/>
     </component>

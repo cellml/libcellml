@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-function(TARGET_WARNINGS_AS_ERRORS _TARGET)
+function(target_warnings_as_errors _TARGET)
   set(_COMPILER_WAE)
 
   set(_GNU_FLAGS_COMPILER_COMPAT "GNU" "AppleClang" "Clang")
@@ -29,7 +29,7 @@ function(TARGET_WARNINGS_AS_ERRORS _TARGET)
   unset(_COMPILER_WAE)
 endfunction()
 
-function(INTERNALISE_CMAKE_VARIABLES)
+function(internalise_cmake_variables)
   # internalise some CMake variables
   file(TO_CMAKE_PATH ${LIBCELLML_INSTALL_PREFIX} _CMAKE_INSTALL_PREFIX)
   set(CMAKE_INSTALL_PREFIX ${_CMAKE_INSTALL_PREFIX} CACHE INTERNAL "Internalise CMAKE_INSTALL_PREFIX, manipulate via LIBCELLML_INSTALL_PREFIX" FORCE)
@@ -37,7 +37,7 @@ function(INTERNALISE_CMAKE_VARIABLES)
   set(BUILD_SHARED_LIBS ${LIBCELLML_BUILD_SHARED} CACHE INTERNAL "Internalise BUILD_SHARED_LIBS, manipulate via LIBCELLML_BUILD_SHARED" FORCE)
 endfunction()
 
-function(HIDE_DISTRACTING_VARIABLES)
+function(hide_distracting_variables)
   # Mark cache variables that aren't libCellML configuration variables as advanced
   # to hide them from the user in a CMake GUI.
   mark_as_advanced(CMAKE_CONFIGURATION_TYPES)
@@ -61,7 +61,7 @@ function(HIDE_DISTRACTING_VARIABLES)
   endif()
 endfunction()
 
-function(GROUP_SOURCE_TO_DIR_STRUCTURE)
+function(group_source_to_dir_structure)
   if(MSVC)
     foreach(_FILE ${ARGN})
       # Basic test for determining if current file is a source file or header file.
@@ -87,11 +87,11 @@ function(GROUP_SOURCE_TO_DIR_STRUCTURE)
   endif()
 endfunction()
 
-function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
+function(configure_clang_and_clang_tidy_settings _TARGET)
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
      OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # The full list of diagnostic flags in Clang can be found at
-    # https://clang.llvm.org/docs/DiagnosticsReference.html
+    # https://clang.llvm.org/docs/DiagnosticsReference.html.
     set(_COMPILE_OPTIONS
       -Weverything
       -Wno-c++98-compat
@@ -124,27 +124,35 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
 
   if(CLANG_TIDY_AVAILABLE)
     if(NOT "${_TARGET}" STREQUAL "cellml")
-        set(_NO_BUGPRONE_EXCEPTION_ESCAPE -bugprone-exception-escape)
-        set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
-        set(_NO_HICPP_VARARG -hicpp-vararg)
+        set(_DISABLED_BUGPRONE_CHECKS
+          -bugprone-exception-escape
+        )
+        set(_DISABLED_CPPCOREGUIDELINES_CHECKS
+          -cppcoreguidelines-avoid-non-const-global-variables
+          -cppcoreguidelines-pro-type-vararg
+        )
+        set(_DISABLED_HICPP_CHECKS
+          -hicpp-vararg
+        )
     endif()
 
     # The full list of Clang-Tidy checks can be found at
-    # https://clang.llvm.org/extra/clang-tidy/checks/list.html
+    # https://clang.llvm.org/extra/clang-tidy/checks/list.html.
     set(_CLANG_TIDY_CHECKS
       -*
       bugprone-*
       -bugprone-branch-clone
-      ${_NO_BUGPRONE_EXCEPTION_ESCAPE}
+      ${_DISABLED_BUGPRONE_CHECKS}
       cert-*
       -cert-err58-cpp
       cppcoreguidelines-*
       -cppcoreguidelines-avoid-magic-numbers
+      -cppcoreguidelines-init-variables
       -cppcoreguidelines-owning-memory
       -cppcoreguidelines-pro-type-reinterpret-cast
-      ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
       -cppcoreguidelines-slicing
       -cppcoreguidelines-special-member-functions
+      ${_DISABLED_CPPCOREGUIDELINES_CHECKS}
       fuchsia-*
       -fuchsia-default-arguments
       -fuchsia-default-arguments-calls
@@ -157,21 +165,25 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -google-runtime-references
       hicpp-*
       -hicpp-special-member-functions
-      ${_NO_HICPP_VARARG}
+      ${_DISABLED_HICPP_CHECKS}
       llvm-*
+      -llvm-qualified-auto
       -llvm-header-guard
       misc-*
       -misc-non-private-member-variables-in-classes
+      -misc-no-recursion
       modernize-*
       -modernize-make-shared
       -modernize-pass-by-value
       -modernize-raw-string-literal
+      -modernize-use-nodiscard
       -modernize-use-trailing-return-type
       performance-*
       -performance-inefficient-string-concatenation
       readability-*
       -readability-convert-member-functions-to-static
       -readability-magic-numbers
+      -readability-qualified-auto
     )
     string(REPLACE ";" ","
            _CLANG_TIDY_CHECKS "${_CLANG_TIDY_CHECKS}")
@@ -192,13 +204,19 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
     string(REPLACE "/" "\\\/"
            _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
 
+    if(MSVC)
+      # Extra argument for Clang-Tidy when used with cl.
+      # See https://gitlab.kitware.com/cmake/cmake/-/issues/20512#note_722771.
+      set(_EXTRA_ARG ";--extra-arg=/EHsc")
+    endif()
+
     set_target_properties(${_TARGET} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_HEADER_FILTER_DIR}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE}${_EXTRA_ARG};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_HEADER_FILTER_DIR}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
     )
   endif()
 endfunction()
 
-function(GET_SYSTEM_NAME RETURN_SYSTEM_NAME)
+function(get_system_name RETURN_SYSTEM_NAME)
   if(WIN32)
     set(SYSTEM_NAME "Windows" )
   elseif(APPLE)
@@ -246,7 +264,7 @@ function(GET_SYSTEM_NAME RETURN_SYSTEM_NAME)
   set(${RETURN_SYSTEM_NAME} ${SYSTEM_NAME} PARENT_SCOPE)
 endfunction()
 
-function(DEBIAN_BASED _RESULT)
+function(debian_based _RESULT)
   set(_DEBIAN_BASED FALSE)
   string(FIND ${LIBCELLML_SYSTEM} "Ubuntu" INDEX)
   if(INDEX EQUAL 0)
@@ -257,7 +275,7 @@ function(DEBIAN_BASED _RESULT)
   set(${_RESULT} ${_DEBIAN_BASED} PARENT_SCOPE)
 endfunction()
 
-function(REDHAT_BASED _RESULT)
+function(redhat_based _RESULT)
   set(_REDHAT_BASED FALSE)
   if(EXISTS "/etc/redhat-release")
     set(_REDHAT_BASED TRUE)

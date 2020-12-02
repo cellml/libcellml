@@ -66,6 +66,9 @@ ComponentEntity::~ComponentEntity()
 
 bool ComponentEntity::addComponent(const ComponentPtr &component)
 {
+    if (component == nullptr) {
+        return false;
+    }
     return doAddComponent(component);
 }
 

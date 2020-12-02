@@ -16,12 +16,12 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/logger.h"
 #include "libcellml/model.h"
 #include "libcellml/types.h"
 #include "libcellml/units.h"
-
-#include <string>
 
 namespace libcellml {
 
@@ -33,10 +33,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Parser: public Logger
 {
 public:
-    ~Parser() override; /**< Destructor */
-    Parser(const Parser &rhs) = delete; /**< Copy constructor */
-    Parser(Parser &&rhs) noexcept = delete; /**< Move constructor */
-    Parser &operator=(Parser rhs) = delete; /**< Assignment operator */
+    ~Parser() override; /**< Destructor. */
+    Parser(const Parser &rhs) = delete; /**< Copy constructor. */
+    Parser(Parser &&rhs) noexcept = delete; /**< Move constructor. */
+    Parser &operator=(Parser rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Parser object.
@@ -63,7 +63,7 @@ public:
     ModelPtr parseModel(const std::string &input);
 
 private:
-    Parser(); /**< Constructor */
+    Parser(); /**< Constructor. */
 
     struct ParserImpl; /**< Forward declaration for pImpl idiom. */
     ParserImpl *mPimpl; /**< Private member to implementation pointer. */

@@ -16,10 +16,10 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
-
-#include <string>
 
 #ifndef SWIG
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;
@@ -39,10 +39,10 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
 #endif
 {
 public:
-    ~Model() override; /**< Destructor */
-    Model(const Model &rhs) = delete; /**< Copy constructor */
-    Model(Model &&rhs) noexcept = delete; /**< Move constructor */
-    Model &operator=(Model rhs) = delete; /**< Assignment operator */
+    ~Model() override; /**< Destructor. */
+    Model(const Model &rhs) = delete; /**< Copy constructor. */
+    Model(Model &&rhs) noexcept = delete; /**< Move constructor. */
+    Model &operator=(Model rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Model object.
@@ -66,13 +66,21 @@ public:
     static ModelPtr create(const std::string &name) noexcept;
 
     /**
-     * @brief Add a child units to this model.
+     * @brief Add a child units item to this model.
      *
-     * Add a copy of the given units as a child units of this model.
+     * Add units by reference to the model. If the units item was
+     * previously in a different model, it is moved to this one,
+     * and the previous model's units list is updated.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p units pointer already exists in this model; or
+     *  - The @p units is @c nullptr.
      *
      * @param units The units to add.
+     *
+     * @return @c true if the units item is added or @c false otherwise.
      */
-    void addUnits(const UnitsPtr &units);
+    bool addUnits(const UnitsPtr &units);
 
     /**
      * @brief Remove the units at the given @p index.
@@ -82,7 +90,7 @@ public:
      *
      * @param index The index of the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(size_t index);
 
@@ -95,7 +103,7 @@ public:
      *
      * @param name The name of the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(const std::string &name);
 
@@ -108,7 +116,7 @@ public:
      *
      * @param units The pointer to the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(const UnitsPtr &units);
 
@@ -149,7 +157,7 @@ public:
     bool hasUnits(const UnitsPtr &units) const;
 
     /**
-     * @brief Get a units at the given @p index.
+     * @brief Get the units item at the given @p index.
      *
      * Returns a reference to a units at the given @p index.  If the @p index
      * is not valid a @c nullptr is returned, the range of valid values for the
@@ -259,21 +267,23 @@ public:
      * linked to @c Units added to the model.  This method will link
      * variable units specified by name to units in the model
      * (if they are found). Any variable units that cannot be linked
-     * to units in the model are left in an unlinked state.  This means it 
-     * is possible to still have unlinked @c Units in the model after 
+     * to units in the model are left in an unlinked state.  This means it
+     * is possible to still have unlinked @c Units in the model after
      * calling this method.
      *
      * Unlinked variable units can occur when a @c Variable's units are
-     * set by name.  If the @c Model to which the @c Variable belongs 
+     * set by name.  If the @c Model to which the @c Variable belongs
      * has @c Units defined with the same name, then that @c Variable's
-     * @c Units will not be linked to the @c Model's @c Units.  This 
+     * @c Units will not be linked to the @c Model's @c Units.  This
      * method will link the two units (the one from the variable and the
      * one from the model).
      *
      * If a @c Variable has units that are not found in the model
-     * then the units will remain unlinked.
+     * then the units will remain unlinked, and this will return @c false.
+     * 
+     * @return @c true upon success; @c false if some units have not been linked.
      */
-    void linkUnits();
+    bool linkUnits();
 
     /**
      * @brief Test to determine if any variable units are not linked to model units.
@@ -300,17 +310,6 @@ public:
     bool hasImports() const;
 
     /**
-     * @brief Resolve all imports in this model.
-     *
-     * Resolve all @c Component and @c Units imports by loading the models
-     * from local disk through relative URLs.  The @p baseFile is used to determine
-     * the full path to the source model relative to this one.
-     *
-     * @param baseFile The @c std::string location on local disk of the source @c Model.
-     */
-    void resolveImports(const std::string &baseFile);
-
-    /**
      * @brief Test if this model has unresolved imports.
      *
      * Test if this model has unresolved imports.
@@ -331,19 +330,6 @@ public:
     ModelPtr clone() const;
 
     /**
-     * @brief Flatten this model.
-     *
-     * Instantiates all imports and removes them from this model.
-     * The result is a self-contained model requiring no external
-     * resources and having no imports.
-     *
-     * The effects of this method cannot be undone.
-     *
-     * @sa clone
-     */
-    void flatten();
-
-    /**
      * @brief Fix @c Variable interfaces throughout the model.
      *
      * Traverses the model investigating variable equivalences to set the appropriate
@@ -358,14 +344,95 @@ public:
      */
     bool fixVariableInterfaces();
 
+    /**
+     * @brief Add an import source item to this model.
+     *
+     * Add import source by reference to the model. If the import
+     * source item was previously in a different model, it is moved
+     * to this one, and the previous model's import source list is updated.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p importSrc pointer already exists in this model; or
+     *  - The @p importSrc is @c nullptr.
+     *
+     * @param importSrc The import source to add.
+     *
+     * @return @c true if the import source item is added or @c false otherwise.
+     */
+    bool addImportSource(const ImportSourcePtr &importSrc);
+
+    /**
+     * @brief Get the number of import source items in the model.
+     *
+     * Returns the number of import source items the model contains.
+     *
+     * @return The number of import source items.
+     */
+    size_t importSourceCount() const;
+
+    /**
+     * @brief Get the import source item at the given @p index.
+     *
+     * Returns a reference to an import source at the given @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the range of valid values for the
+     * index is [0, \#importSources).
+     *
+     * @param index The index of the import source to return.
+     *
+     * @return A reference to the import source at the given @p index on success, @c nullptr otherwise.
+     */
+    ImportSourcePtr importSource(size_t index) const;
+
+    /**
+     * @brief Remove the import source at the given @p index.
+     *
+     * Remove the import source from this model at the given @p index.
+     * @p index must be in the range [0, \#importSources).
+     *
+     * @param index The index of the import source to remove.
+     *
+     * @return @c true if the import source was removed, @c false otherwise.
+     */
+    bool removeImportSource(size_t index);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the import source at the given reference.
+     *
+     * @param importSrc The pointer to the import source to remove.
+     *
+     * @return @c true if the import source was removed, @c false otherwise.
+     */
+    bool removeImportSource(const ImportSourcePtr &importSrc);
+
+    /**
+     * @brief Remove all import sources stored in this model.
+     *
+     * Clears all import sources that have been added to this model.
+     */
+    bool removeAllImportSources();
+
+    /**
+     * @brief Tests to see if the import source is within this model.
+     *
+     * Tests to see if the given import source is contained within this model.
+     * Returns @c true if the import source is in the model and @c false otherwise.
+     *
+     * @param importSrc The import source to test for existence in this model.
+     *
+     * @return @c true if the import source is in the model and @c false otherwise.
+     */
+    bool hasImportSource(const ImportSourcePtr &importSrc) const;
+
 private:
-    Model(); /**< Constructor */
+    Model(); /**< Constructor. */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
 
     bool doAddComponent(const ComponentPtr &component) override;
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    ModelImpl *mPimpl; /**< Private member to implementation pointer */
+    ModelImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

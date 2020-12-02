@@ -25,16 +25,6 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"q", "dimensionless", "my_component", CONSTANT},
     {"r", "dimensionless", "my_component", CONSTANT},
     {"s", "dimensionless", "my_component", CONSTANT},
-    {"eqnCnInteger", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnCnDouble", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnCnIntegerWithExponent", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnCnDoubleWithExponent", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnTrue", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnFalse", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnExponentiale", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnPi", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnInfinity", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnNotanumber", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnEq", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnEqCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNeq", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -203,7 +193,17 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"eqnPiecewisePiecePiecePiece", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewisePiecePiecePieceOtherwise", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnWithPiecewise", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnCi", "dimensionless", "my_component", COMPUTED_CONSTANT}
+    {"eqnCnInteger", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCnDouble", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCnIntegerWithExponent", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCnDoubleWithExponent", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCi", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnTrue", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnFalse", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnExponentiale", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnPi", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnInfinity", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnNotanumber", "dimensionless", "my_component", COMPUTED_CONSTANT}
 };
 
 double xor(double x, double y)
@@ -302,9 +302,8 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initializeStatesAndConstants(double *states, double *variables)
+void initialiseStatesAndConstants(double *states, double *variables)
 {
-    states[0] = 0.0;
     variables[0] = 1.0;
     variables[1] = 2.0;
     variables[2] = 3.0;
@@ -322,6 +321,7 @@ void initializeStatesAndConstants(double *states, double *variables)
     variables[183] = 3.14159265358979;
     variables[184] = INFINITY;
     variables[185] = NAN;
+    states[0] = 0.0;
 }
 
 void computeComputedConstants(double *variables)

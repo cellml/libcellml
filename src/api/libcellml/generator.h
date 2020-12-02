@@ -16,122 +16,34 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/logger.h"
-
 #include <string>
 
+#include "libcellml/exportdefinitions.h"
+#include "libcellml/types.h"
+
 namespace libcellml {
-
-class Generator;
-
-/**
- * @brief The GeneratorVariable class.
- *
- * The GeneratorVariable class is for representing a variable in the context
- * of a CellML Generator, i.e. a constant, a computed constant or an algebraic
- * variable.
- */
-class LIBCELLML_EXPORT GeneratorVariable
-{
-    friend class Generator;
-
-public:
-    enum class Type
-    {
-        VARIABLE_OF_INTEGRATION,
-        STATE,
-        CONSTANT,
-        COMPUTED_CONSTANT,
-        ALGEBRAIC
-    };
-
-    ~GeneratorVariable(); /**< Destructor */
-    GeneratorVariable(const GeneratorVariable &rhs) = delete; /**< Copy constructor */
-    GeneratorVariable(GeneratorVariable &&rhs) noexcept = delete; /**< Move constructor */
-    GeneratorVariable &operator=(GeneratorVariable rhs) = delete; /**< Assignment operator */
-
-    /**
-     * @brief Create a @c GeneratorVariable object.
-     *
-     * Factory method to create a @c GeneratorVariable.  Create a
-     * generator variable with::
-     *
-     *   GeneratorVariablePtr generatorVariable = libcellml::GeneratorVariable::create();
-     *
-     * @return A smart pointer to a @c GeneratorVariable object.
-     */
-    static GeneratorVariablePtr create() noexcept;
-
-    /**
-     * @brief Get the @c Variable for this @c GeneratorVariable.
-     *
-     * Return the @c Variable of this @c GeneratorVariable.
-     *
-     * @return The @c Variable.
-     */
-    VariablePtr variable() const;
-
-    /**
-     * @brief Get the @c Component for this @c GeneratorVariable.
-     *
-     * Return the @c Component of this @c GeneratorVariable. It is the
-     * @c Component in which the @c Variable is first defined (in the case of
-     * the variable of integration), initialised (in the case of a constant) or
-     * actually computed (in the case of a state, computed constant or algebraic
-     * variable). It may or may not be the same @c Component as the parent
-     * component of the @c Variable.
-     *
-     * @return The @c Component.
-     */
-    ComponentPtr component() const;
-
-    /**
-     * @brief Get the @c Type for this @c GeneratorVariable.
-     *
-     * Return the @c Type of this @c GeneratorVariable.
-     *
-     * @return The @c Type.
-     */
-    GeneratorVariable::Type type() const;
-
-private:
-    GeneratorVariable(); /**< Constructor */
-
-    struct GeneratorVariableImpl;
-    GeneratorVariableImpl *mPimpl;
-};
 
 /**
  * @brief The Generator class.
  *
  * The Generator class is for representing a CellML Generator.
  */
-class LIBCELLML_EXPORT Generator: public Logger
+class LIBCELLML_EXPORT Generator
 {
 public:
-    enum class ModelType
-    {
-        UNKNOWN,
-        ALGEBRAIC,
-        ODE,
-        INVALID,
-        UNDERCONSTRAINED,
-        OVERCONSTRAINED,
-        UNSUITABLY_CONSTRAINED
-    };
-
-    ~Generator() override; /**< Destructor */
-    Generator(const Generator &rhs) = delete; /**< Copy constructor */
-    Generator(Generator &&rhs) noexcept = delete; /**< Move constructor */
-    Generator &operator=(Generator rhs) = delete; /**< Assignment operator */
+    ~Generator(); /**< Destructor. */
+    Generator(const Generator &rhs) = delete; /**< Copy constructor. */
+    Generator(Generator &&rhs) noexcept = delete; /**< Move constructor. */
+    Generator &operator=(Generator rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Generator object.
      *
-     * Factory method to create a @c Generator.  Create a
-     * generator with::
+     * Factory method to create a @c Generator. Create a generator with::
      *
-     *   GeneratorPtr generator = libcellml::Generator::create();
+     * @code
+     *   auto generator = libcellml::Generator::create();
+     * @endcode
      *
      * @return A smart pointer to a @c Generator object.
      */
@@ -156,95 +68,45 @@ public:
     void setProfile(const GeneratorProfilePtr &profile);
 
     /**
-     * @brief Process the @c Model.
+     * @brief Get the @c AnalyserModel.
      *
-     * Process the @c Model using this @c Generator.
+     * Get the @c AnalyserModel used by this @c Generator.
      *
-     * @param model The @c Model to process.
+     * @return The @c AnalyserModel used.
      */
-    void processModel(const ModelPtr &model);
+    AnalyserModelPtr model();
 
     /**
-     * @brief Get the @c ModelType of the @c Model.
+     * @brief Set the @c AnalyserModel.
      *
-     * Return the @c ModelType of the @c Model processed by this @c Generator.
+     * Set the @c AnalyserModel to be used by this @c Generator.
      *
-     * @return The @c ModelType.
+     * @param model The @c AnalyserModel to set.
      */
-    ModelType modelType() const;
+    void setModel(const AnalyserModelPtr &model);
 
     /**
-     * @brief Get the number of states in the @c Model.
+     * @brief Get the interface code for the @c AnalyserModel.
      *
-     * Return the number of states in the @c Model processed by this
-     * @c Generator.
+     * Return the interface code for the @c AnalyserModel, using the
+     * @c GeneratorProfile.
      *
-     * @return The number of states.
-     */
-    size_t stateCount() const;
-
-    /**
-     * @brief Get the number of variables in the @c Model.
-     *
-     * Return the number of variables in the @c Model processed by this
-     * @c Generator.
-     *
-     * @return The number of variables.
-     */
-    size_t variableCount() const;
-
-    /**
-     * @brief Get the variable of integration of the @c Model.
-     *
-     * Return the @c Variable of integration of the @c Model processed by this
-     * @c Generator.
-     *
-     * @return The @c Type.
-     */
-    GeneratorVariablePtr voi() const;
-
-    /**
-     * @brief Get the state at @p index.
-     *
-     * Return the state at the index @p index for the @c Model processed by this
-     * @c Generator.
-     *
-     * @param index The index of the state to return.
-     */
-    GeneratorVariablePtr state(size_t index) const;
-
-    /**
-     * @brief Get the variable at @p index.
-     *
-     * Return the variable at the index @p index for the @c Model processed by
-     * this @c Generator.
-     *
-     * @param index The index of the variable to return.
-     */
-    GeneratorVariablePtr variable(size_t index) const;
-
-    /**
-     * @brief Get the interface code for the @c Model.
-     *
-     * Return the interface code for the @c Model processed by this
-     * @c Generator, using its @c GeneratorProfile.
-     *
-     * @return The code.
+     * @return The interface code as a @c std::string.
      */
     std::string interfaceCode() const;
 
     /**
-     * @brief Get the implementation code for the @c Model.
+     * @brief Get the implementation code for the @c AnalyserModel.
      *
-     * Return the implementation code for the @c Model processed by this
-     * @c Generator, using its @c GeneratorProfile.
+     * Return the implementation code for the @c AnalyserModel, using the
+     * @c GeneratorProfile.
      *
-     * @return The code.
+     * @return The implementation code as a @c std::string.
      */
     std::string implementationCode() const;
 
 private:
-    Generator(); /**< Constructor */
+    Generator(); /**< Constructor. */
 
     struct GeneratorImpl;
     GeneratorImpl *mPimpl;

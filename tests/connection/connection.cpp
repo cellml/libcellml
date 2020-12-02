@@ -117,6 +117,18 @@ TEST(Variable, hasIndirectEquivalentVariable)
     EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
 }
 
+TEST(Variable, connectionId)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
+
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_id");
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v1, v2));
+}
+
 TEST(Connection, componentlessVariableInvalidConnection)
 {
     const std::string e =
@@ -240,7 +252,7 @@ TEST(Connection, parseValidAlternateFormConnection)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(in);
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
     EXPECT_EQ(size_t(2), model->componentCount());
     EXPECT_EQ(size_t(1), model->component("component1")->variable("variable1")->equivalentVariableCount());
 }
@@ -887,6 +899,57 @@ TEST(Connection, removeVariablesFromConnections)
     EXPECT_EQ(e5, a);
 }
 
+TEST(Connection, nonUniqueWayOfGettingEquivalenceConnectionId)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+
+    comp1->addVariable(v1);
+    comp1->addVariable(v2);
+    comp2->addVariable(v3);
+    comp2->addVariable(v4);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v2, v4);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v3, "connection_id");
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v4));
+}
+
+TEST(Connection, connectionIdFromReverseVariablesToThoseSet)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_id");
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v1));
+}
+
 TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces)
 {
     const std::string e =
@@ -1105,7 +1168,8 @@ TEST(Connection, importedComponentConnectionAndParse)
     m->addComponent(componentBob);
     componentImported->addVariable(variableImported);
     componentBob->addVariable(variableBob);
-    EXPECT_EQ(componentImported->variable(0), variableImported);
+    EXPECT_EQ(variableImported, componentImported->variable(0));
+
     libcellml::Variable::addEquivalence(variableImported, variableBob);
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     std::string a = printer->printModel(m);
@@ -1114,7 +1178,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     a = printer->printModel(model);
     EXPECT_EQ(e, a);
@@ -1146,18 +1210,57 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
         "  </component>\n"
         "</model>\n";
 
-    const std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
+    const std::string expectIssue = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(s);
-    EXPECT_EQ(size_t(1), parser->errorCount());
+    EXPECT_EQ(size_t(1), parser->issueCount());
 
-    EXPECT_EQ(expectError, parser->error(0)->description());
-    parser->removeAllErrors();
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(expectIssue, parser->issue(0)->description());
+    parser->removeAllIssues();
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
+}
+
+TEST(Connection, mappingId)
+{
+    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"  name=\"everything\" >\n"
+                           "  <component name=\"c1\" >\n"
+                           "    <variable name=\"v1\" units=\"units2\" interface=\"private\"/>\n"
+                           "  </component>\n"
+                           "  <component name=\"c2\">\n"
+                           "    <variable name=\"v2a\" units=\"units2\" interface=\"public\"/>\n"
+                           "    <variable name=\"v2b\" units=\"units2\" interface=\"public\"/>\n"
+                           "  </component>\n"
+                           "  <component name=\"c3\">\n"
+                           "    <variable name=\"v3\" units=\"units2\" interface=\"public\"/>\n"
+                           "  </component>\n"
+                           "  <connection component_1=\"c1\" component_2=\"c2\">\n"
+                           "    <map_variables variable_1=\"v1\" variable_2=\"v2a\" id=\"id12a\"/>\n"
+                           "    <map_variables variable_1=\"v1\" variable_2=\"v2b\" id=\"id12b\"/>\n"
+                           "  </connection>\n"
+                           "  <connection component_1=\"c1\" component_2=\"c3\">\n"
+                           "    <map_variables variable_1=\"v1\" variable_2=\"v3\" id=\"id13\"/>\n"
+                           "  </connection>\n"
+
+                           "</model>\n";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    EXPECT_EQ("id12a",
+              libcellml::Variable::equivalenceMappingId(
+                  model->component("c1")->variable("v1"),
+                  model->component("c2")->variable("v2a")));
+    EXPECT_EQ("id12b",
+              libcellml::Variable::equivalenceMappingId(
+                  model->component("c1")->variable("v1"),
+                  model->component("c2")->variable("v2b")));
+    EXPECT_EQ("id13",
+              libcellml::Variable::equivalenceMappingId(
+                  model->component("c1")->variable("v1"),
+                  model->component("c3")->variable("v3")));
 }

@@ -18,6 +18,11 @@ get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
 find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
+if(WIN32)
+  find_program(CLCACHE_EXE clcache)
+else()
+  find_program(CCACHE_EXE ccache)
+endif()
 find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
 find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
 find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
@@ -27,9 +32,26 @@ find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLV
 find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
+if(Python_Interpreter_FOUND)
+  if(NOT DEFINED TEST_COVERAGE_RESULT)
+    set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
+    message(STATUS "Performing Test HAVE_COVERAGE")
+    get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
+    execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/python_package_check.py exclude-until-coverage-plugin
+      RESULT_VARIABLE TEST_COVERAGE_RESULT OUTPUT_QUIET ERROR_QUIET)
+    if(TEST_COVERAGE_RESULT EQUAL 0)
+      set(HAVE_COVERAGE TRUE)
+      message(STATUS "Performing Test HAVE_COVERAGE - Success")
+    else()
+      set(HAVE_COVERAGE FALSE)
+      message(STATUS "Performing Test HAVE_COVERAGE - Failed")
+    endif()
+  endif()
+endif()
+
 find_package(Doxygen)
 find_package(Sphinx)
-find_package(SWIG 3)
+find_package(SWIG 4)
 
 set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 
@@ -41,6 +63,11 @@ check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_F
 
 set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
+if(WIN32)
+  mark_as_advanced(CLCACHE_EXE)
+else()
+  mark_as_advanced(CCACHE_EXE)
+endif()
 mark_as_advanced(
   CLANG_TIDY_EXE
   CLANG_FORMAT_EXE
@@ -83,6 +110,16 @@ else()
   find_package(LibXml2 REQUIRED)
 endif()
 
+if(WIN32)
+  if(CLCACHE_EXE)
+    set(CLCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
+  endif()
+else()
+  if(CCACHE_EXE)
+    set(CCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
+  endif()
+endif()
+
 if(CLANG_FORMAT_EXE AND GIT_EXE)
   set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
 endif()
@@ -105,6 +142,10 @@ endif()
 
 if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS_OK)
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
+endif()
+
+if(HAVE_COVERAGE)
+  set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Module required to run Python coverage testing is available.")
 endif()
 
 if(WIN32)
