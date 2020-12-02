@@ -139,7 +139,7 @@ public:
      *
      * Test to see if the @c AnalyserExternalVariable with the the given
      * @p variableName in the @c Component with the given @p componentName in
-     * the given @p model is contained within this @c Analyser. Returns @c true
+     * the given @p model is contained within this @c Analyser. Return @c true
      * if the @c AnalyserExternalVariable is in the @c Analyser and @c false
      * otherwise.
      *
@@ -163,7 +163,7 @@ public:
      * pointer is contained within this @c Analyser.
      *
      * Test to see if the @c AnalyserExternalVariable with the given pointer is
-     * contained within this @c Analyser. Returns @c true if the
+     * contained within this @c Analyser. Return @c true if the
      * @c AnalyserExternalVariable is in the @c Analyser and @c false otherwise.
      *
      * @param variable The pointer to the @c AnalyserExternalVariable to remove.
