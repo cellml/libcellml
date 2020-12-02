@@ -459,11 +459,12 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mLockedProfile->acothFunctionString();
 
     // Miscellaneous.
+    // Note: we do NOT include interfaceFileNameString() since it may be the
+    //       only thing that someone might change, so that the generated file
+    //       works with the file name it is to be given.
 
     profileContents += mLockedProfile->commentString()
                        + mLockedProfile->originCommentString();
-
-    profileContents += mLockedProfile->interfaceFileNameString();
 
     profileContents += mLockedProfile->interfaceHeaderString()
                        + mLockedProfile->implementationHeaderString();
@@ -557,7 +558,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mLockedProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "330093949b2bbc919f3290c8e8fbd6f1a174fd19";
+        res = profileContentsSha1 != "60d16843c0cb0180f147a4a562aa7a434634e929";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
