@@ -192,7 +192,7 @@ public:
      *
      * Return the dependency with the given @p variableName in the @c Component
      * with the given @p componentName in the given @p model. If no such
-     * dependency is contained withing the @AnalyserExternalVariable, a
+     * dependency is contained within the @AnalyserExternalVariable, a
      * @c nullptr is returned.
      *
      * @param model The pointer to the @c Model which contains the dependency to

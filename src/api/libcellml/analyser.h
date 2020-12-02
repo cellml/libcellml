@@ -193,7 +193,7 @@ public:
      *
      * Return the @c AnalyserExternalVariable with the given @p variableName in
      * the @c Component with the given @p componentName in the given @p model.
-     * If no such @c AnalyserExternalVariable is contained withing the
+     * If no such @c AnalyserExternalVariable is contained within the
      * @c Analyser, a @c nullptr is returned.
      *
      * @param model The pointer to the @c Model which contains the
