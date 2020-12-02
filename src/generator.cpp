@@ -557,11 +557,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mLockedProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "a59668d381d7fac3a13d737e8f397c08ccdfc7ba";
+        res = profileContentsSha1 != "330093949b2bbc919f3290c8e8fbd6f1a174fd19";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "daed105c1b0b4d527483db0dbee5c9ecb24de55d";
+        res = profileContentsSha1 != "1532797cc47546dd18bbe4d30fd69a046cf011ea";
 
         break;
     }

@@ -458,7 +458,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.1.0\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.2.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
@@ -769,7 +769,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.1.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.2.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";

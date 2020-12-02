@@ -270,7 +270,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->implementationHeaderString());
 
     EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
-    EXPECT_EQ("const char VERSION[] = \"0.1.0\";\n", generatorProfile->implementationVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.2.0\";\n", generatorProfile->implementationVersionString());
 
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->implementationLibcellmlVersionString());
