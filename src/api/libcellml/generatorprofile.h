@@ -2257,6 +2257,8 @@ public:
      *
      * Return the @c std::string for the interface file name.
      *
+     * @sa setImplementationHeaderString
+     *
      * @return The @c std::string for the interface file name.
      */
     std::string interfaceFileNameString() const;
@@ -2302,7 +2304,11 @@ public:
     /**
      * @brief Set the @c std::string for an implementation header.
      *
-     * Set the @c std::string for an implementation header.
+     * Set the @c std::string for an implementation header. To be useful, the
+     * string should contain the <INTERFACE_FILE_NAME> tag, which will be
+     * replaced with the interface file name.
+     *
+     * @sa interfaceFileNameString
      *
      * @param implementationHeaderString The @c std::string to use for an
      * implementation header.
@@ -2514,6 +2520,8 @@ public:
      * tag, which will be replaced with a type for the external variable type,
      * if needed.
      *
+     * @sa variableTypeObjectExternalTypeString
+     *
      * @param variableTypeObjectString The @c std::string to use for the data
      * structure for the variable type object.
      */
@@ -2525,6 +2533,8 @@ public:
      *
      * Return the @c std::string for the external type for the data structure
      * for the variable type object.
+     *
+     * @sa setVariableTypeObjectString
      *
      * @return The @c std::string for the external type for the data structure
      * for the variable type object.
@@ -2989,6 +2999,11 @@ public:
      *
      * Return the @c std::string for the external variable method parameter.
      *
+     * @sa setInterfaceComputeRatesMethodString,
+     * setImplementationComputeRatesMethodString,
+     * setInterfaceComputeVariablesMethodString,
+     * setImplementationComputeVariablesMethodString
+     *
      * @return The @c std::string for the external variable method parameter.
      */
     std::string externalVariableMethodParameterString() const;
@@ -3270,6 +3285,8 @@ public:
      * will be replaced with a parameter for the compute external variables
      * method, if needed.
      *
+     * @sa externalVariableMethodParameterString
+     *
      * @param interfaceComputeRatesMethodString The @c std::string to use for
      * the interface to compute rates.
      */
@@ -3293,6 +3310,8 @@ public:
      * external variables method, if needed, and with some code to compute
      * rates, respectively.
      *
+     * @sa externalVariableMethodParameterString
+     *
      * @param implementationComputeRatesMethodString The @c std::string to use
      * for the implementation to compute rates.
      */
@@ -3314,6 +3333,8 @@ public:
      * useful, the string should contain the <OPTIONAL_PARAMETER> tag, which
      * will be replaced with a parameter for the compute external variables
      * method, if needed.
+     *
+     * @sa externalVariableMethodParameterString
      *
      * @param interfaceComputeVariablesMethodString The @c std::string to use
      * for the interface to compute variables.
@@ -3339,6 +3360,8 @@ public:
      * <CODE> tags, which will be replaced with a parameter for the compute
      * external variables method, if needed, and with some code to compute
      * rates, respectively.
+     *
+     * @sa externalVariableMethodParameterString
      *
      * @param implementationComputeVariablesMethodString The @c std::string to
      * use for the implementation to compute variables.
