@@ -869,7 +869,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const char VERSION[] = "0.1.0";\n', g.implementationVersionString())
+        self.assertEqual('const char VERSION[] = "0.2.0";\n', g.implementationVersionString())
         g.setImplementationVersionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVersionString())
 
