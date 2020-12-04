@@ -361,8 +361,8 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
     // as parameters, thus ensuring the uniqueness of the key (see
     // https://en.wikipedia.org/wiki/Pairing_function#Cantor_pairing_function).
 
-    auto v1 = reinterpret_cast<uint64_t>(variable1.get());
-    auto v2 = reinterpret_cast<uint64_t>(variable2.get());
+    auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
+    auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
 
     if (v2 < v1) {
         v1 += v2;
