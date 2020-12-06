@@ -30,18 +30,21 @@ TEST(Analyser, initialisedVariableOfIntegration)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VOI_INITIALISED,
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -56,18 +59,21 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'environment' cannot be both a variable of integration and initialised.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VOI_INITIALISED,
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -82,18 +88,21 @@ TEST(Analyser, twoVariablesOfIntegration)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be the variable of integration.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VOI_SEVERAL,
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -110,7 +119,7 @@ TEST(Analyser, nonFirstOrderOdes)
         "The differential equation for variable 'y' in component 'sub' must be of the first order.",
         "The differential equation for variable 'z' in component 'sub_sub' must be of the first order.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::MATH,
         libcellml::CellmlElementType::MATH,
         libcellml::CellmlElementType::MATH,
@@ -120,12 +129,17 @@ TEST(Analyser, nonFirstOrderOdes)
         libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER,
+        libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER,
+        libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -141,7 +155,7 @@ TEST(Analyser, undefinedVariables)
         "MathML ci element has the child text 'a' which does not correspond with any variable names present in component 'my_component'.",
         "MathML ci element has the child text 'b' which does not correspond with any variable names present in component 'my_component'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::MATH,
         libcellml::CellmlElementType::MATH,
     };
@@ -149,12 +163,16 @@ TEST(Analyser, undefinedVariables)
         libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::MATH_CI_VARIABLE_REF,
+        libcellml::Issue::ReferenceRule::MATH_CI_VARIABLE_REF,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -169,18 +187,21 @@ TEST(Analyser, variableInitialisedTwice)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'sub' and variable 'x' in component 'main' are equivalent and cannot therefore both be initialised.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE,
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -193,20 +214,23 @@ TEST(Analyser, nonConstantInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' is initialised using variable 'k2', but it is not a constant.",
+        "Variable 'x' in component 'main' is initialised using variable 'k2', which is not a constant.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION,
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -221,18 +245,21 @@ TEST(Analyser, nonExistingInitialisingVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'main' has an invalid initial value 'k'. Initial values must be a real number string or a variable reference.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::VARIABLE_INITIAL_VALUE,
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -247,11 +274,14 @@ TEST(Analyser, nonInitialisedState)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is used in an ODE, but it is not initialised.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED,
     };
     const std::string expectedVariableName = "x";
 
@@ -259,7 +289,7 @@ TEST(Analyser, nonInitialisedState)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
     EXPECT_EQ(expectedVariableName, analyser->issue(0)->variable()->name());
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
@@ -273,20 +303,23 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is not computed.",
+        "Variable 'x' in component 'my_component' is unused.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -301,18 +334,21 @@ TEST(Analyser, overconstrainedOneVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is computed more than once.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
     };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -328,7 +364,7 @@ TEST(Analyser, overconstrainedTwoVariables)
         "Variable 'x' in component 'my_component' is computed more than once.",
         "Variable 'y' in component 'my_component' is computed more than once.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
         libcellml::CellmlElementType::VARIABLE,
     };
@@ -336,12 +372,16 @@ TEST(Analyser, overconstrainedTwoVariables)
         libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -358,7 +398,7 @@ TEST(Analyser, overconstrainedThreeVariables)
         "Variable 'y' in component 'my_component' is computed more than once.",
         "Variable 'z' in component 'my_component' is computed more than once.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
         libcellml::CellmlElementType::VARIABLE,
         libcellml::CellmlElementType::VARIABLE,
@@ -368,12 +408,17 @@ TEST(Analyser, overconstrainedThreeVariables)
         libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -386,10 +431,10 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is not computed.",
+        "Variable 'x' in component 'my_component' is unused.",
         "Variable 'y' in component 'my_component' is computed more than once.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedItemTypes = {
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::VARIABLE,
         libcellml::CellmlElementType::VARIABLE,
     };
@@ -397,14 +442,544 @@ TEST(Analyser, unsuitablyConstrained)
         libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS(expectedIssues, expectedItemTypes, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
+}
+
+TEST(Analyser, addSameExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
+
+    analyser->addExternalVariable(externalVariable);
+
+    EXPECT_EQ(size_t(1), analyser->externalVariableCount());
+
+    analyser->addExternalVariable(externalVariable);
+
+    EXPECT_EQ(size_t(1), analyser->externalVariableCount());
+}
+
+TEST(Analyser, addExternalVariableFromDifferentModels)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto other_model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'V' in component 'membrane' is marked as an external variable, but it belongs to a different model and will therefore be ignored.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(other_model->component("membrane")->variable("V")));
+
+    EXPECT_EQ(size_t(2), analyser->externalVariableCount());
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, removeExternalVariableByIndex)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    EXPECT_FALSE(analyser->removeExternalVariable(0));
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+
+    EXPECT_TRUE(analyser->removeExternalVariable(0));
+    EXPECT_FALSE(analyser->removeExternalVariable(1));
+}
+
+TEST(Analyser, removeExternalVariableByName)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "V"));
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+
+    EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "X"));
+}
+
+TEST(Analyser, removeExternalVariableByPointer)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
+
+    EXPECT_FALSE(analyser->removeExternalVariable(externalVariable));
+
+    analyser->addExternalVariable(externalVariable);
+
+    EXPECT_TRUE(analyser->removeExternalVariable(externalVariable));
+    EXPECT_FALSE(analyser->removeExternalVariable(externalVariable));
+    EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
+}
+
+TEST(Analyser, removeAllExternalVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
+
+    EXPECT_EQ(size_t(3), analyser->externalVariableCount());
+
+    analyser->removeAllExternalVariables();
+
+    EXPECT_EQ(size_t(0), analyser->externalVariableCount());
+}
+
+TEST(Analyser, containsExternalVariableByName)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+
+    EXPECT_TRUE(analyser->containsExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->containsExternalVariable(model, "membrane", "X"));
+}
+
+TEST(Analyser, containsExternalVariableByPointer)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
+
+    analyser->addExternalVariable(externalVariable);
+
+    EXPECT_TRUE(analyser->containsExternalVariable(externalVariable));
+    EXPECT_FALSE(analyser->containsExternalVariable(nullptr));
+}
+
+TEST(Analyser, externalVariableByIndex)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    EXPECT_EQ(nullptr, analyser->externalVariable(0));
+
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
+
+    analyser->addExternalVariable(externalVariable);
+
+    EXPECT_EQ(externalVariable, analyser->externalVariable(0));
+    EXPECT_EQ(nullptr, analyser->externalVariable(1));
+}
+
+TEST(Analyser, externalVariableByName)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    EXPECT_EQ(nullptr, analyser->externalVariable(model, "membrane", "V"));
+
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
+
+    analyser->addExternalVariable(externalVariable);
+
+    EXPECT_EQ(externalVariable, analyser->externalVariable(model, "membrane", "V"));
+    EXPECT_EQ(nullptr, analyser->externalVariable(model, "membrane", "X"));
+}
+
+TEST(Analyser, onePrimaryVoiExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'time' in component 'environment' is marked as an external variable, but it is the variable of integration which cannot be used as an external variable.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("environment")->variable("time")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+}
+
+TEST(Analyser, oneNonPrimaryVoiExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'time' in component 'membrane' is marked as an external variable, but it is equivalent to variable 'time' in component 'environment', the primary variable of integration which cannot be used as an external variable.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+}
+
+TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Both variable 'time' in component 'environment' and variable 'time' in component 'membrane' are marked as external variables, but they are equivalent to variable 'time' in component 'environment', the primary variable of integration which cannot be used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("environment")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Both variable 'time' in component 'membrane' and variable 'time' in component 'sodium_channel' are marked as external variables, but they are equivalent to variable 'time' in component 'environment', the primary variable of integration which cannot be used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("time")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'time' in component 'environment', variable 'time' in component 'membrane' and variable 'time' in component 'sodium_channel' are marked as external variables, but they are equivalent to variable 'time' in component 'environment', the primary variable of integration which cannot be used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("environment")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("time")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'time' in component 'membrane', variable 'time' in component 'sodium_channel' and variable 'time' in component 'potassium_channel' are marked as external variables, but they are equivalent to variable 'time' in component 'environment', the primary variable of integration which cannot be used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("time")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, onePrimaryExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
+}
+
+TEST(Analyser, oneNonPrimaryExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'V' in component 'sodium_channel' is marked as an external variable, but it is not a primary variable. Variable 'V' in component 'membrane' is its corresponding primary variable and will therefore be the one used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Both variable 'V' in component 'membrane' and variable 'V' in component 'sodium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is the primary variable and will therefore be the one used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Both variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'V' in component 'membrane', variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are all equivalent. Variable 'V' in component 'membrane' is the primary variable and will therefore be the one used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'V' in component 'sodium_channel', variable 'V' in component 'potassium_channel' and variable 'V' in component 'leakage_current' are marked as external variables, but they are all equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one used as an external variable.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
 TEST(Analyser, coverage)
@@ -422,6 +997,8 @@ TEST(Analyser, coverage)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNKNOWN, analyserModel->type());
 
     EXPECT_EQ(nullptr, analyserModel->voi());
+
+    EXPECT_FALSE(analyserModel->hasExternalVariables());
 
     EXPECT_EQ(size_t(0), analyserModel->stateCount());
     EXPECT_EQ(size_t(0), analyserModel->states().size());

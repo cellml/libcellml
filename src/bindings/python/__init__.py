@@ -12,6 +12,7 @@ import libcellml
 from libcellml.analyser import Analyser
 from libcellml.analyserequation import AnalyserEquation
 from libcellml.analyserequationast import AnalyserEquationAst
+from libcellml.analyserexternalvariable import AnalyserExternalVariable
 from libcellml.analysermodel import AnalyserModel
 from libcellml.analyservariable import AnalyserVariable
 from libcellml.annotator import Annotator
