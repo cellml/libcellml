@@ -47,7 +47,8 @@ public:
         TRUE_CONSTANT,
         VARIABLE_BASED_CONSTANT,
         RATE,
-        ALGEBRAIC
+        ALGEBRAIC,
+        EXTERNAL
     };
 
     ~AnalyserEquation(); /**< Destructor. */

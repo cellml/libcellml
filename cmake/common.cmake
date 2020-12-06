@@ -112,6 +112,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
 
     if(NOT "${_TARGET}" STREQUAL "cellml")
       list(APPEND _COMPILE_OPTIONS
+        -Wno-old-style-cast
         -Wno-used-but-marked-unused
         --system-header-prefix=gtest/
       )
@@ -126,13 +127,18 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
     if(NOT "${_TARGET}" STREQUAL "cellml")
         set(_DISABLED_BUGPRONE_CHECKS
           -bugprone-exception-escape
+          -bugprone-suspicious-include
         )
         set(_DISABLED_CPPCOREGUIDELINES_CHECKS
           -cppcoreguidelines-avoid-non-const-global-variables
+          -cppcoreguidelines-pro-bounds-pointer-arithmetic
           -cppcoreguidelines-pro-type-vararg
         )
         set(_DISABLED_HICPP_CHECKS
           -hicpp-vararg
+        )
+        set(_DISABLED_READABILITY_CHECKS
+          -readability-named-parameter
         )
     endif()
 
@@ -184,6 +190,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -readability-convert-member-functions-to-static
       -readability-magic-numbers
       -readability-qualified-auto
+      ${_DISABLED_READABILITY_CHECKS}
     )
     string(REPLACE ";" ","
            _CLANG_TIDY_CHECKS "${_CLANG_TIDY_CHECKS}")
