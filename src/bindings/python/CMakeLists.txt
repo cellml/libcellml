@@ -22,6 +22,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/analyser.i
     ../interface/analyserequation.i
     ../interface/analyserequationast.i
+    ../interface/analyserexternalvariable.i
     ../interface/analysermodel.i
     ../interface/analyservariable.i
     ../interface/annotator.i
