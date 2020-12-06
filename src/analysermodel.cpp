@@ -17,6 +17,7 @@ limitations under the License.
 #include "libcellml/analysermodel.h"
 
 #include "analysermodel_p.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -355,6 +356,41 @@ bool AnalyserModel::needAcothFunction() const
     }
 
     return mPimpl->mNeedAcothFunction;
+}
+
+bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
+                                           const VariablePtr &variable2)
+{
+    // This is a cached version of the areEquivalentVariables() utility. Indeed,
+    // an AnalyserModel object refers to a static version of a model, which
+    // means that we can safely cache the result of a call to that utility. In
+    // turn, this means that we can speed up any feature (e.g., code generation)
+    // that also relies on that utility. When it comes to the key for the cache,
+    // we use the Cantor pairing function with the address of the two variables
+    // as parameters, thus ensuring the uniqueness of the key (see
+    // https://en.wikipedia.org/wiki/Pairing_function#Cantor_pairing_function).
+
+    auto v1 = reinterpret_cast<uintptr_t>(variable1.get());
+    auto v2 = reinterpret_cast<uintptr_t>(variable2.get());
+
+    if (v2 < v1) {
+        v1 += v2;
+        v2 = v1 - v2;
+        v1 = v1 - v2;
+    }
+
+    auto key = ((v1 + v2) * (v1 + v2 + 1) >> 1U) + v2;
+    auto cacheKey = mPimpl->mCachedEquivalentVariables.find(key);
+
+    if (cacheKey != mPimpl->mCachedEquivalentVariables.end()) {
+        return cacheKey->second;
+    }
+
+    bool res = libcellml::areEquivalentVariables(variable1, variable2);
+
+    mPimpl->mCachedEquivalentVariables[key] = res;
+
+    return res;
 }
 
 } // namespace libcellml
