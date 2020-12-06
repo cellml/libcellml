@@ -27,6 +27,8 @@ struct AnalyserModel::AnalyserModelImpl
 {
     AnalyserModel::Type mType = Type::UNKNOWN;
 
+    bool mHasExternalVariables = false;
+
     AnalyserVariablePtr mVoi = nullptr;
     std::vector<AnalyserVariablePtr> mStates;
     std::vector<AnalyserVariablePtr> mVariables;

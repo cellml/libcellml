@@ -113,6 +113,7 @@ struct Generator::GeneratorImpl
     void addTrigonometricFunctionsCode();
 
     void addInterfaceCreateDeleteArrayMethodsCode();
+    void addExternalVariableMethodTypeDefinitionCode();
     void addImplementationCreateStatesArrayMethodCode();
     void addImplementationCreateVariablesArrayMethodCode();
     void addImplementationDeleteArrayMethodCode();
@@ -197,6 +198,8 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 
 double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) const
 {
+    // Return the scaling factor for the given variable.
+
     return Units::scalingFactor(variable->units(), analyserVariable(variable)->variable()->units());
 }
 
@@ -456,11 +459,12 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mLockedProfile->acothFunctionString();
 
     // Miscellaneous.
+    // Note: we do NOT include interfaceFileNameString() since it may be the
+    //       only thing that someone might change, so that the generated file
+    //       works with the file name it is to be given.
 
     profileContents += mLockedProfile->commentString()
                        + mLockedProfile->originCommentString();
-
-    profileContents += mLockedProfile->interfaceFileNameString();
 
     profileContents += mLockedProfile->interfaceHeaderString()
                        + mLockedProfile->implementationHeaderString();
@@ -478,10 +482,12 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mLockedProfile->implementationVariableCountString();
 
     profileContents += mLockedProfile->variableTypeObjectString();
+    profileContents += mLockedProfile->variableTypeObjectExternalTypeString();
 
     profileContents += mLockedProfile->constantVariableTypeString()
                        + mLockedProfile->computedConstantVariableTypeString()
-                       + mLockedProfile->algebraicVariableTypeString();
+                       + mLockedProfile->algebraicVariableTypeString()
+                       + mLockedProfile->externalVariableTypeString();
 
     profileContents += mLockedProfile->variableInfoObjectString()
                        + mLockedProfile->variableInfoWithTypeObjectString();
@@ -503,6 +509,10 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->statesArrayString()
                        + mLockedProfile->ratesArrayString()
                        + mLockedProfile->variablesArrayString();
+
+    profileContents += mLockedProfile->externalVariableMethodTypeDefinitionString()
+                       + mLockedProfile->externalVariableMethodParameterString()
+                       + mLockedProfile->externalVariableMethodCallString();
 
     profileContents += mLockedProfile->interfaceCreateStatesArrayMethodString()
                        + mLockedProfile->implementationCreateStatesArrayMethodString();
@@ -548,11 +558,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mLockedProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "0e79e682d28bcaf67f5ed5cbf419de670fd7373b";
+        res = profileContentsSha1 != "60d16843c0cb0180f147a4a562aa7a434634e929";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "073377e89d73541021cbea7dce4b06ee4dc88c13";
+        res = profileContentsSha1 != "1532797cc47546dd18bbe4d30fd69a046cf011ea";
 
         break;
     }
@@ -672,12 +682,15 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 
 void Generator::GeneratorImpl::addVariableTypeObjectCode()
 {
-    if (!mLockedProfile->variableTypeObjectString().empty()) {
+    if (!mLockedProfile->variableTypeObjectString().empty()
+        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->variableTypeObjectExternalTypeString().empty())
+            || !mLockedModel->hasExternalVariables())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
 
-        mCode += mLockedProfile->variableTypeObjectString();
+        mCode += replace(mLockedProfile->variableTypeObjectString(),
+                         "<OPTIONAL_TYPE>", mLockedModel->hasExternalVariables() ? mLockedProfile->variableTypeObjectExternalTypeString() : "");
     }
 }
 
@@ -815,7 +828,8 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
         && !mLockedProfile->arrayElementSeparatorString().empty()
         && !mLockedProfile->constantVariableTypeString().empty()
         && !mLockedProfile->computedConstantVariableTypeString().empty()
-        && !mLockedProfile->algebraicVariableTypeString().empty()) {
+        && !mLockedProfile->algebraicVariableTypeString().empty()
+        && !mLockedProfile->externalVariableTypeString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -835,6 +849,8 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
                 variableType = mLockedProfile->computedConstantVariableTypeString();
             } else if (variable->type() == AnalyserVariable::Type::ALGEBRAIC) {
                 variableType = mLockedProfile->algebraicVariableTypeString();
+            } else if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
+                variableType = mLockedProfile->externalVariableTypeString();
             }
 
             infoElementsCode += mLockedProfile->indentString()
@@ -1097,6 +1113,23 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
     }
 
     mCode += interfaceCreateDeleteArraysCode;
+}
+
+void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
+{
+    if (mLockedModel->hasExternalVariables()) {
+        std::string externalVariableMethodTypeDefinitionCode;
+
+        if (!mLockedProfile->externalVariableMethodTypeDefinitionString().empty()) {
+            externalVariableMethodTypeDefinitionCode += mLockedProfile->externalVariableMethodTypeDefinitionString();
+        }
+
+        if (!externalVariableMethodTypeDefinitionCode.empty()) {
+            mCode += "\n";
+        }
+
+        mCode += externalVariableMethodTypeDefinitionCode;
+    }
 }
 
 void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode()
@@ -1949,18 +1982,31 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
     if (std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end()) {
         if ((equation->type() == AnalyserEquation::Type::RATE)
-            || (equation->type() == AnalyserEquation::Type::ALGEBRAIC)) {
+            || (equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+            || (equation->type() == AnalyserEquation::Type::EXTERNAL)) {
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::RATE)
                     && (!onlyStateRateBasedEquations
-                        || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                        || (((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                             || (dependency->type() == AnalyserEquation::Type::EXTERNAL))
                             && dependency->isStateRateBased()))) {
                     res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
                 }
             }
         }
 
-        res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
+        if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
+            std::ostringstream index;
+
+            index << equation->variable()->index();
+
+            res += mLockedProfile->indentString() + generateVariableNameCode(equation->variable()->variable()) + " = "
+                   + replace(mLockedProfile->externalVariableMethodCallString(),
+                             "<INDEX>", index.str())
+                   + mLockedProfile->commandSeparatorString() + "\n";
+        } else {
+            res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
+        }
 
         remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
     }
@@ -1980,12 +2026,18 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
         interfaceComputeModelMethodsCode += mLockedProfile->interfaceComputeComputedConstantsMethodString();
     }
 
-    if (!mLockedProfile->interfaceComputeRatesMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mLockedProfile->interfaceComputeRatesMethodString();
+    if (!mLockedProfile->interfaceComputeRatesMethodString().empty()
+        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
+            || !mLockedModel->hasExternalVariables())) {
+        interfaceComputeModelMethodsCode += replace(mLockedProfile->interfaceComputeRatesMethodString(),
+                                                    "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
     }
 
-    if (!mLockedProfile->interfaceComputeVariablesMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mLockedProfile->interfaceComputeVariablesMethodString();
+    if (!mLockedProfile->interfaceComputeVariablesMethodString().empty()
+        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
+            || !mLockedModel->hasExternalVariables())) {
+        interfaceComputeModelMethodsCode += replace(mLockedProfile->interfaceComputeVariablesMethodString(),
+                                                    "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
     }
 
     if (!interfaceComputeModelMethodsCode.empty()) {
@@ -2047,7 +2099,9 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 
 void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    if (!mLockedProfile->implementationComputeRatesMethodString().empty()) {
+    if (!mLockedProfile->implementationComputeRatesMethodString().empty()
+        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
+            || !mLockedModel->hasExternalVariables())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -2060,14 +2114,17 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             }
         }
 
-        mCode += replace(mLockedProfile->implementationComputeRatesMethodString(),
+        mCode += replace(replace(mLockedProfile->implementationComputeRatesMethodString(),
+                                 "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
                          "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
 void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    if (!mLockedProfile->implementationComputeVariablesMethodString().empty()) {
+    if (!mLockedProfile->implementationComputeVariablesMethodString().empty()
+        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
+            || !mLockedModel->hasExternalVariables())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -2078,13 +2135,15 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
 
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || ((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+                || (((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+                     || (equation->type() == AnalyserEquation::Type::EXTERNAL))
                     && equation->isStateRateBased())) {
                 methodBody += generateEquationCode(equation, newRemainingEquations, true);
             }
         }
 
-        mCode += replace(mLockedProfile->implementationComputeVariablesMethodString(),
+        mCode += replace(replace(mLockedProfile->implementationComputeVariablesMethodString(),
+                                 "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
                          "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
@@ -2174,6 +2233,10 @@ std::string Generator::interfaceCode() const
     // Add code for the interface to create and delete arrays.
 
     mPimpl->addInterfaceCreateDeleteArrayMethodsCode();
+
+    // Add code for the external variable method type definition.
+
+    mPimpl->addExternalVariableMethodTypeDefinitionCode();
 
     // Add code for the interface to compute the model.
 
