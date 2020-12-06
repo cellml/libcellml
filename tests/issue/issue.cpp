@@ -319,6 +319,17 @@ void testReferenceRule(const libcellml::IssuePtr &e)
         EXPECT_EQ("3.10.8", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MODEL_INVALID:
+    case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE:
+    case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION:
+    case libcellml::Issue::ReferenceRule::ANALYSER_VOI_INITIALISED:
+    case libcellml::Issue::ReferenceRule::ANALYSER_VOI_SEVERAL:
+    case libcellml::Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER:
+    case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED:
+    case libcellml::Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED:
+    case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE:
+    case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL:
+    case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI:
+    case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE:
     case libcellml::Issue::ReferenceRule::UNSPECIFIED:
         EXPECT_EQ("", e->referenceHeading());
         break;
