@@ -2257,6 +2257,8 @@ public:
      *
      * Return the @c std::string for the interface file name.
      *
+     * @sa setImplementationHeaderString
+     *
      * @return The @c std::string for the interface file name.
      */
     std::string interfaceFileNameString() const;
@@ -2302,7 +2304,11 @@ public:
     /**
      * @brief Set the @c std::string for an implementation header.
      *
-     * Set the @c std::string for an implementation header.
+     * Set the @c std::string for an implementation header. To be useful, the
+     * string should contain the <INTERFACE_FILE_NAME> tag, which will be
+     * replaced with the interface file name.
+     *
+     * @sa interfaceFileNameString
      *
      * @param implementationHeaderString The @c std::string to use for an
      * implementation header.
@@ -2509,13 +2515,43 @@ public:
      * @brief Set the @c std::string for the data structure for the variable
      * type object.
      *
-     * Set the @c std::string for the data structure for the variable type
-     * object.
+     * Set the @c std::string for the data structure for the variable
+     * type object. To be useful, the string should contain the <OPTIONAL_TYPE>
+     * tag, which will be replaced with a type for the external variable type,
+     * if needed.
+     *
+     * @sa variableTypeObjectExternalTypeString
      *
      * @param variableTypeObjectString The @c std::string to use for the data
      * structure for the variable type object.
      */
     void setVariableTypeObjectString(const std::string &variableTypeObjectString);
+
+    /**
+     * @brief Get the @c std::string for the external type for the data
+     * structure for the variable type object.
+     *
+     * Return the @c std::string for the external type for the data structure
+     * for the variable type object.
+     *
+     * @sa setVariableTypeObjectString
+     *
+     * @return The @c std::string for the external type for the data structure
+     * for the variable type object.
+     */
+    std::string variableTypeObjectExternalTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the external type for the data
+     * structure for the variable type object.
+     *
+     * Set this @c std::string for the external type for the data structure for
+     * the variable type object.
+     *
+     * @param variableTypeObjectExternalTypeString The @c std::string to use for
+     * the external type for the data structure for the variable type object.
+     */
+    void setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString);
 
     /**
      * @brief Get the @c std::string for the name of the constant variable type.
@@ -2580,6 +2616,25 @@ public:
      * algebraic variable type.
      */
     void setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString);
+
+    /**
+     * @brief Get the @c std::string for the name of the external variable type.
+     *
+     * Return the @c std::string for the name of the external variable type.
+     *
+     * @return The @c std::string for the name of the external variable type.
+     */
+    std::string externalVariableTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the external variable type.
+     *
+     * Set this @c std::string for the name of the external variable type.
+     *
+     * @param statesArrayString The @c std::string to use for the name of the
+     * external variable type.
+     */
+    void setExternalVariableTypeString(const std::string &externalVariableTypeString);
 
     /**
      * @brief Get the @c std::string for the data structure for the variable
@@ -2916,6 +2971,77 @@ public:
     void setVariablesArrayString(const std::string &variablesArrayString);
 
     /**
+     * @brief Get the @c std::string for the type definition of an external
+     * variable method.
+     *
+     * Return the @c std::string for the type definition of an external variable
+     * method.
+     *
+     * @return The @c std::string for the type definition of an external
+     * variable method.
+     */
+    std::string externalVariableMethodTypeDefinitionString() const;
+
+    /**
+     * @brief Set the @c std::string for the type definition of an external
+     * variable method.
+     *
+     * Set this @c std::string for the type definition of an external variable
+     * method.
+     *
+     * @param externalVariableMethodTypeDefinitionString The @c std::string to
+     * use for the type definition of an external variable method.
+     */
+    void setExternalVariableMethodTypeDefinitionString(const std::string &externalVariableMethodTypeDefinitionString);
+
+    /**
+     * @brief Get the @c std::string for the external variable method parameter.
+     *
+     * Return the @c std::string for the external variable method parameter.
+     *
+     * @sa setInterfaceComputeRatesMethodString,
+     * setImplementationComputeRatesMethodString,
+     * setInterfaceComputeVariablesMethodString,
+     * setImplementationComputeVariablesMethodString
+     *
+     * @return The @c std::string for the external variable method parameter.
+     */
+    std::string externalVariableMethodParameterString() const;
+
+    /**
+     * @brief Set the @c std::string for the external variable method parameter.
+     *
+     * Set this @c std::string for the external variable method parameter.
+     *
+     * @param externalVariableMethodParameterString The @c std::string to use
+     * for the external variable method parameter.
+     */
+    void setExternalVariableMethodParameterString(const std::string &externalVariableMethodParameterString);
+
+    /**
+     * @brief Get the @c std::string for the call to the external variable
+     * method.
+     *
+     * Return the @c std::string for the call to the external variable method.
+     *
+     * @return The @c std::string for the call to the external variable method.
+     */
+    std::string externalVariableMethodCallString() const;
+
+    /**
+     * @brief Set the @c std::string for the call to the external variable
+     * method.
+     *
+     * Set this @c std::string for the call to the external variable method. To
+     * be useful, the string should contain the <INDEX> tag, which will be
+     * replaced with the index of the external variable.
+     *
+     * @param externalVariableMethodCallString The @c std::string to use for the
+     * call to the external variable method.
+     */
+    void setExternalVariableMethodCallString(const std::string &externalVariableMethodCallString);
+
+    /**
      * @brief Get the @c std::string for the interface to create the states
      * array.
      *
@@ -3154,7 +3280,12 @@ public:
     /**
      * @brief Set the @c std::string for the interface to compute rates.
      *
-     * Set the @c std::string for the interface to compute rates.
+     * Set the @c std::string for the interface to compute rates. To be
+     * useful, the string should contain the <OPTIONAL_PARAMETER> tag, which
+     * will be replaced with a parameter for the compute external variables
+     * method, if needed.
+     *
+     * @sa externalVariableMethodParameterString
      *
      * @param interfaceComputeRatesMethodString The @c std::string to use for
      * the interface to compute rates.
@@ -3174,8 +3305,12 @@ public:
      * @brief Set the @c std::string for the implementation to compute rates.
      *
      * Set the @c std::string for the implementation to compute rates. To be
-     * useful, the string should contain the <CODE> tag, which will be replaced
-     * with a parameter for some code to compute rates.
+     * useful, the string should contain both the <OPTIONAL_PARAMETER> and
+     * <CODE> tags, which will be replaced with a parameter for the compute
+     * external variables method, if needed, and with some code to compute
+     * rates, respectively.
+     *
+     * @sa externalVariableMethodParameterString
      *
      * @param implementationComputeRatesMethodString The @c std::string to use
      * for the implementation to compute rates.
@@ -3194,7 +3329,12 @@ public:
     /**
      * @brief Set the @c std::string for the interface to compute variables.
      *
-     * Set the @c std::string for the interface to compute variables.
+     * Set the @c std::string for the interface to compute variables. To be
+     * useful, the string should contain the <OPTIONAL_PARAMETER> tag, which
+     * will be replaced with a parameter for the compute external variables
+     * method, if needed.
+     *
+     * @sa externalVariableMethodParameterString
      *
      * @param interfaceComputeVariablesMethodString The @c std::string to use
      * for the interface to compute variables.
@@ -3215,9 +3355,13 @@ public:
      * @brief Set the @c std::string for the implementation to compute
      * variables.
      *
-     * Set the @c std::string for the implementation to compute variables. To be
-     * useful, the string should contain the <CODE> tag, which will be replaced
-     * with a parameter for some code to compute rates.
+     * Set the @c std::string for the implementation to compute variables. To
+     * be useful, the string should contain both the <OPTIONAL_PARAMETER> and
+     * <CODE> tags, which will be replaced with a parameter for the compute
+     * external variables method, if needed, and with some code to compute
+     * rates, respectively.
+     *
+     * @sa externalVariableMethodParameterString
      *
      * @param implementationComputeVariablesMethodString The @c std::string to
      * use for the implementation to compute variables.
