@@ -95,11 +95,15 @@ public:
     void setImportReference(const std::string &reference);
 
     /**
-     * @brief Test whether this imported entity has been resolved.
+     * @brief Test whether this entity has been resolved.
      *
-     * Returns @c true if this entity is not an imported entity or if this entity is
-     * an imported entity then it tests that the import can be resolved, otherwise it
-     * returns @c false.
+     * Test whether this entity is resolved or not.
+     *
+     * An entity that is not imported is always resolved so this method
+     * returns @c true. Alternatively, if this entity is imported then
+     * it returns @c true if every entity that this imported entity requires
+     * can be found. That is return @c true if this imported entity is resolvable.
+     * In all other cases this method returns @c false.
      *
      * @return @c true if the import is resolved, @c false otherwise.
      */
