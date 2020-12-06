@@ -54,11 +54,11 @@ TEST(Importer, noWarningDiamondImport)
 
 TEST(Importer, warningCircularImportReferencesComponent)
 {
-    std::string errorMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
-                               " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
-                               " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
-                               " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
-                               " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml'.";
+    const std::string errorMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
+                                     " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
+                                     " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
+                                     " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
+                                     " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml'.";
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/circularImport_1.cellml"));
