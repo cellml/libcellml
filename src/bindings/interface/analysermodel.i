@@ -121,6 +121,9 @@
 %feature("docstring") libcellml::AnalyserModel::needAcothFunction
 "Tests if this :class:`AnalyserModel` object needs an \"arc hyperbolic cotangent\" function.";
 
+%feature("docstring") libcellml::AnalyserModel::areEquivalentVariables
+"Tests if the two variables are equivalents.";
+
 %{
 #include "libcellml/analysermodel.h"
 %}
