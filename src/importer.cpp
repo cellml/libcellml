@@ -60,8 +60,7 @@ struct Importer::ImporterImpl
     ImportLibrary mLibrary;
 
     IssuePtr makeIssueCyclicDependency(const ModelPtr &model, Type type,
-                                       std::vector<std::tuple<std::string,
-                                                              std::string, std::string>> &history,
+                                       HistorySearchVector &history,
                                        const std::string &action) const;
 
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
@@ -144,7 +143,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, cons
     // If they are imported, then they can't have any child unit elements anyway.
     auto h = std::make_tuple(units->name(), units->importReference(), units->importSource()->url());
 
-    // If the dependencies have not beed recorded already, then check it.
+    // If the dependencies have not been recorded already, then check it.
     if (std::find(history.begin(), history.end(), h) == history.end()) {
         history.emplace_back(h);
 
@@ -180,7 +179,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ModelPtr &origModel, 
 {
     auto h = std::make_tuple(component->name(), component->importReference(), component->importSource()->url());
 
-    // If the dependencies have not beed recorded already, then check it.
+    // If the dependencies have not been recorded already, then check it.
     if (std::find(history.begin(), history.end(), h) == history.end()) {
         history.emplace_back(h);
 
