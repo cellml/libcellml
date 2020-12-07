@@ -54,7 +54,7 @@ TEST(Importer, noWarningDiamondImport)
 
 TEST(Importer, warningCircularImportReferencesComponent)
 {
-    const std::string warningMessage =
+    const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
         " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
@@ -68,27 +68,26 @@ TEST(Importer, warningCircularImportReferencesComponent)
     importer->resolveImports(model, resourcePath("importer/"));
 
     EXPECT_EQ(size_t(1), importer->issueCount());
-    EXPECT_EQ(size_t(1), importer->warningCount());
-    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(errorMessage, importer->error(0)->description());
 }
 
 TEST(Importer, warningCircularImportReferencesUnits)
 {
-    const std::string warningMessage =
+    const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve units in model 'circularImport1'. The dependency loop is:\n"
         " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml';\n"
         " - units 'u2' is imported from 'u3' in 'circularUnits_3.cellml';\n"
         " - units 'u3' is imported from 'i_am_cyclic' in 'circularUnits_1.cellml'; and\n"
         " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml'.";
-
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/circularUnits_1.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
-    EXPECT_EQ(size_t(1), importer->warningCount());
-    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(errorMessage, importer->error(0)->description());
 }
 
 TEST(Importer, warningUnrequiredCircularDependencyComponent)
