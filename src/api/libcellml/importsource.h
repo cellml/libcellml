@@ -97,7 +97,7 @@ public:
     void setModel(const ModelPtr &model);
 
     /**
-     * @brief Removes the model from this import source.
+     * @brief Remove the model from this import source.
      *
      * Remove the reference to a model from this import source.
      */
