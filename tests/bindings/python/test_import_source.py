@@ -50,7 +50,7 @@ class ImportSourceTestCase(unittest.TestCase):
         self.assertFalse(x.hasModel())
         x.setModel(model)
         self.assertTrue(x.hasModel())
-        x.setModel(None)
+        x.removeModel()
         self.assertFalse(x.hasModel())
 
     def test_clone(self):

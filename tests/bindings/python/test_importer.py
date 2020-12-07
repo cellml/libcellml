@@ -147,6 +147,39 @@ class ValidatorTestCase(unittest.TestCase):
         importer.clearImports(model)
         self.assertTrue(model.hasUnresolvedImports())
 
+    def test_is_resolved_units(self):
+        from libcellml import Importer, Parser
+
+        parser = Parser()
+        importer = Importer()
+
+        model = parser.parseModel(file_contents("importer/master_units.cellml"))
+        self.assertEqual(0, parser.issueCount())
+
+        importer.resolveImports(model, resource_path("importer/"))
+
+        self.assertEqual(0, importer.issueCount())
+
+        u = model.units(0)
+
+        self.assertTrue(u.isResolved())
+
+    def test_is_resolved_component(self):
+        from libcellml import Importer, Parser
+
+        parser = Parser()
+        importer = Importer()
+
+        model = parser.parseModel(file_contents("importer/component_importer_unresolved.cellml"))
+        self.assertEqual(0, parser.issueCount())
+        importer.resolveImports(model, resource_path("importer/"))
+
+        self.assertEqual(1, importer.issueCount())
+
+        c = model.component(0)
+
+        self.assertFalse(c.isResolved())
+
 
 if __name__ == '__main__':
     unittest.main()
