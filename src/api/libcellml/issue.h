@@ -214,7 +214,7 @@ public:
         // Issues not present in the normative specification:
         MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION,
 
-        // Importer class issues
+        // Importer class issues:
         IMPORTER_NULL_MODEL,
         IMPORTER_MISSING_COMPONENT,
         IMPORTER_MISSING_UNITS,

@@ -478,13 +478,13 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
     issue->setDescription(msg);
     issue->setLevel(Issue::Level::ERROR);
     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
-    HistorySearchVector().swap(history);
+    history.clear();
     return issue;
 }
 
 bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 {
-    HistorySearchVector history = {};
+    HistorySearchVector history;
     bool status = true;
     clearImports(model);
 

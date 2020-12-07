@@ -848,9 +848,6 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
     auto originalModel = parser->parseModel(fileContents("modelflattening/importExample2b.cellml"));
     auto importer = libcellml::Importer::create();
 
-    auto printer = libcellml::Printer::create();
-    std::cout << printer->printModel(originalModel) << std::endl;
-
     // Resolve the imports.
     importer->resolveImports(originalModel, resourcePath("modelflattening/"));
 
@@ -900,7 +897,7 @@ TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
 
 TEST(ModelFlattening, resolveFlattenMissingModel)
 {
-    auto e = "Component 'left' requires a model imported from 'diamond_point.cellml' which is not available in the importer.";
+    const std::string expectedError = "Component 'left' requires a model imported from 'diamond_point.cellml' which is not available in the importer.";
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("importer/diamond.cellml"));
     auto importer = libcellml::Importer::create();
@@ -915,7 +912,7 @@ TEST(ModelFlattening, resolveFlattenMissingModel)
     // Attempt to flatten the model.
     auto flatModel = importer->flattenModel(originalModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
-    EXPECT_EQ(e, importer->issue(0)->description());
+    EXPECT_EQ(expectedError, importer->issue(0)->description());
 }
 
 TEST(ModelFlattening, resolveFlattenMissingComponent)
