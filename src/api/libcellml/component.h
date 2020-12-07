@@ -429,7 +429,7 @@ public:
 
 private:
     Component(); /**< Constructor @private*/
-    explicit Component(const std::string &name); /**< Constructor named @private. */
+    explicit Component(const std::string &name); /**< Constructor named, @private. */
 
     bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private. */
 
