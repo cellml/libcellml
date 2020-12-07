@@ -30,6 +30,8 @@ limitations under the License.
 
 namespace libcellml {
 
+using HistorySearchVector = std::vector<std::tuple<std::string, std::string, std::string>>;
+using IssueList = std::vector<IssuePtr>;
 /**
  * Base URLs of specification and example sites from which the Issue::url() will be constructed.
  */
@@ -663,5 +665,46 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
  * @return A @c std::vector of @ref VariablePtr.
  */
 std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
+
+/**
+ * @brief Check that the imports of the given @ref ModelPtr are not circular.
+ * 
+ * Check that the imports of the given @ref ModelPtr are not circular.
+ * 
+ * @param model The @ref Model to check
+ * @param issueList The @ref IssueList which will keep a record of any issues found.
+ * 
+ * @return @c true if cycles are found, @c false otherwise.
+ */
+bool checkModelForCycles(const ModelPtr &model, IssueList &issueList);
+
+/**
+ * @brief Check that the imports of the given @ref ModelPtr are not circular, given 
+ *        an existing history of imports.
+ * 
+ * Check that the imports of the given @ref ModelPtr are not circular, given an existing history of imports.
+ * 
+ * @param model The @ref Model to check
+ * @param history A @ref HistorySearchVector of the existing import history
+ * @return @c true if cycles are found, @c false otherwise.
+ */
+bool hasNoCyclicImports(ModelPtr &model, HistorySearchVector &history);
+
+/**
+ * @brief Function to create an @ref Issue for a cyclic dependency.
+ * 
+ * Create an @ref Issue for a cyclical dependency found during importing.
+ * 
+ * @param model A @ref Model to check for cyclical imports
+ * @param typeString A @c std::string containing either "units" or "components"
+ * @param history A @ref HistorySearchVector containing the import history to this point
+ * @param action A @c std::string describing the action attempted by the calling class
+ * 
+ * @return The created @ref IssuePtr.
+ */
+IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
+                                   const std::string &typeString,
+                                   HistorySearchVector &history,
+                                   const std::string &action);
 
 } // namespace libcellml
