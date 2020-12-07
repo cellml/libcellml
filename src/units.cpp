@@ -692,10 +692,10 @@ bool Units::doIsResolved() const
                             continue;
                         }
                         auto childUnits = model->units(reference);
-                        if (childUnits) {
-                            resolved = childUnits->isResolved();
-                        } else {
+                        if (childUnits == nullptr) {
                             resolved = false;
+                        } else {
+                            resolved = childUnits->isResolved();
                         }
                     }
                 }

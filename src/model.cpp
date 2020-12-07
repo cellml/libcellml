@@ -358,7 +358,7 @@ bool Model::hasUnresolvedImports() const
     for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
         unresolvedImports = !units(n)->isResolved();
     }
-    for (size_t n = 0; n < componentCount() && !unresolvedImports; ++n) {
+    for (size_t n = 0; (n < componentCount()) && !unresolvedImports; ++n) {
         unresolvedImports = !component(n)->isResolved();
     }
     return unresolvedImports;
@@ -367,7 +367,7 @@ bool Model::hasUnresolvedImports() const
 bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
 {
     bool importsPresent = false;
-    for (size_t n = 0; n < componentEntity->componentCount() && !importsPresent; ++n) {
+    for (size_t n = 0; (n < componentEntity->componentCount()) && !importsPresent; ++n) {
         libcellml::ComponentPtr childComponent = componentEntity->component(n);
         importsPresent = childComponent->isImport();
         if (!importsPresent) {
@@ -380,7 +380,7 @@ bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
 bool Model::hasImports() const
 {
     bool importsPresent = false;
-    for (size_t n = 0; n < unitsCount() && !importsPresent; ++n) {
+    for (size_t n = 0; (n < unitsCount()) && !importsPresent; ++n) {
         libcellml::UnitsPtr units = Model::units(n);
         if (units->isImport()) {
             importsPresent = true;
