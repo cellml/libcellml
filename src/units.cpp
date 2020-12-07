@@ -666,4 +666,43 @@ UnitsPtr Units::clone() const
     return units;
 }
 
+bool Units::doIsResolved() const
+{
+    bool resolved = true;
+    if (isImport()) {
+        auto model = importSource()->model();
+        if (model == nullptr) {
+            resolved = false;
+        } else {
+            auto importedUnits = model->units(importReference());
+            if (importedUnits == nullptr) {
+                resolved = false;
+            } else {
+                if (importedUnits->isImport()) {
+                    resolved = importedUnits->isResolved();
+                } else {
+                    for (size_t u = 0; (u < importedUnits->unitCount()) && resolved; ++u) {
+                        std::string reference;
+                        std::string prefix;
+                        std::string id;
+                        double exponent;
+                        double multiplier;
+                        importedUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
+                        if (isStandardUnitName(reference)) {
+                            continue;
+                        }
+                        auto childUnits = model->units(reference);
+                        if (childUnits == nullptr) {
+                            resolved = false;
+                        } else {
+                            resolved = childUnits->isResolved();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return resolved;
+}
+
 } // namespace libcellml
