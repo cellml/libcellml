@@ -48,6 +48,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/annotator.cpp
@@ -84,6 +85,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequation.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequationast.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserexternalvariable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analysermodel.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyservariable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/annotator.h

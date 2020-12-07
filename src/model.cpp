@@ -91,6 +91,16 @@ Model::~Model()
     delete mPimpl;
 }
 
+void registerPossibleImportSource(const ModelPtr &model, const ComponentPtr &component)
+{
+    if (component->isImport()) {
+        model->addImportSource(component->importSource());
+    }
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        registerPossibleImportSource(model, component->component(index));
+    }
+}
+
 bool Model::doAddComponent(const ComponentPtr &component)
 {
     if (component->hasParent()) {
@@ -99,10 +109,8 @@ bool Model::doAddComponent(const ComponentPtr &component)
     }
     component->setParent(shared_from_this());
 
-    if (component->isImport()) {
-        auto importSource = component->importSource();
-        addImportSource(importSource);
-    }
+    registerPossibleImportSource(shared_from_this(), component);
+
     return ComponentEntity::doAddComponent(component);
 }
 

@@ -233,7 +233,7 @@ TEST(Model, removeComponent)
 
     m->addComponent(c1);
 
-    // Remove the first occurence of "child1".
+    // Remove the first occurrence of "child1".
     EXPECT_TRUE(m->removeComponent("child1"));
     EXPECT_EQ(size_t(1), m->componentCount());
     a = printer->printModel(m);
