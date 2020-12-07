@@ -1200,13 +1200,27 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
 void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported) const
 {
     std::string hints;
+    ComponentPtr parentComponent = owningComponent(variable);
+
+    if (variable->units() == nullptr) {
+        // If the variable has no units, don't check it.
+        return;
+    }
+
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
+
         // If the parent component of the variable is nonexistent or imported, don't check it.
         auto equivalentComponent = owningComponent(equivalentVariable);
         if ((equivalentComponent == nullptr) || equivalentComponent->isImport()) {
             continue;
         }
+
+        // If the equivalent variable has no units, don't check it.
+        if (equivalentVariable->units() == nullptr) {
+            continue;
+        }
+
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
             auto it = std::find_if(alreadyReported.begin(), alreadyReported.end(),
@@ -1215,12 +1229,9 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
                                    });
             if (it == alreadyReported.end()) {
                 VariablePairPtr pair = VariablePair::create(variable, equivalentVariable);
-                ComponentPtr parentComponent = owningComponent(variable);
                 alreadyReported.push_back(pair);
-                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
-                err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + variable->units()->name() + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentVariable->units()->name() + "'. The mismatch is: " + hints);
                 err->setMapVariables(VariablePair::create(variable, equivalentVariable));
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
@@ -1334,10 +1345,6 @@ bool unitsAreEquivalent(const ModelPtr &model,
     std::string ref;
     hints = "";
     multiplier = 0.0;
-
-    if (v1->units() == nullptr || v2->units() == nullptr) {
-        return false;
-    }
 
     if (model->hasUnits(v1->units()->name())) {
         UnitsPtr u1 = Units::create();

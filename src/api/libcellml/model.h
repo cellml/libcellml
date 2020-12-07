@@ -200,7 +200,7 @@ public:
      *
      * @brief Take the units with the given @p name and return it.
      *
-     * Takes the first occurence of the units with the given name @p name and returns it.
+     * Takes the first occurrence of the units with the given name @p name and returns it.
      * If no units with name @p name is found then a @c nullptr is returned.
      *
      * @param name The name of the units to take.
@@ -280,7 +280,7 @@ public:
      *
      * If a @c Variable has units that are not found in the model
      * then the units will remain unlinked, and this will return @c false.
-     * 
+     *
      * @return @c true upon success; @c false if some units have not been linked.
      */
     bool linkUnits();
