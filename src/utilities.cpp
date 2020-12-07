@@ -116,26 +116,26 @@ bool isCellMLExponent(const std::string &candidate)
     return isCellMLInteger(candidate);
 }
 
-std::vector<size_t> findOccurences(const std::string &candidate, const std::string &sub)
+std::vector<size_t> findOccurrences(const std::string &candidate, const std::string &sub)
 {
-    std::vector<size_t> occurences;
+    std::vector<size_t> occurrences;
     size_t pos = candidate.find(sub, 0);
     while (pos != std::string::npos) {
-        occurences.push_back(pos);
+        occurrences.push_back(pos);
         pos = candidate.find(sub, pos + 1);
     }
-    return occurences;
+    return occurrences;
 }
 
 bool isCellMLBasicReal(const std::string &candidate)
 {
     if (!candidate.empty()) {
-        std::vector<size_t> decimalOccurences = findOccurences(candidate, ".");
-        if (decimalOccurences.size() < 2) {
+        std::vector<size_t> decimalOccurrences = findOccurrences(candidate, ".");
+        if (decimalOccurrences.size() < 2) {
             bool beginsMinus = *candidate.begin() == '-';
             std::string numbersOnlyCandidate = candidate;
-            if (decimalOccurences.size() == 1) {
-                numbersOnlyCandidate.erase(decimalOccurences.at(0), 1);
+            if (decimalOccurrences.size() == 1) {
+                numbersOnlyCandidate.erase(decimalOccurrences.at(0), 1);
             }
             if (beginsMinus) {
                 numbersOnlyCandidate.erase(0, 1);
@@ -151,15 +151,15 @@ bool isCellMLReal(const std::string &candidate)
     bool isReal = false;
     if (!candidate.empty()) {
         std::string normalisedCandidate = candidate;
-        std::vector<size_t> eOccurences = findOccurences(candidate, "E");
-        for (const auto &ePos : eOccurences) {
+        std::vector<size_t> eOccurrences = findOccurrences(candidate, "E");
+        for (const auto &ePos : eOccurrences) {
             normalisedCandidate.replace(ePos, 1, "e");
         }
-        std::vector<size_t> lowerEOccurences = findOccurences(normalisedCandidate, "e");
-        size_t eIndicatorCount = lowerEOccurences.size();
+        std::vector<size_t> lowerEOccurrences = findOccurrences(normalisedCandidate, "e");
+        size_t eIndicatorCount = lowerEOccurrences.size();
         if (eIndicatorCount < 2) {
             if (eIndicatorCount == 1) {
-                size_t ePos = lowerEOccurences.at(0);
+                size_t ePos = lowerEOccurrences.at(0);
                 std::string significand = normalisedCandidate.substr(0, ePos);
                 std::string exponent = normalisedCandidate.substr(ePos + 1, std::string::npos);
                 if (isCellMLBasicReal(significand) && isCellMLExponent(exponent)) {
