@@ -1519,9 +1519,9 @@ void Validator::ValidatorImpl::checkUnitsForCycles(const ModelPtr &model, const 
                 UnitsPtr child = model->units(ref);
                 history.push_back(ref);
                 // Making a copy of the history vector to this point.
-                std::vector<std::string> child_history(history);
-                checkUnitsForCycles(model, child, child_history, errorList);
-                std::vector<std::string>().swap(child_history);
+                std::vector<std::string> childHistory(history);
+                checkUnitsForCycles(model, child, childHistory, errorList);
+                std::vector<std::string>().swap(childHistory);
             }
         }
     }
