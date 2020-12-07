@@ -28,7 +28,7 @@ TEST(ModelFlattening, invalidInput)
 
     EXPECT_EQ(nullptr, flatModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
-    EXPECT_EQ("Model is null.", importer->issue(0)->description());
+    EXPECT_EQ("The model is null.", importer->issue(0)->description());
     EXPECT_EQ(libcellml::Issue::ReferenceRule::INVALID_ARGUMENT, importer->issue(0)->referenceRule());
 }
 

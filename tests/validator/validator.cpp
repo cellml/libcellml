@@ -31,7 +31,7 @@ TEST(Validator, invalidInput)
 
     validator->validateModel(nullptr);
     EXPECT_EQ(size_t(1), validator->issueCount());
-    EXPECT_EQ("Model is null.", validator->issue(0)->description());
+    EXPECT_EQ("The model is null.", validator->issue(0)->description());
 }
 
 TEST(Validator, namedModel)
