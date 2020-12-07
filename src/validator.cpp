@@ -422,8 +422,8 @@ void Validator::validateModel(const ModelPtr &model)
 
     if (model == nullptr) {
         auto issue = Issue::create();
-        issue->setReferenceRule(Issue::ReferenceRule::MODEL_INVALID);
-        issue->setDescription("The given model is invalid.");
+        issue->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
+        issue->setDescription("Model is null.");
         addIssue(issue);
     } else {
         // Check for a valid name attribute.

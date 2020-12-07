@@ -514,8 +514,8 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
     ModelPtr flatModel;
     if (model == nullptr) {
         auto issue = Issue::create();
-        issue->setReferenceRule(Issue::ReferenceRule::MODEL_INVALID);
-        issue->setDescription("The given model is invalid.");
+        issue->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
+        issue->setDescription("Model is null.");
         addIssue(issue);
 
         return flatModel;

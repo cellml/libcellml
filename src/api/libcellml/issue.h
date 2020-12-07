@@ -213,7 +213,7 @@ public:
 
         // Issues not present in the normative specification:
         MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION,
-        MODEL_INVALID,
+        INVALID_ARGUMENT,
 
         // Analyser issues:
 
