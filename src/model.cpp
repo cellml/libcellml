@@ -539,11 +539,13 @@ bool Model::fixVariableInterfaces()
     return allOk;
 }
 
+static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
+
 bool isComponentEmpty(const ComponentPtr &component)
 {
-    for (int i = int(component->componentCount() - 1); i >= 0; --i) {
-        if (isComponentEmpty(component->component(size_t(i)))) {
-            component->removeComponent(size_t(i));
+    for (size_t i = component->componentCount() - 1; i != MAX_SIZE_T; --i) {
+        if (isComponentEmpty(component->component(i))) {
+            component->removeComponent(i);
         }
     }
 
@@ -587,7 +589,7 @@ std::vector<UnitsPtr> buildUnusedUnitsList(const ModelPtr &model)
 void Model::clean()
 {
     // Remove empty import sources.
-    for (int i = int(importSourceCount() - 1); i >= 0; --i) {
+    for (size_t i = importSourceCount() - 1; i != MAX_SIZE_T; --i) {
         auto import = importSource(size_t(i));
         if (import->componentCount() + import->unitsCount() == 0) {
             removeImportSource(import);
@@ -595,7 +597,7 @@ void Model::clean()
     }
 
     // Remove empty components.
-    for (int i = int(componentCount() - 1); i >= 0; --i) {
+    for (size_t i = componentCount() - 1; i != MAX_SIZE_T; --i) {
         if (isComponentEmpty(component(size_t(i)))) {
             removeComponent(size_t(i));
         }
