@@ -543,7 +543,9 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
 
     flatModel->linkUnits();
 
-    for (int i = int(flatModel->importSourceCount()) - 1; i >= 0; --i) {
+    static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
+
+    for (size_t i = flatModel->importSourceCount() - 1; i != MAX_SIZE_T; --i) {
         auto importSource = flatModel->importSource(size_t(i));
         if ((importSource->unitsCount() == 0) && (importSource->componentCount() == 0)) {
             flatModel->removeImportSource(importSource);
