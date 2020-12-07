@@ -1990,25 +1990,73 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
-TEST(Validator, unitIllDefinedEquivalentUnits)
+TEST(Validator, unitMissingEquivalentUnits)
 {
     const std::vector<std::string> expectedIssues = {
         "Variable 'v1' in component 'c1' does not have any units specified.",
-        "Variable 'v2' in component 'c2' does not have any units specified.",
-        "Variable 'v1' in component 'c1' has units of '' and an equivalent variable 'v2' in component 'c2' with non-matching units of ''. The mismatch is: ",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
     auto c1 = m->component(0);
     auto c2 = m->component(1);
+
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+
+    v2->setUnits("second");
+    v2->setInterfaceType("public");
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    validator->validateModel(m);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+TEST(Validator, unitTwoMissingEquivalentUnits)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' does not have any units specified.",
+        "Variable 'v2' in component 'c2' does not have any units specified.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+
     auto v1 = c1->variable(0);
     auto v2 = c2->variable(0);
 
     libcellml::Variable::addEquivalence(v1, v2);
+    validator->validateModel(m);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, mismatchedBaseUnitsEquivalentVariables)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'metre' and an equivalent variable 'v3' in component 'c3' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+    v1->setUnits("metre");
+    v2->setUnits("metre");
+
+    m->addComponent(libcellml::Component::create("c3"));
+    auto v3 = libcellml::Variable::create("v3");
+    m->component("c3")->addVariable(v3);
+    v3->setUnits("second");
+    v3->setInterfaceType("public");
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v3, v1);
 
     validator->validateModel(m);
-
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 

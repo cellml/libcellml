@@ -264,9 +264,9 @@ TEST(Component, removeComponentMethods)
     c->addComponent(c1);
     c->addComponent(c1);
     c->addComponent(c1);
-    // Remove the occurence of "child1".
+    // Remove the occurrence of "child1".
     EXPECT_TRUE(c->removeComponent("child1"));
-    // Cannot remove a second occurence of "child1".
+    // Cannot remove a second occurrence of "child1".
     EXPECT_FALSE(c->removeComponent(c1));
     // Still have component 'c2'.
     EXPECT_EQ(size_t(1), c->componentCount());
