@@ -833,12 +833,12 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
 
 TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 {
-    std::string resolveError = "Cyclic dependencies were found when attempting to resolve component in model 'importExample2b'. The dependency loop is:\n"
+    std::string resolveError = "Cyclic dependencies were found when attempting to resolve components in model 'importExample2b'. The dependency loop is:\n"
                                " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
                                " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
                                " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
                                " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml'.";
-    std::string flattenError = "Cyclic dependencies were found when attempting to flatten component in model 'importExample2b'. The dependency loop is:\n"
+    std::string flattenError = "Cyclic dependencies were found when attempting to flatten components in model 'importExample2b'. The dependency loop is:\n"
                                " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
                                " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
                                " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
@@ -847,6 +847,9 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("modelflattening/importExample2b.cellml"));
     auto importer = libcellml::Importer::create();
+
+    auto printer = libcellml::Printer::create();
+    std::cout << printer->printModel(originalModel) << std::endl;
 
     // Resolve the imports.
     importer->resolveImports(originalModel, resourcePath("modelflattening/"));
