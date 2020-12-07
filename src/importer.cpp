@@ -195,7 +195,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     // If not, check for model, and parse/instantiate/add to library if needed.
     // If model exists, resolve component's requirements, including child components and units required.
 
-    if (!importComponent->requiresImports() || importComponent->isResolved()) {
+    if (!importComponent->requiresImports()) {
         return true;
     }
 
@@ -259,13 +259,12 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         return false;
     }
 
-    importComponent->setResolved(true);
     return true;
 }
 
 bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
-    if (!importUnits->isImport() || importUnits->isResolved()) {
+    if (!importUnits->isImport()) {
         return true;
     }
 
@@ -320,7 +319,6 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         return false;
     }
 
-    importUnits->setResolved(true);
     return true;
 }
 
@@ -380,8 +378,7 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 void clearComponentImports(const ComponentPtr &component)
 {
     if (component->isImport()) {
-        component->importSource()->setModel(nullptr);
-        component->setResolved(false);
+        component->importSource()->removeModel();
     }
     for (size_t c = 0; c < component->componentCount(); ++c) {
         clearComponentImports(component->component(c));
@@ -394,8 +391,7 @@ void Importer::clearImports(ModelPtr &model)
     for (size_t u = 0; u < model->unitsCount(); ++u) {
         auto mu = model->units(u);
         if (mu->isImport()) {
-            mu->importSource()->setModel(nullptr);
-            mu->setResolved(false);
+            mu->importSource()->removeModel();
         }
     }
     for (size_t c = 0; c < model->componentCount(); ++c) {
@@ -515,10 +511,20 @@ void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &compon
 
 ModelPtr Importer::flattenModel(const ModelPtr &model)
 {
-    if (model->hasUnresolvedImports()) {
-        return nullptr;
+    ModelPtr flatModel;
+    if (model == nullptr) {
+        auto issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
+        issue->setDescription("The model is null.");
+        addIssue(issue);
+
+        return flatModel;
     }
-    auto flatModel = model->clone();
+    if (model->hasUnresolvedImports()) {
+        return flatModel;
+    }
+
+    flatModel = model->clone();
 
     while (flatModel->hasImports()) {
         // Go through Units and instantiate any imported Units.

@@ -450,4 +450,27 @@ bool Component::requiresImports()
     return doRequiresImport(shared_from_this());
 }
 
+bool Component::doIsResolved() const
+{
+    bool resolved = true;
+    if (isImport()) {
+        auto model = importSource()->model();
+        if (model == nullptr) {
+            resolved = false;
+        } else {
+            auto importedComponent = model->component(importReference());
+            if (importedComponent == nullptr) {
+                resolved = false;
+            } else {
+                resolved = importedComponent->isResolved();
+            }
+        }
+    }
+    for (size_t i = 0; (i < componentCount()) && resolved; ++i) {
+        resolved = component(i)->isResolved();
+    }
+
+    return resolved;
+}
+
 } // namespace libcellml
