@@ -472,6 +472,33 @@ public:
      */
     bool needAcothFunction() const;
 
+    /**
+     * @brief Test to determine if @p variable1 and @p variable2 are equivalent.
+     *
+     * Test to see if @p variable1 is the same as or equivalent to @p variable2.
+     * Returns @c true if @p variable1 is equivalent to @p variable2 and
+     * @c false otherwise.
+     *
+     * To test for equivalence is time consuming, so caching is used to speed
+     * things up. During the analysis of a model, various tests are performed
+     * and their result cached. So, if you test two variables that were tested
+     * during the analysis then the cached result will be returned otherwise the
+     * two variables will be properly tested and their result cached. This works
+     * because an @c AnalyserModel always refers to a static version of a
+     * @c Model. However, this might break if a @c Model is modified after it
+     * has been analysed.
+     *
+     * @param variable1 The @c Variable to test if it is equivalent to
+     * @p variable2.
+     * @param variable2 The @c Variable that is potentially equivalent to
+     * @p variable1.
+     *
+     * @return @c true if @p variable1 is equivalent to @p variable2 and
+     * @c false otherwise.
+     */
+    bool areEquivalentVariables(const VariablePtr &variable1,
+                                const VariablePtr &variable2);
+
 private:
     AnalyserModel(); /**< Constructor. */
 
