@@ -70,6 +70,7 @@ public:
      * Resolve all @c Component and @c Units imports by loading the models
      * from local disk through relative URLs.  The @p baseFile is used to determine
      * the full path to the source model relative to this one.
+     *
      * @param model The @c Model whose imports need resolution.
      * @param baseFile The @c std::string location on local disk of the source @c Model.
      * 

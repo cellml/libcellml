@@ -47,8 +47,10 @@ class AnalyserTestCase(unittest.TestCase):
         from libcellml import Analyser
         from libcellml import AnalyserEquation
         from libcellml import AnalyserEquationAst
+        from libcellml import AnalyserExternalVariable
         from libcellml import AnalyserModel
         from libcellml import AnalyserVariable
+        from libcellml import Model
         from libcellml import Parser
         from test_resources import file_contents
 
@@ -66,11 +68,42 @@ class AnalyserTestCase(unittest.TestCase):
         a = Analyser()
         a.analyseModel(m)
 
+        # Ensure coverage for Analyser.
+
+        c = m.component(1)
+        v0 = c.variable(0)
+
+        aev = AnalyserExternalVariable(v0)
+
+        self.assertTrue(a.addExternalVariable(aev))
+
+        self.assertTrue(a.containsExternalVariable(aev))
+        self.assertTrue(a.containsExternalVariable(m, c.name(), v0.name()))
+
+        self.assertEqual(aev.variable().name(), a.externalVariable(0).variable().name())
+        self.assertEqual(aev.variable().name(), a.externalVariable(m, c.name(), v0.name()).variable().name())
+
+        v2 = c.variable(2)
+
+        self.assertTrue(a.addExternalVariable(AnalyserExternalVariable(c.variable(1))))
+        self.assertTrue(a.addExternalVariable(AnalyserExternalVariable(v2)))
+        self.assertTrue(a.addExternalVariable(AnalyserExternalVariable(c.variable(3))))
+
+        self.assertEqual(4, a.externalVariableCount())
+
+        self.assertTrue(a.removeExternalVariable(1))
+        self.assertTrue(a.removeExternalVariable(aev))
+        self.assertTrue(a.removeExternalVariable(m, c.name(), v2.name()))
+
+        a.removeAllExternalVariables()
+
         # Ensure coverage for AnalyserModel.
 
         am = a.model()
 
         self.assertTrue(am.isValid())
+
+        self.assertFalse(am.hasExternalVariables())
 
         self.assertIsNotNone(am.voi())
 
@@ -110,6 +143,8 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertFalse(am.needAsechFunction())
         self.assertFalse(am.needAcschFunction())
         self.assertFalse(am.needAcothFunction())
+
+        self.assertTrue(am.areEquivalentVariables(am.voi().variable(), am.voi().variable()))
 
         # Ensure coverage for AnalyserVariable.
 

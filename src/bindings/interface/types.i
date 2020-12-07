@@ -14,6 +14,7 @@ Provides support for shared pointers declared in types.h.
 %shared_ptr(libcellml::Analyser)
 %shared_ptr(libcellml::AnalyserEquation)
 %shared_ptr(libcellml::AnalyserEquationAst)
+%shared_ptr(libcellml::AnalyserExternalVariable)
 %shared_ptr(libcellml::AnalyserModel)
 %shared_ptr(libcellml::AnalyserVariable)
 %shared_ptr(libcellml::Annotator)
