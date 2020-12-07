@@ -31,6 +31,7 @@ TEST(Validator, invalidInput)
 
     validator->validateModel(nullptr);
     EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ("The given model is invalid.", validator->issue(0)->description());
 }
 
 TEST(Validator, namedModel)

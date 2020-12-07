@@ -671,13 +671,17 @@ bool Units::doIsResolved() const
     bool resolved = true;
     if (isImport()) {
         auto model = importSource()->model();
-        if (model) {
+        if (model == nullptr) {
+            resolved = false;
+        } else {
             auto importedUnits = model->units(importReference());
-            if (importedUnits) {
+            if (importedUnits == nullptr) {
+                resolved = false;
+            } else {
                 if (importedUnits->isImport()) {
                     resolved = importedUnits->isResolved();
                 } else {
-                    for (size_t u = 0; u < importedUnits->unitCount() && resolved; ++u) {
+                    for (size_t u = 0; (u < importedUnits->unitCount()) && resolved; ++u) {
                         std::string reference;
                         std::string prefix;
                         std::string id;
@@ -695,11 +699,7 @@ bool Units::doIsResolved() const
                         }
                     }
                 }
-            } else {
-                resolved = false;
             }
-        } else {
-            resolved = false;
         }
     }
     return resolved;

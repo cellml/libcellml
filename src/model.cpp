@@ -356,12 +356,10 @@ bool Model::hasUnresolvedImports() const
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
-        libcellml::UnitsPtr units = Model::units(n);
-        unresolvedImports = !units->isResolved();
+        unresolvedImports = !units(n)->isResolved();
     }
     for (size_t n = 0; n < componentCount() && !unresolvedImports; ++n) {
-        libcellml::ComponentPtr component = this->component(n);
-        unresolvedImports = !component->isResolved();
+        unresolvedImports = !component(n)->isResolved();
     }
     return unresolvedImports;
 }

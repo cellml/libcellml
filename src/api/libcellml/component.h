@@ -444,8 +444,8 @@ private:
 
     bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
 
-    struct ComponentImpl; /**< Forward declaration for pImpl idiom. @private. */
-    ComponentImpl *mPimpl; /**< Private member to implementation pointer. @private. */
+    struct ComponentImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ComponentImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
