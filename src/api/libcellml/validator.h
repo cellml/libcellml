@@ -50,7 +50,8 @@ public:
     static ValidatorPtr create() noexcept;
 
     /**
-     * @brief Validate the @p model using the CellML 2.0 Specification.
+     * @brief Validate the @p model using the CellML 2.0 Specification, not including
+     * any imported entities.
      *
      * Validate the given @p model and its encapsulated entities using the
      * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
@@ -58,6 +59,19 @@ public:
      * @param model The model to validate.
      */
     void validateModel(const ModelPtr &model);
+
+    /**
+     * @brief Validate the @p model using the CellML 2.0 Specification, including
+     * any imported entities.
+     *
+     * Validate the given @p model and its encapsulated entities using the
+     * CellML 2.0 Specification, after resolving the imports against the given @p baseLocation.
+     * Any errors will be logged in the @c Validator.
+     *
+     * @param model The model to validate.
+     * @param baseLocation The location against which the imports should be resolved.
+     */
+    void validateModel(const ModelPtr &model, const std::string &baseLocation);
 
 private:
     Validator(); /**< Constructor. */

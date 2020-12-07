@@ -24,7 +24,9 @@ limitations under the License.
 #include <stdexcept>
 
 #include "libcellml/component.h"
+#include "libcellml/importer.h"
 #include "libcellml/importsource.h"
+#include "libcellml/issue.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
@@ -413,6 +415,57 @@ Validator::~Validator()
 ValidatorPtr Validator::create() noexcept
 {
     return std::shared_ptr<Validator> {new Validator {}};
+}
+
+void Validator::validateModel(const ModelPtr &model, const std::string &baseLocation)
+{
+    validateModel(model);
+
+    std::vector<UnitsPtr> skipUnits;
+    std::vector<ComponentPtr> skipComponents;
+
+    for (size_t i = 0; i < issueCount(); ++i) {
+        auto rule = issue(i)->referenceRule();
+        if ((issue(i)->cellmlElementType() == CellmlElementType::UNITS)
+            && ((rule == Issue::ReferenceRule::IMPORT_UNITS_NAME)
+                || (rule == Issue::ReferenceRule::IMPORT_UNITS_NAME_UNIQUE)
+                || (rule == Issue::ReferenceRule::UNITS_NAME)
+                || (rule == Issue::ReferenceRule::UNITS_NAME_UNIQUE))) {
+            skipUnits.emplace_back(issue(i)->units());
+        } else if ((issue(i)->cellmlElementType() == CellmlElementType::COMPONENT)
+                   && ((rule == Issue::ReferenceRule::IMPORT_COMPONENT_NAME)
+                       || (rule == Issue::ReferenceRule::IMPORT_COMPONENT_NAME_UNIQUE)
+                       || (rule == Issue::ReferenceRule::COMPONENT_NAME)
+                       || (rule == Issue::ReferenceRule::COMPONENT_NAME_UNIQUE))) {
+            skipComponents.emplace_back(issue(i)->component());
+        }
+    }
+
+    auto importer = Importer::create();
+    auto clone = model->clone();
+    importer->resolveImports(clone, baseLocation);
+    for (size_t i = 0; i < importer->issueCount(); ++i) {
+        auto issue = importer->issue(i);
+        
+        // KRM need to change the importer so that the original caller of the
+        // import gets stored against the issue.
+
+        if (issue->cellmlElementType() == CellmlElementType::COMPONENT) {
+            auto component = model->component(issue->component()->name(), true);
+            issue->setComponent(component);
+        } else if (issue->cellmlElementType() == CellmlElementType::UNITS) {
+            auto units = model->units(issue->units()->name());
+            issue->setUnits(units);
+        } else if (issue->cellmlElementType() == CellmlElementType::IMPORT) {
+            size_t is = 0;
+            auto importSource = clone->importSource(is);
+            while (importSource != issue->importSource()) {
+                ++is;
+            }
+            issue->setImportSource(model->importSource(is));
+        }
+        addIssue(issue);
+    }
 }
 
 void Validator::validateModel(const ModelPtr &model)

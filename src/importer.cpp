@@ -59,7 +59,7 @@ struct Importer::ImporterImpl
 
     ImportLibrary mLibrary;
 
-    IssuePtr makeIssueCyclicDependency(const ModelPtr &model, Type type,
+    IssuePtr makeIssueCyclicDependency(const ModelPtr &model, const std::string &typeString,
                                        HistorySearchVector &history,
                                        const std::string &action) const;
 
@@ -171,7 +171,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, cons
     }
     // Otherwise, return true indicating that cycles have been found.
     history.emplace_back(h);
-    mImporter->addIssue(makeIssueCyclicDependency(origModel, Type::UNITS, history, "flatten"));
+    mImporter->addIssue(makeIssueCyclicDependency(origModel, "units", history, "flatten"));
     return true;
 }
 
@@ -213,7 +213,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ModelPtr &origModel, 
 
     // Otherwise, return true indicating that cycles have been found.
     history.emplace_back(h);
-    mImporter->addIssue(makeIssueCyclicDependency(origModel, Type::COMPONENT, history, "flatten"));
+    mImporter->addIssue(makeIssueCyclicDependency(origModel, "component", history, "flatten"));
     return true;
 }
 
@@ -307,7 +307,7 @@ bool Importer::ImporterImpl::fetchImportSource(const ModelPtr &origModel, const 
     }
     auto model = mLibrary[url];
     if (!checkForCycles(model, history)) {
-        auto issue = makeIssueCyclicDependency(origModel, type, history, "resolve");
+        auto issue = makeIssueCyclicDependency(origModel, type == Type::COMPONENT ? "component" : "units", history, "resolve");
         issue->setImportSource(importSource);
         mImporter->addIssue(issue);
         return false;
@@ -449,16 +449,15 @@ bool Importer::ImporterImpl::fetchUnits(const ModelPtr &origModel, const UnitsPt
 }
 
 IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
-                                                           Type type,
-                                                           HistorySearchVector &history,
+                                                           const std::string &typeString,
+                                                           HistorySearchVector &history, 
                                                            const std::string &action) const
 {
     std::string msg = "Cyclic dependencies were found when attempting to " + action + " "
-                      + std::string((type == Type::UNITS) ? "units" : "components") + " in model '"
+                      + typeString + " in model '"
                       + model->name() + "'. The dependency loop is:\n";
     std::tuple<std::string, std::string, std::string> h;
     auto hSize = history.size();
-    std::string typeString = (type == Type::UNITS) ? "units" : "component";
     for (size_t i = 0; i < hSize; ++i) {
         h = history[i];
         msg += " - " + typeString + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'";
