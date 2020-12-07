@@ -989,7 +989,7 @@ TEST(Importer, isResolvedComponentOverTwoLevelsUnresolved)
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
-TEST(Importer, isResolvedReferncedUnitsMissing)
+TEST(Importer, isResolvedReferencedUnitsMissing)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/main_referenced_units_missing.cellml"));

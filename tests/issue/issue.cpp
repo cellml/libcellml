@@ -318,7 +318,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE:
         EXPECT_EQ("3.10.8", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::MODEL_INVALID:
+    case libcellml::Issue::ReferenceRule::INVALID_ARGUMENT:
     case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE:
     case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION:
     case libcellml::Issue::ReferenceRule::ANALYSER_VOI_INITIALISED:
