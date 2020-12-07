@@ -455,18 +455,18 @@ bool Component::doIsResolved() const
     bool resolved = true;
     if (isImport()) {
         auto model = importSource()->model();
-        if (model) {
-            auto importedComponent = model->component(importReference());
-            if (importedComponent) {
-                resolved = importedComponent->isResolved();
-            } else {
-                resolved = false;
-            }
-        } else {
+        if (model == nullptr) {
             resolved = false;
+        } else {
+            auto importedComponent = model->component(importReference());
+            if (importedComponent == nullptr) {
+                resolved = false;
+            } else {
+                resolved = importedComponent->isResolved();
+            }
         }
     }
-    for (size_t i = 0; i < componentCount() && resolved; ++i) {
+    for (size_t i = 0; (i < componentCount()) && resolved; ++i) {
         resolved = component(i)->isResolved();
     }
 

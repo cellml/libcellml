@@ -420,7 +420,12 @@ void Validator::validateModel(const ModelPtr &model)
     // Clear any pre-existing issues in ths validator instance.
     removeAllIssues();
 
-    if (model) {
+    if (model == nullptr) {
+        auto issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::MODEL_INVALID);
+        issue->setDescription("The given model is invalid.");
+        addIssue(issue);
+    } else {
         // Check for a valid name attribute.
         if (!isCellmlIdentifier(model->name())) {
             auto issue = makeIssueIllegalIdentifier(model->name());
@@ -526,11 +531,6 @@ void Validator::validateModel(const ModelPtr &model)
 
         // Check ids across the model are unique.
         mPimpl->checkUniqueIds(model);
-    } else {
-        auto issue = Issue::create();
-        issue->setReferenceRule(Issue::ReferenceRule::MODEL_INVALID);
-        issue->setDescription("The given model is invalid.");
-        addIssue(issue);
     }
 }
 
