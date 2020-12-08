@@ -77,6 +77,9 @@ element for the model's structure.  For the :class:`Component` class this is
 the ``component_ref`` element that references the component it represents in
 the structure."
 
+%feature("docstring") libcellml::ComponentEntity::componentIndex
+"Return the index of the given Component within this entity.";
+
 
 #if defined(SWIGPYTHON)
     %ignore libcellml::ComponentEntity::replaceComponent(size_t index, const ComponentPtr &component);

@@ -291,7 +291,14 @@ public:
      */
     std::string encapsulationId() const;
 
-    // KRM
+    /**
+     * @brief Return the index of the given @p Component within this entity.
+     * If the given component is not found, it will return SIZE_T_MAX.
+     * 
+     * @param component The @ref ComponentPtr to find.
+     * 
+     * @return The index of the component, if found.
+     */
     size_t componentIndex(const ComponentPtr &component);
 
 protected:

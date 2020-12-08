@@ -419,7 +419,7 @@ public:
     ComponentPtr clone() const;
 
     /**
-     * @brief Determines whether this component or its descendants
+     * @brief Determine whether this component or its descendants
      *        contain imported components.
      *
      * Determines whether this component or its descendants contain
@@ -429,7 +429,17 @@ public:
      */
     bool requiresImports();
 
-    // KRM
+    /**
+     * @brief Trace the indices required to navigate from the parent
+     * model to this component.
+     * 
+     * The current component can be found by iterating through the @ref 
+     * IndexStack returned, starting from the top-level component of the 
+     * parent model: the first index in the stack relates to the 
+     * highest-level component index.
+     * 
+     * @return A @ref IndexStack of indices.
+     */
     IndexStack encapsulationIndices();
 
 private:

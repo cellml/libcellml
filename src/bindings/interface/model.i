@@ -81,9 +81,11 @@ Only the first matching Units is removed and returned.";
 %feature("docstring") libcellml::Model::removeAllImportSources
 "Remove all ImportSource items from the Model.";
 
-%feature("docstring") libcellml::Model::hasImportSource
-"Test whether this Model already contains the given ImportSource.";
+%feature("docstring") libcellml::Model::unitsIndex
+"Return the index of the given Units within this Model.";
 
+%feature("docstring") libcellml::Model::importSourceIndex
+"Return the index of the given ImportSource within this Model.";
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)

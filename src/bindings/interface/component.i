@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %include <std_shared_ptr.i>
+%include <std_vector.i>
 
 %import "componententity.i"
 %import "createconstructor.i"
@@ -104,6 +105,11 @@ resets and False otherwise.";
 "Determines whether this component relies on any imports.  If this component 
 or any of its encapsulated components are imported, returns @c true, 
 otherwise @c false.";
+
+%feature("docstring") libcellml::Component::encapsulationIndices
+"Trace the indices required to navigate from the parent model to this component.
+The first index is corresponds to the immediate child of the parent model.";
+
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)

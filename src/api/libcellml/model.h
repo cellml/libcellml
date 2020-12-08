@@ -414,9 +414,9 @@ public:
     bool removeAllImportSources();
 
     /**
-     * @brief Tests to see if the import source is within this model.
+     * @brief Test to see if the import source is within this model.
      *
-     * Tests to see if the given import source is contained within this model.
+     * Test to see if the given import source is contained within this model.
      * Returns @c true if the import source is in the model and @c false otherwise.
      *
      * @param importSrc The import source to test for existence in this model.
@@ -425,8 +425,24 @@ public:
      */
     bool hasImportSource(const ImportSourcePtr &importSrc) const;
 
-    // KRM
+    /**
+     * @brief Return the index of the given @p Units within this model.
+     * If the given units item is not found, it will return SIZE_T_MAX.
+     * 
+     * @param u The @ref UnitsPtr to find.
+     * 
+     * @return The index of the component, if found.
+     */
     size_t unitsIndex(const UnitsPtr &u) const;
+
+    /**
+     * @brief Return the index of the given @p ImportSource within this model.
+     * If the given units item is not found, it will return SIZE_T_MAX.
+     * 
+     * @param i The @ref ImportSourcePtr to find.
+     * 
+     * @return The index of the import source, if found.
+     */
     size_t importSourceIndex(const ImportSourcePtr &i) const;
 
 private:
