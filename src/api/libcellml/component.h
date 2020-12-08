@@ -27,6 +27,8 @@ template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Component>;
 
 namespace libcellml {
 
+using IndexStack = std::vector<size_t>;
+
 /**
  * @brief The Component class.
  *
