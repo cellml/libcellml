@@ -302,7 +302,8 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual(2, mCloned.componentCount())
         self.assertEqual(1, mCloned.unitsCount())
         self.assertEqual(1, mCloned.component(0).variableCount())
-        self.assertEqual("apple", mCloned.component(0).variable(0).units().name())
+        self.assertEqual("apple", mCloned.component(
+            0).variable(0).units().name())
 
     def test_link_units(self):
         from libcellml import Component, Model, Units, Variable
@@ -357,27 +358,82 @@ class ModelTestCase(unittest.TestCase):
 
         m.addUnits(u)
         self.assertTrue(m.hasImports())
-
         self.assertEqual(1, m.importSourceCount())
 
         i = ImportSource()
         i.setUrl('actual_url')
 
         m.addImportSource(i)
-
         self.assertEqual(2, m.importSourceCount())
 
         i1 = m.importSource(0)
-
         self.assertTrue(m.hasImportSource(i))
 
         m.removeImportSource(0)
-
         self.assertEqual(1, m.importSourceCount())
 
         m.removeAllImportSources()
-
         self.assertEqual(0, m.importSourceCount())
+
+    def test_component_index(self):
+        import sys
+        from libcellml import Component, Model
+
+        m = Model()
+        c1 = Component('c1')
+        c2 = Component('c2')
+        c3 = Component('c3')
+
+        m.addComponent(c1)
+        m.addComponent(c2)
+
+        self.assertEqual(0, m.componentIndex(c1))
+        self.assertEqual(1, m.componentIndex(c2))
+        self.assertEqual((sys.maxsize+1)*2-1, m.componentIndex(c3))
+
+    def test_units_index(self):
+        import sys
+        from libcellml import Model, Units
+
+        m = Model()
+        u1 = Units('u1')
+        u2 = Units('u2')
+        u3 = Units('u3')
+
+        m.addUnits(u1)
+        m.addUnits(u2)
+
+        self.assertEqual(0, m.unitsIndex(u1))
+        self.assertEqual(1, m.unitsIndex(u2))
+        self.assertEqual((sys.maxsize+1)*2-1, m.unitsIndex(u3))
+
+    def test_import_source_index(self):
+        import sys
+        from libcellml import Model, ImportSource
+
+        m = Model()
+        is1 = ImportSource()
+        is2 = ImportSource()
+        is3 = ImportSource()
+
+        m.addImportSource(is1)
+        m.addImportSource(is2)
+
+        self.assertEqual(0, m.importSourceIndex(is1))
+        self.assertEqual(1, m.importSourceIndex(is2))
+        self.assertEqual((sys.maxsize+1)*2-1, m.importSourceIndex(is3))
+
+    def test_has_import_source(self):
+        from libcellml import Model, ImportSource
+
+        m = Model()
+        is1 = ImportSource()
+        is2 = ImportSource()
+
+        m.addImportSource(is1)
+
+        self.assertTrue(m.hasImportSource(is1))
+        self.assertFalse(m.hasImportSource(is2))
 
 
 if __name__ == '__main__':

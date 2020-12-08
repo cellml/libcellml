@@ -285,6 +285,26 @@ class ComponentTestCase(unittest.TestCase):
 
         c = Component("banana")
         self.assertFalse(c.requiresImports())
+    
+    def test_encapsulation_indices(self):
+        from libcellml import Component, Model
+
+        m = Model('model')
+        c1 = Component('component_1')
+        c2 = Component('component_2')
+        c3 = Component('component_3')
+        
+        c1.addComponent(c2)
+        c1.addComponent(c3)
+        
+        self.assertEqual((), c1.encapsulationIndices())
+        self.assertEqual((), c2.encapsulationIndices())
+        
+        m.addComponent(c1)
+
+        self.assertEqual((0,), c1.encapsulationIndices())
+        self.assertEqual((0,0), c2.encapsulationIndices())
+        self.assertEqual((0,1), c3.encapsulationIndices())
 
 if __name__ == '__main__':
     unittest.main()

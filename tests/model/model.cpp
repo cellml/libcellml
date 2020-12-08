@@ -624,3 +624,48 @@ TEST(Model, removeComponentInsensitiveToOrder)
     EXPECT_EQ(size_t(0), modelParsed->componentCount());
     EXPECT_EQ(size_t(2), modelApi->componentCount());
 }
+
+TEST(Model, componentIndex)
+{
+    auto m = libcellml::Model::create();
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto c3 = libcellml::Component::create("c3");
+
+    m->addComponent(c1);
+    m->addComponent(c2);
+
+    EXPECT_EQ(size_t(0), m->componentIndex(c1));
+    EXPECT_EQ(size_t(1), m->componentIndex(c2));
+    EXPECT_EQ(SIZE_T_MAX, m->componentIndex(c3));
+}
+
+TEST(Model, unitsIndex)
+{
+    auto m = libcellml::Model::create();
+    auto u1 = libcellml::Units::create("u1");
+    auto u2 = libcellml::Units::create("u2");
+    auto u3 = libcellml::Units::create("u3");
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+
+    EXPECT_EQ(size_t(0), m->unitsIndex(u1));
+    EXPECT_EQ(size_t(1), m->unitsIndex(u2));
+    EXPECT_EQ(SIZE_T_MAX, m->unitsIndex(u3));
+}
+
+TEST(Model, importSourceIndex)
+{
+    auto m = libcellml::Model::create();
+    auto is1 = libcellml::ImportSource::create();
+    auto is2 = libcellml::ImportSource::create();
+    auto is3 = libcellml::ImportSource::create();
+
+    m->addImportSource(is1);
+    m->addImportSource(is2);
+
+    EXPECT_EQ(size_t(0), m->importSourceIndex(is1));
+    EXPECT_EQ(size_t(1), m->importSourceIndex(is2));
+    EXPECT_EQ(SIZE_T_MAX, m->importSourceIndex(is3));
+}

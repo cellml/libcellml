@@ -439,9 +439,6 @@ void Validator::validateModel(const ModelPtr &model, const std::string &baseLoca
             }
             issue->setComponent(component);
 
-        } else if (type == CellmlElementType::MODEL) {
-            issue->setModel(model);
-
         } else if (type == CellmlElementType::UNITS) {
             auto index = clone->unitsIndex(issue->units());
             issue->setUnits(model->units(index));

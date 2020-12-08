@@ -133,6 +133,8 @@ The first index is corresponds to the immediate child of the parent model.";
 # libCellML generated wrapper code starts here.
 %}
 
+%template() std::vector<size_t>;
+
 %create_constructor(Component)
 %create_name_constructor(Component)
 

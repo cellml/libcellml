@@ -2952,7 +2952,9 @@ TEST(Validator, importComponentWithInvalidName)
 {
     const std::vector<std::string> errorMessages = {
         "Import of component 'c' has an invalid URI in the xlink:href attribute.",
-        "The attempt to resolve imports with the model at '" + resourcePath() + "i am broken and invalid.cellml' failed: the file could not be opened."};
+        "The attempt to resolve imports with the model at '"
+            + resourcePath()
+            + "i am broken and invalid.cellml' failed: the file could not be opened."};
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
     auto model = parser->parseModel(fileContents("invalid_import_url.cellml"));
@@ -2968,4 +2970,25 @@ TEST(Validator, importComponentWithInvalidName)
     EXPECT_EQ_ISSUES(errorMessages, validator);
     EXPECT_EQ(model->importSource(0), validator->error(0)->importSource());
     EXPECT_EQ(model->importSource(0), validator->error(1)->importSource());
+}
+
+TEST(Validator, importSecondGenComponentWithInvalidName)
+{
+    const std::string errorMessage =
+        "The attempt to resolve imports with the model at '"
+        + resourcePath()
+        + "i am broken and invalid.cellml' failed: the file could not be opened.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("import_invalid_import_url.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    validator->validateModel(model, resourcePath(""));
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(errorMessage, validator->issue(0)->description());
+    EXPECT_EQ(model->component("c", true), validator->issue(0)->component());
 }
