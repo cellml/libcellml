@@ -531,6 +531,8 @@ private:
 
     bool doEqual(const EntityPtr &other) const override;
 
+    bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
+
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
     UnitsImpl *mPimpl; /**< Private member to implementation pointer. */
 };

@@ -29,7 +29,6 @@ struct ImportedEntity::ImportedEntityImpl
 {
     ImportSourcePtr mImportSource;
     std::string mImportReference;
-    bool mIsResolved = false;
 };
 
 ImportedEntity::ImportedEntity()
@@ -94,12 +93,7 @@ void ImportedEntity::setImportReference(const std::string &reference)
 
 bool ImportedEntity::isResolved() const
 {
-    return mPimpl->mIsResolved;
-}
-
-void ImportedEntity::setResolved(bool status)
-{
-    mPimpl->mIsResolved = status;
+    return doIsResolved();
 }
 
 } // namespace libcellml
