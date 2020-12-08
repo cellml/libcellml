@@ -445,26 +445,24 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
                                                            HistorySearchVector &history,
                                                            const std::string &action) const
 {
-    std::string msg = "Cyclic dependencies were found when attempting to " + action + " "
-                      + typeString + " in model '"
-                      + model->name() + "'. The dependency loop is:\n";
+    std::string msg1 = "Cyclic dependencies were found when attempting to " + action + " "
+                       + typeString + " in model '"
+                       + model->name() + "'. The dependency loop is:\n";
+    std::string msg2;
     std::tuple<std::string, std::string, std::string> h;
-    auto hSize = history.size();
-    for (size_t i = 0; i < hSize; ++i) {
+    std::string eol = "; and\n";
+    size_t i = history.size() - 1;
+    while (i != SIZE_T_MAX) {
         h = history[i];
-        msg += " - " + typeString + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'";
-        if (i != hSize - 1) {
-            msg += ";";
-            if (i == hSize - 2) {
-                msg += " and";
-            }
-            msg += "\n";
-        } else {
-            msg += ".";
-        }
+        msg2 = eol + " - " + typeString + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'" + msg2;
+        eol = ";\n";
+        --i;
     }
+    msg2.erase(0, 2);
+    msg2 += ".";
+
     auto issue = Issue::create();
-    issue->setDescription(msg);
+    issue->setDescription(msg1 + msg2);
     issue->setLevel(Issue::Level::ERROR);
     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
     history.clear();

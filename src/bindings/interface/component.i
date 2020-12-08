@@ -108,7 +108,7 @@ otherwise @c false.";
 
 %feature("docstring") libcellml::Component::encapsulationIndices
 "Trace the indices required to navigate from the parent model to this component.
-The first index is corresponds to the immediate child of the parent model.";
+The first index corresponds to the immediate child of the parent model.";
 
 
 #if defined(SWIGPYTHON)
