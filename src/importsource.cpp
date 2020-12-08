@@ -302,7 +302,6 @@ void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityWeakPt
     }
 
     // Iterate through components index vector and decrement all indices above the item's index.
-    static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
     for (size_t i = mComponents.size() - 1; (i != MAX_SIZE_T) && (mComponents[i] > index); --i) {
         --mComponents[i];
     }
