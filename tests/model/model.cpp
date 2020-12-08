@@ -637,7 +637,7 @@ TEST(Model, componentIndex)
 
     EXPECT_EQ(size_t(0), m->componentIndex(c1));
     EXPECT_EQ(size_t(1), m->componentIndex(c2));
-    EXPECT_EQ(SIZE_T_MAX, m->componentIndex(c3));
+    EXPECT_EQ(MAX_SIZE_T, m->componentIndex(c3));
 }
 
 TEST(Model, unitsIndex)
@@ -652,7 +652,7 @@ TEST(Model, unitsIndex)
 
     EXPECT_EQ(size_t(0), m->unitsIndex(u1));
     EXPECT_EQ(size_t(1), m->unitsIndex(u2));
-    EXPECT_EQ(SIZE_T_MAX, m->unitsIndex(u3));
+    EXPECT_EQ(MAX_SIZE_T, m->unitsIndex(u3));
 }
 
 TEST(Model, importSourceIndex)
@@ -667,5 +667,5 @@ TEST(Model, importSourceIndex)
 
     EXPECT_EQ(size_t(0), m->importSourceIndex(is1));
     EXPECT_EQ(size_t(1), m->importSourceIndex(is2));
-    EXPECT_EQ(SIZE_T_MAX, m->importSourceIndex(is3));
+    EXPECT_EQ(MAX_SIZE_T, m->importSourceIndex(is3));
 }

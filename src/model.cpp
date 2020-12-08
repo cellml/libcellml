@@ -192,7 +192,7 @@ size_t Model::unitsIndex(const UnitsPtr &u) const
     if (it != mPimpl->mUnits.end()) {
         return size_t(it - mPimpl->mUnits.begin());
     }
-    return SIZE_T_MAX;
+    return MAX_SIZE_T;
 }
 
 size_t Model::importSourceIndex(const ImportSourcePtr &i) const
@@ -201,7 +201,7 @@ size_t Model::importSourceIndex(const ImportSourcePtr &i) const
     if (it != mPimpl->mImports.end()) {
         return size_t(it - mPimpl->mImports.begin());
     }
-    return SIZE_T_MAX;
+    return MAX_SIZE_T;
 }
 
 bool Model::hasUnits(const std::string &name) const

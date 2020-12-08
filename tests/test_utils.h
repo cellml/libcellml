@@ -27,6 +27,8 @@ limitations under the License.
 #include "../src/commonutils.h"
 #undef TEST_UTILS
 
+static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
+
 const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
 const std::string NON_EMPTY_MATH =

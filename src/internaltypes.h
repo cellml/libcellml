@@ -57,4 +57,6 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
+static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
+
 } // namespace libcellml

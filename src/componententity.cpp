@@ -281,7 +281,7 @@ size_t ComponentEntity::componentIndex(const ComponentPtr &component)
     if (it != mPimpl->mComponents.end()) {
         return size_t(mPimpl->findComponent(component) - mPimpl->mComponents.begin());
     }
-    return SIZE_T_MAX;
+    return MAX_SIZE_T;
 }
 
 } // namespace libcellml

@@ -427,7 +427,7 @@ public:
 
     /**
      * @brief Return the index of the given @p Units within this model.
-     * If the given units item is not found, it will return SIZE_T_MAX.
+     * If the given units item is not found, it will return MAX_SIZE_T.
      * 
      * @param u The @ref UnitsPtr to find.
      * 
@@ -437,7 +437,7 @@ public:
 
     /**
      * @brief Return the index of the given @p ImportSource within this model.
-     * If the given units item is not found, it will return SIZE_T_MAX.
+     * If the given units item is not found, it will return MAX_SIZE_T.
      * 
      * @param i The @ref ImportSourcePtr to find.
      * 

@@ -293,7 +293,7 @@ public:
 
     /**
      * @brief Return the index of the given @p Component within this entity.
-     * If the given component is not found, it will return SIZE_T_MAX.
+     * If the given component is not found, it will return MAX_SIZE_T.
      * 
      * @param component The @ref ComponentPtr to find.
      * 
