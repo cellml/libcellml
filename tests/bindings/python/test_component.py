@@ -286,12 +286,5 @@ class ComponentTestCase(unittest.TestCase):
         c = Component("banana")
         self.assertFalse(c.requiresImports())
 
-    def test_resolved(self):
-        from libcellml import Component
-        b = Component("banana")
-        self.assertFalse(b.isResolved())
-        b.setResolved(True)
-        self.assertTrue(b.isResolved())
-
 if __name__ == '__main__':
     unittest.main()

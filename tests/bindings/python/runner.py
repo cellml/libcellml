@@ -30,6 +30,6 @@ cov.stop()
 cov.save()
 
 if arg1 == "html":
-    cov.html_report(directory='coverage_html_report')
+    cov.html_report(directory='coverage_report')
 else:
     cov.report()

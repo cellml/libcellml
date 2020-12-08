@@ -27,6 +27,8 @@ struct AnalyserModel::AnalyserModelImpl
 {
     AnalyserModel::Type mType = Type::UNKNOWN;
 
+    bool mHasExternalVariables = false;
+
     AnalyserVariablePtr mVoi = nullptr;
     std::vector<AnalyserVariablePtr> mStates;
     std::vector<AnalyserVariablePtr> mVariables;
@@ -58,6 +60,8 @@ struct AnalyserModel::AnalyserModelImpl
     bool mNeedAsechFunction = false;
     bool mNeedAcschFunction = false;
     bool mNeedAcothFunction = false;
+
+    std::map<uintptr_t, bool> mCachedEquivalentVariables;
 };
 
 } // namespace libcellml
