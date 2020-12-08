@@ -1496,7 +1496,7 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
         history.push_back(u->name());
         checkUnitsForCycles(model, u, history, issueList);
         // Have to delete this each time to prevent reinitialisation with previous base variables.
-        std::vector<std::string>().swap(history);
+        history.clear();
     }
 
     if (!issueList.empty()) {
@@ -1523,7 +1523,6 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
                 mValidator->addIssue(issue);
                 reportedIssueList.push_back(hash);
             }
-            std::map<std::string, bool>().swap(hash);
         }
     }
 }
@@ -1559,9 +1558,8 @@ void Validator::ValidatorImpl::checkUnitsForCycles(const ModelPtr &model, const 
                 UnitsPtr child = model->units(ref);
                 history.push_back(ref);
                 // Making a copy of the history vector to this point.
-                std::vector<std::string> child_history(history);
-                checkUnitsForCycles(model, child, child_history, errorList);
-                std::vector<std::string>().swap(child_history);
+                std::vector<std::string> childHistory(history);
+                checkUnitsForCycles(model, child, childHistory, errorList);
             }
         }
     }
