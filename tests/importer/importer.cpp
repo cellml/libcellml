@@ -52,10 +52,10 @@ TEST(Importer, noWarningDiamondImport)
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
-TEST(Importer, warningCircularImportReferencesComponent)
+TEST(Importer, circularImportReferencesComponent)
 {
     const std::string errorMessage =
-        "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to resolve component in model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
         " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
         " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
@@ -70,9 +70,10 @@ TEST(Importer, warningCircularImportReferencesComponent)
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(errorMessage, importer->error(0)->description());
+    EXPECT_EQ(model->component(0), importer->issue(0)->component());
 }
 
-TEST(Importer, warningCircularImportReferencesUnits)
+TEST(Importer, circularImportReferencesUnits)
 {
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve units in model 'circularImport1'. The dependency loop is:\n"
@@ -85,9 +86,11 @@ TEST(Importer, warningCircularImportReferencesUnits)
     auto model = parser->parseModel(fileContents("importer/circularUnits_1.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
     importer->resolveImports(model, resourcePath("importer/"));
+
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(errorMessage, importer->error(0)->description());
+    EXPECT_EQ(model->units(0), importer->issue(0)->units());
 }
 
 TEST(Importer, warningUnrequiredCircularDependencyComponent)
@@ -672,7 +675,6 @@ TEST(Importer, importFilesWithSameName)
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(0), importer->issueCount());
-    printIssues(importer);
 
     // 4 items in the library.
     EXPECT_EQ(size_t(4), importer->libraryCount());
@@ -735,6 +737,8 @@ TEST(Importer, resolveWithMissingItems)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(2), importer->issueCount());
     EXPECT_EQ_ISSUES(e, importer);
+    EXPECT_EQ(model->units("i_dont_exist"), importer->issue(0)->units());
+    EXPECT_EQ(model->component("i_dont_exist"), importer->issue(1)->component());
 }
 
 TEST(Importer, resolveWithMissingChildComponents)
@@ -748,6 +752,7 @@ TEST(Importer, resolveWithMissingChildComponents)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+    EXPECT_EQ(model->component("component1"), importer->issue(0)->component());
 }
 
 TEST(Importer, resolveWithPresentChildUnits)
@@ -772,6 +777,7 @@ TEST(Importer, resolveWithMissingChildUnits)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+    EXPECT_EQ(model->units("units1"), importer->issue(0)->units());
 }
 
 TEST(Importer, resolveWithMissingChildDependentUnits)
@@ -785,6 +791,7 @@ TEST(Importer, resolveWithMissingChildDependentUnits)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+    EXPECT_EQ(model->component("component"), importer->issue(0)->component());
 }
 
 TEST(Importer, resolveWithChildUnitsImportedFromMissingModel)
@@ -798,6 +805,7 @@ TEST(Importer, resolveWithChildUnitsImportedFromMissingModel)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+    EXPECT_EQ(model->units("units1"), importer->issue(0)->units());
 }
 
 TEST(Importer, resolveComponentWithUnitsMissingModel)
@@ -811,6 +819,7 @@ TEST(Importer, resolveComponentWithUnitsMissingModel)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+    EXPECT_EQ(model->component("imported_component"), importer->issue(0)->component());
 }
 
 TEST(Importer, resolveImportsOfGrandchildComponents)
@@ -856,6 +865,9 @@ TEST(Importer, complicatedHHImportMissingGateModel)
     EXPECT_EQ(size_t(2), importer->errorCount());
     EXPECT_EQ(e, importer->error(0)->description());
     EXPECT_EQ(e, importer->error(1)->description());
+
+    EXPECT_EQ(model->component("sodiumChannel"), importer->error(0)->component());
+    EXPECT_EQ(model->component("potassiumChannel"), importer->error(1)->component());
 }
 
 TEST(Importer, clearModelImportsBeforeResolving)

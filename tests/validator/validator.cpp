@@ -2842,3 +2842,130 @@ TEST(Validator, duplicateIdAll)
     validator->validateModel(model);
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
+
+TEST(Validator, circularImportReferencesComponent)
+{
+    const std::string errorMessage =
+        "Cyclic dependencies were found when attempting to resolve component in model 'circularImport1'. The dependency loop is:\n"
+        " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
+        " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
+        " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
+        " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml'.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("importer/circularImport_1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    validator->validateModel(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(errorMessage, validator->error(0)->description());
+    EXPECT_EQ(model->component(0), validator->issue(0)->component());
+}
+
+TEST(Validator, circularImportReferencesUnits)
+{
+    const std::string errorMessage =
+        "Cyclic dependencies were found when attempting to resolve units in model 'circularImport1'. The dependency loop is:\n"
+        " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml';\n"
+        " - units 'u2' is imported from 'u3' in 'circularUnits_3.cellml';\n"
+        " - units 'u3' is imported from 'i_am_cyclic' in 'circularUnits_1.cellml'; and\n"
+        " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml'.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("importer/circularUnits_1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    validator->validateModel(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(errorMessage, validator->error(0)->description());
+    EXPECT_EQ(model->units(0), validator->issue(0)->units());
+}
+
+TEST(Validator, circularImportedUnitsDuplicateNames)
+{
+    const std::vector<std::string> errorMessages = {
+        "Model 'circularImport1' contains multiple units with the name 'i_am_duplicated'. Valid units names must be unique to their model.",
+        "Cyclic dependencies were found when attempting to resolve units in model 'circularImport1'. The dependency loop is:\n"
+        " - units 'i_am_duplicated' is imported from 'u2' in 'circularUnits_2.cellml';\n"
+        " - units 'u2' is imported from 'u3' in 'circularUnits_3.cellml';\n"
+        " - units 'u3' is imported from 'i_am_cyclic' in 'circularUnits_1.cellml';\n"
+        " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml'; and\n"
+        " - units 'u2' is imported from 'u3' in 'circularUnits_3.cellml'.",
+    };
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("importer/circularUnits_1_duplicated_name.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
+    EXPECT_EQ(model, validator->error(0)->model());
+
+    validator->validateModel(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(2), validator->issueCount());
+    EXPECT_EQ_ISSUES(errorMessages, validator);
+    EXPECT_EQ(model, validator->issue(0)->model());
+    EXPECT_EQ(model->units(0), validator->issue(1)->units());
+}
+
+TEST(Validator, circularImportedComponentsDuplicateNames)
+{
+    const std::vector<std::string> errorMessages = {
+        "Model 'circularImport1' contains multiple components with the name 'i_am_duplicated'. Valid component names must be unique to their model.",
+        "Cyclic dependencies were found when attempting to resolve component in model 'circularImport1'. The dependency loop is:\n"
+        " - component 'i_am_duplicated' is imported from 'c2' in 'circularImport_2.cellml';\n"
+        " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
+        " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml';\n"
+        " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml'; and\n"
+        " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml'."};
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("importer/circularImport_1_duplicated_name.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
+    EXPECT_EQ(model, validator->error(0)->model());
+
+    validator->validateModel(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(2), validator->issueCount());
+    EXPECT_EQ_ISSUES(errorMessages, validator);
+    EXPECT_EQ(model, validator->issue(0)->model());
+    EXPECT_EQ(model->units(0), validator->issue(1)->units());
+}
+
+TEST(Validator, importComponentWithInvalidName)
+{
+    const std::vector<std::string> errorMessages = {
+        "Import of component 'c' has an invalid URI in the xlink:href attribute.",
+        "The attempt to resolve imports with the model at '" + resourcePath() + "i am broken and invalid.cellml' failed: the file could not be opened."};
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("invalid_import_url.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
+    EXPECT_EQ(model->importSource(0), validator->error(0)->importSource());
+
+    validator->validateModel(model, resourcePath(""));
+    EXPECT_EQ(size_t(2), validator->issueCount());
+    EXPECT_EQ_ISSUES(errorMessages, validator);
+    EXPECT_EQ(model->importSource(0), validator->error(0)->importSource());
+    EXPECT_EQ(model->importSource(0), validator->error(1)->importSource());
+}

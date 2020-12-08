@@ -23,6 +23,8 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/units.h"
 
+#include "commonutils.h"
+
 namespace libcellml {
 
 /**
@@ -271,6 +273,15 @@ void ComponentEntity::setEncapsulationId(const std::string &id)
 std::string ComponentEntity::encapsulationId() const
 {
     return mPimpl->mEncapsulationId;
+}
+
+size_t ComponentEntity::componentIndex(const ComponentPtr &component)
+{
+    auto it = mPimpl->findComponent(component);
+    if (it != mPimpl->mComponents.end()) {
+        return size_t(mPimpl->findComponent(component) - mPimpl->mComponents.begin());
+    }
+    return SIZE_T_MAX;
 }
 
 } // namespace libcellml

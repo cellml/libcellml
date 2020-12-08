@@ -427,6 +427,9 @@ public:
      */
     bool requiresImports();
 
+    // KRM
+    IndexStack encapsulationIndices();
+
 private:
     Component(); /**< Constructor @private*/
     explicit Component(const std::string &name); /**< Constructor named, @private. */

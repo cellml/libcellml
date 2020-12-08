@@ -421,49 +421,36 @@ void Validator::validateModel(const ModelPtr &model, const std::string &baseLoca
 {
     validateModel(model);
 
-    std::vector<UnitsPtr> skipUnits;
-    std::vector<ComponentPtr> skipComponents;
-
-    for (size_t i = 0; i < issueCount(); ++i) {
-        auto rule = issue(i)->referenceRule();
-        if ((issue(i)->cellmlElementType() == CellmlElementType::UNITS)
-            && ((rule == Issue::ReferenceRule::IMPORT_UNITS_NAME)
-                || (rule == Issue::ReferenceRule::IMPORT_UNITS_NAME_UNIQUE)
-                || (rule == Issue::ReferenceRule::UNITS_NAME)
-                || (rule == Issue::ReferenceRule::UNITS_NAME_UNIQUE))) {
-            skipUnits.emplace_back(issue(i)->units());
-        } else if ((issue(i)->cellmlElementType() == CellmlElementType::COMPONENT)
-                   && ((rule == Issue::ReferenceRule::IMPORT_COMPONENT_NAME)
-                       || (rule == Issue::ReferenceRule::IMPORT_COMPONENT_NAME_UNIQUE)
-                       || (rule == Issue::ReferenceRule::COMPONENT_NAME)
-                       || (rule == Issue::ReferenceRule::COMPONENT_NAME_UNIQUE))) {
-            skipComponents.emplace_back(issue(i)->component());
-        }
-    }
-
     auto importer = Importer::create();
     auto clone = model->clone();
     importer->resolveImports(clone, baseLocation);
+
+    // Transfer the objects stored in any importer issues to the original model instead of the clone.
     for (size_t i = 0; i < importer->issueCount(); ++i) {
         auto issue = importer->issue(i);
-        
-        // KRM need to change the importer so that the original caller of the
-        // import gets stored against the issue.
+        auto type = issue->cellmlElementType();
 
-        if (issue->cellmlElementType() == CellmlElementType::COMPONENT) {
-            auto component = model->component(issue->component()->name(), true);
-            issue->setComponent(component);
-        } else if (issue->cellmlElementType() == CellmlElementType::UNITS) {
-            auto units = model->units(issue->units()->name());
-            issue->setUnits(units);
-        } else if (issue->cellmlElementType() == CellmlElementType::IMPORT) {
-            size_t is = 0;
-            auto importSource = clone->importSource(is);
-            while (importSource != issue->importSource()) {
-                ++is;
+        if (type == CellmlElementType::COMPONENT) {
+            auto indexList = issue->component()->encapsulationIndices();
+            auto component = model->component(indexList.at(0));
+            indexList.erase(indexList.begin());
+            for (const auto &index : indexList) {
+                component = component->component(index);
             }
-            issue->setImportSource(model->importSource(is));
+            issue->setComponent(component);
+
+        } else if (type == CellmlElementType::MODEL) {
+            issue->setModel(model);
+
+        } else if (type == CellmlElementType::UNITS) {
+            auto index = clone->unitsIndex(issue->units());
+            issue->setUnits(model->units(index));
+
+        } else if (type == CellmlElementType::IMPORT) {
+            auto index = clone->importSourceIndex(issue->importSource());
+            issue->setImportSource(model->importSource(index));
         }
+
         addIssue(issue);
     }
 }

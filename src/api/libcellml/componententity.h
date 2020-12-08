@@ -291,6 +291,9 @@ public:
      */
     std::string encapsulationId() const;
 
+    // KRM
+    size_t componentIndex(const ComponentPtr &component);
+
 protected:
     /**
      * @brief Virtual add component method to be implemented by derived classes.

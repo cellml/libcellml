@@ -422,3 +422,48 @@ TEST(Encapsulation, encapsulationWithMultipleRootHierarchy)
     const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
+
+TEST(Encapsulation, encapsulationIndices)
+{
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2a = libcellml::Component::create("c2a");
+    auto c2b = libcellml::Component::create("c2b");
+    auto c3a = libcellml::Component::create("c3a");
+    auto c3b = libcellml::Component::create("c3b");
+
+    model->addComponent(c1);
+    c1->addComponent(c2a);
+    c1->addComponent(c2b);
+    c2b->addComponent(c3a);
+    c2b->addComponent(c3b);
+
+    libcellml::IndexStack index1 {0};
+    libcellml::IndexStack index2b {0, 1};
+    libcellml::IndexStack index3b {0, 1, 1};
+
+    EXPECT_EQ(index1, c1->encapsulationIndices());
+    EXPECT_EQ(index2b, c2b->encapsulationIndices());
+    EXPECT_EQ(index3b, c3b->encapsulationIndices());
+}
+
+TEST(Encapsulation, encapsulationIndicesNoModel)
+{
+    auto c1 = libcellml::Component::create("c1");
+    auto c2a = libcellml::Component::create("c2a");
+    auto c2b = libcellml::Component::create("c2b");
+    auto c3a = libcellml::Component::create("c3a");
+    auto c3b = libcellml::Component::create("c3b");
+
+    // Do not add components into a model.
+    c1->addComponent(c2a);
+    c1->addComponent(c2b);
+    c2b->addComponent(c3a);
+    c2b->addComponent(c3b);
+
+    libcellml::IndexStack empty;
+
+    EXPECT_EQ(empty, c1->encapsulationIndices());
+    EXPECT_EQ(empty, c2b->encapsulationIndices());
+    EXPECT_EQ(empty, c3b->encapsulationIndices());
+}

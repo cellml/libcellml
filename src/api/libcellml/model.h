@@ -425,6 +425,10 @@ public:
      */
     bool hasImportSource(const ImportSourcePtr &importSrc) const;
 
+    // KRM
+    size_t unitsIndex(const UnitsPtr &u) const;
+    size_t importSourceIndex(const ImportSourcePtr &i) const;
+
 private:
     Model(); /**< Constructor. */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/

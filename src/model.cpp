@@ -186,6 +186,24 @@ void Model::removeAllUnits()
     mPimpl->mUnits.clear();
 }
 
+size_t Model::unitsIndex(const UnitsPtr &u) const
+{
+    auto it = std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), u);
+    if (it != mPimpl->mUnits.end()) {
+        return size_t(it - mPimpl->mUnits.begin());
+    }
+    return SIZE_T_MAX;
+}
+
+size_t Model::importSourceIndex(const ImportSourcePtr &i) const
+{
+    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), i);
+    if (it != mPimpl->mImports.end()) {
+        return size_t(it - mPimpl->mImports.begin());
+    }
+    return SIZE_T_MAX;
+}
+
 bool Model::hasUnits(const std::string &name) const
 {
     return mPimpl->findUnits(name) != mPimpl->mUnits.end();

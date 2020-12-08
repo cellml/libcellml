@@ -46,6 +46,8 @@ struct Component::ComponentImpl
     std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
     std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
+
+    void doFindComponentInEncapsulation(IndexStack &indexList, const ComponentPtr &findMe);
 };
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
@@ -471,6 +473,36 @@ bool Component::doIsResolved() const
     }
 
     return resolved;
+}
+
+void Component::ComponentImpl::doFindComponentInEncapsulation(IndexStack &indexList,
+                                                              const ComponentPtr &findMe)
+{
+    auto parentComponent = owningComponent(findMe);
+
+    if (parentComponent != nullptr) {
+        doFindComponentInEncapsulation(indexList, parentComponent);
+
+        auto index = parentComponent->componentIndex(findMe);
+        indexList.push_back(index);
+    } else {
+        // Find position in model's array.
+        auto parentModel = owningModel(findMe);
+        if (parentModel != nullptr) {
+            auto index = parentModel->componentIndex(findMe);
+            indexList.push_back(index);
+        }
+    }
+}
+
+IndexStack Component::encapsulationIndices()
+{
+    IndexStack indexList;
+    if (owningModel(shared_from_this()) == nullptr) {
+        return indexList;
+    }
+    mPimpl->doFindComponentInEncapsulation(indexList, shared_from_this());
+    return indexList;
 }
 
 } // namespace libcellml

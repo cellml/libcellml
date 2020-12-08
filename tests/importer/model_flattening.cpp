@@ -846,13 +846,13 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
 TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 {
     const std::string resolveError =
-        "Cyclic dependencies were found when attempting to resolve components in model 'importExample2b'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to resolve component in model 'importExample2b'. The dependency loop is:\n"
         " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
         " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml'.";
     const std::string flattenError =
-        "Cyclic dependencies were found when attempting to flatten components in model 'importExample2b'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to flatten component in model 'importExample2b'. The dependency loop is:\n"
         " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
         " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
@@ -875,6 +875,7 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(flattenError, importer->issue(0)->description());
     EXPECT_EQ(nullptr, flatModel);
+    EXPECT_EQ(originalModel->component("sideB"), importer->issue(0)->component());
 }
 
 TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
@@ -909,6 +910,7 @@ TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(flattenError, importer->issue(0)->description());
     EXPECT_EQ(nullptr, flatModel);
+    EXPECT_EQ(originalModel->units("sideB"), importer->issue(0)->units());
 }
 
 TEST(ModelFlattening, resolveFlattenMissingModel)
@@ -929,6 +931,7 @@ TEST(ModelFlattening, resolveFlattenMissingModel)
     auto flatModel = importer->flattenModel(originalModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(expectedError, importer->issue(0)->description());
+    EXPECT_EQ(originalModel->component("left"), importer->issue(0)->component());
 }
 
 TEST(ModelFlattening, resolveFlattenMissingComponent)
@@ -950,6 +953,7 @@ TEST(ModelFlattening, resolveFlattenMissingComponent)
     auto flatModel = importer->flattenModel(originalModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+    EXPECT_EQ(originalModel->component("left"), importer->issue(0)->component());
 }
 
 TEST(ModelFlattening, resolveFlattenMissingUnits)
@@ -971,4 +975,5 @@ TEST(ModelFlattening, resolveFlattenMissingUnits)
     auto flatModel = importer->flattenModel(originalModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+    EXPECT_EQ(originalModel->units("units1_imported"), importer->issue(0)->units());
 }
