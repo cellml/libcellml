@@ -16,6 +16,9 @@
 %feature("docstring") libcellml::AnalyserModel::type
 "Returns the :enum:`AnalyserModel::Type`.";
 
+%feature("docstring") libcellml::AnalyserModel::hasExternalVariables
+"Tests if this :class:`AnalyserModel` object has external variables.";
+
 %feature("docstring") libcellml::AnalyserModel::voi
 "Returns the :class:`AnalyserVariable` for the variable of integration.";
 
@@ -117,6 +120,9 @@
 
 %feature("docstring") libcellml::AnalyserModel::needAcothFunction
 "Tests if this :class:`AnalyserModel` object needs an \"arc hyperbolic cotangent\" function.";
+
+%feature("docstring") libcellml::AnalyserModel::areEquivalentVariables
+"Tests if the two variables are equivalents.";
 
 %{
 #include "libcellml/analysermodel.h"

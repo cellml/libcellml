@@ -39,6 +39,8 @@ struct AnalyserEquation::AnalyserEquationImpl
                   const AnalyserEquationAstPtr &ast,
                   const std::vector<AnalyserEquationPtr> &dependencies,
                   const AnalyserVariablePtr &variable);
+
+    void cleanUpDependencies();
 };
 
 } // namespace libcellml
