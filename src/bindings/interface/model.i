@@ -85,7 +85,7 @@ Only the first matching Units is removed and returned.";
 "Test whether this Model already contains the given ImportSource.";
 
 %feature("docstring") libcellml::Model::clean
-"Remove any empty import sources, empty components, and unused units from the model."
+"Remove any empty import sources and empty components from the model."
 
 
 #if defined(SWIGPYTHON)

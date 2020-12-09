@@ -517,39 +517,6 @@ bool findAndRemoveEmptyComponent(const ComponentPtr &component)
            && !component->isImport();
 }
 
-void checkUnits(const ComponentPtr &component, std::vector<UnitsPtr> &unused)
-{
-    for (size_t v = 0; v < component->variableCount(); ++v) {
-        auto u = component->variable(v)->units();
-        if (u != nullptr) {
-            auto it = std::find_if(unused.begin(), unused.end(), [=](const UnitsPtr &t) -> bool {
-                // KRM Not sure whether including names is a good idea or not.  They should be linked by
-                //     pointers only anyway, but the findUnits function is still testing names and equivalence ...
-                return (t == u) || (u->name() == t->name());
-            });
-            if (it != unused.end()) {
-                unused.erase(it);
-            }
-        }
-    }
-
-    for (size_t c = 0; c < component->componentCount(); ++c) {
-        checkUnits(component->component(c), unused);
-    }
-}
-
-std::vector<UnitsPtr> buildUnusedUnitsList(const ModelPtr &model)
-{
-    std::vector<UnitsPtr> unused;
-    for (size_t u = 0; u < model->unitsCount(); ++u) {
-        unused.push_back(model->units(u));
-    }
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        checkUnits(model->component(c), unused);
-    }
-    return unused;
-}
-
 void Model::clean()
 {
     // Remove empty import sources.
@@ -565,9 +532,6 @@ void Model::clean()
         if (findAndRemoveEmptyComponent(component(size_t(i)))) {
             removeComponent(size_t(i));
         }
-    }
-    for (auto &u : buildUnusedUnitsList(shared_from_this())) {
-        removeUnits(u);
     }
 }
 
