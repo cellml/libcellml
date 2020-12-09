@@ -28,6 +28,9 @@ unset).";
 %feature("docstring") libcellml::ImportSource::hasModel
 "Returns True if this ImportSource has been resolved, False otherwise.";
 
+%feature("docstring") libcellml::ImportSource::removeModel
+"Remove the model from this ImportSource.";
+
 %feature("docstring") libcellml::ImportSource::clone
 "Create a copy of this import source.";
 
