@@ -213,9 +213,14 @@ public:
 
         // Issues not present in the normative specification:
         MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION,
+        INVALID_ARGUMENT,
+
+        // Importer class issues:
+        IMPORTER_NULL_MODEL,
+        IMPORTER_MISSING_COMPONENT,
+        IMPORTER_MISSING_UNITS,
 
         // Analyser issues:
-
         ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE,
         ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION,
         ANALYSER_VOI_INITIALISED,

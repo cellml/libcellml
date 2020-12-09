@@ -25,6 +25,15 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
+TEST(Validator, invalidInput)
+{
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    validator->validateModel(nullptr);
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ("The model is null.", validator->issue(0)->description());
+}
+
 TEST(Validator, namedModel)
 {
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
