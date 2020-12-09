@@ -417,7 +417,7 @@ class ModelTestCase(unittest.TestCase):
 
         self.assertEqual(1, model.importSourceCount())
         self.assertEqual(2, model.componentCount())
-        self.assertEqual(1, model.unitsCount())
+        self.assertEqual(2, model.unitsCount())
 
 
 if __name__ == '__main__':
