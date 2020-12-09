@@ -1607,31 +1607,3 @@ TEST(Generator, coverage)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode());
 }
-
-TEST(Generator, validateUnitsInMathMLStrings)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/validate_units_in_model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->errorCount());
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ(size_t(6), generator->errorCount());
-}
-
-TEST(Generator, validateMultiplierInMathMLStrings)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/validate_multiplier_in_model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->errorCount());
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ(size_t(5), generator->errorCount());
-}
