@@ -430,6 +430,13 @@ public:
      *        model.
      * 
      *  Remove any empty import sources, empty components, and unused units from the model.
+     *  In this context, "empty" items are:
+     *   - components with no resets, variables, maths, or non-empty child components;
+     *   - import sources with no imported components or units; and
+     *   - units which are not required anywhere. 
+     *  This is applied recursively. In the situation where a component is only called
+     *  non-empty because it has a child component, but that child is empty, both will be
+     *  removed.
      */
     void clean();
 
