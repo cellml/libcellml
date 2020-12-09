@@ -504,15 +504,15 @@ bool Model::fixVariableInterfaces()
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
-bool isComponentEmpty(const ComponentPtr &component)
+bool findAndRemoveEmptyComponent(const ComponentPtr &component)
 {
     for (size_t i = component->componentCount() - 1; i != MAX_SIZE_T; --i) {
-        if (isComponentEmpty(component->component(i))) {
+        if (findAndRemoveEmptyComponent(component->component(i))) {
             component->removeComponent(i);
         }
     }
 
-    return (component->variableCount() + component->resetCount() + component->componentCount()) == 0
+    return (component->variableCount() + component->resetCount() + component->componentCount() == 0)
            && component->math().empty()
            && !component->isImport();
 }
@@ -525,13 +525,14 @@ void checkUnits(const ComponentPtr &component, std::vector<UnitsPtr> &unused)
             auto it = std::find_if(unused.begin(), unused.end(), [=](const UnitsPtr &t) -> bool {
                 // KRM Not sure whether including names is a good idea or not.  They should be linked by
                 //     pointers only anyway, but the findUnits function is still testing names and equivalence ...
-                return t == u || u->name() == t->name();
+                return (t == u) || (u->name() == t->name());
             });
             if (it != unused.end()) {
                 unused.erase(it);
             }
         }
     }
+
     for (size_t c = 0; c < component->componentCount(); ++c) {
         checkUnits(component->component(c), unused);
     }
@@ -561,7 +562,7 @@ void Model::clean()
 
     // Remove empty components.
     for (size_t i = componentCount() - 1; i != MAX_SIZE_T; --i) {
-        if (isComponentEmpty(component(size_t(i)))) {
+        if (findAndRemoveEmptyComponent(component(size_t(i)))) {
             removeComponent(size_t(i));
         }
     }

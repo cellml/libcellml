@@ -628,16 +628,17 @@ TEST(Model, removeComponentInsensitiveToOrder)
 TEST(Model, cleanModel)
 {
     // Make a model with empty components, unrequired units, empty import sources.
-    auto e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"dirtyModel\">\n"
-             "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"importedModel.cellml\">\n"
-             "    <component component_ref=\"importMe\" name=\"importedComponent\"/>\n"
-             "  </import>\n"
-             "  <units name=\"requiredUnits\"/>\n"
-             "  <component name=\"nonEmptyComponent\">\n"
-             "    <variable name=\"x\" units=\"requiredUnits\"/>\n"
-             "  </component>\n"
-             "</model>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"dirtyModel\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"importedModel.cellml\">\n"
+        "    <component component_ref=\"importMe\" name=\"importedComponent\"/>\n"
+        "  </import>\n"
+        "  <units name=\"requiredUnits\"/>\n"
+        "  <component name=\"nonEmptyComponent\">\n"
+        "    <variable name=\"x\" units=\"requiredUnits\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("dirty_model.cellml"));
     auto printer = libcellml::Printer::create();
@@ -659,18 +660,19 @@ TEST(Model, cleanModel)
 TEST(Model, cleanEncapsulatedModel)
 {
     // Make a model with empty components, unrequired units, empty import sources.
-    auto e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"dirtyModel\">\n"
-             "  <component name=\"emptyComponent\"/>\n"
-             "  <component name=\"nonEmptyComponent\">\n"
-             "    <variable name=\"x\" units=\"dimensionless\"/>\n"
-             "  </component>\n"
-             "  <encapsulation>\n"
-             "    <component_ref component=\"emptyComponent\">\n"
-             "      <component_ref component=\"nonEmptyComponent\"/>\n"
-             "    </component_ref>\n"
-             "  </encapsulation>\n"
-             "</model>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"dirtyModel\">\n"
+        "  <component name=\"emptyComponent\"/>\n"
+        "  <component name=\"nonEmptyComponent\">\n"
+        "    <variable name=\"x\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"emptyComponent\">\n"
+        "      <component_ref component=\"nonEmptyComponent\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("dirty_encapsulated_model.cellml"));
