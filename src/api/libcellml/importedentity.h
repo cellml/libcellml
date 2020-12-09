@@ -35,7 +35,6 @@ public:
     virtual ~ImportedEntity(); /**< Destructor. */
     ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor. */
     ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor. */
-    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Test if this entity is an imported entity.
@@ -96,24 +95,19 @@ public:
     void setImportReference(const std::string &reference);
 
     /**
-     * @brief Test whether this imported entity has been resolved.
+     * @brief Test whether this entity has been resolved.
      *
-     * Returns @c true if the import and any dependencies are resolved, otherwise @c false.
+     * Test whether this entity is resolved or not.
+     *
+     * An entity that is not imported is always resolved so this method
+     * returns @c true. Alternatively, if this entity is imported then
+     * it returns @c true if every entity that this imported entity requires
+     * can be found. That is, return @c true if this imported entity is resolvable.
+     * In all other cases, this method returns @c false.
      *
      * @return @c true if the import is resolved, @c false otherwise.
      */
     bool isResolved() const;
-
-    /**
-     * @brief Set the resolution status of this imported entity.
-     *
-     * Set the resolution status of this imported entity.  When @c true, this 
-     * indicates that the item and all its dependent children have been resolved.
-     * Otherwise, @c false.
-     * 
-     * @param status A boolean indicating import resolution status.
-     */
-    void setResolved(bool status);
 
 protected:
     ImportedEntity(); /**< Constructor. */
@@ -127,6 +121,16 @@ protected:
      * @param importSource The import source to set.
      */
     virtual void doSetImportSource(const ImportSourcePtr &importSource);
+
+    /**
+     * @brief Virtual is resolved method to be implemented by derived classes.
+     *
+     * Virtual isResolved method to allow the @ref Units and @ref Component classes to
+     * implement their own versions.
+     *
+     * @return @c true if this imported entity is resolved and @c false otherwise.
+     */
+    virtual bool doIsResolved() const = 0;
 
 private:
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */

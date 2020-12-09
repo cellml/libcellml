@@ -95,6 +95,16 @@ Model::~Model()
     delete mPimpl;
 }
 
+void registerPossibleImportSource(const ModelPtr &model, const ComponentPtr &component)
+{
+    if (component->isImport()) {
+        model->addImportSource(component->importSource());
+    }
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        registerPossibleImportSource(model, component->component(index));
+    }
+}
+
 bool Model::doAddComponent(const ComponentPtr &component)
 {
     if (component->hasParent()) {
@@ -103,10 +113,8 @@ bool Model::doAddComponent(const ComponentPtr &component)
     }
     component->setParent(shared_from_this());
 
-    if (component->isImport()) {
-        auto importSource = component->importSource();
-        addImportSource(importSource);
-    }
+    registerPossibleImportSource(shared_from_this(), component);
+
     return ComponentEntity::doAddComponent(component);
 }
 
@@ -395,59 +403,14 @@ bool Model::hasUnlinkedUnits()
     return unlinkedUnits;
 }
 
-bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
-{
-    bool unresolvedImport = false;
-    if (importedEntity->isImport()) {
-        ImportSourcePtr importedSource = importedEntity->importSource();
-        unresolvedImport = !importedSource->hasModel();
-    }
-    return unresolvedImport;
-}
-
-bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponentEntity);
-
-bool doHasUnresolvedComponentImports(const ComponentPtr &component)
-{
-    bool unresolvedImports = false;
-    if (component->isImport()) {
-        unresolvedImports = isUnresolvedImport(component);
-        if (!unresolvedImports) {
-            // Check that the imported component can import all it needs from its model.
-            auto importedSource = component->importSource();
-            auto importedModel = importedSource->model();
-            auto importedComponent = importedModel->component(component->importReference());
-            if (importedComponent == nullptr) {
-                unresolvedImports = true;
-            } else {
-                unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
-            }
-        }
-    } else {
-        unresolvedImports = hasUnresolvedComponentImports(component);
-    }
-    return unresolvedImports;
-}
-
-bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponentEntity)
-{
-    bool unresolvedImports = false;
-    for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->component(n);
-        unresolvedImports = doHasUnresolvedComponentImports(component);
-    }
-    return unresolvedImports;
-}
-
 bool Model::hasUnresolvedImports() const
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
-        libcellml::UnitsPtr units = Model::units(n);
-        unresolvedImports = isUnresolvedImport(units);
+        unresolvedImports = !units(n)->isResolved();
     }
-    if (!unresolvedImports) {
-        unresolvedImports = hasUnresolvedComponentImports(shared_from_this());
+    for (size_t n = 0; (n < componentCount()) && !unresolvedImports; ++n) {
+        unresolvedImports = !component(n)->isResolved();
     }
     return unresolvedImports;
 }
@@ -455,7 +418,7 @@ bool Model::hasUnresolvedImports() const
 bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
 {
     bool importsPresent = false;
-    for (size_t n = 0; n < componentEntity->componentCount() && !importsPresent; ++n) {
+    for (size_t n = 0; (n < componentEntity->componentCount()) && !importsPresent; ++n) {
         libcellml::ComponentPtr childComponent = componentEntity->component(n);
         importsPresent = childComponent->isImport();
         if (!importsPresent) {
@@ -468,7 +431,7 @@ bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
 bool Model::hasImports() const
 {
     bool importsPresent = false;
-    for (size_t n = 0; n < unitsCount() && !importsPresent; ++n) {
+    for (size_t n = 0; (n < unitsCount()) && !importsPresent; ++n) {
         libcellml::UnitsPtr units = Model::units(n);
         if (units->isImport()) {
             importsPresent = true;
