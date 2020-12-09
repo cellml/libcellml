@@ -350,7 +350,7 @@ public:
      * Add import source by reference to the model. If the import
      * source item was previously in a different model, it is moved
      * to this one, and the previous model's import source list is updated.
-     * if the optional @p merge parameter is true, the contents of the given @p importSrc
+     * If the optional @p merge parameter is true, the contents of the given @p importSrc
      * will be merged with the first import source with the same attributes, if found.
      * 
      * The function will return @c false and no action is taken if:
