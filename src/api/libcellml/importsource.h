@@ -25,6 +25,8 @@ template class LIBCELLML_EXPORT std::weak_ptr<libcellml::ImportSource>;
 
 namespace libcellml {
 
+class ImportSourcePrivate;
+
 /**
  * @brief The ImportSource class.
  *
@@ -280,14 +282,12 @@ public:
     UnitsPtr units(size_t index) const;
 
 protected:
-
     bool doEqual(const EntityPtr &other) const override;
 
 private:
     ImportSource(); /**< Constructor. */
 
-    struct ImportSourceImpl; /**< Forward declaration for pImpl idiom. */
-    ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
+    ImportSourcePrivate *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

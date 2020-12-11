@@ -23,11 +23,15 @@ limitations under the License.
 #include <cassert>
 #include <cmath>
 #include <map>
+#include <numeric>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
+#include "units_p.h"
 #include "utilities.h"
+
+#include "debug.h"
 
 namespace libcellml {
 
@@ -95,60 +99,6 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
     {Units::StandardUnit::VOLT, "volt"},
     {Units::StandardUnit::WATT, "watt"},
     {Units::StandardUnit::WEBER, "weber"}};
-
-/**
- * @brief The UnitDefinition struct.
- *
- * An internal structure to capture a unit definition.  The
- * prefix can be expressed using either an integer or an enum.
- * The enum structure member is given preference if both are set.
- */
-struct UnitDefinition
-{
-    std::string mReference; /**< Reference to the units for the unit.*/
-    std::string mPrefix; /**< String expression of the prefix for the unit.*/
-    std::string mExponent; /**< Exponent for the unit.*/
-    std::string mMultiplier; /**< Multiplier for the unit.*/
-    std::string mId; /**< Id for the unit.*/
-};
-
-/**
- * @brief The Units::UnitsImpl struct.
- *
- * The private implementation for the Units class.
- */
-struct Units::UnitsImpl
-{
-    std::vector<UnitDefinition> mUnits; /**< A vector of unit defined for this Units.*/
-
-    std::vector<UnitDefinition>::iterator findUnit(const std::string &reference);
-
-    /**
-     * @brief Test if this units is a standard unit that is a base unit.
-     *
-     * Only tests if the name of the units matches a standard unit name
-     * that is a base units.  Returns @c true if the unit name does match
-     * a base units name and @c false otherwise.
-     *
-     * @param name The name of the units.
-     *
-     * @return @c true if the name of the units is one of: "ampere",
-     * "candela", "dimensionless", "kelvin", "kilogram", "metre", "mole" , "second".
-     */
-    bool isBaseUnit(const std::string &name) const;
-};
-
-std::vector<UnitDefinition>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
-{
-    return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitDefinition &u) -> bool { return u.mReference == reference; });
-}
-
-bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
-{
-    return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
-}
-
 /**
  * @brief Finds and updates the multiplier of the unit.
  *
@@ -218,12 +168,12 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
 }
 
 Units::Units()
-    : mPimpl(new UnitsImpl())
+    : mPimpl(new UnitsPrivate())
 {
 }
 
 Units::Units(const std::string &name)
-    : mPimpl(new UnitsImpl())
+    : mPimpl(new UnitsPrivate())
 {
     setName(name);
 }
@@ -269,9 +219,38 @@ bool Units::doEqual(const EntityPtr &other) const
 {
     if (NamedEntity::doEqual(other)) {
         auto units = std::dynamic_pointer_cast<Units>(other);
-        if (units &&
-                this->unitCount() == units->unitCount() &&
-                this->importEqual(units)) {
+        if (units != nullptr &&
+                mPimpl->mUnits.size() == units->unitCount() &&
+                ImportedEntity::doEqual(units)) {
+            // Check unit definitions match.
+            std::string reference;
+            std::string prefix;
+            std::string id;
+            double exponent;
+            double multiplier;
+
+            std::vector<size_t> unmatchedUnitIndex(mPimpl->mUnits.size());
+            std::iota(unmatchedUnitIndex.begin(), unmatchedUnitIndex.end(), 0);
+            for (auto unitDefinition : mPimpl->mUnits) {
+                bool unitFound = false;
+                size_t index = 0;
+                for (index = 0; index < unmatchedUnitIndex.size() && !unitFound; ++index) {
+                    size_t currentIndex = unmatchedUnitIndex.at(index);
+                    units->unitAttributes(currentIndex, reference, prefix, exponent, multiplier, id);
+                    if (unitDefinition.mExponent == exponent &&
+                            unitDefinition.mId == id &&
+                            unitDefinition.mMultiplier == multiplier &&
+                            unitDefinition.mPrefix == prefix &&
+                            unitDefinition.mReference == reference) {
+                        unitFound = true;
+                    }
+                }
+                if (unitFound) {
+                    unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + index - 1);
+                } else {
+                    return false;
+                }
+            }
             return true;
         }
     }
@@ -294,12 +273,8 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     } catch (std::out_of_range &) {
         ud.mPrefix = prefix;
     }
-    if (exponent != 1.0) {
-        ud.mExponent = convertToString(exponent);
-    }
-    if (multiplier != 1.0) {
-        ud.mMultiplier = convertToString(multiplier);
-    }
+    ud.mExponent = exponent;
+    ud.mMultiplier = multiplier;
     if (!id.empty()) {
         ud.mId = id;
     }
@@ -389,12 +364,14 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
     }
     reference = ud.mReference;
     prefix = ud.mPrefix;
-    if (ud.mExponent.empty() || !convertToDouble(ud.mExponent, exponent)) {
-        exponent = 1.0;
-    }
-    if (ud.mMultiplier.empty() || !convertToDouble(ud.mMultiplier, multiplier)) {
-        multiplier = 1.0;
-    }
+    exponent = ud.mExponent;
+    multiplier = ud.mMultiplier;
+//    if (ud.mExponent.empty() || !convertToDouble(ud.mExponent, exponent)) {
+//        exponent = 1.0;
+//    }
+//    if (ud.mMultiplier.empty() || !convertToDouble(ud.mMultiplier, multiplier)) {
+//        multiplier = 1.0;
+//    }
     id = ud.mId;
 }
 

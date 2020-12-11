@@ -18,47 +18,18 @@ limitations under the License.
 
 #include "libcellml/importsource.h"
 
+#include "importedentity_p.h"
+
 namespace libcellml {
 
-/**
- * @brief The ImportedEntity::ImportedEntityImpl struct.
- *
- * The private implementation for the ImportedEntity class.
- */
-struct ImportedEntity::ImportedEntityImpl
-{
-    ImportSourcePtr mImportSource;
-    std::string mImportReference;
-};
-
 ImportedEntity::ImportedEntity()
-    : mPimpl(new ImportedEntityImpl())
+    : mPimpl(new ImportedEntityPrivate())
 {
 }
 
 ImportedEntity::~ImportedEntity()
 {
     delete mPimpl;
-}
-
-bool ImportedEntity::importEqual(const ImportedEntityPtr &other) const
-{
-    if (other) {
-        bool importMatches = this->isImport() == other->isImport();
-        if (this->isImport() &&
-                importMatches &&
-                this->importReference() == other->importReference()) {
-            auto importSource = this->importSource();
-            if (mPimpl->mImportSource) {
-                return mPimpl->mImportSource->equal(other->importSource());
-            } else if (other->importSource()) {
-                return false;
-            }
-            return true;
-        }
-        return importMatches;
-    }
-    return false;
 }
 
 bool ImportedEntity::isImport() const
@@ -94,6 +65,21 @@ void ImportedEntity::setImportReference(const std::string &reference)
 bool ImportedEntity::isResolved() const
 {
     return doIsResolved();
+}
+
+bool ImportedEntity::doEqual(const ImportedEntityPtr &other) const
+{
+    if (other != nullptr) {
+        bool isImportLocal = isImport();
+        bool importMatches = isImportLocal == other->isImport();
+        if (isImportLocal &&
+                importMatches &&
+                mPimpl->mImportReference == other->importReference()) {
+            return mPimpl->mImportSource->equal(other->importSource());
+        }
+        return importMatches;
+    }
+    return false;
 }
 
 } // namespace libcellml

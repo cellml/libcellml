@@ -272,6 +272,8 @@ private:
     Reset(); /**< Constructor. */
     explicit Reset(int order); /**< Constructor with int parameter */
 
+    bool doEqual(const EntityPtr &other) const override;
+
     struct ResetImpl; /**< Forward declaration for pImpl idiom. */
     ResetImpl *mPimpl; /**< Private member to implementation pointer. */
 };
