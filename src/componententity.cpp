@@ -69,6 +69,11 @@ bool ComponentEntity::addComponent(const ComponentPtr &component)
     if (component == nullptr) {
         return false;
     }
+
+    if (std::find(mPimpl->mComponents.begin(), mPimpl->mComponents.end(), component) != mPimpl->mComponents.end()) {
+        return false;
+    }
+
     return doAddComponent(component);
 }
 

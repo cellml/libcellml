@@ -227,6 +227,11 @@ bool Component::addVariable(const VariablePtr &variable)
         return false;
     }
 
+    // Prevent adding the same variable.
+    if (std::find(mPimpl->mVariables.begin(), mPimpl->mVariables.end(), variable) != mPimpl->mVariables.end()) {
+        return false;
+    }
+
     // Prevent adding to multiple components.
     if (variable->hasParent()) {
         auto otherParent = std::dynamic_pointer_cast<Component>(variable->parent());
@@ -340,6 +345,11 @@ bool Component::addReset(const ResetPtr &reset)
 {
     // Prevent adding null pointer.
     if (reset == nullptr) {
+        return false;
+    }
+
+    // Prevent adding the same reset.
+    if (std::find(mPimpl->mResets.begin(), mPimpl->mResets.end(), reset) != mPimpl->mResets.end()) {
         return false;
     }
 

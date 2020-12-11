@@ -124,8 +124,6 @@ protected:
      */
     virtual void doSetImportSource(const ImportSourcePtr &importSource);
 
-    bool equalImport(const ImportedEntityPtr &other) const;
-
     /**
      * @brief Virtual is resolved method to be implemented by derived classes.
      *

@@ -52,6 +52,7 @@ struct Model::ModelImpl
 
     std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
     std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
+    std::vector<ImportSourcePtr>::const_iterator findImportSource(const ImportSourcePtr &importSource) const;
 
     bool equalUnits(const ModelPtr &other) const;
 };
@@ -66,6 +67,12 @@ std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const UnitsPtr
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return u->equal(units); });
+}
+
+std::vector<ImportSourcePtr>::const_iterator Model::ModelImpl::findImportSource(const ImportSourcePtr &importSource) const
+{
+    return std::find_if(mImports.begin(), mImports.end(),
+                        [=](const ImportSourcePtr &iS) -> bool { return iS->equal(importSource); });
 }
 
 bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
@@ -143,6 +150,10 @@ bool Model::doAddComponent(const ComponentPtr &component)
 bool Model::addUnits(const UnitsPtr &units)
 {
     if (units == nullptr) {
+        return false;
+    }
+
+    if (std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), units) != mPimpl->mUnits.end()) {
         return false;
     }
 
@@ -283,7 +294,7 @@ size_t Model::unitsCount() const
 
 bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
 {
-    return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc) != mPimpl->mImports.end();
+    return mPimpl->findImportSource(importSrc) != mPimpl->mImports.end();
 }
 
 bool Model::addImportSource(const ImportSourcePtr &importSrc)
@@ -291,9 +302,11 @@ bool Model::addImportSource(const ImportSourcePtr &importSrc)
     if (importSrc == nullptr) {
         return false;
     }
-    if (hasImportSource(importSrc)) {
+
+    if (std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc) != mPimpl->mImports.end()) {
         return false;
     }
+
     auto otherModel = owningModel(importSrc);
     if (otherModel != nullptr) {
         otherModel->removeImportSource(importSrc);
@@ -329,7 +342,7 @@ bool Model::removeImportSource(size_t index)
 bool Model::removeImportSource(const ImportSourcePtr &importSrc)
 {
     bool status = false;
-    auto result = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc);
+    auto result = mPimpl->findImportSource(importSrc);
     if (result != mPimpl->mImports.end()) {
         importSrc->removeParent();
         mPimpl->mImports.erase(result);
