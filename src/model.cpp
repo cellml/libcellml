@@ -79,7 +79,7 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
 {
     std::vector<size_t> unmatchedIndex(mUnits.size());
     std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
-    for (auto units : mUnits) {
+    for (const auto &units : mUnits) {
         bool resetFound = false;
         size_t index = 0;
         for (index = 0; index < unmatchedIndex.size() && !resetFound; ++index) {
