@@ -19,35 +19,18 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
 
+#include "namedentity_p.h"
+
 namespace libcellml {
 
-/**
- * @brief The NamedEntity::NamedEntityImpl struct.
- *
- * The private implementation for the NamedEntity class.
- */
-struct NamedEntity::NamedEntityImpl
-{
-    std::string mName; /**< Entity name represented as a std::string. */
-};
-
 NamedEntity::NamedEntity()
-    : mPimpl(new NamedEntityImpl())
+    : mPimpl(new NamedEntityPrivate())
 {
 }
 
 NamedEntity::~NamedEntity()
 {
     delete mPimpl;
-}
-
-bool NamedEntity::doEqual(const EntityPtr &other) const
-{
-    auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(other);
-    if (namedEntity) {
-        return name() == namedEntity->name();
-    }
-    return false;
 }
 
 void NamedEntity::setName(const std::string &name)
@@ -58,6 +41,17 @@ void NamedEntity::setName(const std::string &name)
 std::string NamedEntity::name() const
 {
     return mPimpl->mName;
+}
+
+bool NamedEntity::doEqual(const EntityPtr &other) const
+{
+    if (Entity::doEqual(other)) {
+        auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(other);
+        if (namedEntity != nullptr) {
+            return mPimpl->mName == namedEntity->name();
+        }
+    }
+    return false;
 }
 
 } // namespace libcellml

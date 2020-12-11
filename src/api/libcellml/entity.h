@@ -23,6 +23,8 @@ limitations under the License.
 
 namespace libcellml {
 
+class EntityPrivate;
+
 /**
  * @brief The Entity class.
  *
@@ -109,16 +111,14 @@ public:
      */
     bool hasAncestor(const EntityPtr &entity) const;
 
-    bool equal(const EntityPtr &entity) const;
+    bool equal(const EntityPtr &other) const;
 
 protected:
     Entity(); /**< Constructor. */
-
     virtual bool doEqual(const EntityPtr &entity) const;
 
 private:
-    struct EntityImpl;
-    EntityImpl *mPimpl;
+    EntityPrivate *mPimpl;
 };
 
 } // namespace libcellml

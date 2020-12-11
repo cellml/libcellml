@@ -24,6 +24,7 @@ limitations under the License.
 
 namespace libcellml {
 
+class NamedEntityPrivate;
 /**
  * @brief The NamedEntity class.
  *
@@ -62,8 +63,7 @@ protected:
     bool doEqual(const EntityPtr &other) const override;
 
 private:
-    struct NamedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    NamedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    NamedEntityPrivate *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

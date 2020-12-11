@@ -24,6 +24,8 @@ limitations under the License.
 
 namespace libcellml {
 
+class ImportedEntityPrivate;
+
 /**
  * @brief The ImportedEntity class.
  *
@@ -122,7 +124,7 @@ protected:
      */
     virtual void doSetImportSource(const ImportSourcePtr &importSource);
 
-    bool importEqual(const ImportedEntityPtr &other) const;
+    bool equalImport(const ImportedEntityPtr &other) const;
 
     /**
      * @brief Virtual is resolved method to be implemented by derived classes.
@@ -134,9 +136,10 @@ protected:
      */
     virtual bool doIsResolved() const = 0;
 
+    bool doEqual(const ImportedEntityPtr &other) const;
+
 private:
-    struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    ImportedEntityPrivate *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

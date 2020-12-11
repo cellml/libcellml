@@ -25,30 +25,13 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/units.h"
 
+#include "importsource_p.h"
 #include "internaltypes.h"
 
 namespace libcellml {
 
-using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>;
-
-/**
- * @brief The ImportSource::ImportSourceImpl struct.
- *
- * The private implementation for the ImportSource class.
- */
-struct ImportSource::ImportSourceImpl
-{
-    std::string mUrl;
-    ModelWeakPtr mModel;
-    std::vector<size_t> mComponents;
-    std::vector<size_t> mUnits;
-    std::vector<ImportedEntityWeakPtr> mImports;
-
-    void removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it);
-};
-
 ImportSource::ImportSource()
-    : mPimpl(new ImportSourceImpl())
+    : mPimpl(new ImportSourcePrivate())
 {
 }
 
@@ -60,15 +43,6 @@ ImportSource::~ImportSource()
 ImportSourcePtr ImportSource::create() noexcept
 {
     return std::shared_ptr<ImportSource> {new ImportSource {}};
-}
-
-bool ImportSource::doEqual(const EntityPtr &other) const
-{
-    auto importSource = std::dynamic_pointer_cast<ImportSource>(other);
-    if (importSource) {
-        return this->url() == importSource->url();
-    }
-    return false;
 }
 
 std::string ImportSource::url() const
@@ -296,7 +270,16 @@ bool ImportSource::removeAllUnits()
     return status;
 }
 
-void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it)
+bool ImportSource::doEqual(const EntityPtr &other) const
+{
+    auto importSource = std::dynamic_pointer_cast<ImportSource>(other);
+    if (importSource != nullptr) {
+        return mPimpl->mUrl == importSource->url();
+    }
+    return false;
+}
+
+void ImportSourcePrivate::removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it)
 {
     // Find current index for the item to remove.
     auto index = size_t(std::distance(mImports.begin(), it));

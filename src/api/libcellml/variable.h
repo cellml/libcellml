@@ -28,6 +28,8 @@ template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
 
 namespace libcellml {
 
+class VariablePrivate;
+
 /**
  * @brief The Variable class.
  *
@@ -467,19 +469,13 @@ public:
     VariablePtr clone() const;
 
 private:
+    Variable(); /**< Constructor. */
 
-    /**
-     * @brief equal
-     * @param other
-     * @return
-     */
     bool doEqual(const EntityPtr &other) const override;
 
-    Variable(); /**< Constructor. */
     explicit Variable(const std::string &name); /**< Constructor with std::string parameter*/
 
-    struct VariableImpl; /**< Forward declaration for pImpl idiom. */
-    VariableImpl *mPimpl; /**< Private member to implementation pointer. */
+    VariablePrivate *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

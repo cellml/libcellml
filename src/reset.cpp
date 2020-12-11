@@ -197,4 +197,24 @@ ResetPtr Reset::clone() const
     return r;
 }
 
+bool Reset::doEqual(const EntityPtr &other) const
+{
+    if (Entity::doEqual(other)) {
+        auto reset = std::dynamic_pointer_cast<Reset>(other);
+        if (reset != nullptr &&
+                mPimpl->mOrder == reset->order() &&
+                mPimpl->mResetValue == reset->resetValue() &&
+                mPimpl->mResetValueId == reset->resetValueId() &&
+                mPimpl->mTestValue == reset->testValue() &&
+                mPimpl->mTestValueId == reset->testValueId() &&
+                mPimpl->mTestVariable != nullptr &&
+                mPimpl->mTestVariable->equal(reset->testVariable()) &&
+                mPimpl->mVariable != nullptr &&
+                mPimpl->mVariable->equal(reset->variable())) {
+            return true;
+        }
+    }
+    return false;
+}
+
 } // namespace libcellml
