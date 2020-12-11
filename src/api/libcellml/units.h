@@ -38,8 +38,6 @@ template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Units>;
 
 namespace libcellml {
 
-class UnitsPrivate;
-
 /**
  * @brief The Units class.
  * Class for Units.
@@ -535,7 +533,8 @@ private:
 
     bool doEqual(const EntityPtr &other) const override;
 
-    UnitsPrivate *mPimpl; /**< Private member to implementation pointer. */
+    struct UnitsImpl;
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

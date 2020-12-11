@@ -115,10 +115,11 @@ public:
 
 protected:
     Entity(); /**< Constructor. */
-    virtual bool doEqual(const EntityPtr &entity) const;
+    virtual bool doEqual(const EntityPtr &entity) const; /**< Virtual implementation method for equal. */
 
 private:
-    EntityPrivate *mPimpl;
+    struct EntityImpl;
+    EntityImpl *mPimpl;
 };
 
 } // namespace libcellml

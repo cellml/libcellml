@@ -28,7 +28,6 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "units_p.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -97,6 +96,61 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
     {Units::StandardUnit::VOLT, "volt"},
     {Units::StandardUnit::WATT, "watt"},
     {Units::StandardUnit::WEBER, "weber"}};
+
+
+/**
+ * @brief The UnitDefinition struct.
+ *
+ * An internal structure to capture a unit definition.  The
+ * prefix can be expressed using either an integer or an enum.
+ * The enum structure member is given preference if both are set.
+ */
+struct UnitDefinition
+{
+    std::string mReference; /**< Reference to the units for the unit.*/
+    std::string mPrefix; /**< String expression of the prefix for the unit.*/
+    double mExponent = 1.0; /**< Exponent for the unit.*/
+    double mMultiplier = 1.0; /**< Multiplier for the unit.*/
+    std::string mId; /**< Id for the unit.*/
+};
+
+/**
+ * @brief The Units::UnitsImpl struct.
+ *
+ * The private implementation for the Units class.
+ */
+struct Units::UnitsImpl
+{
+    std::vector<UnitDefinition> mUnits; /**< A vector of unit defined for this Units.*/
+
+    std::vector<UnitDefinition>::const_iterator findUnit(const std::string &reference) const;
+
+    /**
+     * @brief Test if this units is a standard unit that is a base unit.
+     *
+     * Only tests if the name of the units matches a standard unit name
+     * that is a base units.  Returns @c true if the unit name does match
+     * a base units name and @c false otherwise.
+     *
+     * @param name The name of the units.
+     *
+     * @return @c true if the name of the units is one of: "ampere",
+     * "candela", "dimensionless", "kelvin", "kilogram", "metre", "mole" , "second".
+     */
+    bool isBaseUnit(const std::string &name) const;
+};
+
+std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std::string &reference) const
+{
+    return std::find_if(mUnits.begin(), mUnits.end(),
+                        [=](const UnitDefinition &u) -> bool { return u.mReference == reference; });
+}
+
+bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
+{
+    return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
+}
+
 /**
  * @brief Finds and updates the multiplier of the unit.
  *
@@ -166,12 +220,12 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
 }
 
 Units::Units()
-    : mPimpl(new UnitsPrivate())
+    : mPimpl(new UnitsImpl())
 {
 }
 
 Units::Units(const std::string &name)
-    : mPimpl(new UnitsPrivate())
+    : mPimpl(new UnitsImpl())
 {
     setName(name);
 }
@@ -364,12 +418,6 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
     prefix = ud.mPrefix;
     exponent = ud.mExponent;
     multiplier = ud.mMultiplier;
-//    if (ud.mExponent.empty() || !convertToDouble(ud.mExponent, exponent)) {
-//        exponent = 1.0;
-//    }
-//    if (ud.mMultiplier.empty() || !convertToDouble(ud.mMultiplier, multiplier)) {
-//        multiplier = 1.0;
-//    }
     id = ud.mId;
 }
 

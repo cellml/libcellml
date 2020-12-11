@@ -25,8 +25,6 @@ template class LIBCELLML_EXPORT std::weak_ptr<libcellml::ImportSource>;
 
 namespace libcellml {
 
-class ImportSourcePrivate;
-
 /**
  * @brief The ImportSource class.
  *
@@ -287,7 +285,8 @@ protected:
 private:
     ImportSource(); /**< Constructor. */
 
-    ImportSourcePrivate *mPimpl; /**< Private member to implementation pointer. */
+    struct ImportSourceImpl;
+    ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

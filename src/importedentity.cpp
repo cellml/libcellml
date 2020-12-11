@@ -18,12 +18,21 @@ limitations under the License.
 
 #include "libcellml/importsource.h"
 
-#include "importedentity_p.h"
-
 namespace libcellml {
 
+/**
+ * @brief The ImportedEntity::ImportedEntityImpl struct.
+ *
+ * The private implementation for the ImportedEntity class.
+ */
+struct ImportedEntity::ImportedEntityImpl
+{
+    ImportSourcePtr mImportSource;
+    std::string mImportReference;
+};
+
 ImportedEntity::ImportedEntity()
-    : mPimpl(new ImportedEntityPrivate())
+    : mPimpl(new ImportedEntityImpl())
 {
 }
 

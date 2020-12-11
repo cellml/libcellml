@@ -19,12 +19,23 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
 
-#include "entity_p.h"
-
 namespace libcellml {
 
+using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entity pointer. */
+
+/**
+ * @brief The Entity::EntityImpl struct.
+ *
+ * The private implementation for the Entity class.
+ */
+struct Entity::EntityImpl
+{
+    EntityWeakPtr mParent; /**< Pointer to parent. */
+    std::string mId; /**< String document identifier for this entity. */
+};
+
 Entity::Entity()
-    : mPimpl(new EntityPrivate())
+    : mPimpl(new EntityImpl())
 {
     mPimpl->mParent = {};
 }

@@ -26,18 +26,173 @@ limitations under the License.
 #include "libcellml/units.h"
 
 #include "utilities.h"
-#include "variable_p.h"
 
 namespace libcellml {
 
+using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
+
+/**
+ * @brief The Variable::VariableImpl struct.
+ *
+ * The private implementation for the Variable class.
+ */
+struct Variable::VariableImpl
+{
+    Variable *mVariable = nullptr;
+    std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping id map for equivalent variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/
+    std::string mInitialValue; /**< Initial value for this Variable.*/
+    std::string mInterfaceType; /**< Interface type for this Variable.*/
+    UnitsPtr mUnits = nullptr; /**< The Units defined for this Variable.*/
+
+    /**
+     * @brief Clean expired equivalent variables.
+     *
+     * Clean away any equivalent variables that have become expired.
+     */
+    void cleanExpiredVariables();
+
+    /**
+     * @brief Private function to add an equivalent variable to the set for this variable.
+     *
+     * Add the argument equivalent variable to the set of equivalent variables for this
+     * variable if it is not already present. If the equivalent variable is present,
+     * do nothing.
+     *
+     * @sa addEquivalence, unsetEquivalentTo
+     *
+     * @param equivalentVariable The variable to add to this variable's equivalent
+     * variable set if not already present.
+     *
+     * @return True if the given variable is added to this variables equivalent variable set.
+     */
+    bool setEquivalentTo(const VariablePtr &equivalentVariable);
+
+    /**
+     * @brief Private function to remove an equivalent variable from the set for this variable.
+     *
+     * Remove the @p equivalentVariable from the set of equivalent variables for this
+     * variable if it is present.
+     *
+     * @sa removeEquivalence, setEquivalentTo
+     *
+     * @param equivalentVariable The variable to remove from this variable's equivalent
+     * variable set if it is present.
+     *
+     * @return True if the @p equivalentVariable is removed from set of equivalent variables, false otherwise.
+     */
+    bool unsetEquivalentTo(const VariablePtr &equivalentVariable);
+
+    /**
+     * @brief Test if the given variable is directly equivalent to this one.
+     *
+     * The two variables are considered directly equivalent if this variable holds a valid reference to the
+     * given variable.  Returns @c true if this variable holds a reference to the given variable
+     * and that that reference is a valid reference to the given variable.
+     *
+     * @param equivalentVariable The variable to test for equivalence to this one.
+     * @return @c true if the variables are equivalent @c false otherwise.
+     */
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences = false) const;
+
+    /**
+     * @brief Test whether the argument variable is equivalent to this variable.
+     *
+     * Tests to see if the argument variable is equivalent to this variable. Returns @c true if
+     * the argument variable is equivalent to this variable and @c false otherwise. The test will
+     * traverse through the equivalent network to determine if the argument variable is
+     * equivalent to this variable.
+     *
+     * @param equivalentVariable The variable to check for equivalence.
+     *
+     * @return @c true if the @p equivalentVariable is equivalent to this variable and
+     * @c false otherwise.
+     */
+    bool hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
+
+    /**
+     * @brief Set the equivalent mapping id for this equivalence.
+     *
+     * Record the given id as the mapping id for the equivalence defined with this variable
+     * and the given one.  This id appears in the 'map_variables' element of the model when
+     * serialised.
+     *
+     * To clear an equivalence mapping id set it to the empty string. If the two variables are
+     * not equivalent the mapping id is not set.
+     *
+     * @param equivalentVariable The equivalent variable the id refers to.
+     * @param id @c std::string id to set.
+     */
+    void setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id);
+
+    /**
+     * @brief Set the equivalent connection id for this equivalence.
+     *
+     * Record the given id as the connection id for the equivalence defined with this variable
+     * and the given one.  This id appears in the 'connection' element of the model when serialised.
+     *
+     * Where the same component pair has multiple equivalent variables only the last connection id
+     * found in the set will be serialised.
+     *
+     * To clear an equivalence connection id set it to the empty string.  If the two variables are not
+     * equivalent the connection id is not set.
+     *
+     * @param equivalentVariable The equivalent variable the id refers to.
+     * @param id @c std::string id to set.
+     */
+    void setEquivalentConnectionId(const VariablePtr &equivalentVariable, const std::string &id);
+
+    /**
+     * @brief Get the equivalent mapping id for this equivalence.
+     *
+     * Get the mapping id set for the equivalence defined by the this variable and the given one.
+     * If no mapping id is set the empty string is returned.
+     *
+     * If the two variables are not equivalent the empty string is returned.
+     *
+     * @param equivalentVariable The variable this variable is equivalent to.
+     * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
+     */
+    std::string equivalentMappingId(const VariablePtr &equivalentVariable) const;
+
+    /**
+     * @brief Get the equivalent connection id for this equivalence.
+     *
+     * Get the connection id set for the equivalence defined by the this variable and the given one.
+     * If no connection id is set the empty string is returned.
+     *
+     * If the two variables are not equivalent the empty string is returned.
+     *
+     * @param equivalentVariable The variable this variable is equivalent to.
+     * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
+     */
+    std::string equivalentConnectionId(const VariablePtr &equivalentVariable) const;
+
+    std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
+    std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
+};
+
+std::vector<VariableWeakPtr>::const_iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable) const
+{
+    return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
+                        [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+}
+
+std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
+{
+    return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
+                        [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+}
+
 Variable::Variable()
-    : mPimpl(new VariablePrivate())
+    : mPimpl(new VariableImpl())
 {
     mPimpl->mVariable = this;
 }
 
 Variable::Variable(const std::string &name)
-    : mPimpl(new VariablePrivate())
+    : mPimpl(new VariableImpl())
 {
     mPimpl->mVariable = this;
     setName(name);
@@ -137,12 +292,12 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool
     return mPimpl->hasEquivalentVariable(equivalentVariable, considerIndirectEquivalences);
 }
 
-void VariablePrivate::cleanExpiredVariables()
+void Variable::VariableImpl::cleanExpiredVariables()
 {
     mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(), [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
 }
 
-bool VariablePrivate::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
+bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
 {
     bool equivalent = false;
     if (considerIndirectEquivalences) {
@@ -196,7 +351,7 @@ bool haveEquivalentVariables(const Variable *variable1,
     return false;
 }
 
-bool VariablePrivate::hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const
+bool Variable::VariableImpl::hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
     if (mVariable == equivalentVariable.get()) {
         return false;
@@ -207,7 +362,7 @@ bool VariablePrivate::hasIndirectEquivalentVariable(const VariablePtr &equivalen
     return haveEquivalentVariables(mVariable, equivalentVariable.get(), testedVariables);
 }
 
-bool VariablePrivate::setEquivalentTo(const VariablePtr &equivalentVariable)
+bool Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)
 {
     cleanExpiredVariables();
     if (!hasEquivalentVariable(equivalentVariable)) {
@@ -219,7 +374,7 @@ bool VariablePrivate::setEquivalentTo(const VariablePtr &equivalentVariable)
     return false;
 }
 
-bool VariablePrivate::unsetEquivalentTo(const VariablePtr &equivalentVariable)
+bool Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVariable)
 {
     cleanExpiredVariables();
     bool status = false;
@@ -240,13 +395,13 @@ bool VariablePrivate::unsetEquivalentTo(const VariablePtr &equivalentVariable)
     return status;
 }
 
-void VariablePrivate::setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id)
+void Variable::VariableImpl::setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id)
 {
     VariableWeakPtr weakEquivalentVariable = equivalentVariable;
     mMappingIdMap[weakEquivalentVariable] = id;
 }
 
-std::string VariablePrivate::equivalentMappingId(const VariablePtr &equivalentVariable) const
+std::string Variable::VariableImpl::equivalentMappingId(const VariablePtr &equivalentVariable) const
 {
     if (mMappingIdMap.find(equivalentVariable) != mMappingIdMap.end()) {
         return mMappingIdMap.at(equivalentVariable);
@@ -254,13 +409,13 @@ std::string VariablePrivate::equivalentMappingId(const VariablePtr &equivalentVa
     return "";
 }
 
-void VariablePrivate::setEquivalentConnectionId(const VariablePtr &equivalentVariable, const std::string &id)
+void Variable::VariableImpl::setEquivalentConnectionId(const VariablePtr &equivalentVariable, const std::string &id)
 {
     VariableWeakPtr weakEquivalentVariable = equivalentVariable;
     mConnectionIdMap[weakEquivalentVariable] = id;
 }
 
-std::string VariablePrivate::equivalentConnectionId(const VariablePtr &equivalentVariable) const
+std::string Variable::VariableImpl::equivalentConnectionId(const VariablePtr &equivalentVariable) const
 {
     if (mConnectionIdMap.find(equivalentVariable) != mConnectionIdMap.end()) {
         return mConnectionIdMap.at(equivalentVariable);
@@ -432,18 +587,6 @@ VariablePtr Variable::clone() const
     v->setName(name());
 
     return v;
-}
-
-std::vector<VariableWeakPtr>::const_iterator VariablePrivate::findEquivalentVariable(const VariablePtr &equivalentVariable) const
-{
-    return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                        [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
-}
-
-std::vector<VariableWeakPtr>::iterator VariablePrivate::findEquivalentVariable(const VariablePtr &equivalentVariable)
-{
-    return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                        [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
 }
 
 } // namespace libcellml
