@@ -44,37 +44,37 @@ struct Component::ComponentImpl
     std::vector<ResetPtr> mResets;
     std::vector<VariablePtr> mVariables;
 
-    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
-    std::vector<VariablePtr>::iterator findVariable(const std::string &name);
-    std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
+    std::vector<ResetPtr>::const_iterator findReset(const ResetPtr &reset) const;
+    std::vector<VariablePtr>::const_iterator findVariable(const std::string &name) const;
+    std::vector<VariablePtr>::const_iterator findVariable(const VariablePtr &variable) const;
 
-    bool equalVariables(const ComponentPtr &other);
-    bool equalResets(const ComponentPtr &other);
+    bool equalVariables(const ComponentPtr &other) const;
+    bool equalResets(const ComponentPtr &other) const;
 };
 
-std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
+std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
                         [=](const VariablePtr &v) -> bool { return v->name() == name; });
 }
 
-std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const VariablePtr &variable)
+std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const VariablePtr &variable) const
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
                         [=](const VariablePtr &v) -> bool { return v->equal(variable); });
 }
 
-std::vector<ResetPtr>::iterator Component::ComponentImpl::findReset(const ResetPtr &reset)
+std::vector<ResetPtr>::const_iterator Component::ComponentImpl::findReset(const ResetPtr &reset) const
 {
     return std::find_if(mResets.begin(), mResets.end(),
                         [=](const ResetPtr &r) -> bool { return r->equal(reset); });
 }
 
-bool Component::ComponentImpl::equalVariables(const ComponentPtr &other)
+bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
 {
     std::vector<size_t> unmatchedIndex(mVariables.size());
     std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
-    for (auto variable : mVariables) {
+    for (const auto &variable : mVariables) {
         bool variableFound = false;
         size_t index = 0;
         for (index = 0; index < unmatchedIndex.size() && !variableFound; ++index) {
@@ -93,11 +93,11 @@ bool Component::ComponentImpl::equalVariables(const ComponentPtr &other)
     return true;
 }
 
-bool Component::ComponentImpl::equalResets(const ComponentPtr &other)
+bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
 {
     std::vector<size_t> unmatchedIndex(mResets.size());
     std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
-    for (auto reset : mResets) {
+    for (const auto &reset : mResets) {
         bool resetFound = false;
         size_t index = 0;
         for (index = 0; index < unmatchedIndex.size() && !resetFound; ++index) {
