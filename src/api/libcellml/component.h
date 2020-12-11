@@ -444,6 +444,8 @@ private:
 
     bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
 
+    bool doEqual(const EntityPtr &other) const override;
+
     struct ComponentImpl; /**< Forward declaration for pImpl idiom, @private. */
     ComponentImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };

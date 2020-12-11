@@ -28,8 +28,6 @@ limitations under the License.
 #include "utilities.h"
 #include "variable_p.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 Variable::Variable()
