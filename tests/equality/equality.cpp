@@ -118,6 +118,18 @@ TEST(Equality, variableEqualAllTestedConditionsVariant2)
     EXPECT_TRUE(v1->equal(v2));
 }
 
+TEST(Equality, variableNotEqualByUnits)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create("variable");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("variable");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create("m_per_s");
+
+    v2->setUnits(u2);
+
+    EXPECT_FALSE(v1->equal(v2));
+}
+
 TEST(Equality, unitsEqualByNameOnly)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create("units");
