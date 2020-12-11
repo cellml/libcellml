@@ -25,13 +25,30 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/units.h"
 
-#include "importsource_p.h"
 #include "internaltypes.h"
 
 namespace libcellml {
 
+using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>;
+
+/**
+ * @brief The ImportSource::ImportSourceImpl struct.
+ *
+ * The private implementation for the ImportSource class.
+ */
+struct ImportSource::ImportSourceImpl
+{
+    std::string mUrl;
+    ModelWeakPtr mModel;
+    std::vector<size_t> mComponents;
+    std::vector<size_t> mUnits;
+    std::vector<ImportedEntityWeakPtr> mImports;
+
+    void removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it);
+};
+
 ImportSource::ImportSource()
-    : mPimpl(new ImportSourcePrivate())
+    : mPimpl(new ImportSourceImpl())
 {
 }
 
@@ -281,7 +298,7 @@ bool ImportSource::doEqual(const EntityPtr &other) const
     return false;
 }
 
-void ImportSourcePrivate::removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it)
+void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it)
 {
     // Find current index for the item to remove.
     auto index = size_t(std::distance(mImports.begin(), it));

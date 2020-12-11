@@ -19,12 +19,20 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
 
-#include "namedentity_p.h"
-
 namespace libcellml {
 
+/**
+ * @brief The NamedEntity::NamedEntityImpl struct.
+ *
+ * The private implementation for the NamedEntity class.
+ */
+struct NamedEntity::NamedEntityImpl
+{
+    std::string mName; /**< Entity name represented as a std::string. */
+};
+
 NamedEntity::NamedEntity()
-    : mPimpl(new NamedEntityPrivate())
+    : mPimpl(new NamedEntityImpl())
 {
 }
 

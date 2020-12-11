@@ -128,20 +128,10 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/component_p.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/componententity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/entity_p.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/importedentity_p.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/importsource_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/model_p.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/namedentity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/reset_p.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/units_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/variable_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h

@@ -137,7 +137,8 @@ protected:
     bool doEqual(const ImportedEntityPtr &other) const;
 
 private:
-    ImportedEntityPrivate *mPimpl; /**< Private member to implementation pointer. */
+    struct ImportedEntityImpl;
+    ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml
