@@ -431,6 +431,8 @@ private:
 
     bool doAddComponent(const ComponentPtr &component) override;
 
+    bool doEqual(const EntityPtr &other) const override;
+
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
     ModelImpl *mPimpl; /**< Private member to implementation pointer. */
 };

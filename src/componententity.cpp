@@ -50,7 +50,7 @@ std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findCo
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component)
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr &c) -> bool { return c == component; });
+                        [=](const ComponentPtr &c) -> bool { return c->equal(component); });
 }
 
 // Interface class Model implementation
@@ -271,6 +271,25 @@ void ComponentEntity::setEncapsulationId(const std::string &id)
 std::string ComponentEntity::encapsulationId() const
 {
     return mPimpl->mEncapsulationId;
+}
+
+bool ComponentEntity::doEqual(const EntityPtr &other) const
+{
+    if (NamedEntity::doEqual(other)) {
+        auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(other);
+        if (componentEntity != nullptr &&
+                mPimpl->mEncapsulationId == componentEntity->encapsulationId() &&
+                mPimpl->mComponents.size() == componentEntity->componentCount()) {
+            for (auto component : mPimpl->mComponents) {
+                if (!componentEntity->containsComponent(component, false)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace libcellml

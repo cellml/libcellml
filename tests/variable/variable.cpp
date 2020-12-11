@@ -637,15 +637,15 @@ TEST(Variable, addVariablesWithAndWithoutNameAndUnits)
     libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::VariablePtr v4 = libcellml::Variable::create();
 
-    c->addVariable(v1);
-    c->addVariable(v2);
-    c->addVariable(v3);
-    c->addVariable(v4);
-
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("dimensionless");
     v1->setUnits(u);
     v3->setUnits(u);
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->addVariable(v4);
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(m);
@@ -1837,8 +1837,9 @@ TEST(Variable, addVariableDuplicates)
     EXPECT_TRUE(tomato->addVariable(pip));
     EXPECT_EQ(size_t(1), tomato->variableCount());
 
-    // Try to add the same pip again.
-    EXPECT_FALSE(tomato->addVariable(pip));
+    // Try to add the same pip again. Successfull but doesn't add another variable.
+    EXPECT_TRUE(tomato->addVariable(pip));
+    EXPECT_EQ(size_t(1), tomato->variableCount());
 
     // Add the same pip to the apple this time, which will effectively move it
     // from the tomato to the apple.

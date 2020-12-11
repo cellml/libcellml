@@ -18,6 +18,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 TEST(Equality, invalidInput)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create("variable");
@@ -535,4 +537,343 @@ TEST(Equality, resetNotEqualByVariable)
 
 
     EXPECT_FALSE(r1->equal(r2));
+}
+
+TEST(Equality, resetNotEqualByNullTestVariable)
+{
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("vB");
+
+    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
+    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
+
+    r1->setOrder(3);
+    r2->setOrder(3);
+
+    r1->setResetValue("reset value math");
+    r2->setResetValue("reset value math");
+
+    r1->setResetValueId("rv_id");
+    r2->setResetValueId("rv_id");
+
+    r1->setTestValue("test value math");
+    r2->setTestValue("test value math");
+
+    r1->setTestValueId("tv_id");
+    r2->setTestValueId("tv_id");
+
+    r2->setTestVariable(tv2);
+
+    r1->setVariable(v1);
+    r2->setVariable(v2);
+
+
+    EXPECT_FALSE(r1->equal(r2));
+}
+
+TEST(Equality, resetNotEqualByNullVariable)
+{
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("vB");
+
+    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
+    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
+
+    r1->setOrder(3);
+    r2->setOrder(3);
+
+    r1->setResetValue("reset value math");
+    r2->setResetValue("reset value math");
+
+    r1->setResetValueId("rv_id");
+    r2->setResetValueId("rv_id");
+
+    r1->setTestValue("test value math");
+    r2->setTestValue("test value math");
+
+    r1->setTestValueId("tv_id");
+    r2->setTestValueId("tv_id");
+
+    r1->setTestVariable(tv1);
+    r2->setTestVariable(tv2);
+
+    r2->setVariable(v2);
+
+
+    EXPECT_FALSE(r1->equal(r2));
+}
+
+TEST(Equality, componentEqual)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::ComponentPtr cChild1 = libcellml::Component::create("child");
+    libcellml::ComponentPtr cChild2 = libcellml::Component::create("child");
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("vA");
+
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+
+    r1->setOrder(5);
+    r2->setOrder(5);
+
+    c1->addComponent(cChild1);
+    c2->addComponent(cChild2);
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    c1->addReset(r1);
+    c2->addReset(r2);
+
+    EXPECT_TRUE(c1->equal(c2));
+}
+
+TEST(Equality, componentEqualDifferentOrderResets)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
+    libcellml::ResetPtr r4 = libcellml::Reset::create();
+    libcellml::ResetPtr r5 = libcellml::Reset::create();
+    libcellml::ResetPtr r6 = libcellml::Reset::create();
+
+    r1->setOrder(5);
+    r2->setOrder(3);
+    r3->setOrder(7);
+    r4->setOrder(5);
+    r5->setOrder(3);
+    r6->setOrder(7);
+
+    c1->addReset(r1);
+    c1->addReset(r2);
+    c1->addReset(r3);
+
+    c2->addReset(r4);
+    c2->addReset(r6);
+    c2->addReset(r5);
+
+    EXPECT_TRUE(c1->equal(c2));
+}
+
+TEST(Equality, componentEqualDifferentOrderVariables)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("vB");
+    libcellml::VariablePtr v3 = libcellml::Variable::create("vC");
+    libcellml::VariablePtr v4 = libcellml::Variable::create("vA");
+    libcellml::VariablePtr v5 = libcellml::Variable::create("vB");
+    libcellml::VariablePtr v6 = libcellml::Variable::create("vC");
+
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c1->addVariable(v3);
+
+    c2->addVariable(v6);
+    c2->addVariable(v4);
+    c2->addVariable(v5);
+
+    EXPECT_TRUE(c1->equal(c2));
+}
+
+TEST(Equality, componentEqualDifferentOrderComponents)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::ComponentPtr cChild1 = libcellml::Component::create("child1");
+    libcellml::ComponentPtr cChild2 = libcellml::Component::create("child2");
+    libcellml::ComponentPtr cChild3 = libcellml::Component::create("child3");
+    libcellml::ComponentPtr cChild4 = libcellml::Component::create("child1");
+    libcellml::ComponentPtr cChild5 = libcellml::Component::create("child2");
+    libcellml::ComponentPtr cChild6 = libcellml::Component::create("child3");
+
+
+    c1->addComponent(cChild1);
+    c1->addComponent(cChild2);
+    c1->addComponent(cChild3);
+
+    c2->addComponent(cChild5);
+    c2->addComponent(cChild6);
+    c2->addComponent(cChild4);
+
+    EXPECT_TRUE(c1->equal(c2));
+}
+
+TEST(Equality, componentEqualWithComponentHierarchy)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::ComponentPtr cChild1 = libcellml::Component::create("child1");
+    libcellml::ComponentPtr cChild2 = libcellml::Component::create("child1");
+
+    libcellml::ComponentPtr cChild11 = libcellml::Component::create("child11");
+    libcellml::ComponentPtr cChild21 = libcellml::Component::create("child11");
+
+    c1->addComponent(cChild1);
+    c2->addComponent(cChild2);
+
+    cChild1->addComponent(cChild11);
+    cChild2->addComponent(cChild21);
+
+    EXPECT_TRUE(c1->equal(c2));
+}
+
+TEST(Equality, componentNotEqualByReset)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+
+    r1->setOrder(5);
+    r2->setOrder(7);
+
+    c1->addReset(r1);
+    c2->addReset(r2);
+
+    EXPECT_FALSE(c1->equal(c2));
+}
+
+TEST(Equality, componentNotEqualByComponent)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::ComponentPtr cChild1 = libcellml::Component::create("child1");
+    libcellml::ComponentPtr cChild2 = libcellml::Component::create("child2");
+
+    c1->addComponent(cChild1);
+    c2->addComponent(cChild2);
+
+    EXPECT_FALSE(c1->equal(c2));
+}
+
+TEST(Equality, componentNotEqualByVariable)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("vB");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    EXPECT_FALSE(c1->equal(c2));
+}
+
+TEST(Equality, importSourceEqual)
+{
+    libcellml::ImportSourcePtr is1 = libcellml::ImportSource::create();
+    libcellml::ImportSourcePtr is2 = libcellml::ImportSource::create();
+
+    is1->setUrl("great_url");
+    is2->setUrl("great_url");
+
+    EXPECT_TRUE(is1->equal(is2));
+}
+
+TEST(Equality, importSourceNotEqual)
+{
+    libcellml::ImportSourcePtr is1 = libcellml::ImportSource::create();
+    libcellml::ImportSourcePtr is2 = libcellml::ImportSource::create();
+
+    is1->setUrl("another_great_url");
+    is2->setUrl("great_url");
+
+    EXPECT_FALSE(is1->equal(is2));
+}
+
+TEST(Equality, importSourceNotEqualInvalidInput)
+{
+    libcellml::ImportSourcePtr is1 = libcellml::ImportSource::create();
+
+    is1->setUrl("a_great_url");
+
+    EXPECT_FALSE(is1->equal(nullptr));
+}
+
+TEST(Equality, modelEqual)
+{
+    libcellml::ModelPtr m1 = libcellml::Model::create();
+    libcellml::ModelPtr m2 = libcellml::Model::create();
+
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    m1->addComponent(c1);
+    m2->addComponent(c2);
+
+    m1->addUnits(u1);
+    m2->addUnits(u2);
+
+    EXPECT_TRUE(m1->equal(m2));
+}
+
+TEST(Equality, modelNotEqualInvalidInput)
+{
+    libcellml::ModelPtr m1 = libcellml::Model::create();
+
+    EXPECT_FALSE(m1->equal(nullptr));
+}
+
+TEST(Equality, modelNotEqualByComponents)
+{
+    libcellml::ModelPtr m1 = libcellml::Model::create();
+    libcellml::ModelPtr m2 = libcellml::Model::create();
+
+    libcellml::ComponentPtr c1 = libcellml::Component::create("c1");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c2");
+
+    m1->addComponent(c1);
+    m2->addComponent(c2);
+
+    EXPECT_FALSE(m1->equal(m2));
+}
+
+TEST(Equality, modelNotEqualByUnits)
+{
+    libcellml::ModelPtr m1 = libcellml::Model::create();
+    libcellml::ModelPtr m2 = libcellml::Model::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsB");
+
+    m1->addUnits(u1);
+    m2->addUnits(u2);
+
+    EXPECT_FALSE(m1->equal(m2));
+}
+
+TEST(Equality, modelHH)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto clonedModel = model->clone();
+
+    EXPECT_TRUE(model->equal(clonedModel));
 }

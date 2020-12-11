@@ -177,12 +177,6 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::VariablePtr v4 = libcellml::Variable::create();
     libcellml::VariablePtr v5 = libcellml::Variable::create();
-    model->addComponent(c1);
-    c1->addVariable(v1);
-    c1->addVariable(v2);
-    c1->addVariable(v3);
-    c1->addVariable(v4);
-    c1->addVariable(v5);
 
     model->setName("minnesota");
     c1->setName("fargo");
@@ -195,6 +189,14 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     v4->setUnits("dollars");
     v5->setName("mullah");
     v5->setUnits("$$");
+
+    model->addComponent(c1);
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c1->addVariable(v3);
+    c1->addVariable(v4);
+    c1->addVariable(v5);
+
     validator->validateModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);

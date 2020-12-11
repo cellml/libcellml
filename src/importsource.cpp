@@ -272,9 +272,11 @@ bool ImportSource::removeAllUnits()
 
 bool ImportSource::doEqual(const EntityPtr &other) const
 {
-    auto importSource = std::dynamic_pointer_cast<ImportSource>(other);
-    if (importSource != nullptr) {
-        return mPimpl->mUrl == importSource->url();
+    if (Entity::doEqual(other)) {
+        auto importSource = std::dynamic_pointer_cast<ImportSource>(other);
+        if (importSource != nullptr) {
+            return mPimpl->mUrl == importSource->url();
+        }
     }
     return false;
 }

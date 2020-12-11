@@ -206,11 +206,21 @@ bool Reset::doEqual(const EntityPtr &other) const
                 mPimpl->mResetValue == reset->resetValue() &&
                 mPimpl->mResetValueId == reset->resetValueId() &&
                 mPimpl->mTestValue == reset->testValue() &&
-                mPimpl->mTestValueId == reset->testValueId() &&
-                mPimpl->mTestVariable != nullptr &&
-                mPimpl->mTestVariable->equal(reset->testVariable()) &&
-                mPimpl->mVariable != nullptr &&
-                mPimpl->mVariable->equal(reset->variable())) {
+                mPimpl->mTestValueId == reset->testValueId()) {
+            if (mPimpl->mTestVariable != nullptr &&
+                    !mPimpl->mTestVariable->equal(reset->testVariable())) {
+                return false;
+            } else if (mPimpl->mTestVariable == nullptr &&
+                       reset->testVariable() != nullptr) {
+                return false;
+            }
+            if (mPimpl->mVariable != nullptr &&
+                    !mPimpl->mVariable->equal(reset->variable())) {
+                return false;
+            } else if (mPimpl->mVariable == nullptr &&
+                       reset->variable() != nullptr) {
+                return false;
+            }
             return true;
         }
     }

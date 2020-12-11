@@ -19,6 +19,7 @@ limitations under the License.
 #include <algorithm>
 #include <fstream>
 #include <map>
+#include <numeric>
 #include <sstream>
 #include <stack>
 #include <utility>
@@ -49,20 +50,45 @@ struct Model::ModelImpl
     std::vector<UnitsPtr> mUnits;
     std::vector<ImportSourcePtr> mImports;
 
-    std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
-    std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
+    std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
+    std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
+
+    bool equalUnits(const ModelPtr &other) const;
 };
 
-std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
+std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const std::string &name) const
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return u->name() == name; });
 }
 
-std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
+std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const UnitsPtr &units) const
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::equivalent(u, units); });
+                        [=](const UnitsPtr &u) -> bool { return u->equal(units); });
+}
+
+bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
+{
+    std::vector<size_t> unmatchedIndex(mUnits.size());
+    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
+    for (auto units : mUnits) {
+        bool resetFound = false;
+        size_t index = 0;
+        for (index = 0; index < unmatchedIndex.size() && !resetFound; ++index) {
+            size_t currentIndex = unmatchedIndex.at(index);
+            auto unitsOther = other->units(currentIndex);
+            if (units->equal(unitsOther)) {
+                resetFound = true;
+            }
+        }
+        if (resetFound) {
+            unmatchedIndex.erase(unmatchedIndex.begin() + index - 1);
+        } else {
+            return false;
+        }
+    }
+    return true;
 }
 
 Model::Model()
@@ -117,11 +143,6 @@ bool Model::doAddComponent(const ComponentPtr &component)
 bool Model::addUnits(const UnitsPtr &units)
 {
     if (units == nullptr) {
-        return false;
-    }
-
-    // Prevent adding multiple times to list.
-    if (hasUnits(units)) {
         return false;
     }
 
@@ -500,6 +521,18 @@ bool Model::fixVariableInterfaces()
     }
 
     return allOk;
+}
+
+bool Model::doEqual(const EntityPtr &other) const
+{
+    if (ComponentEntity::doEqual(other)) {
+        auto model = std::dynamic_pointer_cast<Model>(other);
+        if (model != nullptr &&
+                mPimpl->equalUnits(model)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } // namespace libcellml

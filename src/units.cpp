@@ -31,8 +31,6 @@ limitations under the License.
 #include "units_p.h"
 #include "utilities.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 /**

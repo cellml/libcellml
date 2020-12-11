@@ -69,17 +69,14 @@ bool ImportedEntity::isResolved() const
 
 bool ImportedEntity::doEqual(const ImportedEntityPtr &other) const
 {
-    if (other != nullptr) {
-        bool isImportLocal = isImport();
-        bool importMatches = isImportLocal == other->isImport();
-        if (isImportLocal &&
-                importMatches &&
-                mPimpl->mImportReference == other->importReference()) {
-            return mPimpl->mImportSource->equal(other->importSource());
-        }
-        return importMatches;
+    bool isImportLocal = isImport();
+    bool importMatches = isImportLocal == other->isImport();
+    if (isImportLocal &&
+            importMatches &&
+            mPimpl->mImportReference == other->importReference()) {
+        return mPimpl->mImportSource->equal(other->importSource());
     }
-    return false;
+    return importMatches;
 }
 
 } // namespace libcellml

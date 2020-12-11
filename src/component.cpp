@@ -17,6 +17,7 @@ limitations under the License.
 #include "libcellml/component.h"
 
 #include <algorithm>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -46,6 +47,9 @@ struct Component::ComponentImpl
     std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
     std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
+
+    bool equalVariables(const ComponentPtr &other);
+    bool equalResets(const ComponentPtr &other);
 };
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
@@ -57,13 +61,59 @@ std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const VariablePtr &variable)
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v == variable; });
+                        [=](const VariablePtr &v) -> bool { return v->equal(variable); });
 }
 
 std::vector<ResetPtr>::iterator Component::ComponentImpl::findReset(const ResetPtr &reset)
 {
     return std::find_if(mResets.begin(), mResets.end(),
-                        [=](const ResetPtr &r) -> bool { return r == reset; });
+                        [=](const ResetPtr &r) -> bool { return r->equal(reset); });
+}
+
+bool Component::ComponentImpl::equalVariables(const ComponentPtr &other)
+{
+    std::vector<size_t> unmatchedIndex(mVariables.size());
+    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
+    for (auto variable : mVariables) {
+        bool variableFound = false;
+        size_t index = 0;
+        for (index = 0; index < unmatchedIndex.size() && !variableFound; ++index) {
+            size_t currentIndex = unmatchedIndex.at(index);
+            auto variableOther = other->variable(currentIndex);
+            if (variable->equal(variableOther)) {
+                variableFound = true;
+            }
+        }
+        if (variableFound) {
+            unmatchedIndex.erase(unmatchedIndex.begin() + index - 1);
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Component::ComponentImpl::equalResets(const ComponentPtr &other)
+{
+    std::vector<size_t> unmatchedIndex(mResets.size());
+    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
+    for (auto reset : mResets) {
+        bool resetFound = false;
+        size_t index = 0;
+        for (index = 0; index < unmatchedIndex.size() && !resetFound; ++index) {
+            size_t currentIndex = unmatchedIndex.at(index);
+            auto resetOther = other->reset(currentIndex);
+            if (reset->equal(resetOther)) {
+                resetFound = true;
+            }
+        }
+        if (resetFound) {
+            unmatchedIndex.erase(unmatchedIndex.begin() + index - 1);
+        } else {
+            return false;
+        }
+    }
+    return true;
 }
 
 Component::Component()
@@ -174,11 +224,6 @@ bool Component::addVariable(const VariablePtr &variable)
 {
     // Prevent adding null pointer.
     if (variable == nullptr) {
-        return false;
-    }
-
-    // Prevent adding multiple times to list.
-    if (hasVariable(variable)) {
         return false;
     }
 
@@ -295,11 +340,6 @@ bool Component::addReset(const ResetPtr &reset)
 {
     // Prevent adding null pointer.
     if (reset == nullptr) {
-        return false;
-    }
-
-    // Prevent adding multiple times to list.
-    if (hasReset(reset)) {
         return false;
     }
 
@@ -471,6 +511,21 @@ bool Component::doIsResolved() const
     }
 
     return resolved;
+}
+
+bool Component::doEqual(const EntityPtr &other) const
+{
+    if (ComponentEntity::doEqual(other)) {
+        auto component = std::dynamic_pointer_cast<Component>(other);
+        if (component != nullptr &&
+                mPimpl->mMath == component->math() &&
+                mPimpl->equalResets(component) &&
+                mPimpl->equalVariables(component) &&
+                ImportedEntity::doEqual(component)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } // namespace libcellml
