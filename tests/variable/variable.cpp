@@ -1837,8 +1837,8 @@ TEST(Variable, addVariableDuplicates)
     EXPECT_TRUE(tomato->addVariable(pip));
     EXPECT_EQ(size_t(1), tomato->variableCount());
 
-    // Try to add the same pip again. Successfull but doesn't add another variable.
-    EXPECT_TRUE(tomato->addVariable(pip));
+    // Try to add the same pip again. Rejected.
+    EXPECT_FALSE(tomato->addVariable(pip));
     EXPECT_EQ(size_t(1), tomato->variableCount());
 
     // Add the same pip to the apple this time, which will effectively move it

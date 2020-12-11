@@ -556,8 +556,8 @@ TEST(Component, addVariableMultipleTimes)
     // Adding a pip to the tomato.
     EXPECT_TRUE(tomato->addVariable(pip));
 
-    // Try to add the same pip again.  Works but
-    EXPECT_TRUE(tomato->addVariable(pip));
+    // Try to add the same pip again.  Rejected.
+    EXPECT_FALSE(tomato->addVariable(pip));
 
     // We haven't added another variable.
     EXPECT_EQ(size_t(1), tomato->variableCount());
