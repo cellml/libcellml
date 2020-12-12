@@ -275,6 +275,10 @@ bool nearlyEqual(const double a, const double b)
         return true;
     }
 
+    if (difference < 2 * fixedEpsilon) {
+        return true;
+    }
+
     return false;
 }
 
