@@ -689,7 +689,7 @@ IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originSta
     rebasedStack.resize(originStack.size(), SIZE_MAX);
     if (rebasedStack == originStack) {
         rebasedStack = destinationStack;
-        auto offsetIt = stack.begin() + int64_t(originStack.size());
+        auto offsetIt = stack.begin() + ssize_t(originStack.size());
         rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
     } else {
         rebasedStack.clear();
