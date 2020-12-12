@@ -253,7 +253,7 @@ bool Component::removeVariable(size_t index)
 {
     if (index < mPimpl->mVariables.size()) {
         auto variable = mPimpl->mVariables[index];
-        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + int64_t(index));
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + ssize_t(index));
         variable->removeParent();
         return true;
     }
@@ -373,7 +373,7 @@ bool Component::removeReset(size_t index)
 {
     if (index < mPimpl->mResets.size()) {
         mPimpl->mResets.at(index)->removeParent();
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + int64_t(index));
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + ssize_t(index));
         return true;
     }
     return false;

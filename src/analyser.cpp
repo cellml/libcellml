@@ -1748,7 +1748,7 @@ bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVa
 bool Analyser::removeExternalVariable(size_t index)
 {
     if (index < mPimpl->mExternalVariables.size()) {
-        mPimpl->mExternalVariables.erase(mPimpl->mExternalVariables.begin() + int64_t(index));
+        mPimpl->mExternalVariables.erase(mPimpl->mExternalVariables.begin() + ssize_t(index));
 
         return true;
     }
