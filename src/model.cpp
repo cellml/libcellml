@@ -80,17 +80,20 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
     std::vector<size_t> unmatchedIndex(mUnits.size());
     std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
     for (const auto &units : mUnits) {
-        bool resetFound = false;
+        bool unitsFound = false;
         size_t index = 0;
-        for (index = 0; index < unmatchedIndex.size() && !resetFound; ++index) {
+        for (index = 0; index < unmatchedIndex.size() && !unitsFound; ++index) {
             size_t currentIndex = unmatchedIndex.at(index);
             auto unitsOther = other->units(currentIndex);
             if (units->equal(unitsOther)) {
-                resetFound = true;
+                unitsFound = true;
             }
         }
-        if (resetFound) {
-            unmatchedIndex.erase(unmatchedIndex.begin() + index - 1);
+        if (unitsFound) {
+            // We are going to assume here that nobody is going to add more
+            // than 2,147,483,647 units to this component. And much more than
+            // that in a 64-bit environment.
+            unmatchedIndex.erase(unmatchedIndex.begin() + ssize_t(index) - 1);
         } else {
             return false;
         }
