@@ -285,7 +285,7 @@ bool ComponentEntity::doEqual(const EntityPtr &other) const
         if (componentEntity != nullptr &&
                 mPimpl->mEncapsulationId == componentEntity->encapsulationId() &&
                 mPimpl->mComponents.size() == componentEntity->componentCount()) {
-            for (auto component : mPimpl->mComponents) {
+            for (const auto &component : mPimpl->mComponents) {
                 if (!componentEntity->containsComponent(component, false)) {
                     return false;
                 }

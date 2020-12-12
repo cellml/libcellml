@@ -85,7 +85,10 @@ bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
             }
         }
         if (variableFound) {
-            unmatchedIndex.erase(unmatchedIndex.begin() + index - 1);
+            // We are going to assume here that nobody is going to add more
+            // than 2,147,483,647 variables to this component. And much more than
+            // that in a 64-bit environment.
+            unmatchedIndex.erase(unmatchedIndex.begin() + ssize_t(index) - 1);
         } else {
             return false;
         }
@@ -108,7 +111,10 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
             }
         }
         if (resetFound) {
-            unmatchedIndex.erase(unmatchedIndex.begin() + index - 1);
+            // We are going to assume here that nobody is going to add more
+            // than 2,147,483,647 resets to this component. And much more than
+            // that in a 64-bit environment.
+            unmatchedIndex.erase(unmatchedIndex.begin() + ssize_t(index) - 1);
         } else {
             return false;
         }
