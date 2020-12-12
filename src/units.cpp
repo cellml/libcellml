@@ -267,6 +267,17 @@ bool Units::isBaseUnit() const
     return unitCount() == 0 && standardUnitCheck;
 }
 
+bool nearlyEqual(const double a, const double b)
+{
+    const double fixedEpsilon = 2 * std::numeric_limits<double>::epsilon();
+    const double difference = fabs(a-b);
+    if (difference < fixedEpsilon) {
+        return true;
+    }
+
+    return false;
+}
+
 bool Units::doEqual(const EntityPtr &other) const
 {
     if (NamedEntity::doEqual(other)) {
@@ -283,22 +294,22 @@ bool Units::doEqual(const EntityPtr &other) const
 
             std::vector<size_t> unmatchedUnitIndex(mPimpl->mUnits.size());
             std::iota(unmatchedUnitIndex.begin(), unmatchedUnitIndex.end(), 0);
-            for (auto unitDefinition : mPimpl->mUnits) {
+            for (const auto &unitDefinition : mPimpl->mUnits) {
                 bool unitFound = false;
                 size_t index = 0;
                 for (index = 0; index < unmatchedUnitIndex.size() && !unitFound; ++index) {
                     size_t currentIndex = unmatchedUnitIndex.at(index);
                     units->unitAttributes(currentIndex, reference, prefix, exponent, multiplier, id);
-                    if (unitDefinition.mExponent == exponent &&
+                    if (nearlyEqual(unitDefinition.mExponent, exponent) &&
                             unitDefinition.mId == id &&
-                            unitDefinition.mMultiplier == multiplier &&
+                            nearlyEqual(unitDefinition.mMultiplier, multiplier) &&
                             unitDefinition.mPrefix == prefix &&
                             unitDefinition.mReference == reference) {
                         unitFound = true;
                     }
                 }
                 if (unitFound) {
-                    unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + index - 1);
+                    unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ssize_t(index) - 1);
                 } else {
                     return false;
                 }
