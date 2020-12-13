@@ -281,7 +281,8 @@ ssize_t ulpsDistance(const double a, const double b)
         return max;
     }
 
-    ssize_t ia, ib;
+    ssize_t ia;
+    ssize_t ib;
     memcpy(&ia, &a, sizeof(double));
     memcpy(&ib, &b, sizeof(double));
 
