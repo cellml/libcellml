@@ -978,3 +978,18 @@ TEST(Equality, modelHH)
 
     EXPECT_TRUE(model->equal(clonedModel));
 }
+
+TEST(Equality, modelHHWithDifference)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto clonedModel = model->clone();
+
+    auto v = clonedModel->component(3)->component(0)->variable(3);
+    v->setUnits("millisecond");
+
+    EXPECT_FALSE(model->equal(clonedModel));
+}
