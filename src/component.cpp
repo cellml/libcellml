@@ -88,7 +88,7 @@ bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 variables to this component. And much more than
             // that in a 64-bit environment.
-            unmatchedIndex.erase(unmatchedIndex.begin() + ssize_t(index) - 1);
+            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
         } else {
             return false;
         }
@@ -114,7 +114,7 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 resets to this component. And much more than
             // that in a 64-bit environment.
-            unmatchedIndex.erase(unmatchedIndex.begin() + ssize_t(index) - 1);
+            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
         } else {
             return false;
         }
@@ -253,7 +253,7 @@ bool Component::removeVariable(size_t index)
 {
     if (index < mPimpl->mVariables.size()) {
         auto variable = mPimpl->mVariables[index];
-        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + ssize_t(index));
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + ptrdiff_t(index));
         variable->removeParent();
         return true;
     }
@@ -373,7 +373,7 @@ bool Component::removeReset(size_t index)
 {
     if (index < mPimpl->mResets.size()) {
         mPimpl->mResets.at(index)->removeParent();
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + ssize_t(index));
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + ptrdiff_t(index));
         return true;
     }
     return false;
