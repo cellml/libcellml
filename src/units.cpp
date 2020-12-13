@@ -22,6 +22,8 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <cstdint>
+#include <cstring>
 #include <map>
 #include <numeric>
 #include <stdexcept>
@@ -267,27 +269,27 @@ bool Units::isBaseUnit() const
     return unitCount() == 0 && standardUnitCheck;
 }
 
-ssize_t ulpsDistance(const double a, const double b)
+ptrdiff_t ulpsDistance(const double a, const double b)
 {
-    const auto max = std::numeric_limits<ssize_t>::max();
+    const auto max = std::numeric_limits<ptrdiff_t>::max();
 
     // Max distance for NaN
-    if (isnan(a) || isnan(b)) {
+    if (std::isnan(a) || std::isnan(b)) {
         return max;
     }
 
     // If one's infinite and they're not equal, max distance.
-    if ((isinf(a) || isinf(b)) && (isinf(a) != isinf(b))) {
+    if ((std::isinf(a) || std::isinf(b)) && (std::isinf(a) != std::isinf(b))) {
         return max;
     }
 
-    ssize_t ia;
-    ssize_t ib;
+    ptrdiff_t ia;
+    ptrdiff_t ib;
     memcpy(&ia, &a, sizeof(double));
     memcpy(&ib, &b, sizeof(double));
 
     // Return the absolute value of the distance in ULPs.
-    ssize_t distance = ia - ib;
+    ptrdiff_t distance = ia - ib;
     if (distance < 0) {
         distance = -distance;
     }
@@ -313,7 +315,7 @@ ssize_t ulpsDistance(const double a, const double b)
 bool nearlyEqual(const double a, const double b)
 {
     const double fixedEpsilon = std::numeric_limits<double>::epsilon();
-    const ssize_t ulpsEpsilon = 1;
+    const ptrdiff_t ulpsEpsilon = 1;
 
     const double difference = fabs(a-b);
     if (difference <= fixedEpsilon) {
@@ -359,7 +361,7 @@ bool Units::doEqual(const EntityPtr &other) const
                     }
                 }
                 if (unitFound) {
-                    unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ssize_t(index) - 1);
+                    unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ptrdiff_t(index) - 1);
                 } else {
                     return false;
                 }
@@ -515,7 +517,7 @@ bool Units::removeUnit(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ssize_t(index));
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ptrdiff_t(index));
         status = true;
     }
 

@@ -93,7 +93,7 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 units to this component. And much more than
             // that in a 64-bit environment.
-            unmatchedIndex.erase(unmatchedIndex.begin() + ssize_t(index) - 1);
+            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
         } else {
             return false;
         }
@@ -178,9 +178,9 @@ bool Model::removeUnits(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        auto units = *(mPimpl->mUnits.begin() + ssize_t(index));
+        auto units = *(mPimpl->mUnits.begin() + ptrdiff_t(index));
         units->removeParent();
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ssize_t(index));
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ptrdiff_t(index));
         status = true;
     }
 
@@ -273,7 +273,7 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 {
     bool status = false;
     if (removeUnits(index)) {
-        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + ssize_t(index), units);
+        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + ptrdiff_t(index), units);
         status = true;
     }
 
