@@ -467,7 +467,7 @@ public:
     VariablePtr clone() const;
 
 private:
-    Variable(); /**< Constructor. */    
+    Variable(); /**< Constructor. */
     explicit Variable(const std::string &name); /**< Constructor with std::string parameter. */
 
     bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
