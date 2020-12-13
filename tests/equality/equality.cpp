@@ -395,7 +395,6 @@ TEST(Equality, resetEqual)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-
     EXPECT_TRUE(r1->equal(r2));
 }
 
@@ -430,7 +429,6 @@ TEST(Equality, resetNotEqualByOrder)
 
     r1->setVariable(v1);
     r2->setVariable(v2);
-
 
     EXPECT_FALSE(r1->equal(r2));
 }
@@ -467,7 +465,6 @@ TEST(Equality, resetNotEqualByResetValue)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-
     EXPECT_FALSE(r1->equal(r2));
 }
 
@@ -502,7 +499,6 @@ TEST(Equality, resetNotEqualByResetValueId)
 
     r1->setVariable(v1);
     r2->setVariable(v2);
-
 
     EXPECT_FALSE(r1->equal(r2));
 }
@@ -539,7 +535,6 @@ TEST(Equality, resetNotEqualByTestValue)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-
     EXPECT_FALSE(r1->equal(r2));
 }
 
@@ -574,7 +569,6 @@ TEST(Equality, resetNotEqualByTestValueId)
 
     r1->setVariable(v1);
     r2->setVariable(v2);
-
 
     EXPECT_FALSE(r1->equal(r2));
 }
@@ -611,7 +605,6 @@ TEST(Equality, resetNotEqualByTestVariable)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-
     EXPECT_FALSE(r1->equal(r2));
 }
 
@@ -647,7 +640,6 @@ TEST(Equality, resetNotEqualByVariable)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-
     EXPECT_FALSE(r1->equal(r2));
 }
 
@@ -682,7 +674,6 @@ TEST(Equality, resetNotEqualByNullTestVariable)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-
     EXPECT_FALSE(r1->equal(r2));
 }
 
@@ -716,7 +707,6 @@ TEST(Equality, resetNotEqualByNullVariable)
     r2->setTestVariable(tv2);
 
     r2->setVariable(v2);
-
 
     EXPECT_FALSE(r1->equal(r2));
 }
@@ -814,7 +804,6 @@ TEST(Equality, componentEqualDifferentOrderComponents)
     libcellml::ComponentPtr cChild4 = libcellml::Component::create("child1");
     libcellml::ComponentPtr cChild5 = libcellml::Component::create("child2");
     libcellml::ComponentPtr cChild6 = libcellml::Component::create("child3");
-
 
     c1->addComponent(cChild1);
     c1->addComponent(cChild2);

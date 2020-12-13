@@ -217,12 +217,9 @@ bool Variable::doEqual(const EntityPtr &other) const
 {
     if (NamedEntity::doEqual(other)) {
         auto variable = std::dynamic_pointer_cast<libcellml::Variable>(other);
-        if (variable != nullptr &&
-                mPimpl->mInitialValue == variable->initialValue() &&
-                mPimpl->mInterfaceType == variable->interfaceType()) {
+        if (variable != nullptr && mPimpl->mInitialValue == variable->initialValue() && mPimpl->mInterfaceType == variable->interfaceType()) {
             bool equal = true;
-            if (mPimpl->mUnits == nullptr &&
-                    variable->units() != nullptr) {
+            if (mPimpl->mUnits == nullptr && variable->units() != nullptr) {
                 equal = false;
             } else if (mPimpl->mUnits != nullptr) {
                 equal = mPimpl->mUnits->equal(variable->units());
