@@ -267,19 +267,64 @@ bool Units::isBaseUnit() const
     return unitCount() == 0 && standardUnitCheck;
 }
 
+ssize_t ulpsDistance(const double a, const double b)
+{
+    const auto max = std::numeric_limits<ssize_t>::max();
+
+    // Max distance for NaN
+    if (isnan(a) || isnan(b)) {
+        return max;
+    }
+
+    // If one's infinite and they're not equal, max distance.
+    if ((isinf(a) || isinf(b)) && (isinf(a) != isinf(b))) {
+        return max;
+    }
+
+    ssize_t ia, ib;
+    memcpy(&ia, &a, sizeof(double));
+    memcpy(&ib, &b, sizeof(double));
+
+    // Return the absolute value of the distance in ULPs.
+    ssize_t distance = ia - ib;
+    if (distance < 0) {
+        distance = -distance;
+    }
+
+    return distance;
+}
+
+/**
+ * @brief Decide if two doubles are nearly equal.
+ *
+ * Test two doubles to determine if they are close enough
+ * to be considered equal.
+ *
+ * Uses a modified form of comparing floats:
+ *
+ *   https://bitbashing.io/comparing-floats.html
+ *
+ * @param a A double to test.
+ * @param b A double to test.
+ *
+ * @return @c true if the given doubles are considered close, @c false otherwise.
+ */
 bool nearlyEqual(const double a, const double b)
 {
-    const double fixedEpsilon = 2 * std::numeric_limits<double>::epsilon();
+    const double fixedEpsilon = std::numeric_limits<double>::epsilon();
+    const ssize_t ulpsEpsilon = 1;
+
     const double difference = fabs(a-b);
-    if (difference < fixedEpsilon) {
+    if (difference <= fixedEpsilon) {
         return true;
     }
 
-    if (difference < 2 * fixedEpsilon) {
-        return true;
+    // If they are not the same sign then return false.
+    if ((a < 0) != (b < 0)) {
+        return false;
     }
 
-    return false;
+    return ulpsDistance(a, b) <= ulpsEpsilon;
 }
 
 bool Units::doEqual(const EntityPtr &other) const

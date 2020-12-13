@@ -275,6 +275,94 @@ TEST(Equality, unitsNotEqualDifferingOrderOfUnits)
     EXPECT_FALSE(u1->equal(u2));
 }
 
+TEST(Equality, unitsEqualPrecision1)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", 1.0);
+    u2->addUnit("second", 1.0 + std::numeric_limits<double>::epsilon());
+
+    EXPECT_TRUE(u1->equal(u2));
+}
+
+TEST(Equality, unitsEqualPrecision2)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", 1.0);
+    u2->addUnit("second", 1.0 + 2 * std::numeric_limits<double>::epsilon());
+
+    EXPECT_FALSE(u1->equal(u2));
+}
+
+TEST(Equality, unitsEqualPrecision3)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", 1.0);
+    u2->addUnit("second", 1.0 + 3 * std::numeric_limits<double>::epsilon());
+
+    EXPECT_FALSE(u1->equal(u2));
+}
+
+TEST(Equality, unitsEqualPrecision4)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", 2.000000000000000444089209850062616169452667236328125);
+    u2->addUnit("second", 2.0);
+
+    EXPECT_TRUE(u1->equal(u2));
+}
+
+TEST(Equality, unitsEqualPrecision5)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", 238487722399.29384);
+    u2->addUnit("second", 238487722399.29383);
+
+    EXPECT_TRUE(u1->equal(u2));
+}
+
+TEST(Equality, unitsNotEqualExponent)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", -3.0);
+    u2->addUnit("second", 2.0);
+
+    EXPECT_FALSE(u1->equal(u2));
+}
+
+TEST(Equality, unitsNotEqualInfinity)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", std::numeric_limits<double>::infinity());
+    u2->addUnit("second", 3.0);
+
+    EXPECT_FALSE(u1->equal(u2));
+}
+
+TEST(Equality, unitsNotEqualNaN)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", std::numeric_limits<double>::quiet_NaN());
+    u2->addUnit("second", 2.0);
+
+    EXPECT_FALSE(u1->equal(u2));
+}
+
 TEST(Equality, resetEqual)
 {
     libcellml::ResetPtr r1 = libcellml::Reset::create();
