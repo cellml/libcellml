@@ -156,6 +156,7 @@ bool Model::addUnits(const UnitsPtr &units)
         return false;
     }
 
+    // Prevent adding the same units.
     if (std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), units) != mPimpl->mUnits.end()) {
         return false;
     }
@@ -306,6 +307,7 @@ bool Model::addImportSource(const ImportSourcePtr &importSrc)
         return false;
     }
 
+    // Prevent adding the same import source.
     if (std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc) != mPimpl->mImports.end()) {
         return false;
     }
