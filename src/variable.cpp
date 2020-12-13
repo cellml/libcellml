@@ -220,7 +220,14 @@ bool Variable::doEqual(const EntityPtr &other) const
         if (variable != nullptr &&
                 mPimpl->mInitialValue == variable->initialValue() &&
                 mPimpl->mInterfaceType == variable->interfaceType()) {
-            return mPimpl->mUnits ? mPimpl->mUnits->equal(variable->units()) : true;
+            bool equal = true;
+            if (mPimpl->mUnits == nullptr &&
+                    variable->units() != nullptr) {
+                equal = false;
+            } else if (mPimpl->mUnits != nullptr) {
+                equal = mPimpl->mUnits->equal(variable->units());
+            }
+            return equal;
         }
     }
     return false;
