@@ -99,7 +99,6 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
     {Units::StandardUnit::WATT, "watt"},
     {Units::StandardUnit::WEBER, "weber"}};
 
-
 /**
  * @brief The UnitDefinition struct.
  *
@@ -317,7 +316,7 @@ bool nearlyEqual(const double a, const double b)
     const double fixedEpsilon = std::numeric_limits<double>::epsilon();
     const ptrdiff_t ulpsEpsilon = 1;
 
-    const double difference = fabs(a-b);
+    const double difference = fabs(a - b);
     if (difference <= fixedEpsilon) {
         return true;
     }
@@ -334,9 +333,7 @@ bool Units::doEqual(const EntityPtr &other) const
 {
     if (NamedEntity::doEqual(other)) {
         auto units = std::dynamic_pointer_cast<Units>(other);
-        if (units != nullptr &&
-                mPimpl->mUnits.size() == units->unitCount() &&
-                ImportedEntity::doEqual(units)) {
+        if (units != nullptr && mPimpl->mUnits.size() == units->unitCount() && ImportedEntity::doEqual(units)) {
             // Check unit definitions match.
             std::string reference;
             std::string prefix;
@@ -352,11 +349,7 @@ bool Units::doEqual(const EntityPtr &other) const
                 for (index = 0; index < unmatchedUnitIndex.size() && !unitFound; ++index) {
                     size_t currentIndex = unmatchedUnitIndex.at(index);
                     units->unitAttributes(currentIndex, reference, prefix, exponent, multiplier, id);
-                    if (nearlyEqual(unitDefinition.mExponent, exponent) &&
-                            unitDefinition.mId == id &&
-                            nearlyEqual(unitDefinition.mMultiplier, multiplier) &&
-                            unitDefinition.mPrefix == prefix &&
-                            unitDefinition.mReference == reference) {
+                    if (nearlyEqual(unitDefinition.mExponent, exponent) && unitDefinition.mId == id && nearlyEqual(unitDefinition.mMultiplier, multiplier) && unitDefinition.mPrefix == prefix && unitDefinition.mReference == reference) {
                         unitFound = true;
                     }
                 }

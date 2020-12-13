@@ -201,24 +201,15 @@ bool Reset::doEqual(const EntityPtr &other) const
 {
     if (Entity::doEqual(other)) {
         auto reset = std::dynamic_pointer_cast<Reset>(other);
-        if (reset != nullptr &&
-                mPimpl->mOrder == reset->order() &&
-                mPimpl->mResetValue == reset->resetValue() &&
-                mPimpl->mResetValueId == reset->resetValueId() &&
-                mPimpl->mTestValue == reset->testValue() &&
-                mPimpl->mTestValueId == reset->testValueId()) {
+        if (reset != nullptr && mPimpl->mOrder == reset->order() && mPimpl->mResetValue == reset->resetValue() && mPimpl->mResetValueId == reset->resetValueId() && mPimpl->mTestValue == reset->testValue() && mPimpl->mTestValueId == reset->testValueId()) {
             bool equal = true;
-            if (mPimpl->mTestVariable != nullptr &&
-                    !mPimpl->mTestVariable->equal(reset->testVariable())) {
+            if (mPimpl->mTestVariable != nullptr && !mPimpl->mTestVariable->equal(reset->testVariable())) {
                 equal = false;
-            } else if (mPimpl->mTestVariable == nullptr &&
-                       reset->testVariable() != nullptr) {
+            } else if (mPimpl->mTestVariable == nullptr && reset->testVariable() != nullptr) {
                 equal = false;
-            } else if (mPimpl->mVariable != nullptr &&
-                    !mPimpl->mVariable->equal(reset->variable())) {
+            } else if (mPimpl->mVariable != nullptr && !mPimpl->mVariable->equal(reset->variable())) {
                 equal = false;
-            } else if (mPimpl->mVariable == nullptr &&
-                       reset->variable() != nullptr) {
+            } else if (mPimpl->mVariable == nullptr && reset->variable() != nullptr) {
                 equal = false;
             }
             return equal;
