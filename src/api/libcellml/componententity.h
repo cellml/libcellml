@@ -312,8 +312,8 @@ protected:
     ComponentEntity(); /**< ComponentEntity Constructor. */
 
 private:
-    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

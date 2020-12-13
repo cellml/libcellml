@@ -283,10 +283,10 @@ protected:
     bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
 
 private:
-    ImportSource(); /**< Constructor. */
+    ImportSource(); /**< Constructor, @private. */
 
-    struct ImportSourceImpl;
-    ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ImportSourceImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ImportSourceImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

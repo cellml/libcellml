@@ -173,11 +173,11 @@ public:
     IssuePtr message(size_t index) const;
 
 protected:
-    Logger(); /**< Constructor. */
+    Logger(); /**< Constructor, @private. */
 
 private:
-    struct LoggerImpl; /**< Forward declaration for pImpl idiom. */
-    LoggerImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct LoggerImpl; /**< Forward declaration for pImpl idiom, @private. */
+    LoggerImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

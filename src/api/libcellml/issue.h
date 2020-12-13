@@ -639,7 +639,7 @@ public:
     void clear();
 
 private:
-    Issue(); /**< Constructor. */
+    Issue(); /**< Constructor, @private. */
 
     /**
      * @brief Constructs an Issue for the component.
@@ -704,8 +704,8 @@ private:
      */
     explicit Issue(const UnitPtr &unit);
 
-    struct IssueImpl; /**< Forward declaration for pImpl idiom. */
-    IssueImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct IssueImpl; /**< Forward declaration for pImpl idiom, @private. */
+    IssueImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

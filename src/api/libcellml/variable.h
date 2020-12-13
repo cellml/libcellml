@@ -467,13 +467,13 @@ public:
     VariablePtr clone() const;
 
 private:
-    Variable(); /**< Constructor. */
-    explicit Variable(const std::string &name); /**< Constructor with std::string parameter. */
+    Variable(); /**< Constructor, @private. */
+    explicit Variable(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
     bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
 
-    struct VariableImpl;
-    VariableImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct VariableImpl; /**< Forward declaration for pImpl idiom, @private. */
+    VariableImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
