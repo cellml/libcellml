@@ -307,7 +307,7 @@ protected:
      */
     virtual bool doAddComponent(const ComponentPtr &component);
 
-    bool doEqual(const EntityPtr &other) const override;
+    bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
 
     ComponentEntity(); /**< ComponentEntity Constructor. */
 

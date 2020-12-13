@@ -280,7 +280,7 @@ public:
     UnitsPtr units(size_t index) const;
 
 protected:
-    bool doEqual(const EntityPtr &other) const override;
+    bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
 
 private:
     ImportSource(); /**< Constructor. */
