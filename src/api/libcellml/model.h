@@ -432,15 +432,15 @@ public:
     bool hasImportSource(const ImportSourcePtr &importSrc) const;
 
 private:
-    Model(); /**< Constructor. */
-    explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
+    Model(); /**< Constructor, @private. */
+    explicit Model(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
-    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual implementation method for addComponent. */
+    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual implementation method for addComponent, @private. */
 
     bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
 
-    struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    ModelImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

@@ -128,12 +128,12 @@ public:
     bool equal(const EntityPtr &other) const;
 
 protected:
-    Entity(); /**< Constructor. */
+    Entity(); /**< Constructor, @private. */
     virtual bool doEqual(const EntityPtr &other) const; /**< Virtual implementation method for equal, @private. */
 
 private:
-    struct EntityImpl;
-    EntityImpl *mPimpl;
+    struct EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    EntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
