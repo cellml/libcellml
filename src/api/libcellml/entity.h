@@ -111,11 +111,25 @@ public:
      */
     bool hasAncestor(const EntityPtr &entity) const;
 
+    /**
+     * @brief Test to see if this entity is equal to the @p other entity.
+     *
+     * The attributes and properties of the entity are tested against the @p other
+     * entities attributes and properties and compared for equality.
+     *
+     * If an entity has any children associated with it, then the order that children appear in
+     * is **not** taken into account.
+     *
+     * The parents of either entity (if they exist) are ignored when determining equality.
+     *
+     * @param other The entity to test against.
+     * @return @c true if this entity is equal to the other entity, @c false otherwise.
+     */
     bool equal(const EntityPtr &other) const;
 
 protected:
     Entity(); /**< Constructor. */
-    virtual bool doEqual(const EntityPtr &other) const; /**< Virtual implementation method for equal. */
+    virtual bool doEqual(const EntityPtr &other) const; /**< Virtual implementation method for equal, @private. */
 
 private:
     struct EntityImpl;

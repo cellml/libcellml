@@ -435,9 +435,9 @@ private:
     Model(); /**< Constructor. */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
 
-    bool doAddComponent(const ComponentPtr &component) override;
+    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual implementation method for addComponent. */
 
-    bool doEqual(const EntityPtr &other) const override;
+    bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
     ModelImpl *mPimpl; /**< Private member to implementation pointer. */

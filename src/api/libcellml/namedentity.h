@@ -59,7 +59,7 @@ public:
 protected:
     NamedEntity(); /**< Constructor. */
 
-    bool doEqual(const EntityPtr &other) const override;
+    bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
 
 private:
     struct NamedEntityImpl;
