@@ -115,7 +115,7 @@ public:
      * @brief Test to see if this entity is equal to the @p other entity.
      *
      * The attributes and properties of the entity are tested against the @p other
-     * entities attributes and properties and compared for equality.
+     * entity's attributes and properties and compared for equality.
      *
      * If an entity has any children associated with it, then the order that children appear in
      * is **not** taken into account.
