@@ -34,6 +34,7 @@ TEST(Equality, variableEqualByNameOnly)
 
     EXPECT_NE(v1, v2);
     EXPECT_TRUE(v1->equal(v2));
+    EXPECT_TRUE(v2->equal(v1));
 }
 
 TEST(Equality, variableNotEqualByNameOnly)
@@ -43,6 +44,7 @@ TEST(Equality, variableNotEqualByNameOnly)
 
     EXPECT_NE(v1, v2);
     EXPECT_FALSE(v1->equal(v2));
+    EXPECT_FALSE(v2->equal(v1));
 }
 
 TEST(Equality, variableNotEqualToUnits)
@@ -50,6 +52,7 @@ TEST(Equality, variableNotEqualToUnits)
     libcellml::VariablePtr v1 = libcellml::Variable::create("variable");
     libcellml::UnitsPtr u1 = libcellml::Units::create("variable");
 
+    EXPECT_FALSE(v1->equal(u1));
     EXPECT_FALSE(v1->equal(u1));
 }
 
@@ -62,6 +65,7 @@ TEST(Equality, variableEqualById)
     v2->setId("lefisjeij");
 
     EXPECT_TRUE(v1->equal(v2));
+    EXPECT_TRUE(v2->equal(v1));
 }
 
 TEST(Equality, variableNotEqualById)
@@ -73,6 +77,7 @@ TEST(Equality, variableNotEqualById)
     v2->setId("lefisjeij");
 
     EXPECT_FALSE(v1->equal(v2));
+    EXPECT_FALSE(v2->equal(v1));
 }
 
 TEST(Equality, variableEqualAllTestedConditionsVariant1)
@@ -93,6 +98,7 @@ TEST(Equality, variableEqualAllTestedConditionsVariant1)
     v2->setUnits("ampere");
 
     EXPECT_TRUE(v1->equal(v2));
+    EXPECT_TRUE(v2->equal(v1));
 }
 
 TEST(Equality, variableEqualAllTestedConditionsVariant2)
@@ -116,6 +122,7 @@ TEST(Equality, variableEqualAllTestedConditionsVariant2)
     v2->setUnits(u2);
 
     EXPECT_TRUE(v1->equal(v2));
+    EXPECT_TRUE(v2->equal(v1));
 }
 
 TEST(Equality, variableNotEqualByUnits)
@@ -128,6 +135,7 @@ TEST(Equality, variableNotEqualByUnits)
     v1->setUnits(u1);
 
     EXPECT_FALSE(v1->equal(v2));
+    EXPECT_FALSE(v2->equal(v1));
 }
 
 TEST(Equality, variableNotEqualByUnitsOther)
@@ -140,6 +148,7 @@ TEST(Equality, variableNotEqualByUnitsOther)
     v2->setUnits(u2);
 
     EXPECT_FALSE(v1->equal(v2));
+    EXPECT_FALSE(v2->equal(v1));
 }
 
 TEST(Equality, unitsEqualByNameOnly)
@@ -149,6 +158,7 @@ TEST(Equality, unitsEqualByNameOnly)
 
     EXPECT_NE(u1, u2);
     EXPECT_TRUE(u1->equal(u2));
+    EXPECT_TRUE(u2->equal(u1));
     EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
 }
 
@@ -159,6 +169,7 @@ TEST(Equality, unitsNotEqualByNameOnly)
 
     EXPECT_NE(u1, u2);
     EXPECT_FALSE(u1->equal(u2));
+    EXPECT_FALSE(u2->equal(u1));
     EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
 }
 
@@ -179,6 +190,7 @@ TEST(Equality, unitsEqualAllTestedConditionsVariant1)
     u2->addUnit("meter");
 
     EXPECT_TRUE(u1->equal(u2));
+    EXPECT_TRUE(u2->equal(u1));
 }
 
 TEST(Equality, unitsEqualAllTestedConditionsVariant2)
@@ -198,6 +210,7 @@ TEST(Equality, unitsEqualAllTestedConditionsVariant2)
     u2->addUnit("second", 1.0, "unit_id");
 
     EXPECT_TRUE(u1->equal(u2));
+    EXPECT_TRUE(u2->equal(u1));
 }
 
 TEST(Equality, unitsNotEqualDifferingNumberOfUnits)
@@ -212,6 +225,7 @@ TEST(Equality, unitsNotEqualDifferingNumberOfUnits)
     u2->addUnit("second", 1.0, "second_id");
 
     EXPECT_FALSE(u1->equal(u2));
+    EXPECT_FALSE(u2->equal(u1));
 }
 
 TEST(Equality, unitsNotEqualDifferingUnitsBasic)
@@ -225,6 +239,7 @@ TEST(Equality, unitsNotEqualDifferingUnitsBasic)
     u2->addUnit("second", 2.0, "unit_id");
 
     EXPECT_FALSE(u1->equal(u2));
+    EXPECT_FALSE(u2->equal(u1));
 }
 
 TEST(Equality, unitsEqualDifferingOrderOfUnits)
@@ -238,6 +253,7 @@ TEST(Equality, unitsEqualDifferingOrderOfUnits)
     u2->addUnit("second", 1.0, "unit_id");
 
     EXPECT_TRUE(u1->equal(u2));
+    EXPECT_TRUE(u2->equal(u1));
 }
 
 TEST(Equality, unitsEqualDifferingOrderOfUnitsManyUnit)
@@ -260,6 +276,7 @@ TEST(Equality, unitsEqualDifferingOrderOfUnitsManyUnit)
     u2->addUnit("flip");
 
     EXPECT_TRUE(u1->equal(u2));
+    EXPECT_TRUE(u2->equal(u1));
 }
 
 TEST(Equality, unitsNotEqualDifferingOrderOfUnits)
@@ -273,6 +290,7 @@ TEST(Equality, unitsNotEqualDifferingOrderOfUnits)
     u2->addUnit("meter", 3.0);
 
     EXPECT_FALSE(u1->equal(u2));
+    EXPECT_FALSE(u2->equal(u1));
 }
 
 TEST(Equality, unitsEqualPrecision1)
@@ -284,6 +302,7 @@ TEST(Equality, unitsEqualPrecision1)
     u2->addUnit("second", 1.0 + std::numeric_limits<double>::epsilon());
 
     EXPECT_TRUE(u1->equal(u2));
+    EXPECT_TRUE(u2->equal(u1));
 }
 
 TEST(Equality, unitsEqualPrecision2)
@@ -295,20 +314,10 @@ TEST(Equality, unitsEqualPrecision2)
     u2->addUnit("second", 1.0 + 2 * std::numeric_limits<double>::epsilon());
 
     EXPECT_FALSE(u1->equal(u2));
+    EXPECT_FALSE(u2->equal(u1));
 }
 
 TEST(Equality, unitsEqualPrecision3)
-{
-    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
-    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
-
-    u1->addUnit("second", 1.0);
-    u2->addUnit("second", 1.0 + 3 * std::numeric_limits<double>::epsilon());
-
-    EXPECT_FALSE(u1->equal(u2));
-}
-
-TEST(Equality, unitsEqualPrecision4)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
@@ -317,9 +326,10 @@ TEST(Equality, unitsEqualPrecision4)
     u2->addUnit("second", 2.0);
 
     EXPECT_TRUE(u1->equal(u2));
+    EXPECT_TRUE(u2->equal(u1));
 }
 
-TEST(Equality, unitsEqualPrecision5)
+TEST(Equality, unitsEqualPrecision4)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
@@ -328,6 +338,7 @@ TEST(Equality, unitsEqualPrecision5)
     u2->addUnit("second", 238487722399.29383);
 
     EXPECT_TRUE(u1->equal(u2));
+    EXPECT_TRUE(u2->equal(u1));
 }
 
 TEST(Equality, unitsNotEqualExponent)
@@ -339,6 +350,7 @@ TEST(Equality, unitsNotEqualExponent)
     u2->addUnit("second", 2.0);
 
     EXPECT_FALSE(u1->equal(u2));
+    EXPECT_FALSE(u2->equal(u1));
 }
 
 TEST(Equality, unitsNotEqualInfinity)
@@ -350,6 +362,7 @@ TEST(Equality, unitsNotEqualInfinity)
     u2->addUnit("second", 3.0);
 
     EXPECT_FALSE(u1->equal(u2));
+    EXPECT_FALSE(u2->equal(u1));
 }
 
 TEST(Equality, unitsNotEqualNaN)
@@ -361,6 +374,7 @@ TEST(Equality, unitsNotEqualNaN)
     u2->addUnit("second", 2.0);
 
     EXPECT_FALSE(u1->equal(u2));
+    EXPECT_FALSE(u2->equal(u1));
 }
 
 TEST(Equality, resetEqual)
@@ -396,6 +410,7 @@ TEST(Equality, resetEqual)
     r2->setVariable(v2);
 
     EXPECT_TRUE(r1->equal(r2));
+    EXPECT_TRUE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByOrder)
@@ -431,6 +446,7 @@ TEST(Equality, resetNotEqualByOrder)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByResetValue)
@@ -466,6 +482,7 @@ TEST(Equality, resetNotEqualByResetValue)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByResetValueId)
@@ -501,6 +518,7 @@ TEST(Equality, resetNotEqualByResetValueId)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByTestValue)
@@ -536,6 +554,7 @@ TEST(Equality, resetNotEqualByTestValue)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByTestValueId)
@@ -571,6 +590,7 @@ TEST(Equality, resetNotEqualByTestValueId)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByTestVariable)
@@ -606,6 +626,7 @@ TEST(Equality, resetNotEqualByTestVariable)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByVariable)
@@ -641,6 +662,7 @@ TEST(Equality, resetNotEqualByVariable)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByNullTestVariable)
@@ -675,6 +697,7 @@ TEST(Equality, resetNotEqualByNullTestVariable)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, resetNotEqualByNullVariable)
@@ -709,6 +732,7 @@ TEST(Equality, resetNotEqualByNullVariable)
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equal(r2));
+    EXPECT_FALSE(r2->equal(r1));
 }
 
 TEST(Equality, componentEqual)
@@ -738,6 +762,7 @@ TEST(Equality, componentEqual)
     c2->addReset(r2);
 
     EXPECT_TRUE(c1->equal(c2));
+    EXPECT_TRUE(c2->equal(c1));
 }
 
 TEST(Equality, componentEqualDifferentOrderResets)
@@ -768,6 +793,7 @@ TEST(Equality, componentEqualDifferentOrderResets)
     c2->addReset(r5);
 
     EXPECT_TRUE(c1->equal(c2));
+    EXPECT_TRUE(c2->equal(c1));
 }
 
 TEST(Equality, componentEqualDifferentOrderVariables)
@@ -791,6 +817,7 @@ TEST(Equality, componentEqualDifferentOrderVariables)
     c2->addVariable(v5);
 
     EXPECT_TRUE(c1->equal(c2));
+    EXPECT_TRUE(c2->equal(c1));
 }
 
 TEST(Equality, componentEqualDifferentOrderComponents)
@@ -814,6 +841,7 @@ TEST(Equality, componentEqualDifferentOrderComponents)
     c2->addComponent(cChild4);
 
     EXPECT_TRUE(c1->equal(c2));
+    EXPECT_TRUE(c2->equal(c1));
 }
 
 TEST(Equality, componentEqualWithComponentHierarchy)
@@ -834,6 +862,7 @@ TEST(Equality, componentEqualWithComponentHierarchy)
     cChild2->addComponent(cChild21);
 
     EXPECT_TRUE(c1->equal(c2));
+    EXPECT_TRUE(c2->equal(c1));
 }
 
 TEST(Equality, componentNotEqualByReset)
@@ -851,6 +880,7 @@ TEST(Equality, componentNotEqualByReset)
     c2->addReset(r2);
 
     EXPECT_FALSE(c1->equal(c2));
+    EXPECT_FALSE(c2->equal(c1));
 }
 
 TEST(Equality, componentNotEqualByComponent)
@@ -865,6 +895,7 @@ TEST(Equality, componentNotEqualByComponent)
     c2->addComponent(cChild2);
 
     EXPECT_FALSE(c1->equal(c2));
+    EXPECT_FALSE(c2->equal(c1));
 }
 
 TEST(Equality, componentNotEqualByVariable)
@@ -879,6 +910,7 @@ TEST(Equality, componentNotEqualByVariable)
     c2->addVariable(v2);
 
     EXPECT_FALSE(c1->equal(c2));
+    EXPECT_FALSE(c2->equal(c1));
 }
 
 TEST(Equality, importSourceEqual)
@@ -890,6 +922,7 @@ TEST(Equality, importSourceEqual)
     is2->setUrl("great_url");
 
     EXPECT_TRUE(is1->equal(is2));
+    EXPECT_TRUE(is2->equal(is1));
 }
 
 TEST(Equality, importSourceNotEqual)
@@ -901,6 +934,7 @@ TEST(Equality, importSourceNotEqual)
     is2->setUrl("great_url");
 
     EXPECT_FALSE(is1->equal(is2));
+    EXPECT_FALSE(is2->equal(is1));
 }
 
 TEST(Equality, importSourceNotEqualInvalidInput)
@@ -930,6 +964,7 @@ TEST(Equality, modelEqual)
     m2->addUnits(u2);
 
     EXPECT_TRUE(m1->equal(m2));
+    EXPECT_TRUE(m2->equal(m1));
 }
 
 TEST(Equality, modelNotEqualInvalidInput)
@@ -951,6 +986,7 @@ TEST(Equality, modelNotEqualByComponents)
     m2->addComponent(c2);
 
     EXPECT_FALSE(m1->equal(m2));
+    EXPECT_FALSE(m2->equal(m1));
 }
 
 TEST(Equality, modelNotEqualByUnits)
@@ -965,6 +1001,7 @@ TEST(Equality, modelNotEqualByUnits)
     m2->addUnits(u2);
 
     EXPECT_FALSE(m1->equal(m2));
+    EXPECT_FALSE(m2->equal(m1));
 }
 
 TEST(Equality, modelHH)
@@ -977,6 +1014,7 @@ TEST(Equality, modelHH)
     auto clonedModel = model->clone();
 
     EXPECT_TRUE(model->equal(clonedModel));
+    EXPECT_TRUE(clonedModel->equal(model));
 }
 
 TEST(Equality, modelHHWithDifference)
@@ -992,4 +1030,5 @@ TEST(Equality, modelHHWithDifference)
     v->setUnits("millisecond");
 
     EXPECT_FALSE(model->equal(clonedModel));
+    EXPECT_FALSE(clonedModel->equal(model));
 }
