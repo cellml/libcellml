@@ -553,7 +553,7 @@ TEST(Component, addVariableMultipleTimes)
     EXPECT_TRUE(model->addComponent(tomato));
     EXPECT_TRUE(model->addComponent(apple));
 
-    // Adding a pip to the tomato.
+    // Add a pip to the tomato.
     EXPECT_TRUE(tomato->addVariable(pip));
 
     // Try to add the same pip again.  Rejected.

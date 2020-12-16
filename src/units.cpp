@@ -306,8 +306,8 @@ ptrdiff_t ulpsDistance(const double a, const double b)
  *
  *   https://bitbashing.io/comparing-floats.html
  *
- * @param a A double to test.
- * @param b A double to test.
+ * @param a A @c double to test.
+ * @param b A @c double to test.
  *
  * @return @c true if the given doubles are considered close, @c false otherwise.
  */
@@ -353,7 +353,7 @@ bool Units::doEqual(const EntityPtr &other) const
                         unitFound = true;
                     }
                 }
-                if (unitFound) {
+                if (unitFound && index < std::numeric_limits<ptrdiff_t>::max()) {
                     unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ptrdiff_t(index) - 1);
                 } else {
                     return false;
