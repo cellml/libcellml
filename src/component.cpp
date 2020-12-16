@@ -84,7 +84,7 @@ bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
                 variableFound = true;
             }
         }
-        if (variableFound) {
+        if (variableFound && index < std::numeric_limits<ptrdiff_t>::max()) {
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 variables to this component. And much more than
             // that in a 64-bit environment.
@@ -110,7 +110,7 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
                 resetFound = true;
             }
         }
-        if (resetFound) {
+        if (resetFound && index < std::numeric_limits<ptrdiff_t>::max()) {
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 resets to this component. And much more than
             // that in a 64-bit environment.

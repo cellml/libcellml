@@ -89,7 +89,7 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
                 unitsFound = true;
             }
         }
-        if (unitsFound) {
+        if (unitsFound && index < std::numeric_limits<ptrdiff_t>::max()) {
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 units to this component. And much more than
             // that in a 64-bit environment.

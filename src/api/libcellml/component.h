@@ -131,7 +131,7 @@ public:
      * was previously in a different component, it is moved to this one, and the
      * previous component's variable list is updated.
      *
-     * Note: We assume that less than 2,147,483,647 variables will be added.
+     * Note: We assume that fewer than 2,147,483,647 variables will be added.
      * Undefined behaviour may occur if this assumption is violated.
      *
      * The function will return @c false and no action is taken if:
@@ -308,7 +308,7 @@ public:
      * was previously in a different component, it is moved to this one, and the
      * previous component's reset list is updated.
      *
-     * Note: We assume that less than 2,147,483,647 resets will be added.
+     * Note: We assume that fewer than 2,147,483,647 resets will be added.
      * Undefined behaviour may occur if this assumption is violated.
      *
      * The function will return @c false with no action taken if:
