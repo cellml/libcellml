@@ -637,15 +637,15 @@ TEST(Variable, addVariablesWithAndWithoutNameAndUnits)
     libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::VariablePtr v4 = libcellml::Variable::create();
 
-    libcellml::UnitsPtr u = libcellml::Units::create();
-    u->setName("dimensionless");
-    v1->setUnits(u);
-    v3->setUnits(u);
-
     c->addVariable(v1);
     c->addVariable(v2);
     c->addVariable(v3);
     c->addVariable(v4);
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("dimensionless");
+    v1->setUnits(u);
+    v3->setUnits(u);
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(m);
