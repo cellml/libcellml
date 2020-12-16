@@ -353,7 +353,7 @@ bool Units::doEqual(const EntityPtr &other) const
                         unitFound = true;
                     }
                 }
-                if (unitFound && index < std::numeric_limits<ptrdiff_t>::max()) {
+                if (unitFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
                     unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ptrdiff_t(index) - 1);
                 } else {
                     return false;
