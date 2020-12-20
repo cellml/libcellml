@@ -27,6 +27,7 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "math.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -533,7 +534,7 @@ bool Component::doEqual(const EntityPtr &other) const
 {
     if (ComponentEntity::doEqual(other)) {
         auto component = std::dynamic_pointer_cast<Component>(other);
-        if (component != nullptr && mPimpl->mMath == component->math() && mPimpl->equalResets(component) && mPimpl->equalVariables(component) && ImportedEntity::doEqual(component)) {
+        if (component != nullptr && compareMath(mPimpl->mMath, component->math()) && mPimpl->equalResets(component) && mPimpl->equalVariables(component) && ImportedEntity::doEqual(component)) {
             return true;
         }
     }
