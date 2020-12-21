@@ -21,7 +21,7 @@ limitations under the License.
 
 #include "libcellml/variable.h"
 
-#include "math.h"
+#include "mathml.h"
 
 namespace libcellml {
 
