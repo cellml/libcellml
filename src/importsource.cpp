@@ -89,6 +89,11 @@ void ImportSource::setModel(const ModelPtr &model)
     }
 }
 
+void ImportSource::removeModel()
+{
+    mPimpl->mModel.reset();
+}
+
 bool ImportSource::hasModel() const
 {
     return !mPimpl->mModel.expired();
