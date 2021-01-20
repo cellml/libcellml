@@ -23,7 +23,7 @@ namespace libcellml {
 /**
  * @brief Compare math to determine if it is equal.
  *
- * Compare the given math strings to determin if they are equal or not.
+ * Compare the given math strings to determine if they are equal or not.
  * The current test is a simplistic comparison of string equality.
  *
  * @param math1 The first parameter to compare against parameter two.
