@@ -1,6 +1,9 @@
 Options
 -------
 
+Some options are platform or tool dependent.
+For example, MEMCHECK is only available if the valgrind tool is available.
+
 ============== ============ =========================================
 Config         Default      Description
 ============== ============ =========================================
@@ -21,7 +24,6 @@ TWAE :sup:`*`  ON           Treat warnings as errors.
 UNIT_TESTS     ON           Enable tests.
 ============== ============ =========================================
 
-:sup:`*` In CMake GUI Configuration applications this option is given in full ``LIBCELLML_TREAT_WARNINGS_AS_ERRORS``
 
 .. note In CMake GUI Configuration applications the config variable is prefixed with 'LIBCELLML\_'
 

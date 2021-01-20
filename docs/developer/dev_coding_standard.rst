@@ -1,3 +1,5 @@
+.. devcodingstandard::
+
 ===============
 Coding Standard
 ===============
@@ -8,11 +10,11 @@ The coding standard in use for libCellML is in evidence in the code itself, so n
 In essence, we seek code that looks good, is easy to read and has great documentation.
 We do not want to spend time discussing the minutiae of the coding style.
 
-The following is a list of exceptions/deviations from the google style guide that have been agreed upon for libCellML software development purposes.
+The following is a list of exceptions/deviations from the Google style guide that have been agreed upon for libCellML software development purposes.
 Think of it like case-law.
 
- * Lower camel case class method names.
- * Indent core code 4 spaces at a time (no tabs); for `CMake <https://cmake.org/>`_ files use 2-space indentation.
+ * `Lower camel case <https://en.wikipedia.org/wiki/Camel_case>`__ class method names.
+ * Indent core code 4 spaces at a time (no tabs); for `CMake <https://cmake.org/>`__ files use 2-space indentation.
 
 Doxygen Comments
 ================
@@ -24,7 +26,7 @@ Doxygen Comments
 Test Naming
 ===========
 
- * Names should respect the `lower camel case <https://en.wikipedia.org/wiki/Camel_case>`_ convention.
+ * Names should respect the lower camel case convention.
  * Names should be explicit enough to identify the specific code features they cover.
 
 Variable Naming
