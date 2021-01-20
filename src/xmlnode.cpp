@@ -304,12 +304,5 @@ std::string XmlNode::convertToStrippedString() const
     contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), [](int c) { return isspace(c); }).base(), contentString.end());
     return contentString;
 }
-/*
-std::string XmlNode::convertUnitToString() const
-{
-    std::string unitContent;
-    if (mPimpl->
-}
-*/
 
 } // namespace libcellml

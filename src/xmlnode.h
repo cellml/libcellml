@@ -299,16 +299,6 @@ public:
      */
     std::string convertToStrippedString() const;
 
-    /**
-     * @brief Get the units for this @c XmlNode, returning as a @c std::string.
-     * 
-     * Gets the content of the node and converts the units name into a string.
-     * If no string is found, then we return the empty string.
-     *
-     * @return The @c std::string representing the units for this element.
-     */
-    //std::string convertUnitToString() const;
-
 private:
     struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */
     XmlNodeImpl *mPimpl; /**< Private member to implementation pointer. */
