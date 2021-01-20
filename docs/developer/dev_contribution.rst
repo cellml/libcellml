@@ -28,7 +28,7 @@ Note that a bug is just a type of issue, and that resolving the bug should have 
 For more details, see the text below.
 
 .. _libcellml-development-process:
-.. figure:: images/libCellMLProcesses-DevelopmentProcess.png
+.. figure:: ../images/libCellMLProcesses-DevelopmentProcess.png
    :align: center
    :alt: Developer contribution process.
 
@@ -67,7 +67,7 @@ All development work should be carried out on a topic branch, for example any ma
 Before creating a local topic branch, pull the latest changes from the :term:`prime repository` ``develop`` branch.
 
 .. _libcellml-branching:
-.. figure:: images/libCellMLProcesses-GitBranching.png
+.. figure:: ../images/libCellMLProcesses-GitBranching.png
    :align: center
    :alt: Git branching illustration.
 

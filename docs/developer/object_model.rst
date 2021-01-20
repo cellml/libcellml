@@ -14,14 +14,14 @@ This document is organic and is expected to change in accordance with community 
 Overview of Object Model
 ========================
 
-.. figure:: images/libCellMLRoughObjectModel-Overview.png
+.. figure:: ../images/libCellMLRoughObjectModel-Overview.png
    :alt: libCellML Overview Object Model.
 
-Object Model for Use Cases 1 - 4
-================================
+Detailed
+========
 
-.. figure:: images/libCellMLRoughObjectModel-Entities.png
-   :alt: libCellML Object Model: Entities for use cases 1 - 4.
+.. figure:: ../images/libCellMLRoughObjectModel-Entities.png
+   :alt: libCellML Object Model.
 
-.. figure:: images/libCellMLRoughObjectModel-IOError.png
-   :alt: libCellML Object Model: Input, Output, and Errors for use cases 1 - 4.
+.. figure:: ../images/libCellMLRoughObjectModel-IOError.png
+   :alt: libCellML Object Model.

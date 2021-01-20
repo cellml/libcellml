@@ -16,23 +16,14 @@ Contents:
 
    roadmap
    current_thinking
-   usecases
-   object_model
+   getting_started
+   developer/index
    api_documentation
    coverage_statistics
-   dev_setup
-   dev_building
-   dev_testing_code
-   dev_contribution
-   dev_review
-   dev_coding_standard
-   contributors
    glossary
 
 .. toctree::
    :hidden:
-
-   dev_configuration_options
 
 Indices and tables
 ==================
