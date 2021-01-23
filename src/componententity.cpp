@@ -86,10 +86,6 @@ bool ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
     bool status = false;
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
-        if ((*result)->isImport()) {
-            auto copy = (*result);
-            (*result)->importSource()->removeComponent(copy);
-        }
         (*result)->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
@@ -107,11 +103,6 @@ bool ComponentEntity::removeComponent(size_t index)
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
         auto component = mPimpl->mComponents[index];
-        if (component->isImport()) {
-            auto copy = component;
-            component->importSource()->removeComponent(copy);
-        }
-
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
         component->removeParent();
         status = true;
@@ -125,10 +116,6 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     bool status = false;
     auto result = mPimpl->findComponent(component);
     if (result != mPimpl->mComponents.end()) {
-        if (component->isImport()) {
-            auto copy = component;
-            component->importSource()->removeComponent(copy);
-        }
         component->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
@@ -144,9 +131,6 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
 void ComponentEntity::removeAllComponents()
 {
     for (auto &component : mPimpl->mComponents) {
-        if (component->isImport()) {
-            component->importSource()->removeComponent(component);
-        }
         component->removeParent();
     }
     mPimpl->mComponents.clear();
@@ -217,9 +201,6 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     ComponentPtr component = nullptr;
     if (index < mPimpl->mComponents.size()) {
         component = mPimpl->mComponents.at(index);
-        if (component->isImport()) {
-            component->importSource()->removeComponent(component);
-        }
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
         component->removeParent();
     }
@@ -233,16 +214,14 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
-        ImportSourcePtr import;
-        if (foundComponent->isImport()) {
-            import = foundComponent->importSource()->clone();
-            // Remove from this model's import source list.
-            foundComponent->importSource()->removeComponent(foundComponent);
-        }
+//        ImportSourcePtr import;
+//        if (foundComponent->isImport()) {
+//            import = foundComponent->importSource();
+//        }
         mPimpl->mComponents.erase(result);
         foundComponent->removeParent();
         // Add import source back *after* removing parent to prevent duplication.
-        foundComponent->setImportSource(import);
+//        foundComponent->setImportSource(import);
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
             foundComponent = component(i)->takeComponent(name, searchEncapsulated);

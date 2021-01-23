@@ -350,20 +350,16 @@ public:
      * Add import source by reference to the model. If the import
      * source item was previously in a different model, it is moved
      * to this one, and the previous model's import source list is updated.
-     * if the optional @p merge parameter is true, the contents of the given @p importSrc
-     * will be merged with the first import source with the same attributes, if found.
      * 
      * The function will return @c false and no action is taken if:
      *  - The @p importSrc pointer already exists in this model and @p merge is @c false; or
      *  - The @p importSrc is @c nullptr.
      *
      * @param importSrc The import source to add.
-     * @param merge Whether or not to merge the given import source with another of the 
-     *              same attribute, if present.
      *
      * @return @c true if the import source item is added or @c false otherwise.
      */
-    bool addImportSource(const ImportSourcePtr &importSrc, bool merge = false);
+    bool addImportSource(const ImportSourcePtr &importSrc);
 
     /**
      * @brief Get the number of import source items in the model.
