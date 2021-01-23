@@ -441,16 +441,8 @@ void Units::doSetImportSource(const ImportSourcePtr &importSource)
     auto model = owningModel(shared_from_this());
     auto units = shared_from_this();
 
-    auto oldImportSource = units->importSource();
-
-    if (importSource != nullptr) {
-        if (model != nullptr) {
-            model->addImportSource(importSource);
-        }
-        importSource->addUnits(units);
-        if (oldImportSource != nullptr) {
-            oldImportSource->removeUnits(units, false);
-        }
+    if (importSource != nullptr && model != nullptr) {
+        model->addImportSource(importSource);
     }
     ImportedEntity::doSetImportSource(importSource);
 }
