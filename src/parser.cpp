@@ -1071,14 +1071,8 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
                 // invalid parents, are still included in the model.
                 model->addComponent(childComponent);
             }
-            if (childComponent->isImport()) {
-                model->addImportSource(childComponent->importSource(), true);
-            }
         }
         childComponentNode = childComponentNode->next();
-    }
-    if ((parentComponent != nullptr) && (parentComponent->isImport())) {
-        model->addImportSource(parentComponent->importSource(), true);
     }
 
     return parentComponent;
@@ -1087,6 +1081,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
 void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
 {
     XmlNodePtr componentRefNode = node;
+//    model->removeAllImportSources();
     while (componentRefNode) {
         ComponentPtr parentComponent = nullptr;
         std::string encapsulationId;

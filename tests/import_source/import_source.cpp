@@ -62,95 +62,6 @@ TEST(ImportSource, addToModel)
     EXPECT_EQ(imp3, model->importSource(2));
 }
 
-TEST(ImportSource, importSourceDetailsCoverage)
-{
-    auto model = libcellml::Model::create("importing_model");
-    auto imp = libcellml::ImportSource::create();
-    auto component1 = libcellml::Component::create("Bart");
-    auto component2 = libcellml::Component::create("Lisa");
-    auto units1 = libcellml::Units::create("Maggie");
-    auto units2 = libcellml::Units::create("Marge");
-
-    model->addComponent(component1);
-    model->addComponent(component2);
-    model->addUnits(units1);
-    model->addUnits(units2);
-
-    model->addImportSource(imp);
-    EXPECT_TRUE(model->hasImportSource(imp));
-
-    // Set up component so it's an import.
-    component1->setImportSource(imp);
-
-    EXPECT_TRUE(component1->isImport());
-    EXPECT_EQ(size_t(1), imp->componentCount());
-    EXPECT_EQ(component1, imp->component(0));
-    EXPECT_EQ(nullptr, imp->component(99));
-
-    // Add the other direction, expect false as it's already there.
-    EXPECT_FALSE(imp->addComponent(component1));
-
-    // Add the other component so it's an import.
-    component2->setImportSource(imp);
-    EXPECT_TRUE(component2->isImport());
-    EXPECT_EQ(size_t(2), imp->componentCount());
-    EXPECT_EQ(component2, imp->component(1));
-
-    // Remove a component from the import source by index.
-    EXPECT_TRUE(imp->removeComponent(0));
-    EXPECT_EQ(size_t(1), imp->componentCount());
-    EXPECT_FALSE(component1->isImport());
-
-    // Remove component by pointer.
-    EXPECT_TRUE(imp->removeComponent(component2));
-    EXPECT_FALSE(component2->isImport());
-    EXPECT_EQ(size_t(0), imp->componentCount());
-
-    // Remove a component that doesn't exist.
-    EXPECT_FALSE(imp->removeComponent(99));
-    EXPECT_FALSE(imp->removeComponent(component2));
-    libcellml::ComponentPtr nullComponent = nullptr;
-    EXPECT_FALSE(imp->removeComponent(nullComponent));
-
-    // Set up units so it's an import.
-    units1->setImportSource(imp);
-
-    EXPECT_TRUE(units1->isImport());
-    EXPECT_EQ(size_t(1), imp->unitsCount());
-    EXPECT_EQ(units1, imp->units(0));
-    EXPECT_EQ(nullptr, imp->units(99));
-
-    // Add the other direction, expect false as it's already there.
-    EXPECT_FALSE(imp->addUnits(units1));
-
-    // Add the other units so it's an import.
-    units2->setImportSource(imp);
-    EXPECT_TRUE(units2->isImport());
-    EXPECT_EQ(size_t(2), imp->unitsCount());
-    EXPECT_EQ(units2, imp->units(1));
-
-    // Remove a units from the import source by index.
-    EXPECT_TRUE(imp->removeUnits(0));
-    EXPECT_EQ(size_t(1), imp->unitsCount());
-    EXPECT_FALSE(units1->isImport());
-
-    // Remove units by pointer.
-    EXPECT_TRUE(imp->removeUnits(units2));
-    EXPECT_FALSE(units2->isImport());
-
-    // Remove a units that doesn't exist.
-    EXPECT_FALSE(imp->removeUnits(99));
-    EXPECT_FALSE(imp->removeUnits(units2));
-    libcellml::UnitsPtr nullUnits = nullptr;
-    EXPECT_FALSE(imp->removeUnits(nullUnits));
-
-    EXPECT_TRUE(model->removeImportSource(0));
-    EXPECT_FALSE(model->removeImportSource(0));
-    model->addImportSource(imp);
-    EXPECT_TRUE(model->removeImportSource(imp));
-    EXPECT_FALSE(model->removeImportSource(imp));
-}
-
 TEST(ImportSource, importSourceMove)
 {
     auto imp1 = libcellml::ImportSource::create();
@@ -167,15 +78,9 @@ TEST(ImportSource, importSourceMove)
 
     EXPECT_TRUE(component->isImport());
     EXPECT_TRUE(units->isImport());
-    EXPECT_EQ(size_t(1), imp1->componentCount());
-    EXPECT_EQ(size_t(1), imp1->unitsCount());
 
     component->setImportSource(imp2);
     units->setImportSource(imp2);
-    EXPECT_EQ(size_t(0), imp1->componentCount());
-    EXPECT_EQ(size_t(0), imp1->unitsCount());
-    EXPECT_EQ(size_t(1), imp2->componentCount());
-    EXPECT_EQ(size_t(1), imp2->unitsCount());
     EXPECT_TRUE(component->isImport());
     EXPECT_TRUE(units->isImport());
 }
@@ -287,8 +192,6 @@ TEST(ImportSource, createLinkedMultiple)
     u1->setImportSource(imp);
     u2->setImportSource(imp);
 
-    EXPECT_EQ(size_t(2), imp->componentCount());
-    EXPECT_EQ(size_t(2), imp->unitsCount());
     EXPECT_EQ(size_t(1), model->importSourceCount());
 
     // Change to another import source:
@@ -296,18 +199,12 @@ TEST(ImportSource, createLinkedMultiple)
     c2->setImportSource(imp2);
     u2->setImportSource(imp2);
 
-    EXPECT_EQ(size_t(1), imp->componentCount());
-    EXPECT_EQ(size_t(1), imp->unitsCount());
-    EXPECT_EQ(size_t(1), imp2->componentCount());
-    EXPECT_EQ(size_t(1), imp2->unitsCount());
     EXPECT_EQ(size_t(2), model->importSourceCount());
 
-    imp->removeAllComponents();
-    imp->removeAllUnits();
-    EXPECT_EQ(size_t(0), imp->componentCount());
-    EXPECT_EQ(size_t(0), imp->unitsCount());
-    EXPECT_FALSE(c1->isImport());
-    EXPECT_FALSE(u1->isImport());
+    EXPECT_TRUE(c1->isImport());
+    EXPECT_TRUE(u1->isImport());
+    EXPECT_TRUE(c2->isImport());
+    EXPECT_TRUE(u2->isImport());
 }
 
 TEST(ImportSource, addImportComponentBeforeAddingToModel)

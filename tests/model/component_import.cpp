@@ -18,6 +18,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 /**
  * @todo Need a way to have resources which can be used in tests, such as the
  * source models used in these tests. But I guess not until we start validating
@@ -311,6 +313,8 @@ TEST(ComponentImport, complexImportAndParse)
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    printIssues(parser);
     a = printer->printModel(model);
     EXPECT_EQ(e, a);
 

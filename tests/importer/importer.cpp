@@ -55,7 +55,7 @@ TEST(Importer, noWarningDiamondImport)
 TEST(Importer, warningCircularImportReferencesComponent)
 {
     const std::string errorMessage =
-        "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to resolve component in model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
         " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
         " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
@@ -647,9 +647,12 @@ TEST(Importer, importEncapsulatedChildren)
     auto model = parser->parseModel(fileContents("importer/trunk.cellml"));
 
     importer->resolveImports(model, resourcePath("importer/"));
+    printIssues(importer);
     EXPECT_FALSE(model->hasUnresolvedImports());
     EXPECT_EQ(size_t(2), importer->libraryCount());
+    printIssues(importer);
     auto flat = importer->flattenModel(model);
+    printIssues(importer);
     EXPECT_EQ(flatModelString, printer->printModel(flat));
 }
 

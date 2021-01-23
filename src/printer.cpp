@@ -401,6 +401,9 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
 {
     std::string repr;
 
+    std::vector<UnitsPtr> importedUnits = getImportedUnits(model);
+    std::vector<ComponentPtr> importedComponents = getImportedComponents(model);
+
     for (size_t i = 0; i < model->importSourceCount(); ++i) {
         auto importSource = model->importSource(i);
 
@@ -412,26 +415,28 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
         }
         repr += ">";
 
-        for (size_t c = 0; c < importSource->componentCount(); ++c) {
-            auto component = importSource->component(c);
-            repr += "<component component_ref=\"" + component->importReference() + "\" name=\"" + component->name() + "\"";
-            if (!component->id().empty()) {
-                repr += " id=\"" + component->id() + "\"";
-            } else if (autoIds) {
-                repr += " id=\"" + makeUniqueId(idList) + "\"";
-            }
-            repr += "/>";
-        }
 
-        for (size_t u = 0; u < importSource->unitsCount(); ++u) {
-            auto units = importSource->units(u);
-            repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
-            if (!units->id().empty()) {
-                repr += " id=\"" + units->id() + "\"";
-            } else if (autoIds) {
-                repr += " id=\"" + makeUniqueId(idList) + "\"";
+        for (const UnitsPtr &units : importedUnits) {
+            if (units->importSource() == importSource) {
+                repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
+                if (!units->id().empty()) {
+                    repr += " id=\"" + units->id() + "\"";
+                } else if (autoIds) {
+                    repr += " id=\"" + makeUniqueId(idList) + "\"";
+                }
+                repr += "/>";
             }
-            repr += "/>";
+        }
+        for (const ComponentPtr &component : importedComponents) {
+            if (component->importSource() == importSource) {
+                repr += "<component component_ref=\"" + component->importReference() + "\" name=\"" + component->name() + "\"";
+                if (!component->id().empty()) {
+                    repr += " id=\"" + component->id() + "\"";
+                } else if (autoIds) {
+                    repr += " id=\"" + makeUniqueId(idList) + "\"";
+                }
+                repr += "/>";
+            }
         }
         repr += "</import>";
     }

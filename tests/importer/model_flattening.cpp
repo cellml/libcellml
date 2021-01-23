@@ -846,13 +846,13 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
 TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 {
     const std::string resolveError =
-        "Cyclic dependencies were found when attempting to resolve components in model 'importExample2b'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to resolve component in model 'importExample2b'. The dependency loop is:\n"
         " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
         " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml'.";
     const std::string flattenError =
-        "Cyclic dependencies were found when attempting to flatten components in model 'importExample2b'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to flatten component in model 'importExample2b'. The dependency loop is:\n"
         " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
         " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
