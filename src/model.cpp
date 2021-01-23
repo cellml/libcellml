@@ -47,10 +47,12 @@ namespace libcellml {
 struct Model::ModelImpl
 {
     std::vector<UnitsPtr> mUnits;
-    std::vector<ImportSourcePtr> mImports;
+    std::vector<ImportSourceWeakPtr> mImports;
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
+
+    void cleanExpiredImportSources();
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -147,13 +149,9 @@ bool Model::removeUnits(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        auto units = *(mPimpl->mUnits.begin() + int64_t(index));
-        if (units->isImport()) {
-            units->importSource()->removeUnits(units);
-        }
-
+        auto units = *(mPimpl->mUnits.begin() + ptrdiff_t(index));
         units->removeParent();
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ptrdiff_t(index));
         status = true;
     }
 
@@ -166,11 +164,7 @@ bool Model::removeUnits(const std::string &name)
     auto result = mPimpl->findUnits(name);
     if (result != mPimpl->mUnits.end()) {
         auto units = (*result);
-        if (units->isImport()) {
-            units->importSource()->removeUnits(units);
-        }
-
-        (*result)->removeParent();
+        units->removeParent();
         mPimpl->mUnits.erase(result);
         status = true;
     }
@@ -183,14 +177,6 @@ bool Model::removeUnits(const UnitsPtr &units)
     bool status = false;
     auto result = mPimpl->findUnits(units);
     if (result != mPimpl->mUnits.end()) {
-        if (units->isImport()) {
-            // Creating a copy of the units: the units to be removed can be
-            // found using the name or reference, so we don't need to alter
-            // the const state of the argument.
-            auto copy = Units::create(units->name());
-            units->importSource()->removeUnits(copy);
-        }
-
         units->removeParent();
         mPimpl->mUnits.erase(result);
         status = true;
@@ -285,12 +271,19 @@ size_t Model::unitsCount() const
     return mPimpl->mUnits.size();
 }
 
-bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
+
+void Model::ModelImpl::cleanExpiredImportSources()
 {
-    return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc) != mPimpl->mImports.end();
+    mImports.erase(std::remove_if(mImports.begin(), mImports.end(), [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSourceWeak.expired(); }), mImports.end());
 }
 
-bool Model::addImportSource(const ImportSourcePtr &importSrc, bool merge)
+bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
+{
+    return std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
+                            [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSrc == importSourceWeak.lock(); }) != mPimpl->mImports.end();
+}
+
+bool Model::addImportSource(const ImportSourcePtr &importSrc)
 {
     if (importSrc == nullptr) {
         return false;
@@ -303,46 +296,24 @@ bool Model::addImportSource(const ImportSourcePtr &importSrc, bool merge)
         otherModel->removeImportSource(importSrc);
     }
     importSrc->setParent(shared_from_this());
-    if (!merge) {
-        // Add an entirely separate copy to the model's list.
-        mPimpl->mImports.push_back(importSrc);
-        return true;
-    }
-    // Otherwise, see whether an import source with the same attributes exists and add to that instead.
-    // NB: This doesn't counteract the "hasImportSource" test above - we're only testing attributes here, not
-    // stored pointers.
-    auto url = importSrc->url();
-    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
-                           [=](const ImportSourcePtr &imp) -> bool { return imp->url() == url; });
-    if (it == mPimpl->mImports.end()) {
-        mPimpl->mImports.push_back(importSrc);
-        return true;
-    }
-    auto existingImportSource = (*it);
-    // Add contents of the given import source into the found one.
-    while (importSrc->componentCount() > 0) {
-        auto component = importSrc->component(0);
-        component->setImportSource(existingImportSource);
-        importSrc->removeComponent(0);
-    }
-    while (importSrc->unitsCount() > 0) {
-        auto units = importSrc->units(0);
-        units->setImportSource(existingImportSource);
-        importSrc->removeUnits(0);
-    }
+    // Add an entirely separate copy to the model's list.
+    mPimpl->mImports.push_back(importSrc);
     return true;
 }
 
 size_t Model::importSourceCount() const
 {
+    mPimpl->cleanExpiredImportSources();
     return mPimpl->mImports.size();
 }
 
 ImportSourcePtr Model::importSource(size_t index) const
 {
+    mPimpl->cleanExpiredImportSources();
+
     ImportSourcePtr importSrc = nullptr;
     if (index < mPimpl->mImports.size()) {
-        importSrc = mPimpl->mImports.at(index);
+        importSrc = mPimpl->mImports.at(index).lock();
     }
 
     return importSrc;
@@ -350,16 +321,17 @@ ImportSourcePtr Model::importSource(size_t index) const
 
 bool Model::removeImportSource(size_t index)
 {
-    bool status = false;
     auto importSrc = importSource(index);
-    status = removeImportSource(importSrc);
-    return status;
+    return removeImportSource(importSrc);
 }
 
 bool Model::removeImportSource(const ImportSourcePtr &importSrc)
 {
+    mPimpl->cleanExpiredImportSources();
+
     bool status = false;
-    auto result = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc);
+    auto result = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
+                               [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSrc == importSourceWeak.lock(); });
     if (result != mPimpl->mImports.end()) {
         importSrc->removeParent();
         mPimpl->mImports.erase(result);
@@ -370,12 +342,14 @@ bool Model::removeImportSource(const ImportSourcePtr &importSrc)
 
 bool Model::removeAllImportSources()
 {
-    bool status = true;
     for (const auto &imp : mPimpl->mImports) {
-        imp->removeParent();
+        auto importSrc = imp.lock();
+        if (importSrc != nullptr) {
+            importSrc->removeParent();
+        }
     }
     mPimpl->mImports.clear();
-    return status;
+    return true;
 }
 
 bool Model::linkUnits()
@@ -462,28 +436,6 @@ void fixComponentUnits(const ModelPtr &model, const ComponentPtr &component)
     }
 }
 
-void fixImportSourceUnits(const ImportSourcePtr &i1, ImportSourcePtr &i2)
-{
-    auto m2 = owningModel(i2);
-
-    // Go through all the imported units in this import source and update their sources.
-    for (size_t index = 0; index < i1->unitsCount(); ++index) {
-        auto u1 = i1->units(index);
-        auto u2 = m2->units(u1->name());
-        u2->setImportSource(i2);
-    }
-}
-
-void fixImportSourceComponents(const ImportSourcePtr &i1, ImportSourcePtr &i2)
-{
-    auto m2 = owningModel(i2);
-    for (size_t index = 0; index < i1->componentCount(); ++index) {
-        auto c1 = i1->component(index);
-        auto c2 = m2->component(c1->name(), true);
-        c2->setImportSource(i2);
-    }
-}
-
 ModelPtr Model::clone() const
 {
     auto m = create();
@@ -506,15 +458,36 @@ ModelPtr Model::clone() const
     }
 
     // Remove all import sources from the cloned model as they will
-    // be duplicates.  The real ones will be copied below.
+    // have lost their associations.  The proper associated imports
+    // will be copied below.
     m->removeAllImportSources();
 
+    auto originalImportedUnits = getImportedUnits(shared_from_this());
+    auto clonedImportedUnits = getImportedUnits(m);
+
+    auto originalImportedComponents = getImportedComponents(shared_from_this());
+    auto clonedImportedComponents = getImportedComponents(m);
+
     for (size_t index = 0; index < importSourceCount(); ++index) {
-        auto i1 = importSource(index);
-        auto i2 = i1->clone();
-        m->addImportSource(i2);
-        fixImportSourceUnits(i1, i2);
-        fixImportSourceComponents(i1, i2);
+        auto originalImportSource = importSource(index);
+        auto clonedImportSource = originalImportSource->clone();
+        m->addImportSource(clonedImportSource);
+
+        // Reset import associations for units.
+        for (size_t indexUnits = 0; indexUnits < originalImportedUnits.size(); ++indexUnits) {
+            auto originalUnits = originalImportedUnits.at(indexUnits);
+            if (originalUnits->importSource() == originalImportSource) {
+                clonedImportedUnits.at(indexUnits)->setImportSource(clonedImportSource);
+            }
+        }
+
+        // Reset import associations for components.
+        for (size_t indexComponents = 0; indexComponents < originalImportedComponents.size(); ++indexComponents) {
+            auto originalComponent = originalImportedComponents.at(indexComponents);
+            if (originalComponent->importSource() == originalImportSource) {
+                clonedImportedComponents.at(indexComponents)->setImportSource(clonedImportSource);
+            }
+        }
     }
 
     // Generate equivalence map starting from the models components.
