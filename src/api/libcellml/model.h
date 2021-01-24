@@ -350,7 +350,7 @@ public:
      * Add import source by reference to the model. If the import
      * source item was previously in a different model, it is moved
      * to this one, and the previous model's import source list is updated.
-     * 
+     *
      * The function will return @c false and no action is taken if:
      *  - The @p importSrc pointer already exists in this model; or
      *  - The @p importSrc is @c nullptr.

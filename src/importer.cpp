@@ -207,23 +207,6 @@ bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
             return true;
         }
     }
-//    for (size_t i = 0; i < model->importSourceCount(); ++i) {
-//        auto importSource = model->importSource(i);
-//        history.clear();
-
-//        for(const UnitsPtr &units : importedUnits) {
-//            if (units->importSource() == importSource && checkUnitsForCycles(model, units, history)) {
-//                return true;
-//            }
-//        }
-
-//        for (const ComponentPtr &component : importedComponents) {
-//            if (component->importSource() == importSource && checkComponentForCycles(model, component, history)) {
-//                return true;
-//            }
-//        }
-
-//    }
 
     return false;
 }
@@ -252,7 +235,6 @@ bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
 
     return false;
 }
-
 
 /**
  * @brief Resolve the path of the given filename using the given base.
