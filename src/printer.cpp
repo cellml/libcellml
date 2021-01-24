@@ -415,7 +415,6 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
         }
         repr += ">";
 
-
         for (const UnitsPtr &units : importedUnits) {
             if (units->importSource() == importSource) {
                 repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";

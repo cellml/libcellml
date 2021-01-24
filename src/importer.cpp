@@ -197,7 +197,7 @@ bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
     auto importedUnits = getImportedUnits(model);
     auto importedComponents = getImportedComponents(model);
 
-    for(const UnitsPtr &units : importedUnits) {
+    for (const UnitsPtr &units : importedUnits) {
         if (checkUnitsForCycles(model, units, history)) {
             return true;
         }
@@ -214,7 +214,7 @@ bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
 bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
 {
     auto importedUnits = getImportedUnits(model);
-    for(const UnitsPtr &units : importedUnits) {
+    for (const UnitsPtr &units : importedUnits) {
         auto importSource = units->importSource();
         auto h = std::make_tuple(units->name(), units->importReference(), importSource->url());
         if (std::find(history.begin(), history.end(), h) != history.end()) {
