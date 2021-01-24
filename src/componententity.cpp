@@ -214,14 +214,8 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
-//        ImportSourcePtr import;
-//        if (foundComponent->isImport()) {
-//            import = foundComponent->importSource();
-//        }
         mPimpl->mComponents.erase(result);
         foundComponent->removeParent();
-        // Add import source back *after* removing parent to prevent duplication.
-//        foundComponent->setImportSource(import);
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
             foundComponent = component(i)->takeComponent(name, searchEncapsulated);
