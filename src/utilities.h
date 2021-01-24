@@ -476,12 +476,12 @@ bool areEquivalentVariables(const VariablePtr &variable1,
  * Test to see if @p entity1 is a child of @p entity2.  Returns @c true if
  * @p entity1 is a child of @p entity2 and @c false otherwise.
  *
- * @param entity1 The @c Entity to test if it is a child of @p entity2.
- * @param entity2 The @c Entity that is potentially the parent of @p entity1.
+ * @param entity1 The @c ParentedEntity to test if it is a child of @p entity2.
+ * @param entity2 The @c ParentedEntity that is potentially the parent of @p entity1.
  *
  * @return @c true if @p entity1 is a child of @p entity2 and @c false otherwise.
  */
-bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
+bool isEntityChildOf(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2);
 
 /**
  * @brief Test to determine if @p entity1 and @p entity2 are siblings.
@@ -489,12 +489,12 @@ bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
  * Test to determine if @p entity1 and @p entity2 are siblings.  Returns
  * @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
  *
- * @param entity1 An @c Entity to test if it is a sibling to @p entity2.
- * @param entity2 An @c Entity to test if it is a sibling to @p entity1.
+ * @param entity1 An @c ParentedEntity to test if it is a sibling to @p entity2.
+ * @param entity2 An @c ParentedEntity to test if it is a sibling to @p entity1.
  *
  * @return @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
  */
-bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
+bool areEntitiesSiblings(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2);
 
 /**
  * @brief Determine the interface type of the @p variable.

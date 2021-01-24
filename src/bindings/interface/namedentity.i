@@ -2,7 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
-%import "entity.i"
+%import "parentedentity.i"
 %import "types.i"
 
 %feature("docstring") libcellml::NamedEntity
