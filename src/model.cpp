@@ -291,12 +291,7 @@ bool Model::addImportSource(const ImportSourcePtr &importSrc)
     if (hasImportSource(importSrc)) {
         return false;
     }
-    auto otherModel = owningModel(importSrc);
-    if (otherModel != nullptr) {
-        otherModel->removeImportSource(importSrc);
-    }
-    importSrc->setParent(shared_from_this());
-    // Add an entirely separate copy to the model's list.
+
     mPimpl->mImports.push_back(importSrc);
     return true;
 }
@@ -333,7 +328,6 @@ bool Model::removeImportSource(const ImportSourcePtr &importSrc)
     auto result = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
                                [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSrc == importSourceWeak.lock(); });
     if (result != mPimpl->mImports.end()) {
-        importSrc->removeParent();
         mPimpl->mImports.erase(result);
         status = true;
     }
@@ -342,12 +336,6 @@ bool Model::removeImportSource(const ImportSourcePtr &importSrc)
 
 bool Model::removeAllImportSources()
 {
-    for (const auto &imp : mPimpl->mImports) {
-        auto importSrc = imp.lock();
-        if (importSrc != nullptr) {
-            importSrc->removeParent();
-        }
-    }
     mPimpl->mImports.clear();
     return true;
 }
