@@ -271,7 +271,6 @@ size_t Model::unitsCount() const
     return mPimpl->mUnits.size();
 }
 
-
 void Model::ModelImpl::cleanExpiredImportSources()
 {
     mImports.erase(std::remove_if(mImports.begin(), mImports.end(), [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSourceWeak.expired(); }), mImports.end());
@@ -280,7 +279,8 @@ void Model::ModelImpl::cleanExpiredImportSources()
 bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
 {
     return std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
-                            [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSrc == importSourceWeak.lock(); }) != mPimpl->mImports.end();
+                        [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSrc == importSourceWeak.lock(); })
+           != mPimpl->mImports.end();
 }
 
 bool Model::addImportSource(const ImportSourcePtr &importSrc)
