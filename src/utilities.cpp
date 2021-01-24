@@ -188,8 +188,8 @@ std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &c
         }
 
         auto childImportedComponents = getImportedComponents(component);
-        importedComponents.reserve(importedComponents.size() + distance(childImportedComponents.begin(),childImportedComponents.end()));
-        importedComponents.insert(importedComponents.end(),childImportedComponents.begin(),childImportedComponents.end());
+        importedComponents.reserve(importedComponents.size() + childImportedComponents.size());
+        importedComponents.insert(importedComponents.end(), childImportedComponents.begin(), childImportedComponents.end());
     }
 
     return importedComponents;
