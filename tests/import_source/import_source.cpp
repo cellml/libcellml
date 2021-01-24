@@ -26,6 +26,13 @@ TEST(ImportSource, createImportSource)
     EXPECT_NE(nullptr, imp1);
 }
 
+TEST(ImportSource, addImportSourceBadInput)
+{
+    auto model = libcellml::Model::create();
+
+    EXPECT_FALSE(model->addImportSource(nullptr));
+}
+
 TEST(ImportSource, addToModel)
 {
     auto model = libcellml::Model::create("so_much_importing");
@@ -60,6 +67,40 @@ TEST(ImportSource, addToModel)
     EXPECT_TRUE(model->addImportSource(imp3));
     EXPECT_EQ(size_t(3), model->importSourceCount());
     EXPECT_EQ(imp3, model->importSource(2));
+}
+
+TEST(ImportSource, removeImportSourceByIndex)
+{
+    auto model = libcellml::Model::create("remove_import_source");
+
+    auto importSource = libcellml::ImportSource::create();
+
+    model->addImportSource(importSource);
+
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    EXPECT_TRUE(model->removeImportSource(0));
+
+    EXPECT_EQ(size_t(0), model->importSourceCount());
+
+    EXPECT_FALSE(model->removeImportSource(0));
+}
+
+TEST(ImportSource, removeImportSourceByReference)
+{
+    auto model = libcellml::Model::create("remove_import_source");
+
+    auto importSource = libcellml::ImportSource::create();
+
+    model->addImportSource(importSource);
+
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    EXPECT_TRUE(model->removeImportSource(importSource));
+
+    EXPECT_EQ(size_t(0), model->importSourceCount());
+
+    EXPECT_FALSE(model->removeImportSource(importSource));
 }
 
 TEST(ImportSource, importSourceMove)
