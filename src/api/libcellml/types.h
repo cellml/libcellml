@@ -71,6 +71,8 @@ class ImportSource; /**< Forward declaration of ImportSource class. */
 using ImportSourcePtr = std::shared_ptr<ImportSource>; /**< Type definition for shared import source pointer. */
 class Model; /**< Forward declaration of Model class. */
 using ModelPtr = std::shared_ptr<Model>; /**< Type definition for shared model pointer. */
+class ParentedEntity; /**< Forward declaration of parented entity class. */
+using ParentedEntityPtr = std::shared_ptr<ParentedEntity>; /**< Type definition for shared parented entity pointer. */
 class Reset; /**< Forward declaration of Reset class. */
 using ResetPtr = std::shared_ptr<Reset>; /**< Type definition for shared reset pointer. */
 class Unit; /**< Forward declaration of Unit class. */

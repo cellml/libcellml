@@ -56,8 +56,8 @@ using UnitsWeakPtr = std::weak_ptr<Units>; /**< Type definition for weak units p
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
 using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Type definition for shared component entity const pointer. */
-using EntityConstPtr = std::shared_ptr<const Entity>; /**< Type definition for shared entity const pointer. */
 using ModelConstPtr = std::shared_ptr<const Model>; /**< Type definition for shared model const pointer. */
+using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type definition for shared parented entity const pointer. */
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
