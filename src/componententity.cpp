@@ -235,7 +235,7 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &newComp
 {
     bool status = false;
     auto oldComponent = component(index);
-    EntityPtr parent = nullptr;
+    ParentedEntityPtr parent = nullptr;
     if (oldComponent != nullptr && oldComponent->hasParent()) {
         parent = oldComponent->parent();
     }
