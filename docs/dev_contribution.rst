@@ -1,24 +1,24 @@
-.. Contribution documentation for libCellML
+.. _dev_contribution:
 
 ============
 Contributing
 ============
 
 This document covers the process to follow for getting your changes into the :term:`prime repository`.
-While there are many types of contribution, this section focuses on contributions made through `GitHub <https://github.com/>`_ and `Git <https://git-scm.com/>`_, or in other words assets that are managed using the version control system.
-It is assumed that :doc:`Setup <dev_setup>` and :doc:`Building <dev_building>` have already been read and followed.
+While there are many types of contribution, this section focuses on contributions made through :github:`GitHub<>` and :git:`Git<>` , or in other words assets that are managed using the version control system.
+It is assumed that :ref:`Setup <dev_setup>` and :ref:`Building <dev_building>` have already been read and followed.
 
 .. contents::
 
 Overview
 ========
 
-For any body of work intended for the :term:`prime repository` start with a `GitHub <https://github.com/>`_ issue.
+For any body of work intended for the :term:`prime repository` start with a Github issue.
 The issue can be used to discuss the topic and clarify any problems related to it.
 Once progress has been made towards addressing the issue, a pull request is created that references the issue.
 
 Reviewers provide feedback on the changes by adding comments to the pull request or associated commits.
-The `Buildbot <https://buildbot.net/>`_ ``build/test`` procedure will run each time changes are pushed to the pull request's branch, and the results are displayed in the pull request view.
+The :buildbot:`Buildbot<>` ``build/test`` procedure will run each time changes are pushed to the pull request's branch, and the results are displayed in the pull request view.
 
 Once all the changes and reviews are complete, one of the :term:`prime repository` owners will merge the pull request into the prime repository, onto the ``develop`` branch.
 
@@ -28,7 +28,7 @@ Note that a bug is just a type of issue, and that resolving the bug should have 
 For more details, see the text below.
 
 .. _libcellml-development-process:
-.. figure:: ../images/libCellMLProcesses-DevelopmentProcess.png
+.. figure:: ./images/libCellMLProcesses-DevelopmentProcess.png
    :align: center
    :alt: Developer contribution process.
 
@@ -43,8 +43,8 @@ The issue is the place to discuss the particulars related to the issue, discussi
 Labels
 ------
 
-A `GitHub <https://github.com/>`_ issue may be assigned labels by the project administrators to help identify its status at a glance.
-General labels currently used for libCellML are:
+A Github issue may be assigned labels by the project administrators to help identify its status at a glance.
+General labels currently used for libCellML are: **TODO These are not current?**
 
 * **Bug**: the issue identifies a malfunction in the current codebase.
 * **Feature**: the issue constitutes a request or plan for a new feature.
@@ -55,7 +55,7 @@ General labels currently used for libCellML are:
 * **Needs reviewing**: the issue requires further review from project participants to be complete.
   This may refer to a bug report, contributed code, comments, etc. in the issue.
 
-In addition, a **Platform** label may be used to identify the issue as specific to a given platform (`Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_/`Linux <https://en.wikipedia.org/wiki/Linux>`_/`macOS <https://en.wikipedia.org/wiki/MacOS>`_).
+In addition, a **Platform** label may be used to identify the issue as specific to a given platform.
 **Milestone** labels may be used to project when a feature is expected to be complete and/or indicate the priority of a given issue.
 Higher priority issues will take precedence and therefore be assigned a more immediate (lower) milestone number.
 
@@ -67,22 +67,22 @@ All development work should be carried out on a topic branch, for example any ma
 Before creating a local topic branch, pull the latest changes from the :term:`prime repository` ``develop`` branch.
 
 .. _libcellml-branching:
-.. figure:: ../images/libCellMLProcesses-GitBranching.png
+.. figure:: ./images/libCellMLProcesses-GitBranching.png
    :align: center
    :alt: Git branching illustration.
 
-   `Git <https://git-scm.com/>`_ branching illustration.
+   Git branching illustration.
 
 Following this process will make it easier to have multiple topic branches at once and keep them in-sync with the :term:`prime repository` ``develop`` branch, which will in turn make it easier to manage multiple pull requests.
 
-The following `Git <https://git-scm.com/>`_ command line commands show an example of how to create a topic branch for fixing a (hypothetical) bug described in `issue #123`::
+The following Git commands show an example of how to create a topic branch for fixing a (hypothetical) bug described in `issue #123`::
 
   git fetch prime develop
   git checkout develop # Not required if already on develop branch
   git merge prime/develop
   git checkout -b issue123
 
-Test Driven Development
+Test-driven Development
 =======================
 
 Test driven development entails writing a test that covers the intended functionality (this may require a suite of tests to be written) and no more.
@@ -103,21 +103,21 @@ For simple or obvious bugs, which have fallen through the testing gaps, just the
 GitHub Pull Request
 ===================
 
-Once some changes have been made and local commits committed, push your changes to your `GitHub <https://github.com/>`_ libCellML repository (refer to :numref:`Figure %s <libcellml-branching>`).
+Once some changes have been made and local commits committed, push your changes to your Github libCellML repository (refer to :numref:`Figure %s <libcellml-branching>`).
 From there, create a pull request from your topic branch to the :term:`prime repository` ``develop`` branch.
 When creating the pull request, make sure to add in the comment ``Addresses issue #123`` (of course, replace the number 123 with the actual number of the issue you are addressing), or something to that effect.
 This will create a link between the issue and the pull request enabling other people to see that you are working on this issue and comment on your work.
 
-The following `Git <https://git-scm.com/>`_ command line commands show an example of how to add all files, commit the changes and push them to a `GitHub <https://github.com/>`_ repository for the first time::
+The following Git commands show an example of how to add all files, commit the changes and push them to a Github repository for the first time::
 
   git add .
   git commit -m "Descriptive message about the changes made."
   git push -u origin issue123
 
-The ``git add`` and ``git commit`` commands should be obvious, the ``git push`` command sets the local branch ``issue123`` to be linked with the remote branch ``issue123`` in the origin (the default shorthand for your libCellML repository on `GitHub <https://github.com/>`_) repository.
+The ``git add`` and ``git commit`` commands should be obvious, the ``git push`` command sets the local branch ``issue123`` to be linked with the remote branch ``issue123`` in the origin (the default shorthand for your libCellML repository on Github) repository.
 This branch will be created in the origin repository if it does not already exist.
 
-To create a pull request from one `GitHub <https://github.com/>`_ repository to another, follow the instructions `here <https://help.github.com/articles/creating-a-pull-request/>`_.
+To create a pull request from one Github repository to another, follow the instructions for :github_help:`creating Github pull requests</articles/creating-a-pull-request/>` .
 
 Satisfy Comments
 ================
@@ -140,4 +140,4 @@ For small submissions, it is sufficient for the second owner to show satisfactio
 For larger submissions one of the owners will post a comment on the issue notifying subscribers that they intend to merge the pull request.
 If no further objections are raised, the pull request will be merged and closed.
 
-A little reminder for the repository owners to check that the :doc:`Review Process <dev_review>` has been followed/(is going to be followed) when merging the pull request.
+A little reminder for the repository owners to check that the :ref:`Review Process <dev_review>` has been followed/(is going to be followed) when merging the pull request.

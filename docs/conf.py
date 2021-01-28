@@ -32,6 +32,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
+    'sphinx.ext.extlinks',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -42,6 +43,45 @@ source_suffix = '.rst'
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
+
+# These are the shorthand for external links.  Use them in the other pages as:
+#   :shortcut:`Shortcut text <extra string if needed>` NB space before <
+# Declare below as:
+#   'shortcut': ('http://linkhere/%s',''), NB have to put the string insertion %s to make it work
+extlinks = {
+    # NB for deployment outside of the libcellml.org domain, you will need to include the root of the href for the
+    # :api: shortcut here.  This only works internally.
+    'api': ('/documentation/api/latest/classlibcellml_1_1%s', ''),  
+    'buildbot': ('https://buildbot.net/%s',''),
+    'cellml': ('https://www.cellml.org/%s',''),
+    'clang': ('https://clang.llvm.org/%s',''),
+    'cmake': ('https://cmake.org/%s',''),
+    'doxygen': ('http://www.doxygen.nl/%s',''),
+    'forcescheduler': ('http://docs.buildbot.net/latest/developer/cls-forcesched.html%s',''),
+    'gcc': ('https://gcc.gnu.org/%s',''),
+    'gcovr': ('https://gcovr.com/%s',''),
+    'git': ('https://git-scm.com/%s',''),
+    'github': ('https://github.com/%s',''),
+    'github_desktop': ('https://desktop.github.com/%s',''),
+    'github_help': ('https://help.github.com%s',''),
+    'github_rtd': ('https://github.com/rtfd/readthedocs.org/issues%s',''),
+    'google_style_guide': ('https://google.github.io/styleguide/cppguide.html%s',''),
+    'google_style_bad': ('https://www.linkedin.com/pulse/20140503193653-3046051-why-google-style-guide-for-c-is-a-deal-breaker%s',''),
+    'graphviz': ('http://graphviz.org%s',''),
+    'htpasswd': ('https://httpd.apache.org/docs/current/programs/htpasswd.html%s',''),
+    'libcellml_buildbot': ('http://autotest.bioeng.auckland.ac.nz/libcellml-buildbot/builders%s',''),
+    'libxml2': ('http://xmlsoft.org/%s',''),
+    'mathml': ('https://www.w3.org/Math/%s',''),
+    'msvs': ('https://visualstudio.microsoft.com%s',''),
+    'opencmiss_repo': ('https://github.com/OpenCMISS-Dependencies/libxml2/releases%s',''),
+    'python': ('https://www.python.org/%s',''),
+    'sphinx': ('http://www.sphinx-doc.org/en/master/%s',''),
+    'swig':('http://swig.org%s',''),
+    'swigwin_download': ('https://sourceforge.net/projects/swig/files/swigwin/%s',''),
+    'wikipedia': ('https://en.wikipedia.org/wiki%s',''),
+    'xml': ('https://www.w3.org/XML/%s',''),
+
+}
 
 # The master toctree document.
 master_doc = 'index'

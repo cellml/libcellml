@@ -1,10 +1,10 @@
-.. devcodingstandard::
+.. _dev_coding_standards:
 
 ===============
 Coding Standard
 ===============
 
-The coding standard for libCellML follows that specified in the `Google C++ Style Guide <https://google.github.io/styleguide/cppguide.html>`_, but it does not have to be followed to the letter, `other people <https://www.linkedin.com/pulse/20140503193653-3046051-why-google-style-guide-for-c-is-a-deal-breaker>`_ have not so positive opinions about the quality of the google style guide.
+The coding standard for libCellML follows that specified in the :google_style_guide:`Google C++ Style Guide<>`, but it does not have to be followed to the letter, :google_style_bad:`other people<>` have not so positive opinions about the quality of the Google style guide.
 The coding standard in use for libCellML is in evidence in the code itself, so new code should be consistent with what is already there.
 
 In essence, we seek code that looks good, is easy to read and has great documentation.
@@ -13,8 +13,8 @@ We do not want to spend time discussing the minutiae of the coding style.
 The following is a list of exceptions/deviations from the Google style guide that have been agreed upon for libCellML software development purposes.
 Think of it like case-law.
 
- * `Lower camel case <https://en.wikipedia.org/wiki/Camel_case>`__ class method names.
- * Indent core code 4 spaces at a time (no tabs); for `CMake <https://cmake.org/>`__ files use 2-space indentation.
+ * :wikipedia:`Lower camel case</Camel_case>` class method names.
+ * Indent core code 4 spaces at a time (no tabs); for CMake files use 2-space indentation.
 
 Doxygen Comments
 ================
