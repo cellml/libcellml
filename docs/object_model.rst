@@ -8,20 +8,19 @@ Introduction
 ============
 
 The object model described by this document is a very high level conceptual design.
-The focus is on a design to support the initial use cases from the use case document :doc:`Use-cases for libCellML <usecases>`.
 This document is organic and is expected to change in accordance with community decisions/discussion.
 
 Overview of Object Model
 ========================
 
-.. figure:: ../images/libCellMLRoughObjectModel-Overview.png
+.. figure:: ./images/libCellMLRoughObjectModel-Overview.png
    :alt: libCellML Overview Object Model.
 
 Detailed
 ========
 
-.. figure:: ../images/libCellMLRoughObjectModel-Entities.png
+.. figure:: ./images/libCellMLRoughObjectModel-Entities.png
    :alt: libCellML Object Model.
 
-.. figure:: ../images/libCellMLRoughObjectModel-IOError.png
+.. figure:: ./images/libCellMLRoughObjectModel-IOError.png
    :alt: libCellML Object Model.

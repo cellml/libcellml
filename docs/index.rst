@@ -1,11 +1,11 @@
-.. libCellML documentation master file, created by
-   sphinx-quickstart on Mon Jun  9 21:58:16 2014.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. _dev_index:
 
-=======================
-libCellML Documentation
-=======================
+====================
+Developer Guidelines
+====================
+
+This section covers the process to follow for getting your changes into the :term:`prime repository`.
+While there are many types of contribution, this section focuses on contributions made using :github:`GitHub<>` and :git:`Git<>`, the version control system.
 
 Contents:
 =========
@@ -14,30 +14,21 @@ Contents:
    :maxdepth: 2
    :titlesonly:
 
-   roadmap
-   current_thinking
-   getting_started
-   developer/index
-   api_documentation
+   object_model
+   dev_setup
+   dev_building
+   dev_testing_code
+   dev_contribution
+   dev_review
+   dev_coding_standards
    coverage_statistics
    glossary
+   roadmap
+   current_thinking
 
 .. toctree::
    :hidden:
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-Supported by:
-==============
-
-.. figure:: images/vpr.png
-   :target: http://www.virtualrat.org
-   :width: 50%
-.. figure:: images/abi.png
-   :target: http://www.abi.auckland.ac.nz
-   :width: 50%
+   dev_configuration_options
+   dev_configuration_options_gui
+   dev_versions
