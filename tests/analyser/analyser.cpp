@@ -1074,5 +1074,3 @@ TEST(Generator, validateMultiplierInMathMLStrings)
     EXPECT_EQ(size_t(5), generator->errorCount());
 }
 */
-
-
