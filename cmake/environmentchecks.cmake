@@ -121,7 +121,17 @@ else()
 endif()
 
 if(CLANG_FORMAT_EXE AND GIT_EXE)
-  set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
+  set(CLANG_FORMAT_VERSION_MINIMUM 11)
+  execute_process(COMMAND ${CLANG_FORMAT_EXE} -version
+                  OUTPUT_VARIABLE CLANG_FORMAT_VERSION
+                  ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REGEX REPLACE "clang-format version ([.0-9]+).*" "\\1" CLANG_FORMAT_VERSION "${CLANG_FORMAT_VERSION}")
+
+  if(CLANG_FORMAT_VERSION VERSION_LESS CLANG_FORMAT_VERSION_MINIMUM)
+    message(STATUS "ClangFormat ${CLANG_FORMAT_VERSION} was found, but version ${CLANG_FORMAT_VERSION_MINIMUM}+ is needed to run the ClangFormat test")
+  else()
+    set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
+  endif()
 endif()
 
 if(CLANG_TIDY_EXE)
