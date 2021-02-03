@@ -13,9 +13,6 @@ The variable :code:`LIBCELLML_SRC` shall be used to refer to the directory conta
 
 .. contents::
 
-
-Directory structure
-===================
 It is best to build libCellML outside of the source tree.
 To this end, create a build directory that is not the :code:`LIBCELLML_SRC` directory.
 A sibling directory of :code:`LIBCELLML_SRC` is a good choice, named something like :code:`build` or :code:`libcellml-build`.
@@ -128,7 +125,7 @@ Once you’ve checked and set this path, push *Configure* again.
 The configuration process should run successfully now, but there may be a few extra things you need to check before proceeding to generate the build files.  
 These are listed below.
 
-===============
+
 Troubleshooting
 ===============
 
