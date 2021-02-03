@@ -982,6 +982,34 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
+TEST(Generator, validateUnitsInMathmlStrings)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/validate_units_in_mathml_strings.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(6), analyser->issueCount());
+}
+
+TEST(Generator, validateMultiplierInMathmlStrings)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/validate_multiplier_in_mathml_strings.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(5), analyser->issueCount());
+}
+
 TEST(Analyser, coverage)
 {
     auto analyser = libcellml::Analyser::create();
@@ -1043,34 +1071,3 @@ TEST(Analyser, coverage)
     ast->setVariable(libcellml::Variable::create());
     ast->setParent(libcellml::AnalyserEquationAst::create());
 }
-
-/*
-* Old validator tests, the tests have been moved to tests/resources/analyser in the source code.
-TEST(Generator, validateUnitsInMathMLStrings)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/validate_units_in_model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->errorCount());
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ(size_t(6), generator->errorCount());
-}
-
-TEST(Generator, validateMultiplierInMathMLStrings)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/validate_multiplier_in_model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->errorCount());
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ(size_t(5), generator->errorCount());
-}
-*/
