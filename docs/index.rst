@@ -7,28 +7,28 @@ Developer Guidelines
 This section covers the process to follow for getting your changes into the :term:`prime repository`.
 While there are many types of contribution, this section focuses on contributions made using :github:`GitHub<>` and :git:`Git<>`, the version control system.
 
-Contents:
-=========
+1. :ref:`Development setup<dev_setup>` : Instructions for getting your own copy of libCellML for development purposes.
+#. :ref:`Dependency versions and compatibility<dev_versions>` : Dependencies and requirements for a development set-up.
+#. :ref:`Configuring and building libCellML<dev_building>` : How to build libCellML from source code.
+#. :ref:`Testing libCellML<dev_testing>` : How to test your code without opening a pull request.
+#. :ref:`Contributing to libCellML<dev_contribution>` : Getting your code into the libCellML prime repository.
+#. :ref:`Review process<dev_review>` : Instructions for code review and responding to comments.
+#. :ref:`Coding Standards<dev_coding_standards>` : Guidelines for coding style and standards for contributions.
+#. :ref:`Glossary<glossary>` : Glossary of terminology
 
-.. toctree::
-   :maxdepth: 2
-   :titlesonly:
+.. container:: quicklinks
 
-   object_model
-   dev_setup
-   dev_building
-   dev_testing_code
-   dev_contribution
-   dev_review
-   dev_coding_standards
-   coverage_statistics
-   glossary
-   roadmap
-   current_thinking
+   :ref:`Development setup<dev_setup>`
+   :ref:`Dependency versions and compatibility<dev_versions>`
+   :ref:`Configuring and building libCellML<dev_building>`
+   :ref:`Testing libCellML<dev_testing>`
+   :ref:`Contributing to libCellML<dev_contribution>` 
+   :ref:`Review Process<dev_review>`
+   :ref:`Coding Standards<dev_coding_standards>`
+   :ref:`Glossary<glossary>` 
 
 .. toctree::
    :hidden:
+   :glob:
 
-   dev_configuration_options
-   dev_configuration_options_gui
-   dev_versions
+   *

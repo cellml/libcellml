@@ -1,4 +1,4 @@
-.. _dev_version:
+.. _dev_versions:
 
 =====================================
 Dependency versions and compatibility
