@@ -1,30 +1,32 @@
 .. _dev_setup:
 
 =================
-Development Setup
+Development setup
 =================
 
 This section describes how someone wanting to contribute to the libCellML project should set up their *working copy* for developing libCellML.
-
-.. contents::
 
 Overview
 ========
 
 The libCellML codebase is hosted on :github:`Github<>` and therefore :git:`Git<>` is used to track changes. Before you begin, you will need to have a few pre-requisites satisfied:
 
-1. :github:`Github<>` user account (for the rest of this document we will call our user *andre*);
-#. :git:`Git<>` for tracking changes in code;
-#. :cmake:`CMake<>` to configure the build files;
-#. Toolchain for building the library (dependent on the operating system);
-#. :libxml2:`LibXml2<>`, an external library used to parse XML; and
-#. :doxygen:`Doxygen<>` to generate documentation.
+.. container:: shortlist
+
+  1. :github:`Github<>` user account (for the rest of this document we will call our user *andre*);
+  #. :git:`Git<>` for tracking changes in code;
+  #. :cmake:`CMake<>` to configure the build files;
+  #. Toolchain for building the library (dependent on the operating system);
+  #. :libxml2:`LibXml2<>`, an external library used to parse XML; and
+  #. :doxygen:`Doxygen<>` to generate documentation.
 
 If Python bindings are required, the following packages are also needed:
 
-a. :python:`Python<>` Version 3.5.2 or later is needed for Sphinx (see below)
-#. :swig:`SWIG<>` to generate the bindings for Python
-#. :sphinx:`Sphinx<>` to generate documentation for Python bindings
+.. container:: shortlist
+
+  a. :python:`Python<>` Version 3.5.2 or later is needed for Sphinx (see below)
+  #. :swig:`SWIG<>` to generate the bindings for Python
+  #. :sphinx:`Sphinx<>` to generate documentation for Python bindings
 
 
 Pre-requisite acquisition
@@ -46,7 +48,7 @@ Installing a Git client is particular to each operating system and some pointers
   - `GitKracken <https://www.gitkraken.com/>`__
   - `Git SCM <https://git-scm.com/>`__
 
-- **Linux** Git can be installed using the package manager with the command ``sudo apt-get install git``.
+- **Linux** Git can be installed using the package manager with the command :code:`sudo apt-get install git`.
 - **macOS** Git is pre-installed and available from the command line.
 
 
@@ -63,7 +65,7 @@ Again, installation of CMake is particular to each operating system.
 
 - **Windows** CMake provides :cmake:`installation binaries</download/>` .
   Choose the binary appropriate for your operating system and follow the installation instructions.
-- **Linux** CMake can be installed using the package manager with the command ``sudo apt-get install cmake``.
+- **Linux** CMake can be installed using the package manager with the command :code:`sudo apt-get install cmake`.
 - **macOS** CMake provides :cmake:`installation binaries</download/>` .
   Choose the binary appropriate for your operating system and follow the installation instructions.
 
@@ -77,59 +79,48 @@ The toolchain specifies the compiler that we will use to build libCellML.
 Toolchains are highly dependent on the operating system.
 When we test libCellML, we currently use:
 
-- **Windows** :msvs`Microsoft Visual Studio<>` ;
+- **Windows** :msvs:`Microsoft Visual Studio<>` ;
 - **Linux** :gcc:`GCC<>` ; and
 - **macOS** :clang:`Clang<>` .
 
 We recommend using these compilers on these systems, but feel free to use a different toolchain.
-
 The following sub-sections provide guidance on how to install the recommended toolchain on the major operating systems that libCellML supports.
 
-Windows
-+++++++
-
-Visual Studio is available to download from :msvs:`the MSVS download page</downloads/>`.
-We currently test with Visual Studio 2015 (version 14), but later versions are known to work.
-The *Community* edition is more than sufficient for the needs of libCellML.
-To minimize the size of the installation, you may install only the C++ compiler.
-This component (and its requirements) is sufficient for building libCellML.
-
-Linux
-+++++
-(todo)
-
-MacOS
-+++++
-(todo)
-
+- **Windows** Visual Studio is available to download from :msvs:`the MSVS download page</downloads/>`.
+  We currently test with Visual Studio 2015 (version 14), but later versions are known to work.
+  The *Community* edition is more than sufficient for the needs of libCellML.
+  To minimise the size of the installation, you may install only the C++ compiler.
+  This component (and its requirements) is sufficient for building libCellML.
+- **Linux** TODO
+- **macOS** TODO
 
 .. _dev_setup_libxml2:
 
 LibXml2
 -------
-
 :libxml2:`LibXml2<>` is a parser and toolkit for manipulating XML files and text.  
 It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.  
 
 - **Windows** On Windows, it's easiest to install using the packaged version available from :opencmiss_repo:`the OpenCMISS site<>` .
   You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.  
   Source code for building it yourself can be downloaded from the :libxml2:`LibXml2<>` site.
-- **Linux** LibXml2 can be installed using ``sudo apt install libxml2-dev``.
+- **Linux** LibXml2 can be installed using :code:`sudo apt install libxml2-dev`.
 - **macOS** LibXML2 is already installed on macOS, so no further action is required on that platform.  
 
 .. _dev_setup_doxygen:
 
 Doxygen
 -------
-
 :doxygen:`Doxygen<>` is software which assembles documentation files directly from annotated source code, including the generation of inheritance and dependency tree diagrams for classes.  
 In order for libCellML to build its documentation you will need to have Doxygen and its dependencies installed.  
 Note that this does not affect your use of the libCellML library itself. 
 
-Binary distributions for Linux, Windows, and MacOS are available from the :doxygen:`download page of the Doxygen website </download.html#srcbin>` , and source code is available there too.
+- **Windows** Binary distributions are available from the :doxygen:`download page of the Doxygen website </download.html#srcbin>`.
+  You may also need to download and install the Graphviz package in order to generate the class hierarchy diagrams.
+  You can :graphviz:`download Graphviz</download/>` from their website.
+- **Linux** Binary distributions are available from the :doxygen:`download page of the Doxygen website </download.html#srcbin>`.
+- **macOS** Binary distributions are available from the :doxygen:`download page of the Doxygen website </download.html#srcbin>`.
 
-On Windows you may also need to download and install the Graphviz package in order to generate the class hierarchy diagrams.
-You can :graphviz:`download Graphviz</download/>` from their website.
 
 .. _dev_setup_python:
 
@@ -149,7 +140,6 @@ Note that creation of Python bindings is optional, and can be enabled/disabled a
 
 SWIG for Python bindings (optional)
 -----------------------------------
-
 :swig:`SWIG<>` is a tool which acts as a translator between code written in C++ and other languages, including :python:`Python<>`.  
 Here SWIG is used to generate the optional Python bindings for libCellML.  
 The current version (0.9) of libCellML uses SWIG 4.0.0. 
@@ -158,13 +148,12 @@ The current version (0.9) of libCellML uses SWIG 4.0.0.
 
 - **Linux** Both Python and SWIG are already included, so no further action is needed.  
 
-- **macOS** SWIG for MacOS can be accessed using the :swig:`downloads for Unix/Linux sources</download.html>` and building them locally according to the instructions provided on that page.
+- **macOS** SWIG for macOS can be accessed using the :swig:`downloads for Unix/Linux sources</download.html>` and building them locally according to the instructions provided on that page.
 
 .. _dev_setup_sphinx:
 
 Sphinx for Python documentation (optional)
 ------------------------------------------
-
 :sphinx:`Sphinx<>` is an additional documentation tool used here to assemble documentation of the Python bindings.  
 Instructions for all operating systems can be found on their :sphinx:`Installation page</usage/installation.html>`.
 The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an :github_rtd:`import error</3812>` despite being reported fixed since version Sphinx 1.7.2).  
@@ -174,7 +163,6 @@ The current version (2.0.1) needs Python version 3.5.2 or later (note that Pytho
 
 Setting up the codebase
 =======================
-
 The remainder of this document assumes that the above pre-requisites have been met, and covers setup from the command line.
 If you are using a GUI like :github_desktop:`GitHub Desktop<>` then you will need to adjust the commands accordingly.
 
@@ -194,7 +182,6 @@ The four steps to getting set up are detailed below.
 
 Forking your own copy
 ---------------------
-
 Login to Github using your credentials and go to https://github.com/cellml/libCellML.
 
 Use the fork button to create a libCellML repository under your own account, see :numref:`fig_devSetup_githubFork` for locating this button.
@@ -209,7 +196,6 @@ Use the fork button to create a libCellML repository under your own account, see
 
 Clone
 -----
-
 You now need to clone the libCellML repository to your computer.
 You do this by going to your fork (in this example user *andre*'s fork) at https://github.com/andre/libCellML.
 
@@ -231,7 +217,6 @@ Note: again, do not clone this location; substitute your Github username for *an
 
 Set Git remotes
 ---------------
-
 You now need to setup a read-only remote connection to the :term:`prime libCellML repository`.
 Given that you are still in the directory where you cloned the libCellML repository from, do the following::
 
@@ -239,12 +224,11 @@ Given that you are still in the directory where you cloned the libCellML reposit
   git remote add prime https://github.com/cellml/libCellML.git
   git config remote.prime.pushurl "You really did not want to do that!"
 
-You have now added a new remote named ``prime`` and set origin as the default fetch and push location to point at repositories under your control on Github.
-Here, ``prime`` is a reference to the main definitive repository where releases are made from for the libCellML project.
-You have also set the ``prime`` repository as read-only by setting an invalid push URL.
+You have now added a new remote named :code:`prime` and set origin as the default fetch and push location to point at repositories under your control on Github.
+Here, :code:`prime` is a reference to the main definitive repository where releases are made from for the libCellML project.
+You have also set the :code:`prime` repository as read-only by setting an invalid push URL.
 
 Finally
 =======
-
 You are all done and ready to start development, read :ref:`Building <dev_building>` on how to build libCellML.
 Then, read :ref:`Contribution <dev_contribution>` to get your changes into libCellML's prime repository.
