@@ -371,6 +371,7 @@ struct Analyser::AnalyserImpl
     std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable) const;
 
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
+    void analyseEquationUnits(const AnalyserEquationAstPtr &ast);
 
     double scalingFactor(const VariablePtr &variable);
 
@@ -1126,6 +1127,11 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     }
 }
 
+void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast)
+{
+    (void) ast;
+}
+
 double Analyser::AnalyserImpl::scalingFactor(const VariablePtr &variable)
 {
     return Units::scalingFactor(variable->units(), internalVariable(variable)->mVariable->units());
@@ -1274,6 +1280,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         for (const auto &internalEquation : mInternalEquations) {
             analyseEquationAst(internalEquation->mAst);
+        }
+    }
+
+    if (mAnalyser->errorCount() == 0) {
+        // Analyse our different equations' units to make sure that everything
+        // is consistent units wise.
+
+        for (const auto &internalEquation : mInternalEquations) {
+            analyseEquationUnits(internalEquation->mAst);
         }
     }
 
@@ -1834,19 +1849,6 @@ AnalyserModelPtr Analyser::model() const
 }
 
 /*
-// This comment holds the changes done to the validator which were to be used in the analyser class.
-void processEquationAst(const GeneratorEquationAstPtr &ast);
-void processEquationUnits(const GeneratorEquationAstPtr &ast); // in the private declaration
-
-
-// The call when processing the model in the generator
-if (mGenerator->errorCount() == 0) {
-        for (const auto &equation : mEquations) {
-            processEquationUnits(equation->mAst);
-        }
-}
-
-
 // The main AST construction also had a few elements where the CellML markup had to be analysed.
         // Checking if the <cn> element has a unit associated with it. If it does, then return the unit name as a string.
         std::string nodeString = node->convertToString();
