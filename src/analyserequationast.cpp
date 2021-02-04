@@ -49,6 +49,11 @@ void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
     mParent = parent;
 }
 
+UnitsPtr AnalyserEquationAst::AnalyserEquationAstImpl::units() const
+{
+    return mUnits.lock();
+}
+
 AnalyserEquationAst::AnalyserEquationAst()
     : mPimpl(new AnalyserEquationAstImpl())
 {
