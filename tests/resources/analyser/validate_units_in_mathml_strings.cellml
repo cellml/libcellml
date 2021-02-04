@@ -13,220 +13,220 @@
         <unit prefix="milli" units="apple"/>
     </units>
     <units name="apple_and_milliapple">
-        <unit units="milliapple"/>
         <unit units="apple"/>
+        <unit units="milliapple"/>
     </units>
-    <!-- Simple checks for direct comparision operator behaviour (plus, minus. equals, less than, etc).-->
-    <component name="direct_comparision_operators">
-        <variable interface="public" name="a" units="volt_per_farad"/>
-        <variable interface="public" name="b" units="metre_per_second"/>
-        <variable interface="public" name="c" units="metre_per_second"/>
-        <variable interface="public" name="d" units="metre_per_second"/>
-        <variable interface="public" name="k" units="metre_per_second"/>
-        <variable initial_value="1" name="z" units="metre_per_second"/>
+    <!-- Simple checks for direct comparison of operator behaviour (plus, minus. equals, less than, etc.). -->
+    <component name="direct_comparison_operators">
+        <variable name="i" units="volt_per_farad"/>
+        <variable name="j" units="metre_per_second"/>
+        <variable name="k" units="metre_per_second"/>
+        <variable initial_value="1" name="a" units="metre_per_second"/>
+        <variable initial_value="2" name="b" units="metre_per_second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
+                <!-- Invalid: we have a unit mismatch between i and a+b. -->
                 <eq/>
-                <ci>a</ci>
+                <ci>i</ci>
                 <apply>
                     <plus/>
+                    <ci>a</ci>
                     <ci>b</ci>
-                    <ci>c</ci>
                 </apply>
             </apply>
-            <!-- Not allowed, we have a unit mismatch between (b+c) and a, for the sign "=".-->
             <apply>
+                <!-- Invalid: the exponent for b creates a mismatch.-->
                 <eq/>
-                <ci>d</ci>
+                <ci>j</ci>
                 <apply>
                     <plus/>
-                    <ci>b</ci>
+                    <ci>a</ci>
                     <apply>
                         <power/>
-                        <ci>c</ci>
+                        <ci>b</ci>
                         <cn cellml:units="dimensionless">2</cn>
                     </apply>
                 </apply>
             </apply>
-            <!-- Also should return an error as the exponent creates a mismatch.-->
             <apply>
+                <!-- Valid. -->
                 <eq/>
-                <ci>z</ci>
+                <ci>k</ci>
                 <apply>
                     <plus/>
+                    <ci>a</ci>
                     <ci>b</ci>
-                    <ci>c</ci>
                 </apply>
             </apply>
         </math>
-        <!-- Allowed.-->
     </component>
     <component name="trigonometric_operators">
-        <variable interface="public" name="arg" units="second"/>
-        <variable interface="public" name="op_resultNotAllowed" units="dimensionless"/>
-        <variable interface="public" name="op_resultAllowed" units="dimensionless"/>
+        <variable name="i" units="dimensionless"/>
+        <variable name="j" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
+                <!-- Invalid: trigonometric operators only take dimensionless arguments. -->
                 <eq/>
-                <ci>op_resultNotAllowed</ci>
+                <ci>i</ci>
                 <apply>
                     <tan/>
-                    <ci>arg</ci>
+                    <ci>a</ci>
                 </apply>
             </apply>
-            <!--Not allowed - we can only take tan of dimensionless arguments-->
             <apply>
+                <!-- Valid. -->
                 <eq/>
-                <ci>op_resultAllowed</ci>
+                <ci>j</ci>
                 <apply>
                     <tan/>
                     <apply>
                         <divide/>
-                        <ci>arg</ci>
-                        <ci>arg</ci>
+                        <ci>a</ci>
+                        <ci>a</ci>
                     </apply>
                 </apply>
             </apply>
         </math>
-        <!-- Allowed-->
     </component>
     <component name="logarithmic_operators">
-        <variable interface="public" name="in_A" units="second"/>
-        <variable interface="public" name="out_A" units="dimensionless"/>
-        <variable interface="public" name="out_B" units="dimensionless"/>
-        <variable interface="public" name="out_C" units="dimensionless"/>
-        <variable interface="public" name="in_B" units="dimensionless"/>
+        <variable name="i" units="dimensionless"/>
+        <variable name="j" units="dimensionless"/>
+        <variable name="k" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="second"/>
+        <variable initial_value="2" name="b" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
+                <!-- Invalid: mismatch in the base and actual logarithm. -->
                 <eq/>
-                <ci>out_A</ci>
+                <ci>i</ci>
                 <apply>
                     <log/>
                     <logbase>
                         <cn cellml:units="dimensionless">2</cn>
                     </logbase>
-                    <ci>in_A</ci>
+                    <ci>a</ci>
                 </apply>
             </apply>
-            <!-- Not allowed to have a mismatch in the base and actual logarithm-->
             <apply>
+                <!-- Valid. -->
                 <eq/>
-                <ci>out_B</ci>
+                <ci>j</ci>
                 <apply>
                     <log/>
                     <logbase>
                         <cn cellml:units="second">2</cn>
                     </logbase>
-                    <ci>in_A</ci>
+                    <ci>a</ci>
                 </apply>
             </apply>
-            <!-- Allowed-->
             <apply>
+                <!-- Valid. -->
                 <eq/>
-                <ci>out_C</ci>
+                <ci>k</ci>
                 <apply>
                     <log/>
                     <logbase>
                         <cn cellml:units="dimensionless">2</cn>
                     </logbase>
-                    <ci>in_B</ci>
+                    <ci>b</ci>
                 </apply>
             </apply>
         </math>
-        <!-- Allowed-->
     </component>
     <component name="power_root_operators">
-        <variable interface="public" name="f" units="volt_per_farad"/>
-        <variable interface="public" name="g" units="volt_per_farad"/>
-        <variable interface="public" name="h" units="volt_per_farad"/>
-        <variable interface="public" name="i" units="dimensionless"/>
-        <variable interface="public" name="j" units="dimensionless"/>
+        <variable name="i" units="volt_per_farad"/>
+        <variable name="j" units="volt_per_farad"/>
+        <variable name="k" units="dimensionless"/>
+        <variable name="l" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="volt_per_farad"/>
+        <variable initial_value="2" name="b" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
+                <!-- Valid. -->
                 <eq/>
-                <ci>g</ci>
+                <ci>i</ci>
                 <apply>
                     <root/>
                     <apply>
                         <power/>
-                        <ci>f</ci>
+                        <ci>a</ci>
                         <cn cellml:units="dimensionless">2</cn>
                     </apply>
                 </apply>
             </apply>
-            <!-- Allowed-->
             <apply>
-                <eq/>
-                <ci>h</ci>
-                <apply>
-                    <root/>
-                    <apply>
-                        <power/>
-                        <ci>f</ci>
-                        <cn cellml:units="dimensionless">2</cn>
-                    </apply>
-                </apply>
-            </apply>
-            <!-- Allowed-->
-            <apply>
+                <!-- Valid. -->
                 <eq/>
                 <ci>j</ci>
+                <apply>
+                    <root/>
+                    <apply>
+                        <power/>
+                        <ci>a</ci>
+                        <cn cellml:units="dimensionless">2</cn>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <!-- Valid: both e and b are dimensionless, although b is not a constant. -->
+                <eq/>
+                <ci>k</ci>
                 <apply>
                     <exp/>
-                    <ci>i</ci>
+                    <ci>b</ci>
                 </apply>
             </apply>
-            <!-- Allowed as both e and i are dimensionless although i is not a fixed value.-->
             <apply>
+                <!-- Invalid: 2 is not dimensionless. -->
                 <eq/>
-                <ci>j</ci>
+                <ci>l</ci>
                 <apply>
                     <power/>
-                    <ci>h</ci>
+                    <ci>a</ci>
                     <cn cellml:units="second">2</cn>
                 </apply>
             </apply>
         </math>
-        <!-- Not allowed - 2 is not dimensionless-->
     </component>
     <component name="non_standard_units">
-        <variable interface="public" name="A_p" units="apple"/>
-        <variable interface="public" name="A_m" units="milliapple"/>
-        <variable interface="public" name="A_out" units="milliapple"/>
-        <variable interface="public" name="time" units="second"/>
-        <variable interface="public" name="A_into" units="apple_and_milliapple"/>
-        <variable interface="public" name="A_o" units="apple_and_milliapple"/>
+        <variable name="t" units="second"/>
+        <variable name="i" units="milliapple"/>
+        <variable name="j" units="apple_and_milliapple"/>
+        <variable initial_value="1" name="a" units="apple"/>
+        <variable initial_value="2" name="b" units="milliapple"/>
+        <variable initial_value="3" name="c" units="apple_and_milliapple"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
+                <!-- Valid. -->
                 <eq/>
                 <apply>
                     <diff/>
                     <bvar>
-                        <ci>time</ci>
+                        <ci>t</ci>
                     </bvar>
-                    <ci>A_out</ci>
+                    <ci>i</ci>
                 </apply>
                 <apply>
                     <divide/>
                     <apply>
                         <times/>
-                        <ci>A_p</ci>
-                        <ci>A_m</ci>
+                        <ci>a</ci>
+                        <ci>b</ci>
                     </apply>
                     <apply>
                         <times/>
-                        <ci>A_p</ci>
-                        <ci>time</ci>
+                        <ci>a</ci>
+                        <ci>t</ci>
                     </apply>
                 </apply>
             </apply>
-            <!-- Should be allowed both for multipliers and units checking.-->
+            <!-- Coverage for nested base units that are not standard. -->
             <apply>
                 <eq/>
-                <ci>A_o</ci>
-                <ci>A_into</ci>
+                <ci>j</ci>
+                <ci>c</ci>
             </apply>
         </math>
-        <!-- Cvoerage for nested base units which are not standard-->
     </component>
 </model>

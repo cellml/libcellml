@@ -9,45 +9,46 @@
     <units name="root_volt">
         <unit exponent="0.5" units="volt"/>
     </units>
-    <!-- Simple equation checks to see if simple behaviour functions as expected.-->
     <component name="simple_checks">
-        <variable interface="public" name="A" units="millivolt"/>
-        <variable initial_value="1" name="B" units="millivolt"/>
-        <variable initial_value="2" name="C" units="kilo_microvolt"/>
-        <variable interface="public" name="D" units="millivolt"/>
-        <variable initial_value="2" name="E" units="root_volt"/>
-        <variable interface="public" name="F" units="millivolt"/>
+        <variable name="i" units="millivolt"/>
+        <variable name="j" units="millivolt"/>
+        <variable name="k" units="millivolt"/>
+        <variable initial_value="1" name="a" units="millivolt"/>
+        <variable initial_value="2" name="b" units="kilo_microvolt"/>
+        <variable initial_value="3" name="c" units="root_volt"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <!-- Simple checks to see if simple behaviour functions as expected. -->
             <apply>
+                <!-- Valid. -->
                 <eq/>
-                <ci>A</ci>
+                <ci>i</ci>
                 <apply>
                     <plus/>
-                    <ci>B</ci>
-                    <ci>C</ci>
+                    <ci>a</ci>
+                    <ci>b</ci>
                 </apply>
             </apply>
-            <!-- Allowed, should be no mismatch here-->
             <apply>
+                <!-- Invalid: mV != V. -->
                 <eq/>
-                <ci>D</ci>
+                <ci>j</ci>
                 <apply>
                     <times/>
                     <cn cellml:units="dimensionless">1000</cn>
-                    <ci>B</ci>
+                    <ci>a</ci>
                 </apply>
             </apply>
-            <!-- Not allowed, mV != V-->
             <apply>
+                <!-- Invalid: multiplier mismatch of 10. -->
                 <eq/>
-                <ci>F</ci>
+                <ci>k</ci>
                 <apply>
                     <divide/>
                     <apply>
                         <power/>
                         <apply>
                             <root/>
-                            <ci>E</ci>
+                            <ci>c</ci>
                         </apply>
                         <cn cellml:units="dimensionless">4</cn>
                     </apply>
@@ -55,28 +56,27 @@
                 </apply>
             </apply>
         </math>
-        <!-- Not allowed. Multiplier mismatch of 10.-->
     </component>
     <component name="complex_checks">
-        <variable interface="public" name="t" units="second"/>
-        <variable interface="public" name="i_A" units="millivolt"/>
-        <variable initial_value="2" name="i_B" units="millivolt"/>
-        <variable initial_value="1" name="i_x" units="millivolt"/>
-        <variable interface="public" name="i_y" units="millivolt"/>
-        <variable initial_value="1" name="z" units="kilo_microvolt"/>
-        <variable initial_value="1" name="y" units="kilo_microvolt"/>
-        <variable interface="public" name="x" units="volt"/>
-        <variable interface="public" name="q" units="millivolt"/>
-        <variable interface="public" name="r" units="millivolt"/>
-        <variable interface="public" name="s" units="volt"/>
-        <!-- Trig Expressions -->
+        <variable name="t" units="second"/>
+        <variable name="i" units="millivolt"/>
+        <variable name="j" units="millivolt"/>
+        <variable name="k" units="volt"/>
+        <variable initial_value="4" name="l" units="millivolt"/>
+        <variable initial_value="5" name="m" units="millivolt"/>
+        <variable name="n" units="volt"/>
+        <variable name="o" units="millivolt"/>
+        <variable initial_value="1" name="a" units="millivolt"/>
+        <variable initial_value="2" name="b" units="kilo_microvolt"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <!-- Trigonometric expressions. -->
             <apply>
+                <!-- Valid. -->
                 <eq/>
-                <ci>i_A</ci>
+                <ci>i</ci>
                 <apply>
                     <times/>
-                    <ci>i_B</ci>
+                    <ci>a</ci>
                     <apply>
                         <tan/>
                         <pi/>
@@ -84,22 +84,23 @@
                 </apply>
             </apply>
             <apply>
+                <!-- Valid. -->
                 <eq/>
-                <ci>i_y</ci>
+                <ci>j</ci>
                 <apply>
                     <times/>
-                    <ci>i_x</ci>
+                    <ci>a</ci>
                     <apply>
                         <tan/>
                         <cn cellml:units="dimensionless">1000</cn>
                     </apply>
                 </apply>
             </apply>
-            <!-- No mismatch in either case.-->
-            <!-- Logarithms -->
+            <!-- Logarithms. -->
             <apply>
+                <!-- Invalid: multiplier mismatch. -->
                 <eq/>
-                <ci>x</ci>
+                <ci>k</ci>
                 <apply>
                     <times/>
                     <apply>
@@ -115,13 +116,13 @@
                             </apply>
                             <apply>
                                 <power/>
-                                <ci>y</ci>
+                                <ci>b</ci>
                                 <cn cellml:units="dimensionless">2</cn>
                             </apply>
                         </apply>
                         <apply>
                             <times/>
-                            <ci>z</ci>
+                            <ci>b</ci>
                             <cn cellml:units="dimensionless">3</cn>
                         </apply>
                     </apply>
@@ -129,13 +130,14 @@
                 </apply>
             </apply>
             <apply>
+                <!-- Invalid: multiplier mismatch. -->
                 <eq/>
                 <apply>
                     <diff/>
                     <bvar>
                         <ci>t</ci>
                     </bvar>
-                    <ci>q</ci>
+                    <ci>l</ci>
                 </apply>
                 <apply>
                     <divide/>
@@ -148,27 +150,27 @@
                             </logbase>
                             <cn cellml:units="dimensionless">1000</cn>
                         </apply>
-                        <ci>i_A</ci>
+                        <ci>a</ci>
                     </apply>
                     <ci>t</ci>
                 </apply>
             </apply>
-            <!-- Multiplier mismatch-->
-            <!-- Exponents-->
+            <!-- Exponents. -->
             <apply>
+                <!-- Valid. -->
                 <eq/>
                 <apply>
                     <diff/>
                     <bvar>
                         <ci>t</ci>
                     </bvar>
-                    <ci>r</ci>
+                    <ci>m</ci>
                 </apply>
                 <apply>
                     <divide/>
                     <apply>
                         <times/>
-                        <ci>i_A</ci>
+                        <ci>a</ci>
                         <apply>
                             <exp/>
                             <cn cellml:units="dimensionless">5</cn>
@@ -178,8 +180,9 @@
                 </apply>
             </apply>
             <apply>
+                <!-- Invalid: multiplier mismatch. -->
                 <eq/>
-                <ci>s</ci>
+                <ci>n</ci>
                 <apply>
                     <divide/>
                     <apply>
@@ -187,25 +190,25 @@
                         <apply>
                             <times/>
                             <cn cellml:units="dimensionless">10000</cn>
-                            <ci>i_A</ci>
+                            <ci>a</ci>
                         </apply>
                         <cn cellml:units="dimensionless">2</cn>
                     </apply>
-                    <ci>i_A</ci>
+                    <ci>a</ci>
                 </apply>
             </apply>
             <apply>
+                <!-- Invalid: multiplier mismatch. -->
                 <eq/>
-                <ci>r</ci>
+                <ci>o</ci>
                 <apply>
                     <root/>
                     <degree>
                         <cn cellml:units="dimensionless">3</cn>
                     </degree>
-                    <ci>i_A</ci>
+                    <ci>a</ci>
                 </apply>
             </apply>
         </math>
-        <!-- Multiplier mismatch for last two-->
     </component>
 </model>
