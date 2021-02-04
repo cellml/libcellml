@@ -29,19 +29,23 @@ void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
 
 void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
                                                             const std::string &value,
+                                                            const UnitsPtr &units,
                                                             const AnalyserEquationAstPtr &parent)
 {
     mType = type;
     mValue = value;
+    mUnits = units;
     mParent = parent;
 }
 
 void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
                                                             const VariablePtr &variable,
+                                                            const UnitsPtr &units,
                                                             const AnalyserEquationAstPtr &parent)
 {
     mType = type;
     mVariable = variable;
+    mUnits = units;
     mParent = parent;
 }
 

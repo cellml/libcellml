@@ -830,23 +830,44 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         // Have our equation track the (ODE) variable (by ODE variable, we mean
         // a variable that is used in a "diff" element).
 
+        auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
+
         if (node->parent()->firstChild()->isMathmlElement("diff")) {
-            equation->addOdeVariable(internalVariable(variable));
+            equation->addOdeVariable(internalVariable);
         } else if (!(node->parent()->isMathmlElement("bvar")
                      && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
-            equation->addVariable(internalVariable(variable));
+            equation->addVariable(internalVariable);
         }
 
         // Add the variable to our AST.
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, variable->units(), astParent);
     } else if (node->isMathmlElement("cn")) {
+        // Retrieve the unit, if any and if it is not dimensionless, associated
+        // with the CN value.
+
+        UnitsPtr units;
+        std::string unitsName = node->attribute("units");
+
+        if (!isDimensionlessUnitName(unitsName)) {
+            // We are not allowed to redefine standard units, so construct the
+            // units if we have a standard unit.
+
+            if (isStandardUnitName(unitsName)) {
+                units = libcellml::Units::create();
+
+                units->setName(unitsName);
+            } else {
+                units = owningModel(component)->units(unitsName);
+            }
+        }
+
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
 
-            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString() + "e" + node->firstChild()->next()->next()->convertToStrippedString(), astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString() + "e" + node->firstChild()->next()->next()->convertToStrippedString(), units, astParent);
         } else {
-            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString(), astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString(), units, astParent);
         }
 
         // Qualifier elements.
@@ -1150,7 +1171,7 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
     scaledAst->mPimpl->mOwnedLeftChild = AnalyserEquationAst::create();
     scaledAst->mPimpl->mOwnedRightChild = ast;
 
-    scaledAst->mPimpl->mOwnedLeftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+    scaledAst->mPimpl->mOwnedLeftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), nullptr, scaledAst);
 
     ast->mPimpl->mParent = scaledAst;
 
@@ -1849,30 +1870,6 @@ AnalyserModelPtr Analyser::model() const
 }
 
 /*
-// The main AST construction also had a few elements where the CellML markup had to be analysed.
-        // Checking if the <cn> element has a unit associated with it. If it does, then return the unit name as a string.
-        std::string nodeString = node->convertToString();
-        std::size_t findUnitPos = nodeString.find("cellml:units");
-        if (findUnitPos != std::string::npos) {
-            std::string unitName;
-            findUnitPos += 14; // Getting to the start of the unit name string, which begins after "cellml:units=\"
-            while (nodeString[findUnitPos] != '"') {
-                unitName.push_back(nodeString[findUnitPos]);
-                ++findUnitPos;
-            }
-
-            // We are not allowed to redefine standard units, so if we have a standard unit name we construct the unit.
-            if (isStandardUnitName(unitName) && unitName != "dimensionless") {
-                UnitsPtr u = libcellml::Units::create();
-                u->setName(unitName);
-                ast->mUnits = u; // Add the unit to the AST node
-            } else {
-                ModelPtr model = owningModel(component);
-                ast->mUnits = model->units(unitName);
-            }
-        }
-
-
 // Everything from here down was used to check the units within each equation model.
 
 // Functions to determine type of operation on the internal node, which dictates how we treat child unit mappings.
