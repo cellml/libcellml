@@ -322,6 +322,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT:
     case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_UNITS:
     case libcellml::Issue::ReferenceRule::INVALID_ARGUMENT:
+    case libcellml::Issue::ReferenceRule::ANALYSER_UNITS:
     case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE:
     case libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION:
     case libcellml::Issue::ReferenceRule::ANALYSER_VOI_INITIALISED:
