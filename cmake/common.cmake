@@ -139,7 +139,6 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
         )
         set(_DISABLED_READABILITY_CHECKS
           -readability-named-parameter
-          -readability-use-anyofallof
         )
     endif()
 
