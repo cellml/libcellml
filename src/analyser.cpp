@@ -1644,7 +1644,6 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
 
                     std::string err = "The units in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
-                                      + "' of model '" + modelName
                                       + "' are not equivalent. The unit mismatch is " + hints;
                     issueDescriptions.push_back(err);
                 }
@@ -1701,7 +1700,6 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
 
                     std::string err = "The units in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
-                                      + "' of model '" + modelName
                                       + "' are not dimensionless. The units in the expression are " + hints;
                     issueDescriptions.push_back(err);
                 }
@@ -1720,7 +1718,6 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
 
                     std::string err = "The units in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
-                                      + "' of model '" + modelName
                                       + "' are not consistent with the base. The mismatch is: " + hints;
                     issueDescriptions.push_back(err);
                 }
@@ -1740,7 +1737,6 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
 
                     std::string err = "The argument in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
-                                      + "' of model '" + modelName
                                       + "' is not dimensionless. The units in the argument are: " + hints;
                     issueDescriptions.push_back(err);
                     leftMap.clear(); // Clear our mapping to reduce the potential for errors further up the tree.
@@ -1814,9 +1810,8 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
 
                     std::string err = "The expression '" + getEquation(ast)
                                       + "' in component '" + compName
-                                      + "' of model '" + modelName
                                       + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult)
-                                      + ". A variable in the expression is " + variable->name();
+                                      + ". A variable in the expression is " + variable->name() + ".";
                     issueDescriptions.push_back(err);
                 }
             }
@@ -1874,6 +1869,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             auto issue = Issue::create();
 
             issue->setDescription(issueDescription);
+            issue->setLevel(Issue::Level::MESSAGE);
             issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
 
             mAnalyser->addIssue(issue);

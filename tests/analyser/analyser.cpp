@@ -989,11 +989,44 @@ TEST(Generator, validateUnitsInMathmlStrings)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
+    const std::vector<std::string> expectedIssues = {
+        "The units in the expression 'i = (a + b)' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is ampere^-3, kilogram^2, metre^3, second^-6.",
+        "The units in the expression '(a + pow(b,2))' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is metre^-1, second^1.",
+        "The argument in the expression 'tan(a)' in component 'trigonometric_operators' is not dimensionless. The units in the argument are: second^1.",
+        "The units in the expression 'log(2)' in component '' are not consistent with the base. The mismatch is: second^1.",
+        "The units in the expression 'log(2)' in component '' are not consistent with the base. The mismatch is: second^1.",
+        "The units in the expression 'l = pow(a,2)' in component 'power_root_operators' are not equivalent. The unit mismatch is ampere^6, kilogram^-4, metre^-8, second^14.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+    };
+
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(6), analyser->issueCount());
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
 TEST(Generator, validateMultiplierInMathmlStrings)
@@ -1003,11 +1036,40 @@ TEST(Generator, validateMultiplierInMathmlStrings)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
+    const std::vector<std::string> expectedIssues = {
+        "The expression 'k = (pow(root(c,2),4) / 100)' in component 'simple_checks' has a multiplier mismatch. The mismatch is: -3.000000. A variable in the expression is k.",
+        "The expression 'k = (((log(10) * pow(b,2)) / (b * 3)) * 1000)' in component 'complex_checks' has a multiplier mismatch. The mismatch is: 3.000000. A variable in the expression is k.",
+        "The expression 'n = (pow((10000 * a),2) / a)' in component 'complex_checks' has a multiplier mismatch. The mismatch is: 3.000000. A variable in the expression is n.",
+        "The units in the expression 'o = root(3,a)' in component 'complex_checks' are not equivalent. The unit mismatch is ampere^-0.666667, kilogram^0.666667, metre^1.333333, second^-2.",
+        "The expression 'o = root(3,a)' in component 'complex_checks' has a multiplier mismatch. The mismatch is: -3.000000. A variable in the expression is o.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+    };
+
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(5), analyser->issueCount());
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
 TEST(Analyser, coverage)

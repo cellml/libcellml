@@ -191,7 +191,7 @@
     </component>
     <component name="non_standard_units">
         <variable name="t" units="second"/>
-        <variable name="i" units="milliapple"/>
+        <variable initial_value="1" name="i" units="milliapple"/>
         <variable name="j" units="apple_and_milliapple"/>
         <variable initial_value="1" name="a" units="apple"/>
         <variable initial_value="2" name="b" units="milliapple"/>
