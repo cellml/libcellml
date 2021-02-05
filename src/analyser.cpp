@@ -27,6 +27,7 @@ limitations under the License.
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include "analyserequation_p.h"
