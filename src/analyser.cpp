@@ -1860,9 +1860,9 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast)
 {
     std::vector<std::string> issueDescriptions;
-    double multiplier = 0.0;
-    UnitsMap unitsMap = analyseEquationUnitsAst(ast, issueDescriptions);
-    multiplier = analyseEquationMultiplierAst(ast, issueDescriptions, multiplier);
+
+    analyseEquationUnitsAst(ast, issueDescriptions);
+    analyseEquationMultiplierAst(ast, issueDescriptions, 0.0);
 
     if (!issueDescriptions.empty()) {
         for (const auto &issueDescription : issueDescriptions) {
