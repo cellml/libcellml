@@ -424,7 +424,7 @@ bool isDimensionlessUnitName(const std::string &name)
 
 bool isDimensionlessUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && units->unitCount() == 0 && isDimensionlessUnitName(units->name());
+    return (units != nullptr) && (units->unitCount() == 0) && isDimensionlessUnitName(units->name());
 }
 
 bool isStandardUnitName(const std::string &name)
@@ -434,7 +434,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && units->unitCount() == 0 && isStandardUnitName(units->name());
+    return (units != nullptr) && (units->unitCount() == 0) && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)

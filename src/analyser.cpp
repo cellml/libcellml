@@ -378,14 +378,13 @@ struct Analyser::AnalyserImpl
                              std::map<std::string, double> &unitsMap,
                              const std::string &unitsName,
                              double unitsExponential, double logMultiplier);
-    bool isDirectComparisonOperator(const AnalyserEquationAstPtr &ast);
-    bool isMultiplicativeOperator(const AnalyserEquationAstPtr &ast);
-    bool isExponentOperator(const AnalyserEquationAstPtr &ast);
-    bool isLogarithmicOperator(const AnalyserEquationAstPtr &ast);
+    bool isDirectOperator(const AnalyserEquationAstPtr &ast);
+    bool isTimesOrDivideOperator(const AnalyserEquationAstPtr &ast);
+    bool isPowerOrRootOperator(const AnalyserEquationAstPtr &ast);
+    bool isExponentialOrLogarithmicOperator(const AnalyserEquationAstPtr &ast);
     bool isTrigonometricOperator(const AnalyserEquationAstPtr &ast);
     bool isDerivativeOperator(const AnalyserEquationAstPtr &ast);
     bool isBoundVariableOperator(const AnalyserEquationAstPtr &ast);
-
     UnitsMap addMappings(UnitsMap firstMap, const UnitsMap &secondMap, int operation);
     UnitsMap multiplyMappings(UnitsMap map, const AnalyserEquationAstPtr &ast, double power);
     bool mapsAreEquivalent(const UnitsMap &firstMap, const UnitsMap &secondMap, std::string &hints);
@@ -399,7 +398,6 @@ struct Analyser::AnalyserImpl
     std::string expression(std::string first, std::string second, const AnalyserEquationAstPtr &ast);
     std::string getEquation(const AnalyserEquationAstPtr &ast);
     std::string getHints(const UnitsMap &map);
-
     UnitsMap analyseEquationUnitsAst(const AnalyserEquationAstPtr &ast,
                                      std::vector<std::string> &issueDescriptions);
     double analyseEquationMultiplierAst(const AnalyserEquationAstPtr &ast,
@@ -1230,88 +1228,81 @@ void Analyser::AnalyserImpl::updateBaseUnitCount(const ModelPtr &model,
     }
 }
 
-bool Analyser::AnalyserImpl::isDirectComparisonOperator(const AnalyserEquationAstPtr &ast)
+bool Analyser::AnalyserImpl::isDirectOperator(const AnalyserEquationAstPtr &ast)
 {
-    const AnalyserEquationAst::Type type = ast->mPimpl->mType;
-    return (type == libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
-           || (type == libcellml::AnalyserEquationAst::Type::PLUS)
-           || (type == libcellml::AnalyserEquationAst::Type::MINUS)
-           || (type == libcellml::AnalyserEquationAst::Type::EQ)
-           || (type == libcellml::AnalyserEquationAst::Type::LEQ)
-           || (type == libcellml::AnalyserEquationAst::Type::NEQ)
-           || (type == libcellml::AnalyserEquationAst::Type::GEQ)
-           || (type == libcellml::AnalyserEquationAst::Type::LT)
-           || (type == libcellml::AnalyserEquationAst::Type::GT)
-           || (type == libcellml::AnalyserEquationAst::Type::MIN)
-           || (type == libcellml::AnalyserEquationAst::Type::MAX)
-           || (type == libcellml::AnalyserEquationAst::Type::AND)
-           || (type == libcellml::AnalyserEquationAst::Type::OR)
-           || (type == libcellml::AnalyserEquationAst::Type::NOT)
-           || (type == libcellml::AnalyserEquationAst::Type::XOR)
-           || (type == libcellml::AnalyserEquationAst::Type::PIECEWISE);
+    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EQ)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NEQ)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LT)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PLUS)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PIECEWISE);
 }
 
-bool Analyser::AnalyserImpl::isMultiplicativeOperator(const AnalyserEquationAstPtr &ast)
+bool Analyser::AnalyserImpl::isTimesOrDivideOperator(const AnalyserEquationAstPtr &ast)
 {
-    const AnalyserEquationAst::Type type = ast->mPimpl->mType;
-    return (type == libcellml::AnalyserEquationAst::Type::TIMES)
-           || (type == libcellml::AnalyserEquationAst::Type::DIVIDE);
+    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TIMES)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE);
 }
 
-bool Analyser::AnalyserImpl::isExponentOperator(const AnalyserEquationAstPtr &ast)
+bool Analyser::AnalyserImpl::isPowerOrRootOperator(const AnalyserEquationAstPtr &ast)
 {
-    const AnalyserEquationAst::Type type = ast->mPimpl->mType;
-    return (type == libcellml::AnalyserEquationAst::Type::POWER)
-           || (type == libcellml::AnalyserEquationAst::Type::ROOT);
+    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT);
 }
 
-bool Analyser::AnalyserImpl::isLogarithmicOperator(const AnalyserEquationAstPtr &ast)
+bool Analyser::AnalyserImpl::isExponentialOrLogarithmicOperator(const AnalyserEquationAstPtr &ast)
 {
-    const AnalyserEquationAst::Type type = ast->mPimpl->mType;
-    return (type == libcellml::AnalyserEquationAst::Type::LN)
-           || (type == libcellml::AnalyserEquationAst::Type::LOG)
-           || (type == libcellml::AnalyserEquationAst::Type::EXP);
+    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG);
 }
 
 bool Analyser::AnalyserImpl::isTrigonometricOperator(const AnalyserEquationAstPtr &ast)
 {
-    const AnalyserEquationAst::Type type = ast->mPimpl->mType;
-    return (type == libcellml::AnalyserEquationAst::Type::ASIN)
-           || (type == libcellml::AnalyserEquationAst::Type::ASINH)
-           || (type == libcellml::AnalyserEquationAst::Type::SIN)
-           || (type == libcellml::AnalyserEquationAst::Type::SINH)
-           || (type == libcellml::AnalyserEquationAst::Type::ACOS)
-           || (type == libcellml::AnalyserEquationAst::Type::ACOSH)
-           || (type == libcellml::AnalyserEquationAst::Type::COS)
-           || (type == libcellml::AnalyserEquationAst::Type::COSH)
-           || (type == libcellml::AnalyserEquationAst::Type::ATAN)
-           || (type == libcellml::AnalyserEquationAst::Type::ATANH)
-           || (type == libcellml::AnalyserEquationAst::Type::TAN)
-           || (type == libcellml::AnalyserEquationAst::Type::TANH)
-           || (type == libcellml::AnalyserEquationAst::Type::ASEC)
-           || (type == libcellml::AnalyserEquationAst::Type::ASECH)
-           || (type == libcellml::AnalyserEquationAst::Type::SECH)
-           || (type == libcellml::AnalyserEquationAst::Type::SEC)
-           || (type == libcellml::AnalyserEquationAst::Type::ACSC)
-           || (type == libcellml::AnalyserEquationAst::Type::ACSCH)
-           || (type == libcellml::AnalyserEquationAst::Type::CSC)
-           || (type == libcellml::AnalyserEquationAst::Type::CSCH)
-           || (type == libcellml::AnalyserEquationAst::Type::ACOT)
-           || (type == libcellml::AnalyserEquationAst::Type::ACOTH)
-           || (type == libcellml::AnalyserEquationAst::Type::COT)
-           || (type == libcellml::AnalyserEquationAst::Type::COTH);
+    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SIN)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COS)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TAN)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SEC)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSC)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COT)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SINH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COSH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TANH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SECH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSCH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COTH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASIN)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOS)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATAN)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASEC)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSC)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOT)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASINH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOSH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATANH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
+           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH);
 }
 
 bool Analyser::AnalyserImpl::isDerivativeOperator(const AnalyserEquationAstPtr &ast)
 {
-    const AnalyserEquationAst::Type type = ast->mPimpl->mType;
-    return type == libcellml::AnalyserEquationAst::Type::DIFF;
+    return ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIFF;
 }
 
 bool Analyser::AnalyserImpl::isBoundVariableOperator(const AnalyserEquationAstPtr &ast)
 {
-    const AnalyserEquationAst::Type type = ast->mPimpl->mType;
-    return type == libcellml::AnalyserEquationAst::Type::BVAR;
+    return ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::BVAR;
 }
 
 // Function which adds the unit mappings together if we have a times or divide operator in the AST.
@@ -1531,7 +1522,7 @@ static const std::map<AnalyserEquationAst::Type, std::string> AstTypeToString = 
 std::string Analyser::AnalyserImpl::expression(std::string first, std::string second, const AnalyserEquationAstPtr &ast)
 {
     // Statement capturing all expressions which require one operand only.
-    if (isTrigonometricOperator(ast) || isLogarithmicOperator(ast) || ast->mPimpl->mType == AnalyserEquationAst::Type::REM
+    if (isTrigonometricOperator(ast) || isExponentialOrLogarithmicOperator(ast) || ast->mPimpl->mType == AnalyserEquationAst::Type::REM
         || ast->mPimpl->mType == AnalyserEquationAst::Type::CEILING || ast->mPimpl->mType == AnalyserEquationAst::Type::FLOOR
         || ast->mPimpl->mType == AnalyserEquationAst::Type::ABS || ast->mPimpl->mType == AnalyserEquationAst::Type::NOT) {
         return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + first + ")";
@@ -1641,7 +1632,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
             UnitsMap rightMap = analyseEquationUnitsAst(ast->mPimpl->mOwnedRightChild, issueDescriptions);
 
             // Plus, Minus, any unit comparisons where units have to be exactly the same.
-            if (isDirectComparisonOperator(ast)) {
+            if (isDirectOperator(ast)) {
                 std::string hints;
                 if (!(mapsAreEquivalent(leftMap, rightMap, hints) || rightMap.empty())) {
                     //return leftMap;
@@ -1660,7 +1651,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
             }
 
             // Multiply, Divide: add mappings, no interest in unit compatibility.
-            if (isMultiplicativeOperator(ast)) {
+            if (isTimesOrDivideOperator(ast)) {
                 UnitsMap newMapping;
                 if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
                     newMapping = addMappings(leftMap, rightMap, 1);
@@ -1671,7 +1662,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
             }
 
             // Checks for exponential operators, multiplies unit mappings with power
-            if (isExponentOperator(ast)) {
+            if (isPowerOrRootOperator(ast)) {
                 double power = 0.0;
                 if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
                     power = getPower(ast->mPimpl->mOwnedRightChild);
@@ -1718,7 +1709,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
             }
 
             // Check logarithms to ensure we have the same base and units inside the logarithmic expression, or both are dimensionless.
-            if (isLogarithmicOperator(ast)) {
+            if (isExponentialOrLogarithmicOperator(ast)) {
                 std::string hints;
                 if (!mapsAreEquivalent(rightMap, leftMap, hints)) {
                     VariablePtr variable = getVariable(ast);
@@ -1812,8 +1803,8 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
             double leftMult = analyseEquationMultiplierAst(ast->mPimpl->mOwnedLeftChild, issueDescriptions, multiplier);
             double rightMult = analyseEquationMultiplierAst(ast->mPimpl->mOwnedRightChild, issueDescriptions, multiplier);
 
-            // The only time we check multiplier mismatch is in a comparision operation.
-            if (isDirectComparisonOperator(ast)) {
+            // The only time we check multiplier mismatch is in a comparison operation.
+            if (isDirectOperator(ast)) {
                 if (!areEqual(leftMult, rightMult) && ast->mPimpl->mOwnedLeftChild != nullptr && ast->mPimpl->mOwnedRightChild != nullptr) {
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
@@ -1831,7 +1822,7 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
             }
 
             // Otherwise for all the other cases we change the multiplier
-            if (isMultiplicativeOperator(ast)) {
+            if (isTimesOrDivideOperator(ast)) {
                 if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
                     leftMult += rightMult;
                 } else {
@@ -1839,7 +1830,7 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
                 }
             }
 
-            if (isExponentOperator(ast)) {
+            if (isPowerOrRootOperator(ast)) {
                 double power = (ast->mPimpl->mOwnedRightChild != nullptr) ? getPower(ast->mPimpl->mOwnedRightChild) : getPower(ast->mPimpl->mOwnedLeftChild);
                 if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER && power != 0.0) {
                     leftMult *= power;
@@ -1854,7 +1845,7 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
                 }
             }
 
-            if (isLogarithmicOperator(ast) || isTrigonometricOperator(ast)) {
+            if (isExponentialOrLogarithmicOperator(ast) || isTrigonometricOperator(ast)) {
                 leftMult = 0.0;
             }
 
