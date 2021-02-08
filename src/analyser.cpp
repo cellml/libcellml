@@ -1553,6 +1553,11 @@ std::string Analyser::AnalyserImpl::expression(std::string first, std::string se
         return first + AstTypeToString.find(ast->mPimpl->mType)->second + second;
     }
 
+    // If we have a bounding variable, we return dx/dt
+    if (ast->mPimpl->mType == AnalyserEquationAst::Type::BVAR) {
+        return "d" + second + "/d" + first;
+    }
+
     return "(" + first + AstTypeToString.find(ast->mPimpl->mType)->second + second + ")";
 }
 
