@@ -1198,7 +1198,7 @@ void Analyser::AnalyserImpl::updateBaseUnitCount(const ModelPtr &model,
     if (isStandardUnitName(unitsName)) {
         for (const auto &iter : standardUnitsList.at(unitsName)) {
             if (unitsMap.find(iter.first) == unitsMap.end()) {
-                unitsMap.emplace(std::pair<std::string, double>(iter.first, 0.0));
+                unitsMap[iter.first] = 0.0;
             }
             unitsMap.at(iter.first) += (iter.second * unitsExponential);
         }
@@ -1219,7 +1219,7 @@ void Analyser::AnalyserImpl::updateBaseUnitCount(const ModelPtr &model,
                 } else {
                     for (const auto &iter : standardUnitsList.at(ref)) {
                         if (unitsMap.find(iter.first) == unitsMap.end()) {
-                            unitsMap.emplace(std::pair<std::string, double>(iter.first, 0.0));
+                            unitsMap[iter.first] = 0.0;
                         }
                         unitsMap.at(iter.first) += (iter.second * exp * unitsExponential);
                     }
@@ -1229,7 +1229,7 @@ void Analyser::AnalyserImpl::updateBaseUnitCount(const ModelPtr &model,
 
         // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
         else if (unitsMap.find(unitsName) == unitsMap.end()) {
-            unitsMap.emplace(std::pair<std::string, double>(unitsName, 1.0 * unitsExponential));
+            unitsMap[unitsName] = unitsExponential;
         } else {
             const auto &iter = unitsMap.find(unitsName);
             unitsMap.at(iter->first) += (iter->second * unitsExponential);
@@ -1320,7 +1320,7 @@ UnitsMap Analyser::AnalyserImpl::addMappings(UnitsMap firstMap, const UnitsMap &
     for (const auto &unit : secondMap) {
         auto it = firstMap.find(unit.first);
         if (it == firstMap.end()) {
-            firstMap.emplace(std::pair<std::string, double>(unit.first, operation * unit.second));
+            firstMap[unit.first] = operation * unit.second;
         } else {
             it->second += operation * unit.second;
         }

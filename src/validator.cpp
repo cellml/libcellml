@@ -1434,7 +1434,7 @@ void updateBaseUnitCount(const ModelPtr &model,
                 }
             }
         } else if (unitMap.find(uName) == unitMap.end()) {
-            unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
+            unitMap[uName] = direction * uExp;
             multiplier += direction * logMult;
         }
     } else if (isStandardUnitName(uName)) {
