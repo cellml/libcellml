@@ -508,7 +508,7 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
         auto unitsName = units->name();
         auto found = unitsMap.find(unitsName);
         if (found == unitsMap.end()) {
-            unitsMap.emplace(unitsName, exp);
+            unitsMap[unitsName] = exp;
         } else {
             found->second += exp;
         }
