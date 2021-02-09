@@ -377,7 +377,7 @@ struct Analyser::AnalyserImpl
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
     void updateBaseUnitCount(const ModelPtr &model,
-                             std::map<std::string, double> &unitsMap,
+                             UnitsMap &unitsMap,
                              const std::string &unitsName,
                              double unitsExponential, double logMultiplier);
     bool isDirectOperator(const AnalyserEquationAstPtr &ast);
@@ -1183,7 +1183,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 }
 
 void Analyser::AnalyserImpl::updateBaseUnitCount(const ModelPtr &model,
-                                                 std::map<std::string, double> &unitsMap,
+                                                 UnitsMap &unitsMap,
                                                  const std::string &unitsName,
                                                  double unitsExponential,
                                                  double logMultiplier)
