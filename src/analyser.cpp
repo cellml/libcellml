@@ -1686,6 +1686,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
                 }
 
                 //double power = getPower(ast->mPimpl->mOwnedRightChild);
+/*ISSUE496: this code is not needed because of the below code that has been commented out.
                 bool correctUnits = false;
                 if (power == 0.0 && ast->mPimpl->mOwnedRightChild != nullptr && ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
                     correctUnits = isDimensionless(leftMap) && isDimensionless(rightMap); // If we have a variable as our power both the power and the quantity it is being applied to must be dimensionless
@@ -1695,6 +1696,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
                 } else {
                     correctUnits = isDimensionless(rightMap); // Otherwise we just check the power for dimensionlessness
                 }
+*/
 
                 // If we have a square root operation
                 if (power == 0.0 && ast->mPimpl->mOwnedRightChild == nullptr) {
