@@ -422,11 +422,6 @@ bool isDimensionlessUnitName(const std::string &name)
     return name == "dimensionless";
 }
 
-bool isDimensionlessUnit(const UnitsPtr &units)
-{
-    return (units != nullptr) && (units->unitCount() == 0) && isDimensionlessUnitName(units->name());
-}
-
 bool isStandardUnitName(const std::string &name)
 {
     return standardUnitsList.count(name) != 0;
