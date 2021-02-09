@@ -330,6 +330,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
  *
  * The private implementation for the Analyser class.
  */
+using AstUnitsMap = std::map<AnalyserEquationAstPtr, UnitsWeakPtr>;
 using UnitsMap = std::map<std::string, double>;
 
 struct Analyser::AnalyserImpl
@@ -341,6 +342,8 @@ struct Analyser::AnalyserImpl
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
+
+    AstUnitsMap mAstUnits;
 
     explicit AnalyserImpl(Analyser *analyser);
 
@@ -873,9 +876,11 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             equation->addVariable(internalVariable);
         }
 
-        // Add the variable to our AST.
+        // Add the variable to our AST and keep track of its unit.
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, variable->units(), astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, astParent);
+
+        mAstUnits[ast] = variable->units();
     } else if (node->isMathmlElement("cn")) {
         // Retrieve the unit, if any and if it is not dimensionless, associated
         // with the CN value.
@@ -899,10 +904,12 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
 
-            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString() + "e" + node->firstChild()->next()->next()->convertToStrippedString(), units, astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString() + "e" + node->firstChild()->next()->next()->convertToStrippedString(), astParent);
         } else {
-            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString(), units, astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString(), astParent);
         }
+
+        mAstUnits[ast] = units;
 
         // Qualifier elements.
 
@@ -1616,7 +1623,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
             && (ast->mPimpl->mOwnedRightChild == nullptr)) {
             // If we have a unit associated with the value of a number we add it to the units mapping.
 
-            UnitsPtr units = ast->mPimpl->units();
+            UnitsPtr units = mAstUnits[ast].lock();
 
             if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
                 && (units != nullptr)) {
@@ -1779,7 +1786,7 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
         if (ast->mPimpl->mOwnedLeftChild == nullptr && ast->mPimpl->mOwnedRightChild == nullptr) {
             // If we have a unit associated with the value of a number we add it to the units mapping.
 
-            UnitsPtr units = ast->mPimpl->units();
+            UnitsPtr units = mAstUnits[ast].lock();
 
             if (ast->mPimpl->mType == AnalyserEquationAst::Type::CN && units != nullptr) {
                 updateBaseMultiplier(owningModel(units), multiplier, units->name(), 1, 0);
@@ -1899,7 +1906,7 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
     scaledAst->mPimpl->mOwnedLeftChild = AnalyserEquationAst::create();
     scaledAst->mPimpl->mOwnedRightChild = ast;
 
-    scaledAst->mPimpl->mOwnedLeftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), nullptr, scaledAst);
+    scaledAst->mPimpl->mOwnedLeftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
 
     ast->mPimpl->mParent = scaledAst;
 
@@ -2012,6 +2019,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     mInternalVariables.clear();
     mInternalEquations.clear();
+
+    mAstUnits.clear();
 
     // Recursively analyse the model's components, so that we end up with an AST
     // for each of the model's equations.

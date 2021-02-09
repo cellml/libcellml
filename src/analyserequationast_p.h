@@ -32,7 +32,6 @@ struct AnalyserEquationAst::AnalyserEquationAstImpl
     AnalyserEquationAst::Type mType = Type::ASSIGNMENT;
     std::string mValue;
     VariableWeakPtr mVariable;
-    UnitsWeakPtr mUnits;
     AnalyserEquationAstWeakPtr mParent;
     AnalyserEquationAstPtr mOwnedLeftChild = nullptr;
     AnalyserEquationAstPtr mOwnedRightChild = nullptr;
@@ -42,11 +41,9 @@ struct AnalyserEquationAst::AnalyserEquationAstImpl
     void populate(AnalyserEquationAst::Type type,
                   const AnalyserEquationAstPtr &parent);
     void populate(AnalyserEquationAst::Type type, const std::string &value,
-                  const UnitsPtr &units, const AnalyserEquationAstPtr &parent);
+                  const AnalyserEquationAstPtr &parent);
     void populate(AnalyserEquationAst::Type type, const VariablePtr &variable,
-                  const UnitsPtr &units, const AnalyserEquationAstPtr &parent);
-
-    UnitsPtr units() const;
+                  const AnalyserEquationAstPtr &parent);
 };
 
 } // namespace libcellml
