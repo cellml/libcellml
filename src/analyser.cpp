@@ -1621,9 +1621,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
             if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
                 && (units != nullptr)) {
                 updateBaseUnitCount(owningModel(units), unitsMap, units->name(), 1, 0);
-            }
-
-            if (ast->mPimpl->mType == AnalyserEquationAst::Type::CI) {
+            } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::CI) {
                 std::string unitsName = (units != nullptr) ? units->name() : "dimensionless";
 
                 if (unitsName != "dimensionless") {
