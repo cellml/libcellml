@@ -19,7 +19,7 @@ The following is a list of exceptions/deviations from the Google style guide tha
 Doxygen comments
 ================
 
- * Code-words (e.g. :code:`true`/`false`, :code:`std::string`) should be styled as typewriter text with a preceding :code:`@c`.
+ * Code-words (e.g. :code:`true`, :code:`false`, :code:`std::string`) should be styled as typewriter text with a preceding :code:`@c`.
  * Doxygen comments should be sentence-style: beginning with capitalisation (except code-words) and ending with punctuation.
    However, they do not need to form grammatically correct sentences.
 
