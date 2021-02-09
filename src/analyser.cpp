@@ -1702,6 +1702,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
                 }
 
                 // Otherwise, for a non-dimensionless case, we return what the units are in the expression.
+/*ISSUE496: this code is not currently used at all...?
                 if (!correctUnits) {
                     std::string hints = getHints(rightMap);
                     VariablePtr variable = getVariable(ast);
@@ -1715,6 +1716,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
                                       + "' are not dimensionless. The units in the expression are " + hints;
                     issueDescriptions.push_back(err);
                 }
+*/
                 return multiplyMappings(leftMap, ast, power); // Reduce potential for errors as we continue to traverse up the tree
             }
 
