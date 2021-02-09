@@ -1622,13 +1622,11 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
                 && (units != nullptr)) {
                 updateBaseUnitCount(owningModel(units), unitsMap, units->name(), 1, 0);
             } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::CI) {
-                std::string unitsName = (units != nullptr) ? units->name() : "dimensionless";
-
-                if (unitsName != "dimensionless") {
+                if (!isDimensionlessUnit(units)) {
                     VariablePtr variable = ast->variable();
                     ModelPtr model = (variable != nullptr) ? owningModel(variable) : nullptr;
 
-                    updateBaseUnitCount(model, unitsMap, unitsName, 1, 0);
+                    updateBaseUnitCount(model, unitsMap, units->name(), 1, 0);
                 }
             }
 
@@ -1779,27 +1777,19 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
     if (ast != nullptr) {
         // Evaluate multiplier if we are at a variable
         if (ast->mPimpl->mOwnedLeftChild == nullptr && ast->mPimpl->mOwnedRightChild == nullptr) {
-            ModelPtr model;
-            std::string uName;
-            UnitsMap unitMap;
-
             // If we have a unit associated with the value of a number we add it to the units mapping.
 
             UnitsPtr units = ast->mPimpl->units();
 
             if (ast->mPimpl->mType == AnalyserEquationAst::Type::CN && units != nullptr) {
-                model = owningModel(units);
-                uName = units->name();
-                updateBaseMultiplier(model, multiplier, uName, 1, 0);
+                updateBaseMultiplier(owningModel(units), multiplier, units->name(), 1, 0);
             }
 
             if (ast->mPimpl->mType == AnalyserEquationAst::Type::CI) {
                 VariablePtr variable = ast->variable();
 
-                model = (variable != nullptr) ? owningModel(variable) : nullptr;
-                uName = (units != nullptr) ? units->name() : "dimensionless";
-                if (!(uName == "dimensionless")) {
-                    updateBaseMultiplier(model, multiplier, uName, 1, 0);
+                if (!isDimensionlessUnit(units)) {
+                    updateBaseMultiplier((variable != nullptr) ? owningModel(variable) : nullptr, multiplier, units->name(), 1, 0);
                 } else {
                     multiplier = 0.0;
                 }
