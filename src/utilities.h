@@ -390,19 +390,6 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
 bool isDimensionlessUnitName(const std::string &name);
 
 /**
- * @brief Test if the provided @c Units is a dimensionless unit.
- *
- * Tests to determine if the provided @p units is the dimensionless unit.
- * Returns @c true if the @p units is a dimensionless unit and @c false
- * otherwise.
- *
- * @param units The @c Units to test.
- *
- * @return @c true if @p units is a dimensionless unit, @c false otherwise.
- */
-bool isDimensionlessUnit(const UnitsPtr &units);
-
-/**
  * @brief Check if the provided @p name is a standard unit.
  *
  * Checks if the provided @p name is one of the standard units in the
