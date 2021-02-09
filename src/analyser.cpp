@@ -1863,21 +1863,21 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast)
 {
+    // Analyse our equations' units and report any mismatch that we come across.
+
     std::vector<std::string> issueDescriptions;
 
     analyseEquationUnitsAst(ast, issueDescriptions);
     analyseEquationMultiplierAst(ast, issueDescriptions, 0.0);
 
-    if (!issueDescriptions.empty()) {
-        for (const auto &issueDescription : issueDescriptions) {
-            auto issue = Issue::create();
+    for (const auto &issueDescription : issueDescriptions) {
+        auto issue = Issue::create();
 
-            issue->setDescription(issueDescription);
-            issue->setLevel(Issue::Level::MESSAGE);
-            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
+        issue->setDescription(issueDescription);
+        issue->setLevel(Issue::Level::MESSAGE);
+        issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
 
-            mAnalyser->addIssue(issue);
-        }
+        mAnalyser->addIssue(issue);
     }
 }
 
