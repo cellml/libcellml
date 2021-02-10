@@ -867,13 +867,11 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         // Have our equation track the (ODE) variable (by ODE variable, we mean
         // a variable that is used in a "diff" element).
 
-        auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
-
         if (node->parent()->firstChild()->isMathmlElement("diff")) {
-            equation->addOdeVariable(internalVariable);
+            equation->addOdeVariable(internalVariable(variable));
         } else if (!(node->parent()->isMathmlElement("bvar")
                      && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
-            equation->addVariable(internalVariable);
+            equation->addVariable(internalVariable(variable));
         }
 
         // Add the variable to our AST and keep track of its unit.
@@ -882,8 +880,8 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         mAstUnits[ast] = variable->units();
     } else if (node->isMathmlElement("cn")) {
-        // Retrieve the unit, if any and if it is not dimensionless, associated
-        // with the CN value.
+        // Retrieve the unit associated with the CN value unless it's
+        // dimensionless (since it's not relevant for our unit analysis).
 
         UnitsPtr units;
         std::string unitsName = node->attribute("units");
@@ -892,13 +890,9 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             // We are not allowed to redefine standard units, so construct the
             // units if we have a standard unit.
 
-            if (isStandardUnitName(unitsName)) {
-                units = libcellml::Units::create();
-
-                units->setName(unitsName);
-            } else {
-                units = owningModel(component)->units(unitsName);
-            }
+            units = isStandardUnitName(unitsName) ?
+                        libcellml::Units::create(unitsName) :
+                        owningModel(component)->units(unitsName);
         }
 
         if (mathmlChildCount(node) == 1) {
