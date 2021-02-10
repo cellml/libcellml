@@ -35,14 +35,13 @@ Note that it may be some time before changes to the documentation are seen on th
 
 Resolving comments
 ==================
-
 All comments on the pull request and associated issue should be responded to and satisfied.
 It's useful if contributors include the Git commit number (a six or seven digit hexadecimal code) in which any requested code changes are made in their reply to reviewer comments.
 It is the reviewers' responsibility to check that appropriate changes have been made before merging the pull request.
 
-Coding standard
-===============
-Currently, there is no fully-defined libCellML coding standard set, but the :google_style_guide:`Google C++ Style Guide<>` can be considered a baseline for the standard of code that is expected for libCellML.
+Coding standards
+================
+Currently, there is no fully-defined libCellML coding standards set, but the :google_style_guide:`Google C++ Style Guide<>` can be considered a baseline for the standard of code that is expected for libCellML.
 See the :ref:`Coding Standards <dev_coding_standards>` document for deviations from this guideline.
 
 Merging a pull request
