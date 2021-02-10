@@ -1,3 +1,4 @@
+#include <iostream>
 /*
 Copyright libCellML Contributors
 
@@ -1641,16 +1642,15 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstP
         return {};
     }
 
-    // Check whether we are dealing with an AST leaf and, if so, retrieve its
-    // units map, but only if it is either a non-dimensionless CI or a CN
-    // element.
+    // Check whether we are dealing with a CI/CN element and, if so, return its
+    // units map, but only if it isn't dimensionless.
 
-    if ((ast->mPimpl->mOwnedLeftChild == nullptr)
-        && (ast->mPimpl->mOwnedRightChild == nullptr)) {
+    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
         UnitsPtr units = mAstUnits[ast].lock();
 
         if (units == nullptr) {
-            // Dimensionless AST leaf.
+            // Dimensionless CI/CN element.
 
             return {};
         }
@@ -1662,11 +1662,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstP
             return unitsMap(model, units->name());
         }
 
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::CN) {
-            return unitsMap(owningModel(units), units->name());
-        }
-
-        return {};
+        return unitsMap(owningModel(units), units->name());
     }
 
     // Evaluate left, right subtrees first
@@ -1812,16 +1808,15 @@ double Analyser::AnalyserImpl::analyseEquationUnitsMultiplier(const AnalyserEqua
         return multiplier;
     }
 
-    // Check whether we are dealing with an AST leaf and, if so, retrieve its
-    // multiplier, but only if it is either a non-dimensionless CI or a CN
-    // element.
+    // Check whether we are dealing with a CI/CN element and, if so, return its
+    // multiplier, but only if it isn't dimensionless.
 
-    if ((ast->mPimpl->mOwnedLeftChild == nullptr)
-        && (ast->mPimpl->mOwnedRightChild == nullptr)) {
+    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
         UnitsPtr units = mAstUnits[ast].lock();
 
         if (units == nullptr) {
-            // Dimensionless AST leaf.
+            // Dimensionless CI/CN element.
 
             return 0.0;
         }
@@ -1832,11 +1827,7 @@ double Analyser::AnalyserImpl::analyseEquationUnitsMultiplier(const AnalyserEqua
             return Analyser::AnalyserImpl::multiplier((variable != nullptr) ? owningModel(variable) : nullptr, units->name());
         }
 
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::CN) {
-            return Analyser::AnalyserImpl::multiplier(owningModel(units), units->name());
-        }
-
-        return 0.0;
+        return Analyser::AnalyserImpl::multiplier(owningModel(units), units->name());
     }
 
     // Evaluate left, right subtrees first
