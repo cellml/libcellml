@@ -1057,6 +1057,12 @@ std::vector<VariablePtr> Analyser::AnalyserImpl::equivalentVariables(const Varia
 
 void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &ast)
 {
+    // Make sure that we an AST to analyse.
+
+    if (ast == nullptr) {
+        return;
+    }
+
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
 
@@ -1167,13 +1173,8 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     // Recursively check the given AST's children.
 
-    if (ast->mPimpl->mOwnedLeftChild != nullptr) {
-        analyseEquationAst(ast->mPimpl->mOwnedLeftChild);
-    }
-
-    if (ast->mPimpl->mOwnedRightChild != nullptr) {
-        analyseEquationAst(ast->mPimpl->mOwnedRightChild);
-    }
+    analyseEquationAst(ast->mPimpl->mOwnedLeftChild);
+    analyseEquationAst(ast->mPimpl->mOwnedRightChild);
 }
 
 void Analyser::AnalyserImpl::updateBaseUnitCount(const ModelPtr &model,
