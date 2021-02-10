@@ -4,7 +4,7 @@ Building libCellML for use in the Browser
 =========================================
 
 To build libCellML for the browser we use the emscripten toolchain to create web assembly binaries.
-Here we will go through the process of building be with assembly binaries on macOS.
+Here we will go through the process of building web assembly binaries on macOS.
 For other operating systems modifications to these instructions will have to be made.
 Any modifications required are expected to be self evident – with this in mind these instructions should be universally applicable.
 
