@@ -982,7 +982,7 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
-TEST(Analyser, analyseUnitsInMathmlStrings)
+TEST(Analyser, unitsInMathmlStrings)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("analyser/units_in_mathml_strings.cellml"));
@@ -1029,7 +1029,7 @@ TEST(Analyser, analyseUnitsInMathmlStrings)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
-TEST(Analyser, analyseUnitsMultiplierInMathmlStrings)
+TEST(Analyser, unitsMultiplierInMathmlStrings)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("analyser/units_multiplier_in_mathml_strings.cellml"));
