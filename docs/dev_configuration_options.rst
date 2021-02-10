@@ -2,7 +2,7 @@ Options
 -------
 
 Some options are platform or tool dependent.
-For example, MEMCHECK is only available if the valgrind tool is available.
+For example, :code:`MEMCHECK` is only available if the valgrind tool is available.
 
 ======================== ============ ===========================================
 Config                    Default      Description

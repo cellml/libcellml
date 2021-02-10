@@ -97,8 +97,10 @@ It may be necessary to refactor the current design to enable the easiest possibl
 This is a good thing as the quality of the design improves and this makes it easier to work with in the future.
 Refactoring means improving the code without adding features, and the tests provide validation that the refactored code performs as well as before.
 
-For simple or obvious bugs, which have fallen through the testing gaps, just the implementation is fine.
-**TODO** KRM I don't understand this sentence?
+For simple or obvious bugs which have fallen through the testing gaps, simply submitting a pull request with the repaired implementation and no extra tests is fine.
+
+**TODO** check above is true.
+
 
 GitHub pull requests
 ====================
