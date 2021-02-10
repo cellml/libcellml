@@ -40,7 +40,7 @@ The command line options can be set with the :code:`-D` flag, like so :code:`-DB
 From the command line (bash shell), libCellML can be configured to create an optimised shared object library like so::
 
   cd $LIBCELLML_BUILD
-  cmake -DBUILD_TYPERelease $LIBCELLML_SRC
+  cmake -DBUILD_TYPE=Release $LIBCELLML_SRC
   
 
 
@@ -52,14 +52,17 @@ Instructions for running CMake through the command line can be found on the :cma
 
 For Windows only the location of the libXML2 library must be specified through the command line by adding the parameter::
 
-  -DLibXml2_DIR "C:\Program Files\libxml2 2.9.6\lib\cmake"
+  -DLibXml2_DIR="C:\Program Files\libxml2 2.9.6\lib\cmake"
 
 to the configuration command.  
 This library is built into Linux and MacOS systems, so this step is only needed on Windows.
 
-This assumes that the recommended LibXml2 binaries have been installed to the default location :code:`C:\Program Files\libxml2 2.9.6`.  
-Please note that libCellML will only work with a 64-bit installation of libXML2.  
-A pre-built 64-bit installer is available from the :opencmiss_repo:`OpenCMISS repository<>` ; 32-bit binaries or 32-bit builds will not work with libCellML.
+This assumes that the recommended LibXml2 binaries have been installed to the default location :code:`C:\Program Files\libxml2 2.9.6`.
+
+..container:: nb
+
+   Please note that libCellML will only work with a 64-bit installation of libXML2.  
+   A pre-built 64-bit installer is available from the :opencmiss_repo:`OpenCMISS repository<>` ; 32-bit binaries or 32-bit builds will not work with libCellML.
 
 
 Windows CMake-GUI
@@ -168,8 +171,8 @@ You may need to restart your computer after installation, and then re-launch CMa
 
 Could NOT find Sphinx (missing: SPHINX_EXECUTABLE)
 --------------------------------------------------
-`Sphinx <http://www.sphinx-doc.org/en/master/>`_ is a documentation generator used by libCellML to collect documentation on Python bindings, which requires Python 3.5.2 or later in order to run.  
-Please see the installation instructions on the `installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`_ and then restart CMake.  
+:sphinx:`Sphinx<>` is a documentation generator used by libCellML to collect documentation on Python bindings, which requires Python 3.5.2 or later in order to run.  
+Please see the installation instructions on the :sphinx:`installation page</usage/installation.html>` and then restart CMake.  
 If you do not need to generate bindings for Python then simply un-tick the CMake option :code:`LIBCELLML_BINDINGS_PYTHON`, and push *Configure* again. 
 
 
