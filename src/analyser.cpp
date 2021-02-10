@@ -880,19 +880,19 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         mAstUnits[ast] = variable->units();
     } else if (node->isMathmlElement("cn")) {
-        // Retrieve the unit associated with the CN value unless it's
-        // dimensionless (since it's not relevant for our unit analysis).
+        // Retrieve the unit associated with the CN value and keep track of it,
+        // unless it's dimensionless in which case we skip it since it's not
+        // relevant for our unit analysis.
 
-        UnitsPtr units;
         std::string unitsName = node->attribute("units");
 
         if (!isDimensionlessUnitName(unitsName)) {
             // We are not allowed to redefine standard units, so construct the
             // units if we have a standard unit.
 
-            units = isStandardUnitName(unitsName) ?
-                        libcellml::Units::create(unitsName) :
-                        owningModel(component)->units(unitsName);
+            mAstUnits[ast] = isStandardUnitName(unitsName) ?
+                                 libcellml::Units::create(unitsName) :
+                                 owningModel(component)->units(unitsName);
         }
 
         if (mathmlChildCount(node) == 1) {
@@ -902,8 +902,6 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         } else {
             ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString(), astParent);
         }
-
-        mAstUnits[ast] = units;
 
         // Qualifier elements.
 
@@ -1864,7 +1862,7 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast)
 {
-    // Analyse our equations' units and report any mismatch that we come across.
+    // Analyse our equations' units and report any mismatch that we came across.
 
     std::vector<std::string> issueDescriptions;
 
@@ -2037,7 +2035,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     if (mAnalyser->errorCount() == 0) {
         // Analyse our different equations' units to make sure that everything
-        // is consistent units wise.
+        // is consistent.
 
         for (const auto &internalEquation : mInternalEquations) {
             analyseEquationUnits(internalEquation->mAst);
