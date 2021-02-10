@@ -874,15 +874,20 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             equation->addVariable(internalVariable(variable));
         }
 
-        // Add the variable to our AST and keep track of its unit.
+        // Add the variable to our AST and keep track of its unit, unless it's
+        // dimensionless in which case we skip it since it's not relevant for
+        // our unit analysis.
 
         ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, astParent);
 
-        mAstUnits[ast] = variable->units();
+        if (!isDimensionlessUnit(variable->units())) {
+            mAstUnits[ast] = variable->units();
+        }
     } else if (node->isMathmlElement("cn")) {
-        // Add the number to our AST and keep track of its unit. Note that in
-        // the case of a standard unit, we need to create a units since it's
-        // obviously not declared in the model.
+        // Add the number to our AST and keep track of its unit, unless it's
+        // dimensionless in which case we skip it since it's not relevant for
+        // our unit analysis. Note that in the case of a standard unit, we need
+        // to create a units since it's not declared in the model.
 
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
@@ -894,9 +899,11 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         std::string unitsName = node->attribute("units");
 
-        mAstUnits[ast] = isStandardUnitName(unitsName) ?
-                             libcellml::Units::create(unitsName) :
-                             owningModel(component)->units(unitsName);
+        if (!isDimensionlessUnitName(unitsName)) {
+            mAstUnits[ast] = isStandardUnitName(unitsName) ?
+                                 libcellml::Units::create(unitsName) :
+                                 owningModel(component)->units(unitsName);
+        }
 
         // Qualifier elements.
 
