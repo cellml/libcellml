@@ -405,9 +405,9 @@ struct Analyser::AnalyserImpl
     std::string getHints(const UnitsMap &map);
     UnitsMap analyseEquationUnitsAst(const AnalyserEquationAstPtr &ast,
                                      std::vector<std::string> &issueDescriptions);
-    double analyseEquationMultiplierAst(const AnalyserEquationAstPtr &ast,
-                                        std::vector<std::string> &issueDescriptions,
-                                        double multiplier);
+    double analyseEquationUnitsMultiplierAst(const AnalyserEquationAstPtr &ast,
+                                             std::vector<std::string> &issueDescriptions,
+                                             double multiplier);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast);
 
     double scalingFactor(const VariablePtr &variable);
@@ -1769,9 +1769,9 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnitsAst(const AnalyserEquationA
     return unitsMap;
 }
 
-double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquationAstPtr &ast,
-                                                            std::vector<std::string> &issueDescriptions,
-                                                            double multiplier)
+double Analyser::AnalyserImpl::analyseEquationUnitsMultiplierAst(const AnalyserEquationAstPtr &ast,
+                                                                 std::vector<std::string> &issueDescriptions,
+                                                                 double multiplier)
 {
     if (ast != nullptr) {
         // Evaluate multiplier if we are at a variable
@@ -1799,8 +1799,8 @@ double Analyser::AnalyserImpl::analyseEquationMultiplierAst(const AnalyserEquati
         // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mPimpl->mOwnedLeftChild != nullptr || ast->mPimpl->mOwnedRightChild != nullptr) {
             // Evaluate left, right subtrees first
-            double leftMult = analyseEquationMultiplierAst(ast->mPimpl->mOwnedLeftChild, issueDescriptions, multiplier);
-            double rightMult = analyseEquationMultiplierAst(ast->mPimpl->mOwnedRightChild, issueDescriptions, multiplier);
+            double leftMult = analyseEquationUnitsMultiplierAst(ast->mPimpl->mOwnedLeftChild, issueDescriptions, multiplier);
+            double rightMult = analyseEquationUnitsMultiplierAst(ast->mPimpl->mOwnedRightChild, issueDescriptions, multiplier);
 
             // The only time we check multiplier mismatch is in a comparison operation.
             if (isDirectOperator(ast)) {
@@ -1867,7 +1867,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     std::vector<std::string> issueDescriptions;
 
     analyseEquationUnitsAst(ast, issueDescriptions);
-    analyseEquationMultiplierAst(ast, issueDescriptions, 0.0);
+    analyseEquationUnitsMultiplierAst(ast, issueDescriptions, 0.0);
 
     for (const auto &issueDescription : issueDescriptions) {
         auto issue = Issue::create();
