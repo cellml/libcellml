@@ -391,19 +391,19 @@ struct Analyser::AnalyserImpl
     bool isTrigonometricOperator(const AnalyserEquationAstPtr &ast);
     bool isDerivativeOperator(const AnalyserEquationAstPtr &ast);
     bool isBoundVariableOperator(const AnalyserEquationAstPtr &ast);
-    UnitsMap addMappings(UnitsMap firstMap, const UnitsMap &secondMap, int operation);
-    UnitsMap multiplyMappings(UnitsMap map, const AnalyserEquationAstPtr &ast, double power);
-    bool mapsAreEquivalent(const UnitsMap &firstMap, const UnitsMap &secondMap, std::string &hints);
+    UnitsMap addUnitsMaps(UnitsMap firstMap, const UnitsMap &secondMap, int operation);
+    UnitsMap multiplyUnitsMaps(UnitsMap map, const AnalyserEquationAstPtr &ast, double power);
+    bool areEquivalentUnitsMaps(const UnitsMap &firstMap, const UnitsMap &secondMap, std::string &hints);
     bool isDimensionless(const UnitsMap &map);
     void updateMultiplier(const ModelPtr &model, double &multiplier,
                           const std::string &unitsName, double unitsExponent,
                           double logMultiplier);
     double multiplier(const ModelPtr &model, const std::string &unitsName);
-    VariablePtr getVariable(const AnalyserEquationAstPtr &ast);
-    double getPower(const AnalyserEquationAstPtr &ast);
+    VariablePtr variable(const AnalyserEquationAstPtr &ast);
+    double power(const AnalyserEquationAstPtr &ast);
     std::string expression(std::string first, std::string second, const AnalyserEquationAstPtr &ast);
-    std::string getEquation(const AnalyserEquationAstPtr &ast);
-    std::string getHints(const UnitsMap &map);
+    std::string equation(const AnalyserEquationAstPtr &ast);
+    std::string hints(const UnitsMap &map);
     UnitsMap analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                                   std::vector<std::string> &issueDescriptions);
     double analyseEquationUnitsMultiplier(const AnalyserEquationAstPtr &ast,
@@ -1321,7 +1321,7 @@ bool Analyser::AnalyserImpl::isBoundVariableOperator(const AnalyserEquationAstPt
 }
 
 // Function which adds the unit mappings together if we have a times or divide operator in the AST.
-UnitsMap Analyser::AnalyserImpl::addMappings(UnitsMap firstMap, const UnitsMap &secondMap, int operation)
+UnitsMap Analyser::AnalyserImpl::addUnitsMaps(UnitsMap firstMap, const UnitsMap &secondMap, int operation)
 {
     for (const auto &unit : secondMap) {
         auto it = firstMap.find(unit.first);
@@ -1335,7 +1335,7 @@ UnitsMap Analyser::AnalyserImpl::addMappings(UnitsMap firstMap, const UnitsMap &
 }
 
 // Function which multiplies mappings if we have a power or root operator in the AST.
-UnitsMap Analyser::AnalyserImpl::multiplyMappings(UnitsMap map, const AnalyserEquationAstPtr &ast, double power)
+UnitsMap Analyser::AnalyserImpl::multiplyUnitsMaps(UnitsMap map, const AnalyserEquationAstPtr &ast, double power)
 {
     if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER) {
         for (auto &unit : map) {
@@ -1350,7 +1350,7 @@ UnitsMap Analyser::AnalyserImpl::multiplyMappings(UnitsMap map, const AnalyserEq
 }
 
 // Helper function to check map equivalences
-bool Analyser::AnalyserImpl::mapsAreEquivalent(const UnitsMap &firstMap, const UnitsMap &secondMap, std::string &hints)
+bool Analyser::AnalyserImpl::areEquivalentUnitsMaps(const UnitsMap &firstMap, const UnitsMap &secondMap, std::string &hints)
 {
     UnitsMap mapping;
     for (const auto &baseUnits : baseUnitsList) {
@@ -1443,7 +1443,7 @@ double Analyser::AnalyserImpl::multiplier(const ModelPtr &model,
 }
 
 // Grabs a variable associated with the model, so we can return an error message
-VariablePtr Analyser::AnalyserImpl::getVariable(const AnalyserEquationAstPtr &ast)
+VariablePtr Analyser::AnalyserImpl::variable(const AnalyserEquationAstPtr &ast)
 {
     VariablePtr variable = ast->variable();
 
@@ -1451,13 +1451,13 @@ VariablePtr Analyser::AnalyserImpl::getVariable(const AnalyserEquationAstPtr &as
         return variable;
     }
     if (ast->mPimpl->mOwnedLeftChild != nullptr) {
-        return getVariable(ast->mPimpl->mOwnedLeftChild);
+        return Analyser::AnalyserImpl::variable(ast->mPimpl->mOwnedLeftChild);
     }
     return nullptr;
 }
 
 // Gets the power for a given node. (this needs to be redone so we will always be guaranteed to find the power for an operation)
-double Analyser::AnalyserImpl::getPower(const AnalyserEquationAstPtr &ast)
+double Analyser::AnalyserImpl::power(const AnalyserEquationAstPtr &ast)
 {
     if (ast == nullptr) {
         return 0.0; // Return 0 for case where there is a null node
@@ -1469,19 +1469,19 @@ double Analyser::AnalyserImpl::getPower(const AnalyserEquationAstPtr &ast)
         }
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
-            return getPower(ast->mPimpl->mOwnedLeftChild) * getPower(ast->mPimpl->mOwnedRightChild);
+            return power(ast->mPimpl->mOwnedLeftChild) * power(ast->mPimpl->mOwnedRightChild);
         }
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIVIDE) {
-            return (getPower(ast->mPimpl->mOwnedRightChild) != 0.0) ? getPower(ast->mPimpl->mOwnedLeftChild) / getPower(ast->mPimpl->mOwnedRightChild) : 0.0;
+            return (power(ast->mPimpl->mOwnedRightChild) != 0.0) ? power(ast->mPimpl->mOwnedLeftChild) / power(ast->mPimpl->mOwnedRightChild) : 0.0;
         }
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::PLUS) {
-            return getPower(ast->mPimpl->mOwnedLeftChild) + getPower(ast->mPimpl->mOwnedRightChild);
+            return power(ast->mPimpl->mOwnedLeftChild) + power(ast->mPimpl->mOwnedRightChild);
         }
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::MINUS) {
-            return getPower(ast->mPimpl->mOwnedLeftChild) - getPower(ast->mPimpl->mOwnedRightChild);
+            return power(ast->mPimpl->mOwnedLeftChild) - power(ast->mPimpl->mOwnedRightChild);
         }
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::DEGREE) {
-            return getPower(ast->mPimpl->mOwnedLeftChild);
+            return power(ast->mPimpl->mOwnedLeftChild);
         }
     }
 
@@ -1591,7 +1591,7 @@ std::string Analyser::AnalyserImpl::expression(std::string first, std::string se
 }
 
 // Function to return the part of the equation in error as a string
-std::string Analyser::AnalyserImpl::getEquation(const AnalyserEquationAstPtr &ast)
+std::string Analyser::AnalyserImpl::equation(const AnalyserEquationAstPtr &ast)
 {
     if (ast == nullptr) {
         return {};
@@ -1607,13 +1607,13 @@ std::string Analyser::AnalyserImpl::getEquation(const AnalyserEquationAstPtr &as
         return ast->value();
     }
 
-    return expression(getEquation(ast->mPimpl->mOwnedLeftChild),
-                      getEquation(ast->mPimpl->mOwnedRightChild),
+    return expression(equation(ast->mPimpl->mOwnedLeftChild),
+                      equation(ast->mPimpl->mOwnedRightChild),
                       ast);
 }
 
 // Get the units in the mapping if we have an incorrect test case.
-std::string Analyser::AnalyserImpl::getHints(const UnitsMap &map)
+std::string Analyser::AnalyserImpl::hints(const UnitsMap &map)
 {
     std::string hints;
     for (const auto &unit : map) {
@@ -1665,22 +1665,23 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstP
         return unitsMap(owningModel(units), units->name());
     }
 
-    // Evaluate left, right subtrees first
-    UnitsMap leftMap = analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, issueDescriptions);
-    UnitsMap rightMap = analyseEquationUnits(ast->mPimpl->mOwnedRightChild, issueDescriptions);
+    // Check the left and right children.
+
+    UnitsMap leftUnitsMap = analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, issueDescriptions);
+    UnitsMap rightUnitsMap = analyseEquationUnits(ast->mPimpl->mOwnedRightChild, issueDescriptions);
 
     // Plus, Minus, any unit comparisons where units have to be exactly the same.
     if (isDirectOperator(ast)) {
         std::string hints;
-        if (!(mapsAreEquivalent(leftMap, rightMap, hints) || rightMap.empty())) {
+        if (!(areEquivalentUnitsMaps(leftUnitsMap, rightUnitsMap, hints) || rightUnitsMap.empty())) {
             //return leftMap;
-            VariablePtr variable = getVariable(ast);
+            VariablePtr variable = Analyser::AnalyserImpl::variable(ast);
             ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
             ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
             std::string compName = (component != nullptr) ? component->name() : "";
             std::string modelName = (model != nullptr) ? model->name() : "";
 
-            std::string err = "The units in the expression '" + getEquation(ast)
+            std::string err = "The units in the expression '" + equation(ast)
                               + "' in component '" + compName
                               + "' are not equivalent. The unit mismatch is " + hints;
             issueDescriptions.push_back(err);
@@ -1691,9 +1692,9 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstP
     if (isTimesOrDivideOperator(ast)) {
         UnitsMap newMapping;
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
-            newMapping = addMappings(leftMap, rightMap, 1);
+            newMapping = addUnitsMaps(leftUnitsMap, rightUnitsMap, 1);
         } else {
-            newMapping = addMappings(leftMap, rightMap, -1);
+            newMapping = addUnitsMaps(leftUnitsMap, rightUnitsMap, -1);
         }
         return newMapping;
     }
@@ -1702,12 +1703,12 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstP
     if (isPowerOrRootOperator(ast)) {
         double power = 0.0;
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
-            power = getPower(ast->mPimpl->mOwnedRightChild);
+            power = Analyser::AnalyserImpl::power(ast->mPimpl->mOwnedRightChild);
         } else {
             if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
-                power = getPower(ast->mPimpl->mOwnedLeftChild);
+                power = Analyser::AnalyserImpl::power(ast->mPimpl->mOwnedLeftChild);
             } else {
-                power = getPower(ast->mPimpl->mOwnedRightChild);
+                power = Analyser::AnalyserImpl::power(ast->mPimpl->mOwnedRightChild);
             }
         }
 
@@ -1719,7 +1720,7 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstP
         } else*/
         if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
             //                    correctUnits = isDimensionless(leftMap);
-            leftMap = rightMap;
+            leftUnitsMap = rightUnitsMap;
             //                } else {
             //                    correctUnits = isDimensionless(rightMap); // Otherwise we just check the power for dimensionlessness
         }
@@ -1745,57 +1746,57 @@ UnitsMap Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstP
             issueDescriptions.push_back(err);
         }
 */
-        return multiplyMappings(leftMap, ast, power); // Reduce potential for errors as we continue to traverse up the tree
+        return multiplyUnitsMaps(leftUnitsMap, ast, power); // Reduce potential for errors as we continue to traverse up the tree
     }
 
     // Check logarithms to ensure we have the same base and units inside the logarithmic expression, or both are dimensionless.
     if (isExponentialOrLogarithmicOperator(ast)) {
         std::string hints;
-        if (!mapsAreEquivalent(rightMap, leftMap, hints)) {
-            VariablePtr variable = getVariable(ast);
+        if (!areEquivalentUnitsMaps(rightUnitsMap, leftUnitsMap, hints)) {
+            VariablePtr variable = Analyser::AnalyserImpl::variable(ast);
             ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
             ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
             std::string compName = (component != nullptr) ? component->name() : "";
             std::string modelName = (model != nullptr) ? model->name() : "";
 
-            std::string err = "The units in the expression '" + getEquation(ast)
+            std::string err = "The units in the expression '" + equation(ast)
                               + "' in component '" + compName
                               + "' are not consistent with the base. The mismatch is: " + hints;
             issueDescriptions.push_back(err);
         }
-        rightMap.clear();
-        return rightMap;
+        rightUnitsMap.clear();
+        return rightUnitsMap;
     }
 
     // All trig arguments should be dimensionless
     if (isTrigonometricOperator(ast)) {
-        if (!isDimensionless(leftMap)) {
-            std::string hints = getHints(leftMap);
-            VariablePtr variable = getVariable(ast);
+        if (!isDimensionless(leftUnitsMap)) {
+            std::string hints = Analyser::AnalyserImpl::hints(leftUnitsMap);
+            VariablePtr variable = Analyser::AnalyserImpl::variable(ast);
             ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
             ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
             std::string compName = (component != nullptr) ? component->name() : "";
             std::string modelName = (model != nullptr) ? model->name() : "";
 
-            std::string err = "The argument in the expression '" + getEquation(ast)
+            std::string err = "The argument in the expression '" + equation(ast)
                               + "' in component '" + compName
                               + "' is not dimensionless. The units in the argument are: " + hints;
             issueDescriptions.push_back(err);
-            leftMap.clear(); // Clear our mapping to reduce the potential for errors further up the tree.
+            leftUnitsMap.clear(); // Clear our mapping to reduce the potential for errors further up the tree.
         }
     }
 
     if (isDerivativeOperator(ast)) {
-        return addMappings(leftMap, rightMap, 1);
+        return addUnitsMaps(leftUnitsMap, rightUnitsMap, 1);
     }
 
     if (isBoundVariableOperator(ast)) {
-        for (auto &unit : leftMap) {
+        for (auto &unit : leftUnitsMap) {
             unit.second *= -1.0; // Bottom variable will be "per" the unit on the top
         }
     }
 
-    return leftMap;
+    return leftUnitsMap;
 }
 
 double Analyser::AnalyserImpl::analyseEquationUnitsMultiplier(const AnalyserEquationAstPtr &ast,
@@ -1830,22 +1831,23 @@ double Analyser::AnalyserImpl::analyseEquationUnitsMultiplier(const AnalyserEqua
         return Analyser::AnalyserImpl::multiplier(owningModel(units), units->name());
     }
 
-    // Evaluate left, right subtrees first
-    double leftMult = analyseEquationUnitsMultiplier(ast->mPimpl->mOwnedLeftChild, issueDescriptions, multiplier);
-    double rightMult = analyseEquationUnitsMultiplier(ast->mPimpl->mOwnedRightChild, issueDescriptions, multiplier);
+    // Check the left and right children.
+
+    double leftMultiplier = analyseEquationUnitsMultiplier(ast->mPimpl->mOwnedLeftChild, issueDescriptions, multiplier);
+    double rightMultiplier = analyseEquationUnitsMultiplier(ast->mPimpl->mOwnedRightChild, issueDescriptions, multiplier);
 
     // The only time we check multiplier mismatch is in a comparison operation.
     if (isDirectOperator(ast)) {
-        if (!areEqual(leftMult, rightMult) && ast->mPimpl->mOwnedLeftChild != nullptr && ast->mPimpl->mOwnedRightChild != nullptr) {
-            VariablePtr variable = getVariable(ast);
+        if (!areEqual(leftMultiplier, rightMultiplier) && ast->mPimpl->mOwnedLeftChild != nullptr && ast->mPimpl->mOwnedRightChild != nullptr) {
+            VariablePtr variable = Analyser::AnalyserImpl::variable(ast);
             ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
             ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
             std::string compName = (component != nullptr) ? component->name() : "";
             std::string modelName = (model != nullptr) ? model->name() : "";
 
-            std::string err = "The expression '" + getEquation(ast)
+            std::string err = "The expression '" + equation(ast)
                               + "' in component '" + compName
-                              + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult)
+                              + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMultiplier - rightMultiplier)
                               + ". A variable in the expression is " + variable->name() + ".";
             issueDescriptions.push_back(err);
         }
@@ -1854,40 +1856,42 @@ double Analyser::AnalyserImpl::analyseEquationUnitsMultiplier(const AnalyserEqua
     // Otherwise for all the other cases we change the multiplier
     if (isTimesOrDivideOperator(ast)) {
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
-            leftMult += rightMult;
+            leftMultiplier += rightMultiplier;
         } else {
-            leftMult -= rightMult;
+            leftMultiplier -= rightMultiplier;
         }
     }
 
     if (isPowerOrRootOperator(ast)) {
-        double power = (ast->mPimpl->mOwnedRightChild != nullptr) ? getPower(ast->mPimpl->mOwnedRightChild) : getPower(ast->mPimpl->mOwnedLeftChild);
+        double power = (ast->mPimpl->mOwnedRightChild != nullptr) ?
+                           Analyser::AnalyserImpl::power(ast->mPimpl->mOwnedRightChild) :
+                           Analyser::AnalyserImpl::power(ast->mPimpl->mOwnedLeftChild);
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER && power != 0.0) {
-            leftMult *= power;
+            leftMultiplier *= power;
         } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::ROOT) {
             if ((ast->mPimpl->mOwnedRightChild != nullptr || ast->mPimpl->mOwnedLeftChild != nullptr) && power != 0.0) {
-                leftMult /= power;
+                leftMultiplier /= power;
             } else {
-                leftMult *= 0.5;
+                leftMultiplier *= 0.5;
             }
         } else {
-            leftMult = 0.0;
+            leftMultiplier = 0.0;
         }
     }
 
     if (isExponentialOrLogarithmicOperator(ast) || isTrigonometricOperator(ast)) {
-        leftMult = 0.0;
+        leftMultiplier = 0.0;
     }
 
     if (isDerivativeOperator(ast)) {
-        leftMult = leftMult + rightMult;
+        leftMultiplier = leftMultiplier + rightMultiplier;
     }
 
     if (isBoundVariableOperator(ast)) {
-        leftMult = 0.0 - leftMult;
+        leftMultiplier = 0.0 - leftMultiplier;
     }
 
-    return leftMult;
+    return leftMultiplier;
 }
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast)
@@ -2207,7 +2211,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                         mAnalyser->addIssue(issue);
                     } else {
-                        auto internalVariable = AnalyserImpl::internalVariable(variable);
+                        auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
 
                         primaryExternalVariables[internalVariable->mVariable].push_back(variable);
 
@@ -2217,7 +2221,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                             std::vector<VariablePtr> dependencies;
 
                             for (const auto &dependency : externalVariable->dependencies()) {
-                                dependencies.push_back(AnalyserImpl::internalVariable(dependency)->mVariable);
+                                dependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
                             }
 
                             externalVariables[internalVariable] = dependencies;
