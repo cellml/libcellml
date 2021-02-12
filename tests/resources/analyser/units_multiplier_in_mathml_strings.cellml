@@ -17,9 +17,7 @@
         <variable initial_value="2" name="b" units="kilo_microvolt"/>
         <variable initial_value="3" name="c" units="root_volt"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <!-- Simple checks to see if simple behaviour functions as expected. -->
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>i</ci>
                 <apply>
@@ -29,7 +27,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Invalid: mV != V. -->
                 <eq/>
                 <ci>j</ci>
                 <apply>
@@ -39,7 +36,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Invalid: multiplier mismatch of 10. -->
                 <eq/>
                 <ci>k</ci>
                 <apply>
@@ -69,9 +65,7 @@
         <variable initial_value="1" name="a" units="millivolt"/>
         <variable initial_value="2" name="b" units="kilo_microvolt"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <!-- Trigonometric expressions. -->
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>i</ci>
                 <apply>
@@ -84,7 +78,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>j</ci>
                 <apply>
@@ -96,9 +89,7 @@
                     </apply>
                 </apply>
             </apply>
-            <!-- Logarithms. -->
             <apply>
-                <!-- Invalid: multiplier mismatch. -->
                 <eq/>
                 <ci>k</ci>
                 <apply>
@@ -130,7 +121,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Invalid: multiplier mismatch. -->
                 <eq/>
                 <apply>
                     <diff/>
@@ -155,9 +145,7 @@
                     <ci>t</ci>
                 </apply>
             </apply>
-            <!-- Exponents. -->
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <apply>
                     <diff/>
@@ -180,7 +168,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Invalid: multiplier mismatch. -->
                 <eq/>
                 <ci>n</ci>
                 <apply>
@@ -198,7 +185,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Invalid: multiplier mismatch. -->
                 <eq/>
                 <ci>o</ci>
                 <apply>
