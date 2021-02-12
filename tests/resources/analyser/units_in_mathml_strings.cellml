@@ -16,7 +16,6 @@
         <unit units="apple"/>
         <unit units="milliapple"/>
     </units>
-    <!-- Simple checks for direct comparison of operator behaviour (plus, minus. equals, less than, etc.). -->
     <component name="direct_comparison_operators">
         <variable name="i" units="volt_per_farad"/>
         <variable name="j" units="metre_per_second"/>
@@ -25,7 +24,6 @@
         <variable initial_value="2" name="b" units="metre_per_second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
-                <!-- Invalid: we have a unit mismatch between i and a+b. -->
                 <eq/>
                 <ci>i</ci>
                 <apply>
@@ -35,7 +33,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Invalid: the exponent for b creates a mismatch.-->
                 <eq/>
                 <ci>j</ci>
                 <apply>
@@ -49,7 +46,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>k</ci>
                 <apply>
@@ -66,7 +62,6 @@
         <variable initial_value="1" name="a" units="second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
-                <!-- Invalid: trigonometric operators only take dimensionless arguments. -->
                 <eq/>
                 <ci>i</ci>
                 <apply>
@@ -75,7 +70,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>j</ci>
                 <apply>
@@ -97,7 +91,6 @@
         <variable initial_value="2" name="b" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
-                <!-- Invalid: mismatch in the base and actual logarithm. -->
                 <eq/>
                 <ci>i</ci>
                 <apply>
@@ -109,25 +102,23 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>j</ci>
                 <apply>
                     <log/>
                     <logbase>
-                        <cn cellml:units="second">2</cn>
+                        <cn cellml:units="second">3</cn>
                     </logbase>
                     <ci>a</ci>
                 </apply>
             </apply>
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>k</ci>
                 <apply>
                     <log/>
                     <logbase>
-                        <cn cellml:units="dimensionless">2</cn>
+                        <cn cellml:units="dimensionless">4</cn>
                     </logbase>
                     <ci>b</ci>
                 </apply>
@@ -143,7 +134,6 @@
         <variable initial_value="2" name="b" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>i</ci>
                 <apply>
@@ -156,7 +146,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <ci>j</ci>
                 <apply>
@@ -169,7 +158,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Valid: both e and b are dimensionless, although b is not a constant. -->
                 <eq/>
                 <ci>k</ci>
                 <apply>
@@ -178,7 +166,6 @@
                 </apply>
             </apply>
             <apply>
-                <!-- Invalid: 2 is not dimensionless. -->
                 <eq/>
                 <ci>l</ci>
                 <apply>
@@ -198,7 +185,6 @@
         <variable initial_value="3" name="c" units="apple_and_milliapple"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
-                <!-- Valid. -->
                 <eq/>
                 <apply>
                     <diff/>
@@ -221,7 +207,6 @@
                     </apply>
                 </apply>
             </apply>
-            <!-- Coverage for nested base units that are not standard. -->
             <apply>
                 <eq/>
                 <ci>j</ci>

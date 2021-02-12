@@ -382,26 +382,24 @@ struct Analyser::AnalyserImpl
     void updateUnitsMap(const ModelPtr &model, UnitsMap &unitsMap,
                         const std::string &unitsName, double unitsExponent = 1,
                         double logMultiplier = 0.0);
-    bool isDirectOperator(const AnalyserEquationAstPtr &ast);
-    bool isPowerOrRootOperator(const AnalyserEquationAstPtr &ast);
-    bool isExponentialOrLogarithmicOperator(const AnalyserEquationAstPtr &ast);
-    bool isTrigonometricOperator(const AnalyserEquationAstPtr &ast);
-    bool isDerivativeOperator(const AnalyserEquationAstPtr &ast);
-    bool isBoundVariableOperator(const AnalyserEquationAstPtr &ast);
-    UnitsMap addUnitsMaps(UnitsMap firstMap, const UnitsMap &secondMap, int operation);
-    UnitsMap multiplyUnitsMaps(UnitsMap map, const AnalyserEquationAstPtr &ast, double power);
-    bool areEquivalentUnitsMaps(const UnitsMap &firstMap, const UnitsMap &secondMap, std::string &hints);
-    bool isDimensionless(const UnitsMap &map);
-    void updateMultiplier(const ModelPtr &model, double &multiplier,
-                          const std::string &unitsName, double unitsExponent,
+    UnitsMap addUnitsMaps(const UnitsMap &firstUnitsMap,
+                          const UnitsMap &secondUnitsMap, int sign);
+    UnitsMap multiplyUnitsMaps(const UnitsMap &unitsMap,
+                               const AnalyserEquationAstPtr &ast, double power);
+    std::string hints(const UnitsMap &unitsMap);
+    bool areSameUnitsMaps(const UnitsMap &firstUnitsMap,
+                          const UnitsMap &secondUnitsMap,
+                          std::string &hints);
+    void updateMultiplier(const ModelPtr &model, const std::string &unitsName,
+                          double &multiplier, double unitsExponent,
                           double logMultiplier);
     double multiplier(const ModelPtr &model, const std::string &unitsName);
     VariablePtr variable(const AnalyserEquationAstPtr &ast);
     std::string componentName(const VariablePtr &variable);
     double power(const AnalyserEquationAstPtr &ast);
-    std::string expression(std::string first, std::string second, const AnalyserEquationAstPtr &ast);
+    std::string expression(const AnalyserEquationAstPtr &ast,
+                           const std::string &lhs, const std::string &rhs);
     std::string equation(const AnalyserEquationAstPtr &ast);
-    std::string hints(const UnitsMap &map);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                               UnitsMap &unitsMap, double &multiplier,
                               std::vector<std::string> &issueDescriptions);
@@ -1061,7 +1059,7 @@ std::vector<VariablePtr> Analyser::AnalyserImpl::equivalentVariables(const Varia
 
 void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &ast)
 {
-    // Make sure that we an AST to analyse.
+    // Make sure that we have an AST to analyse.
 
     if (ast == nullptr) {
         return;
@@ -1192,222 +1190,175 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
             if (unitsMap.find(iter.first) == unitsMap.end()) {
                 unitsMap[iter.first] = 0.0;
             }
-            unitsMap.at(iter.first) += (iter.second * unitsExponent);
+
+            unitsMap[iter.first] += iter.second * unitsExponent;
         }
     } else if (model->hasUnits(unitsName)) {
-        UnitsPtr u = model->units(unitsName);
-        if (!u->isBaseUnit()) {
-            std::string ref;
-            std::string pre;
+        UnitsPtr units = model->units(unitsName);
+
+        if (units->isBaseUnit()) {
+            auto iter = unitsMap.find(unitsName);
+
+            unitsMap[iter->first] += iter->second * unitsExponent;
+        } else {
+            std::string reference;
+            std::string prefix;
+            double exponent;
+            double multiplier;
             std::string id;
-            double exp;
-            double mult;
-            double expMult;
-            for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->unitAttributes(i, ref, pre, exp, expMult, id);
-                mult = std::log10(expMult);
-                if (!isStandardUnitName(ref)) {
-                    updateUnitsMap(model, unitsMap, ref, exp * unitsExponent, logMultiplier + mult * unitsExponent + standardPrefixList.at(pre) * unitsExponent);
-                } else {
-                    for (const auto &iter : standardUnitsList.at(ref)) {
+
+            for (size_t i = 0; i < units->unitCount(); ++i) {
+                units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+
+                if (isStandardUnitName(reference)) {
+                    for (const auto &iter : standardUnitsList.at(reference)) {
                         if (unitsMap.find(iter.first) == unitsMap.end()) {
                             unitsMap[iter.first] = 0.0;
                         }
-                        unitsMap.at(iter.first) += (iter.second * exp * unitsExponent);
+
+                        unitsMap[iter.first] += iter.second * exponent * unitsExponent;
                     }
+                } else {
+                    updateUnitsMap(model, unitsMap, reference,
+                                   exponent * unitsExponent,
+                                   logMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
                 }
             }
         }
-
-        // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
-        else if (unitsMap.find(unitsName) == unitsMap.end()) {
-            unitsMap[unitsName] = unitsExponent;
-        } else {
-            const auto &iter = unitsMap.find(unitsName);
-            unitsMap.at(iter->first) += (iter->second * unitsExponent);
-        }
     }
 }
 
-bool Analyser::AnalyserImpl::isDirectOperator(const AnalyserEquationAstPtr &ast)
+UnitsMap Analyser::AnalyserImpl::addUnitsMaps(const UnitsMap &firstUnitsMap,
+                                              const UnitsMap &secondUnitsMap,
+                                              int sign)
 {
-    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EQ)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NEQ)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LT)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PLUS)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PIECEWISE);
-}
+    // Add the given unit maps together, following a multiplication (sign = 1)
+    // or division (sign = -1).
 
-bool Analyser::AnalyserImpl::isPowerOrRootOperator(const AnalyserEquationAstPtr &ast)
-{
-    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT);
-}
+    UnitsMap res = firstUnitsMap;
 
-bool Analyser::AnalyserImpl::isExponentialOrLogarithmicOperator(const AnalyserEquationAstPtr &ast)
-{
-    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG);
-}
+    for (const auto &units : secondUnitsMap) {
+        auto it = res.find(units.first);
 
-bool Analyser::AnalyserImpl::isTrigonometricOperator(const AnalyserEquationAstPtr &ast)
-{
-    return (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SIN)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COS)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TAN)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SEC)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSC)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COT)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SINH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COSH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TANH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SECH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSCH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COTH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASIN)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOS)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATAN)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASEC)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSC)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOT)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASINH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOSH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATANH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
-           || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH);
-}
-
-bool Analyser::AnalyserImpl::isDerivativeOperator(const AnalyserEquationAstPtr &ast)
-{
-    return ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIFF;
-}
-
-bool Analyser::AnalyserImpl::isBoundVariableOperator(const AnalyserEquationAstPtr &ast)
-{
-    return ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::BVAR;
-}
-
-// Function which adds the unit mappings together if we have a times or divide operator in the AST.
-UnitsMap Analyser::AnalyserImpl::addUnitsMaps(UnitsMap firstMap, const UnitsMap &secondMap, int operation)
-{
-    for (const auto &unit : secondMap) {
-        auto it = firstMap.find(unit.first);
-        if (it == firstMap.end()) {
-            firstMap[unit.first] = operation * unit.second;
+        if (it == res.end()) {
+            res[units.first] = sign * units.second;
         } else {
-            it->second += operation * unit.second;
+            it->second += sign * units.second;
+
+            if (areEqual(it->second, 0.0)) {
+                // The units has now an exponent value of zero, so no need to
+                // track it anymore.
+
+                res.erase(it);
+            }
         }
     }
-    return firstMap;
+
+    return res;
 }
 
 // Function which multiplies mappings if we have a power or root operator in the AST.
-UnitsMap Analyser::AnalyserImpl::multiplyUnitsMaps(UnitsMap map, const AnalyserEquationAstPtr &ast, double power)
+UnitsMap Analyser::AnalyserImpl::multiplyUnitsMaps(const UnitsMap &unitsMap,
+                                                   const AnalyserEquationAstPtr &ast,
+                                                   double power)
 {
+    UnitsMap res = unitsMap;
+
     if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER) {
-        for (auto &unit : map) {
-            unit.second = unit.second * power;
+        for (auto &units : res) {
+            units.second = units.second * power;
         }
     } else {
-        for (auto &unit : map) {
-            unit.second = unit.second / power;
+        for (auto &units : res) {
+            units.second = units.second / power;
         }
     }
-    return map;
+    return res;
 }
 
-// Helper function to check map equivalences
-bool Analyser::AnalyserImpl::areEquivalentUnitsMaps(const UnitsMap &firstMap, const UnitsMap &secondMap, std::string &hints)
+std::string Analyser::AnalyserImpl::hints(const UnitsMap &unitsMap)
 {
-    UnitsMap mapping;
-    for (const auto &baseUnits : baseUnitsList) {
-        mapping[baseUnits] = 0.0;
-    }
-    for (const auto &unit : firstMap) {
-        mapping[unit.first] += unit.second;
-    }
-    for (const auto &unit : secondMap) {
-        mapping[unit.first] -= unit.second;
-    }
+    // Retrieve the hints for the given units map.
 
-    // Remove "dimensionless" from base unit testing.
-    mapping.erase("dimensionless");
-    bool equivalent = true;
-    for (const auto &unit : mapping) {
-        if (unit.second != 0.0) {
-            std::string num = std::to_string(unit.second);
-            num.erase(num.find_last_not_of('0') + 1, num.length());
-            if (num.back() == '.') {
-                num.pop_back();
+    std::string res;
+
+    for (const auto &units : unitsMap) {
+        if (!areEqual(units.second, 0.0)) {
+            auto intExponent = int(units.second);
+            auto exponent = areEqual(units.second, intExponent) ?
+                                std::to_string(intExponent) :
+                                std::to_string(units.second);
+
+            if (!res.empty()) {
+                res += ", ";
             }
-            hints += unit.first + "^" + num + ", ";
-            equivalent = false;
+
+            res += units.first + "^" + exponent;
         }
     }
 
-    // Remove the final trailing comma from the hints string.
-    if (hints.length() > 2) {
-        hints.pop_back();
-        hints.back() = '.';
+    if (!res.empty()) {
+        res += ".";
     }
-    return equivalent;
+
+    return res;
 }
 
-// Helper function to check dimensionlessness
-bool Analyser::AnalyserImpl::isDimensionless(const UnitsMap &map)
+bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMap &firstUnitsMap,
+                                              const UnitsMap &secondUnitsMap,
+                                              std::string &hints)
 {
-    for (const auto &u : map) {
-        if (u.second != 0.0) {
-            return false;
-        }
+    // Check whether the given units map are the same by checking their
+    // exponents, and provide hints if they are not.
+
+    UnitsMap unitsMap;
+
+    for (const auto &units : firstUnitsMap) {
+        unitsMap[units.first] += units.second;
     }
-    return true;
+
+    for (const auto &units : secondUnitsMap) {
+        unitsMap[units.first] -= units.second;
+    }
+
+    hints = Analyser::AnalyserImpl::hints(unitsMap);
+
+    return hints.empty();
 }
 
 void Analyser::AnalyserImpl::updateMultiplier(const ModelPtr &model,
-                                              double &multiplier,
                                               const std::string &unitsName,
+                                              double &unitsMultiplier,
                                               double unitsExponent,
                                               double logMultiplier)
 {
+    // Update the given units multiplier using the given information.
+
     if (isStandardUnitName(unitsName)) {
-        multiplier += (logMultiplier + (standardMultiplierList.at(unitsName)));
+        unitsMultiplier += logMultiplier + standardMultiplierList.at(unitsName);
     } else if (model->hasUnits(unitsName)) {
-        UnitsPtr u = model->units(unitsName);
-        if (!u->isBaseUnit()) {
-            std::string ref;
-            std::string pre;
+        UnitsPtr units = model->units(unitsName);
+
+        if (units->isBaseUnit()) {
+            unitsMultiplier += logMultiplier;
+        } else {
+            std::string reference;
+            std::string prefix;
+            double exponent;
+            double multiplier;
             std::string id;
-            double exp;
-            double mult;
-            double expMult;
-            for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->unitAttributes(i, ref, pre, exp, expMult, id);
-                mult = std::log10(expMult);
-                if (!isStandardUnitName(ref)) {
-                    updateMultiplier(model, multiplier, ref, exp * unitsExponent, logMultiplier + mult * unitsExponent + standardPrefixList.at(pre) * unitsExponent);
+
+            for (size_t i = 0; i < units->unitCount(); ++i) {
+                units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+
+                if (isStandardUnitName(reference)) {
+                    unitsMultiplier += logMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + standardPrefixList.at(prefix)) * exponent * unitsExponent;
                 } else {
-                    multiplier += (logMultiplier + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp * unitsExponent);
+                    updateMultiplier(model, reference, unitsMultiplier,
+                                     exponent * unitsExponent,
+                                     logMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
                 }
             }
-        }
-
-        // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
-        else {
-            multiplier += 1.0 * logMultiplier;
         }
     }
 }
@@ -1415,29 +1366,36 @@ void Analyser::AnalyserImpl::updateMultiplier(const ModelPtr &model,
 double Analyser::AnalyserImpl::multiplier(const ModelPtr &model,
                                           const std::string &unitsName)
 {
+    // Return the multiplier for the given units name.
+
     double multiplier = 0.0;
 
-    updateMultiplier(model, multiplier, unitsName, 1, 0);
+    updateMultiplier(model, unitsName, multiplier, 1, 0);
 
     return multiplier;
 }
 
-// Grabs a variable associated with the model, so we can return an error message
 VariablePtr Analyser::AnalyserImpl::variable(const AnalyserEquationAstPtr &ast)
 {
+    // Return the variable for the given AST.
+
     VariablePtr variable = ast->variable();
 
     if (variable != nullptr) {
         return variable;
     }
+
     if (ast->mPimpl->mOwnedLeftChild != nullptr) {
         return Analyser::AnalyserImpl::variable(ast->mPimpl->mOwnedLeftChild);
     }
+
     return nullptr;
 }
 
 std::string Analyser::AnalyserImpl::componentName(const VariablePtr &variable)
 {
+    // Return the name of the component in which the given variable is defined.
+
     ComponentPtr component = (variable != nullptr) ?
                                  std::dynamic_pointer_cast<Component>(variable->parent()) :
                                  nullptr;
@@ -1447,147 +1405,170 @@ std::string Analyser::AnalyserImpl::componentName(const VariablePtr &variable)
                "";
 }
 
-// Gets the power for a given node. (this needs to be redone so we will always be guaranteed to find the power for an operation)
 double Analyser::AnalyserImpl::power(const AnalyserEquationAstPtr &ast)
 {
+    // Return the power for the given AST.
+
     if (ast == nullptr) {
-        return 0.0; // Return 0 for case where there is a null node
+        return 0.0;
     }
+
     if (ast->value().empty()) {
-        // If we have a variable then we return 0 and just make sure both mappings are dimensionless
-        if (ast->mPimpl->mOwnedLeftChild == nullptr && ast->mPimpl->mOwnedRightChild == nullptr) {
+        if ((ast->mPimpl->mOwnedLeftChild == nullptr) && (ast->mPimpl->mOwnedRightChild == nullptr)) {
             return 0.0;
         }
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
             return power(ast->mPimpl->mOwnedLeftChild) * power(ast->mPimpl->mOwnedRightChild);
         }
+
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIVIDE) {
-            return (power(ast->mPimpl->mOwnedRightChild) != 0.0) ? power(ast->mPimpl->mOwnedLeftChild) / power(ast->mPimpl->mOwnedRightChild) : 0.0;
+            return areEqual(power(ast->mPimpl->mOwnedRightChild), 0.0) ?
+                       0.0 :
+                       power(ast->mPimpl->mOwnedLeftChild) / power(ast->mPimpl->mOwnedRightChild);
         }
+
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::PLUS) {
             return power(ast->mPimpl->mOwnedLeftChild) + power(ast->mPimpl->mOwnedRightChild);
         }
+
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::MINUS) {
             return power(ast->mPimpl->mOwnedLeftChild) - power(ast->mPimpl->mOwnedRightChild);
         }
+
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::DEGREE) {
             return power(ast->mPimpl->mOwnedLeftChild);
         }
-    }
 
-    // In the special case where the terminating node is a variable, eliminates the possibility of making an invalid std::stod call
-    if (ast->value().empty()) {
         return 0.0;
     }
 
     return std::stod(ast->value());
 }
 
-static const std::map<AnalyserEquationAst::Type, std::string> AstTypeToString = {
-    {AnalyserEquationAst::Type::ASSIGNMENT, " = "},
-    {AnalyserEquationAst::Type::EQ, " == "},
-    {AnalyserEquationAst::Type::NEQ, " != "},
-    {AnalyserEquationAst::Type::LT, " < "},
-    {AnalyserEquationAst::Type::GT, " > "},
-    {AnalyserEquationAst::Type::LEQ, " <= "},
-    {AnalyserEquationAst::Type::GEQ, " >= "},
-    {AnalyserEquationAst::Type::PLUS, " + "},
-    {AnalyserEquationAst::Type::MINUS, " - "},
-    {AnalyserEquationAst::Type::AND, " && "},
-    {AnalyserEquationAst::Type::OR, " || "},
-    {AnalyserEquationAst::Type::XOR, " xor "},
-    {AnalyserEquationAst::Type::NOT, " ! "},
-    {AnalyserEquationAst::Type::TIMES, " * "},
-    {AnalyserEquationAst::Type::DIVIDE, " / "},
-    {AnalyserEquationAst::Type::POWER, "pow"},
-    {AnalyserEquationAst::Type::ROOT, "root"},
-    {AnalyserEquationAst::Type::ABS, "fabs"},
-    {AnalyserEquationAst::Type::EXP, "exp"},
-    {AnalyserEquationAst::Type::LN, "ln"},
-    {AnalyserEquationAst::Type::LOG, "log"},
-    {AnalyserEquationAst::Type::CEILING, "ceil"},
-    {AnalyserEquationAst::Type::FLOOR, "floor"},
-    {AnalyserEquationAst::Type::MIN, "min"},
-    {AnalyserEquationAst::Type::MAX, "max"},
-    {AnalyserEquationAst::Type::REM, "rem"},
-    {AnalyserEquationAst::Type::ASIN, "asin"},
-    {AnalyserEquationAst::Type::ASINH, "asinh"},
-    {AnalyserEquationAst::Type::SIN, "sin"},
-    {AnalyserEquationAst::Type::SINH, "sinh"},
-    {AnalyserEquationAst::Type::ACOS, "acos"},
-    {AnalyserEquationAst::Type::ACOSH, "acosh"},
-    {AnalyserEquationAst::Type::COS, "cos"},
-    {AnalyserEquationAst::Type::COSH, "cosh"},
-    {AnalyserEquationAst::Type::ATAN, "atan"},
-    {AnalyserEquationAst::Type::ATANH, "atanh"},
-    {AnalyserEquationAst::Type::TAN, "tan"},
-    {AnalyserEquationAst::Type::TANH, "tanh"},
-    {AnalyserEquationAst::Type::ASEC, "asec"},
-    {AnalyserEquationAst::Type::ASECH, "asech"},
-    {AnalyserEquationAst::Type::SECH, "sech"},
-    {AnalyserEquationAst::Type::SEC, "sec"},
-    {AnalyserEquationAst::Type::ACSC, "acsc"},
-    {AnalyserEquationAst::Type::ACSCH, "acsch"},
-    {AnalyserEquationAst::Type::CSC, "csc"},
-    {AnalyserEquationAst::Type::CSCH, "csch"},
-    {AnalyserEquationAst::Type::ACOT, "acot"},
-    {AnalyserEquationAst::Type::ACOTH, "acoth"},
-    {AnalyserEquationAst::Type::COT, "cot"},
-    {AnalyserEquationAst::Type::COTH, "coth"}};
-
-std::string Analyser::AnalyserImpl::expression(std::string first, std::string second, const AnalyserEquationAstPtr &ast)
+std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast,
+                                               const std::string &lhs,
+                                               const std::string &rhs)
 {
-    // Statement capturing all expressions which require one operand only.
-    if (isTrigonometricOperator(ast)
-        || isExponentialOrLogarithmicOperator(ast)
+    static const std::map<AnalyserEquationAst::Type, std::string> AstTypeToString = {
+        {AnalyserEquationAst::Type::ASSIGNMENT, " = "},
+        {AnalyserEquationAst::Type::EQ, " == "},
+        {AnalyserEquationAst::Type::NEQ, " != "},
+        {AnalyserEquationAst::Type::LT, " < "},
+        {AnalyserEquationAst::Type::GT, " > "},
+        {AnalyserEquationAst::Type::LEQ, " <= "},
+        {AnalyserEquationAst::Type::GEQ, " >= "},
+        {AnalyserEquationAst::Type::PLUS, " + "},
+        {AnalyserEquationAst::Type::MINUS, " - "},
+        {AnalyserEquationAst::Type::AND, " && "},
+        {AnalyserEquationAst::Type::OR, " || "},
+        {AnalyserEquationAst::Type::XOR, " xor "},
+        {AnalyserEquationAst::Type::NOT, " ! "},
+        {AnalyserEquationAst::Type::TIMES, " * "},
+        {AnalyserEquationAst::Type::DIVIDE, " / "},
+        {AnalyserEquationAst::Type::POWER, "pow"},
+        {AnalyserEquationAst::Type::ROOT, "root"},
+        {AnalyserEquationAst::Type::ABS, "fabs"},
+        {AnalyserEquationAst::Type::EXP, "exp"},
+        {AnalyserEquationAst::Type::LN, "ln"},
+        {AnalyserEquationAst::Type::LOG, "log"},
+        {AnalyserEquationAst::Type::CEILING, "ceil"},
+        {AnalyserEquationAst::Type::FLOOR, "floor"},
+        {AnalyserEquationAst::Type::MIN, "min"},
+        {AnalyserEquationAst::Type::MAX, "max"},
+        {AnalyserEquationAst::Type::REM, "rem"},
+        {AnalyserEquationAst::Type::ASIN, "asin"},
+        {AnalyserEquationAst::Type::ASINH, "asinh"},
+        {AnalyserEquationAst::Type::SIN, "sin"},
+        {AnalyserEquationAst::Type::SINH, "sinh"},
+        {AnalyserEquationAst::Type::ACOS, "acos"},
+        {AnalyserEquationAst::Type::ACOSH, "acosh"},
+        {AnalyserEquationAst::Type::COS, "cos"},
+        {AnalyserEquationAst::Type::COSH, "cosh"},
+        {AnalyserEquationAst::Type::ATAN, "atan"},
+        {AnalyserEquationAst::Type::ATANH, "atanh"},
+        {AnalyserEquationAst::Type::TAN, "tan"},
+        {AnalyserEquationAst::Type::TANH, "tanh"},
+        {AnalyserEquationAst::Type::ASEC, "asec"},
+        {AnalyserEquationAst::Type::ASECH, "asech"},
+        {AnalyserEquationAst::Type::SECH, "sech"},
+        {AnalyserEquationAst::Type::SEC, "sec"},
+        {AnalyserEquationAst::Type::ACSC, "acsc"},
+        {AnalyserEquationAst::Type::ACSCH, "acsch"},
+        {AnalyserEquationAst::Type::CSC, "csc"},
+        {AnalyserEquationAst::Type::CSCH, "csch"},
+        {AnalyserEquationAst::Type::ACOT, "acot"},
+        {AnalyserEquationAst::Type::ACOTH, "acoth"},
+        {AnalyserEquationAst::Type::COT, "cot"},
+        {AnalyserEquationAst::Type::COTH, "coth"}};
+
+    if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SIN)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COS)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TAN)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SEC)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSC)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COT)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SINH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COSH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TANH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SECH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSCH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COTH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASIN)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOS)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATAN)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASEC)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSC)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOT)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASINH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOSH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATANH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::REM)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CEILING)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::FLOOR)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::ABS)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::NOT)) {
-        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + first + ")";
+        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + lhs + ")";
     }
 
-    // The ordering of nodes beneath a power node in the tree means we consider it as it's own case
     if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
-        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + first + "," + second + ")";
+        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + lhs + ", " + rhs + ")";
     }
 
-    // Likewise for root nodes, which are constructed in the reverse order
     if (ast->mPimpl->mType == AnalyserEquationAst::Type::ROOT) {
-        if (second.empty()) {
-            second = "2";
-        }
-        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + first + "," + second + ")";
+        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + lhs + ", " + (rhs.empty() ? "2" : rhs) + ")";
     }
 
-    // If we have degree or logbase we just return the number
-    if (ast->mPimpl->mType == AnalyserEquationAst::Type::LOGBASE || ast->mPimpl->mType == AnalyserEquationAst::Type::DEGREE) {
-        return first;
+    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::LOGBASE)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)) {
+        return lhs;
     }
 
-    // If we have an assignment operator we don't include the outer braces
     if (ast->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT) {
-        return first + AstTypeToString.find(ast->mPimpl->mType)->second + second;
+        return lhs + AstTypeToString.find(ast->mPimpl->mType)->second + rhs;
     }
 
-    // If we have a bounding variable, we return dt
     if (ast->mPimpl->mType == AnalyserEquationAst::Type::BVAR) {
-        return "d" + first;
+        return "d" + lhs;
     }
 
-    // If we have a bounding variable, we return dx/dt
     if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
-        return "d" + second + "/" + first;
+        return "d" + rhs + "/" + lhs;
     }
 
-    return "(" + first + AstTypeToString.find(ast->mPimpl->mType)->second + second + ")";
+    return "(" + lhs + AstTypeToString.find(ast->mPimpl->mType)->second + rhs + ")";
 }
 
-// Function to return the part of the equation in error as a string
 std::string Analyser::AnalyserImpl::equation(const AnalyserEquationAstPtr &ast)
 {
+    // Return the given AST as a string.
+
     if (ast == nullptr) {
         return {};
     }
@@ -1602,30 +1583,9 @@ std::string Analyser::AnalyserImpl::equation(const AnalyserEquationAstPtr &ast)
         return ast->value();
     }
 
-    return expression(equation(ast->mPimpl->mOwnedLeftChild),
-                      equation(ast->mPimpl->mOwnedRightChild),
-                      ast);
-}
-
-// Get the units in the mapping if we have an incorrect test case.
-std::string Analyser::AnalyserImpl::hints(const UnitsMap &map)
-{
-    std::string hints;
-    for (const auto &unit : map) {
-        if (unit.second != 0.0) {
-            std::string num = std::to_string(unit.second);
-            num.erase(num.find_last_not_of('0') + 1, num.length());
-            if (num.back() == '.') {
-                num.pop_back();
-            }
-            hints += unit.first + "^" + num + ", ";
-        }
-    }
-    if (hints.length() > 2) {
-        hints.pop_back();
-        hints.back() = '.';
-    }
-    return hints;
+    return expression(ast,
+                      equation(ast->mPimpl->mOwnedLeftChild),
+                      equation(ast->mPimpl->mOwnedRightChild));
 }
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
@@ -1633,7 +1593,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                   double &multiplier,
                                                   std::vector<std::string> &issueDescriptions)
 {
-    // Make sure that we an AST to analyse.
+    // Make sure that we have an AST to analyse.
 
     if (ast == nullptr) {
         unitsMap = {};
@@ -1680,11 +1640,26 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMap, multiplier, issueDescriptions);
     analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMap, rightMultiplier, issueDescriptions);
 
-    if (isDirectOperator(ast)) {
+    if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EQ)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NEQ)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LT)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PLUS)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PIECEWISE)) {
         std::string hints;
 
         if (!rightUnitsMap.empty()
-            && !areEquivalentUnitsMaps(unitsMap, rightUnitsMap, hints)) {
+            && !areSameUnitsMaps(unitsMap, rightUnitsMap, hints)) {
             issueDescriptions.push_back("The units in the expression '" + equation(ast)
                                         + "' in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
                                         + "' are not equivalent. The unit mismatch is " + hints);
@@ -1706,7 +1681,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE) {
         unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, -1);
         multiplier -= rightMultiplier;
-    } else if (isPowerOrRootOperator(ast)) {
+    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
         double power = 0.0;
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
@@ -1720,7 +1696,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             }
         }
 
-        if ((ast->mPimpl->mOwnedRightChild == nullptr) && (power == 0.0)) {
+        if ((ast->mPimpl->mOwnedRightChild == nullptr) && areEqual(power, 0.0)) {
             // Special case where we have a square root.
 
             power = 2.0;
@@ -1733,10 +1709,12 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         } else {
             multiplier /= power;
         }
-    } else if (isExponentialOrLogarithmicOperator(ast)) {
+    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
         std::string hints;
 
-        if (!areEquivalentUnitsMaps(rightUnitsMap, unitsMap, hints)) {
+        if (!areSameUnitsMaps(rightUnitsMap, unitsMap, hints)) {
             issueDescriptions.push_back("The units in the expression '" + equation(ast)
                                         + "' in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
                                         + "' are not consistent with the base. The mismatch is: " + hints);
@@ -1744,8 +1722,31 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         unitsMap = {};
         multiplier = 0.0;
-    } else if (isTrigonometricOperator(ast)) {
-        if (!isDimensionless(unitsMap)) {
+    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SIN)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COS)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TAN)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SEC)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSC)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COT)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SINH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COSH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TANH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SECH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSCH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COTH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASIN)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOS)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATAN)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASEC)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSC)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOT)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASINH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOSH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATANH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
+        if (!unitsMap.empty()) {
             issueDescriptions.push_back("The argument in the expression '" + equation(ast)
                                         + "' in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
                                         + "' is not dimensionless. The units in the argument are: " + hints(unitsMap));
@@ -1753,10 +1754,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         unitsMap = {};
         multiplier = 0.0;
-    } else if (isDerivativeOperator(ast)) {
+    } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIFF) {
         unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, 1);
         multiplier = multiplier + rightMultiplier;
-    } else if (isBoundVariableOperator(ast)) {
+    } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::BVAR) {
         for (auto &unit : unitsMap) {
             unit.second *= -1.0;
         }
@@ -2115,7 +2116,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                             description += (i != equivalentVariableCount - 1) ? ", " : " and ";
                         }
 
-                        auto variableString = ((i == 0) && (equivalentVariableCount != 2)) ? std::string("Variable") : std::string("variable");
+                        auto variableString = ((i == 0) && (equivalentVariableCount != 2)) ?
+                                                  std::string("Variable") :
+                                                  std::string("variable");
 
                         description += variableString + " '" + primaryExternalVariable.second[i]->name()
                                        + "' in component '" + owningComponent(primaryExternalVariable.second[i])->name()
@@ -2470,7 +2473,7 @@ bool Analyser::containsExternalVariable(const AnalyserExternalVariablePtr &exter
 AnalyserExternalVariablePtr Analyser::externalVariable(size_t index) const
 {
     if (index < mPimpl->mExternalVariables.size()) {
-        return mPimpl->mExternalVariables.at(index);
+        return mPimpl->mExternalVariables[index];
     }
 
     return nullptr;
