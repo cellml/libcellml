@@ -1197,9 +1197,13 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
         UnitsPtr units = model->units(unitsName);
 
         if (units->isBaseUnit()) {
-            auto iter = unitsMap.find(unitsName);
+            if (unitsMap.find(unitsName) == unitsMap.end()) {
+                unitsMap[unitsName] = unitsExponent;
+            } else {
+                auto iter = unitsMap.find(unitsName);
 
-            unitsMap[iter->first] += iter->second * unitsExponent;
+                unitsMap[iter->first] += iter->second * unitsExponent;
+            }
         } else {
             std::string reference;
             std::string prefix;
