@@ -14,5 +14,9 @@ EMSCRIPTEN_BINDINGS(libcellml_logger) {
         .function("error", &libcellml::Logger::error)
         .function("warning", &libcellml::Logger::warning)
         .function("hint", &libcellml::Logger::hint)
+        .function("issueCount", &libcellml::Logger::issueCount)
+        .function("errorCount", &libcellml::Logger::errorCount)
+        .function("warningCount", &libcellml::Logger::warningCount)
+        .function("hintCount", &libcellml::Logger::hintCount)
     ;
 }
