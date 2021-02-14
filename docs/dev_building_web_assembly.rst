@@ -4,7 +4,7 @@ Building libCellML for use in the Browser
 =========================================
 
 To build libCellML for the browser we use the emscripten toolchain to create web assembly binaries.
-Here we will go through the process of building be with assembly binaries on macOS.
+Here we will go through the process of building web assembly binaries on macOS.
 For other operating systems modifications to these instructions will have to be made.
 Any modifications required are expected to be self evident – with this in mind these instructions should be universally applicable.
 
@@ -70,8 +70,8 @@ Then as before configure the library::
 
 There are two additions to the configure command this time;
 
-  1. We set ZLIB_DIR to enable the configuration to find our zlib library we just installed, and
-  2. We turn off building a shared libxml2 library.
+1. We set ZLIB_DIR to enable the configuration to find our zlib library we just installed, and
+2. We turn off building a shared libxml2 library.
 
 As a general note it is better to specify the variable `ZLIB_DIR` as an absolute path and not a relative path as we have done here.
 Feel free to use the absolute path when you are configuring libXml2.
