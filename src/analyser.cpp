@@ -349,6 +349,7 @@ struct Analyser::AnalyserImpl
     AstUnitsMap mAstUnits;
 
     explicit AnalyserImpl(Analyser *analyser);
+    ~AnalyserImpl();
 
     static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
                                                    const AnalyserInternalVariablePtr &variable2);
@@ -430,6 +431,13 @@ Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     // Retrieve our generator's profile.
 
     mGenerator->mPimpl->retrieveLockedModelAndProfile();
+}
+
+Analyser::AnalyserImpl::~AnalyserImpl()
+{
+    // Reset our generator's profile.
+
+    mGenerator->mPimpl->resetLockedModelAndProfile();
 }
 
 bool Analyser::AnalyserImpl::compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
