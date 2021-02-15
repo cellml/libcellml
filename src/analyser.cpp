@@ -33,6 +33,7 @@ limitations under the License.
 #include "analyserequationast_p.h"
 #include "analysermodel_p.h"
 #include "analyservariable_p.h"
+#include "generator_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
@@ -343,6 +344,8 @@ struct Analyser::AnalyserImpl
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
 
+    GeneratorPtr mGenerator = libcellml::Generator::create();
+
     AstUnitsMap mAstUnits;
 
     explicit AnalyserImpl(Analyser *analyser);
@@ -397,9 +400,7 @@ struct Analyser::AnalyserImpl
     VariablePtr variable(const AnalyserEquationAstPtr &ast);
     std::string componentName(const VariablePtr &variable);
     double power(const AnalyserEquationAstPtr &ast);
-    std::string expression(const AnalyserEquationAstPtr &ast,
-                           const std::string &lhs, const std::string &rhs);
-    std::string equation(const AnalyserEquationAstPtr &ast);
+    std::string equation(const AnalyserEquationAstPtr &ast) const;
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                               UnitsMap &unitsMap, double &multiplier,
                               std::vector<std::string> &issueDescriptions);
@@ -426,6 +427,9 @@ struct Analyser::AnalyserImpl
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     : mAnalyser(analyser)
 {
+    // Retrieve our generator's profile.
+
+    mGenerator->mPimpl->retrieveLockedModelAndProfile();
 }
 
 bool Analyser::AnalyserImpl::compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
@@ -1449,146 +1453,11 @@ double Analyser::AnalyserImpl::power(const AnalyserEquationAstPtr &ast)
     return std::stod(ast->value());
 }
 
-std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast,
-                                               const std::string &lhs,
-                                               const std::string &rhs)
+std::string Analyser::AnalyserImpl::equation(const AnalyserEquationAstPtr &ast) const
 {
-    static const std::map<AnalyserEquationAst::Type, std::string> AstTypeToString = {
-        {AnalyserEquationAst::Type::ASSIGNMENT, " = "},
-        {AnalyserEquationAst::Type::EQ, " == "},
-        {AnalyserEquationAst::Type::NEQ, " != "},
-        {AnalyserEquationAst::Type::LT, " < "},
-        {AnalyserEquationAst::Type::GT, " > "},
-        {AnalyserEquationAst::Type::LEQ, " <= "},
-        {AnalyserEquationAst::Type::GEQ, " >= "},
-        {AnalyserEquationAst::Type::PLUS, " + "},
-        {AnalyserEquationAst::Type::MINUS, " - "},
-        {AnalyserEquationAst::Type::AND, " && "},
-        {AnalyserEquationAst::Type::OR, " || "},
-        {AnalyserEquationAst::Type::XOR, " xor "},
-        {AnalyserEquationAst::Type::NOT, " ! "},
-        {AnalyserEquationAst::Type::TIMES, " * "},
-        {AnalyserEquationAst::Type::DIVIDE, " / "},
-        {AnalyserEquationAst::Type::POWER, "pow"},
-        {AnalyserEquationAst::Type::ROOT, "root"},
-        {AnalyserEquationAst::Type::ABS, "fabs"},
-        {AnalyserEquationAst::Type::EXP, "exp"},
-        {AnalyserEquationAst::Type::LN, "ln"},
-        {AnalyserEquationAst::Type::LOG, "log"},
-        {AnalyserEquationAst::Type::CEILING, "ceil"},
-        {AnalyserEquationAst::Type::FLOOR, "floor"},
-        {AnalyserEquationAst::Type::MIN, "min"},
-        {AnalyserEquationAst::Type::MAX, "max"},
-        {AnalyserEquationAst::Type::REM, "rem"},
-        {AnalyserEquationAst::Type::ASIN, "asin"},
-        {AnalyserEquationAst::Type::ASINH, "asinh"},
-        {AnalyserEquationAst::Type::SIN, "sin"},
-        {AnalyserEquationAst::Type::SINH, "sinh"},
-        {AnalyserEquationAst::Type::ACOS, "acos"},
-        {AnalyserEquationAst::Type::ACOSH, "acosh"},
-        {AnalyserEquationAst::Type::COS, "cos"},
-        {AnalyserEquationAst::Type::COSH, "cosh"},
-        {AnalyserEquationAst::Type::ATAN, "atan"},
-        {AnalyserEquationAst::Type::ATANH, "atanh"},
-        {AnalyserEquationAst::Type::TAN, "tan"},
-        {AnalyserEquationAst::Type::TANH, "tanh"},
-        {AnalyserEquationAst::Type::ASEC, "asec"},
-        {AnalyserEquationAst::Type::ASECH, "asech"},
-        {AnalyserEquationAst::Type::SECH, "sech"},
-        {AnalyserEquationAst::Type::SEC, "sec"},
-        {AnalyserEquationAst::Type::ACSC, "acsc"},
-        {AnalyserEquationAst::Type::ACSCH, "acsch"},
-        {AnalyserEquationAst::Type::CSC, "csc"},
-        {AnalyserEquationAst::Type::CSCH, "csch"},
-        {AnalyserEquationAst::Type::ACOT, "acot"},
-        {AnalyserEquationAst::Type::ACOTH, "acoth"},
-        {AnalyserEquationAst::Type::COT, "cot"},
-        {AnalyserEquationAst::Type::COTH, "coth"}};
+    // Return the generated code for the given AST.
 
-    if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SIN)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COS)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TAN)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SEC)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSC)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COT)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SINH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COSH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TANH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SECH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSCH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COTH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASIN)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOS)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATAN)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASEC)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSC)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOT)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASINH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOSH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATANH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::REM)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::CEILING)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::FLOOR)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::ABS)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::NOT)) {
-        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + lhs + ")";
-    }
-
-    if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
-        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + lhs + ", " + rhs + ")";
-    }
-
-    if (ast->mPimpl->mType == AnalyserEquationAst::Type::ROOT) {
-        return AstTypeToString.find(ast->mPimpl->mType)->second + "(" + lhs + ", " + (rhs.empty() ? "2" : rhs) + ")";
-    }
-
-    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::LOGBASE)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)) {
-        return lhs;
-    }
-
-    if (ast->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT) {
-        return lhs + AstTypeToString.find(ast->mPimpl->mType)->second + rhs;
-    }
-
-    if (ast->mPimpl->mType == AnalyserEquationAst::Type::BVAR) {
-        return "d" + lhs;
-    }
-
-    if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
-        return "d" + rhs + "/" + lhs;
-    }
-
-    return "(" + lhs + AstTypeToString.find(ast->mPimpl->mType)->second + rhs + ")";
-}
-
-std::string Analyser::AnalyserImpl::equation(const AnalyserEquationAstPtr &ast)
-{
-    // Return the given AST as a string.
-
-    if (ast == nullptr) {
-        return {};
-    }
-
-    VariablePtr variable = ast->variable();
-
-    if (variable != nullptr) {
-        return variable->name();
-    }
-
-    if (!ast->value().empty()) {
-        return ast->value();
-    }
-
-    return expression(ast,
-                      equation(ast->mPimpl->mOwnedLeftChild),
-                      equation(ast->mPimpl->mOwnedRightChild));
+    return mGenerator->mPimpl->generateCode(ast);
 }
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
