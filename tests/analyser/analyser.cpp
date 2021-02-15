@@ -990,12 +990,12 @@ TEST(Analyser, unitsInMathmlStrings)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in the expression 'i = a+b' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is ampere^-3, kilogram^2, metre^3, second^-6.",
-        "The units in the expression 'a+pow(b, 2.0)' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is metre^-1, second^1.",
+        "The units in 'i = a+b' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is ampere^-3, kilogram^2, metre^3, second^-6.",
+        "The units in 'a+pow(b, 2.0)' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is metre^-1, second^1.",
         "The argument in the expression 'tan(a)' in component 'trigonometric_operators' is not dimensionless. The units in the argument are: second^1.",
-        "The units in the expression 'log(a)/log(2.0)' in component '' are not consistent with the base. The mismatch is: second^1.",
-        "The units in the expression 'log(a)/log(3.0)' in component '' are not consistent with the base. The mismatch is: second^1.",
-        "The units in the expression 'l = pow(a, 2.0)' in component 'power_root_operators' are not equivalent. The unit mismatch is ampere^6, kilogram^-4, metre^-8, second^14.",
+        "The units in 'log(a)/log(2.0)' in component '' are not consistent with the base. The mismatch is: second^1.",
+        "The units in 'log(a)/log(3.0)' in component '' are not consistent with the base. The mismatch is: second^1.",
+        "The units in 'l = pow(a, 2.0)' in component 'power_root_operators' are not equivalent. The unit mismatch is ampere^6, kilogram^-4, metre^-8, second^14.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1040,7 +1040,7 @@ TEST(Analyser, unitsMultiplierInMathmlStrings)
         "The expression 'k = pow(sqrt(c), 4.0)/100.0' in component 'simple_checks' has a multiplier mismatch. The mismatch is: -3.000000. A variable in the expression is k.",
         "The expression 'k = log10(1000.0)*pow(b, 2.0)/(b*3.0)*1000.0' in component 'complex_checks' has a multiplier mismatch. The mismatch is: 3.000000. A variable in the expression is k.",
         "The expression 'n = pow(10000.0*a, 2.0)/a' in component 'complex_checks' has a multiplier mismatch. The mismatch is: 3.000000. A variable in the expression is n.",
-        "The units in the expression 'o = pow(a, 1.0/3.0)' in component 'complex_checks' are not equivalent. The unit mismatch is ampere^-0.666667, kilogram^0.666667, metre^1.333333, second^-2.",
+        "The units in 'o = pow(a, 1.0/3.0)' in component 'complex_checks' are not equivalent. The unit mismatch is ampere^-0.666667, kilogram^0.666667, metre^1.333333, second^-2.",
         "The expression 'o = pow(a, 1.0/3.0)' in component 'complex_checks' has a multiplier mismatch. The mismatch is: -3.000000. A variable in the expression is o.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {

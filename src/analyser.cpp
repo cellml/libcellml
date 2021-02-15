@@ -1540,7 +1540,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         if (!rightUnitsMap.empty()
             && !areSameUnitsMaps(unitsMap, rightUnitsMap, hints)) {
-            issueDescriptions.push_back("The units in the expression '" + equation(ast)
+            issueDescriptions.push_back("The units in '" + equation(ast)
                                         + "' in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
                                         + "' are not equivalent. The unit mismatch is " + hints);
         }
@@ -1595,7 +1595,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         std::string hints;
 
         if (!areSameUnitsMaps(rightUnitsMap, unitsMap, hints)) {
-            issueDescriptions.push_back("The units in the expression '" + equation(ast)
+            issueDescriptions.push_back("The units in '" + equation(ast)
                                         + "' in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
                                         + "' are not consistent with the base. The mismatch is: " + hints);
         }
