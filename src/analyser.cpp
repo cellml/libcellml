@@ -337,7 +337,7 @@ struct Analyser::AnalyserImpl
 {
     Analyser *mAnalyser = nullptr;
 
-    AnalyserModelPtr mModel = nullptr;
+    AnalyserModelPtr mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
     std::vector<AnalyserExternalVariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
@@ -425,7 +425,6 @@ struct Analyser::AnalyserImpl
 
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     : mAnalyser(analyser)
-    , mModel(std::shared_ptr<AnalyserModel> {new AnalyserModel {}})
 {
 }
 

@@ -2191,8 +2191,6 @@ void Generator::setModel(const AnalyserModelPtr &model)
 
 std::string Generator::interfaceCode() const
 {
-    mPimpl->retrieveLockedModelAndProfile();
-
     if (!mPimpl->retrieveLockedModelAndProfile()
         || !mPimpl->mLockedModel->isValid()
         || !mPimpl->mLockedProfile->hasInterface()) {
