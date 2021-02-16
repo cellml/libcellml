@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="cn" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="frog"/>
+    <units name="rooster"/>
+    <units name="dove"/>
+    <component name="main">
+        <variable name="a" units="dimensionless"/>
+        <variable name="b" units="dimensionless"/>
+        <variable name="c" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>a</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <gt/>
+                            <ci>a</ci>
+                            <cn cellml:units="dimensionless">3</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dimensionless">5</cn>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>b</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="second">7</cn>
+                        <apply>
+                            <gt/>
+                            <ci>b</ci>
+                            <cn cellml:units="metre">9</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="mole">11</cn>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>c</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="frog">13</cn>
+                        <apply>
+                            <gt/>
+                            <ci>c</ci>
+                            <cn cellml:units="rooster">15</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dove">17</cn>
+                    </otherwise>
+                </piecewise>
+            </apply>
+        </math>
+    </component>
+</model>

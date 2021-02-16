@@ -991,9 +991,9 @@ TEST(Analyser, unitsInMathmlStrings)
 
     const std::vector<std::string> expectedIssues = {
         "The units in 'i = a+b' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is ampere^-3, kilogram^2, metre^3, second^-6.",
-        "The units in 'a+pow(b, 2.0)' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is metre^-1, second^1.",
-        "The argument in the expression 'tan(a)' in component 'trigonometric_operators' is not dimensionless. The units in the argument are: second^1.",
-        "The units in 'log(a)/log(2.0)' in component '' are not consistent with the base. The mismatch is: second^1.",
+        "The units in 'a+pow(b, 2.0)' in equation 'j = a+pow(b, 2.0)' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is metre^-1, second^1.",
+        "The argument in the expression 'tan(a)' in equation 'i = tan(a)' in component 'trigonometric_operators' is not dimensionless. The unit mismatch is second^1.",
+        "The units in 'log(a)/log(2.0)' in equation 'i = log(a)/log(2.0)' in component '' are not consistent with the base. The mismatch is: second^1.",
         "The units in 'l = pow(a, 2.0)' in component 'power_root_operators' are not equivalent. The unit mismatch is ampere^6, kilogram^-4, metre^-8, second^14.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
