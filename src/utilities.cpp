@@ -55,10 +55,14 @@ bool hasNonWhitespaceCharacters(const std::string &input)
     return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
-std::string convertToString(double value)
+std::string convertToString(double value, bool fullPrecision)
 {
     std::ostringstream strs;
-    strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    if (fullPrecision) {
+        strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    } else {
+        strs << value;
+    }
     return strs.str();
 }
 
