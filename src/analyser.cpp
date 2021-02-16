@@ -346,6 +346,7 @@ struct Analyser::AnalyserImpl
 
     GeneratorPtr mGenerator = libcellml::Generator::create();
 
+    std::map<std::string, UnitsPtr> mStandardUnits;
     AstUnitsMap mAstUnits;
 
     explicit AnalyserImpl(Analyser *analyser);
@@ -906,9 +907,17 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         std::string unitsName = node->attribute("units");
 
         if (!isDimensionlessUnitName(unitsName)) {
-            mAstUnits[ast] = isStandardUnitName(unitsName) ?
-                                 libcellml::Units::create(unitsName) :
-                                 owningModel(component)->units(unitsName);
+            if (isStandardUnitName(unitsName)) {
+                auto iter = mStandardUnits.find(unitsName);
+
+                if (iter == mStandardUnits.end()) {
+                    mAstUnits[ast] = mStandardUnits[unitsName] = libcellml::Units::create(unitsName);
+                } else {
+                    mAstUnits[ast] = iter->second;
+                }
+            } else {
+                mAstUnits[ast] = owningModel(component)->units(unitsName);
+            }
         }
 
         // Qualifier elements.
