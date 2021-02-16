@@ -286,7 +286,7 @@ std::string convertToString(size_t value);
  *
  * @return @c std::string representation of the @p value.
  */
-std::string convertToString(double value);
+std::string convertToString(double value, bool fullPrecision = true);
 
 /**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.

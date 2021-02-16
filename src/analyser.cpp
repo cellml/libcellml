@@ -402,7 +402,7 @@ struct Analyser::AnalyserImpl
     VariablePtr variable(const AnalyserEquationAstPtr &ast);
     std::string componentName(const VariablePtr &variable);
     double power(const AnalyserEquationAstPtr &ast);
-    std::string equation(const AnalyserEquationAstPtr &ast) const;
+    std::string expressionInformation(const AnalyserEquationAstPtr &ast);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                               UnitsMap &unitsMap, double &multiplier,
                               std::vector<std::string> &issueDescriptions);
@@ -1310,8 +1310,8 @@ std::string Analyser::AnalyserImpl::hints(const UnitsMap &unitsMap)
         if (!areEqual(units.second, 0.0)) {
             auto intExponent = int(units.second);
             auto exponent = areEqual(units.second, intExponent) ?
-                                std::to_string(intExponent) :
-                                std::to_string(units.second);
+                                convertToString(intExponent) :
+                                convertToString(units.second, false);
 
             if (!res.empty()) {
                 res += ", ";
@@ -1470,10 +1470,10 @@ double Analyser::AnalyserImpl::power(const AnalyserEquationAstPtr &ast)
     return std::stod(ast->value());
 }
 
-std::string Analyser::AnalyserImpl::equation(const AnalyserEquationAstPtr &ast) const
+std::string Analyser::AnalyserImpl::expressionInformation(const AnalyserEquationAstPtr &ast)
 {
-    // Return the generated code for the given AST, specifying the equation in
-    // which it is, if needed.
+    // Return the generated code for the given AST, specifying the equation, if
+    // needed, and component in which it is.
 
     std::string inEquation;
     AnalyserEquationAstPtr equationAst = ast;
@@ -1488,7 +1488,7 @@ std::string Analyser::AnalyserImpl::equation(const AnalyserEquationAstPtr &ast) 
         inEquation = " in equation '" + mGenerator->mPimpl->generateCode(equationAst) + "'";
     }
 
-    return "'" + mGenerator->mPimpl->generateCode(ast) + "'" + inEquation;
+    return "'" + mGenerator->mPimpl->generateCode(ast) + "'" + inEquation + " in component '" + componentName(variable(equationAst)) + "'";
 }
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
@@ -1563,20 +1563,15 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         if (!rightUnitsMap.empty()
             && !areSameUnitsMaps(unitsMap, rightUnitsMap, hints)) {
-            issueDescriptions.push_back("The units in " + equation(ast)
-                                        + " in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
-                                        + "' are not equivalent. The unit mismatch is " + hints);
+            issueDescriptions.push_back("The units in " + expressionInformation(ast)
+                                        + " are not equivalent. The unit mismatch is " + hints);
         }
 
         if ((ast->mPimpl->mOwnedLeftChild != nullptr)
             && (ast->mPimpl->mOwnedRightChild != nullptr)
             && !areEqual(multiplier, rightMultiplier)) {
-            auto variable = Analyser::AnalyserImpl::variable(ast);
-
-            issueDescriptions.push_back("The expression " + equation(ast)
-                                        + " in component '" + componentName(variable)
-                                        + "' has a multiplier mismatch. The mismatch is: " + std::to_string(multiplier - rightMultiplier)
-                                        + ". A variable in the expression is " + variable->name() + ".");
+            issueDescriptions.push_back("The units in " + expressionInformation(ast)
+                                        + " has a multiplier mismatch. The multiplier mismatch is " + convertToString(multiplier - rightMultiplier, false) + ".");
         }
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
         unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, 1);
@@ -1618,9 +1613,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         std::string hints;
 
         if (!areSameUnitsMaps(rightUnitsMap, unitsMap, hints)) {
-            issueDescriptions.push_back("The units in " + equation(ast)
-                                        + " in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
-                                        + "' are not consistent with the base. The mismatch is: " + hints);
+            issueDescriptions.push_back("The units in " + expressionInformation(ast)
+                                        + " are not consistent with the base. The mismatch is " + hints);
         }
 
         unitsMap = {};
@@ -1650,9 +1644,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
         if (!unitsMap.empty()) {
-            issueDescriptions.push_back("The argument in the expression " + equation(ast)
-                                        + " in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
-                                        + "' is not dimensionless. The unit mismatch is " + hints(unitsMap));
+            issueDescriptions.push_back("The argument in " + expressionInformation(ast)
+                                        + " is not dimensionless. The unit mismatch is " + hints(unitsMap));
         }
 
         unitsMap = {};

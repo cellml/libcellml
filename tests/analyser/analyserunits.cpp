@@ -101,10 +101,10 @@ TEST(AnalyserUnits, piecewise)
 
     const std::vector<std::string> expectedIssues = {
         "The units in 'b > 9.0' in equation 'b = (b > 9.0)?7.0:11.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
-        "The units in '(b > 9.0)?7.0:11.0' in equation 'b = (b > 9.0)?7.0:11.0' in component '' are not equivalent. The unit mismatch is mole^-1, second^1.",
+        "The units in '(b > 9.0)?7.0:11.0' in equation 'b = (b > 9.0)?7.0:11.0' in component 'main' are not equivalent. The unit mismatch is mole^-1, second^1.",
         "The units in 'b = (b > 9.0)?7.0:11.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
         "The units in 'c > 15.0' in equation 'c = (c > 15.0)?13.0:17.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
-        "The units in '(c > 15.0)?13.0:17.0' in equation 'c = (c > 15.0)?13.0:17.0' in component '' are not equivalent. The unit mismatch is dove^-1, frog^1.",
+        "The units in '(c > 15.0)?13.0:17.0' in equation 'c = (c > 15.0)?13.0:17.0' in component 'main' are not equivalent. The unit mismatch is dove^-1, frog^1.",
         "The units in 'c = (c > 15.0)?13.0:17.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
 
