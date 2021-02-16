@@ -62,17 +62,25 @@ TEST(AnalyserUnits, cn)
     const std::vector<std::string> expectedIssues = {
         "The units in 'b = 3.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
         "The units in 'c = 5.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'e = 9.0e3' in component 'main' are not equivalent. The unit mismatch is second^-1.",
+        "The units in 'f = 11.0e5' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
 
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
     };
