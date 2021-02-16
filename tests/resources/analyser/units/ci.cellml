@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="ci" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="frog"/>
+    <component name="main">
+        <variable name="a" units="dimensionless"/>
+        <variable name="b" units="dimensionless"/>
+        <variable name="c" units="dimensionless"/>
+        <variable initial_value="1" name="aCst" units="dimensionless"/>
+        <variable initial_value="3" name="bCst" units="second"/>
+        <variable initial_value="5" name="cCst" units="frog"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>a</ci>
+                <ci>aCst</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>b</ci>
+                <ci>bCst</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>c</ci>
+                <ci>cCst</ci>
+            </apply>
+        </math>
+    </component>
+</model>
