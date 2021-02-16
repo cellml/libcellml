@@ -1472,9 +1472,23 @@ double Analyser::AnalyserImpl::power(const AnalyserEquationAstPtr &ast)
 
 std::string Analyser::AnalyserImpl::equation(const AnalyserEquationAstPtr &ast) const
 {
-    // Return the generated code for the given AST.
+    // Return the generated code for the given AST, specifying the equation in
+    // which it is, if needed.
 
-    return mGenerator->mPimpl->generateCode(ast);
+    std::string inEquation;
+    AnalyserEquationAstPtr equationAst = ast;
+    AnalyserEquationAstPtr equationAstParent = ast->parent();
+
+    while (equationAstParent != nullptr) {
+        equationAst = equationAstParent;
+        equationAstParent = equationAst->parent();
+    }
+
+    if (ast != equationAst) {
+        inEquation = " in equation '" + mGenerator->mPimpl->generateCode(equationAst) + "'";
+    }
+
+    return "'" + mGenerator->mPimpl->generateCode(ast) + "'" + inEquation;
 }
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
@@ -1549,8 +1563,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         if (!rightUnitsMap.empty()
             && !areSameUnitsMaps(unitsMap, rightUnitsMap, hints)) {
-            issueDescriptions.push_back("The units in '" + equation(ast)
-                                        + "' in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
+            issueDescriptions.push_back("The units in " + equation(ast)
+                                        + " in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
                                         + "' are not equivalent. The unit mismatch is " + hints);
         }
 
@@ -1559,8 +1573,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             && !areEqual(multiplier, rightMultiplier)) {
             auto variable = Analyser::AnalyserImpl::variable(ast);
 
-            issueDescriptions.push_back("The expression '" + equation(ast)
-                                        + "' in component '" + componentName(variable)
+            issueDescriptions.push_back("The expression " + equation(ast)
+                                        + " in component '" + componentName(variable)
                                         + "' has a multiplier mismatch. The mismatch is: " + std::to_string(multiplier - rightMultiplier)
                                         + ". A variable in the expression is " + variable->name() + ".");
         }
@@ -1604,8 +1618,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         std::string hints;
 
         if (!areSameUnitsMaps(rightUnitsMap, unitsMap, hints)) {
-            issueDescriptions.push_back("The units in '" + equation(ast)
-                                        + "' in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
+            issueDescriptions.push_back("The units in " + equation(ast)
+                                        + " in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
                                         + "' are not consistent with the base. The mismatch is: " + hints);
         }
 
@@ -1636,9 +1650,9 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
         if (!unitsMap.empty()) {
-            issueDescriptions.push_back("The argument in the expression '" + equation(ast)
-                                        + "' in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
-                                        + "' is not dimensionless. The units in the argument are: " + hints(unitsMap));
+            issueDescriptions.push_back("The argument in the expression " + equation(ast)
+                                        + " in component '" + componentName(Analyser::AnalyserImpl::variable(ast))
+                                        + "' is not dimensionless. The unit mismatch is " + hints(unitsMap));
         }
 
         unitsMap = {};
