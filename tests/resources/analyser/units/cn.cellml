@@ -5,6 +5,9 @@
         <variable name="a" units="dimensionless"/>
         <variable name="b" units="dimensionless"/>
         <variable name="c" units="dimensionless"/>
+        <variable name="d" units="dimensionless"/>
+        <variable name="e" units="dimensionless"/>
+        <variable name="f" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -20,6 +23,21 @@
                 <eq/>
                 <ci>c</ci>
                 <cn cellml:units="frog">5</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>d</ci>
+                <cn cellml:units="dimensionless" type="e-notation">7<sep/>1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>e</ci>
+                <cn cellml:units="second" type="e-notation">9<sep/>3</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>f</ci>
+                <cn cellml:units="frog" type="e-notation">11<sep/>5</cn>
             </apply>
         </math>
     </component>
