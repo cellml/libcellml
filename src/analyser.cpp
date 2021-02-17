@@ -400,7 +400,7 @@ struct Analyser::AnalyserImpl
                           double logMultiplier);
     double multiplier(const ModelPtr &model, const std::string &unitsName);
     VariablePtr variable(const AnalyserEquationAstPtr &ast);
-    std::string componentName(const VariablePtr &variable);
+    std::string componentName(const AnalyserEquationAstPtr &ast);
     double power(const AnalyserEquationAstPtr &ast);
     std::string expressionInformation(const AnalyserEquationAstPtr &ast);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
@@ -1409,10 +1409,11 @@ VariablePtr Analyser::AnalyserImpl::variable(const AnalyserEquationAstPtr &ast)
     return nullptr;
 }
 
-std::string Analyser::AnalyserImpl::componentName(const VariablePtr &variable)
+std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &ast)
 {
     // Return the name of the component in which the given variable is defined.
 
+    auto variable = Analyser::AnalyserImpl::variable(ast);
     ComponentPtr component = (variable != nullptr) ?
                                  std::dynamic_pointer_cast<Component>(variable->parent()) :
                                  nullptr;
@@ -1481,7 +1482,7 @@ std::string Analyser::AnalyserImpl::expressionInformation(const AnalyserEquation
         inEquation = " in equation '" + mGenerator->mPimpl->generateCode(equationAst) + "'";
     }
 
-    return "'" + mGenerator->mPimpl->generateCode(ast) + "'" + inEquation + " in component '" + componentName(variable(equationAst)) + "'";
+    return "'" + mGenerator->mPimpl->generateCode(ast) + "'" + inEquation + " in component '" + componentName(equationAst) + "'";
 }
 
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
