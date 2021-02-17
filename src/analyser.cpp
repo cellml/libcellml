@@ -391,10 +391,10 @@ struct Analyser::AnalyserImpl
                           const UnitsMap &secondUnitsMap, int sign);
     UnitsMap multiplyUnitsMaps(const UnitsMap &unitsMap,
                                const AnalyserEquationAstPtr &ast, double power);
-    std::string hints(const UnitsMap &unitsMap);
+    std::string unitMismatchInformation(const UnitsMap &unitsMap);
     bool areSameUnitsMaps(const UnitsMap &firstUnitsMap,
                           const UnitsMap &secondUnitsMap,
-                          std::string &hints);
+                          std::string &unitMismatchInformation);
     void updateMultiplier(const ModelPtr &model, const std::string &unitsName,
                           double &multiplier, double unitsExponent,
                           double logMultiplier);
@@ -881,20 +881,15 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             equation->addVariable(internalVariable(variable));
         }
 
-        // Add the variable to our AST and keep track of its unit, unless it's
-        // dimensionless in which case we skip it since it's not relevant for
-        // our unit analysis.
+        // Add the variable to our AST and keep track of its unit.
 
         ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, astParent);
 
-        if (!isDimensionlessUnit(variable->units())) {
-            mAstUnits[ast] = variable->units();
-        }
+        mAstUnits[ast] = variable->units();
     } else if (node->isMathmlElement("cn")) {
-        // Add the number to our AST and keep track of its unit, unless it's
-        // dimensionless in which case we skip it since it's not relevant for
-        // our unit analysis. Note that in the case of a standard unit, we need
-        // to create a units since it's not declared in the model.
+        // Add the number to our AST and keep track of its unit. Note that in
+        // the case of a standard unit, we need to create a units since it's
+        // not declared in the model.
 
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
@@ -906,18 +901,16 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         std::string unitsName = node->attribute("units");
 
-        if (!isDimensionlessUnitName(unitsName)) {
-            if (isStandardUnitName(unitsName)) {
-                auto iter = mStandardUnits.find(unitsName);
+        if (isStandardUnitName(unitsName)) {
+            auto iter = mStandardUnits.find(unitsName);
 
-                if (iter == mStandardUnits.end()) {
-                    mAstUnits[ast] = mStandardUnits[unitsName] = libcellml::Units::create(unitsName);
-                } else {
-                    mAstUnits[ast] = iter->second;
-                }
+            if (iter == mStandardUnits.end()) {
+                mAstUnits[ast] = mStandardUnits[unitsName] = libcellml::Units::create(unitsName);
             } else {
-                mAstUnits[ast] = owningModel(component)->units(unitsName);
+                mAstUnits[ast] = iter->second;
             }
+        } else {
+            mAstUnits[ast] = owningModel(component)->units(unitsName);
         }
 
         // Qualifier elements.
@@ -1300,9 +1293,9 @@ UnitsMap Analyser::AnalyserImpl::multiplyUnitsMaps(const UnitsMap &unitsMap,
     return res;
 }
 
-std::string Analyser::AnalyserImpl::hints(const UnitsMap &unitsMap)
+std::string Analyser::AnalyserImpl::unitMismatchInformation(const UnitsMap &unitsMap)
 {
-    // Retrieve the hints for the given units map.
+    // Retrieve the unit mismatch information for the given units map.
 
     std::string res;
 
@@ -1321,33 +1314,33 @@ std::string Analyser::AnalyserImpl::hints(const UnitsMap &unitsMap)
         }
     }
 
-    if (!res.empty()) {
-        res += ".";
-    }
-
     return res;
 }
 
 bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMap &firstUnitsMap,
                                               const UnitsMap &secondUnitsMap,
-                                              std::string &hints)
+                                              std::string &unitMismatchInformation)
 {
     // Check whether the given units map are the same by checking their
-    // exponents, and provide hints if they are not.
+    // exponents, and provide unit mismatch information if they are not.
 
     UnitsMap unitsMap;
 
     for (const auto &units : firstUnitsMap) {
-        unitsMap[units.first] += units.second;
+        if (!isDimensionlessUnitName(units.first)) {
+            unitsMap[units.first] += units.second;
+        }
     }
 
     for (const auto &units : secondUnitsMap) {
-        unitsMap[units.first] -= units.second;
+        if (!isDimensionlessUnitName(units.first)) {
+            unitsMap[units.first] -= units.second;
+        }
     }
 
-    hints = Analyser::AnalyserImpl::hints(unitsMap);
+    unitMismatchInformation = Analyser::AnalyserImpl::unitMismatchInformation(unitsMap);
 
-    return hints.empty();
+    return unitMismatchInformation.empty();
 }
 
 void Analyser::AnalyserImpl::updateMultiplier(const ModelPtr &model,
@@ -1559,19 +1552,27 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PIECEWISE)) {
-        std::string hints;
+        std::string unitMismatchInformation;
+        bool unitMismatch = !rightUnitsMap.empty()
+                            && !areSameUnitsMaps(unitsMap, rightUnitsMap, unitMismatchInformation);
+        bool multiplierMismatch = (ast->mPimpl->mOwnedLeftChild != nullptr)
+                                  && (ast->mPimpl->mOwnedRightChild != nullptr)
+                                  && !areEqual(multiplier, rightMultiplier);
 
-        if (!rightUnitsMap.empty()
-            && !areSameUnitsMaps(unitsMap, rightUnitsMap, hints)) {
+        if (unitMismatch && multiplierMismatch) {
             issueDescriptions.push_back("The units in " + expressionInformation(ast)
-                                        + " are not equivalent. The unit mismatch is " + hints);
-        }
-
-        if ((ast->mPimpl->mOwnedLeftChild != nullptr)
-            && (ast->mPimpl->mOwnedRightChild != nullptr)
-            && !areEqual(multiplier, rightMultiplier)) {
+                                        + " are not equivalent and have a multiplier mismatch. The unit mismatch is "
+                                        + unitMismatchInformation
+                                        + " and the multiplier mismatch is "
+                                        + convertToString(multiplier - rightMultiplier, false) + ".");
+        } else if (unitMismatch) {
             issueDescriptions.push_back("The units in " + expressionInformation(ast)
-                                        + " has a multiplier mismatch. The multiplier mismatch is " + convertToString(multiplier - rightMultiplier, false) + ".");
+                                        + " are not equivalent. The unit mismatch is "
+                                        + unitMismatchInformation + ".");
+        } else if (multiplierMismatch) {
+            issueDescriptions.push_back("The units in " + expressionInformation(ast)
+                                        + " have a multiplier mismatch. The multiplier mismatch is "
+                                        + convertToString(multiplier - rightMultiplier, false) + ".");
         }
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
         unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, 1);
@@ -1610,11 +1611,12 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
-        std::string hints;
+        std::string unitMismatchInformation;
 
-        if (!areSameUnitsMaps(rightUnitsMap, unitsMap, hints)) {
+        if (!areSameUnitsMaps(rightUnitsMap, unitsMap, unitMismatchInformation)) {
             issueDescriptions.push_back("The units in " + expressionInformation(ast)
-                                        + " are not consistent with the base. The mismatch is " + hints);
+                                        + " are not consistent with the base. The unit mismatch is "
+                                        + unitMismatchInformation + ".");
         }
 
         unitsMap = {};
@@ -1643,9 +1645,12 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
-        if (!unitsMap.empty()) {
+        if (((unitsMap.size() == 1)
+             && !isDimensionlessUnitName(unitsMap.begin()->first))
+            || (unitsMap.size() > 1)) {
             issueDescriptions.push_back("The argument in " + expressionInformation(ast)
-                                        + " is not dimensionless. The unit mismatch is " + hints(unitsMap));
+                                        + " is not dimensionless. The unit mismatch is "
+                                        + unitMismatchInformation(unitsMap) + ".");
         }
 
         unitsMap = {};

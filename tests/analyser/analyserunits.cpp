@@ -20,6 +20,142 @@ limitations under the License.
 
 #include <libcellml>
 
+TEST(AnalyserUnits, builtInUnits)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/units/build_in_units.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "The units in 'ampere = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1.",
+        "The units in 'becquerel = 1.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
+        "The units in 'candela = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
+        "The units in 'coulomb = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1, second^-1.",
+        "The units in 'farad = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-2, kilogram^1, metre^2, second^-4.",
+        "The units in 'gram = 1.0' in component 'main' are not equivalent and have a multiplier mismatch. The unit mismatch is kilogram^-1 and the multiplier mismatch is 3.",
+        "The units in 'gray = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-2, second^2.",
+        "The units in 'henry = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^2, kilogram^-1, metre^-2, second^2.",
+        "The units in 'hertz = 1.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
+        "The units in 'joule = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1, metre^-2, second^2.",
+        "The units in 'katal = 1.0' in component 'main' are not equivalent. The unit mismatch is mole^-1, second^1.",
+        "The units in 'kelvin = 1.0' in component 'main' are not equivalent. The unit mismatch is kelvin^-1.",
+        "The units in 'kilogram = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1.",
+        "The units in 'litre = 1.0' in component 'main' are not equivalent and have a multiplier mismatch. The unit mismatch is metre^-3 and the multiplier mismatch is 3.",
+        "The units in 'lumen = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
+        "The units in 'lux = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1, metre^2.",
+        "The units in 'metre = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
+        "The units in 'mole = 1.0' in component 'main' are not equivalent. The unit mismatch is mole^-1.",
+        "The units in 'newton = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1, metre^-1, second^2.",
+        "The units in 'ohm = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^2, kilogram^-1, metre^-2, second^3.",
+        "The units in 'pascal = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1, metre^1, second^2.",
+        "The units in 'second = 1.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
+        "The units in 'siemens = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-2, kilogram^1, metre^2, second^-3.",
+        "The units in 'sievert = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-2, second^2.",
+        "The units in 'tesla = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, second^2.",
+        "The units in 'volt = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^3.",
+        "The units in 'watt = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1, metre^-2, second^3.",
+        "The units in 'weber = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^2.",
+    };
+
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
 TEST(AnalyserUnits, ci)
 {
     auto parser = libcellml::Parser::create();
@@ -29,18 +165,22 @@ TEST(AnalyserUnits, ci)
 
     const std::vector<std::string> expectedIssues = {
         "The units in 'b = bCst' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = cCst' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'c = cCst' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^3.",
+        "The units in 'd = dCst' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
 
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
     };
@@ -61,12 +201,16 @@ TEST(AnalyserUnits, cn)
 
     const std::vector<std::string> expectedIssues = {
         "The units in 'b = 3.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = 5.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
-        "The units in 'e = 9.0e3' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'f = 11.0e5' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'c = 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^3.",
+        "The units in 'd = 7.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'f = 11.0e3' in component 'main' are not equivalent. The unit mismatch is second^-1.",
+        "The units in 'g = 13.0e5' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^3.",
+        "The units in 'h = 15.0e7' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
 
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -77,8 +221,12 @@ TEST(AnalyserUnits, cn)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,

@@ -8,6 +8,8 @@
         <variable name="d" units="dimensionless"/>
         <variable name="e" units="dimensionless"/>
         <variable name="f" units="dimensionless"/>
+        <variable name="g" units="dimensionless"/>
+        <variable name="h" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -22,22 +24,32 @@
             <apply>
                 <eq/>
                 <ci>c</ci>
-                <cn cellml:units="frog">5</cn>
+                <cn cellml:units="volt">5</cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>d</ci>
-                <cn cellml:units="dimensionless" type="e-notation">7<sep/>1</cn>
+                <cn cellml:units="frog">7</cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>e</ci>
-                <cn cellml:units="second" type="e-notation">9<sep/>3</cn>
+                <cn cellml:units="dimensionless" type="e-notation">9<sep/>1</cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>f</ci>
-                <cn cellml:units="frog" type="e-notation">11<sep/>5</cn>
+                <cn cellml:units="second" type="e-notation">11<sep/>3</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>g</ci>
+                <cn cellml:units="volt" type="e-notation">13<sep/>5</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>h</ci>
+                <cn cellml:units="frog" type="e-notation">15<sep/>7</cn>
             </apply>
         </math>
     </component>
