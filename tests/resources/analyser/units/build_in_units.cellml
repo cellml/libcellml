@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="build_in_units" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <component name="main">
+        <variable name="ampere" units="dimensionless"/>
+        <variable name="becquerel" units="dimensionless"/>
+        <variable name="candela" units="dimensionless"/>
+        <variable name="coulomb" units="dimensionless"/>
+        <variable name="dimensionless" units="dimensionless"/>
+        <variable name="farad" units="dimensionless"/>
+        <variable name="gram" units="dimensionless"/>
+        <variable name="gray" units="dimensionless"/>
+        <variable name="henry" units="dimensionless"/>
+        <variable name="hertz" units="dimensionless"/>
+        <variable name="joule" units="dimensionless"/>
+        <variable name="katal" units="dimensionless"/>
+        <variable name="kelvin" units="dimensionless"/>
+        <variable name="kilogram" units="dimensionless"/>
+        <variable name="litre" units="dimensionless"/>
+        <variable name="lumen" units="dimensionless"/>
+        <variable name="lux" units="dimensionless"/>
+        <variable name="metre" units="dimensionless"/>
+        <variable name="mole" units="dimensionless"/>
+        <variable name="newton" units="dimensionless"/>
+        <variable name="ohm" units="dimensionless"/>
+        <variable name="pascal" units="dimensionless"/>
+        <variable name="radian" units="dimensionless"/>
+        <variable name="second" units="dimensionless"/>
+        <variable name="siemens" units="dimensionless"/>
+        <variable name="sievert" units="dimensionless"/>
+        <variable name="steradian" units="dimensionless"/>
+        <variable name="tesla" units="dimensionless"/>
+        <variable name="volt" units="dimensionless"/>
+        <variable name="watt" units="dimensionless"/>
+        <variable name="weber" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>ampere</ci>
+                <cn cellml:units="ampere">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>becquerel</ci>
+                <cn cellml:units="becquerel">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>candela</ci>
+                <cn cellml:units="candela">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>coulomb</ci>
+                <cn cellml:units="coulomb">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>dimensionless</ci>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>farad</ci>
+                <cn cellml:units="farad">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>gram</ci>
+                <cn cellml:units="gram">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>gray</ci>
+                <cn cellml:units="gray">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>henry</ci>
+                <cn cellml:units="henry">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>hertz</ci>
+                <cn cellml:units="hertz">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>joule</ci>
+                <cn cellml:units="joule">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>katal</ci>
+                <cn cellml:units="katal">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>kelvin</ci>
+                <cn cellml:units="kelvin">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>kilogram</ci>
+                <cn cellml:units="kilogram">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>litre</ci>
+                <cn cellml:units="litre">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>lumen</ci>
+                <cn cellml:units="lumen">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>lux</ci>
+                <cn cellml:units="lux">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>metre</ci>
+                <cn cellml:units="metre">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>mole</ci>
+                <cn cellml:units="mole">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>newton</ci>
+                <cn cellml:units="newton">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>ohm</ci>
+                <cn cellml:units="ohm">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>pascal</ci>
+                <cn cellml:units="pascal">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>radian</ci>
+                <cn cellml:units="radian">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>second</ci>
+                <cn cellml:units="second">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>siemens</ci>
+                <cn cellml:units="siemens">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>sievert</ci>
+                <cn cellml:units="sievert">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>steradian</ci>
+                <cn cellml:units="steradian">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>tesla</ci>
+                <cn cellml:units="tesla">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>volt</ci>
+                <cn cellml:units="volt">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>watt</ci>
+                <cn cellml:units="watt">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>weber</ci>
+                <cn cellml:units="weber">1</cn>
+            </apply>
+        </math>
+    </component>
+</model>

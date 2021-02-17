@@ -5,9 +5,11 @@
         <variable name="a" units="dimensionless"/>
         <variable name="b" units="dimensionless"/>
         <variable name="c" units="dimensionless"/>
+        <variable name="d" units="dimensionless"/>
         <variable initial_value="1" name="aCst" units="dimensionless"/>
         <variable initial_value="3" name="bCst" units="second"/>
-        <variable initial_value="5" name="cCst" units="frog"/>
+        <variable initial_value="5" name="cCst" units="volt"/>
+        <variable initial_value="7" name="dCst" units="frog"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -23,6 +25,11 @@
                 <eq/>
                 <ci>c</ci>
                 <ci>cCst</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>d</ci>
+                <ci>dCst</ci>
             </apply>
         </math>
     </component>
