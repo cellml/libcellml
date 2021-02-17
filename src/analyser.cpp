@@ -1327,13 +1327,13 @@ bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMap &firstUnitsMap,
     UnitsMap unitsMap;
 
     for (const auto &units : firstUnitsMap) {
-        if (!isDimensionlessUnitName(units.first)) {
+        if (units.first != "dimensionless") {
             unitsMap[units.first] += units.second;
         }
     }
 
     for (const auto &units : secondUnitsMap) {
-        if (!isDimensionlessUnitName(units.first)) {
+        if (units.first != "dimensionless") {
             unitsMap[units.first] -= units.second;
         }
     }
@@ -1646,7 +1646,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
         if (((unitsMap.size() == 1)
-             && !isDimensionlessUnitName(unitsMap.begin()->first))
+             && (unitsMap.begin()->first != "dimensionless"))
             || (unitsMap.size() > 1)) {
             issueDescriptions.push_back("The argument in " + expressionInformation(ast)
                                         + " is not dimensionless. The unit mismatch is "
