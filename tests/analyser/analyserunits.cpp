@@ -23,7 +23,7 @@ limitations under the License.
 TEST(AnalyserUnits, builtInUnits)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/build_in_units.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/units/built_in_units.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
