@@ -1403,16 +1403,13 @@ std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &
         return std::dynamic_pointer_cast<Component>(variable->parent())->name();
     }
 
-    auto astLeftChild = ast->leftChild();
-    auto res = (astLeftChild != nullptr) ?
-                   componentName(astLeftChild) :
+    auto res = (ast->mPimpl->mOwnedLeftChild != nullptr) ?
+                   componentName(ast->mPimpl->mOwnedLeftChild) :
                    "";
 
     if (res.empty()) {
-        auto astRightChild = ast->leftChild();
-
-        res = (astRightChild != nullptr) ?
-                  componentName(astRightChild) :
+        res = (ast->mPimpl->mOwnedRightChild != nullptr) ?
+                  componentName(ast->mPimpl->mOwnedRightChild) :
                   "";
     }
 
