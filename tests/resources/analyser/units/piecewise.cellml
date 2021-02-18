@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<model name="cn" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="frog"/>
+<model name="piecewise" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="rooster"/>
     <units name="dove"/>
     <component name="main">
