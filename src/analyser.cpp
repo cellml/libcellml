@@ -1496,18 +1496,13 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     }
 
     // Check whether we are dealing with a CI/CN element and, if so, retrieve
-    // both its units map and multiplier, but only if it isn't dimensionless.
+    // both its units map and multiplier.
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
         auto units = mAstUnits[ast].lock();
 
-        if (units == nullptr) {
-            // Dimensionless CI/CN element.
-
-            unitsMap = {};
-            multiplier = 0.0;
-        } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::CI) {
+        if (ast->mPimpl->mType == AnalyserEquationAst::Type::CI) {
             auto variable = ast->variable();
             auto model = owningModel(variable);
 
