@@ -1498,21 +1498,11 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
         auto units = mAstUnits[ast].lock();
+        auto model = owningModel(units);
 
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::CI) {
-            auto variable = ast->variable();
-            auto model = owningModel(variable);
+        updateUnitsMap(model, unitsMap, units->name());
 
-            updateUnitsMap(model, unitsMap, units->name());
-
-            unitsMultiplier = Analyser::AnalyserImpl::multiplier(model, units->name());
-        } else {
-            auto model = owningModel(units);
-
-            updateUnitsMap(model, unitsMap, units->name());
-
-            unitsMultiplier = Analyser::AnalyserImpl::multiplier(model, units->name());
-        }
+        unitsMultiplier = Analyser::AnalyserImpl::multiplier(model, units->name());
 
         return;
     }
