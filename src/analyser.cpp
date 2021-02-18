@@ -1548,20 +1548,41 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                   && (ast->mPimpl->mOwnedRightChild != nullptr)
                                   && !areEqual(multiplier, rightMultiplier);
 
-        if (unitMismatch && multiplierMismatch) {
-            issueDescriptions.push_back("The units in " + expressionInformation(ast)
-                                        + " are not equivalent and have a multiplier mismatch. The unit mismatch is "
-                                        + unitMismatchInformation
-                                        + " and the multiplier mismatch is "
-                                        + convertToString(multiplier - rightMultiplier, false) + ".");
-        } else if (unitMismatch) {
-            issueDescriptions.push_back("The units in " + expressionInformation(ast)
-                                        + " are not equivalent. The unit mismatch is "
-                                        + unitMismatchInformation + ".");
-        } else if (multiplierMismatch) {
-            issueDescriptions.push_back("The units in " + expressionInformation(ast)
-                                        + " have a multiplier mismatch. The multiplier mismatch is "
-                                        + convertToString(multiplier - rightMultiplier, false) + ".");
+        if (unitMismatch || multiplierMismatch) {
+            std::string issueDescription = "The units in " + expressionInformation(ast) + " ";
+
+            if (unitMismatch) {
+                issueDescription += "are not equivalent";
+            }
+
+            if (multiplierMismatch) {
+                if (unitMismatch) {
+                    issueDescription += " and ";
+                }
+
+                issueDescription += "have a multiplier mismatch";
+            }
+
+            issueDescription += ". ";
+
+            if (unitMismatch) {
+                issueDescription += "The unit mismatch is " + unitMismatchInformation;
+            }
+
+            if (multiplierMismatch) {
+                if (unitMismatch) {
+                    issueDescription += " and the ";
+                } else {
+                    issueDescription += "The ";
+                }
+
+                issueDescription += "multiplier mismatch is "
+                                    + convertToString(multiplier - rightMultiplier, false);
+            }
+
+            issueDescription += ".";
+
+            issueDescriptions.push_back(issueDescription);
         }
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
         unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, 1);
