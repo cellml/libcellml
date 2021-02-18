@@ -296,7 +296,7 @@ TEST(AnalyserUnits, coverage)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in '1.0 = a' in component '' are not equivalent. The unit mismatch is second^1.",
+        "The units in '1.0 = a' in component 'main' are not equivalent. The unit mismatch is second^1.",
     };
 
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
