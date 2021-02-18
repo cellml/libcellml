@@ -384,8 +384,8 @@ struct Analyser::AnalyserImpl
 
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
-    void updateUnitsMap(const ModelPtr &model, UnitsMap &unitsMap,
-                        const std::string &unitsName, double unitsExponent = 1,
+    void updateUnitsMap(const ModelPtr &model, const std::string &unitsName,
+                        UnitsMap &unitsMap, double unitsExponent = 1.0,
                         double unitsMultiplier = 0.0);
     UnitsMap addUnitsMaps(const UnitsMap &firstUnitsMap,
                           const UnitsMap &secondUnitsMap, int sign);
@@ -396,9 +396,9 @@ struct Analyser::AnalyserImpl
                           const UnitsMap &secondUnitsMap,
                           std::string &unitMismatchInformation);
     void updateMultiplier(const ModelPtr &model, const std::string &unitsName,
-                          double &newUnitsMultiplier, double unitsExponent,
-                          double unitsMultiplier);
-    double multiplier(const ModelPtr &model, const std::string &unitsName);
+                          double &newUnitsMultiplier,
+                          double unitsExponent = 1.0,
+                          double unitsMultiplier = 0.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
     double power(const AnalyserEquationAstPtr &ast);
     std::string expressionInformation(const AnalyserEquationAstPtr &ast);
@@ -1192,8 +1192,8 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 }
 
 void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
-                                            UnitsMap &unitsMap,
                                             const std::string &unitsName,
+                                            UnitsMap &unitsMap,
                                             double unitsExponent,
                                             double unitsMultiplier)
 {
@@ -1235,7 +1235,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                         unitsMap[iter.first] += iter.second * exponent * unitsExponent;
                     }
                 } else {
-                    updateUnitsMap(model, unitsMap, reference,
+                    updateUnitsMap(model, reference, unitsMap,
                                    exponent * unitsExponent,
                                    unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
                 }
@@ -1379,18 +1379,6 @@ void Analyser::AnalyserImpl::updateMultiplier(const ModelPtr &model,
     }
 }
 
-double Analyser::AnalyserImpl::multiplier(const ModelPtr &model,
-                                          const std::string &unitsName)
-{
-    // Return the multiplier for the given units name.
-
-    double multiplier = 0.0;
-
-    updateMultiplier(model, unitsName, multiplier, 1, 0);
-
-    return multiplier;
-}
-
 std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &ast)
 {
     // Return the name of the component in which the given AST is, by going
@@ -1500,9 +1488,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         auto units = mAstUnits[ast].lock();
         auto model = owningModel(units);
 
-        updateUnitsMap(model, unitsMap, units->name());
+        unitsMultiplier = 0.0;
 
-        unitsMultiplier = Analyser::AnalyserImpl::multiplier(model, units->name());
+        updateUnitsMap(model, units->name(), unitsMap);
+        updateMultiplier(model, units->name(), unitsMultiplier);
 
         return;
     }
