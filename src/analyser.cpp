@@ -399,7 +399,6 @@ struct Analyser::AnalyserImpl
                           double &multiplier, double unitsExponent,
                           double logMultiplier);
     double multiplier(const ModelPtr &model, const std::string &unitsName);
-    VariablePtr variable(const AnalyserEquationAstPtr &ast);
     std::string componentName(const AnalyserEquationAstPtr &ast);
     double power(const AnalyserEquationAstPtr &ast);
     std::string expressionInformation(const AnalyserEquationAstPtr &ast);
@@ -1392,35 +1391,32 @@ double Analyser::AnalyserImpl::multiplier(const ModelPtr &model,
     return multiplier;
 }
 
-VariablePtr Analyser::AnalyserImpl::variable(const AnalyserEquationAstPtr &ast)
-{
-    // Return the variable for the given AST.
-
-    VariablePtr variable = ast->variable();
-
-    if (variable != nullptr) {
-        return variable;
-    }
-
-    if (ast->mPimpl->mOwnedLeftChild != nullptr) {
-        return Analyser::AnalyserImpl::variable(ast->mPimpl->mOwnedLeftChild);
-    }
-
-    return nullptr;
-}
-
 std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &ast)
 {
-    // Return the name of the component in which the given variable is defined.
+    // Return the name of the component in which the given AST is, by going
+    // through the AST, if needed, and returning the component of the first
+    // variable we find. Note that we know that the AST is sound, so no need to
 
-    auto variable = Analyser::AnalyserImpl::variable(ast);
-    ComponentPtr component = (variable != nullptr) ?
-                                 std::dynamic_pointer_cast<Component>(variable->parent()) :
-                                 nullptr;
+    auto variable = ast->variable();
 
-    return (component != nullptr) ?
-               component->name() :
-               "";
+    if (variable != nullptr) {
+        return std::dynamic_pointer_cast<Component>(variable->parent())->name();
+    }
+
+    auto astLeftChild = ast->leftChild();
+    auto res = (astLeftChild != nullptr) ?
+                   componentName(astLeftChild) :
+                   "";
+
+    if (res.empty()) {
+        auto astRightChild = ast->leftChild();
+
+        res = (astRightChild != nullptr) ?
+                  componentName(astRightChild) :
+                  "";
+    }
+
+    return res;
 }
 
 double Analyser::AnalyserImpl::power(const AnalyserEquationAstPtr &ast)
