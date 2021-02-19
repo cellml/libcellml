@@ -1306,7 +1306,7 @@ std::string Analyser::AnalyserImpl::unitMismatchInformation(const UnitsMap &unit
                                 convertToString(units.second, false);
 
             if (!res.empty()) {
-                res += ", ";
+                res += " x ";
             }
 
             res += units.first + "^" + exponent;

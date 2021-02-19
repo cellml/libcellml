@@ -31,31 +31,31 @@ TEST(AnalyserUnits, builtInUnits)
         "The units in 'ampere = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1.",
         "The units in 'becquerel = 1.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
         "The units in 'candela = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in 'coulomb = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1, second^-1.",
-        "The units in 'farad = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-2, kilogram^1, metre^2, second^-4.",
+        "The units in 'coulomb = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x second^-1.",
+        "The units in 'farad = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-2 x kilogram^1 x metre^2 x second^-4.",
         "The units in 'gram = 1.0' in component 'main' are not equivalent and have a multiplier mismatch. The unit mismatch is kilogram^-1 and the multiplier mismatch is 3.",
-        "The units in 'gray = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-2, second^2.",
-        "The units in 'henry = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^2, kilogram^-1, metre^-2, second^2.",
+        "The units in 'gray = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-2 x second^2.",
+        "The units in 'henry = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^2 x kilogram^-1 x metre^-2 x second^2.",
         "The units in 'hertz = 1.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'joule = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1, metre^-2, second^2.",
-        "The units in 'katal = 1.0' in component 'main' are not equivalent. The unit mismatch is mole^-1, second^1.",
+        "The units in 'joule = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^-2 x second^2.",
+        "The units in 'katal = 1.0' in component 'main' are not equivalent. The unit mismatch is mole^-1 x second^1.",
         "The units in 'kelvin = 1.0' in component 'main' are not equivalent. The unit mismatch is kelvin^-1.",
         "The units in 'kilogram = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1.",
         "The units in 'litre = 1.0' in component 'main' are not equivalent and have a multiplier mismatch. The unit mismatch is metre^-3 and the multiplier mismatch is 3.",
         "The units in 'lumen = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in 'lux = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1, metre^2.",
+        "The units in 'lux = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1 x metre^2.",
         "The units in 'metre = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
         "The units in 'mole = 1.0' in component 'main' are not equivalent. The unit mismatch is mole^-1.",
-        "The units in 'newton = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1, metre^-1, second^2.",
-        "The units in 'ohm = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^2, kilogram^-1, metre^-2, second^3.",
-        "The units in 'pascal = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1, metre^1, second^2.",
+        "The units in 'newton = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^-1 x second^2.",
+        "The units in 'ohm = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^2 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'pascal = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^1 x second^2.",
         "The units in 'second = 1.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'siemens = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-2, kilogram^1, metre^2, second^-3.",
-        "The units in 'sievert = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-2, second^2.",
-        "The units in 'tesla = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, second^2.",
-        "The units in 'volt = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^3.",
-        "The units in 'watt = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1, metre^-2, second^3.",
-        "The units in 'weber = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^2.",
+        "The units in 'siemens = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-2 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'sievert = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-2 x second^2.",
+        "The units in 'tesla = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x second^2.",
+        "The units in 'volt = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'watt = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'weber = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^2.",
     };
 
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
@@ -165,7 +165,7 @@ TEST(AnalyserUnits, ci)
 
     const std::vector<std::string> expectedIssues = {
         "The units in 'b = bCst' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = cCst' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^3.",
+        "The units in 'c = cCst' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
         "The units in 'd = dCst' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
 
@@ -201,10 +201,10 @@ TEST(AnalyserUnits, cn)
 
     const std::vector<std::string> expectedIssues = {
         "The units in 'b = 3.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^3.",
+        "The units in 'c = 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
         "The units in 'd = 7.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
         "The units in 'f = 11.0e3' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'g = 13.0e5' in component 'main' are not equivalent. The unit mismatch is ampere^1, kilogram^-1, metre^-2, second^3.",
+        "The units in 'g = 13.0e5' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
         "The units in 'h = 15.0e7' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
 
@@ -250,13 +250,13 @@ TEST(AnalyserUnits, piecewise)
     const std::vector<std::string> expectedIssues = {
         "The units in 'b > 13.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
         "The units in 'b > 17.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in '(b > 17.0)?15.0:19.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is ampere^1, mole^-1.",
-        "The units in '(b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1, second^1.",
+        "The units in '(b > 17.0)?15.0:19.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x mole^-1.",
+        "The units in '(b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x second^1.",
         "The units in 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
         "The units in 'c > 23.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
         "The units in 'c > 27.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
-        "The units in '(c > 27.0)?25.0:29.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is dog^1, dove^-1.",
-        "The units in '(c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is dog^-1, frog^1.",
+        "The units in '(c > 27.0)?25.0:29.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is dog^1 x dove^-1.",
+        "The units in '(c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is dog^-1 x frog^1.",
         "The units in 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
 
