@@ -2,6 +2,8 @@
 <model name="piecewise" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="frog"/>
     <units name="rooster"/>
+    <units name="dog"/>
+    <units name="cat"/>
     <units name="dove"/>
     <component name="main">
         <variable name="a" units="dimensionless"/>
@@ -46,11 +48,11 @@
                         </apply>
                     </piece>
                     <piece>
-                        <cn cellml:units="second">15</cn>
+                        <cn cellml:units="ampere">15</cn>
                         <apply>
                             <gt/>
                             <ci>b</ci>
-                            <cn cellml:units="metre">17</cn>
+                            <cn cellml:units="candela">17</cn>
                         </apply>
                     </piece>
                     <otherwise>
@@ -71,11 +73,11 @@
                         </apply>
                     </piece>
                     <piece>
-                        <cn cellml:units="frog">25</cn>
+                        <cn cellml:units="dog">25</cn>
                         <apply>
                             <gt/>
                             <ci>c</ci>
-                            <cn cellml:units="rooster">27</cn>
+                            <cn cellml:units="cat">27</cn>
                         </apply>
                     </piece>
                     <otherwise>
