@@ -248,15 +248,19 @@ TEST(AnalyserUnits, piecewise)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b > 9.0' in equation 'b = (b > 9.0)?7.0:11.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
-        "The units in '(b > 9.0)?7.0:11.0' in equation 'b = (b > 9.0)?7.0:11.0' in component 'main' are not equivalent. The unit mismatch is mole^-1, second^1.",
-        "The units in 'b = (b > 9.0)?7.0:11.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c > 15.0' in equation 'c = (c > 15.0)?13.0:17.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
-        "The units in '(c > 15.0)?13.0:17.0' in equation 'c = (c > 15.0)?13.0:17.0' in component 'main' are not equivalent. The unit mismatch is dove^-1, frog^1.",
-        "The units in 'c = (c > 15.0)?13.0:17.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'b > 13.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
+        "The units in 'b > 17.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
+        "The units in '(b > 17.0)?15.0:19.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is mole^-1, second^1.",
+        "The units in 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
+        "The units in 'c > 23.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
+        "The units in 'c > 27.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
+        "The units in '(c > 27.0)?25.0:29.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is dove^-1, frog^1.",
+        "The units in 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
 
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -271,8 +275,12 @@ TEST(AnalyserUnits, piecewise)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
