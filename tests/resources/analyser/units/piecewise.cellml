@@ -20,8 +20,16 @@
                             <cn cellml:units="dimensionless">3</cn>
                         </apply>
                     </piece>
-                    <otherwise>
+                    <piece>
                         <cn cellml:units="dimensionless">5</cn>
+                        <apply>
+                            <gt/>
+                            <ci>a</ci>
+                            <cn cellml:units="dimensionless">7</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dimensionless">9</cn>
                     </otherwise>
                 </piecewise>
             </apply>
@@ -30,15 +38,23 @@
                 <ci>b</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="second">7</cn>
+                        <cn cellml:units="second">11</cn>
                         <apply>
                             <gt/>
                             <ci>b</ci>
-                            <cn cellml:units="metre">9</cn>
+                            <cn cellml:units="metre">13</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="second">15</cn>
+                        <apply>
+                            <gt/>
+                            <ci>b</ci>
+                            <cn cellml:units="metre">17</cn>
                         </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="mole">11</cn>
+                        <cn cellml:units="mole">19</cn>
                     </otherwise>
                 </piecewise>
             </apply>
@@ -47,15 +63,23 @@
                 <ci>c</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="frog">13</cn>
+                        <cn cellml:units="frog">21</cn>
                         <apply>
                             <gt/>
                             <ci>c</ci>
-                            <cn cellml:units="rooster">15</cn>
+                            <cn cellml:units="rooster">23</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="frog">25</cn>
+                        <apply>
+                            <gt/>
+                            <ci>c</ci>
+                            <cn cellml:units="rooster">27</cn>
                         </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="dove">17</cn>
+                        <cn cellml:units="dove">29</cn>
                     </otherwise>
                 </piecewise>
             </apply>
