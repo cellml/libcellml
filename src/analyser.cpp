@@ -1499,10 +1499,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     // Check the left and right children.
 
     UnitsMap rightUnitsMap;
-    double rightMultiplier;
+    double rightUnitsMultiplier;
 
     analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMap, unitsMultiplier, issueDescriptions);
-    analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMap, rightMultiplier, issueDescriptions);
+    analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMap, rightUnitsMultiplier, issueDescriptions);
 
     if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EQ)
@@ -1525,7 +1525,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                             && !areSameUnitsMaps(unitsMap, rightUnitsMap, unitMismatchInformation);
         bool multiplierMismatch = (ast->mPimpl->mOwnedLeftChild != nullptr)
                                   && (ast->mPimpl->mOwnedRightChild != nullptr)
-                                  && !areEqual(unitsMultiplier, rightMultiplier);
+                                  && !areEqual(unitsMultiplier, rightUnitsMultiplier);
 
         if (unitMismatch || multiplierMismatch) {
             std::string issueDescription = "The units in " + expressionInformation(ast) + " ";
@@ -1556,7 +1556,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                 }
 
                 issueDescription += "multiplier mismatch is "
-                                    + convertToString(unitsMultiplier - rightMultiplier, false);
+                                    + convertToString(unitsMultiplier - rightUnitsMultiplier, false);
             }
 
             issueDescription += ".";
@@ -1565,10 +1565,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         }
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
         unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, 1);
-        unitsMultiplier += rightMultiplier;
+        unitsMultiplier += rightUnitsMultiplier;
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE) {
         unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, -1);
-        unitsMultiplier -= rightMultiplier;
+        unitsMultiplier -= rightUnitsMultiplier;
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
         double power = 0.0;
@@ -1646,7 +1646,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         unitsMultiplier = 0.0;
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIFF) {
         unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, 1);
-        unitsMultiplier = unitsMultiplier + rightMultiplier;
+        unitsMultiplier = unitsMultiplier + rightUnitsMultiplier;
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::BVAR) {
         for (auto &unit : unitsMap) {
             unit.second *= -1.0;
