@@ -389,8 +389,6 @@ struct Analyser::AnalyserImpl
                         double unitsMultiplier = 0.0);
     UnitsMap addUnitsMaps(const UnitsMap &firstUnitsMap,
                           const UnitsMap &secondUnitsMap, int sign);
-    UnitsMap multiplyUnitsMaps(const UnitsMap &unitsMap,
-                               const AnalyserEquationAstPtr &ast, double power);
     std::string unitMismatchInformation(const UnitsMap &unitsMap);
     bool areSameUnitsMaps(const UnitsMap &firstUnitsMap,
                           const UnitsMap &secondUnitsMap,
@@ -400,12 +398,11 @@ struct Analyser::AnalyserImpl
                           double unitsExponent = 1.0,
                           double unitsMultiplier = 0.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
-    double power(const AnalyserEquationAstPtr &ast);
+    double powerValue(const AnalyserEquationAstPtr &ast);
     std::string expressionInformation(const AnalyserEquationAstPtr &ast);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                               UnitsMap &unitsMap, double &unitsMultiplier,
                               std::vector<std::string> &issueDescriptions);
-    void analyseEquationUnits(const AnalyserEquationAstPtr &ast);
 
     double scalingFactor(const VariablePtr &variable);
 
@@ -1273,25 +1270,6 @@ UnitsMap Analyser::AnalyserImpl::addUnitsMaps(const UnitsMap &firstUnitsMap,
     return res;
 }
 
-// Function which multiplies mappings if we have a power or root operator in the AST.
-UnitsMap Analyser::AnalyserImpl::multiplyUnitsMaps(const UnitsMap &unitsMap,
-                                                   const AnalyserEquationAstPtr &ast,
-                                                   double power)
-{
-    UnitsMap res = unitsMap;
-
-    if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER) {
-        for (auto &units : res) {
-            units.second = units.second * power;
-        }
-    } else {
-        for (auto &units : res) {
-            units.second = units.second / power;
-        }
-    }
-    return res;
-}
-
 std::string Analyser::AnalyserImpl::unitMismatchInformation(const UnitsMap &unitsMap)
 {
     // Retrieve the unit mismatch information for the given units map.
@@ -1404,9 +1382,9 @@ std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &
     return res;
 }
 
-double Analyser::AnalyserImpl::power(const AnalyserEquationAstPtr &ast)
+double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast)
 {
-    // Return the power for the given AST.
+    // Return the power value for the given AST.
 
     if (ast == nullptr) {
         return 0.0;
@@ -1418,25 +1396,25 @@ double Analyser::AnalyserImpl::power(const AnalyserEquationAstPtr &ast)
         }
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
-            return power(ast->mPimpl->mOwnedLeftChild) * power(ast->mPimpl->mOwnedRightChild);
+            return powerValue(ast->mPimpl->mOwnedLeftChild) * powerValue(ast->mPimpl->mOwnedRightChild);
         }
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIVIDE) {
-            return areEqual(power(ast->mPimpl->mOwnedRightChild), 0.0) ?
+            return areEqual(powerValue(ast->mPimpl->mOwnedRightChild), 0.0) ?
                        0.0 :
-                       power(ast->mPimpl->mOwnedLeftChild) / power(ast->mPimpl->mOwnedRightChild);
+                       powerValue(ast->mPimpl->mOwnedLeftChild) / powerValue(ast->mPimpl->mOwnedRightChild);
         }
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::PLUS) {
-            return power(ast->mPimpl->mOwnedLeftChild) + power(ast->mPimpl->mOwnedRightChild);
+            return powerValue(ast->mPimpl->mOwnedLeftChild) + powerValue(ast->mPimpl->mOwnedRightChild);
         }
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::MINUS) {
-            return power(ast->mPimpl->mOwnedLeftChild) - power(ast->mPimpl->mOwnedRightChild);
+            return powerValue(ast->mPimpl->mOwnedLeftChild) - powerValue(ast->mPimpl->mOwnedRightChild);
         }
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::DEGREE) {
-            return power(ast->mPimpl->mOwnedLeftChild);
+            return powerValue(ast->mPimpl->mOwnedLeftChild);
         }
 
         return 0.0;
@@ -1571,31 +1549,37 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         unitsMultiplier -= rightUnitsMultiplier;
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
-        double power = 0.0;
+        double powerValue = 0.0;
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
-            power = Analyser::AnalyserImpl::power(ast->mPimpl->mOwnedRightChild);
+            powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
         } else {
             if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
                 unitsMap = rightUnitsMap;
-                power = Analyser::AnalyserImpl::power(ast->mPimpl->mOwnedLeftChild);
+                powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
             } else {
-                power = Analyser::AnalyserImpl::power(ast->mPimpl->mOwnedRightChild);
+                powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
             }
         }
 
-        if ((ast->mPimpl->mOwnedRightChild == nullptr) && areEqual(power, 0.0)) {
+        if ((ast->mPimpl->mOwnedRightChild == nullptr) && areEqual(powerValue, 0.0)) {
             // Special case where we have a square root.
 
-            power = 2.0;
+            powerValue = 2.0;
         }
 
-        unitsMap = multiplyUnitsMaps(unitsMap, ast, power);
+        if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER) {
+            for (auto &units : unitsMap) {
+                units.second = units.second * powerValue;
+            }
 
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
-            unitsMultiplier *= power;
+            unitsMultiplier *= powerValue;
         } else {
-            unitsMultiplier /= power;
+            for (auto &units : unitsMap) {
+                units.second = units.second / powerValue;
+            }
+
+            unitsMultiplier /= powerValue;
         }
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
@@ -1653,27 +1637,6 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         }
 
         unitsMultiplier = 0.0 - unitsMultiplier;
-    }
-}
-
-void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast)
-{
-    // Analyse our equations' units and report any mismatch that we came across.
-
-    UnitsMap dummyUnitsMap;
-    double dummyUnitsMultiplier;
-    std::vector<std::string> issueDescriptions;
-
-    analyseEquationUnits(ast, dummyUnitsMap, dummyUnitsMultiplier, issueDescriptions);
-
-    for (const auto &issueDescription : issueDescriptions) {
-        auto issue = Issue::create();
-
-        issue->setDescription(issueDescription);
-        issue->setLevel(Issue::Level::MESSAGE);
-        issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
-
-        mAnalyser->addIssue(issue);
     }
 }
 
@@ -1830,7 +1793,21 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // is consistent.
 
         for (const auto &internalEquation : mInternalEquations) {
-            analyseEquationUnits(internalEquation->mAst);
+            UnitsMap unitsMap;
+            double unitsMultiplier;
+            std::vector<std::string> issueDescriptions;
+
+            analyseEquationUnits(internalEquation->mAst, unitsMap, unitsMultiplier, issueDescriptions);
+
+            for (const auto &issueDescription : issueDescriptions) {
+                auto issue = Issue::create();
+
+                issue->setDescription(issueDescription);
+                issue->setLevel(Issue::Level::MESSAGE);
+                issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
+
+                mAnalyser->addIssue(issue);
+            }
         }
     }
 
