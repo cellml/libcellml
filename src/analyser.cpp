@@ -332,7 +332,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
  * The private implementation for the Analyser class.
  */
 using AstUnitsMap = std::map<AnalyserEquationAstPtr, UnitsWeakPtr>;
-using IssueDescriptions = std::vector<std::string>;
+using Strings = std::vector<std::string>;
 using UnitsMap = std::map<std::string, double>;
 
 struct Analyser::AnalyserImpl
@@ -403,7 +403,7 @@ struct Analyser::AnalyserImpl
     std::string expressionInformation(const AnalyserEquationAstPtr &ast);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                               UnitsMap &unitsMap, double &unitsMultiplier,
-                              IssueDescriptions &issueDescriptions);
+                              Strings &issueDescriptions);
 
     double scalingFactor(const VariablePtr &variable);
 
@@ -1448,7 +1448,7 @@ std::string Analyser::AnalyserImpl::expressionInformation(const AnalyserEquation
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                                                   UnitsMap &unitsMap,
                                                   double &unitsMultiplier,
-                                                  IssueDescriptions &issueDescriptions)
+                                                  Strings &issueDescriptions)
 {
     // Make sure that we have an AST to analyse.
 
@@ -1796,7 +1796,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         for (const auto &internalEquation : mInternalEquations) {
             UnitsMap unitsMap;
             double unitsMultiplier;
-            IssueDescriptions issueDescriptions;
+            Strings issueDescriptions;
 
             analyseEquationUnits(internalEquation->mAst, unitsMap, unitsMultiplier, issueDescriptions);
 
