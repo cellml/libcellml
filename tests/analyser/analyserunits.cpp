@@ -57,7 +57,6 @@ TEST(AnalyserUnits, builtInUnits)
         "The units in 'watt = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^-2 x second^3.",
         "The units in 'weber = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^2.",
     };
-
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -168,7 +167,6 @@ TEST(AnalyserUnits, ci)
         "The units in 'c = cCst' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
         "The units in 'd = dCst' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
-
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -207,7 +205,6 @@ TEST(AnalyserUnits, cn)
         "The units in 'g = 13.0e5' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
         "The units in 'h = 15.0e7' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
     };
-
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -255,7 +252,6 @@ TEST(AnalyserUnits, piecewise)
         "The units in 'c > 27.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
         "The units in 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatchs are dog^-1, dove^-1 and frog^-1.",
     };
-
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -298,7 +294,6 @@ TEST(AnalyserUnits, coverage)
     const std::vector<std::string> expectedIssues = {
         "The units in '1.0 = a' in component 'main' are not equivalent. The unit mismatch is second^1.",
     };
-
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
     };
