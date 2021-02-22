@@ -138,7 +138,7 @@ struct AnalyserInternalEquation
     size_t mOrder = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
-    std::vector<VariablePtr> mDependencies;
+    VariablePtrs mDependencies;
 
     AnalyserEquationAstPtr mAst;
 
@@ -332,6 +332,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
  * The private implementation for the Analyser class.
  */
 using AstUnitsMap = std::map<AnalyserEquationAstPtr, UnitsWeakPtr>;
+using IssueDescriptions = std::vector<std::string>;
 using UnitsMap = std::map<std::string, double>;
 
 struct Analyser::AnalyserImpl
@@ -379,8 +380,8 @@ struct Analyser::AnalyserImpl
     void analyseComponent(const ComponentPtr &component);
 
     void doEquivalentVariables(const VariablePtr &variable,
-                               std::vector<VariablePtr> &equivalentVariables) const;
-    std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable) const;
+                               VariablePtrs &equivalentVariables) const;
+    VariablePtrs equivalentVariables(const VariablePtr &variable) const;
 
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
@@ -402,7 +403,7 @@ struct Analyser::AnalyserImpl
     std::string expressionInformation(const AnalyserEquationAstPtr &ast);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                               UnitsMap &unitsMap, double &unitsMultiplier,
-                              std::vector<std::string> &issueDescriptions);
+                              IssueDescriptions &issueDescriptions);
 
     double scalingFactor(const VariablePtr &variable);
 
@@ -1044,7 +1045,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
 }
 
 void Analyser::AnalyserImpl::doEquivalentVariables(const VariablePtr &variable,
-                                                   std::vector<VariablePtr> &equivalentVariables) const
+                                                   VariablePtrs &equivalentVariables) const
 {
     for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
         auto equivalentVariable = variable->equivalentVariable(i);
@@ -1057,9 +1058,9 @@ void Analyser::AnalyserImpl::doEquivalentVariables(const VariablePtr &variable,
     }
 }
 
-std::vector<VariablePtr> Analyser::AnalyserImpl::equivalentVariables(const VariablePtr &variable) const
+VariablePtrs Analyser::AnalyserImpl::equivalentVariables(const VariablePtr &variable) const
 {
-    std::vector<VariablePtr> res = {variable};
+    VariablePtrs res = {variable};
 
     doEquivalentVariables(variable, res);
 
@@ -1447,7 +1448,7 @@ std::string Analyser::AnalyserImpl::expressionInformation(const AnalyserEquation
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                                                   UnitsMap &unitsMap,
                                                   double &unitsMultiplier,
-                                                  std::vector<std::string> &issueDescriptions)
+                                                  IssueDescriptions &issueDescriptions)
 {
     // Make sure that we have an AST to analyse.
 
@@ -1795,7 +1796,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         for (const auto &internalEquation : mInternalEquations) {
             UnitsMap unitsMap;
             double unitsMultiplier;
-            std::vector<std::string> issueDescriptions;
+            IssueDescriptions issueDescriptions;
 
             analyseEquationUnits(internalEquation->mAst, unitsMap, unitsMultiplier, issueDescriptions);
 
@@ -1920,7 +1921,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         // Mark some variables as external variables, if needed.
 
-        std::map<AnalyserInternalVariablePtr, std::vector<VariablePtr>> externalVariables;
+        std::map<AnalyserInternalVariablePtr, VariablePtrs> externalVariables;
 
         if (!mExternalVariables.empty()) {
             // Check whether an external variable belongs to the model being
@@ -1928,7 +1929,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             // than once through equivalence or is (equivalent to) the variable
             // of integration.
 
-            std::map<VariablePtr, std::vector<VariablePtr>> primaryExternalVariables;
+            std::map<VariablePtr, VariablePtrs> primaryExternalVariables;
 
             for (const auto &externalVariable : mExternalVariables) {
                 auto variable = externalVariable->variable();
@@ -1953,7 +1954,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         if (((mModel->mPimpl->mVoi == nullptr)
                              || (internalVariable->mVariable != mModel->mPimpl->mVoi->variable()))
                             && (externalVariables.count(internalVariable) == 0)) {
-                            std::vector<VariablePtr> dependencies;
+                            VariablePtrs dependencies;
 
                             for (const auto &dependency : externalVariable->dependencies()) {
                                 dependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
@@ -2155,9 +2156,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 //       for which there is no equation, hence we need to test
                 //       equationDependency against nullptr.
 
-                std::vector<VariablePtr> variableDependencies = (type == AnalyserEquation::Type::EXTERNAL) ?
-                                                                    externalVariables.find(internalEquation->mVariable)->second :
-                                                                    internalEquation->mDependencies;
+                VariablePtrs variableDependencies = (type == AnalyserEquation::Type::EXTERNAL) ?
+                                                        externalVariables.find(internalEquation->mVariable)->second :
+                                                        internalEquation->mDependencies;
                 std::vector<AnalyserEquationPtr> equationDependencies;
 
                 for (const auto &variableDependency : variableDependencies) {
