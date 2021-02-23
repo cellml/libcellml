@@ -1537,6 +1537,8 @@ bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
         }
     }
 
+    std::sort(unitsMismatchesInformation.begin(), unitsMismatchesInformation.end());
+
     return unitsMismatchesInformation.empty();
 }
 
@@ -1773,8 +1775,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PLUS)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PIECEWISE)) {
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)) {
         Strings unitsMapsMismatchesInformation;
         Strings unitsMultipliersMismatchesInformation;
         bool unitsMapsMismatches = !rightUnitsMaps.empty()
@@ -1827,6 +1828,13 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             issueDescriptions.push_back(issueDescription);
         }
+    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::PIECEWISE) {
+        unitsMaps.insert(std::end(unitsMaps),
+                         std::begin(rightUnitsMaps),
+                         std::end(rightUnitsMaps));
+        unitsMultipliers.insert(std::end(unitsMultipliers),
+                                std::begin(rightUnitsMultipliers),
+                                std::end(rightUnitsMultipliers));
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, 1);
         unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, 1);
