@@ -1775,9 +1775,12 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                 }
 
                 issueDescription += "have ";
-                issueDescription += (unitsMultipliersMismatchesInformation.size() == 1) ?
-                                        "a multiplier mismatch" :
-                                        "multiplier mismatches";
+
+                if (unitsMultipliersMismatchesInformation.size() == 1) {
+                    issueDescription += "a multiplier mismatch";
+                } else {
+                    issueDescription += "multiplier mismatches";
+                }
             }
 
             issueDescription += ". ";
