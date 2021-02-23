@@ -247,10 +247,10 @@ TEST(AnalyserUnits, piecewise)
     const std::vector<std::string> expectedIssues = {
         "The units in 'b > 13.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
         "The units in 'b > 17.0' in equation 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatchs are ampere^-1, mole^-1 and second^-1.",
+        "The units in 'b = (b > 13.0)?11.0:(b > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatches are ampere^-1, mole^-1 and second^-1.",
         "The units in 'c > 23.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
         "The units in 'c > 27.0' in equation 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
-        "The units in 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatchs are dog^-1, dove^-1 and frog^-1.",
+        "The units in 'c = (c > 23.0)?21.0:(c > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatches are dog^-1, dove^-1 and frog^-1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
