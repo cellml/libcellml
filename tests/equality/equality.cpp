@@ -186,8 +186,8 @@ TEST(Equality, unitsEqualAllTestedConditionsVariant1)
     u1->setSourceUnits(is, "ampere");
     u2->setSourceUnits(is, "ampere");
 
-    u1->addUnit("meter");
-    u2->addUnit("meter");
+    u1->addUnit("banana");
+    u2->addUnit("banana");
 
     EXPECT_TRUE(u1->equal(u2));
     EXPECT_TRUE(u2->equal(u1));
@@ -221,7 +221,7 @@ TEST(Equality, unitsNotEqualDifferingNumberOfUnits)
     libcellml::ImportSourcePtr is = libcellml::ImportSource::create();
 
     u1->addUnit("second", 1.0, "second_id");
-    u1->addUnit("meter", -1.0, "meter_id");
+    u1->addUnit("metre", -1.0, "metre_id");
     u2->addUnit("second", 1.0, "second_id");
 
     EXPECT_FALSE(u1->equal(u2));
@@ -248,8 +248,8 @@ TEST(Equality, unitsEqualDifferingOrderOfUnits)
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
 
     u1->addUnit("second", 1.0, "unit_id");
-    u1->addUnit("meter", 3.0);
-    u2->addUnit("meter", 3.0);
+    u1->addUnit("metre", 3.0);
+    u2->addUnit("metre", 3.0);
     u2->addUnit("second", 1.0, "unit_id");
 
     EXPECT_TRUE(u1->equal(u2));
@@ -262,7 +262,7 @@ TEST(Equality, unitsEqualDifferingOrderOfUnitsManyUnit)
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
 
     u1->addUnit("second", 1.0, "unit_id");
-    u1->addUnit("meter", 3.0);
+    u1->addUnit("metre", 3.0);
     u1->addUnit("apple", 1.0);
     u1->addUnit("jedi", "yota", -2.0);
     u1->addUnit("flip");
@@ -271,7 +271,7 @@ TEST(Equality, unitsEqualDifferingOrderOfUnitsManyUnit)
     u2->addUnit("jedi", "yota", -2.0);
     u2->addUnit("second", 1.0, "unit_id");
     u2->addUnit("lumen");
-    u2->addUnit("meter", 3.0);
+    u2->addUnit("metre", 3.0);
     u2->addUnit("apple", 1.0);
     u2->addUnit("flip");
 
@@ -284,10 +284,10 @@ TEST(Equality, unitsNotEqualDifferingOrderOfUnits)
     libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
 
-    u1->addUnit("meter", 3.0);
+    u1->addUnit("metre", 3.0);
     u1->addUnit("second", 1.0, "unit_id");
     u2->addUnit("second", 2.0, "unit_id");
-    u2->addUnit("meter", 3.0);
+    u2->addUnit("metre", 3.0);
 
     EXPECT_FALSE(u1->equal(u2));
     EXPECT_FALSE(u2->equal(u1));
