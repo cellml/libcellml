@@ -222,7 +222,7 @@ bool Variable::doEqual(const EntityPtr &other) const
             if (mPimpl->mUnits == nullptr && variable->units() != nullptr) {
                 equal = false;
             } else if (mPimpl->mUnits != nullptr) {
-                equal = mPimpl->mUnits->equal(variable->units());
+                equal = mPimpl->mUnits->equals(variable->units());
             }
             return equal;
         }

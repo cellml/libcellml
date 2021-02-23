@@ -24,7 +24,7 @@ TEST(Equality, invalidInput)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create("variable");
 
-    EXPECT_FALSE(v1->equal(nullptr));
+    EXPECT_FALSE(v1->equals(nullptr));
 }
 
 TEST(Equality, variableEqualByNameOnly)
@@ -33,8 +33,8 @@ TEST(Equality, variableEqualByNameOnly)
     libcellml::VariablePtr v2 = libcellml::Variable::create("variable");
 
     EXPECT_NE(v1, v2);
-    EXPECT_TRUE(v1->equal(v2));
-    EXPECT_TRUE(v2->equal(v1));
+    EXPECT_TRUE(v1->equals(v2));
+    EXPECT_TRUE(v2->equals(v1));
 }
 
 TEST(Equality, variableNotEqualByNameOnly)
@@ -43,8 +43,8 @@ TEST(Equality, variableNotEqualByNameOnly)
     libcellml::VariablePtr v2 = libcellml::Variable::create("variableB");
 
     EXPECT_NE(v1, v2);
-    EXPECT_FALSE(v1->equal(v2));
-    EXPECT_FALSE(v2->equal(v1));
+    EXPECT_FALSE(v1->equals(v2));
+    EXPECT_FALSE(v2->equals(v1));
 }
 
 TEST(Equality, variableNotEqualToUnits)
@@ -52,8 +52,8 @@ TEST(Equality, variableNotEqualToUnits)
     libcellml::VariablePtr v1 = libcellml::Variable::create("variable");
     libcellml::UnitsPtr u1 = libcellml::Units::create("variable");
 
-    EXPECT_FALSE(v1->equal(u1));
-    EXPECT_FALSE(v1->equal(u1));
+    EXPECT_FALSE(v1->equals(u1));
+    EXPECT_FALSE(v1->equals(u1));
 }
 
 TEST(Equality, variableEqualById)
@@ -64,8 +64,8 @@ TEST(Equality, variableEqualById)
     v1->setId("lefisjeij");
     v2->setId("lefisjeij");
 
-    EXPECT_TRUE(v1->equal(v2));
-    EXPECT_TRUE(v2->equal(v1));
+    EXPECT_TRUE(v1->equals(v2));
+    EXPECT_TRUE(v2->equals(v1));
 }
 
 TEST(Equality, variableNotEqualById)
@@ -76,8 +76,8 @@ TEST(Equality, variableNotEqualById)
     v1->setId("eijei3009");
     v2->setId("lefisjeij");
 
-    EXPECT_FALSE(v1->equal(v2));
-    EXPECT_FALSE(v2->equal(v1));
+    EXPECT_FALSE(v1->equals(v2));
+    EXPECT_FALSE(v2->equals(v1));
 }
 
 TEST(Equality, variableEqualAllTestedConditionsVariant1)
@@ -97,8 +97,8 @@ TEST(Equality, variableEqualAllTestedConditionsVariant1)
     v1->setUnits("ampere");
     v2->setUnits("ampere");
 
-    EXPECT_TRUE(v1->equal(v2));
-    EXPECT_TRUE(v2->equal(v1));
+    EXPECT_TRUE(v1->equals(v2));
+    EXPECT_TRUE(v2->equals(v1));
 }
 
 TEST(Equality, variableEqualAllTestedConditionsVariant2)
@@ -121,8 +121,8 @@ TEST(Equality, variableEqualAllTestedConditionsVariant2)
     v1->setUnits(u1);
     v2->setUnits(u2);
 
-    EXPECT_TRUE(v1->equal(v2));
-    EXPECT_TRUE(v2->equal(v1));
+    EXPECT_TRUE(v1->equals(v2));
+    EXPECT_TRUE(v2->equals(v1));
 }
 
 TEST(Equality, variableNotEqualByUnits)
@@ -134,8 +134,8 @@ TEST(Equality, variableNotEqualByUnits)
 
     v1->setUnits(u1);
 
-    EXPECT_FALSE(v1->equal(v2));
-    EXPECT_FALSE(v2->equal(v1));
+    EXPECT_FALSE(v1->equals(v2));
+    EXPECT_FALSE(v2->equals(v1));
 }
 
 TEST(Equality, variableNotEqualByUnitsOther)
@@ -147,8 +147,8 @@ TEST(Equality, variableNotEqualByUnitsOther)
 
     v2->setUnits(u2);
 
-    EXPECT_FALSE(v1->equal(v2));
-    EXPECT_FALSE(v2->equal(v1));
+    EXPECT_FALSE(v1->equals(v2));
+    EXPECT_FALSE(v2->equals(v1));
 }
 
 TEST(Equality, unitsEqualByNameOnly)
@@ -157,8 +157,8 @@ TEST(Equality, unitsEqualByNameOnly)
     libcellml::UnitsPtr u2 = libcellml::Units::create("units");
 
     EXPECT_NE(u1, u2);
-    EXPECT_TRUE(u1->equal(u2));
-    EXPECT_TRUE(u2->equal(u1));
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
     EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
 }
 
@@ -168,8 +168,8 @@ TEST(Equality, unitsNotEqualByNameOnly)
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsB");
 
     EXPECT_NE(u1, u2);
-    EXPECT_FALSE(u1->equal(u2));
-    EXPECT_FALSE(u2->equal(u1));
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
     EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
 }
 
@@ -189,8 +189,8 @@ TEST(Equality, unitsEqualAllTestedConditionsVariant1)
     u1->addUnit("banana");
     u2->addUnit("banana");
 
-    EXPECT_TRUE(u1->equal(u2));
-    EXPECT_TRUE(u2->equal(u1));
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
 }
 
 TEST(Equality, unitsEqualAllTestedConditionsVariant2)
@@ -209,8 +209,8 @@ TEST(Equality, unitsEqualAllTestedConditionsVariant2)
     u1->addUnit("second", 1.0, "unit_id");
     u2->addUnit("second", 1.0, "unit_id");
 
-    EXPECT_TRUE(u1->equal(u2));
-    EXPECT_TRUE(u2->equal(u1));
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
 }
 
 TEST(Equality, unitsNotEqualDifferingNumberOfUnits)
@@ -224,8 +224,8 @@ TEST(Equality, unitsNotEqualDifferingNumberOfUnits)
     u1->addUnit("metre", -1.0, "metre_id");
     u2->addUnit("second", 1.0, "second_id");
 
-    EXPECT_FALSE(u1->equal(u2));
-    EXPECT_FALSE(u2->equal(u1));
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
 }
 
 TEST(Equality, unitsNotEqualDifferingUnitsBasic)
@@ -238,8 +238,8 @@ TEST(Equality, unitsNotEqualDifferingUnitsBasic)
     u1->addUnit("second", 1.0, "unit_id");
     u2->addUnit("second", 2.0, "unit_id");
 
-    EXPECT_FALSE(u1->equal(u2));
-    EXPECT_FALSE(u2->equal(u1));
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
 }
 
 TEST(Equality, unitsEqualDifferingOrderOfUnits)
@@ -252,8 +252,8 @@ TEST(Equality, unitsEqualDifferingOrderOfUnits)
     u2->addUnit("metre", 3.0);
     u2->addUnit("second", 1.0, "unit_id");
 
-    EXPECT_TRUE(u1->equal(u2));
-    EXPECT_TRUE(u2->equal(u1));
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
 }
 
 TEST(Equality, unitsEqualDifferingOrderOfUnitsManyUnit)
@@ -275,8 +275,8 @@ TEST(Equality, unitsEqualDifferingOrderOfUnitsManyUnit)
     u2->addUnit("apple", 1.0);
     u2->addUnit("flip");
 
-    EXPECT_TRUE(u1->equal(u2));
-    EXPECT_TRUE(u2->equal(u1));
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
 }
 
 TEST(Equality, unitsNotEqualDifferingOrderOfUnits)
@@ -289,8 +289,8 @@ TEST(Equality, unitsNotEqualDifferingOrderOfUnits)
     u2->addUnit("second", 2.0, "unit_id");
     u2->addUnit("metre", 3.0);
 
-    EXPECT_FALSE(u1->equal(u2));
-    EXPECT_FALSE(u2->equal(u1));
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
 }
 
 TEST(Equality, unitsEqualPrecision1)
@@ -301,8 +301,8 @@ TEST(Equality, unitsEqualPrecision1)
     u1->addUnit("second", 1.0);
     u2->addUnit("second", 1.0 + std::numeric_limits<double>::epsilon());
 
-    EXPECT_TRUE(u1->equal(u2));
-    EXPECT_TRUE(u2->equal(u1));
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
 }
 
 TEST(Equality, unitsEqualPrecision2)
@@ -313,8 +313,8 @@ TEST(Equality, unitsEqualPrecision2)
     u1->addUnit("second", 1.0);
     u2->addUnit("second", 1.0 + 2 * std::numeric_limits<double>::epsilon());
 
-    EXPECT_FALSE(u1->equal(u2));
-    EXPECT_FALSE(u2->equal(u1));
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
 }
 
 TEST(Equality, unitsEqualPrecision3)
@@ -325,8 +325,8 @@ TEST(Equality, unitsEqualPrecision3)
     u1->addUnit("second", 2.000000000000000444089209850062616169452667236328125);
     u2->addUnit("second", 2.0);
 
-    EXPECT_TRUE(u1->equal(u2));
-    EXPECT_TRUE(u2->equal(u1));
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
 }
 
 TEST(Equality, unitsEqualPrecision4)
@@ -337,8 +337,8 @@ TEST(Equality, unitsEqualPrecision4)
     u1->addUnit("second", 238487722399.29384);
     u2->addUnit("second", 238487722399.29383);
 
-    EXPECT_TRUE(u1->equal(u2));
-    EXPECT_TRUE(u2->equal(u1));
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
 }
 
 TEST(Equality, unitsNotEqualExponent)
@@ -349,8 +349,8 @@ TEST(Equality, unitsNotEqualExponent)
     u1->addUnit("second", -3.0);
     u2->addUnit("second", 2.0);
 
-    EXPECT_FALSE(u1->equal(u2));
-    EXPECT_FALSE(u2->equal(u1));
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
 }
 
 TEST(Equality, unitsNotEqualInfinity)
@@ -361,8 +361,8 @@ TEST(Equality, unitsNotEqualInfinity)
     u1->addUnit("second", std::numeric_limits<double>::infinity());
     u2->addUnit("second", 3.0);
 
-    EXPECT_FALSE(u1->equal(u2));
-    EXPECT_FALSE(u2->equal(u1));
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
 }
 
 TEST(Equality, unitsNotEqualNaN)
@@ -373,8 +373,8 @@ TEST(Equality, unitsNotEqualNaN)
     u1->addUnit("second", std::numeric_limits<double>::quiet_NaN());
     u2->addUnit("second", 2.0);
 
-    EXPECT_FALSE(u1->equal(u2));
-    EXPECT_FALSE(u2->equal(u1));
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
 }
 
 TEST(Equality, resetEqual)
@@ -409,8 +409,8 @@ TEST(Equality, resetEqual)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_TRUE(r1->equal(r2));
-    EXPECT_TRUE(r2->equal(r1));
+    EXPECT_TRUE(r1->equals(r2));
+    EXPECT_TRUE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByOrder)
@@ -445,8 +445,8 @@ TEST(Equality, resetNotEqualByOrder)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByResetValue)
@@ -481,8 +481,8 @@ TEST(Equality, resetNotEqualByResetValue)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByResetValueId)
@@ -517,8 +517,8 @@ TEST(Equality, resetNotEqualByResetValueId)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByTestValue)
@@ -553,8 +553,8 @@ TEST(Equality, resetNotEqualByTestValue)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByTestValueId)
@@ -589,8 +589,8 @@ TEST(Equality, resetNotEqualByTestValueId)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByTestVariable)
@@ -625,8 +625,8 @@ TEST(Equality, resetNotEqualByTestVariable)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByVariable)
@@ -661,8 +661,8 @@ TEST(Equality, resetNotEqualByVariable)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByNullTestVariable)
@@ -696,8 +696,8 @@ TEST(Equality, resetNotEqualByNullTestVariable)
     r1->setVariable(v1);
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, resetNotEqualByNullVariable)
@@ -731,8 +731,8 @@ TEST(Equality, resetNotEqualByNullVariable)
 
     r2->setVariable(v2);
 
-    EXPECT_FALSE(r1->equal(r2));
-    EXPECT_FALSE(r2->equal(r1));
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
 }
 
 TEST(Equality, componentEqual)
@@ -761,8 +761,8 @@ TEST(Equality, componentEqual)
     c1->addReset(r1);
     c2->addReset(r2);
 
-    EXPECT_TRUE(c1->equal(c2));
-    EXPECT_TRUE(c2->equal(c1));
+    EXPECT_TRUE(c1->equals(c2));
+    EXPECT_TRUE(c2->equals(c1));
 }
 
 TEST(Equality, componentEqualDifferentOrderResets)
@@ -792,8 +792,8 @@ TEST(Equality, componentEqualDifferentOrderResets)
     c2->addReset(r6);
     c2->addReset(r5);
 
-    EXPECT_TRUE(c1->equal(c2));
-    EXPECT_TRUE(c2->equal(c1));
+    EXPECT_TRUE(c1->equals(c2));
+    EXPECT_TRUE(c2->equals(c1));
 }
 
 TEST(Equality, componentEqualDifferentOrderVariables)
@@ -816,8 +816,8 @@ TEST(Equality, componentEqualDifferentOrderVariables)
     c2->addVariable(v4);
     c2->addVariable(v5);
 
-    EXPECT_TRUE(c1->equal(c2));
-    EXPECT_TRUE(c2->equal(c1));
+    EXPECT_TRUE(c1->equals(c2));
+    EXPECT_TRUE(c2->equals(c1));
 }
 
 TEST(Equality, componentEqualDifferentOrderComponents)
@@ -840,8 +840,8 @@ TEST(Equality, componentEqualDifferentOrderComponents)
     c2->addComponent(cChild6);
     c2->addComponent(cChild4);
 
-    EXPECT_TRUE(c1->equal(c2));
-    EXPECT_TRUE(c2->equal(c1));
+    EXPECT_TRUE(c1->equals(c2));
+    EXPECT_TRUE(c2->equals(c1));
 }
 
 TEST(Equality, componentEqualWithComponentHierarchy)
@@ -861,8 +861,8 @@ TEST(Equality, componentEqualWithComponentHierarchy)
     cChild1->addComponent(cChild11);
     cChild2->addComponent(cChild21);
 
-    EXPECT_TRUE(c1->equal(c2));
-    EXPECT_TRUE(c2->equal(c1));
+    EXPECT_TRUE(c1->equals(c2));
+    EXPECT_TRUE(c2->equals(c1));
 }
 
 TEST(Equality, componentNotEqualByReset)
@@ -879,8 +879,8 @@ TEST(Equality, componentNotEqualByReset)
     c1->addReset(r1);
     c2->addReset(r2);
 
-    EXPECT_FALSE(c1->equal(c2));
-    EXPECT_FALSE(c2->equal(c1));
+    EXPECT_FALSE(c1->equals(c2));
+    EXPECT_FALSE(c2->equals(c1));
 }
 
 TEST(Equality, componentNotEqualByComponent)
@@ -894,8 +894,8 @@ TEST(Equality, componentNotEqualByComponent)
     c1->addComponent(cChild1);
     c2->addComponent(cChild2);
 
-    EXPECT_FALSE(c1->equal(c2));
-    EXPECT_FALSE(c2->equal(c1));
+    EXPECT_FALSE(c1->equals(c2));
+    EXPECT_FALSE(c2->equals(c1));
 }
 
 TEST(Equality, componentNotEqualByVariable)
@@ -909,8 +909,8 @@ TEST(Equality, componentNotEqualByVariable)
     c1->addVariable(v1);
     c2->addVariable(v2);
 
-    EXPECT_FALSE(c1->equal(c2));
-    EXPECT_FALSE(c2->equal(c1));
+    EXPECT_FALSE(c1->equals(c2));
+    EXPECT_FALSE(c2->equals(c1));
 }
 
 TEST(Equality, importSourceEqual)
@@ -921,8 +921,8 @@ TEST(Equality, importSourceEqual)
     is1->setUrl("great_url");
     is2->setUrl("great_url");
 
-    EXPECT_TRUE(is1->equal(is2));
-    EXPECT_TRUE(is2->equal(is1));
+    EXPECT_TRUE(is1->equals(is2));
+    EXPECT_TRUE(is2->equals(is1));
 }
 
 TEST(Equality, importSourceNotEqual)
@@ -933,8 +933,8 @@ TEST(Equality, importSourceNotEqual)
     is1->setUrl("another_great_url");
     is2->setUrl("great_url");
 
-    EXPECT_FALSE(is1->equal(is2));
-    EXPECT_FALSE(is2->equal(is1));
+    EXPECT_FALSE(is1->equals(is2));
+    EXPECT_FALSE(is2->equals(is1));
 }
 
 TEST(Equality, importSourceNotEqualInvalidInput)
@@ -943,7 +943,7 @@ TEST(Equality, importSourceNotEqualInvalidInput)
 
     is1->setUrl("a_great_url");
 
-    EXPECT_FALSE(is1->equal(nullptr));
+    EXPECT_FALSE(is1->equals(nullptr));
 }
 
 TEST(Equality, modelEqual)
@@ -963,15 +963,15 @@ TEST(Equality, modelEqual)
     m1->addUnits(u1);
     m2->addUnits(u2);
 
-    EXPECT_TRUE(m1->equal(m2));
-    EXPECT_TRUE(m2->equal(m1));
+    EXPECT_TRUE(m1->equals(m2));
+    EXPECT_TRUE(m2->equals(m1));
 }
 
 TEST(Equality, modelNotEqualInvalidInput)
 {
     libcellml::ModelPtr m1 = libcellml::Model::create();
 
-    EXPECT_FALSE(m1->equal(nullptr));
+    EXPECT_FALSE(m1->equals(nullptr));
 }
 
 TEST(Equality, modelNotEqualByComponents)
@@ -985,8 +985,8 @@ TEST(Equality, modelNotEqualByComponents)
     m1->addComponent(c1);
     m2->addComponent(c2);
 
-    EXPECT_FALSE(m1->equal(m2));
-    EXPECT_FALSE(m2->equal(m1));
+    EXPECT_FALSE(m1->equals(m2));
+    EXPECT_FALSE(m2->equals(m1));
 }
 
 TEST(Equality, modelNotEqualByUnits)
@@ -1000,8 +1000,8 @@ TEST(Equality, modelNotEqualByUnits)
     m1->addUnits(u1);
     m2->addUnits(u2);
 
-    EXPECT_FALSE(m1->equal(m2));
-    EXPECT_FALSE(m2->equal(m1));
+    EXPECT_FALSE(m1->equals(m2));
+    EXPECT_FALSE(m2->equals(m1));
 }
 
 TEST(Equality, modelHH)
@@ -1013,8 +1013,8 @@ TEST(Equality, modelHH)
 
     auto clonedModel = model->clone();
 
-    EXPECT_TRUE(model->equal(clonedModel));
-    EXPECT_TRUE(clonedModel->equal(model));
+    EXPECT_TRUE(model->equals(clonedModel));
+    EXPECT_TRUE(clonedModel->equals(model));
 }
 
 TEST(Equality, modelHHWithDifference)
@@ -1029,6 +1029,6 @@ TEST(Equality, modelHHWithDifference)
     auto v = clonedModel->component(3)->component(0)->variable(3);
     v->setUnits("millisecond");
 
-    EXPECT_FALSE(model->equal(clonedModel));
-    EXPECT_FALSE(clonedModel->equal(model));
+    EXPECT_FALSE(model->equals(clonedModel));
+    EXPECT_FALSE(clonedModel->equals(model));
 }

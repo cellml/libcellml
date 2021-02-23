@@ -125,11 +125,11 @@ public:
      * @param other The entity to test against.
      * @return @c true if this entity is equal to the other entity, @c false otherwise.
      */
-    bool equal(const EntityPtr &other) const;
+    bool equals(const EntityPtr &other) const;
 
 protected:
     Entity(); /**< Constructor, @private. */
-    virtual bool doEqual(const EntityPtr &other) const; /**< Virtual implementation method for equal, @private. */
+    virtual bool doEqual(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
 
 private:
     struct EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
