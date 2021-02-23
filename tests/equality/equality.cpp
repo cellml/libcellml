@@ -1019,3 +1019,13 @@ TEST(Equality, modelHHWithDifference)
     EXPECT_FALSE(model->equals(clonedModel));
     EXPECT_FALSE(clonedModel->equals(model));
 }
+
+TEST(Equality, parseMath)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("deriv_approx_sin.xml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    Debug() << model->component(0)->math();
+}
