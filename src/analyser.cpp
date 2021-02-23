@@ -334,6 +334,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 using AstUnitsMap = std::map<AnalyserEquationAstPtr, UnitsWeakPtr>;
 using Strings = std::vector<std::string>;
 using UnitsMap = std::map<std::string, double>;
+using UnitsMaps = std::vector<UnitsMap>;
+using UnitsMultipliers = std::vector<double>;
 
 struct Analyser::AnalyserImpl
 {
@@ -386,23 +388,60 @@ struct Analyser::AnalyserImpl
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
     void updateUnitsMap(const ModelPtr &model, const std::string &unitsName,
-                        UnitsMap &unitsMap, double unitsExponent = 1.0,
-                        double unitsMultiplier = 0.0);
-    UnitsMap addUnitsMaps(const UnitsMap &firstUnitsMap,
-                          const UnitsMap &secondUnitsMap, int sign);
-    std::string unitMismatchInformation(const UnitsMap &unitsMap);
+                        UnitsMap &unitsMap, double unitsExponent,
+                        double unitsMultiplier);
+    void updateUnitsMaps(const ModelPtr &model, const std::string &unitsName,
+                         UnitsMaps &unitsMaps, double unitsExponent = 1.0,
+                         double unitsMultiplier = 0.0);
+    UnitsMap multiplyDivideUnitsMaps(const UnitsMap &firstUnitsMap,
+                                     const UnitsMap &secondUnitsMap, int op);
+    UnitsMaps multiplyDivideUnitsMaps(const UnitsMaps &firstUnitsMaps,
+                                      const UnitsMaps &secondUnitsMaps, int op);
+    UnitsMaps multiplyDivideUnitsMaps(const UnitsMaps &unitsMaps,
+                                      double factor, int op);
+    double multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
+                                          double secondUnitsMultiplier, int op);
+    UnitsMultipliers multiplyDivideUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
+                                                    const UnitsMultipliers &secondUnitsMultipliers,
+                                                    int op);
+    UnitsMultipliers multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
+                                                    const UnitsMultipliers &secondUnitsMultipliers,
+                                                    int op);
+    UnitsMultipliers powerRootUnitsMultipliers(const UnitsMultipliers &unitsMultipliers,
+                                               double factor,
+                                               int op);
+    std::string unitsMismatchInformation(const UnitsMap &unitsMap);
+    Strings unitsMismatchesInformation(const UnitsMaps &unitsMaps);
     bool areSameUnitsMaps(const UnitsMap &firstUnitsMap,
                           const UnitsMap &secondUnitsMap,
-                          std::string &unitMismatchInformation);
-    void updateMultiplier(const ModelPtr &model, const std::string &unitsName,
-                          double &newUnitsMultiplier,
-                          double unitsExponent = 1.0,
-                          double unitsMultiplier = 0.0);
+                          std::string &unitsMismatchInformation);
+    bool areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
+                          const UnitsMaps &secondUnitsMaps,
+                          Strings &unitsMismatchesInformation);
+    bool areSameUnitsMultipliers(double firstUnitsMultiplier,
+                                 double secondUnitsMultiplier,
+                                 std::string &unitsMismatchInformation);
+    bool areSameUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
+                                 const UnitsMultipliers &secondUnitsMultipliers,
+                                 Strings &unitsMismatchesInformation);
+    void updateUnitsMultiplier(const ModelPtr &model,
+                               const std::string &unitsName,
+                               double &newUnitsMultiplier,
+                               double unitsExponent,
+                               double unitsMultiplier);
+    void updateUnitsMultipliers(const ModelPtr &model,
+                                const std::string &unitsName,
+                                UnitsMultipliers &newUnitsMultipliers,
+                                double unitsExponent = 1.0,
+                                double unitsMultiplier = 0.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
     double powerValue(const AnalyserEquationAstPtr &ast);
     std::string expressionInformation(const AnalyserEquationAstPtr &ast);
+    void defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
+                                        UnitsMultipliers &unitsMultipliers);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
-                              UnitsMap &unitsMap, double &unitsMultiplier,
+                              UnitsMaps &unitsMaps,
+                              UnitsMultipliers &unitsMultipliers,
                               Strings &issueDescriptions);
 
     double scalingFactor(const VariablePtr &variable);
@@ -1195,6 +1234,8 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                                             double unitsExponent,
                                             double unitsMultiplier)
 {
+    // Update the given units map using the given information.
+
     if (isStandardUnitName(unitsName)) {
         for (const auto &iter : standardUnitsList.at(unitsName)) {
             if (unitsMap.find(iter.first) == unitsMap.end()) {
@@ -1242,12 +1283,25 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
     }
 }
 
-UnitsMap Analyser::AnalyserImpl::addUnitsMaps(const UnitsMap &firstUnitsMap,
-                                              const UnitsMap &secondUnitsMap,
-                                              int sign)
+void Analyser::AnalyserImpl::updateUnitsMaps(const ModelPtr &model,
+                                             const std::string &unitsName,
+                                             UnitsMaps &unitsMaps,
+                                             double unitsExponent,
+                                             double unitsMultiplier)
 {
-    // Add the given unit maps together, following a multiplication (sign = 1)
-    // or division (sign = -1).
+    // Update the given units maps using the given information.
+
+    for (auto &unitsMap : unitsMaps) {
+        updateUnitsMap(model, unitsName, unitsMap, unitsExponent, unitsMultiplier);
+    }
+}
+
+UnitsMap Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMap &firstUnitsMap,
+                                                         const UnitsMap &secondUnitsMap,
+                                                         int op)
+{
+    // Multiply/divide the given units maps together, following a multiplication
+    // (op = 1) or a division (op = -1).
 
     UnitsMap res = firstUnitsMap;
 
@@ -1255,9 +1309,9 @@ UnitsMap Analyser::AnalyserImpl::addUnitsMaps(const UnitsMap &firstUnitsMap,
         auto it = res.find(units.first);
 
         if (it == res.end()) {
-            res[units.first] = sign * units.second;
+            res[units.first] = op * units.second;
         } else {
-            it->second += sign * units.second;
+            it->second += op * units.second;
 
             if (areEqual(it->second, 0.0)) {
                 // The units has now an exponent value of zero, so no need to
@@ -1271,14 +1325,116 @@ UnitsMap Analyser::AnalyserImpl::addUnitsMaps(const UnitsMap &firstUnitsMap,
     return res;
 }
 
-std::string Analyser::AnalyserImpl::unitMismatchInformation(const UnitsMap &unitsMap)
+UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &firstUnitsMaps,
+                                                          const UnitsMaps &secondUnitsMaps,
+                                                          int op)
+{
+    // Multiply/divide the given units maps together, following a multiplication
+    // (op = 1) or a division (op = -1).
+
+    UnitsMaps res;
+
+    for (const auto &firstUnitsMap : firstUnitsMaps) {
+        for (const auto &secondUnitsMap : secondUnitsMaps) {
+            res.push_back(multiplyDivideUnitsMaps(firstUnitsMap, secondUnitsMap, op));
+        }
+    }
+
+    return res;
+}
+
+UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &unitsMaps,
+                                                          double factor, int op)
+{
+    // Multiply/divide the given units maps by the given factor, following a
+    // multiplication (op = 1) or a division (op = -1).
+
+    UnitsMaps res = unitsMaps;
+    double realFactor = (op == 1) ? factor : 1.0 / factor;
+
+    for (auto &unitsMap : res) {
+        for (auto &units : unitsMap) {
+            units.second = realFactor * units.second;
+        }
+    }
+
+    return res;
+}
+
+double Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
+                                                              double secondUnitsMultiplier,
+                                                              int op)
+{
+    // Multiply/divide the given units multipliers together, following a
+    // multiplication (op = 1) or a division (op = -1).
+
+    return firstUnitsMultiplier + op * secondUnitsMultiplier;
+}
+
+UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
+                                                                        const UnitsMultipliers &secondUnitsMultipliers,
+                                                                        int op)
+{
+    // Multiply/divide the given units multipliers together, following a
+    // multiplication (op = 1) or a division (op = -1).
+
+    UnitsMultipliers res;
+
+    for (const auto &firstUnitsMultiplier : firstUnitsMultipliers) {
+        for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
+            res.push_back(multiplyDivideUnitsMultipliers(firstUnitsMultiplier,
+                                                         secondUnitsMultiplier,
+                                                         op));
+        }
+    }
+
+    return res;
+}
+
+UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
+                                                                        const UnitsMultipliers &secondUnitsMultipliers,
+                                                                        int op)
+{
+    // Multiply/divide the given units multipliers together, following a
+    // multiplication (op = 1) or a division (op = -1).
+
+    UnitsMultipliers res;
+
+    for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
+        res.push_back(multiplyDivideUnitsMultipliers(firstUnitsMultiplier,
+                                                     secondUnitsMultiplier,
+                                                     op));
+    }
+
+    return res;
+}
+
+UnitsMultipliers Analyser::AnalyserImpl::powerRootUnitsMultipliers(const UnitsMultipliers &unitsMultipliers,
+                                                                   double factor,
+                                                                   int op)
+{
+    // Power/root the given units multipliers to the given factor, following a
+    // power (op = 1) or a root (op = -1) operation.
+
+    UnitsMultipliers res;
+    double realFactor = (op == 1) ? factor : 1.0 / factor;
+
+    for (const auto &unitsMultiplier : unitsMultipliers) {
+        res.push_back(realFactor * unitsMultiplier);
+    }
+
+    return res;
+}
+
+std::string Analyser::AnalyserImpl::unitsMismatchInformation(const UnitsMap &unitsMap)
 {
     // Retrieve the unit mismatch information for the given units map.
 
     std::string res;
 
     for (const auto &units : unitsMap) {
-        if (!areEqual(units.second, 0.0)) {
+        if ((units.first != "dimensionless")
+            && !areEqual(units.second, 0.0)) {
             auto intExponent = int(units.second);
             auto exponent = areEqual(units.second, intExponent) ?
                                 convertToString(intExponent) :
@@ -1295,9 +1451,25 @@ std::string Analyser::AnalyserImpl::unitMismatchInformation(const UnitsMap &unit
     return res;
 }
 
+Strings Analyser::AnalyserImpl::unitsMismatchesInformation(const UnitsMaps &unitsMaps)
+{
+    Strings res;
+    std::string unitsMismatchInformation;
+
+    for (const auto &unitsMap : unitsMaps) {
+        unitsMismatchInformation = Analyser::AnalyserImpl::unitsMismatchInformation(unitsMap);
+
+        if (!unitsMismatchInformation.empty()) {
+            res.push_back(unitsMismatchInformation);
+        }
+    }
+
+    return res;
+}
+
 bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMap &firstUnitsMap,
                                               const UnitsMap &secondUnitsMap,
-                                              std::string &unitMismatchInformation)
+                                              std::string &unitsMismatchInformation)
 {
     // Check whether the given units map are the same by checking their
     // exponents, and provide unit mismatch information if they are not.
@@ -1316,16 +1488,73 @@ bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMap &firstUnitsMap,
         }
     }
 
-    unitMismatchInformation = Analyser::AnalyserImpl::unitMismatchInformation(unitsMap);
+    unitsMismatchInformation = Analyser::AnalyserImpl::unitsMismatchInformation(unitsMap);
 
-    return unitMismatchInformation.empty();
+    return unitsMismatchInformation.empty();
 }
 
-void Analyser::AnalyserImpl::updateMultiplier(const ModelPtr &model,
-                                              const std::string &unitsName,
-                                              double &newUnitsMultiplier,
-                                              double unitsExponent,
-                                              double unitsMultiplier)
+bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
+                                              const UnitsMaps &secondUnitsMaps,
+                                              Strings &unitsMismatchesInformation)
+{
+    // Check whether the given units map are the same by checking their
+    // exponents, and provide unit mismatch information if they are not.
+
+    unitsMismatchesInformation.clear();
+
+    std::string unitsMismatchInformation;
+
+    for (const auto &firstUnitsMap : firstUnitsMaps) {
+        for (const auto &secondUnitsMap : secondUnitsMaps) {
+            if (!areSameUnitsMaps(firstUnitsMap, secondUnitsMap,
+                                  unitsMismatchInformation)) {
+                unitsMismatchesInformation.push_back(unitsMismatchInformation);
+            }
+        }
+    }
+
+    return unitsMismatchesInformation.empty();
+}
+
+bool Analyser::AnalyserImpl::areSameUnitsMultipliers(double firstUnitsMultiplier,
+                                                     double secondUnitsMultiplier,
+                                                     std::string &unitsMismatchInformation)
+{
+    // Return whether the units multipliers are equals.
+
+    unitsMismatchInformation = areEqual(firstUnitsMultiplier, secondUnitsMultiplier) ?
+                                   "" :
+                                   convertToString(firstUnitsMultiplier - secondUnitsMultiplier, false);
+
+    return unitsMismatchInformation.empty();
+}
+
+bool Analyser::AnalyserImpl::areSameUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
+                                                     const UnitsMultipliers &secondUnitsMultipliers,
+                                                     Strings &unitsMismatchesInformation)
+{
+    // Return whether the units multipliers are equals.
+
+    std::string unitsMismatchInformation;
+
+    for (const auto &firstUnitsMultiplier : firstUnitsMultipliers) {
+        for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
+            if (!areSameUnitsMultipliers(firstUnitsMultiplier,
+                                         secondUnitsMultiplier,
+                                         unitsMismatchInformation)) {
+                unitsMismatchesInformation.push_back(unitsMismatchInformation);
+            }
+        }
+    }
+
+    return unitsMismatchesInformation.empty();
+}
+
+void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
+                                                   const std::string &unitsName,
+                                                   double &newUnitsMultiplier,
+                                                   double unitsExponent,
+                                                   double unitsMultiplier)
 {
     // Update the given units multiplier using the given information.
 
@@ -1349,12 +1578,26 @@ void Analyser::AnalyserImpl::updateMultiplier(const ModelPtr &model,
                 if (isStandardUnitName(reference)) {
                     newUnitsMultiplier += unitsMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + standardPrefixList.at(prefix)) * exponent * unitsExponent;
                 } else {
-                    updateMultiplier(model, reference, newUnitsMultiplier,
-                                     exponent * unitsExponent,
-                                     unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
+                    updateUnitsMultiplier(model, reference, newUnitsMultiplier,
+                                          exponent * unitsExponent,
+                                          unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
                 }
             }
         }
+    }
+}
+
+void Analyser::AnalyserImpl::updateUnitsMultipliers(const ModelPtr &model,
+                                                    const std::string &unitsName,
+                                                    UnitsMultipliers &newUnitsMultipliers,
+                                                    double unitsExponent,
+                                                    double unitsMultiplier)
+{
+    // Update the given units multipliers using the given information.
+
+    for (auto &newUnitsMultiplier : newUnitsMultipliers) {
+        updateUnitsMultiplier(model, unitsName, newUnitsMultiplier,
+                              unitsExponent, unitsMultiplier);
     }
 }
 
@@ -1445,43 +1688,52 @@ std::string Analyser::AnalyserImpl::expressionInformation(const AnalyserEquation
     return "'" + mGenerator->mPimpl->generateCode(ast) + "'" + inEquation + " in component '" + componentName(equationAst) + "'";
 }
 
+void Analyser::AnalyserImpl::defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
+                                                            UnitsMultipliers &unitsMultipliers)
+{
+    // Default units maps and multipliers.
+
+    unitsMaps = {UnitsMap()};
+    unitsMultipliers = {0.0};
+}
+
 void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &ast,
-                                                  UnitsMap &unitsMap,
-                                                  double &unitsMultiplier,
+                                                  UnitsMaps &unitsMaps,
+                                                  UnitsMultipliers &unitsMultipliers,
                                                   Strings &issueDescriptions)
 {
     // Make sure that we have an AST to analyse.
 
     if (ast == nullptr) {
-        unitsMap = {};
-        unitsMultiplier = 0.0;
+        unitsMaps = {};
+        unitsMultipliers = {};
 
         return;
     }
 
     // Check whether we are dealing with a CI/CN element and, if so, retrieve
-    // both its units map and multiplier.
+    // both its units maps and multipliers.
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
         auto units = mAstUnits[ast].lock();
         auto model = owningModel(units);
 
-        unitsMultiplier = 0.0;
+        defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
 
-        updateUnitsMap(model, units->name(), unitsMap);
-        updateMultiplier(model, units->name(), unitsMultiplier);
+        updateUnitsMaps(model, units->name(), unitsMaps);
+        updateUnitsMultipliers(model, units->name(), unitsMultipliers);
 
         return;
     }
 
     // Check the left and right children.
 
-    UnitsMap rightUnitsMap;
-    double rightUnitsMultiplier;
+    UnitsMaps rightUnitsMaps;
+    UnitsMultipliers rightUnitsMultipliers;
 
-    analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMap, unitsMultiplier, issueDescriptions);
-    analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMap, rightUnitsMultiplier, issueDescriptions);
+    analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, unitsMultipliers, issueDescriptions);
+    analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUnitsMultipliers, issueDescriptions);
 
     if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EQ)
@@ -1499,43 +1751,81 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PIECEWISE)) {
-        std::string unitMismatchInformation;
-        bool unitMismatch = !rightUnitsMap.empty()
-                            && !areSameUnitsMaps(unitsMap, rightUnitsMap, unitMismatchInformation);
-        bool multiplierMismatch = (ast->mPimpl->mOwnedLeftChild != nullptr)
-                                  && (ast->mPimpl->mOwnedRightChild != nullptr)
-                                  && !areEqual(unitsMultiplier, rightUnitsMultiplier);
+        Strings unitsMapsMismatchesInformation;
+        Strings unitsMultipliersMismatchesInformation;
+        bool unitsMapsMismatches = !rightUnitsMaps.empty()
+                                   && !areSameUnitsMaps(unitsMaps, rightUnitsMaps,
+                                                        unitsMapsMismatchesInformation);
+        bool unitsMultipliersMismatches = (ast->mPimpl->mOwnedLeftChild != nullptr)
+                                          && (ast->mPimpl->mOwnedRightChild != nullptr)
+                                          && !areSameUnitsMultipliers(unitsMultipliers,
+                                                                      rightUnitsMultipliers,
+                                                                      unitsMultipliersMismatchesInformation);
 
-        if (unitMismatch || multiplierMismatch) {
+        if (unitsMapsMismatches || unitsMultipliersMismatches) {
             std::string issueDescription = "The units in " + expressionInformation(ast) + " ";
 
-            if (unitMismatch) {
+            if (unitsMapsMismatches) {
                 issueDescription += "are not equivalent";
             }
 
-            if (multiplierMismatch) {
-                if (unitMismatch) {
+            if (unitsMultipliersMismatches) {
+                if (unitsMapsMismatches) {
                     issueDescription += " and ";
                 }
 
-                issueDescription += "have a multiplier mismatch";
+                issueDescription += "have ";
+                issueDescription += (unitsMultipliersMismatchesInformation.size() == 1) ?
+                                        "a multiplier mismatch" :
+                                        "multiplier mismatches";
             }
 
             issueDescription += ". ";
 
-            if (unitMismatch) {
-                issueDescription += "The unit mismatch is " + unitMismatchInformation;
+            if (unitsMapsMismatches) {
+                issueDescription += "The unit ";
+
+                if (unitsMapsMismatchesInformation.size() == 1) {
+                    issueDescription += "mismatch is " + unitsMapsMismatchesInformation.front();
+                } else {
+                    issueDescription += "mismatches are ";
+
+                    for (size_t i = 0; i < unitsMapsMismatchesInformation.size(); ++i) {
+                        if (i == unitsMapsMismatchesInformation.size() - 1) {
+                            issueDescription += " and ";
+                        } else if (i > 0) {
+                            issueDescription += ", ";
+                        }
+
+                        issueDescription += unitsMapsMismatchesInformation[i];
+                    }
+                }
             }
 
-            if (multiplierMismatch) {
-                if (unitMismatch) {
+            if (unitsMultipliersMismatches) {
+                if (unitsMapsMismatches) {
                     issueDescription += " and the ";
                 } else {
                     issueDescription += "The ";
                 }
 
-                issueDescription += "multiplier mismatch is "
-                                    + convertToString(unitsMultiplier - rightUnitsMultiplier, false);
+                issueDescription += "multiplier ";
+
+                if (unitsMultipliersMismatchesInformation.size() == 1) {
+                    issueDescription += "mismatch is " + unitsMultipliersMismatchesInformation.front();
+                } else {
+                    issueDescription += "mismatches are ";
+
+                    for (size_t i = 0; i < unitsMultipliersMismatchesInformation.size(); ++i) {
+                        if (i == unitsMultipliersMismatchesInformation.size() - 1) {
+                            issueDescription += " and ";
+                        } else if (i > 0) {
+                            issueDescription += ", ";
+                        }
+
+                        issueDescription += unitsMultipliersMismatchesInformation[i];
+                    }
+                }
             }
 
             issueDescription += ".";
@@ -1543,58 +1833,68 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             issueDescriptions.push_back(issueDescription);
         }
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
-        unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, 1);
-        unitsMultiplier += rightUnitsMultiplier;
+        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, 1);
+        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, 1);
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE) {
-        unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, -1);
-        unitsMultiplier -= rightUnitsMultiplier;
+        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, -1);
+        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, -1);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
         double powerValue = 0.0;
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
             powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
+        } else if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
+            unitsMaps = rightUnitsMaps;
+            powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
         } else {
-            if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
-                unitsMap = rightUnitsMap;
-                powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
-            } else {
-                powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
-            }
+            powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
         }
 
         if ((ast->mPimpl->mOwnedRightChild == nullptr) && areEqual(powerValue, 0.0)) {
-            // Special case where we have a square root.
+            // Special case where we have a square / square root.
 
             powerValue = 2.0;
         }
 
         if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER) {
-            for (auto &units : unitsMap) {
-                units.second = units.second * powerValue;
-            }
-
-            unitsMultiplier *= powerValue;
+            unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerValue, 1);
+            unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerValue, 1);
         } else {
-            for (auto &units : unitsMap) {
-                units.second = units.second / powerValue;
-            }
-
-            unitsMultiplier /= powerValue;
+            unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerValue, -1);
+            unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerValue, -1);
         }
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
-        std::string unitMismatchInformation;
+        Strings unitsMismatchesInformation;
 
-        if (!areSameUnitsMaps(rightUnitsMap, unitsMap, unitMismatchInformation)) {
-            issueDescriptions.push_back("The units in " + expressionInformation(ast)
-                                        + " are not consistent with the base. The unit mismatch is "
-                                        + unitMismatchInformation + ".");
+        if (!areSameUnitsMaps(rightUnitsMaps, unitsMaps, unitsMismatchesInformation)) {
+            std::string issueDescription = "The units in " + expressionInformation(ast)
+                                           + " are not consistent with the base. The unit ";
+
+            if (unitsMismatchesInformation.size() == 1) {
+                issueDescription += "mismatch is " + unitsMismatchesInformation.front();
+            } else {
+                issueDescription += "mismatches are ";
+
+                for (size_t i = 0; i < unitsMismatchesInformation.size(); ++i) {
+                    if (i == unitsMismatchesInformation.size() - 1) {
+                        issueDescription += " and ";
+                    } else if (i > 0) {
+                        issueDescription += ", ";
+                    }
+
+                    issueDescription += unitsMismatchesInformation[i];
+                }
+            }
+
+            issueDescription += ".";
+
+            issueDescriptions.push_back(issueDescription);
         }
 
-        unitsMap = {};
-        unitsMultiplier = 0.0;
+        defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SIN)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COS)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TAN)
@@ -1619,25 +1919,45 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
-        if (((unitsMap.size() == 1)
-             && (unitsMap.begin()->first != "dimensionless"))
-            || (unitsMap.size() > 1)) {
-            issueDescriptions.push_back("The argument in " + expressionInformation(ast)
-                                        + " is not dimensionless. The unit mismatch is "
-                                        + unitMismatchInformation(unitsMap) + ".");
+        Strings unitsMismatchesInformation = Analyser::AnalyserImpl::unitsMismatchesInformation(unitsMaps);
+
+        if (!unitsMismatchesInformation.empty()) {
+            std::string issueDescription = "The argument in " + expressionInformation(ast)
+                                           + " is not dimensionless. The unit ";
+
+            if (unitsMismatchesInformation.size() == 1) {
+                issueDescription += "mismatch is " + unitsMismatchesInformation.front();
+            } else {
+                issueDescription += "mismatches are ";
+
+                for (size_t i = 0; i < unitsMismatchesInformation.size(); ++i) {
+                    if (i == unitsMismatchesInformation.size() - 1) {
+                        issueDescription += " and ";
+                    } else if (i > 0) {
+                        issueDescription += ", ";
+                    }
+
+                    issueDescription += unitsMismatchesInformation[i];
+                }
+            }
+
+            issueDescription += ".";
+
+            issueDescriptions.push_back(issueDescription);
         }
 
-        unitsMap = {};
-        unitsMultiplier = 0.0;
+        defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIFF) {
-        unitsMap = addUnitsMaps(unitsMap, rightUnitsMap, 1);
-        unitsMultiplier = unitsMultiplier + rightUnitsMultiplier;
+        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, 1);
+        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, 1);
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::BVAR) {
-        for (auto &unit : unitsMap) {
-            unit.second *= -1.0;
+        for (auto &unitsMap : unitsMaps) {
+            for (auto &units : unitsMap) {
+                units.second *= -1.0;
+            }
         }
 
-        unitsMultiplier = 0.0 - unitsMultiplier;
+        unitsMultipliers = multiplyDivideUnitsMultipliers(0.0, unitsMultipliers, -1);
     }
 }
 
@@ -1794,11 +2114,11 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // is consistent.
 
         for (const auto &internalEquation : mInternalEquations) {
-            UnitsMap unitsMap;
-            double unitsMultiplier;
+            UnitsMaps unitsMaps;
+            UnitsMultipliers unitsMultipliers;
             Strings issueDescriptions;
 
-            analyseEquationUnits(internalEquation->mAst, unitsMap, unitsMultiplier, issueDescriptions);
+            analyseEquationUnits(internalEquation->mAst, unitsMaps, unitsMultipliers, issueDescriptions);
 
             for (const auto &issueDescription : issueDescriptions) {
                 auto issue = Issue::create();
