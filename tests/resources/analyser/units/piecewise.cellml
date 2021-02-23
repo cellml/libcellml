@@ -6,19 +6,22 @@
     <units name="cat"/>
     <units name="dove"/>
     <component name="main">
-        <variable name="a" units="dimensionless"/>
-        <variable name="b" units="dimensionless"/>
-        <variable name="c" units="dimensionless"/>
+        <variable name="aLHS" units="dimensionless"/>
+        <variable name="bLHS" units="dimensionless"/>
+        <variable name="cLHS" units="dimensionless"/>
+        <variable name="aRHS" units="dimensionless"/>
+        <variable name="bRHS" units="dimensionless"/>
+        <variable name="cRHS" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>a</ci>
+                <ci>aLHS</ci>
                 <piecewise>
                     <piece>
                         <cn cellml:units="dimensionless">1</cn>
                         <apply>
                             <gt/>
-                            <ci>a</ci>
+                            <ci>aLHS</ci>
                             <cn cellml:units="dimensionless">3</cn>
                         </apply>
                     </piece>
@@ -26,7 +29,7 @@
                         <cn cellml:units="dimensionless">5</cn>
                         <apply>
                             <gt/>
-                            <ci>a</ci>
+                            <ci>aLHS</ci>
                             <cn cellml:units="dimensionless">7</cn>
                         </apply>
                     </piece>
@@ -37,13 +40,13 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>b</ci>
+                <ci>bLHS</ci>
                 <piecewise>
                     <piece>
                         <cn cellml:units="second">11</cn>
                         <apply>
                             <gt/>
-                            <ci>b</ci>
+                            <ci>bLHS</ci>
                             <cn cellml:units="metre">13</cn>
                         </apply>
                     </piece>
@@ -51,7 +54,7 @@
                         <cn cellml:units="ampere">15</cn>
                         <apply>
                             <gt/>
-                            <ci>b</ci>
+                            <ci>bLHS</ci>
                             <cn cellml:units="candela">17</cn>
                         </apply>
                     </piece>
@@ -62,13 +65,13 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>c</ci>
+                <ci>cLHS</ci>
                 <piecewise>
                     <piece>
                         <cn cellml:units="frog">21</cn>
                         <apply>
                             <gt/>
-                            <ci>c</ci>
+                            <ci>cLHS</ci>
                             <cn cellml:units="rooster">23</cn>
                         </apply>
                     </piece>
@@ -76,7 +79,7 @@
                         <cn cellml:units="dog">25</cn>
                         <apply>
                             <gt/>
-                            <ci>c</ci>
+                            <ci>cLHS</ci>
                             <cn cellml:units="cat">27</cn>
                         </apply>
                     </piece>
@@ -84,6 +87,81 @@
                         <cn cellml:units="dove">29</cn>
                     </otherwise>
                 </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <gt/>
+                            <ci>aRHS</ci>
+                            <cn cellml:units="dimensionless">3</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="dimensionless">5</cn>
+                        <apply>
+                            <gt/>
+                            <ci>aRHS</ci>
+                            <cn cellml:units="dimensionless">7</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dimensionless">9</cn>
+                    </otherwise>
+                </piecewise>
+                <ci>aRHS</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="second">11</cn>
+                        <apply>
+                            <gt/>
+                            <ci>bRHS</ci>
+                            <cn cellml:units="metre">13</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="ampere">15</cn>
+                        <apply>
+                            <gt/>
+                            <ci>bRHS</ci>
+                            <cn cellml:units="candela">17</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="mole">19</cn>
+                    </otherwise>
+                </piecewise>
+                <ci>bRHS</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="frog">21</cn>
+                        <apply>
+                            <gt/>
+                            <ci>cRHS</ci>
+                            <cn cellml:units="rooster">23</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="dog">25</cn>
+                        <apply>
+                            <gt/>
+                            <ci>cRHS</ci>
+                            <cn cellml:units="cat">27</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dove">29</cn>
+                    </otherwise>
+                </piecewise>
+                <ci>cRHS</ci>
             </apply>
         </math>
     </component>
