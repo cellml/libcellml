@@ -66,13 +66,13 @@ std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const std::str
 std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const UnitsPtr &units) const
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return u->equal(units); });
+                        [=](const UnitsPtr &u) -> bool { return u->equals(units); });
 }
 
 std::vector<ImportSourcePtr>::const_iterator Model::ModelImpl::findImportSource(const ImportSourcePtr &importSource) const
 {
     return std::find_if(mImports.begin(), mImports.end(),
-                        [=](const ImportSourcePtr &iS) -> bool { return iS->equal(importSource); });
+                        [=](const ImportSourcePtr &iS) -> bool { return iS->equals(importSource); });
 }
 
 bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
@@ -85,7 +85,7 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
         for (index = 0; index < unmatchedIndex.size() && !unitsFound; ++index) {
             size_t currentIndex = unmatchedIndex.at(index);
             auto unitsOther = other->units(currentIndex);
-            if (units->equal(unitsOther)) {
+            if (units->equals(unitsOther)) {
                 unitsFound = true;
             }
         }

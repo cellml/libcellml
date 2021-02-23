@@ -272,7 +272,7 @@ private:
     Reset(); /**< Constructor, @private. */
     explicit Reset(int order); /**< Constructor with int parameter, @private. */
 
-    bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equal, @private. */
+    bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
     struct ResetImpl; /**< Forward declaration for pImpl idiom, @private. */
     ResetImpl *mPimpl; /**< Private member to implementation pointer, @private. */

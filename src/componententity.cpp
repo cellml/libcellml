@@ -50,7 +50,7 @@ std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findCo
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component)
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr &c) -> bool { return c->equal(component); });
+                        [=](const ComponentPtr &c) -> bool { return c->equals(component); });
 }
 
 // Interface class Model implementation

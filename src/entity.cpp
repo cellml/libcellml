@@ -55,7 +55,7 @@ std::string Entity::id() const
     return mPimpl->mId;
 }
 
-bool Entity::equal(const EntityPtr &other) const
+bool Entity::equals(const EntityPtr &other) const
 {
     return doEqual(other);
 }

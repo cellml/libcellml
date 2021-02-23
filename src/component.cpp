@@ -62,13 +62,13 @@ std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const VariablePtr &variable) const
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v->equal(variable); });
+                        [=](const VariablePtr &v) -> bool { return v->equals(variable); });
 }
 
 std::vector<ResetPtr>::const_iterator Component::ComponentImpl::findReset(const ResetPtr &reset) const
 {
     return std::find_if(mResets.begin(), mResets.end(),
-                        [=](const ResetPtr &r) -> bool { return r->equal(reset); });
+                        [=](const ResetPtr &r) -> bool { return r->equals(reset); });
 }
 
 bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
@@ -81,7 +81,7 @@ bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
         for (index = 0; index < unmatchedIndex.size() && !variableFound; ++index) {
             size_t currentIndex = unmatchedIndex.at(index);
             auto variableOther = other->variable(currentIndex);
-            if (variable->equal(variableOther)) {
+            if (variable->equals(variableOther)) {
                 variableFound = true;
             }
         }
@@ -107,7 +107,7 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
         for (index = 0; index < unmatchedIndex.size() && !resetFound; ++index) {
             size_t currentIndex = unmatchedIndex.at(index);
             auto resetOther = other->reset(currentIndex);
-            if (reset->equal(resetOther)) {
+            if (reset->equals(resetOther)) {
                 resetFound = true;
             }
         }
