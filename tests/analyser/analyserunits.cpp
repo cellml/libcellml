@@ -335,30 +335,3 @@ TEST(AnalyserUnits, piecewise)
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
-
-TEST(AnalyserUnits, coverage)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/coverage.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in '1.0 = a' in component 'main' are not equivalent. The unit mismatch is second^1.",
-    };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::MESSAGE,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
-}
