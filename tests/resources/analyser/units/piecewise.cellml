@@ -9,9 +9,11 @@
         <variable name="aLHS" units="dimensionless"/>
         <variable name="bLHS" units="dimensionless"/>
         <variable name="cLHS" units="dimensionless"/>
+        <variable name="dLHS" units="dimensionless"/>
         <variable name="aRHS" units="dimensionless"/>
         <variable name="bRHS" units="dimensionless"/>
         <variable name="cRHS" units="dimensionless"/>
+        <variable name="dRHS" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -162,6 +164,51 @@
                     </otherwise>
                 </piecewise>
                 <ci>cRHS</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="second">21</cn>
+                        <apply>
+                            <gt/>
+                            <ci>dLHS</ci>
+                            <cn cellml:units="metre">23</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="ampere">25</cn>
+                        <apply>
+                            <gt/>
+                            <ci>dLHS</ci>
+                            <cn cellml:units="candela">27</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="mole">29</cn>
+                    </otherwise>
+                </piecewise>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="frog">31</cn>
+                        <apply>
+                            <gt/>
+                            <ci>dRHS</ci>
+                            <cn cellml:units="rooster">33</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="dog">35</cn>
+                        <apply>
+                            <gt/>
+                            <ci>dRHS</ci>
+                            <cn cellml:units="cat">37</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dove">39</cn>
+                    </otherwise>
+                </piecewise>
             </apply>
         </math>
     </component>

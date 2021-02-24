@@ -257,6 +257,13 @@ TEST(AnalyserUnits, piecewise)
         "The units in 'cRHS > 23.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
         "The units in 'cRHS > 27.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
         "The units in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not equivalent. The unit mismatches are dog^1, dove^1 and frog^1.",
+        "The units in 'dLHS > 23.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
+        "The units in 'dLHS > 27.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
+        "The units in 'dRHS > 33.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
+        "The units in 'dRHS > 37.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
+        "The units in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatches are ampere^1 x dog^-1, ampere^1 x dove^-1, ampere^1 x frog^-1, dog^-1 x mole^1, dog^-1 x second^1, dove^-1 x mole^1, dove^-1 x second^1, frog^-1 x mole^1 and frog^-1 x second^1.",
+        "Variable 'dLHS' in component 'main' is unused.",
+        "Variable 'dRHS' in component 'main' is unused.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -271,6 +278,13 @@ TEST(AnalyserUnits, piecewise)
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::VARIABLE,
+        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::MESSAGE,
@@ -285,6 +299,13 @@ TEST(AnalyserUnits, piecewise)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -299,6 +320,13 @@ TEST(AnalyserUnits, piecewise)
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
     };
 
     auto analyser = libcellml::Analyser::create();
