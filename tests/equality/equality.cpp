@@ -1025,7 +1025,36 @@ TEST(Equality, parseMath)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("deriv_approx_sin.xml"));
 
-    EXPECT_EQ(size_t(0), parser->issueCount());
+    libcellml::ComponentPtr component = libcellml::Component::create("sin");
 
-    Debug() << model->component(0)->math();
+    libcellml::VariablePtr x = libcellml::Variable::create("x");
+    x->setUnits("dimensionless");
+    x->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+
+    libcellml::VariablePtr sin_initial_value = libcellml::Variable::create("sin_initial_value");
+    sin_initial_value->setUnits("dimensionless");
+    sin_initial_value->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+
+    libcellml::VariablePtr sin = libcellml::Variable::create("sin");
+    sin->setUnits("dimensionless");
+    sin->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    sin->setInitialValue(sin_initial_value);
+
+    component->setMath("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply><eq/>\n"
+        "        <apply><diff/>\n"
+        "          <bvar><ci>x</ci></bvar>\n"
+        "          <ci>sin</ci>\n"
+        "        </apply>\n"
+        "        <apply><cos/>\n"
+        "          <ci>x</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n");
+
+    EXPECT_TRUE(x->equals(model->component(0)->variable("x")));
+    EXPECT_TRUE(sin_initial_value->equals(model->component(0)->variable("sin_initial_value")));
+    EXPECT_TRUE(sin->equals(model->component(0)->variable("sin")));
+
+    EXPECT_TRUE(component->equals(model->component(0)));
 }
