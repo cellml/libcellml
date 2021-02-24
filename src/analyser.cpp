@@ -1828,6 +1828,17 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             issueDescriptions.push_back(issueDescription);
         }
+
+        // Relational operators result in a dimensionless unit.
+
+        if ((ast->mPimpl->mType == AnalyserEquationAst::Type::EQ)
+            || (ast->mPimpl->mType == AnalyserEquationAst::Type::NEQ)
+            || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LT)
+            || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
+            || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
+            || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)) {
+            defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
+        }
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::PIECEWISE) {
         unitsMaps.insert(std::end(unitsMaps),
                          std::begin(rightUnitsMaps),
