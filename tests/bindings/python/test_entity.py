@@ -76,7 +76,7 @@ class EntityTestCase(unittest.TestCase):
         self.assertTrue(c2.hasAncestor(c1))
         self.assertTrue(c2.hasAncestor(x))
 
-    def test_equal(self):
+    def test_equals(self):
         from libcellml import Units
 
         u1 = Units("second")
@@ -85,7 +85,7 @@ class EntityTestCase(unittest.TestCase):
         u2 = Units("second")
         u2.setId('units_second')
 
-        self.assertTrue(u1.equal(u2))
+        self.assertTrue(u1.equals(u2))
 
 
 class NamedEntityTestCase(unittest.TestCase):
