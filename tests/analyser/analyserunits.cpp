@@ -546,7 +546,7 @@ TEST(AnalyserUnits, geq)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
-TEST(AnalyserUnits, and)
+TEST(AnalyserUnits, _and_)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("analyser/units/and.cellml"));
@@ -585,7 +585,7 @@ TEST(AnalyserUnits, and)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
-TEST(AnalyserUnits, or)
+TEST(AnalyserUnits, _or_)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("analyser/units/or.cellml"));
@@ -624,7 +624,7 @@ TEST(AnalyserUnits, or)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
-TEST(AnalyserUnits, xor)
+TEST(AnalyserUnits, _xor_)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("analyser/units/xor.cellml"));
@@ -663,7 +663,7 @@ TEST(AnalyserUnits, xor)
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
 
-TEST(AnalyserUnits, not)
+TEST(AnalyserUnits, _not_)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("analyser/units/not.cellml"));
