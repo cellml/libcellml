@@ -1914,31 +1914,12 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
-        Strings unitsMismatchesInformation = Analyser::AnalyserImpl::unitsMismatchesInformation(unitsMaps);
+        Strings unitsMapsMismatchesInformation = unitsMismatchesInformation(unitsMaps);
 
-        if (!unitsMismatchesInformation.empty()) {
-            std::string issueDescription = "The argument in " + expressionInformation(ast)
-                                           + " is not dimensionless. The unit ";
-
-            if (unitsMismatchesInformation.size() == 1) {
-                issueDescription += "mismatch is " + unitsMismatchesInformation.front();
-            } else {
-                issueDescription += "mismatches are ";
-
-                for (size_t i = 0; i < unitsMismatchesInformation.size(); ++i) {
-                    if (i == unitsMismatchesInformation.size() - 1) {
-                        issueDescription += " and ";
-                    } else if (i > 0) {
-                        issueDescription += ", ";
-                    }
-
-                    issueDescription += unitsMismatchesInformation[i];
-                }
-            }
-
-            issueDescription += ".";
-
-            issueDescriptions.push_back(issueDescription);
+        if (!unitsMapsMismatchesInformation.empty()) {
+            issueDescriptions.push_back("The argument in " + expressionInformation(ast)
+                                        + " is not dimensionless. The unit "
+                                        + unitsMismatchesInformation(unitsMapsMismatchesInformation) + ".");
         }
 
         defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
