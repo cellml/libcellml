@@ -394,22 +394,24 @@ struct Analyser::AnalyserImpl
                          UnitsMaps &unitsMaps, double unitsExponent = 1.0,
                          double unitsMultiplier = 0.0);
     UnitsMap multiplyDivideUnitsMaps(const UnitsMap &firstUnitsMap,
-                                     const UnitsMap &secondUnitsMap, int op);
+                                     const UnitsMap &secondUnitsMap,
+                                     bool multiply);
     UnitsMaps multiplyDivideUnitsMaps(const UnitsMaps &firstUnitsMaps,
-                                      const UnitsMaps &secondUnitsMaps, int op);
+                                      const UnitsMaps &secondUnitsMaps,
+                                      bool multiply = true);
     UnitsMaps multiplyDivideUnitsMaps(const UnitsMaps &unitsMaps,
-                                      double factor, int op);
+                                      double factor, bool multiply);
     double multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
-                                          double secondUnitsMultiplier, int op);
+                                          double secondUnitsMultiplier,
+                                          bool multiply);
     UnitsMultipliers multiplyDivideUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
                                                     const UnitsMultipliers &secondUnitsMultipliers,
-                                                    int op);
+                                                    bool multiply = true);
     UnitsMultipliers multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
                                                     const UnitsMultipliers &secondUnitsMultipliers,
-                                                    int op);
+                                                    bool multiply);
     UnitsMultipliers powerRootUnitsMultipliers(const UnitsMultipliers &unitsMultipliers,
-                                               double factor,
-                                               int op);
+                                               double factor, bool power);
     std::string unitsMismatchInformation(const UnitsMap &unitsMap);
     Strings unitsMismatchesInformation(const UnitsMaps &unitsMaps);
     std::string unitsMismatchesInformation(const Strings &information,
@@ -1301,20 +1303,21 @@ void Analyser::AnalyserImpl::updateUnitsMaps(const ModelPtr &model,
 
 UnitsMap Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMap &firstUnitsMap,
                                                          const UnitsMap &secondUnitsMap,
-                                                         int op)
+                                                         bool multiply)
 {
     // Multiply/divide the given units maps together, following a multiplication
-    // (op = 1) or a division (op = -1).
+    // (multiply = true) or a division (multiply = false).
 
     UnitsMap res = firstUnitsMap;
+    double sign = multiply ? 1.0 : -1.0;
 
     for (const auto &units : secondUnitsMap) {
         auto it = res.find(units.first);
 
         if (it == res.end()) {
-            res[units.first] = op * units.second;
+            res[units.first] = sign * units.second;
         } else {
-            it->second += op * units.second;
+            it->second += sign * units.second;
 
             if (areEqual(it->second, 0.0)) {
                 // The units has now an exponent value of zero, so no need to
@@ -1330,16 +1333,16 @@ UnitsMap Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMap &firstUn
 
 UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &firstUnitsMaps,
                                                           const UnitsMaps &secondUnitsMaps,
-                                                          int op)
+                                                          bool multiply)
 {
     // Multiply/divide the given units maps together, following a multiplication
-    // (op = 1) or a division (op = -1).
+    // (multiply = true) or a division (multiply = false).
 
     UnitsMaps res;
 
     for (const auto &firstUnitsMap : firstUnitsMaps) {
         for (const auto &secondUnitsMap : secondUnitsMaps) {
-            res.push_back(multiplyDivideUnitsMaps(firstUnitsMap, secondUnitsMap, op));
+            res.push_back(multiplyDivideUnitsMaps(firstUnitsMap, secondUnitsMap, multiply));
         }
     }
 
@@ -1347,13 +1350,14 @@ UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &first
 }
 
 UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &unitsMaps,
-                                                          double factor, int op)
+                                                          double factor,
+                                                          bool multiply)
 {
     // Multiply/divide the given units maps by the given factor, following a
-    // multiplication (op = 1) or a division (op = -1).
+    // multiplication (multiply = true) or a division (multiply = false).
 
     UnitsMaps res = unitsMaps;
-    double realFactor = (op == 1) ? factor : 1.0 / factor;
+    double realFactor = multiply ? factor : 1.0 / factor;
 
     for (auto &unitsMap : res) {
         for (auto &units : unitsMap) {
@@ -1366,20 +1370,20 @@ UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &units
 
 double Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
                                                               double secondUnitsMultiplier,
-                                                              int op)
+                                                              bool multiply)
 {
     // Multiply/divide the given units multipliers together, following a
-    // multiplication (op = 1) or a division (op = -1).
+    // multiplication (multiply = true) or a division (multiply = false).
 
-    return firstUnitsMultiplier + op * secondUnitsMultiplier;
+    return firstUnitsMultiplier + (multiply ? 1.0 : -1.0) * secondUnitsMultiplier;
 }
 
 UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
                                                                         const UnitsMultipliers &secondUnitsMultipliers,
-                                                                        int op)
+                                                                        bool multiply)
 {
     // Multiply/divide the given units multipliers together, following a
-    // multiplication (op = 1) or a division (op = -1).
+    // multiplication (multiply = true) or a division (multiply = false).
 
     UnitsMultipliers res;
 
@@ -1387,7 +1391,7 @@ UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const Un
         for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
             res.push_back(multiplyDivideUnitsMultipliers(firstUnitsMultiplier,
                                                          secondUnitsMultiplier,
-                                                         op));
+                                                         multiply));
         }
     }
 
@@ -1396,17 +1400,17 @@ UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(const Un
 
 UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double firstUnitsMultiplier,
                                                                         const UnitsMultipliers &secondUnitsMultipliers,
-                                                                        int op)
+                                                                        bool multiply)
 {
     // Multiply/divide the given units multipliers together, following a
-    // multiplication (op = 1) or a division (op = -1).
+    // multiplication (multiply = true) or a division (multiply = false).
 
     UnitsMultipliers res;
 
     for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
         res.push_back(multiplyDivideUnitsMultipliers(firstUnitsMultiplier,
                                                      secondUnitsMultiplier,
-                                                     op));
+                                                     multiply));
     }
 
     return res;
@@ -1414,13 +1418,13 @@ UnitsMultipliers Analyser::AnalyserImpl::multiplyDivideUnitsMultipliers(double f
 
 UnitsMultipliers Analyser::AnalyserImpl::powerRootUnitsMultipliers(const UnitsMultipliers &unitsMultipliers,
                                                                    double factor,
-                                                                   int op)
+                                                                   bool power)
 {
     // Power/root the given units multipliers to the given factor, following a
-    // power (op = 1) or a root (op = -1) operation.
+    // power (power = true) or a root (power = false) operation.
 
     UnitsMultipliers res;
-    double realFactor = (op == 1) ? factor : 1.0 / factor;
+    double realFactor = power ? factor : 1.0 / factor;
 
     for (const auto &unitsMultiplier : unitsMultipliers) {
         res.push_back(realFactor * unitsMultiplier);
@@ -1924,12 +1928,12 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         }
 
         defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
-    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
-        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, 1);
-        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, 1);
-    } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE) {
-        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, -1);
-        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, -1);
+    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE)) {
+        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps,
+                                            ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
+        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers,
+                                                          ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
         double powerValue = 0.0;
@@ -1949,13 +1953,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             powerValue = 2.0;
         }
 
-        if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER) {
-            unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerValue, 1);
-            unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerValue, 1);
-        } else {
-            unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerValue, -1);
-            unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerValue, -1);
-        }
+        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerValue,
+                                            ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
+        unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerValue,
+                                                     ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
@@ -2002,8 +2003,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIFF) {
-        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, 1);
-        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, 1);
+        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps);
+        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::BVAR) {
         for (auto &unitsMap : unitsMaps) {
             for (auto &units : unitsMap) {
@@ -2011,7 +2012,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             }
         }
 
-        unitsMultipliers = multiplyDivideUnitsMultipliers(0.0, unitsMultipliers, -1);
+        unitsMultipliers = multiplyDivideUnitsMultipliers(0.0, unitsMultipliers, false);
     }
 }
 
