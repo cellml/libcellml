@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="plus" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="frog"/>
+    <component name="main">
+        <variable name="a" units="dimensionless"/>
+        <variable name="b" units="dimensionless"/>
+        <variable name="c" units="dimensionless"/>
+        <variable name="d" units="dimensionless"/>
+        <variable initial_value="1" name="aCst" units="dimensionless"/>
+        <variable initial_value="3" name="bCst" units="second"/>
+        <variable initial_value="5" name="cCst" units="volt"/>
+        <variable initial_value="7" name="dCst" units="frog"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>a</ci>
+                <apply>
+                    <plus/>
+                    <ci>aCst</ci>
+                    <cn cellml:units="dimensionless">1</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>b</ci>
+                <apply>
+                    <plus/>
+                    <ci>bCst</ci>
+                    <cn cellml:units="dimensionless">3</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>c</ci>
+                <apply>
+                    <plus/>
+                    <ci>cCst</ci>
+                    <cn cellml:units="dimensionless">5</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>d</ci>
+                <apply>
+                    <plus/>
+                    <ci>dCst</ci>
+                    <cn cellml:units="dimensionless">7</cn>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>
