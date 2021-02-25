@@ -1811,12 +1811,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                     issueDescription += " and ";
                 }
 
-                issueDescription += "have ";
-
                 if (unitsMultipliersMismatchesInformation.size() == 1) {
-                    issueDescription += "a multiplier mismatch";
+                    issueDescription += "have a multiplier mismatch";
                 } else {
-                    issueDescription += "multiplier mismatches";
+                    issueDescription += "have multiplier mismatches";
                 }
             }
 
@@ -1867,16 +1865,14 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         if (!unitsMapsMismatchesInformation.empty()
             || !rightUnitsMapsMismatchesInformation.empty()) {
-            std::string issueDescription = "The ";
+            std::string issueDescription = "The unit";
 
             if (!unitsMapsMismatchesInformation.empty()
                 && !rightUnitsMapsMismatchesInformation.empty()) {
-                issueDescription += "units ";
-            } else {
-                issueDescription += "unit ";
+                issueDescription += "s";
             }
 
-            issueDescription += "of ";
+            issueDescription += " of ";
 
             if (!unitsMapsMismatchesInformation.empty()) {
                 issueDescription += expressionInformation(ast->mPimpl->mOwnedLeftChild, false);
