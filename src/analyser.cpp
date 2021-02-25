@@ -412,7 +412,8 @@ struct Analyser::AnalyserImpl
                                                int op);
     std::string unitsMismatchInformation(const UnitsMap &unitsMap);
     Strings unitsMismatchesInformation(const UnitsMaps &unitsMaps);
-    std::string unitsMismatchesInformation(const Strings &information);
+    std::string unitsMismatchesInformation(const Strings &information,
+                                           bool includingForeword = true);
     bool areSameUnitsMaps(const UnitsMap &firstUnitsMap,
                           const UnitsMap &secondUnitsMap,
                           std::string &unitsMismatchInformation);
@@ -437,7 +438,8 @@ struct Analyser::AnalyserImpl
                                 double unitsMultiplier = 0.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
     double powerValue(const AnalyserEquationAstPtr &ast);
-    std::string expressionInformation(const AnalyserEquationAstPtr &ast);
+    std::string expressionInformation(const AnalyserEquationAstPtr &ast,
+                                      bool includeHierarchy = true);
     void defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
                                         UnitsMultipliers &unitsMultipliers);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
@@ -1468,15 +1470,22 @@ Strings Analyser::AnalyserImpl::unitsMismatchesInformation(const UnitsMaps &unit
     return res;
 }
 
-std::string Analyser::AnalyserImpl::unitsMismatchesInformation(const Strings &information)
+std::string Analyser::AnalyserImpl::unitsMismatchesInformation(const Strings &information,
+                                                               bool includingForeword)
 {
     std::string res;
 
-    if (information.size() == 1) {
-        res += "mismatch is " + information.front();
-    } else {
-        res += "mismatches are ";
+    if (includingForeword) {
+        if (information.size() == 1) {
+            res += "mismatch is ";
+        } else {
+            res += "mismatches are ";
+        }
+    }
 
+    if (information.size() == 1) {
+        res += information.front();
+    } else {
         for (size_t i = 0; i < information.size(); ++i) {
             if (i == information.size() - 1) {
                 res += " and ";
@@ -1693,25 +1702,32 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast)
     return std::stod(ast->value());
 }
 
-std::string Analyser::AnalyserImpl::expressionInformation(const AnalyserEquationAstPtr &ast)
+std::string Analyser::AnalyserImpl::expressionInformation(const AnalyserEquationAstPtr &ast,
+                                                          bool includeHierarchy)
 {
-    // Return the generated code for the given AST, specifying the equation, if
-    // needed, and component in which it is.
+    // Return the generated code for the given AST, specifying the equation and
+    // component in which it is, if needed and requested.
 
-    std::string inEquation;
-    AnalyserEquationAstPtr equationAst = ast;
-    AnalyserEquationAstPtr equationAstParent = ast->parent();
+    std::string res = "'" + mGenerator->mPimpl->generateCode(ast) + "'";
 
-    while (equationAstParent != nullptr) {
-        equationAst = equationAstParent;
-        equationAstParent = equationAst->parent();
+    if (includeHierarchy) {
+        std::string inEquation;
+        AnalyserEquationAstPtr equationAst = ast;
+        AnalyserEquationAstPtr equationAstParent = ast->parent();
+
+        while (equationAstParent != nullptr) {
+            equationAst = equationAstParent;
+            equationAstParent = equationAst->parent();
+        }
+
+        if (ast != equationAst) {
+            inEquation = " in equation '" + mGenerator->mPimpl->generateCode(equationAst) + "'";
+        }
+
+        res += inEquation + " in component '" + componentName(equationAst) + "'";
     }
 
-    if (ast != equationAst) {
-        inEquation = " in equation '" + mGenerator->mPimpl->generateCode(equationAst) + "'";
-    }
-
-    return "'" + mGenerator->mPimpl->generateCode(ast) + "'" + inEquation + " in component '" + componentName(equationAst) + "'";
+    return res;
 }
 
 void Analyser::AnalyserImpl::defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
@@ -1768,10 +1784,6 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PLUS)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
@@ -1846,6 +1858,76 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         unitsMultipliers.insert(std::end(unitsMultipliers),
                                 std::begin(rightUnitsMultipliers),
                                 std::end(rightUnitsMultipliers));
+    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)) {
+        Strings unitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMismatchesInformation(unitsMaps);
+        Strings rightUnitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMismatchesInformation(rightUnitsMaps);
+
+        if (!unitsMapsMismatchesInformation.empty()
+            || !rightUnitsMapsMismatchesInformation.empty()) {
+            std::string issueDescription = "The ";
+
+            if (!unitsMapsMismatchesInformation.empty()
+                && !rightUnitsMapsMismatchesInformation.empty()) {
+                issueDescription += "units ";
+            } else {
+                issueDescription += "unit ";
+            }
+
+            issueDescription += "of ";
+
+            if (!unitsMapsMismatchesInformation.empty()) {
+                issueDescription += expressionInformation(ast->mPimpl->mOwnedLeftChild, false);
+            }
+
+            if (!unitsMapsMismatchesInformation.empty()
+                && !rightUnitsMapsMismatchesInformation.empty()) {
+                issueDescription += " and ";
+            }
+
+            if (!rightUnitsMapsMismatchesInformation.empty()) {
+                issueDescription += expressionInformation(ast->mPimpl->mOwnedRightChild, false);
+            }
+
+            issueDescription += " in " + expressionInformation(ast);
+
+            if (!unitsMapsMismatchesInformation.empty()
+                && !rightUnitsMapsMismatchesInformation.empty()) {
+                issueDescription += " are ";
+            } else {
+                issueDescription += " is ";
+            }
+
+            issueDescription += "not dimensionless. The unit ";
+
+            if (!unitsMapsMismatchesInformation.empty()
+                && !rightUnitsMapsMismatchesInformation.empty()) {
+                issueDescription += "mismatches are ";
+            } else {
+                issueDescription += "mismatch is ";
+            }
+
+            if (!unitsMapsMismatchesInformation.empty()) {
+                issueDescription += unitsMismatchesInformation(unitsMapsMismatchesInformation, false);
+            }
+
+            if (!unitsMapsMismatchesInformation.empty()
+                && !rightUnitsMapsMismatchesInformation.empty()) {
+                issueDescription += " and ";
+            }
+
+            if (!rightUnitsMapsMismatchesInformation.empty()) {
+                issueDescription += unitsMismatchesInformation(rightUnitsMapsMismatchesInformation, false);
+            }
+
+            issueDescription += ".";
+
+            issueDescriptions.push_back(issueDescription);
+        }
+
+        defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, 1);
         unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, 1);
