@@ -1936,26 +1936,26 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                           ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
-        double powerValue = 0.0;
+        double powerRootValue = 0.0;
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
-            powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
+            powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
         } else if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
             unitsMaps = rightUnitsMaps;
-            powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
+            powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
         } else {
-            powerValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
+            powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
         }
 
-        if ((ast->mPimpl->mOwnedRightChild == nullptr) && areEqual(powerValue, 0.0)) {
+        if ((ast->mPimpl->mOwnedRightChild == nullptr) && areEqual(powerRootValue, 0.0)) {
             // Special case where we have a square / square root.
 
-            powerValue = 2.0;
+            powerRootValue = 2.0;
         }
 
-        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerValue,
+        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue,
                                             ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
-        unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerValue,
+        unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue,
                                                      ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
