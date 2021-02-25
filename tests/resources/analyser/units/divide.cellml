@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="divide" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="frog"/>
+    <units name="second_per_volt">
+        <unit units="second"/>
+        <unit exponent="-1" units="volt"/>
+    </units>
+    <units name="volt_per_volt">
+        <unit units="volt"/>
+        <unit exponent="-1" units="volt"/>
+    </units>
+    <units name="frog_per_volt">
+        <unit units="frog"/>
+        <unit exponent="-1" units="volt"/>
+    </units>
+    <component name="main">
+        <variable name="a" units="dimensionless"/>
+        <variable name="b" units="dimensionless"/>
+        <variable name="c" units="dimensionless"/>
+        <variable name="d" units="dimensionless"/>
+        <variable name="e" units="second_per_volt"/>
+        <variable name="f" units="volt_per_volt"/>
+        <variable name="g" units="frog_per_volt"/>
+        <variable name="h" units="second_per_volt"/>
+        <variable name="i" units="volt_per_volt"/>
+        <variable name="j" units="frog_per_volt"/>
+        <variable initial_value="1" name="aCst" units="dimensionless"/>
+        <variable initial_value="3" name="bCst" units="second"/>
+        <variable initial_value="5" name="cCst" units="volt"/>
+        <variable initial_value="7" name="dCst" units="frog"/>
+        <variable initial_value="9" name="eCst" units="second"/>
+        <variable initial_value="11" name="fCst" units="volt"/>
+        <variable initial_value="13" name="gCst" units="frog"/>
+        <variable initial_value="15" name="hCst" units="second"/>
+        <variable initial_value="17" name="iCst" units="volt"/>
+        <variable initial_value="19" name="jCst" units="frog"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>a</ci>
+                <apply>
+                    <divide/>
+                    <ci>aCst</ci>
+                    <cn cellml:units="dimensionless">1</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>b</ci>
+                <apply>
+                    <divide/>
+                    <ci>bCst</ci>
+                    <cn cellml:units="dimensionless">3</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>c</ci>
+                <apply>
+                    <divide/>
+                    <ci>cCst</ci>
+                    <cn cellml:units="dimensionless">5</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>d</ci>
+                <apply>
+                    <divide/>
+                    <ci>dCst</ci>
+                    <cn cellml:units="dimensionless">7</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>e</ci>
+                <apply>
+                    <divide/>
+                    <ci>eCst</ci>
+                    <cn cellml:units="dimensionless">9</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>f</ci>
+                <apply>
+                    <divide/>
+                    <ci>fCst</ci>
+                    <cn cellml:units="dimensionless">11</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>g</ci>
+                <apply>
+                    <divide/>
+                    <ci>gCst</ci>
+                    <cn cellml:units="dimensionless">13</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>h</ci>
+                <apply>
+                    <divide/>
+                    <ci>hCst</ci>
+                    <cn cellml:units="volt">15</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>i</ci>
+                <apply>
+                    <divide/>
+                    <ci>iCst</ci>
+                    <cn cellml:units="volt">17</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>j</ci>
+                <apply>
+                    <divide/>
+                    <ci>jCst</ci>
+                    <cn cellml:units="volt">19</cn>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

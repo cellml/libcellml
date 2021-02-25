@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="minus" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="frog"/>
+    <component name="main">
+        <variable name="a" units="dimensionless"/>
+        <variable name="b" units="dimensionless"/>
+        <variable name="c" units="dimensionless"/>
+        <variable name="d" units="dimensionless"/>
+        <variable name="e" units="dimensionless"/>
+        <variable name="f" units="dimensionless"/>
+        <variable name="g" units="dimensionless"/>
+        <variable name="h" units="dimensionless"/>
+        <variable initial_value="1" name="aCst" units="dimensionless"/>
+        <variable initial_value="3" name="bCst" units="second"/>
+        <variable initial_value="5" name="cCst" units="volt"/>
+        <variable initial_value="7" name="dCst" units="frog"/>
+        <variable initial_value="9" name="eCst" units="dimensionless"/>
+        <variable initial_value="11" name="fCst" units="second"/>
+        <variable initial_value="13" name="gCst" units="volt"/>
+        <variable initial_value="15" name="hCst" units="frog"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>a</ci>
+                <apply>
+                    <minus/>
+                    <ci>aCst</ci>
+                    <cn cellml:units="dimensionless">1</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>b</ci>
+                <apply>
+                    <minus/>
+                    <ci>bCst</ci>
+                    <cn cellml:units="dimensionless">3</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>c</ci>
+                <apply>
+                    <minus/>
+                    <ci>cCst</ci>
+                    <cn cellml:units="dimensionless">5</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>d</ci>
+                <apply>
+                    <minus/>
+                    <ci>dCst</ci>
+                    <cn cellml:units="dimensionless">7</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>e</ci>
+                <apply>
+                    <minus/>
+                    <ci>eCst</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>f</ci>
+                <apply>
+                    <minus/>
+                    <ci>fCst</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>g</ci>
+                <apply>
+                    <minus/>
+                    <ci>gCst</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>h</ci>
+                <apply>
+                    <minus/>
+                    <ci>hCst</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>
