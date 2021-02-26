@@ -1958,17 +1958,20 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
             powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
-        } else if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
-            unitsMaps = rightUnitsMaps;
-            powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
         } else {
-            powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
-        }
+            // Root case.
 
-        if ((ast->mPimpl->mOwnedRightChild == nullptr) && areEqual(powerRootValue, 0.0)) {
-            // Special case where we have a square / square root.
+            if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
+                unitsMaps = rightUnitsMaps;
+                unitsMultipliers = rightUnitsMultipliers;
 
-            powerRootValue = 2.0;
+                powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
+            } else {
+                // No DEGREE element, which means that we are dealing with a
+                // square root.
+
+                powerRootValue = 2.0;
+            }
         }
 
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue,
