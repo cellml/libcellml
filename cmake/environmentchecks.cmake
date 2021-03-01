@@ -19,7 +19,12 @@ get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
 
 # Need to change a lot of what we would normally do as it doesn't apply to Emscripten.
-if (NOT EMSCRIPTEN)
+if (EMSCRIPTEN)
+    find_program(NODE_EXE NAMES ${PREFERRED_NODE_NAMES} node)
+    find_program(NPM_EXE NAMES ${PREFERRED_NPM_NAMES} npm)
+    message(STATUS "NODE_EXE: ${NODE_EXE}")
+    message(STATUS "NPM_EXE: ${NPM_EXE}")
+else ()
   find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
   find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
@@ -115,4 +120,8 @@ if(WIN32 AND NOT EMSCRIPTEN)
   else()
     set(NSIS_FOUND FALSE)
   endif()
+endif()
+
+if(EMSCRIPTEN AND NODE_EXE AND NPM_EXE)
+    set(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the javascript bindings tests are available.")
 endif()

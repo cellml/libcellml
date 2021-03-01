@@ -166,7 +166,11 @@ if(LIBCELLML_UNIT_TESTS)
   # enable testing here so that we can make use of the 'test' target
   enable_testing()
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
+elseif(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE)
+    enable_testing()
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests/bindings/javascript)
 endif()
+
 
 # Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
