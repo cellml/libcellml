@@ -1,4 +1,4 @@
-.. _dev_building:
+.. _configure_and_build:
 
 ==================================
 Configuring and building libCellML
@@ -7,7 +7,7 @@ Configuring and building libCellML
 This document covers building libCellML from source.  
 
 It is assumed that you already have the codebase downloaded and ready for building.  
-If not, please see the :ref:`Development Setup <dev_setup>` page for instructions.
+If not, please see the :ref:`Development Setup <setup>` page for instructions.
 
 The variable :code:`LIBCELLML_SRC` shall be used to refer to the directory containing the :code:`LICENSE` file for libCellML.
 
@@ -23,7 +23,7 @@ Configure with CMake
 The first step is to use :cmake:`CMake<>` to configure and generate build files for the libCellML library.  
 Linux and MacOS use a command line interface, and under Windows there is an optional GUI.  
 Note that CMake version 3.2 or later is required to configure libCellML.  
-Instructions and information about installing CMake can be found in the :ref:`Setup <dev_setup_cmake>` section.
+Instructions and information about installing CMake can be found in the :ref:`Setup <setup_cmake>` section.
 
 
 Command line Linux, MacOS
@@ -114,7 +114,7 @@ The first time you push the *Configure* button you will probably encounter an er
    
 To fix the issue, check that:
 
-- you have installed libXML2 according to the directions on the :ref:`Setup page <dev_setup>`;
+- you have installed libXML2 according to the directions on the :ref:`Setup page <setup>`;
 - there is a variable called :code:`LibXml2_DIR` listed in your CMake variables (use the *Add entry* button to create it if not);
 - that the path specified in the :code:`LibXml2_DIR` variable points to the :code:`cmake` directory inside your libXML2 installation;
 - that your installed version is 64-bit.   
@@ -166,7 +166,7 @@ Could not find SWIG (missing: SWIG_DIR, SWIG_EXECUTABLE)
 --------------------------------------------------------
 SWIG is go-between software used by libCellML to generate bindings for Python and other languages.  
 If you have the CMake option :code:`LIBCELLML_BINDINGS_PYTHON` set to :code:`true` then SWIG is required.  
-Follow the instructions for :ref:`setting up SWIG <dev_setup_swig>`.
+Follow the instructions for :ref:`setting up SWIG <setup_swig>`.
 You may need to restart your computer after installation, and then re-launch CMake.
 
 Could NOT find Sphinx (missing: SPHINX_EXECUTABLE)

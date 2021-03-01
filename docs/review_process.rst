@@ -1,4 +1,4 @@
-.. _dev_review:
+.. _review_process:
 
 ==============
 Review process
@@ -42,7 +42,7 @@ It is the reviewers' responsibility to check that appropriate changes have been 
 Coding standards
 ================
 Currently, there is no fully-defined libCellML coding standards set, but the :google_style_guide:`Google C++ Style Guide<>` can be considered a baseline for the standard of code that is expected for libCellML.
-See the :ref:`Coding Standards <dev_coding_standards>` document for deviations from this guideline.
+See the :ref:`Coding Standards <coding_standards>` document for deviations from this guideline.
 
 Merging a pull request
 ======================

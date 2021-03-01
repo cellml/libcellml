@@ -1,4 +1,4 @@
-.. _dev_contribution:
+.. _contributing:
 
 =========================
 Contributing to libCellML
@@ -6,7 +6,7 @@ Contributing to libCellML
 
 This document covers the process to follow for getting your changes into the :term:`prime repository`.
 While there are many types of contribution, this section is focussed on contributions made through :github:`GitHub<>` and :git:`Git<>` to assets that are managed using the version control system.
-It is assumed that :ref:`Setup <dev_setup>` and :ref:`Building <dev_building>` have already been read and followed.
+It is assumed that :ref:`Setup <setup>` and :ref:`Building <configure_and_build>` have already been read and followed.
 
 Overview
 ========
@@ -140,4 +140,4 @@ For small submissions, it is sufficient for the second owner to show satisfactio
 For larger submissions one of the owners will post a comment on the issue notifying subscribers that they intend to merge the pull request.
 If no further objections are raised, the pull request will be merged and closed.
 
-A little reminder for the repository owners to check that the :ref:`Review Process <dev_review>` has been followed before merging the pull request.
+A little reminder for the repository owners to check that the :ref:`Review Process <review_process>` has been followed before merging the pull request.

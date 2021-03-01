@@ -1,4 +1,4 @@
-.. _dev_coding_standards:
+.. _coding_standards:
 
 ================
 Coding standards
