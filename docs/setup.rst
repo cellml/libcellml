@@ -1,4 +1,4 @@
-.. _dev_setup:
+.. _setup:
 
 =================
 Development setup
@@ -34,7 +34,7 @@ Pre-requisite acquisition
 
 In this section, we cover the retrieval and installation of pre-requisites.
 
-.. _dev_setup_git:
+.. _setup_git:
 
 Git
 ---
@@ -52,7 +52,7 @@ Installing a Git client is particular to each operating system and some pointers
 - **macOS** Git is pre-installed and available from the command line.
 
 
-.. _dev_setup_cmake:
+.. _setup_cmake:
 
 CMake
 -----
@@ -70,7 +70,7 @@ Again, installation of CMake is particular to each operating system.
   Choose the binary appropriate for your operating system and follow the installation instructions.
 
 
-.. _dev_setup_toolchain:
+.. _setup_toolchain:
 
 Toolchain
 ---------
@@ -94,7 +94,7 @@ The following sub-sections provide guidance on how to install the recommended to
 - **Linux** TODO
 - **macOS** TODO
 
-.. _dev_setup_libxml2:
+.. _setup_libxml2:
 
 LibXml2
 -------
@@ -107,7 +107,7 @@ It's important to use a 64-bit version of the library as the 32-bit is not compa
 - **Linux** LibXml2 can be installed using :code:`sudo apt install libxml2-dev`.
 - **macOS** LibXML2 is already installed on macOS, so no further action is required on that platform.  
 
-.. _dev_setup_doxygen:
+.. _setup_doxygen:
 
 Doxygen
 -------
@@ -122,13 +122,13 @@ Note that this does not affect your use of the libCellML library itself.
 - **macOS** Binary distributions are available from the :doxygen:`download page of the Doxygen website </download.html#srcbin>`.
 
 
-.. _dev_setup_python:
+.. _setup_python:
 
 Python (optional)
 -----------------
 :python:`Python<>` is an open-source language which is syntactically easier to read than other higher-level languages.  
 It is commonly used as a scripting language for experimentation, and is included here to allow libCellML to be accessed from Python-based programs.  
-Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the :ref:`Building LibCellML <dev_building>` page.
+Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the :ref:`Building LibCellML <configure_and_build>` page.
 
 - **Windows** Python binaries for Windows can be found on :python:`the Python download page</downloads/windows/>`, or you can build your own from source files if you prefer. 
 
@@ -136,7 +136,7 @@ Note that creation of Python bindings is optional, and can be enabled/disabled a
 
 - **macOS** Python is already installed, though depending on the age of your machine you may like to upgrade it to a :python:`later version from the Python site<downloads/mac-osx/>` .
 
-.. _dev_setup_swig:
+.. _setup_swig:
 
 SWIG for Python bindings (optional)
 -----------------------------------
@@ -150,7 +150,7 @@ The current version (0.9) of libCellML uses SWIG 4.0.0.
 
 - **macOS** SWIG for macOS can be accessed using the :swig:`downloads for Unix/Linux sources</download.html>` and building them locally according to the instructions provided on that page.
 
-.. _dev_setup_sphinx:
+.. _setup_sphinx:
 
 Sphinx for Python documentation (optional)
 ------------------------------------------
@@ -159,7 +159,7 @@ Instructions for all operating systems can be found on their :sphinx:`Installati
 The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an :github_rtd:`import error</3812>` despite being reported fixed since version Sphinx 1.7.2).  
 
 
-.. _dev_setup_codebase:
+.. _setup_codebase:
 
 Setting up the codebase
 =======================
@@ -230,5 +230,5 @@ You have also set the :code:`prime` repository as read-only by setting an invali
 
 Finally
 =======
-You are all done and ready to start development, read :ref:`Building <dev_building>` on how to build libCellML.
-Then, read :ref:`Contribution <dev_contribution>` to get your changes into libCellML's prime repository.
+You are all done and ready to start development, read :ref:`Building <configure_and_build>` on how to build libCellML.
+Then, read :ref:`Contribution <contributing>` to get your changes into libCellML's prime repository.

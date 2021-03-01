@@ -1,4 +1,4 @@
-.. _dev_testing:
+.. _testing:
 
 =================
 Testing libCellML
