@@ -1,8 +1,8 @@
 .. _glossary_page:
 
-========
-Glossary
-========
+=================
+Glossary of terms
+=================
 
 .. glossary::
    :sorted:
