@@ -14,7 +14,7 @@ While there are many types of contribution, this section focuses on contribution
 #. :ref:`Contributing to libCellML<contributing>` : Getting your code into the libCellML prime repository.
 #. :ref:`Review process<review_process>` : Instructions for code review and responding to comments.
 #. :ref:`Coding Standards<coding_standards>` : Guidelines for coding style and standards for contributions.
-#. :ref:`Glossary<glossary>` : Glossary of terminology
+#. :ref:`Glossary<glossary_page>` : Glossary of terminology
 
 .. container:: quicklinks
 
@@ -25,7 +25,7 @@ While there are many types of contribution, this section focuses on contribution
    :ref:`Contributing to libCellML<contributing>` 
    :ref:`Review Process<review_process>`
    :ref:`Coding Standards<coding_standards>`
-   :ref:`Glossary<glossary>` 
+   :ref:`Glossary<glossary_page>` 
 
 .. toctree::
    :hidden:
