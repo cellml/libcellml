@@ -224,11 +224,7 @@ bool Variable::doEquals(const EntityPtr &other) const
                 return mPimpl->mUnits->equals(variable->units());
             }
 
-            if (variable->units() != nullptr) {
-                return false;
-            }
-
-            return true;
+            return variable->units() == nullptr;
         }
     }
     return false;
