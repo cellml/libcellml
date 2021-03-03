@@ -676,9 +676,9 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
 std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
 
 /**
- * @brief Test the given entities are equal to entities in owner.
+ * @brief Test the given @p entities are equal to entities in @p owner.
  *
- * Test to see if all the entites given in @p entities are equal to
+ * Test to see if all the entities given in @p entities are equal to
  * entities in @p owner.  The order that the entities appear in is not
  * taken into account.
  *
