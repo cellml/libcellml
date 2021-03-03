@@ -24,8 +24,6 @@ limitations under the License.
 
 namespace libcellml {
 
-class ImportedEntityPrivate;
-
 /**
  * @brief The ImportedEntity class.
  *
