@@ -496,8 +496,8 @@ bool Component::doEquals(const EntityPtr &other) const
     if (ComponentEntity::doEquals(other)) {
         auto component = std::dynamic_pointer_cast<Component>(other);
         return (component != nullptr) && areEqual(mPimpl->mMath, component->math())
-                && mPimpl->equalResets(component) && mPimpl->equalVariables(component)
-                && ImportedEntity::doEquals(component);
+               && mPimpl->equalResets(component) && mPimpl->equalVariables(component)
+               && ImportedEntity::doEquals(component);
     }
     return false;
 }

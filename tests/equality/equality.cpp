@@ -805,7 +805,8 @@ TEST(Equality, parseMath)
     sin->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
     sin->setInitialValue(sin_initial_value);
 
-    component->setMath("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+    component->setMath(
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "      <apply><eq/>\n"
         "        <apply><diff/>\n"
         "          <bvar><ci>x</ci></bvar>\n"
@@ -833,7 +834,7 @@ TEST(Equality, clone)
     importer->resolveImports(model, resourcePath("modelflattening/"));
     model = importer->flattenModel(model);
 
-    importer->resolveImports(clonedModel,  resourcePath("modelflattening/"));
+    importer->resolveImports(clonedModel, resourcePath("modelflattening/"));
     clonedModel = importer->flattenModel(clonedModel);
 
     EXPECT_TRUE(model->equals(clonedModel));
