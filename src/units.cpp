@@ -268,29 +268,31 @@ bool Units::isBaseUnit() const
     return unitCount() == 0 && standardUnitCheck;
 }
 
-ptrdiff_t ulpsDistance(const double a, const double b)
+ptrdiff_t ulpsDistance(double a, double b)
 {
-    const auto max = std::numeric_limits<ptrdiff_t>::max();
+    static const auto max = std::numeric_limits<ptrdiff_t>::max();
 
-    // Max distance for NaN
+    // Max distance for NaN.
     if (std::isnan(a) || std::isnan(b)) {
         return max;
     }
 
     // If one's infinite and they're not equal, max distance.
-    if ((std::isinf(a) || std::isinf(b)) && (std::isinf(a) != std::isinf(b))) {
+    if (std::isinf(a) xor std::isinf(b)) {
         return max;
     }
 
+    static const int SIZE_OF_DOUBLE = sizeof(double);
+
     ptrdiff_t ia;
     ptrdiff_t ib;
-    memcpy(&ia, &a, sizeof(double));
-    memcpy(&ib, &b, sizeof(double));
+    memcpy(&ia, &a, SIZE_OF_DOUBLE);
+    memcpy(&ib, &b, SIZE_OF_DOUBLE);
 
     // Return the absolute value of the distance in ULPs.
     ptrdiff_t distance = ia - ib;
     if (distance < 0) {
-        distance = -distance;
+        return -distance;
     }
 
     return distance;
@@ -311,18 +313,17 @@ ptrdiff_t ulpsDistance(const double a, const double b)
  *
  * @return @c true if the given doubles are considered close, @c false otherwise.
  */
-bool nearlyEqual(const double a, const double b)
+bool nearlyEqual(double a, double b)
 {
-    const double fixedEpsilon = std::numeric_limits<double>::epsilon();
-    const ptrdiff_t ulpsEpsilon = 1;
+    static const double fixedEpsilon = std::numeric_limits<double>::epsilon();
+    static const ptrdiff_t ulpsEpsilon = 1;
 
-    const double difference = fabs(a - b);
-    if (difference <= fixedEpsilon) {
+    if (fabs(a - b) <= fixedEpsilon) {
         return true;
     }
 
     // If they are not the same sign then return false.
-    if ((a < 0) != (b < 0)) {
+    if ((a < 0.0) != (b < 0.0)) {
         return false;
     }
 
@@ -331,38 +332,56 @@ bool nearlyEqual(const double a, const double b)
 
 bool Units::doEquals(const EntityPtr &other) const
 {
-    if (NamedEntity::doEquals(other)) {
-        auto units = std::dynamic_pointer_cast<Units>(other);
-        if (units != nullptr && mPimpl->mUnits.size() == units->unitCount() && ImportedEntity::doEquals(units)) {
-            // Check unit definitions match.
-            std::string reference;
-            std::string prefix;
-            std::string id;
-            double exponent;
-            double multiplier;
-
-            std::vector<size_t> unmatchedUnitIndex(mPimpl->mUnits.size());
-            std::iota(unmatchedUnitIndex.begin(), unmatchedUnitIndex.end(), 0);
-            for (const auto &unitDefinition : mPimpl->mUnits) {
-                bool unitFound = false;
-                size_t index = 0;
-                for (index = 0; index < unmatchedUnitIndex.size() && !unitFound; ++index) {
-                    size_t currentIndex = unmatchedUnitIndex.at(index);
-                    units->unitAttributes(currentIndex, reference, prefix, exponent, multiplier, id);
-                    if (nearlyEqual(unitDefinition.mExponent, exponent) && unitDefinition.mId == id && nearlyEqual(unitDefinition.mMultiplier, multiplier) && unitDefinition.mPrefix == prefix && unitDefinition.mReference == reference) {
-                        unitFound = true;
-                    }
-                }
-                if (unitFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
-                    unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ptrdiff_t(index) - 1);
-                } else {
-                    return false;
-                }
-            }
-            return true;
-        }
+    if (!NamedEntity::doEquals(other)) {
+        return false;
     }
-    return false;
+
+    auto units = std::dynamic_pointer_cast<Units>(other);
+
+    if ((units == nullptr)
+        || (mPimpl->mUnits.size() != units->unitCount())
+        || !ImportedEntity::doEquals(units)) {
+        return false;
+    }
+
+    // Check unit definitions match.
+    static const size_t PTRDIFF_T_MAX = size_t(std::numeric_limits<ptrdiff_t>::max());
+
+    std::string reference;
+    std::string prefix;
+    double exponent;
+    double multiplier;
+    std::string id;
+    std::vector<size_t> unmatchedUnitIndex(mPimpl->mUnits.size());
+
+    std::iota(unmatchedUnitIndex.begin(), unmatchedUnitIndex.end(), 0);
+
+    for (const auto &unitDefinition : mPimpl->mUnits) {
+        bool unitFound = false;
+        size_t index = 0;
+
+        for (index = 0; (index < unmatchedUnitIndex.size()) && !unitFound; ++index) {
+            size_t currentIndex = unmatchedUnitIndex.at(index);
+
+            units->unitAttributes(currentIndex, reference, prefix, exponent, multiplier, id);
+
+            if (nearlyEqual(unitDefinition.mExponent, exponent)
+                && (unitDefinition.mId == id)
+                && nearlyEqual(unitDefinition.mMultiplier, multiplier)
+                && (unitDefinition.mPrefix == prefix)
+                && (unitDefinition.mReference == reference)) {
+                unitFound = true;
+            }
+        }
+
+        if (!unitFound || (index >= PTRDIFF_T_MAX)) {
+            return false;
+        }
+
+        unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ptrdiff_t(index) - 1);
+    }
+
+    return true;
 }
 
 void Units::addUnit(const std::string &reference, const std::string &prefix, double exponent,
