@@ -353,6 +353,19 @@ bool isCellMLReal(const std::string &candidate);
 bool areEqual(double value1, double value2);
 
 /**
+ * @brief Compare strings to determine if they are equal.
+ *
+ * Compare the given strings to determine if they are equal or not.
+ * The current test is a simplistic comparison of string equality.
+ *
+ * @param str1 The first parameter to compare against parameter two.
+ * @param str2 The second parameter to compare against parameter one.
+ *
+ * @return Return @c true if the @p str1 is equal to @p str2, @c false otherwise.
+ */
+bool areEqual(const std::string &str1, const std::string &str2);
+
+/**
  * @brief Compute the SHA-1 value of the @p string @c std::string.
  *
  * Compute and return the SHA-1 value of the @p string @c std::string.

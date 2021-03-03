@@ -21,7 +21,7 @@ limitations under the License.
 
 #include "libcellml/variable.h"
 
-#include "mathml.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -204,9 +204,9 @@ bool Reset::doEquals(const EntityPtr &other) const
     if (Entity::doEquals(other)) {
         auto reset = std::dynamic_pointer_cast<Reset>(other);
         if ((reset != nullptr) && mPimpl->mOrder == reset->order()
-                && compareMath(mPimpl->mResetValue, reset->resetValue())
+                && areEqual(mPimpl->mResetValue, reset->resetValue())
                 && mPimpl->mResetValueId == reset->resetValueId()
-                && compareMath(mPimpl->mTestValue, reset->testValue())
+                && areEqual(mPimpl->mTestValue, reset->testValue())
                 && mPimpl->mTestValueId == reset->testValueId()) {
             if (mPimpl->mTestVariable != nullptr
                     && !mPimpl->mTestVariable->equals(reset->testVariable())) {
