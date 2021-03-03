@@ -545,7 +545,7 @@ bool Model::doEqual(const EntityPtr &other) const
 {
     if (ComponentEntity::doEqual(other)) {
         auto model = std::dynamic_pointer_cast<Model>(other);
-        if (model != nullptr && mPimpl->equalUnits(model)) {
+        if ((model != nullptr) && mPimpl->equalUnits(model)) {
             return true;
         }
     }

@@ -203,18 +203,25 @@ bool Reset::doEqual(const EntityPtr &other) const
 {
     if (Entity::doEqual(other)) {
         auto reset = std::dynamic_pointer_cast<Reset>(other);
-        if (reset != nullptr && mPimpl->mOrder == reset->order() && compareMath(mPimpl->mResetValue, reset->resetValue()) && mPimpl->mResetValueId == reset->resetValueId() && compareMath(mPimpl->mTestValue, reset->testValue()) && mPimpl->mTestValueId == reset->testValueId()) {
-            bool equal = true;
-            if (mPimpl->mTestVariable != nullptr && !mPimpl->mTestVariable->equals(reset->testVariable())) {
-                equal = false;
-            } else if (mPimpl->mTestVariable == nullptr && reset->testVariable() != nullptr) {
-                equal = false;
-            } else if (mPimpl->mVariable != nullptr && !mPimpl->mVariable->equals(reset->variable())) {
-                equal = false;
-            } else if (mPimpl->mVariable == nullptr && reset->variable() != nullptr) {
-                equal = false;
+        if ((reset != nullptr) && mPimpl->mOrder == reset->order()
+                && compareMath(mPimpl->mResetValue, reset->resetValue())
+                && mPimpl->mResetValueId == reset->resetValueId()
+                && compareMath(mPimpl->mTestValue, reset->testValue())
+                && mPimpl->mTestValueId == reset->testValueId()) {
+            if (mPimpl->mTestVariable != nullptr
+                    && !mPimpl->mTestVariable->equals(reset->testVariable())) {
+                return false;
+            } else if ((mPimpl->mTestVariable == nullptr)
+                       && reset->testVariable() != nullptr) {
+                return false;
+            } else if ((mPimpl->mVariable != nullptr)
+                       && !mPimpl->mVariable->equals(reset->variable())) {
+                return false;
+            } else if ((mPimpl->mVariable == nullptr)
+                       && reset->variable() != nullptr) {
+                return false;
             }
-            return equal;
+            return true;
         }
     }
     return false;

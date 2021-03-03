@@ -78,14 +78,13 @@ bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
     for (const auto &variable : mVariables) {
         bool variableFound = false;
         size_t index = 0;
-        for (index = 0; index < unmatchedIndex.size() && !variableFound; ++index) {
-            size_t currentIndex = unmatchedIndex.at(index);
-            auto variableOther = other->variable(currentIndex);
+        for (index = 0; (index < unmatchedIndex.size()) && !variableFound; ++index) {
+            auto variableOther = other->variable(unmatchedIndex.at(index));
             if (variable->equals(variableOther)) {
                 variableFound = true;
             }
         }
-        if (variableFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
+        if (variableFound && (index < size_t(std::numeric_limits<ptrdiff_t>::max()))) {
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 variables to this component. And much more than
             // that in a 64-bit environment.
@@ -534,9 +533,9 @@ bool Component::doEqual(const EntityPtr &other) const
 {
     if (ComponentEntity::doEqual(other)) {
         auto component = std::dynamic_pointer_cast<Component>(other);
-        if (component != nullptr && compareMath(mPimpl->mMath, component->math()) && mPimpl->equalResets(component) && mPimpl->equalVariables(component) && ImportedEntity::doEqual(component)) {
-            return true;
-        }
+        return (component != nullptr) && compareMath(mPimpl->mMath, component->math())
+                && mPimpl->equalResets(component) && mPimpl->equalVariables(component)
+                && ImportedEntity::doEqual(component);
     }
     return false;
 }
