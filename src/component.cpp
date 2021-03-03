@@ -492,13 +492,13 @@ bool Component::doIsResolved() const
     return resolved;
 }
 
-bool Component::doEqual(const EntityPtr &other) const
+bool Component::doEquals(const EntityPtr &other) const
 {
-    if (ComponentEntity::doEqual(other)) {
+    if (ComponentEntity::doEquals(other)) {
         auto component = std::dynamic_pointer_cast<Component>(other);
         return (component != nullptr) && compareMath(mPimpl->mMath, component->math())
                 && mPimpl->equalResets(component) && mPimpl->equalVariables(component)
-                && ImportedEntity::doEqual(component);
+                && ImportedEntity::doEquals(component);
     }
     return false;
 }

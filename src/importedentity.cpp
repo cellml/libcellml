@@ -76,7 +76,7 @@ bool ImportedEntity::isResolved() const
     return doIsResolved();
 }
 
-bool ImportedEntity::doEqual(const ImportedEntityPtr &other) const
+bool ImportedEntity::doEquals(const ImportedEntityPtr &other) const
 {
     bool isImportLocal = isImport();
     bool importMatches = isImportLocal == other->isImport();

@@ -127,7 +127,7 @@ public:
 
 protected:
     Entity(); /**< Constructor, @private. */
-    virtual bool doEqual(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
+    virtual bool doEquals(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
 
 private:
     struct EntityImpl; /**< Forward declaration for pImpl idiom, @private. */

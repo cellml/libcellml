@@ -279,9 +279,9 @@ std::string ComponentEntity::encapsulationId() const
     return mPimpl->mEncapsulationId;
 }
 
-bool ComponentEntity::doEqual(const EntityPtr &other) const
+bool ComponentEntity::doEquals(const EntityPtr &other) const
 {
-    if (NamedEntity::doEqual(other)) {
+    if (NamedEntity::doEquals(other)) {
         auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(other);
         if ((componentEntity != nullptr)
                 && mPimpl->mEncapsulationId == componentEntity->encapsulationId()

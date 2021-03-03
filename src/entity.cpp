@@ -57,7 +57,7 @@ std::string Entity::id() const
 
 bool Entity::equals(const EntityPtr &other) const
 {
-    return doEqual(other);
+    return doEquals(other);
 }
 
 EntityPtr Entity::parent() const
@@ -99,7 +99,7 @@ bool Entity::hasAncestor(const EntityPtr &entity) const
     return hasAncestor;
 }
 
-bool Entity::doEqual(const EntityPtr &other) const
+bool Entity::doEquals(const EntityPtr &other) const
 {
     if (other == nullptr) {
         return false;

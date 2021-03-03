@@ -522,9 +522,9 @@ bool Model::fixVariableInterfaces()
     return allOk;
 }
 
-bool Model::doEqual(const EntityPtr &other) const
+bool Model::doEquals(const EntityPtr &other) const
 {
-    if (ComponentEntity::doEqual(other)) {
+    if (ComponentEntity::doEquals(other)) {
         auto model = std::dynamic_pointer_cast<Model>(other);
         if ((model != nullptr) && mPimpl->equalUnits(model)) {
             return true;

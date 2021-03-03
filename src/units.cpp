@@ -329,11 +329,11 @@ bool nearlyEqual(const double a, const double b)
     return ulpsDistance(a, b) <= ulpsEpsilon;
 }
 
-bool Units::doEqual(const EntityPtr &other) const
+bool Units::doEquals(const EntityPtr &other) const
 {
-    if (NamedEntity::doEqual(other)) {
+    if (NamedEntity::doEquals(other)) {
         auto units = std::dynamic_pointer_cast<Units>(other);
-        if (units != nullptr && mPimpl->mUnits.size() == units->unitCount() && ImportedEntity::doEqual(units)) {
+        if (units != nullptr && mPimpl->mUnits.size() == units->unitCount() && ImportedEntity::doEquals(units)) {
             // Check unit definitions match.
             std::string reference;
             std::string prefix;
