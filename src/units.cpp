@@ -345,7 +345,7 @@ bool Units::doEquals(const EntityPtr &other) const
     }
 
     // Check unit definitions match.
-    static const size_t PTRDIFF_T_MAX = size_t(std::numeric_limits<ptrdiff_t>::max());
+    static const auto PTRDIFF_T_MAX = size_t(std::numeric_limits<ptrdiff_t>::max());
 
     std::string reference;
     std::string prefix;
