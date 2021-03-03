@@ -64,7 +64,6 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/mathml.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
@@ -131,7 +130,6 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.h
   ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/mathml.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
