@@ -53,7 +53,7 @@ TEST(Equality, variableNotEqualToUnits)
     libcellml::UnitsPtr u1 = libcellml::Units::create("variable");
 
     EXPECT_FALSE(v1->equals(u1));
-    EXPECT_FALSE(v1->equals(u1));
+    EXPECT_FALSE(u1->equals(v1));
 }
 
 TEST(Equality, variableEqualById)
@@ -360,37 +360,27 @@ TEST(Equality, unitsNotEqualNaN)
     EXPECT_FALSE(u2->equals(u1));
 }
 
+libcellml::ResetPtr createInitialisedReset()
+{
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
+    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
+
+    r->setOrder(3);
+    r->setResetValue("reset value math");
+    r->setResetValueId("rv_id");
+    r->setTestValue("test value math");
+    r->setTestValueId("tv_id");
+    r->setTestVariable(tv1);
+    r->setVariable(v1);
+
+    return r;
+}
+
 TEST(Equality, resetEqual)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
-
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vA");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
-    r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
-    r2->setVariable(v2);
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
     EXPECT_TRUE(r1->equals(r2));
     EXPECT_TRUE(r2->equals(r1));
@@ -398,35 +388,10 @@ TEST(Equality, resetEqual)
 
 TEST(Equality, resetNotEqualByOrder)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vA");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
     r2->setOrder(2);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
-    r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
-    r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equals(r2));
     EXPECT_FALSE(r2->equals(r1));
@@ -434,35 +399,10 @@ TEST(Equality, resetNotEqualByOrder)
 
 TEST(Equality, resetNotEqualByResetValue)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vA");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
     r2->setResetValue("reset value different math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
-    r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
-    r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equals(r2));
     EXPECT_FALSE(r2->equals(r1));
@@ -470,35 +410,10 @@ TEST(Equality, resetNotEqualByResetValue)
 
 TEST(Equality, resetNotEqualByResetValueId)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vA");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
     r2->setResetValueId("rv_alt_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
-    r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
-    r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equals(r2));
     EXPECT_FALSE(r2->equals(r1));
@@ -506,35 +421,10 @@ TEST(Equality, resetNotEqualByResetValueId)
 
 TEST(Equality, resetNotEqualByTestValue)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
-
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vA");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
     r1->setTestValue("test value different math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
-    r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
-    r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equals(r2));
     EXPECT_FALSE(r2->equals(r1));
@@ -542,35 +432,10 @@ TEST(Equality, resetNotEqualByTestValue)
 
 TEST(Equality, resetNotEqualByTestValueId)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
-
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vA");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
     r1->setTestValueId("tv_alt_id");
-    r2->setTestValueId("tv_id");
-
-    r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
-    r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equals(r2));
     EXPECT_FALSE(r2->equals(r1));
@@ -578,35 +443,11 @@ TEST(Equality, resetNotEqualByTestValueId)
 
 TEST(Equality, resetNotEqualByTestVariable)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
-
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vA");
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
     libcellml::VariablePtr tv1 = libcellml::Variable::create("vTestA");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
     r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
-    r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equals(r2));
     EXPECT_FALSE(r2->equals(r1));
@@ -614,34 +455,10 @@ TEST(Equality, resetNotEqualByTestVariable)
 
 TEST(Equality, resetNotEqualByVariable)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
     libcellml::VariablePtr v2 = libcellml::Variable::create("vB");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
-    r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
     r2->setVariable(v2);
 
     EXPECT_FALSE(r1->equals(r2));
@@ -650,34 +467,10 @@ TEST(Equality, resetNotEqualByVariable)
 
 TEST(Equality, resetNotEqualByNullTestVariable)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vB");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
-    r2->setTestVariable(tv2);
-
-    r1->setVariable(v1);
-    r2->setVariable(v2);
+    r1->setTestVariable(nullptr);
 
     EXPECT_FALSE(r1->equals(r2));
     EXPECT_FALSE(r2->equals(r1));
@@ -685,34 +478,10 @@ TEST(Equality, resetNotEqualByNullTestVariable)
 
 TEST(Equality, resetNotEqualByNullVariable)
 {
-    libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
 
-    libcellml::VariablePtr v1 = libcellml::Variable::create("vA");
-    libcellml::VariablePtr v2 = libcellml::Variable::create("vB");
-
-    libcellml::VariablePtr tv1 = libcellml::Variable::create("vTest");
-    libcellml::VariablePtr tv2 = libcellml::Variable::create("vTest");
-
-    r1->setOrder(3);
-    r2->setOrder(3);
-
-    r1->setResetValue("reset value math");
-    r2->setResetValue("reset value math");
-
-    r1->setResetValueId("rv_id");
-    r2->setResetValueId("rv_id");
-
-    r1->setTestValue("test value math");
-    r2->setTestValue("test value math");
-
-    r1->setTestValueId("tv_id");
-    r2->setTestValueId("tv_id");
-
-    r1->setTestVariable(tv1);
-    r2->setTestVariable(tv2);
-
-    r2->setVariable(v2);
+    r2->setVariable(nullptr);
 
     EXPECT_FALSE(r1->equals(r2));
     EXPECT_FALSE(r2->equals(r1));
