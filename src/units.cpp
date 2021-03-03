@@ -278,7 +278,7 @@ ptrdiff_t ulpsDistance(double a, double b)
     }
 
     // If one's infinite and they're not equal, max distance.
-    if (std::isinf(a) xor std::isinf(b)) {
+    if (!std::isinf(a) != !std::isinf(b)) {
         return max;
     }
 
