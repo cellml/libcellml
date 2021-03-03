@@ -23,8 +23,6 @@ limitations under the License.
 
 namespace libcellml {
 
-class EntityPrivate;
-
 /**
  * @brief The Entity class.
  *
@@ -115,7 +113,7 @@ public:
      * @brief Test to see if this entity is equal to the @p other entity.
      *
      * The attributes and properties of the entity are tested against the @p other
-     * entity's attributes and properties and compared for equality.
+     * entity's attributes and properties, and compared for equality.
      *
      * If an entity has any children associated with it, then the order that children appear in
      * is **not** taken into account.
@@ -123,7 +121,7 @@ public:
      * The parents of either entity (if they exist) are ignored when determining equality.
      *
      * @param other The entity to test against.
-     * @return @c true if this entity is equal to the other entity, @c false otherwise.
+     * @return @c true if this entity is equal to the @p other entity, @c false otherwise.
      */
     bool equals(const EntityPtr &other) const;
 
