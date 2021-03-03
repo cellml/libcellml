@@ -431,7 +431,7 @@ private:
 
     bool doAddComponent(const ComponentPtr &component) override; /**< Virtual implementation method for addComponent, @private. */
 
-    bool doEqual(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
     ModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */

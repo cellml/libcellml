@@ -213,9 +213,9 @@ VariablePtr Variable::create(const std::string &name) noexcept
     return std::shared_ptr<Variable> {new Variable {name}};
 }
 
-bool Variable::doEqual(const EntityPtr &other) const
+bool Variable::doEquals(const EntityPtr &other) const
 {
-    if (NamedEntity::doEqual(other)) {
+    if (NamedEntity::doEquals(other)) {
         auto variable = std::dynamic_pointer_cast<libcellml::Variable>(other);
         if ((variable != nullptr)
                 && mPimpl->mInitialValue == variable->initialValue()

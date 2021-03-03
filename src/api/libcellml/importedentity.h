@@ -132,7 +132,7 @@ protected:
      */
     virtual bool doIsResolved() const = 0;
 
-    bool doEqual(const ImportedEntityPtr &other) const; /**< Implementation method for equals, @private. */
+    bool doEquals(const ImportedEntityPtr &other) const; /**< Implementation method for equals, @private. */
 
 private:
     struct ImportedEntityImpl;

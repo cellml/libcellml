@@ -51,9 +51,9 @@ std::string NamedEntity::name() const
     return mPimpl->mName;
 }
 
-bool NamedEntity::doEqual(const EntityPtr &other) const
+bool NamedEntity::doEquals(const EntityPtr &other) const
 {
-    if (Entity::doEqual(other)) {
+    if (Entity::doEquals(other)) {
         auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(other);
         if (namedEntity != nullptr) {
             return mPimpl->mName == namedEntity->name();

@@ -199,9 +199,9 @@ ResetPtr Reset::clone() const
     return r;
 }
 
-bool Reset::doEqual(const EntityPtr &other) const
+bool Reset::doEquals(const EntityPtr &other) const
 {
-    if (Entity::doEqual(other)) {
+    if (Entity::doEquals(other)) {
         auto reset = std::dynamic_pointer_cast<Reset>(other);
         if ((reset != nullptr) && mPimpl->mOrder == reset->order()
                 && compareMath(mPimpl->mResetValue, reset->resetValue())
