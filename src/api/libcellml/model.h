@@ -72,9 +72,6 @@ public:
      * previously in a different model, it is moved to this one,
      * and the previous model's units list is updated.
      *
-     * Note: We assume that fewer than 2,147,483,647 units will be added.
-     * Undefined behaviour may occur if this assumption is violated.
-     *
      * The function will return @c false and no action is taken if:
      *  - The @p units pointer already exists in this model; or
      *  - The @p units is @c nullptr.
@@ -353,9 +350,6 @@ public:
      * Add import source by reference to the model. If the import
      * source item was previously in a different model, it is moved
      * to this one, and the previous model's import source list is updated.
-     *
-     * Note: We assume that fewer than 2,147,483,647 import sources will be added.
-     * Undefined behaviour may occur if this assumption is violated.
      *
      * The function will return @c false and no action is taken if:
      *  - The @p importSrc pointer already exists in this model; or
