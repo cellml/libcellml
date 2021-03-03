@@ -205,8 +205,6 @@ TEST(Equality, unitsNotEqualDifferingNumberOfUnits)
     libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
 
-    libcellml::ImportSourcePtr is = libcellml::ImportSource::create();
-
     u1->addUnit("second", 1.0, "second_id");
     u1->addUnit("metre", -1.0, "metre_id");
     u2->addUnit("second", 1.0, "second_id");
@@ -219,8 +217,6 @@ TEST(Equality, unitsNotEqualDifferingUnitsBasic)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
     libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
-
-    libcellml::ImportSourcePtr is = libcellml::ImportSource::create();
 
     u1->addUnit("second", 1.0, "unit_id");
     u2->addUnit("second", 2.0, "unit_id");
