@@ -80,7 +80,8 @@ bool ImportedEntity::doEqual(const ImportedEntityPtr &other) const
 {
     bool isImportLocal = isImport();
     bool importMatches = isImportLocal == other->isImport();
-    if (isImportLocal && importMatches && mPimpl->mImportReference == other->importReference()) {
+    if (isImportLocal && importMatches
+            && mPimpl->mImportReference == other->importReference()) {
         return mPimpl->mImportSource->equals(other->importSource());
     }
     return importMatches;
