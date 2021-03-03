@@ -1058,3 +1058,19 @@ TEST(Equality, parseMath)
 
     EXPECT_TRUE(component->equals(model->component(0)));
 }
+
+TEST(Equality, clone)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/outsidecomponentequivalentvariables.xml"));
+    auto clonedModel = model->clone();
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("modelflattening/"));
+    model = importer->flattenModel(model);
+
+    importer->resolveImports(clonedModel,  resourcePath("modelflattening/"));
+    clonedModel = importer->flattenModel(clonedModel);
+
+    EXPECT_TRUE(model->equals(clonedModel));
+    EXPECT_TRUE(clonedModel->equals(model));
+}
