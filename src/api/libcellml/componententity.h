@@ -51,9 +51,6 @@ public:
      * will keep its current parent and it will remain a child of its
      * current parent.
      *
-     * Note: We assume that fewer than 2,147,483,647 components will be added.
-     * Undefined behaviour may occur if this assumption is violated.
-     *
      * @param component The component to add.
      *
      * @return True if the component was added, false otherwise.
