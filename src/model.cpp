@@ -77,28 +77,9 @@ std::vector<ImportSourcePtr>::const_iterator Model::ModelImpl::findImportSource(
 
 bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
 {
-    std::vector<size_t> unmatchedIndex(mUnits.size());
-    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
-    for (const auto &units : mUnits) {
-        bool unitsFound = false;
-        size_t index = 0;
-        for (index = 0; index < unmatchedIndex.size() && !unitsFound; ++index) {
-            size_t currentIndex = unmatchedIndex.at(index);
-            auto unitsOther = other->units(currentIndex);
-            if (units->equals(unitsOther)) {
-                unitsFound = true;
-            }
-        }
-        if (unitsFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
-            // We are going to assume here that nobody is going to add more
-            // than 2,147,483,647 units to this component. And much more than
-            // that in a 64-bit environment.
-            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
-        } else {
-            return false;
-        }
-    }
-    return true;
+    std::vector<EntityPtr> entities;
+    std::copy(mUnits.begin(), mUnits.end(), std::back_inserter(entities));
+    return equalEntities(other, entities);
 }
 
 Model::Model()

@@ -21,6 +21,7 @@ limitations under the License.
 #include <cmath>
 #include <iomanip>
 #include <limits>
+#include <numeric>
 #include <set>
 #include <sstream>
 #include <vector>
@@ -1165,6 +1166,50 @@ std::string replace(std::string string, const std::string &from, const std::stri
     return (index == std::string::npos) ?
                string :
                string.replace(index, from.length(), to);
+}
+
+bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities)
+{
+    std::vector<size_t> unmatchedIndex(entities.size());
+    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
+    for (const auto &entity : entities) {
+        bool entityFound = false;
+        size_t index = 0;
+        for (index = 0; index < unmatchedIndex.size() && !entityFound; ++index) {
+            size_t currentIndex = unmatchedIndex.at(index);
+            auto model = std::dynamic_pointer_cast<Model>(owner);
+            if (model != nullptr) {
+                auto unitsOther = model->units(currentIndex);
+                if (entity->equals(unitsOther)) {
+                    entityFound = true;
+                }
+            } else {
+                auto component = std::dynamic_pointer_cast<Component>(owner);
+                auto variable = std::dynamic_pointer_cast<Variable>(entity);
+                if (variable != nullptr) {
+                    auto variableOther = component->variable(currentIndex);
+                    if (variable->equals(variableOther)) {
+                        entityFound = true;
+                    }
+                } else {
+                    auto reset = std::dynamic_pointer_cast<Reset>(entity);
+                    auto resetOther = component->reset(currentIndex);
+                    if (reset->equals(resetOther)) {
+                        entityFound = true;
+                    }
+                }
+            }
+        }
+        if (entityFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
+            // We are going to assume here that nobody is going to add more
+            // than 2,147,483,647 units to this component. And much more than
+            // that in a 64-bit environment.
+            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
+        } else {
+            return false;
+        }
+    }
+    return true;
 }
 
 } // namespace libcellml
