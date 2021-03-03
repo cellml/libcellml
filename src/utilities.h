@@ -662,4 +662,18 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
  */
 std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
 
+/**
+ * @brief Test the given entities are equal to entities in owner.
+ *
+ * Test to see if all the entites given in @p entities are equal to
+ * entities in @p owner.  The order that the entities appear in is not
+ * taken into account.
+ *
+ * @param owner The owner to compare entities with.
+ * @param entities The list of entities to equate.
+ *
+ * @return @c true if all the entities in @p entities are equal to entites in the @p owner.
+ */
+bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities);
+
 } // namespace libcellml

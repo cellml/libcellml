@@ -73,53 +73,16 @@ std::vector<ResetPtr>::const_iterator Component::ComponentImpl::findReset(const 
 
 bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
 {
-    std::vector<size_t> unmatchedIndex(mVariables.size());
-    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
-    for (const auto &variable : mVariables) {
-        bool variableFound = false;
-        size_t index = 0;
-        for (index = 0; (index < unmatchedIndex.size()) && !variableFound; ++index) {
-            auto variableOther = other->variable(unmatchedIndex.at(index));
-            if (variable->equals(variableOther)) {
-                variableFound = true;
-            }
-        }
-        if (variableFound && (index < size_t(std::numeric_limits<ptrdiff_t>::max()))) {
-            // We are going to assume here that nobody is going to add more
-            // than 2,147,483,647 variables to this component. And much more than
-            // that in a 64-bit environment.
-            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
-        } else {
-            return false;
-        }
-    }
-    return true;
+    std::vector<EntityPtr> entities;
+    std::copy(mVariables.begin(), mVariables.end(), std::back_inserter(entities));
+    return equalEntities(other, entities);
 }
 
 bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
 {
-    std::vector<size_t> unmatchedIndex(mResets.size());
-    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
-    for (const auto &reset : mResets) {
-        bool resetFound = false;
-        size_t index = 0;
-        for (index = 0; index < unmatchedIndex.size() && !resetFound; ++index) {
-            size_t currentIndex = unmatchedIndex.at(index);
-            auto resetOther = other->reset(currentIndex);
-            if (reset->equals(resetOther)) {
-                resetFound = true;
-            }
-        }
-        if (resetFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
-            // We are going to assume here that nobody is going to add more
-            // than 2,147,483,647 resets to this component. And much more than
-            // that in a 64-bit environment.
-            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
-        } else {
-            return false;
-        }
-    }
-    return true;
+    std::vector<EntityPtr> entities;
+    std::copy(mResets.begin(), mResets.end(), std::back_inserter(entities));
+    return equalEntities(other, entities);
 }
 
 Component::Component()
