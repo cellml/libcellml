@@ -132,7 +132,6 @@ public:
      * previous component's variable list is updated.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p variable reference already exists in this component; or
      *  - The @p variable is the @c nullptr.
      *
      * @sa removeVariable
@@ -306,7 +305,6 @@ public:
      * previous component's reset list is updated.
      *
      * The function will return @c false with no action taken if:
-     *  - the @p reset already exists in this component; or
      *  - the supplied @param reset pointer is @c nullptr.
      *
      * @sa removeReset
