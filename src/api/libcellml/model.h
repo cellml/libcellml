@@ -73,7 +73,6 @@ public:
      * and the previous model's units list is updated.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p units pointer already exists in this model; or
      *  - The @p units is @c nullptr.
      *
      * @param units The units to add.
