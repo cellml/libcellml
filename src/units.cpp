@@ -549,19 +549,19 @@ void Units::removeAllUnits()
 
 void Units::doSetImportSource(const ImportSourcePtr &importSource)
 {
-    auto model = owningModel(shared_from_this());
-    auto units = shared_from_this();
+    auto thisUnits = shared_from_this();
+    auto model = owningModel(thisUnits);
 
-    auto oldImportSource = units->importSource();
+    auto oldImportSource = thisUnits->importSource();
 
     if (model != nullptr) {
         model->addImportSource(importSource);
     }
     if (importSource != nullptr) {
-        importSource->addUnits(units);
+        importSource->addUnits(thisUnits);
     }
     if (oldImportSource != nullptr) {
-        oldImportSource->removeUnits(units, false);
+        oldImportSource->removeUnits(thisUnits, false);
     }
     ImportedEntity::doSetImportSource(importSource);
 }
