@@ -313,7 +313,7 @@ ptrdiff_t ulpsDistance(double a, double b)
  *
  * @return @c true if the given doubles are considered close, @c false otherwise.
  */
-bool nearlyEqual(double a, double b)
+bool areNearlyEqual(double a, double b)
 {
     static const double fixedEpsilon = std::numeric_limits<double>::epsilon();
     static const ptrdiff_t ulpsEpsilon = 1;
@@ -365,9 +365,9 @@ bool Units::doEquals(const EntityPtr &other) const
 
             units->unitAttributes(currentIndex, reference, prefix, exponent, multiplier, id);
 
-            if (nearlyEqual(unitDefinition.mExponent, exponent)
+            if (areNearlyEqual(unitDefinition.mExponent, exponent)
                 && (unitDefinition.mId == id)
-                && nearlyEqual(unitDefinition.mMultiplier, multiplier)
+                && areNearlyEqual(unitDefinition.mMultiplier, multiplier)
                 && (unitDefinition.mPrefix == prefix)
                 && (unitDefinition.mReference == reference)) {
                 unitFound = true;
