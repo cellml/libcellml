@@ -120,13 +120,13 @@ void registerPossibleImportSource(const ModelPtr &model, const ComponentPtr &com
 
 bool Model::doAddComponent(const ComponentPtr &component)
 {
-    if (component->hasParent()) {
-        auto parent = component->parent();
-        removeComponentFromEntity(parent, component);
+    auto thisModel = shared_from_this();
+    if (component->hasParent() && (thisModel != component->parent())) {
+        removeComponentFromEntity(component->parent(), component);
     }
-    component->setParent(shared_from_this());
+    component->setParent(thisModel);
 
-    registerPossibleImportSource(shared_from_this(), component);
+    registerPossibleImportSource(thisModel, component);
 
     return ComponentEntity::doAddComponent(component);
 }
@@ -137,18 +137,14 @@ bool Model::addUnits(const UnitsPtr &units)
         return false;
     }
 
-    // Prevent adding the same units.
-    if (std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), units) != mPimpl->mUnits.end()) {
-        return false;
-    }
-
     // Prevent adding to multiple models: move units to this model.
-    if (units->hasParent()) {
+    auto thisModel = shared_from_this();
+    if (units->hasParent() && (units->parent() != thisModel)) {
         auto otherParent = std::dynamic_pointer_cast<Model>(units->parent());
         otherParent->removeUnits(units);
     }
     mPimpl->mUnits.push_back(units);
-    units->setParent(shared_from_this());
+    units->setParent(thisModel);
 
     if (units->isImport()) {
         addImportSource(units->importSource());
@@ -297,7 +293,9 @@ bool Model::addImportSource(const ImportSourcePtr &importSrc)
     if (otherModel != nullptr) {
         otherModel->removeImportSource(importSrc);
     }
-    importSrc->setParent(shared_from_this());
+
+    auto thisModel = shared_from_this();
+    importSrc->setParent(thisModel);
     mPimpl->mImports.push_back(importSrc);
     return true;
 }

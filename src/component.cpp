@@ -117,22 +117,25 @@ ComponentPtr Component::create(const std::string &name) noexcept
 
 bool Component::doAddComponent(const ComponentPtr &component)
 {
+    auto newParent = shared_from_this();
     bool hasParent = component->hasParent();
     if (hasParent) {
         if (hasAncestor(component)) {
             return false;
         }
         auto parent = component->parent();
-        removeComponentFromEntity(parent, component);
+        if (parent != newParent) {
+            removeComponentFromEntity(parent, component);
+        }
     } else if (!hasParent && hasAncestor(component)) {
         return false;
-    } else if (shared_from_this() == component) {
+    } else if (newParent == component) {
         return false;
     }
-    component->setParent(shared_from_this());
+    component->setParent(newParent);
 
     if (component->isImport()) {
-        auto model = owningModel(shared_from_this());
+        auto model = owningModel(newParent);
         if (model != nullptr) {
             model->addImportSource(component->importSource());
         }
@@ -195,19 +198,15 @@ bool Component::addVariable(const VariablePtr &variable)
         return false;
     }
 
-    // Prevent adding the same variable.
-    if (std::find(mPimpl->mVariables.begin(), mPimpl->mVariables.end(), variable) != mPimpl->mVariables.end()) {
-        return false;
-    }
-
     // Prevent adding to multiple components.
-    if (variable->hasParent()) {
+    auto thisComponent = shared_from_this();
+    if (variable->hasParent() && (thisComponent != variable->parent())) {
         auto otherParent = std::dynamic_pointer_cast<Component>(variable->parent());
         otherParent->removeVariable(variable);
     }
 
+    variable->setParent(thisComponent);
     mPimpl->mVariables.push_back(variable);
-    variable->setParent(shared_from_this());
     return true;
 }
 
@@ -316,17 +315,13 @@ bool Component::addReset(const ResetPtr &reset)
         return false;
     }
 
-    // Prevent adding the same reset.
-    if (std::find(mPimpl->mResets.begin(), mPimpl->mResets.end(), reset) != mPimpl->mResets.end()) {
-        return false;
-    }
-
     // Prevent adding to multiple components.
-    if (reset->hasParent()) {
+    auto thisComponent = shared_from_this();
+    if (reset->hasParent() && (thisComponent != reset->parent())) {
         auto otherParent = std::dynamic_pointer_cast<Component>(reset->parent());
         otherParent->removeReset(reset);
     }
-    reset->setParent(shared_from_this());
+    reset->setParent(thisComponent);
     mPimpl->mResets.push_back(reset);
     return true;
 }

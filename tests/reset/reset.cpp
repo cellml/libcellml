@@ -230,13 +230,13 @@ TEST(Reset, addResetInvalidArguments)
     EXPECT_TRUE(c->addReset(r));
     EXPECT_EQ(size_t(1), c->resetCount());
 
-    // Try to add r to c again, which cannot be done.
-    EXPECT_FALSE(c->addReset(r));
-    EXPECT_EQ(size_t(1), c->resetCount());
+    // Add r to c again.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(2), c->resetCount());
 
     // Try to add a nullptr to c, which cannot be done.
     EXPECT_FALSE(c->addReset(nullptr));
-    EXPECT_EQ(size_t(1), c->resetCount());
+    EXPECT_EQ(size_t(2), c->resetCount());
 }
 
 TEST(Reset, removeReset)
