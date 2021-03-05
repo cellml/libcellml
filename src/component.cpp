@@ -17,6 +17,7 @@ limitations under the License.
 #include "libcellml/component.h"
 
 #include <algorithm>
+#include <iterator>
 #include <numeric>
 #include <string>
 #include <vector>
