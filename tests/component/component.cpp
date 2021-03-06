@@ -396,6 +396,20 @@ TEST(Component, takeComponentMethods)
     EXPECT_EQ(e, a);
 }
 
+TEST(Component, addComponentMultipleTimes)
+{
+    auto model = libcellml::Model::create("model");
+    auto tomato = libcellml::Component::create("tomato");
+
+    EXPECT_TRUE(model->addComponent(tomato));
+    EXPECT_TRUE(model->addComponent(tomato));
+
+    auto apple = model->takeComponent("tomato");
+    apple->setName("apple");
+    EXPECT_EQ("apple", model->component(0)->name());
+    EXPECT_EQ("apple", tomato->name());
+}
+
 TEST(Component, replaceComponentMethods)
 {
     const std::string e_orig =
@@ -570,6 +584,11 @@ TEST(Component, addVariableMultipleTimes)
     EXPECT_TRUE(apple->addVariable(pip));
     EXPECT_EQ(size_t(1), tomato->variableCount());
     EXPECT_EQ(size_t(1), apple->variableCount());
+
+    // check some names
+    pip->setName("not_a_pip");
+    EXPECT_EQ("not_a_pip", tomato->variable(0)->name());
+    EXPECT_EQ("not_a_pip", apple->variable(0)->name());
 }
 
 TEST(Component, preventSegfaultInAddSomething)
