@@ -66,7 +66,7 @@ Start by making the libxml2 build directory the current directory::
 
 Then as before configure the library::
 
-  emcmake cmake -DCMAKE_BUILD_TYPE=Release -DZLIB_DIR=../usr/local/share/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF ../libxml2/
+  emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local -DZLIB_DIR=../usr/local/share/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF ../libxml2/
 
 There are two additions to the configure command this time;
 
