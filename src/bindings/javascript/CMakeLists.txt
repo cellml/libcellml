@@ -48,7 +48,7 @@ set_target_properties(libcellml.common PROPERTIES
 
 set(_PACKAGE_JSON "\{
   \"name\": \"libcellml.js\",
-  \"version\": \"${PROJECT_VERSION}\",
+  \"version\": \"${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}\",
   \"description\": \"libcellml.js javascript web assembly for libCellML.\",
   \"main\": \"libcellml.js\",
   \"files\": [\"libcellml.common.js\", \"libcellml.common.wasm\", \"libcellml.js\", \"libcellml.wasm\", \"README.md\", \"vue-app-with-libcellml.png\"],
@@ -59,3 +59,4 @@ set(_PACKAGE_JSON "\{
 ")
 
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/package.json" "${_PACKAGE_JSON}")
+
