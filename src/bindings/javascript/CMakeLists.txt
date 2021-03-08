@@ -46,6 +46,9 @@ set_target_properties(libcellml.common PROPERTIES
   LINK_FLAGS "--bind -s 'EXPORT_NAME=\"libCellML\"' -s MODULARIZE=1 -s ALLOW_MEMORY_GROWTH=1"
 )
 
+configure_file(README.md README.md COPYONLY)
+configure_file(vue-app-with-libcellml.png vue-app-with-libcellml.png COPYONLY)
+
 set(_PACKAGE_JSON "\{
   \"name\": \"libcellml.js\",
   \"version\": \"${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}\",
