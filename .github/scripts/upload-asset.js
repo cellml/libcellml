@@ -25,7 +25,7 @@ module.exports = ({github, context}) => {
     github.repos.uploadReleaseAsset({
       url: upload_url_with_name,
       headers,
-      file: fs.readFileSync(assetPath)
+      data: fs.readFileSync(assetPath)
     });
   }
 } 
