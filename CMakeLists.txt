@@ -15,7 +15,7 @@
 cmake_minimum_required(VERSION 3.10.2)
 
 set(PROJECT_NAME libCellML)
-set(PROJECT_DEVELOPER_VERSION -rc.1)
+set(PROJECT_DEVELOPER_VERSION -rc.171)
 project(${PROJECT_NAME} VERSION 0.3.0 LANGUAGES CXX)
 
 # Set policies that affect the build.
