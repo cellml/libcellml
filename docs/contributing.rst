@@ -22,13 +22,13 @@ Once all the changes and reviews are complete, one of the :term:`prime repositor
 
 Note that a bug is just a type of issue, and that resolving the bug should have both the implementation to fix the bug and a test that triggers the bug.
 
-:numref:`Figure %s <libcellml-development-process>` gives a graphical overview of the developer contribution process.
+:numref:`libcellml_development_process` gives a graphical overview of the developer contribution process.
 For more details, see the text below.
 
-.. _libcellml-development-process:
 .. figure:: ./images/libCellMLProcesses-DevelopmentProcess.png
    :align: center
    :alt: Developer contribution process.
+   :name: libcellml_development_process
 
    Developer contribution process.
 
@@ -68,12 +68,12 @@ A topic or feature branch is a branch that is local to you (and anyone you colla
 All development work should be carried out on a topic branch, for example any major feature that you work on or minor bug fix.
 Before creating a local topic branch, pull the latest changes from the :term:`prime repository` :code:`develop` branch, to make sure that you're working from the most up-to-date version of the code.
 
-.. _libcellml-branching:
 .. figure:: ./images/libCellMLProcesses-GitBranching.png
    :align: center
    :alt: Git branching illustration.
+   :name: git_branching
 
-   Git branching illustration.
+   How branching in a Git repository works.
 
 Following this process will make it easier to have multiple topic branches at once and keep them in-sync with the :term:`prime repository` :code:`develop` branch, which will in turn make it easier to manage multiple pull requests.
 
@@ -104,7 +104,7 @@ For simple or obvious bugs which have fallen through the testing gaps, simply su
 
 GitHub pull requests
 ====================
-Once some changes have been made and local commits committed, push your changes to your Github libCellML repository (refer to :numref:`Figure %s <libcellml-branching>`).
+Once some changes have been made and local commits committed, push your changes to your Github libCellML repository (refer to :numref:`git_branching`).
 From there, create a pull request from your topic branch to the :term:`prime repository` :code:`develop` branch.
 When creating the pull request, make sure to add in the comment :code:`Addresses issue #123` (of course, replace the number 123 with the actual number of the issue you are addressing), or something to that effect.
 This will create a link between the issue and the pull request enabling other people to see that you are working on this issue and comment on your work.

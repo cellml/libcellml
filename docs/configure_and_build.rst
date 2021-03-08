@@ -76,12 +76,10 @@ As with any CMake session we first set the location of the source files (your :c
 Don’t worry about setting the options at this stage, you can just push *Configure* and CMake will try and find what it needs.  
 You can edit anything you need to in the next step.  
 
-
-.. _fig_devBuilding_windowsCMakeGUISourceBuildDirs:
-
 .. figure:: ./images/libCellMLBuilding-CMakeGUISourceBuildDirs.png
    :align: center
    :alt: CMake-GUI with initial values for source and build directories set.
+   :name: cmake_gui_with_values
 
    CMake-GUI with source and build directories set for user *andre*.
    
@@ -91,23 +89,20 @@ If CMake does not find the entries in the table above you will need to enter the
 To find out what's missing, read the output from the configuration step.  
 Some common messages and their required actions are listed below.
 
-
-.. _fig_devBuilding_windowsCmakeGUIInitialConfigureAttempt:
-
 .. figure:: ./images/libCellMLBuilding-CMakeOptionsInRed.png
    :align: center
    :alt: CMake-GUI with initial values shown in red.
+   :name: cmake_gui_with_initial_values
    
    CMake-GUI with initial values shown in red.
 
 
 The first time you push the *Configure* button you will probably encounter an error like the one shown below.  
    
-.. _fig_devBuilding_windowsCMakeConfigurationError:
-
 .. figure:: ./images/libCellMLBuilding-CMakeWindowsConfigurationError.png
    :align: center
    :alt: CMake-GUI on Windows showing configuration error after initial configuration attempt.
+   :name: cmake_gui_with_errors
 
    CMake-GUI showing configuration error after initial configuration attempt.
    
@@ -137,11 +132,10 @@ Policy CMP0086 is not set
 Despite being in red and repeated multiple times, this is a warning which can safely be ignored.  
 It's caused by a version mis-match between SWIG and libCellML and will be addressed in the next release.
 
-.. _fig_devBuilding_libcellml_cmp0086:
-
 .. figure:: ./images/libCellMLBuilding-PolicyCMP0086Error.png
    :align: center
    :alt: CMake-GUI on Windows shows CMP0086 error.
+   :name: windows_error
 
    CMake-GUI showing CMP0086 error.
 
@@ -153,11 +147,10 @@ To address this you need to manually set the location of the Python library usin
 This can be done through the interface by clicking the *Add entry* button, entering :code:`PYTHON_DEBUG_LIBRARY` in the Name field, and selecting :code:`FILEPATH` in the Option field.  
 Then simply browse to find the file in your Python installation called something like :code:`python35_d.lib` (for Python3.5), probably in the :code:`libs` directory of your Python folder.
 
-.. _fig_devBuilding_PythonDebugLibrary:
-
 .. figure:: ./images/libCellMLBuilding-PythonDebugLibrary.png
    :align: center
    :alt: Set the location of the debug library 
+   :name: python_libraries
    
    Set the location of the debug library using the :code:`PYTHON_DEBUG_LIBRARY` tag
    
@@ -202,7 +195,6 @@ For a more verbose output, run::
 
 
 
-
 Build in Windows and Visual Studio
 ----------------------------------
 
@@ -219,11 +211,11 @@ Cannot access xxx
 This is probably a permissions error related to the locations of your libraries or your :code:`LIBCELLML_BUILD` directory.  
 You could launch Visual Studio as an administrator by right-clicking on its icon in the Start Menu (see below), or create your :code:`LIBCELLML_BUILD` directory somewhere your user has default permission to access.
 
-.. _fig_devBuilding_runAsAdministrator:
 
 .. figure:: ./images/libCellMLBuilding-WindowsRunAsAdmin.png
    :align: center
    :alt: Right-click the VS icon in your start menu and select "Run as administrator"
+   :name: how_to_run_as_admin
 	
    Right-click the VS icon in your start menu and select "Run as administrator"
 
@@ -231,11 +223,10 @@ You could launch Visual Studio as an administrator by right-clicking on its icon
 The code execution cannot proceed because libcellmld.dll was not found
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-.. _fig_devBuilding_dllNotFound:
-
 .. figure:: ./images/libCellMLBuilding-dllNotFound.png
    :align: center
    :alt: System error when dll is not found.
+   :name: dll_not_found
 
    System error when dll is not found.
 
