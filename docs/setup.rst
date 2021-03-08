@@ -168,15 +168,14 @@ If you are using a GUI like :github_desktop:`GitHub Desktop<>` then you will nee
 
 The goal here is to get a working copy of source code, tests, and documentation onto your computer so that you can begin development.
 To make this happen, you will need to fork the :term:`prime libCellML repository`, make a clone onto your computer, and set up the Git remotes.
-In :numref:`fig_devSetup_githubRepos`, you can see a pictorial representation of what we are aiming to achieve.
-
-.. _fig_devSetup_githubRepos:
+In :numref:`repository_setup`, you can see a pictorial representation of what we are aiming to achieve.
 
 .. figure:: ./images/libCellMLProcesses-GitHubRepos.png
    :align: center
    :alt: Setup of Git repositories.
+   :name: repository_setup
 
-   Setup of repositories for development.
+   How the repositories for development are arranged.
 
 The four steps to getting set up are detailed below.
 
@@ -184,13 +183,12 @@ Forking your own copy
 ---------------------
 Login to Github using your credentials and go to https://github.com/cellml/libCellML.
 
-Use the fork button to create a libCellML repository under your own account, see :numref:`fig_devSetup_githubFork` for locating this button.
-
-.. _fig_devSetup_githubFork:
+Use the fork button to create a libCellML repository under your own account, see :numref:`forking_a_repo` for locating this button.
 
 .. figure:: ./images/libCellMLProcesses-GitHubForkButton.png
    :align: center
    :alt: Fork button of libCellML repository.
+   :name: forking_a_repo
 
    Fork button for libCellML repository.
 

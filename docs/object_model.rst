@@ -15,6 +15,9 @@ Overview of Object Model
 
 .. figure:: ./images/libCellMLRoughObjectModel-Overview.png
    :alt: libCellML Overview Object Model.
+   :name: overview_of_libcellml_objects
+
+   Showing the inheritance structure between libCellML items within the model.
 
 Detailed
 ========
