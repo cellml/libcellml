@@ -1,5 +1,4 @@
 const fs = require('fs');
-const mime = require('mime');
 
 module.exports = ({github, context}) => {
   
@@ -17,7 +16,7 @@ module.exports = ({github, context}) => {
   console.log(files)  
   for (let index in files) {
     const assetPath = files[index]
-    const contentType = mime.getType(assetPath);
+    const contentType = 'application/json'//mime.getType(assetPath);
     const assetName = assetPath.split('/').pop();
     const contentLength = filePath => fs.statSync(filePath).size;
     const headers = { 'content-type': contentType, 'content-length': contentLength(assetPath) };
