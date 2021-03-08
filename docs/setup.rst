@@ -200,7 +200,7 @@ You do this by going to your fork (in this example user *andre*'s fork) at https
 .. container:: nb
 
    Do not try and clone this location!
-   Substitute your :github:`Github<>` username for *andre*.
+   Substitute your Github username for *andre*.
 
 On the right hand side of the webpage, on your fork of the repository, you can get the link for cloning the repository to your computer, in our example::
 
