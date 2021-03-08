@@ -16,12 +16,12 @@ High level objectives
 
 libCellML is focused on CellML 2.0 and beyond.
 
-  * The implementation of libCellML should be driven by the requirements for supporting CellML 2.0 and beyond.
+* The implementation of libCellML should be driven by the requirements for supporting CellML 2.0 and beyond.
 
-    * libCellML should be designed to support the CellML specification with the flexibility for extra restrictions, constraints, or additions coming from future proposals for changing the specification.
+  * libCellML should be designed to support the CellML specification with the flexibility for extra restrictions, constraints, or additions coming from future proposals for changing the specification.
 
-  * libCellML should be able to parse models in CellML 2.0 and newer versions of the specification.
-  * libCellML will only serialise models to the current version of the specification.
+* libCellML should be able to parse models in CellML 2.0 and newer versions of the specification.
+* libCellML will only serialise models to the current version of the specification.
 
 Environment
 ===========
@@ -29,14 +29,15 @@ Environment
 This section will specify the environment for the development of libCellML.
 
 * `GitHub <https://github.com/>`_ to host the primary libCellML source repository and issue tracker under the `CellML organisation <https://github.com/cellml>`_ (current and former editorial board members).
-* Development language: primary implementation in C++ with `SWIG <http://www.swig.org/>`_ Python bindings and `enscripten <https://emscripten.org/>`_ based WebAssembly for JavaScript bindings.
+* Development language: primary implementation in C++ with `SWIG <http://www.swig.org/>`_ Python bindings and `emscripten <https://emscripten.org/>`_ based WebAssembly for JavaScript bindings.
 * Build: `CMake <http://www.cmake.org/>`_ for generating cross-platform build rules.
-* Test: using `Buildbot <http://buildbot.net/>`_ on the ABI BaTS to run continuous integration testing.
+* Test: using `Buildbot <http://buildbot.net/>`_ on our own servers to run continuous integration testing.
 * Test: unit testing to use `gtest <https://github.com/google/googletest/>`_.
 * Documentation: written in `reStructuredText <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html>`_.
 * Documentation: API and source code examples will be documented using C++-style `Doxygen <http://www.doxygen.org/>`_ comments.
-* Website: https://libcellml.org
+* Website: `libcellml.org <https://libcellml.org>`_.
 * Website: content pulled from libCellML documentation, tutorials, and `website source <https://github.com/libcellml/website-src>`_.
+* Deploy: use Github actions to build artifacts for deployment.
 
 Requirements
 ------------
@@ -60,7 +61,7 @@ Milestone 1: Python bindings, validation, code generation, and documentation
 
 #. Python bindings.
 
-   #. Wrap the libCellML API using Swig to be able to generate Python bindings for the library.
+   #. Wrap the libCellML API using SWIG to be able to generate Python bindings for the library.
    #. Package the bindings so they can be easily installed across Windows, Linux, and macOS.
 
 #. Load a CellML 2.0 model and validate it.
@@ -91,7 +92,7 @@ Milestone 2: units, JavaScript, and resets
 #. JavaScript.
 
    #. Use Emscripten to create a JavaScript API for libCellML.
-   #. Provide a suitable packaged version of the JavaScript API for integration in common JavaScript environments (e.g., Node, Webpack).
+   #. Provide a suitable packaged version of the JavaScript API for integration in common JavaScript environments (e.g., Node, Browser).
    #. Document the installation and use of the JavaScript API.
 
 #. Resets.
