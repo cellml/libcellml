@@ -4,9 +4,7 @@
 Roadmap
 =======
 
-Updated: 29 May 2019.
-
-The current roadmap had evolved from that present in the `0.1.0 release <https://libcellml.readthedocs.io/en/0.1.0/roadmap.html>`_ of libCellML.
+Updated: 09 March 2021.
 
 Each milestone may consist of several 'releases' and future requirements may impact the design and implementation of earlier releases of libCellML.
 Major changes in the API will be accepted up to the release of libCellML version 1.0.0.
@@ -31,18 +29,19 @@ Environment
 This section will specify the environment for the development of libCellML.
 
 * `GitHub <https://github.com/>`_ to host the primary libCellML source repository and issue tracker under the `CellML organisation <https://github.com/cellml>`_ (current and former editorial board members).
-* Development language: C++ with `SWIG <http://www.swig.org/>`_ bindings.
+* Development language: primary implementation in C++ with `SWIG <http://www.swig.org/>`_ Python bindings and `enscripten <https://emscripten.org/>`_ based WebAssembly for JavaScript bindings.
 * Build: `CMake <http://www.cmake.org/>`_ for generating cross-platform build rules.
 * Test: using `Buildbot <http://buildbot.net/>`_ on the ABI BaTS to run continuous integration testing.
-* Test: unit testing to use `gtest <https://code.google.com/p/googletest/>`_.
+* Test: unit testing to use `gtest <https://github.com/google/googletest/>`_.
 * Documentation: written in `reStructuredText <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html>`_.
 * Documentation: API and source code examples will be documented using C++-style `Doxygen <http://www.doxygen.org/>`_ comments.
+* Website: https://libcellml.org
+* Website: content pulled from libCellML documentation, tutorials, and `website source <https://github.com/libcellml/website-src>`_.
 
 Requirements
 ------------
 
-* Documentation: made available on `readthedocs.io <https://readthedocs.io/>`_.
-  Read the Docs uses `Sphinx <http://sphinx-doc.org/>`_ for generating documentation.
+* Documentation: made available on `libcellml.org <https://libcellml.org/>`_.
 * Documentation: is amenable for inclusion in external documentation efforts
 * Development: Agile, test driven development where:
 
