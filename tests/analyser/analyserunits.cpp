@@ -897,3 +897,89 @@ TEST(AnalyserUnits, divide)
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
+
+TEST(AnalyserUnits, power)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/units/power.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "The units in 'b = pow(bCst, 3.0)' in component 'main' are not equivalent. The unit mismatch is second^-3.",
+        "The units in 'c = pow(cCst, 5.0)' in component 'main' are not equivalent. The unit mismatch is ampere^5 x kilogram^-5 x metre^-10 x second^15.",
+        "The units in 'd = pow(dCst, 7.0)' in component 'main' are not equivalent. The unit mismatch is frog^-7.",
+        "The unit of '9.0' in 'pow(eCst, 9.0)' in equation 'e = pow(eCst, 9.0)' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'e = pow(eCst, 9.0)' in component 'main' are not equivalent. The unit mismatch is second^-9.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(AnalyserUnits, root)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/units/root.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "The units in 'b = pow(bCst, 1.0/3.0)' in component 'main' are not equivalent. The unit mismatch is second^-0.333333.",
+        "The units in 'c = pow(cCst, 1.0/5.0)' in component 'main' are not equivalent. The unit mismatch is ampere^0.2 x kilogram^-0.2 x metre^-0.4 x second^0.6.",
+        "The units in 'd = pow(dCst, 1.0/7.0)' in component 'main' are not equivalent. The unit mismatch is frog^-0.142857.",
+        "The unit of '9.0' in 'pow(eCst, 1.0/9.0)' in equation 'e = pow(eCst, 1.0/9.0)' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'e = pow(eCst, 1.0/9.0)' in component 'main' are not equivalent. The unit mismatch is second^-0.111111.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
