@@ -994,9 +994,11 @@ TEST(Analyser, unitsInMathmlStrings)
         "The units in 'a+pow(b, 2.0)' in equation 'j = a+pow(b, 2.0)' in component 'direct_comparison_operators' are not equivalent. The unit mismatch is metre^-1 x second^1.",
         "The argument in 'tan(a)' in equation 'i = tan(a)' in component 'trigonometric_operators' is not dimensionless. The unit mismatch is second^1.",
         "The units in 'log(a)/log(2.0)' in equation 'i = log(a)/log(2.0)' in component 'logarithmic_operators' are not consistent with the base. The unit mismatch is second^1.",
+        "The unit of '2.0' in 'pow(a, 2.0)' in equation 'l = pow(a, 2.0)' in component 'power_root_operators' is not dimensionless. The unit mismatch is second^1.",
         "The units in 'l = pow(a, 2.0)' in component 'power_root_operators' are not equivalent. The unit mismatch is ampere^6 x kilogram^-4 x metre^-8 x second^14.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -1009,8 +1011,10 @@ TEST(Analyser, unitsInMathmlStrings)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,

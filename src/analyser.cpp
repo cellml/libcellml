@@ -1954,6 +1954,28 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                           ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
+        // Make sure that our power/root value, if any, is dimensionless.
+
+        if ((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER)
+            || (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE)) {
+            Strings unitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMapsMismatchesInformation((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                                                                                                                rightUnitsMaps :
+                                                                                                                unitsMaps);
+
+            if (!unitsMapsMismatchesInformation.empty()) {
+                AnalyserEquationAstPtr astChild = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                                                      ast->mPimpl->mOwnedRightChild :
+                                                      ast->mPimpl->mOwnedLeftChild;
+
+                issueDescriptions.push_back("The unit of " + expressionInformation(astChild, false)
+                                            + " in " + expressionInformation(ast)
+                                            + " is not dimensionless. The unit mismatch is "
+                                            + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation, false) + ".");
+            }
+        }
+
+        // Retrieve the power/root value and apply it to our units maps and multipliers.
+
         double powerRootValue = 0.0;
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
