@@ -431,7 +431,9 @@
                     <and/>
                     <apply>
                         <root/>
-                        <ci>n</ci>
+                        <degree>
+                            <ci>n</ci>
+                        </degree>
                         <ci>m</ci>
                     </apply>
                     <apply>
@@ -536,7 +538,9 @@
                     </apply>
                     <apply>
                         <root/>
-                        <ci>p</ci>
+                        <degree>
+                            <ci>p</ci>
+                        </degree>
                         <ci>o</ci>
                     </apply>
                 </apply>
@@ -669,7 +673,9 @@
                     <or/>
                     <apply>
                         <root/>
-                        <ci>n</ci>
+                        <degree>
+                            <ci>n</ci>
+                        </degree>
                         <ci>m</ci>
                     </apply>
                     <apply>
@@ -774,7 +780,9 @@
                     </apply>
                     <apply>
                         <root/>
-                        <ci>p</ci>
+                        <degree>
+                            <ci>p</ci>
+                        </degree>
                         <ci>o</ci>
                     </apply>
                 </apply>
@@ -907,7 +915,9 @@
                     <xor/>
                     <apply>
                         <root/>
-                        <ci>n</ci>
+                        <degree>
+                            <ci>n</ci>
+                        </degree>
                         <ci>m</ci>
                     </apply>
                     <apply>
@@ -1012,7 +1022,9 @@
                     </apply>
                     <apply>
                         <root/>
-                        <ci>p</ci>
+                        <degree>
+                            <ci>p</ci>
+                        </degree>
                         <ci>o</ci>
                     </apply>
                 </apply>
@@ -1802,7 +1814,9 @@
                     </apply>
                     <apply>
                         <root/>
-                        <ci>p</ci>
+                        <degree>
+                            <ci>p</ci>
+                        </degree>
                         <ci>o</ci>
                     </apply>
                 </apply>
@@ -1855,11 +1869,13 @@
                 <ci>eqnRootParentheses</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <gt/>
-                        <ci>p</ci>
-                        <ci>o</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <gt/>
+                            <ci>p</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
@@ -1872,11 +1888,13 @@
                 <ci>eqnRootParenthesesLeftPlusWith</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <gt/>
-                        <ci>p</ci>
-                        <ci>o</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <gt/>
+                            <ci>p</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <plus/>
                         <ci>m</ci>
@@ -1889,11 +1907,13 @@
                 <ci>eqnRootParenthesesLeftPlusWithout</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <gt/>
-                        <ci>o</ci>
-                        <ci>n</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <gt/>
+                            <ci>o</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <plus/>
                         <ci>m</ci>
@@ -1905,11 +1925,13 @@
                 <ci>eqnRootParenthesesLeftMinusWith</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <gt/>
-                        <ci>p</ci>
-                        <ci>o</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <gt/>
+                            <ci>p</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <minus/>
                         <ci>m</ci>
@@ -1922,11 +1944,13 @@
                 <ci>eqnRootParenthesesLeftMinusWithout</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <gt/>
-                        <ci>o</ci>
-                        <ci>n</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <gt/>
+                            <ci>o</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <minus/>
                         <ci>m</ci>
@@ -1938,11 +1962,13 @@
                 <ci>eqnRootParenthesesLeftTimes</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <gt/>
-                        <ci>p</ci>
-                        <ci>o</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <gt/>
+                            <ci>p</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <times/>
                         <ci>m</ci>
@@ -1955,11 +1981,13 @@
                 <ci>eqnRootParenthesesLeftDivide</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <gt/>
-                        <ci>p</ci>
-                        <ci>o</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <gt/>
+                            <ci>p</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <divide/>
                         <ci>m</ci>
@@ -1972,11 +2000,13 @@
                 <ci>eqnRootParenthesesRightPlusWith</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <plus/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <plus/>
+                            <ci>o</ci>
+                            <ci>p</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
@@ -1989,10 +2019,12 @@
                 <ci>eqnRootParenthesesRightPlusWithout</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <plus/>
-                        <ci>o</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <plus/>
+                            <ci>o</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
@@ -2005,11 +2037,13 @@
                 <ci>eqnRootParenthesesRightMinusWith</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <minus/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <minus/>
+                            <ci>o</ci>
+                            <ci>p</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
@@ -2022,10 +2056,12 @@
                 <ci>eqnRootParenthesesRightMinusWithout</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <minus/>
-                        <ci>o</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <minus/>
+                            <ci>o</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
@@ -2038,11 +2074,13 @@
                 <ci>eqnRootParenthesesRightTimes</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <times/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <times/>
+                            <ci>o</ci>
+                            <ci>p</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
@@ -2055,11 +2093,13 @@
                 <ci>eqnRootParenthesesRightDivide</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <divide/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <divide/>
+                            <ci>o</ci>
+                            <ci>p</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
@@ -2072,11 +2112,13 @@
                 <ci>eqnRootParenthesesRightPower</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <power/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <power/>
+                            <ci>o</ci>
+                            <ci>p</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
@@ -2089,11 +2131,13 @@
                 <ci>eqnRootParenthesesRightRoot</ci>
                 <apply>
                     <root/>
-                    <apply>
-                        <root/>
-                        <ci>p</ci>
-                        <ci>o</ci>
-                    </apply>
+                    <degree>
+                        <apply>
+                            <root/>
+                            <ci>p</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </degree>
                     <apply>
                         <lt/>
                         <ci>m</ci>
