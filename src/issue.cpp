@@ -627,6 +627,29 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2, {"MAP_VARIABLES_VARIABLE2", "2.16.2", baseSpecificationUrl, "specB16"}},
     {Issue::ReferenceRule::MAP_VARIABLES_UNIQUE, {"MAP_VARIABLES_UNIQUE", "2.16.3", baseSpecificationUrl, "specB16"}},
     {Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE, {"MAP_VARIABLES_AVAILABLE_INTERFACE", "3.10.8", baseSpecificationUrl, "specC10"}},
+
+    // Issues not present in the normative specification:
+    {Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, {"MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION", "", docsUrl, ""}},
+    {Issue::ReferenceRule::INVALID_ARGUMENT, {"INVALID_ARGUMENT", "", docsUrl, ""}},
+
+    // Importer class issues:
+    {Issue::ReferenceRule::IMPORTER_NULL_MODEL, {"IMPORTER_NULL_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT, {"IMPORTER_MISSING_COMPONENT", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_MISSING_UNITS, {"IMPORTER_MISSING_UNITS", "", docsUrl, ""}},
+
+    // Analyser issues:
+    {Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE, {"ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION, {"ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_VOI_INITIALISED, {"ANALYSER_VOI_INITIALISED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_VOI_SEVERAL, {"ANALYSER_VOI_SEVERAL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER, {"ANALYSER_ODE_NOT_FIRST_ORDER", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED, {"ANALYSER_VARIABLE_UNUSED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED, {"ANALYSER_STATE_NOT_INITIALISED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE, {"ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL, {"ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI, {"ANALYSER_EXTERNAL_VARIABLE_VOI", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE, {"ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE", "", docsUrl, ""}},
+
 };
 
 std::string Issue::referenceHeading() const
@@ -641,9 +664,14 @@ std::string Issue::referenceHeading() const
 std::string Issue::url() const
 {
     auto search = ruleToInformation.find(referenceRule());
+
     if (referenceRule() != Issue::ReferenceRule::UNDEFINED && search != ruleToInformation.end()) {
+        if(search->second[1].empty()){
+            return search->second[2] + "?issue=" + search->second[0];
+        }
         return search->second[2] + search->second[3] + ".html?issue=" + search->second[0];
     }
+
     return {};
 }
 

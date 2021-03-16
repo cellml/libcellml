@@ -31,9 +31,10 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * Base URLs of specification and example sites from which the Issue::url() will be constructed.
+ * Base URLs of sites from which Issue::url() strings will be constructed.
  */
 static const std::string baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
+static const std::string docsUrl = "https://staging.libcellml.org/documentation/guides/latest/runtime_codes/index";
 
 /**
  * Vector of base units.
