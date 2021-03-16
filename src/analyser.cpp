@@ -444,8 +444,8 @@ struct Analyser::AnalyserImpl
                                 double unitsMultiplier = 0.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
     double powerValue(const AnalyserEquationAstPtr &ast);
-    std::string expressionInformation(const AnalyserEquationAstPtr &ast,
-                                      bool includeHierarchy = true);
+    std::string expression(const AnalyserEquationAstPtr &ast,
+                           bool includeHierarchy = true);
     void defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
                                         UnitsMultipliers &unitsMultipliers);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
@@ -1730,8 +1730,8 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast)
     return std::stod(ast->value());
 }
 
-std::string Analyser::AnalyserImpl::expressionInformation(const AnalyserEquationAstPtr &ast,
-                                                          bool includeHierarchy)
+std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast,
+                                               bool includeHierarchy)
 {
     // Return the generated code for the given AST, specifying the equation and
     // component in which it is, if needed and requested.
@@ -1828,7 +1828,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                                       unitsMultipliersMismatchesInformation);
 
         if (unitsMapsMismatches || unitsMultipliersMismatches) {
-            std::string issueDescription = "The units in " + expressionInformation(ast) + " ";
+            std::string issueDescription = "The units in " + expression(ast) + " ";
 
             if (unitsMapsMismatches) {
                 issueDescription += "are not equivalent";
@@ -1903,7 +1903,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             issueDescription += " of ";
 
             if (!unitsMapsMismatchesInformation.empty()) {
-                issueDescription += expressionInformation(ast->mPimpl->mOwnedLeftChild, false);
+                issueDescription += expression(ast->mPimpl->mOwnedLeftChild, false);
             }
 
             if (!unitsMapsMismatchesInformation.empty()
@@ -1912,10 +1912,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             }
 
             if (!rightUnitsMapsMismatchesInformation.empty()) {
-                issueDescription += expressionInformation(ast->mPimpl->mOwnedRightChild, false);
+                issueDescription += expression(ast->mPimpl->mOwnedRightChild, false);
             }
 
-            issueDescription += " in " + expressionInformation(ast);
+            issueDescription += " in " + expression(ast);
 
             if (!unitsMapsMismatchesInformation.empty()
                 && !rightUnitsMapsMismatchesInformation.empty()) {
@@ -1973,8 +1973,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                       ast->mPimpl->mOwnedRightChild :
                                                       ast->mPimpl->mOwnedLeftChild;
 
-                issueDescriptions.push_back("The unit of " + expressionInformation(astChild, false)
-                                            + " in " + expressionInformation(ast)
+                issueDescriptions.push_back("The unit of " + expression(astChild, false)
+                                            + " in " + expression(ast)
                                             + " is not dimensionless. The unit mismatch is "
                                             + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation, false) + ".");
             }
@@ -2012,7 +2012,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         Strings unitsMapsMismatchesInformation;
 
         if (!areSameUnitsMaps(rightUnitsMaps, unitsMaps, unitsMapsMismatchesInformation)) {
-            issueDescriptions.push_back("The units in " + expressionInformation(ast)
+            issueDescriptions.push_back("The units in " + expression(ast)
                                         + " are not consistent with the base. The unit "
                                         + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation) + ".");
         }
@@ -2045,7 +2045,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         Strings unitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMaps);
 
         if (!unitsMapsMismatchesInformation.empty()) {
-            issueDescriptions.push_back("The argument in " + expressionInformation(ast)
+            issueDescriptions.push_back("The argument in " + expression(ast)
                                         + " is not dimensionless. The unit "
                                         + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation) + ".");
         }
