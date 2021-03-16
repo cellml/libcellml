@@ -634,6 +634,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 
     // Importer class issues:
     {Issue::ReferenceRule::IMPORTER_NULL_MODEL, {"IMPORTER_NULL_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_MISSING_FILE, {"IMPORTER_MISSING_FILE", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT, {"IMPORTER_MISSING_COMPONENT", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_MISSING_UNITS, {"IMPORTER_MISSING_UNITS", "", docsUrl, ""}},
 
@@ -649,6 +650,13 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL, {"ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI, {"ANALYSER_EXTERNAL_VARIABLE_VOI", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE, {"ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE", "", docsUrl, ""}},
+
+    // Annotator issues:
+    {Issue::ReferenceRule::ANNOTATOR_ID_NOT_FOUND, {"ANNOTATOR_ID_NOT_FOUND", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE, {"ANNOTATOR_ID_NOT_UNIQUE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANNOTATOR_NO_MODEL, {"ANNOTATOR_NO_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE, {"ANNOTATOR_INCONSISTENT_TYPE", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANNOTATOR_NULL_MODEL, {"ANNOTATOR_NULL_MODEL", "", docsUrl, ""}},
 
 };
 
@@ -666,7 +674,7 @@ std::string Issue::url() const
     auto search = ruleToInformation.find(referenceRule());
 
     if (referenceRule() != Issue::ReferenceRule::UNDEFINED && search != ruleToInformation.end()) {
-        if(search->second[1].empty()){
+        if (search->second[1].empty()) {
             return search->second[2] + "?issue=" + search->second[0];
         }
         return search->second[2] + search->second[3] + ".html?issue=" + search->second[0];

@@ -440,6 +440,7 @@ void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
     auto issue = Issue::create();
     issue->setDescription("Could not find an item with an id of '" + id + "' in the model.");
     issue->setLevel(Issue::Level::WARNING);
+    issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_FOUND);
     mAnnotator->addIssue(issue);
 }
 
@@ -448,6 +449,7 @@ void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id) const
     auto issue = Issue::create();
     issue->setDescription("The id '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
     issue->setLevel(Issue::Level::WARNING);
+    issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE);
     mAnnotator->addIssue(issue);
 }
 
@@ -456,6 +458,7 @@ void Annotator::AnnotatorImpl::addIssueNoModel() const
     auto issue = Issue::create();
     issue->setDescription("This Annotator object does not have a model to work with.");
     issue->setLevel(Issue::Level::ERROR);
+    issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NO_MODEL);
     mAnnotator->addIssue(issue);
 }
 
@@ -465,6 +468,7 @@ void Annotator::AnnotatorImpl::addInvalidArgument(CellmlElementType type) const
     auto description = "The item is internally inconsistent: the enum type '" + cellmlElementTypeAsString(type) + "' cannot be used with the stored item.";
     issue->setDescription(description);
     issue->setLevel(Issue::Level::ERROR);
+    issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE);
     mAnnotator->addIssue(issue);
 }
 
@@ -978,6 +982,7 @@ bool Annotator::assignAllIds(ModelPtr &model)
         auto issue = Issue::create();
         issue->setDescription("The Model supplied is a nullptr. No action has been taken.");
         issue->setLevel(Issue::Level::ERROR);
+        issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NULL_MODEL);
         return false;
     }
     setModel(model);

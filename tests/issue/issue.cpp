@@ -319,6 +319,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
         EXPECT_EQ("3.10.8", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::IMPORTER_NULL_MODEL:
+    case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_FILE:
     case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT:
     case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_UNITS:
     case libcellml::Issue::ReferenceRule::INVALID_ARGUMENT:
@@ -333,6 +334,11 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL:
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI:
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_ID_NOT_FOUND:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_NO_MODEL:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_NULL_MODEL:
     case libcellml::Issue::ReferenceRule::UNSPECIFIED:
         EXPECT_EQ("", e->referenceHeading());
         break;
