@@ -42,56 +42,6 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>bLHS</ci>
-                <piecewise>
-                    <piece>
-                        <cn cellml:units="second">11</cn>
-                        <apply>
-                            <gt/>
-                            <ci>bLHS</ci>
-                            <cn cellml:units="metre">13</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="ampere">15</cn>
-                        <apply>
-                            <gt/>
-                            <ci>bLHS</ci>
-                            <cn cellml:units="candela">17</cn>
-                        </apply>
-                    </piece>
-                    <otherwise>
-                        <cn cellml:units="mole">19</cn>
-                    </otherwise>
-                </piecewise>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>cLHS</ci>
-                <piecewise>
-                    <piece>
-                        <cn cellml:units="frog">21</cn>
-                        <apply>
-                            <gt/>
-                            <ci>cLHS</ci>
-                            <cn cellml:units="rooster">23</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="dog">25</cn>
-                        <apply>
-                            <gt/>
-                            <ci>cLHS</ci>
-                            <cn cellml:units="cat">27</cn>
-                        </apply>
-                    </piece>
-                    <otherwise>
-                        <cn cellml:units="dove">29</cn>
-                    </otherwise>
-                </piecewise>
-            </apply>
-            <apply>
-                <eq/>
                 <piecewise>
                     <piece>
                         <cn cellml:units="dimensionless">1</cn>
@@ -117,6 +67,31 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>bLHS</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="second">11</cn>
+                        <apply>
+                            <gt/>
+                            <ci>bLHS</ci>
+                            <cn cellml:units="metre">13</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="ampere">15</cn>
+                        <apply>
+                            <gt/>
+                            <ci>bLHS</ci>
+                            <cn cellml:units="candela">17</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="mole">19</cn>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
                 <piecewise>
                     <piece>
                         <cn cellml:units="second">11</cn>
@@ -139,6 +114,31 @@
                     </otherwise>
                 </piecewise>
                 <ci>bRHS</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>cLHS</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="frog">21</cn>
+                        <apply>
+                            <gt/>
+                            <ci>cLHS</ci>
+                            <cn cellml:units="rooster">23</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="dog">25</cn>
+                        <apply>
+                            <gt/>
+                            <ci>cLHS</ci>
+                            <cn cellml:units="cat">27</cn>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dove">29</cn>
+                    </otherwise>
+                </piecewise>
             </apply>
             <apply>
                 <eq/>
