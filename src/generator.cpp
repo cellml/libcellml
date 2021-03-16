@@ -1620,30 +1620,32 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                 && areEqual(doubleValue, 2.0)) {
                 code = mLockedProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
             } else {
-                auto rootValueAst = AnalyserEquationAst::create();
+                if (mLockedProfile->hasPowerOperator()) {
+                    code = generateOperatorCode(mLockedProfile->powerString(), ast);
+                } else {
+                    auto rootValueAst = AnalyserEquationAst::create();
 
-                rootValueAst->setType(AnalyserEquationAst::Type::DIVIDE);
-                rootValueAst->setParent(ast);
+                    rootValueAst->setType(AnalyserEquationAst::Type::DIVIDE);
+                    rootValueAst->setParent(ast);
 
-                auto leftChild = AnalyserEquationAst::create();
-                auto rightChild = AnalyserEquationAst::create();
+                    auto leftChild = AnalyserEquationAst::create();
+                    auto rightChild = AnalyserEquationAst::create();
 
-                leftChild->setType(AnalyserEquationAst::Type::CN);
-                leftChild->setValue("1.0");
-                leftChild->setParent(rootValueAst);
+                    leftChild->setType(AnalyserEquationAst::Type::CN);
+                    leftChild->setValue("1.0");
+                    leftChild->setParent(rootValueAst);
 
-                rightChild->setType(astLeftChild->type());
-                rightChild->setVariable(astLeftChild->variable());
-                rightChild->setParent(rootValueAst);
-                rightChild->setLeftChild(astLeftChild->leftChild());
-                rightChild->setRightChild(astLeftChild->rightChild());
+                    rightChild->setType(astLeftChild->type());
+                    rightChild->setVariable(astLeftChild->variable());
+                    rightChild->setParent(rootValueAst);
+                    rightChild->setLeftChild(astLeftChild->leftChild());
+                    rightChild->setRightChild(astLeftChild->rightChild());
 
-                rootValueAst->setLeftChild(leftChild);
-                rootValueAst->setRightChild(rightChild);
+                    rootValueAst->setLeftChild(leftChild);
+                    rootValueAst->setRightChild(rightChild);
 
-                code = mLockedProfile->hasPowerOperator() ?
-                           generateOperatorCode(mLockedProfile->powerString(), ast) :
-                           mLockedProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mLockedProfile->divideString(), rootValueAst) + ")";
+                    code = mLockedProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mLockedProfile->divideString(), rootValueAst) + ")";
+                }
             }
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
