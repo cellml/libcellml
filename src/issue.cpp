@@ -543,7 +543,7 @@ void Issue::clear()
  * An internal map used to convert a Issue::ReferenceRule into its heading string.
  */
 static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInformation = {
-    {Issue::ReferenceRule::UNDEFINED, {"", "", ""}},
+    {Issue::ReferenceRule::UNDEFINED, {"", "", "", ""}},
 
     // Validation errors related to the CellML Specification:
     {Issue::ReferenceRule::XML, {"XML", "1.2.1", baseSpecificationUrl, "specA02"}},
