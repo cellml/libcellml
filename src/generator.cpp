@@ -1372,6 +1372,14 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             }
         }
     } else if (isRootOperator(ast)) {
+        // Note: when it comes to the left child, we actually need to check the
+        //       left child of the left child since pow(a, 1.0/b) will have the
+        //       following AST:
+        //          ╭──b
+        //       ╭──DEGREE
+        //       ROOT
+        //       ╰──a
+
         if (isRelationalOperator(ast->rightChild())
             || isLogicalOperator(ast->rightChild())
             || isMinusOperator(ast->rightChild())
@@ -1385,17 +1393,17 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             }
         }
 
-        if (isRelationalOperator(ast->leftChild())
-            || isLogicalOperator(ast->leftChild())
-            || isMinusOperator(ast->leftChild())
-            || isTimesOperator(ast->leftChild())
-            || isDivideOperator(ast->leftChild())
-            || isPowerOperator(ast->leftChild())
-            || isRootOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
+        if (isRelationalOperator(ast->leftChild()->leftChild())
+            || isLogicalOperator(ast->leftChild()->leftChild())
+            || isMinusOperator(ast->leftChild()->leftChild())
+            || isTimesOperator(ast->leftChild()->leftChild())
+            || isDivideOperator(ast->leftChild()->leftChild())
+            || isPowerOperator(ast->leftChild()->leftChild())
+            || isRootOperator(ast->leftChild()->leftChild())
+            || isPiecewiseStatement(ast->leftChild()->leftChild())) {
             leftChild = "(" + leftChild + ")";
-        } else if (isPlusOperator(ast->leftChild())) {
-            if (ast->leftChild()->rightChild() != nullptr) {
+        } else if (isPlusOperator(ast->leftChild()->leftChild())) {
+            if (ast->leftChild()->leftChild()->rightChild() != nullptr) {
                 leftChild = "(" + leftChild + ")";
             }
         }
