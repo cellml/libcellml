@@ -217,6 +217,7 @@ public:
 
         // Importer class issues:
         IMPORTER_NULL_MODEL,
+        IMPORTER_MISSING_FILE,
         IMPORTER_MISSING_COMPONENT,
         IMPORTER_MISSING_UNITS,
 
@@ -232,6 +233,13 @@ public:
         ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL,
         ANALYSER_EXTERNAL_VARIABLE_VOI,
         ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
+
+        // Annotator issues:
+        ANNOTATOR_ID_NOT_FOUND,
+        ANNOTATOR_ID_NOT_UNIQUE,
+        ANNOTATOR_NO_MODEL,
+        ANNOTATOR_INCONSISTENT_TYPE,
+        ANNOTATOR_NULL_MODEL,
 
         // Placeholder for further references:
         UNSPECIFIED

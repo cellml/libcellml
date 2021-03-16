@@ -276,7 +276,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
             auto issue = Issue::create();
             issue->setDescription("The attempt to resolve imports with the model at '" + url + "' failed: the file could not be opened.");
             issue->setImportSource(importSource);
-            issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+            issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_FILE);
             mImporter->addIssue(issue);
             return false;
         }
@@ -368,7 +368,7 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
                 auto issue = Issue::create();
                 issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importReference() + "' requires units named '" + unitName + "' which cannot be found.");
                 issue->setComponent(importComponent);
-                issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
                 mImporter->addIssue(issue);
                 return false;
             }
@@ -380,7 +380,7 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
         auto issue = Issue::create();
         issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importSource()->url() + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
         issue->setComponent(importComponent);
-        issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
         mImporter->addIssue(issue);
         return false;
     }
@@ -426,7 +426,7 @@ bool Importer::ImporterImpl::fetchUnits(const ModelPtr &origModel, const UnitsPt
                 auto issue = Issue::create();
                 issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
                 issue->setUnits(sourceUnits);
-                issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+                issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
                 mImporter->addIssue(issue);
                 return false;
             }
@@ -440,7 +440,7 @@ bool Importer::ImporterImpl::fetchUnits(const ModelPtr &origModel, const UnitsPt
         auto issue = Issue::create();
         issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
         issue->setUnits(importUnits);
-        issue->setReferenceRule(Issue::ReferenceRule::UNSPECIFIED);
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
         mImporter->addIssue(issue);
         return false;
     }
