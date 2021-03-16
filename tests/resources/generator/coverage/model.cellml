@@ -2134,7 +2134,9 @@
                     <degree>
                         <apply>
                             <root/>
-                            <ci>p</ci>
+                            <degree>
+                                <ci>p</ci>
+                            </degree>
                             <ci>o</ci>
                         </apply>
                     </degree>
