@@ -1374,14 +1374,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             }
         }
     } else if (isRootOperator(ast)) {
-        // Note: when it comes to the left child, we actually need to check the
-        //       left child of the left child since pow(a, 1.0/b) will have the
-        //       following AST:
-        //          ╭──b
-        //       ╭──DEGREE
-        //       ROOT
-        //       ╰──a
-
         if (isRelationalOperator(astRightChild)
             || isLogicalOperator(astRightChild)
             || isMinusOperator(astRightChild)
@@ -1629,20 +1621,13 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                     rootValueAst->setParent(ast);
 
                     auto leftChild = AnalyserEquationAst::create();
-                    auto rightChild = AnalyserEquationAst::create();
 
                     leftChild->setType(AnalyserEquationAst::Type::CN);
                     leftChild->setValue("1.0");
                     leftChild->setParent(rootValueAst);
 
-                    rightChild->setType(astLeftChild->type());
-                    rightChild->setVariable(astLeftChild->variable());
-                    rightChild->setParent(rootValueAst);
-                    rightChild->setLeftChild(astLeftChild->leftChild());
-                    rightChild->setRightChild(astLeftChild->rightChild());
-
                     rootValueAst->setLeftChild(leftChild);
-                    rootValueAst->setRightChild(rightChild);
+                    rootValueAst->setRightChild(astLeftChild->leftChild());
 
                     code = mLockedProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mLockedProfile->divideString(), rootValueAst) + ")";
                 }
