@@ -474,6 +474,12 @@ struct Analyser::AnalyserImpl
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     : mAnalyser(analyser)
 {
+    // Customise our generator's profile.
+
+    auto profile = mGenerator->profile();
+
+    profile->setAbsoluteValueString("abs");
+
     // Retrieve our generator's profile.
 
     mGenerator->mPimpl->retrieveLockedModelAndProfile();
