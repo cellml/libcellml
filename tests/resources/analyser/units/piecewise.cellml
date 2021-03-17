@@ -10,10 +10,12 @@
         <variable name="bLHS" units="dimensionless"/>
         <variable name="cLHS" units="dimensionless"/>
         <variable name="dLHS" units="dimensionless"/>
+        <variable name="eLHS" units="dimensionless"/>
         <variable name="aRHS" units="dimensionless"/>
         <variable name="bRHS" units="dimensionless"/>
         <variable name="cRHS" units="dimensionless"/>
         <variable name="dRHS" units="dimensionless"/>
+        <variable name="eRHS" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -209,6 +211,32 @@
                         <cn cellml:units="dove">39</cn>
                     </otherwise>
                 </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eLHS</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="dimensionless">41</cn>
+                        <cn cellml:units="second">43</cn>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dimensionless">45</cn>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="dimensionless">41</cn>
+                        <cn cellml:units="second">43</cn>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dimensionless">45</cn>
+                    </otherwise>
+                </piecewise>
+                <ci>eRHS</ci>
             </apply>
         </math>
     </component>
