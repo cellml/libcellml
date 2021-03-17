@@ -262,10 +262,14 @@ TEST(AnalyserUnits, piecewise)
         "The units in 'dRHS > 33.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
         "The units in 'dRHS > 37.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
         "The units in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatches are ampere^1 x dog^-1, ampere^1 x dove^-1, ampere^1 x frog^-1, dog^-1 x mole^1, dog^-1 x second^1, dove^-1 x mole^1, dove^-1 x second^1, frog^-1 x mole^1 and frog^-1 x second^1.",
+        "The unit of '43.0' in '(43.0)?41.0' in equation 'eLHS = (43.0)?41.0:45.0' in component 'main' is not dimensionless. The unit mismatch is second^1.",
+        "The unit of '43.0' in '(43.0)?41.0' in equation '(43.0)?41.0:45.0 = eRHS' in component 'main' is not dimensionless. The unit mismatch is second^1.",
         "Variable 'dLHS' in component 'main' is unused.",
         "Variable 'dRHS' in component 'main' is unused.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -304,10 +308,14 @@ TEST(AnalyserUnits, piecewise)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,

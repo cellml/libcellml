@@ -1772,6 +1772,16 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                   UnitsMultipliers &unitsMultipliers,
                                                   Strings &issueDescriptions)
 {
+    // Analyse the units used with different operators (table 2.1 of the CellML
+    // 2.0 normative specification:
+    //  - Simple operands ('ci' and 'cn'; note: 'sep' is not relevant here): any
+    //    unit can be used.
+    //  - Basic strucural (note: 'apply' is not relevant here):
+    //     - 'piecewise': the units used in the different 'piece' and
+    //       'otherwise' statements must all be the same.
+    //     - 'piece': any unit can be used for the returned value while the
+    //       unit used in the condition must be dimensionless.
+    //     - 'otherwise': any unit can be used.
     // Make sure that we have an AST to analyse.
 
     if (ast == nullptr) {
@@ -1884,6 +1894,16 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         unitsMultipliers.insert(std::end(unitsMultipliers),
                                 std::begin(rightUnitsMultipliers),
                                 std::end(rightUnitsMultipliers));
+    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::PIECE) {
+        Strings unitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMapsMismatchesInformation(rightUnitsMaps);
+
+        if (!unitsMapsMismatchesInformation.empty()) {
+            issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedRightChild, false)
+                                        + " in " + expression(ast)
+                                        + " is not dimensionless. The unit mismatch is "
+                                        + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation, false) + ".");
+        }
+
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
