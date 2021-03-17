@@ -1782,20 +1782,20 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                   Strings &issueDescriptions)
 {
     // Analyse the units used with different operators (table 2.1 of the CellML
-    // 2.0 normative specification:
+    // 2.0 normative specification):
     //  - Simple operands ('ci' and 'cn'; note: 'sep' is not relevant here): any
     //    unit can be used.
     //  - Basic strucural (note: 'apply' is not relevant here):
     //     - 'piecewise': the units used in the different 'piece' and
-    //       'otherwise' statements must all be the same.
+    //       'otherwise' statements should be the same.
     //     - 'piece': any unit can be used for the returned value while the
-    //       unit used in the condition must be dimensionless.
+    //       condition should be dimensionless.
     //     - 'otherwise': any unit can be used.
-    //  - Relational operators ('eq', 'neq', 'gt', 'lt', 'geq' and 'leq'): both
-    //    operands must have the same unit.
+    //  - Relational operators ('eq', 'neq', 'gt', 'lt', 'geq' and 'leq'): the
+    //    unit of both operands should be the same.
     //  - Logical operators:
-    //     - 'and', 'or', 'xor': both operands must be dimensionless.
-    //     - 'not': the operand must be dimensionless.
+    //     - 'and', 'or', 'xor': both operands should be dimensionless.
+    //     - 'not': the operand should be dimensionless.
 
     // Make sure that we have an AST to analyse.
 
