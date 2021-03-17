@@ -1791,6 +1791,12 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     //     - 'piece': any unit can be used for the returned value while the
     //       unit used in the condition must be dimensionless.
     //     - 'otherwise': any unit can be used.
+    //  - Relational operators ('eq', 'neq', 'gt', 'lt', 'geq' and 'leq'): both
+    //    operands must have the same unit.
+    //  - Logical operators:
+    //     - 'and', 'or', 'xor': both operands must be dimensionless.
+    //     - 'not': the operand must be dimensionless.
+
     // Make sure that we have an AST to analyse.
 
     if (ast == nullptr) {
