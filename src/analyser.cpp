@@ -331,7 +331,6 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
  *
  * The private implementation for the Analyser class.
  */
-using AstUnitsMap = std::map<AnalyserEquationAstPtr, UnitsWeakPtr>;
 using Strings = std::vector<std::string>;
 using UnitsMap = std::map<std::string, double>;
 using UnitsMaps = std::vector<UnitsMap>;
@@ -350,7 +349,7 @@ struct Analyser::AnalyserImpl
     GeneratorPtr mGenerator = libcellml::Generator::create();
 
     std::map<std::string, UnitsPtr> mStandardUnits;
-    AstUnitsMap mAstUnits;
+    std::map<AnalyserEquationAstPtr, UnitsWeakPtr> mCiCnUnits;
 
     explicit AnalyserImpl(Analyser *analyser);
     ~AnalyserImpl();
@@ -388,11 +387,8 @@ struct Analyser::AnalyserImpl
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
     void updateUnitsMap(const ModelPtr &model, const std::string &unitsName,
-                        UnitsMap &unitsMap, double unitsExponent,
-                        double unitsMultiplier);
-    void updateUnitsMaps(const ModelPtr &model, const std::string &unitsName,
-                         UnitsMaps &unitsMaps, double unitsExponent = 1.0,
-                         double unitsMultiplier = 0.0);
+                        UnitsMap &unitsMap, double unitsExponent = 1.0,
+                        double unitsMultiplier = 0.0);
     UnitsMap multiplyDivideUnitsMaps(const UnitsMap &firstUnitsMap,
                                      const UnitsMap &secondUnitsMap,
                                      bool multiply);
@@ -435,13 +431,8 @@ struct Analyser::AnalyserImpl
     void updateUnitsMultiplier(const ModelPtr &model,
                                const std::string &unitsName,
                                double &newUnitsMultiplier,
-                               double unitsExponent,
-                               double unitsMultiplier);
-    void updateUnitsMultipliers(const ModelPtr &model,
-                                const std::string &unitsName,
-                                UnitsMultipliers &newUnitsMultipliers,
-                                double unitsExponent = 1.0,
-                                double unitsMultiplier = 0.0);
+                               double unitsExponent = 1.0,
+                               double unitsMultiplier = 0.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
     double powerValue(const AnalyserEquationAstPtr &ast);
     std::string expression(const AnalyserEquationAstPtr &ast,
@@ -936,7 +927,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, astParent);
 
-        mAstUnits[ast] = variable->units();
+        mCiCnUnits[ast] = variable->units();
     } else if (node->isMathmlElement("cn")) {
         // Add the number to our AST and keep track of its unit. Note that in
         // the case of a standard unit, we need to create a units since it's
@@ -956,12 +947,12 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             auto iter = mStandardUnits.find(unitsName);
 
             if (iter == mStandardUnits.end()) {
-                mAstUnits[ast] = mStandardUnits[unitsName] = libcellml::Units::create(unitsName);
+                mCiCnUnits[ast] = mStandardUnits[unitsName] = libcellml::Units::create(unitsName);
             } else {
-                mAstUnits[ast] = iter->second;
+                mCiCnUnits[ast] = iter->second;
             }
         } else {
-            mAstUnits[ast] = owningModel(component)->units(unitsName);
+            mCiCnUnits[ast] = owningModel(component)->units(unitsName);
         }
 
         // Qualifier elements.
@@ -1297,19 +1288,6 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                 }
             }
         }
-    }
-}
-
-void Analyser::AnalyserImpl::updateUnitsMaps(const ModelPtr &model,
-                                             const std::string &unitsName,
-                                             UnitsMaps &unitsMaps,
-                                             double unitsExponent,
-                                             double unitsMultiplier)
-{
-    // Update the given units maps using the given information.
-
-    for (auto &unitsMap : unitsMaps) {
-        updateUnitsMap(model, unitsName, unitsMap, unitsExponent, unitsMultiplier);
     }
 }
 
@@ -1658,20 +1636,6 @@ void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
     }
 }
 
-void Analyser::AnalyserImpl::updateUnitsMultipliers(const ModelPtr &model,
-                                                    const std::string &unitsName,
-                                                    UnitsMultipliers &newUnitsMultipliers,
-                                                    double unitsExponent,
-                                                    double unitsMultiplier)
-{
-    // Update the given units multipliers using the given information.
-
-    for (auto &newUnitsMultiplier : newUnitsMultipliers) {
-        updateUnitsMultiplier(model, unitsName, newUnitsMultiplier,
-                              unitsExponent, unitsMultiplier);
-    }
-}
-
 std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &ast)
 {
     // Return the name of the component in which the given AST is, by going
@@ -1841,13 +1805,18 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
-        auto units = mAstUnits[ast].lock();
+        auto units = mCiCnUnits[ast].lock();
         auto model = owningModel(units);
 
         defaultUnitsMapsAndMultipliers(unitsMaps, unitsMultipliers);
 
-        updateUnitsMaps(model, units->name(), unitsMaps);
-        updateUnitsMultipliers(model, units->name(), unitsMultipliers);
+        for (auto &unitsMap : unitsMaps) {
+            updateUnitsMap(model, units->name(), unitsMap);
+        }
+
+        for (auto &unitsMultiplier : unitsMultipliers) {
+            updateUnitsMultiplier(model, units->name(), unitsMultiplier);
+        }
 
         return;
     }
@@ -2237,7 +2206,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     mInternalVariables.clear();
     mInternalEquations.clear();
 
-    mAstUnits.clear();
+    mCiCnUnits.clear();
 
     // Recursively analyse the model's components, so that we end up with an AST
     // for each of the model's equations.
