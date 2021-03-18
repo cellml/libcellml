@@ -1879,25 +1879,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                                       unitsMultipliersMismatchesInformation);
 
         if (unitsMapsMismatches || unitsMultipliersMismatches) {
-            std::string issueDescription = "The units in " + expression(ast) + " ";
-
-            if (unitsMapsMismatches) {
-                issueDescription += "are not equivalent";
-            }
-
-            if (unitsMultipliersMismatches) {
-                if (unitsMapsMismatches) {
-                    issueDescription += " and ";
-                }
-
-                if (unitsMultipliersMismatchesInformation.size() == 1) {
-                    issueDescription += "have a multiplier mismatch";
-                } else {
-                    issueDescription += "have multiplier mismatches";
-                }
-            }
-
-            issueDescription += ". ";
+            std::string issueDescription = "The units in " + expression(ast) + " are not the same. ";
 
             if (unitsMapsMismatches) {
                 issueDescription += Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation);
