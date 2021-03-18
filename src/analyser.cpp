@@ -1781,21 +1781,47 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                   UnitsMultipliers &unitsMultipliers,
                                                   Strings &issueDescriptions)
 {
-    // Analyse the units used with different operators (table 2.1 of the CellML
-    // 2.0 normative specification):
-    //  - Simple operands ('ci' and 'cn'; note: 'sep' is not relevant here): any
-    //    unit can be used.
+    // Analyse the units used with different MathML elements (table 2.1 of the
+    // CellML 2.0 normative specification; see https://bit.ly/3vBbyO5):
+    //  - Simple operands ('ci' and 'cn'; note: 'sep' is not relevant here): the
+    //    operand can have any unit.
     //  - Basic strucural (note: 'apply' is not relevant here):
-    //     - 'piecewise': the units used in the different 'piece' and
-    //       'otherwise' statements should be the same.
-    //     - 'piece': any unit can be used for the returned value while the
-    //       condition should be dimensionless.
-    //     - 'otherwise': any unit can be used.
+    //     - 'piecewise': the returned value of the different 'piece' and
+    //       'otherwise' statements should have the same unit .
+    //     - 'piece': the returned value can have any unit while the condition
+    //       should be dimensionless.
+    //     - 'otherwise': the returned value can have any unit.
     //  - Relational operators ('eq', 'neq', 'gt', 'lt', 'geq' and 'leq'): the
-    //    unit of both operands should be the same.
+    //    two operands should have the same unit.
     //  - Logical operators:
-    //     - 'and', 'or', 'xor': both operands should be dimensionless.
+    //     - 'and', 'or', 'xor': the two operands should be dimensionless.
     //     - 'not': the operand should be dimensionless.
+    //  - Arithmetic operators:
+    //     - 'plus', 'times' and 'divide': the two operands should have
+    //       the same unit.
+    //     - 'minus': if there is one operand, then it can have any unit. It
+    //       there are two operands, then they should have the same unit.
+    //     - 'power': the base can have any unit while the exponent should be
+    //       dimensionless.
+    //     - 'root': the base can have any unit while the exponent, if present,
+    //       should be dimensionless.
+    //     - 'abs': the argument can have any unit.
+    //     - 'exp' and 'ln': the argument should be dimensionless.
+    //     - 'log': the argument and the base, if present, should be
+    //       dimensionless.
+    //     - 'min' and 'max': the arguments should have the same unit.
+    //     - 'rem': the two arguments should have the same unit.
+    //  - Calculus elements ('diff'): the differentiated variable can have any
+    //    unit. (See 'bvar' below for the bounding variable.)
+    //  - Qualifier elements:
+    //     - 'bvar': a bounding variable can have any unit.
+    //     - 'degree': a degree should be dimensionless.
+    //     - 'logbase': a base should be dimensionless.
+    //  - Trigonometric operators ('sin', 'cos', 'tan', etc.): the argument
+    //    should be dimensionless.
+    //  - Mathematical and logical constants ('pi', 'exponentiale',
+    //    'notanumber','infinity', 'true' and 'false'): those constants are
+    //    dimensionless.
 
     // Make sure that we have an AST to analyse.
 
