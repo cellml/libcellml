@@ -28,34 +28,34 @@ TEST(AnalyserUnits, builtInUnits)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'ampere = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1.",
-        "The units in 'becquerel = 1.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'candela = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in 'coulomb = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x second^-1.",
-        "The units in 'farad = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-2 x kilogram^1 x metre^2 x second^-4.",
-        "The units in 'gram = 1.0' in component 'main' are not equivalent and have a multiplier mismatch. The unit mismatch is kilogram^-1 and the multiplier mismatch is 10^3.",
-        "The units in 'gray = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-2 x second^2.",
-        "The units in 'henry = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^2 x kilogram^-1 x metre^-2 x second^2.",
-        "The units in 'hertz = 1.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'joule = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^-2 x second^2.",
-        "The units in 'katal = 1.0' in component 'main' are not equivalent. The unit mismatch is mole^-1 x second^1.",
-        "The units in 'kelvin = 1.0' in component 'main' are not equivalent. The unit mismatch is kelvin^-1.",
-        "The units in 'kilogram = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1.",
-        "The units in 'litre = 1.0' in component 'main' are not equivalent and have a multiplier mismatch. The unit mismatch is metre^-3 and the multiplier mismatch is 10^3.",
-        "The units in 'lumen = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in 'lux = 1.0' in component 'main' are not equivalent. The unit mismatch is candela^-1 x metre^2.",
-        "The units in 'metre = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
-        "The units in 'mole = 1.0' in component 'main' are not equivalent. The unit mismatch is mole^-1.",
-        "The units in 'newton = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^-1 x second^2.",
-        "The units in 'ohm = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^2 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'pascal = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^1 x second^2.",
-        "The units in 'second = 1.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'siemens = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^-2 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'sievert = 1.0' in component 'main' are not equivalent. The unit mismatch is metre^-2 x second^2.",
-        "The units in 'tesla = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x second^2.",
-        "The units in 'volt = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'watt = 1.0' in component 'main' are not equivalent. The unit mismatch is kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'weber = 1.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^2.",
+        "The units in 'ampere = 1.0' in component 'main' are not the same. The unit mismatch is ampere^-1.",
+        "The units in 'becquerel = 1.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'candela = 1.0' in component 'main' are not the same. The unit mismatch is candela^-1.",
+        "The units in 'coulomb = 1.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x second^-1.",
+        "The units in 'farad = 1.0' in component 'main' are not the same. The unit mismatch is ampere^-2 x kilogram^1 x metre^2 x second^-4.",
+        "The units in 'gram = 1.0' in component 'main' are not the same. The unit mismatch is kilogram^-1 and the multiplier mismatch is 10^3.",
+        "The units in 'gray = 1.0' in component 'main' are not the same. The unit mismatch is metre^-2 x second^2.",
+        "The units in 'henry = 1.0' in component 'main' are not the same. The unit mismatch is ampere^2 x kilogram^-1 x metre^-2 x second^2.",
+        "The units in 'hertz = 1.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'joule = 1.0' in component 'main' are not the same. The unit mismatch is kilogram^-1 x metre^-2 x second^2.",
+        "The units in 'katal = 1.0' in component 'main' are not the same. The unit mismatch is mole^-1 x second^1.",
+        "The units in 'kelvin = 1.0' in component 'main' are not the same. The unit mismatch is kelvin^-1.",
+        "The units in 'kilogram = 1.0' in component 'main' are not the same. The unit mismatch is kilogram^-1.",
+        "The units in 'litre = 1.0' in component 'main' are not the same. The unit mismatch is metre^-3 and the multiplier mismatch is 10^3.",
+        "The units in 'lumen = 1.0' in component 'main' are not the same. The unit mismatch is candela^-1.",
+        "The units in 'lux = 1.0' in component 'main' are not the same. The unit mismatch is candela^-1 x metre^2.",
+        "The units in 'metre = 1.0' in component 'main' are not the same. The unit mismatch is metre^-1.",
+        "The units in 'mole = 1.0' in component 'main' are not the same. The unit mismatch is mole^-1.",
+        "The units in 'newton = 1.0' in component 'main' are not the same. The unit mismatch is kilogram^-1 x metre^-1 x second^2.",
+        "The units in 'ohm = 1.0' in component 'main' are not the same. The unit mismatch is ampere^2 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'pascal = 1.0' in component 'main' are not the same. The unit mismatch is kilogram^-1 x metre^1 x second^2.",
+        "The units in 'second = 1.0' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'siemens = 1.0' in component 'main' are not the same. The unit mismatch is ampere^-2 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'sievert = 1.0' in component 'main' are not the same. The unit mismatch is metre^-2 x second^2.",
+        "The units in 'tesla = 1.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x second^2.",
+        "The units in 'volt = 1.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'watt = 1.0' in component 'main' are not the same. The unit mismatch is kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'weber = 1.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^2.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -163,9 +163,9 @@ TEST(AnalyserUnits, ci)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = bCst' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = cCst' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'd = dCst' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'b = bCst' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'c = cCst' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'd = dCst' in component 'main' are not the same. The unit mismatch is frog^-1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -198,12 +198,12 @@ TEST(AnalyserUnits, cn)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = 3.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'd = 7.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
-        "The units in 'f = 11.0e3' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'g = 13.0e5' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'h = 15.0e7' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'b = 3.0' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'c = 5.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'd = 7.0' in component 'main' are not the same. The unit mismatch is frog^-1.",
+        "The units in 'f = 11.0e3' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'g = 13.0e5' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'h = 15.0e7' in component 'main' are not the same. The unit mismatch is frog^-1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -245,23 +245,23 @@ TEST(AnalyserUnits, piecewise)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bLHS > 13.0' in '(bLHS > 13.0)?11.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
-        "The units in 'bLHS > 17.0' in '(bLHS > 17.0)?15.0' in '(bLHS > 17.0)?15.0:19.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not equivalent. The unit mismatches are ampere^-1, mole^-1 and second^-1.",
-        "The units in 'bRHS > 13.0' in '(bRHS > 13.0)?11.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
-        "The units in 'bRHS > 17.0' in '(bRHS > 17.0)?15.0' in '(bRHS > 17.0)?15.0:19.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not equivalent. The unit mismatches are ampere^1, mole^1 and second^1.",
-        "The units in 'cLHS > 23.0' in '(cLHS > 23.0)?21.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
-        "The units in 'cLHS > 27.0' in '(cLHS > 27.0)?25.0' in '(cLHS > 27.0)?25.0:29.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
-        "The units in 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not equivalent. The unit mismatches are dog^-1, dove^-1 and frog^-1.",
-        "The units in 'cRHS > 23.0' in '(cRHS > 23.0)?21.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
-        "The units in 'cRHS > 27.0' in '(cRHS > 27.0)?25.0' in '(cRHS > 27.0)?25.0:29.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
-        "The units in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not equivalent. The unit mismatches are dog^1, dove^1 and frog^1.",
-        "The units in 'dLHS > 23.0' in '(dLHS > 23.0)?21.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is metre^-1.",
-        "The units in 'dLHS > 27.0' in '(dLHS > 27.0)?25.0' in '(dLHS > 27.0)?25.0:29.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is candela^-1.",
-        "The units in 'dRHS > 33.0' in '(dRHS > 33.0)?31.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is rooster^-1.",
-        "The units in 'dRHS > 37.0' in '(dRHS > 37.0)?35.0' in '(dRHS > 37.0)?35.0:39.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatch is cat^-1.",
-        "The units in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not equivalent. The unit mismatches are ampere^1 x dog^-1, ampere^1 x dove^-1, ampere^1 x frog^-1, dog^-1 x mole^1, dog^-1 x second^1, dove^-1 x mole^1, dove^-1 x second^1, frog^-1 x mole^1 and frog^-1 x second^1.",
+        "The units in 'bLHS > 13.0' in '(bLHS > 13.0)?11.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. The unit mismatch is metre^-1.",
+        "The units in 'bLHS > 17.0' in '(bLHS > 17.0)?15.0' in '(bLHS > 17.0)?15.0:19.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. The unit mismatch is candela^-1.",
+        "The units in 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. The unit mismatches are ampere^-1, mole^-1 and second^-1.",
+        "The units in 'bRHS > 13.0' in '(bRHS > 13.0)?11.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. The unit mismatch is metre^-1.",
+        "The units in 'bRHS > 17.0' in '(bRHS > 17.0)?15.0' in '(bRHS > 17.0)?15.0:19.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. The unit mismatch is candela^-1.",
+        "The units in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. The unit mismatches are ampere^1, mole^1 and second^1.",
+        "The units in 'cLHS > 23.0' in '(cLHS > 23.0)?21.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. The unit mismatch is rooster^-1.",
+        "The units in 'cLHS > 27.0' in '(cLHS > 27.0)?25.0' in '(cLHS > 27.0)?25.0:29.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. The unit mismatch is cat^-1.",
+        "The units in 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. The unit mismatches are dog^-1, dove^-1 and frog^-1.",
+        "The units in 'cRHS > 23.0' in '(cRHS > 23.0)?21.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. The unit mismatch is rooster^-1.",
+        "The units in 'cRHS > 27.0' in '(cRHS > 27.0)?25.0' in '(cRHS > 27.0)?25.0:29.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. The unit mismatch is cat^-1.",
+        "The units in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. The unit mismatches are dog^1, dove^1 and frog^1.",
+        "The units in 'dLHS > 23.0' in '(dLHS > 23.0)?21.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. The unit mismatch is metre^-1.",
+        "The units in 'dLHS > 27.0' in '(dLHS > 27.0)?25.0' in '(dLHS > 27.0)?25.0:29.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. The unit mismatch is candela^-1.",
+        "The units in 'dRHS > 33.0' in '(dRHS > 33.0)?31.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. The unit mismatch is rooster^-1.",
+        "The units in 'dRHS > 37.0' in '(dRHS > 37.0)?35.0' in '(dRHS > 37.0)?35.0:39.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. The unit mismatch is cat^-1.",
+        "The units in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. The unit mismatches are ampere^1 x dog^-1, ampere^1 x dove^-1, ampere^1 x frog^-1, dog^-1 x mole^1, dog^-1 x second^1, dove^-1 x mole^1, dove^-1 x second^1, frog^-1 x mole^1 and frog^-1 x second^1.",
         "The unit of '43.0' in '(43.0)?41.0' in '(43.0)?41.0:45.0' in equation 'eLHS = (43.0)?41.0:45.0' in component 'main' is not dimensionless. The unit mismatch is second^1.",
         "The unit of '43.0' in '(43.0)?41.0' in '(43.0)?41.0:45.0' in equation '(43.0)?41.0:45.0 = eRHS' in component 'main' is not dimensionless. The unit mismatch is second^1.",
         "Variable 'dLHS' in component 'main' is unused.",
@@ -352,9 +352,9 @@ TEST(AnalyserUnits, eq)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst == 3.0' in equation 'b = bCst == 3.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'cCst == 5.0' in equation 'c = cCst == 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'dCst == 7.0' in equation 'd = dCst == 7.0' in component 'main' are not equivalent. The unit mismatch is frog^1.",
+        "The units in 'bCst == 3.0' in equation 'b = bCst == 3.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'cCst == 5.0' in equation 'c = cCst == 5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'dCst == 7.0' in equation 'd = dCst == 7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -387,9 +387,9 @@ TEST(AnalyserUnits, neq)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst != 3.0' in equation 'b = bCst != 3.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'cCst != 5.0' in equation 'c = cCst != 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'dCst != 7.0' in equation 'd = dCst != 7.0' in component 'main' are not equivalent. The unit mismatch is frog^1.",
+        "The units in 'bCst != 3.0' in equation 'b = bCst != 3.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'cCst != 5.0' in equation 'c = cCst != 5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'dCst != 7.0' in equation 'd = dCst != 7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -422,9 +422,9 @@ TEST(AnalyserUnits, lt)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst < 3.0' in equation 'b = bCst < 3.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'cCst < 5.0' in equation 'c = cCst < 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'dCst < 7.0' in equation 'd = dCst < 7.0' in component 'main' are not equivalent. The unit mismatch is frog^1.",
+        "The units in 'bCst < 3.0' in equation 'b = bCst < 3.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'cCst < 5.0' in equation 'c = cCst < 5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'dCst < 7.0' in equation 'd = dCst < 7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -457,9 +457,9 @@ TEST(AnalyserUnits, leq)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst <= 3.0' in equation 'b = bCst <= 3.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'cCst <= 5.0' in equation 'c = cCst <= 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'dCst <= 7.0' in equation 'd = dCst <= 7.0' in component 'main' are not equivalent. The unit mismatch is frog^1.",
+        "The units in 'bCst <= 3.0' in equation 'b = bCst <= 3.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'cCst <= 5.0' in equation 'c = cCst <= 5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'dCst <= 7.0' in equation 'd = dCst <= 7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -492,9 +492,9 @@ TEST(AnalyserUnits, gt)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst > 3.0' in equation 'b = bCst > 3.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'cCst > 5.0' in equation 'c = cCst > 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'dCst > 7.0' in equation 'd = dCst > 7.0' in component 'main' are not equivalent. The unit mismatch is frog^1.",
+        "The units in 'bCst > 3.0' in equation 'b = bCst > 3.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'cCst > 5.0' in equation 'c = cCst > 5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'dCst > 7.0' in equation 'd = dCst > 7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -527,9 +527,9 @@ TEST(AnalyserUnits, geq)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst >= 3.0' in equation 'b = bCst >= 3.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'cCst >= 5.0' in equation 'c = cCst >= 5.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'dCst >= 7.0' in equation 'd = dCst >= 7.0' in component 'main' are not equivalent. The unit mismatch is frog^1.",
+        "The units in 'bCst >= 3.0' in equation 'b = bCst >= 3.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'cCst >= 5.0' in equation 'c = cCst >= 5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'dCst >= 7.0' in equation 'd = dCst >= 7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -714,12 +714,12 @@ TEST(AnalyserUnits, plus)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst+3.0' in equation 'b = bCst+3.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'b = bCst+3.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'cCst+5.0' in equation 'c = cCst+5.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'c = cCst+5.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'dCst+7.0' in equation 'd = dCst+7.0' in component 'main' are not equivalent. The unit mismatch is frog^1.",
-        "The units in 'd = dCst+7.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'bCst+3.0' in equation 'b = bCst+3.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'b = bCst+3.0' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'cCst+5.0' in equation 'c = cCst+5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'c = cCst+5.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'dCst+7.0' in equation 'd = dCst+7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
+        "The units in 'd = dCst+7.0' in component 'main' are not the same. The unit mismatch is frog^-1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -761,15 +761,15 @@ TEST(AnalyserUnits, minus)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst-3.0' in equation 'b = bCst-3.0' in component 'main' are not equivalent. The unit mismatch is second^1.",
-        "The units in 'b = bCst-3.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'cCst-5.0' in equation 'c = cCst-5.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'c = cCst-5.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'dCst-7.0' in equation 'd = dCst-7.0' in component 'main' are not equivalent. The unit mismatch is frog^1.",
-        "The units in 'd = dCst-7.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
-        "The units in 'f = -fCst' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'g = -gCst' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'h = -hCst' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'bCst-3.0' in equation 'b = bCst-3.0' in component 'main' are not the same. The unit mismatch is second^1.",
+        "The units in 'b = bCst-3.0' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'cCst-5.0' in equation 'c = cCst-5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'c = cCst-5.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'dCst-7.0' in equation 'd = dCst-7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
+        "The units in 'd = dCst-7.0' in component 'main' are not the same. The unit mismatch is frog^-1.",
+        "The units in 'f = -fCst' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'g = -gCst' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'h = -hCst' in component 'main' are not the same. The unit mismatch is frog^-1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -820,12 +820,12 @@ TEST(AnalyserUnits, times)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = bCst*3.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = cCst*5.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'd = dCst*7.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
-        "The units in 'e = eCst*9.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'f = fCst*11.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'g = gCst*13.0' in component 'main' are not equivalent. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'b = bCst*3.0' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'c = cCst*5.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'd = dCst*7.0' in component 'main' are not the same. The unit mismatch is frog^-1.",
+        "The units in 'e = eCst*9.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'f = fCst*11.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The units in 'g = gCst*13.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -867,12 +867,12 @@ TEST(AnalyserUnits, divide)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = bCst/3.0' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = cCst/5.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'd = dCst/7.0' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
-        "The units in 'e = eCst/9.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'f = fCst/11.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'g = gCst/13.0' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'b = bCst/3.0' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'c = cCst/5.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'd = dCst/7.0' in component 'main' are not the same. The unit mismatch is frog^-1.",
+        "The units in 'e = eCst/9.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'f = fCst/11.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'g = gCst/13.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -914,11 +914,11 @@ TEST(AnalyserUnits, power)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = pow(bCst, 3.0)' in component 'main' are not equivalent. The unit mismatch is second^-3.",
-        "The units in 'c = pow(cCst, 5.0)' in component 'main' are not equivalent. The unit mismatch is ampere^5 x kilogram^-5 x metre^-10 x second^15.",
-        "The units in 'd = pow(dCst, 7.0)' in component 'main' are not equivalent. The unit mismatch is frog^-7.",
+        "The units in 'b = pow(bCst, 3.0)' in component 'main' are not the same. The unit mismatch is second^-3.",
+        "The units in 'c = pow(cCst, 5.0)' in component 'main' are not the same. The unit mismatch is ampere^5 x kilogram^-5 x metre^-10 x second^15.",
+        "The units in 'd = pow(dCst, 7.0)' in component 'main' are not the same. The unit mismatch is frog^-7.",
         "The unit of '9.0' in 'pow(eCst, 9.0)' in equation 'e = pow(eCst, 9.0)' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'e = pow(eCst, 9.0)' in component 'main' are not equivalent. The unit mismatch is second^-9.",
+        "The units in 'e = pow(eCst, 9.0)' in component 'main' are not the same. The unit mismatch is second^-9.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -957,11 +957,11 @@ TEST(AnalyserUnits, root)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = pow(bCst, 1.0/3.0)' in component 'main' are not equivalent. The unit mismatch is second^-0.333333.",
-        "The units in 'c = pow(cCst, 1.0/5.0)' in component 'main' are not equivalent. The unit mismatch is ampere^0.2 x kilogram^-0.2 x metre^-0.4 x second^0.6.",
-        "The units in 'd = pow(dCst, 1.0/7.0)' in component 'main' are not equivalent. The unit mismatch is frog^-0.142857.",
+        "The units in 'b = pow(bCst, 1.0/3.0)' in component 'main' are not the same. The unit mismatch is second^-0.333333.",
+        "The units in 'c = pow(cCst, 1.0/5.0)' in component 'main' are not the same. The unit mismatch is ampere^0.2 x kilogram^-0.2 x metre^-0.4 x second^0.6.",
+        "The units in 'd = pow(dCst, 1.0/7.0)' in component 'main' are not the same. The unit mismatch is frog^-0.142857.",
         "The unit of '9.0' in 'pow(eCst, 1.0/9.0)' in equation 'e = pow(eCst, 1.0/9.0)' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'e = pow(eCst, 1.0/9.0)' in component 'main' are not equivalent. The unit mismatch is second^-0.111111.",
+        "The units in 'e = pow(eCst, 1.0/9.0)' in component 'main' are not the same. The unit mismatch is second^-0.111111.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1000,9 +1000,9 @@ TEST(AnalyserUnits, abs)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = abs(3.0)' in component 'main' are not equivalent. The unit mismatch is second^-1.",
-        "The units in 'c = abs(5.0)' in component 'main' are not equivalent. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'd = abs(7.0)' in component 'main' are not equivalent. The unit mismatch is frog^-1.",
+        "The units in 'b = abs(3.0)' in component 'main' are not the same. The unit mismatch is second^-1.",
+        "The units in 'c = abs(5.0)' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
+        "The units in 'd = abs(7.0)' in component 'main' are not the same. The unit mismatch is frog^-1.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
