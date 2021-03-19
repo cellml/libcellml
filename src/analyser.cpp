@@ -354,6 +354,10 @@ struct Analyser::AnalyserImpl
     explicit AnalyserImpl(Analyser *analyser);
     ~AnalyserImpl();
 
+    //---GRY--- - Check that all our methods are still needed.
+    //          - Check whether we need to check against "dimensionless" here
+    //            and there.
+
     static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
                                                    const AnalyserInternalVariablePtr &variable2);
 
@@ -409,20 +413,16 @@ struct Analyser::AnalyserImpl
                                                     bool multiply);
     UnitsMultipliers powerRootUnitsMultipliers(const UnitsMultipliers &unitsMultipliers,
                                                double factor, bool power);
-    std::string unitsMapMismatchInformation(const UnitsMap &unitsMap); //---GRY--- STILL NEEDED?
-    Strings unitsMapsMismatchesInformation(const UnitsMaps &unitsMaps); //---GRY--- STILL NEEDED?
+    std::string unitsMapMismatchInformation(const UnitsMap &unitsMap);
+    Strings unitsMapsMismatchesInformation(const UnitsMaps &unitsMaps);
     std::string unitsMismatchesInformation(const Strings &information,
                                            bool unitsMapsInformation,
-                                           bool includingForeword = true); //---GRY--- STILL NEEDED?
+                                           bool includingForeword = true);
     std::string unitsMapsMismatchesInformation(const Strings &information,
-                                               bool includingForeword = true); //---GRY--- STILL NEEDED?
-    std::string unitsMultipliersMismatchesInformation(const Strings &information); //---GRY--- STILL NEEDED?
-    bool areSameUnitsMaps(const UnitsMap &firstUnitsMap,
-                          const UnitsMap &secondUnitsMap,
-                          std::string &unitsMapMismatchInformation);
+                                               bool includingForeword = true);
+    std::string unitsMultipliersMismatchesInformation(const Strings &information);
     bool areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
-                          const UnitsMaps &secondUnitsMaps,
-                          Strings &unitsMapsMismatchesInformation);
+                          const UnitsMaps &secondUnitsMaps);
     bool areSameUnitsMultipliers(double firstUnitsMultiplier,
                                  double secondUnitsMultiplier,
                                  std::string &unitsMismatchInformation);
@@ -1527,55 +1527,37 @@ std::string Analyser::AnalyserImpl::unitsMultipliersMismatchesInformation(const 
     return unitsMismatchesInformation(information, false);
 }
 
-bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMap &firstUnitsMap,
-                                              const UnitsMap &secondUnitsMap,
-                                              std::string &unitsMapMismatchInformation)
-{
-    // Check whether the given units map are the same by checking their
-    // exponents, and provide unit mismatch information if they are not.
-
-    UnitsMap unitsMap;
-
-    for (const auto &units : firstUnitsMap) {
-        if (units.first != "dimensionless") {
-            unitsMap[units.first] += units.second;
-        }
-    }
-
-    for (const auto &units : secondUnitsMap) {
-        if (units.first != "dimensionless") {
-            unitsMap[units.first] -= units.second;
-        }
-    }
-
-    unitsMapMismatchInformation = Analyser::AnalyserImpl::unitsMapMismatchInformation(unitsMap);
-
-    return unitsMapMismatchInformation.empty();
-}
-
 bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
-                                              const UnitsMaps &secondUnitsMaps,
-                                              Strings &unitsMapsMismatchesInformation)
+                                              const UnitsMaps &secondUnitsMaps)
 {
     // Check whether the given units map are the same by checking their
-    // exponents, and provide unit mismatch information if they are not.
-
-    unitsMapsMismatchesInformation.clear();
-
-    std::string unitsMapsMismatchInformation;
+    // exponents.
 
     for (const auto &firstUnitsMap : firstUnitsMaps) {
         for (const auto &secondUnitsMap : secondUnitsMaps) {
-            if (!areSameUnitsMaps(firstUnitsMap, secondUnitsMap,
-                                  unitsMapsMismatchInformation)) {
-                unitsMapsMismatchesInformation.push_back(unitsMapsMismatchInformation);
+            UnitsMap unitsMap;
+
+            for (const auto &units : firstUnitsMap) {
+                if (units.first != "dimensionless") {
+                    unitsMap[units.first] += units.second;
+                }
+            }
+
+            for (const auto &units : secondUnitsMap) {
+                if (units.first != "dimensionless") {
+                    unitsMap[units.first] -= units.second;
+                }
+            }
+
+            for (const auto &units : unitsMap) {
+                if (!areEqual(units.second, 0.0)) {
+                    return false;
+                }
             }
         }
     }
 
-    std::sort(unitsMapsMismatchesInformation.begin(), unitsMapsMismatchesInformation.end());
-
-    return unitsMapsMismatchesInformation.empty();
+    return true;
 }
 
 bool Analyser::AnalyserImpl::areSameUnitsMultipliers(double firstUnitsMultiplier,
@@ -1910,18 +1892,16 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)) {
-        Strings unitsMapsMismatchesInformation;
         Strings unitsMultipliersMismatchesInformation;
-        bool unitsMapsMismatches = !rightUnitsMaps.empty()
-                                   && !areSameUnitsMaps(unitsMaps, rightUnitsMaps,
-                                                        unitsMapsMismatchesInformation);
+        bool sameUnitsMaps = rightUnitsMaps.empty()
+                             || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
         bool unitsMultipliersMismatches = (ast->mPimpl->mOwnedLeftChild != nullptr)
                                           && (ast->mPimpl->mOwnedRightChild != nullptr)
                                           && !areSameUnitsMultipliers(unitsMultipliers,
                                                                       rightUnitsMultipliers,
                                                                       unitsMultipliersMismatchesInformation);
 
-        if (unitsMapsMismatches || unitsMultipliersMismatches) {
+        if (!sameUnitsMaps || unitsMultipliersMismatches) {
             std::string issueDescription = "The units in " + expression(ast) + " are not the same. ";
 
             issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + " while "
@@ -2087,12 +2067,9 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
-        Strings unitsMapsMismatchesInformation;
-
-        if (!areSameUnitsMaps(rightUnitsMaps, unitsMaps, unitsMapsMismatchesInformation)) {
+        if (!areSameUnitsMaps(rightUnitsMaps, unitsMaps)) {
             issueDescriptions.push_back("The units in " + expression(ast)
-                                        + " are not consistent with the base. "
-                                        + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation) + ".");
+                                        + " are not consistent with the base. XXX.");
         }
 
         defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
