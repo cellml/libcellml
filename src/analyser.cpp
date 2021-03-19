@@ -1253,38 +1253,36 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
     } else {
         UnitsPtr units = model->units(unitsName);
 
-        if (units != nullptr) {
-            if (units->isBaseUnit()) {
-                auto iter = unitsMap.find(unitsName);
+        if (units->isBaseUnit()) {
+            auto iter = unitsMap.find(unitsName);
 
-                if (iter == unitsMap.end()) {
-                    unitsMap[unitsName] = unitsExponent;
-                } else {
-                    unitsMap[iter->first] += iter->second * unitsExponent;
-                }
+            if (iter == unitsMap.end()) {
+                unitsMap[unitsName] = unitsExponent;
             } else {
-                std::string reference;
-                std::string prefix;
-                double exponent;
-                double multiplier;
-                std::string id;
+                unitsMap[iter->first] += iter->second * unitsExponent;
+            }
+        } else {
+            std::string reference;
+            std::string prefix;
+            double exponent;
+            double multiplier;
+            std::string id;
 
-                for (size_t i = 0; i < units->unitCount(); ++i) {
-                    units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            for (size_t i = 0; i < units->unitCount(); ++i) {
+                units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
 
-                    if (isStandardUnitName(reference)) {
-                        for (const auto &iter : standardUnitsList.at(reference)) {
-                            if (unitsMap.find(iter.first) == unitsMap.end()) {
-                                unitsMap[iter.first] = 0.0;
-                            }
-
-                            unitsMap[iter.first] += iter.second * exponent * unitsExponent;
+                if (isStandardUnitName(reference)) {
+                    for (const auto &iter : standardUnitsList.at(reference)) {
+                        if (unitsMap.find(iter.first) == unitsMap.end()) {
+                            unitsMap[iter.first] = 0.0;
                         }
-                    } else {
-                        updateUnitsMap(model, reference, unitsMap,
-                                       exponent * unitsExponent,
-                                       unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
+
+                        unitsMap[iter.first] += iter.second * exponent * unitsExponent;
                     }
+                } else {
+                    updateUnitsMap(model, reference, unitsMap,
+                                   exponent * unitsExponent,
+                                   unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
                 }
             }
         }
@@ -1610,26 +1608,24 @@ void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
     } else {
         UnitsPtr units = model->units(unitsName);
 
-        if (units != nullptr) {
-            if (units->isBaseUnit()) {
-                newUnitsMultiplier += unitsMultiplier;
-            } else {
-                std::string reference;
-                std::string prefix;
-                double exponent;
-                double multiplier;
-                std::string id;
+        if (units->isBaseUnit()) {
+            newUnitsMultiplier += unitsMultiplier;
+        } else {
+            std::string reference;
+            std::string prefix;
+            double exponent;
+            double multiplier;
+            std::string id;
 
-                for (size_t i = 0; i < units->unitCount(); ++i) {
-                    units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            for (size_t i = 0; i < units->unitCount(); ++i) {
+                units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
 
-                    if (isStandardUnitName(reference)) {
-                        newUnitsMultiplier += unitsMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + standardPrefixList.at(prefix)) * exponent * unitsExponent;
-                    } else {
-                        updateUnitsMultiplier(model, reference, newUnitsMultiplier,
-                                              exponent * unitsExponent,
-                                              unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
-                    }
+                if (isStandardUnitName(reference)) {
+                    newUnitsMultiplier += unitsMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + standardPrefixList.at(prefix)) * exponent * unitsExponent;
+                } else {
+                    updateUnitsMultiplier(model, reference, newUnitsMultiplier,
+                                          exponent * unitsExponent,
+                                          unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
                 }
             }
         }
