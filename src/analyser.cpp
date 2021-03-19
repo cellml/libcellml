@@ -1787,20 +1787,13 @@ std::string Analyser::AnalyserImpl::expressionUnits(const AnalyserEquationAstPtr
 
     for (size_t i = 0; i < units.size(); ++i) {
         if (i > 0) {
-            if (i == units.size() - 1) {
-                unitsString += " and ";
-            } else {
-                unitsString += ", ";
-            }
+            unitsString += (i == units.size() - 1) ? " and " : ", ";
         }
 
-        unitsString += units[i];
+        unitsString += "'" + units[i] + "'";
     }
 
-    return expression(ast, false) + " is "
-           + (unitsString.empty() ?
-                  "dimensionless" :
-                  "in '" + unitsString + "'");
+    return expression(ast, false) + " is " + (unitsString.empty() ? "dimensionless" : "in " + unitsString);
 }
 
 void Analyser::AnalyserImpl::defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
