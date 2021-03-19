@@ -1895,13 +1895,13 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         Strings unitsMultipliersMismatchesInformation;
         bool sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
-        bool unitsMultipliersMismatches = (ast->mPimpl->mOwnedLeftChild != nullptr)
-                                          && (ast->mPimpl->mOwnedRightChild != nullptr)
-                                          && !areSameUnitsMultipliers(unitsMultipliers,
-                                                                      rightUnitsMultipliers,
-                                                                      unitsMultipliersMismatchesInformation);
+        bool sameUnitsMultipliers = (ast->mPimpl->mOwnedLeftChild == nullptr)
+                                    || (ast->mPimpl->mOwnedRightChild == nullptr)
+                                    || areSameUnitsMultipliers(unitsMultipliers,
+                                                               rightUnitsMultipliers,
+                                                               unitsMultipliersMismatchesInformation);
 
-        if (!sameUnitsMaps || unitsMultipliersMismatches) {
+        if (!sameUnitsMaps || !sameUnitsMultipliers) {
             std::string issueDescription = "The units in " + expression(ast) + " are not the same. ";
 
             issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + " while "
