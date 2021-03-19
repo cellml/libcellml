@@ -276,10 +276,14 @@ TEST(AnalyserUnits, piecewise)
         "The units in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' is in 'second', 'ampere' and 'mole' while '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' is in 'frog', 'dog' and 'dove'.",
         "The unit of '43.0' in '(43.0)?41.0' in '(43.0)?41.0:45.0' in equation 'eLHS = (43.0)?41.0:45.0' in component 'main' is not dimensionless. '43.0' is in 'second'.",
         "The unit of '43.0' in '(43.0)?41.0' in '(43.0)?41.0:45.0' in equation '(43.0)?41.0:45.0 = eRHS' in component 'main' is not dimensionless. '43.0' is in 'second'.",
+        "",
+        "",
         "Variable 'dLHS' in component 'main' is unused.",
         "Variable 'dRHS' in component 'main' is unused.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -322,10 +326,14 @@ TEST(AnalyserUnits, piecewise)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -364,11 +372,13 @@ TEST(AnalyserUnits, eq)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst == 3.0' in equation 'b = bCst == 3.0' in component 'main' are not the same. The unit mismatch is second^1.",
-        "The units in 'cCst == 5.0' in equation 'c = cCst == 5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'dCst == 7.0' in equation 'd = dCst == 7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
+        "The units in 'bCst == 3.0' in equation 'b = bCst == 3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
+        "The units in 'cCst == 5.0' in equation 'c = cCst == 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
+        "The units in 'dCst == 7.0' in equation 'd = dCst == 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
+        "The units in 'eCst == 9.0' in equation 'e = eCst == 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -377,8 +387,10 @@ TEST(AnalyserUnits, eq)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -387,6 +399,7 @@ TEST(AnalyserUnits, eq)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
+printIssues(analyser);
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }

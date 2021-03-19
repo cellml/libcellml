@@ -1,15 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="eq" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="frog"/>
+    <units name="metre_per_second">
+        <unit units="metre"/>
+        <unit exponent="-1" units="second"/>
+    </units>
     <component name="main">
         <variable name="a" units="dimensionless"/>
         <variable name="b" units="dimensionless"/>
         <variable name="c" units="dimensionless"/>
         <variable name="d" units="dimensionless"/>
+        <variable name="e" units="dimensionless"/>
         <variable initial_value="1" name="aCst" units="dimensionless"/>
         <variable initial_value="3" name="bCst" units="second"/>
         <variable initial_value="5" name="cCst" units="volt"/>
         <variable initial_value="7" name="dCst" units="frog"/>
+        <variable initial_value="9" name="eCst" units="metre_per_second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -45,6 +51,15 @@
                     <eq/>
                     <ci>dCst</ci>
                     <cn cellml:units="dimensionless">7</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>e</ci>
+                <apply>
+                    <eq/>
+                    <ci>eCst</ci>
+                    <cn cellml:units="dimensionless">9</cn>
                 </apply>
             </apply>
         </math>
