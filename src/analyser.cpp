@@ -437,6 +437,7 @@ struct Analyser::AnalyserImpl
     double powerValue(const AnalyserEquationAstPtr &ast);
     std::string expression(const AnalyserEquationAstPtr &ast,
                            bool includeHierarchy = true);
+    std::string expressionUnits(const AnalyserEquationAstPtr &ast);
     void defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
                                         UnitsMultipliers &unitsMultipliers);
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
@@ -1731,6 +1732,20 @@ std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast
     return res;
 }
 
+std::string Analyser::AnalyserImpl::expressionUnits(const AnalyserEquationAstPtr &ast)
+{
+    // Return the unit in which the given AST is.
+
+    auto units = (mCiCnUnits.find(ast) != mCiCnUnits.end()) ?
+                     mCiCnUnits[ast].lock()->name() :
+                     "???";
+
+    return expression(ast, false) + " is "
+           + ((units != "dimensionless") ?
+                  "in '" + units + "'" :
+                  units);
+}
+
 void Analyser::AnalyserImpl::defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
                                                             UnitsMultipliers &unitsMultipliers)
 {
@@ -1850,21 +1865,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         if (unitsMapsMismatches || unitsMultipliersMismatches) {
             std::string issueDescription = "The units in " + expression(ast) + " are not the same. ";
 
-            if (unitsMapsMismatches) {
-                issueDescription += Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation);
-            }
-
-            if (unitsMultipliersMismatches) {
-                if (unitsMapsMismatches) {
-                    issueDescription += " and the ";
-                } else {
-                    issueDescription += "The ";
-                }
-
-                issueDescription += "multiplier " + Analyser::AnalyserImpl::unitsMultipliersMismatchesInformation(unitsMultipliersMismatchesInformation);
-            }
-
-            issueDescription += ".";
+            issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild) + " and "
+                                + expressionUnits(ast->mPimpl->mOwnedRightChild) + ".";
 
             issueDescriptions.push_back(issueDescription);
         }
