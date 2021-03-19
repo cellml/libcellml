@@ -11,11 +11,13 @@
         <variable name="c" units="dimensionless"/>
         <variable name="d" units="dimensionless"/>
         <variable name="e" units="dimensionless"/>
+        <variable name="f" units="dimensionless"/>
         <variable initial_value="1" name="aCst" units="dimensionless"/>
         <variable initial_value="3" name="bCst" units="second"/>
         <variable initial_value="5" name="cCst" units="volt"/>
         <variable initial_value="7" name="dCst" units="frog"/>
         <variable initial_value="9" name="eCst" units="metre_per_second"/>
+        <variable initial_value="11" name="fCst" units="second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -60,6 +62,15 @@
                     <lt/>
                     <ci>eCst</ci>
                     <cn cellml:units="dimensionless">9</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>f</ci>
+                <apply>
+                    <lt/>
+                    <ci>fCst</ci>
+                    <cn cellml:units="metre_per_second">11</cn>
                 </apply>
             </apply>
         </math>

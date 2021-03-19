@@ -1958,7 +1958,6 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                         + " is not dimensionless. "
                                         + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation) + ".");
         }
-
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)

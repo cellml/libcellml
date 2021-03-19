@@ -376,8 +376,10 @@ TEST(AnalyserUnits, eq)
         "The units in 'cCst == 5.0' in equation 'c = cCst == 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst == 7.0' in equation 'd = dCst == 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
         "The units in 'eCst == 9.0' in equation 'e = eCst == 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
+        "The units in 'fCst == 11.0' in equation 'f = fCst == 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -388,8 +390,10 @@ TEST(AnalyserUnits, eq)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -415,8 +419,10 @@ TEST(AnalyserUnits, neq)
         "The units in 'cCst != 5.0' in equation 'c = cCst != 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst != 7.0' in equation 'd = dCst != 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
         "The units in 'eCst != 9.0' in equation 'e = eCst != 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
+        "The units in 'fCst != 11.0' in equation 'f = fCst != 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -427,8 +433,10 @@ TEST(AnalyserUnits, neq)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -454,8 +462,10 @@ TEST(AnalyserUnits, lt)
         "The units in 'cCst < 5.0' in equation 'c = cCst < 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst < 7.0' in equation 'd = dCst < 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
         "The units in 'eCst < 9.0' in equation 'e = eCst < 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
+        "The units in 'fCst < 11.0' in equation 'f = fCst < 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -466,8 +476,10 @@ TEST(AnalyserUnits, lt)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -493,8 +505,10 @@ TEST(AnalyserUnits, leq)
         "The units in 'cCst <= 5.0' in equation 'c = cCst <= 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst <= 7.0' in equation 'd = dCst <= 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
         "The units in 'eCst <= 9.0' in equation 'e = eCst <= 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
+        "The units in 'fCst <= 11.0' in equation 'f = fCst <= 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -505,8 +519,10 @@ TEST(AnalyserUnits, leq)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -532,8 +548,10 @@ TEST(AnalyserUnits, gt)
         "The units in 'cCst > 5.0' in equation 'c = cCst > 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst > 7.0' in equation 'd = dCst > 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
         "The units in 'eCst > 9.0' in equation 'e = eCst > 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
+        "The units in 'fCst > 11.0' in equation 'f = fCst > 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -544,8 +562,10 @@ TEST(AnalyserUnits, gt)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -571,8 +591,10 @@ TEST(AnalyserUnits, geq)
         "The units in 'cCst >= 5.0' in equation 'c = cCst >= 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst >= 7.0' in equation 'd = dCst >= 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
         "The units in 'eCst >= 9.0' in equation 'e = eCst >= 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
+        "The units in 'fCst >= 11.0' in equation 'f = fCst >= 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -583,8 +605,10 @@ TEST(AnalyserUnits, geq)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -606,12 +630,14 @@ TEST(AnalyserUnits, andOp)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The unit of 'bCst' in 'bCst && 3.0' in equation 'b = bCst && 3.0' in component 'main' is not dimensionless. The unit mismatch is second^1.",
-        "The unit of 'cCst' in 'cCst && 5.0' in equation 'c = cCst && 5.0' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The unit of 'dCst' in 'dCst && 7.0' in equation 'd = dCst && 7.0' in component 'main' is not dimensionless. The unit mismatch is frog^1.",
-        "The units of 'eCst' while '9.0' in 'eCst && 9.0' in equation 'e = eCst && 9.0' in component 'main' are not dimensionless. The unit mismatches are second^1 and ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "The unit of 'bCst' in 'bCst && 3.0' in equation 'b = bCst && 3.0' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
+        "The unit of 'cCst' in 'cCst && 5.0' in equation 'c = cCst && 5.0' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
+        "The unit of 'dCst' in 'dCst && 7.0' in equation 'd = dCst && 7.0' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
+        "The unit of 'eCst' in 'eCst && 9.0' in equation 'e = eCst && 9.0' in component 'main' is not dimensionless. 'eCst' is in 'metre_per_second'.",
+        "The units in 'fCst' and '11.0' in 'fCst && 11.0' in equation 'f = fCst && 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -622,8 +648,10 @@ TEST(AnalyserUnits, andOp)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -649,8 +677,10 @@ TEST(AnalyserUnits, orOp)
         "The unit of 'cCst' in 'cCst || 5.0' in equation 'c = cCst || 5.0' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
         "The unit of 'dCst' in 'dCst || 7.0' in equation 'd = dCst || 7.0' in component 'main' is not dimensionless. The unit mismatch is frog^1.",
         "The units of 'eCst' while '9.0' in 'eCst || 9.0' in equation 'e = eCst || 9.0' in component 'main' are not dimensionless. The unit mismatches are second^1 and ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -661,8 +691,10 @@ TEST(AnalyserUnits, orOp)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -688,8 +720,10 @@ TEST(AnalyserUnits, xorOp)
         "The unit of 'cCst' in 'xor(cCst, 5.0)' in equation 'c = xor(cCst, 5.0)' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
         "The unit of 'dCst' in 'xor(dCst, 7.0)' in equation 'd = xor(dCst, 7.0)' in component 'main' is not dimensionless. The unit mismatch is frog^1.",
         "The units of 'eCst' while '9.0' in 'xor(eCst, 9.0)' in equation 'e = xor(eCst, 9.0)' in component 'main' are not dimensionless. The unit mismatches are second^1 and ampere^-1 x kilogram^1 x metre^2 x second^-3.",
+        "",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -700,8 +734,10 @@ TEST(AnalyserUnits, xorOp)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -726,8 +762,10 @@ TEST(AnalyserUnits, notOp)
         "The unit of 'bCst' in '!bCst' in equation 'b = !bCst' in component 'main' is not dimensionless. The unit mismatch is second^1.",
         "The unit of 'cCst' in '!cCst' in equation 'c = !cCst' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
         "The unit of 'dCst' in '!dCst' in equation 'd = !dCst' in component 'main' is not dimensionless. The unit mismatch is frog^1.",
+        "",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -736,8 +774,10 @@ TEST(AnalyserUnits, notOp)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
