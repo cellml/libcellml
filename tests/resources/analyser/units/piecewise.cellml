@@ -5,6 +5,10 @@
     <units name="dog"/>
     <units name="cat"/>
     <units name="dove"/>
+    <units name="metre_per_second">
+        <unit units="metre"/>
+        <unit exponent="-1" units="second"/>
+    </units>
     <component name="main">
         <variable name="aLHS" units="dimensionless"/>
         <variable name="bLHS" units="dimensionless"/>
@@ -217,7 +221,7 @@
                 <ci>eLHS</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="dimensionless">41</cn>
+                        <cn cellml:units="metre_per_second">41</cn>
                         <cn cellml:units="second">43</cn>
                     </piece>
                     <otherwise>
@@ -229,7 +233,7 @@
                 <eq/>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="dimensionless">41</cn>
+                        <cn cellml:units="metre_per_second">41</cn>
                         <cn cellml:units="second">43</cn>
                     </piece>
                     <otherwise>
