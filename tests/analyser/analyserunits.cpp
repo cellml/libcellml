@@ -163,10 +163,10 @@ TEST(AnalyserUnits, ci)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = bCst' in component 'main' are not the same. 'b' is dimensionless and 'bCst' is in 'second'.",
-        "The units in 'c = cCst' in component 'main' are not the same. 'c' is dimensionless and 'cCst' is in 'volt'.",
-        "The units in 'd = dCst' in component 'main' are not the same. 'd' is dimensionless and 'dCst' is in 'frog'.",
-        "The units in 'e = eCst' in component 'main' are not the same. 'e' is dimensionless and 'eCst' is in 'metre_per_second'.",
+        "The units in 'b = bCst' in component 'main' are not the same. 'b' is dimensionless while 'bCst' is in 'second'.",
+        "The units in 'c = cCst' in component 'main' are not the same. 'c' is dimensionless while 'cCst' is in 'volt'.",
+        "The units in 'd = dCst' in component 'main' are not the same. 'd' is dimensionless while 'dCst' is in 'frog'.",
+        "The units in 'e = eCst' in component 'main' are not the same. 'e' is dimensionless while 'eCst' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -202,14 +202,14 @@ TEST(AnalyserUnits, cn)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = 3.0' in component 'main' are not the same. 'b' is dimensionless and '3.0' is in 'second'.",
-        "The units in 'c = 5.0' in component 'main' are not the same. 'c' is dimensionless and '5.0' is in 'volt'.",
-        "The units in 'd = 7.0' in component 'main' are not the same. 'd' is dimensionless and '7.0' is in 'frog'.",
-        "The units in 'e = 9.0' in component 'main' are not the same. 'e' is dimensionless and '9.0' is in 'metre_per_second'.",
-        "The units in 'g = 13.0e3' in component 'main' are not the same. 'g' is dimensionless and '13.0e3' is in 'second'.",
-        "The units in 'h = 15.0e5' in component 'main' are not the same. 'h' is dimensionless and '15.0e5' is in 'volt'.",
-        "The units in 'i = 17.0e7' in component 'main' are not the same. 'i' is dimensionless and '17.0e7' is in 'frog'.",
-        "The units in 'j = 19.0e9' in component 'main' are not the same. 'j' is dimensionless and '19.0e9' is in 'metre_per_second'.",
+        "The units in 'b = 3.0' in component 'main' are not the same. 'b' is dimensionless while '3.0' is in 'second'.",
+        "The units in 'c = 5.0' in component 'main' are not the same. 'c' is dimensionless while '5.0' is in 'volt'.",
+        "The units in 'd = 7.0' in component 'main' are not the same. 'd' is dimensionless while '7.0' is in 'frog'.",
+        "The units in 'e = 9.0' in component 'main' are not the same. 'e' is dimensionless while '9.0' is in 'metre_per_second'.",
+        "The units in 'g = 13.0e3' in component 'main' are not the same. 'g' is dimensionless while '13.0e3' is in 'second'.",
+        "The units in 'h = 15.0e5' in component 'main' are not the same. 'h' is dimensionless while '15.0e5' is in 'volt'.",
+        "The units in 'i = 17.0e7' in component 'main' are not the same. 'i' is dimensionless while '17.0e7' is in 'frog'.",
+        "The units in 'j = 19.0e9' in component 'main' are not the same. 'j' is dimensionless while '19.0e9' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -257,22 +257,22 @@ TEST(AnalyserUnits, piecewise)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bLHS > 13.0' in '(bLHS > 13.0)?11.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. 'bLHS' is dimensionless and '13.0' is in 'metre'.",
-        "The units in 'bLHS > 17.0' in '(bLHS > 17.0)?15.0' in '(bLHS > 17.0)?15.0:19.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. 'bLHS' is dimensionless and '17.0' is in 'candela'.",
-        "The units in 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. 'bLHS' is dimensionless and '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' is in 'XXX'.",
-        "The units in 'bRHS > 13.0' in '(bRHS > 13.0)?11.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. 'bRHS' is dimensionless and '13.0' is in 'metre'.",
-        "The units in 'bRHS > 17.0' in '(bRHS > 17.0)?15.0' in '(bRHS > 17.0)?15.0:19.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. 'bRHS' is dimensionless and '17.0' is in 'candela'.",
+        "The units in 'bLHS > 13.0' in '(bLHS > 13.0)?11.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. 'bLHS' is dimensionless while '13.0' is in 'metre'.",
+        "The units in 'bLHS > 17.0' in '(bLHS > 17.0)?15.0' in '(bLHS > 17.0)?15.0:19.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. 'bLHS' is dimensionless while '17.0' is in 'candela'.",
+        "The units in 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. 'bLHS' is dimensionless while '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' is in 'XXX'.",
+        "The units in 'bRHS > 13.0' in '(bRHS > 13.0)?11.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. 'bRHS' is dimensionless while '13.0' is in 'metre'.",
+        "The units in 'bRHS > 17.0' in '(bRHS > 17.0)?15.0' in '(bRHS > 17.0)?15.0:19.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. 'bRHS' is dimensionless while '17.0' is in 'candela'.",
         "The units in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' is in 'XXX' while 'bRHS' is dimensionless.",
-        "The units in 'cLHS > 23.0' in '(cLHS > 23.0)?21.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. 'cLHS' is dimensionless and '23.0' is in 'rooster'.",
-        "The units in 'cLHS > 27.0' in '(cLHS > 27.0)?25.0' in '(cLHS > 27.0)?25.0:29.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. 'cLHS' is dimensionless and '27.0' is in 'cat'.",
-        "The units in 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. 'cLHS' is dimensionless and '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' is in 'XXX'.",
-        "The units in 'cRHS > 23.0' in '(cRHS > 23.0)?21.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. 'cRHS' is dimensionless and '23.0' is in 'rooster'.",
-        "The units in 'cRHS > 27.0' in '(cRHS > 27.0)?25.0' in '(cRHS > 27.0)?25.0:29.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. 'cRHS' is dimensionless and '27.0' is in 'cat'.",
+        "The units in 'cLHS > 23.0' in '(cLHS > 23.0)?21.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. 'cLHS' is dimensionless while '23.0' is in 'rooster'.",
+        "The units in 'cLHS > 27.0' in '(cLHS > 27.0)?25.0' in '(cLHS > 27.0)?25.0:29.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. 'cLHS' is dimensionless while '27.0' is in 'cat'.",
+        "The units in 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. 'cLHS' is dimensionless while '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' is in 'XXX'.",
+        "The units in 'cRHS > 23.0' in '(cRHS > 23.0)?21.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. 'cRHS' is dimensionless while '23.0' is in 'rooster'.",
+        "The units in 'cRHS > 27.0' in '(cRHS > 27.0)?25.0' in '(cRHS > 27.0)?25.0:29.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. 'cRHS' is dimensionless while '27.0' is in 'cat'.",
         "The units in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' is in 'XXX' while 'cRHS' is dimensionless.",
-        "The units in 'dLHS > 23.0' in '(dLHS > 23.0)?21.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dLHS' is dimensionless and '23.0' is in 'metre'.",
-        "The units in 'dLHS > 27.0' in '(dLHS > 27.0)?25.0' in '(dLHS > 27.0)?25.0:29.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dLHS' is dimensionless and '27.0' is in 'candela'.",
-        "The units in 'dRHS > 33.0' in '(dRHS > 33.0)?31.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dRHS' is dimensionless and '33.0' is in 'rooster'.",
-        "The units in 'dRHS > 37.0' in '(dRHS > 37.0)?35.0' in '(dRHS > 37.0)?35.0:39.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dRHS' is dimensionless and '37.0' is in 'cat'.",
+        "The units in 'dLHS > 23.0' in '(dLHS > 23.0)?21.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dLHS' is dimensionless while '23.0' is in 'metre'.",
+        "The units in 'dLHS > 27.0' in '(dLHS > 27.0)?25.0' in '(dLHS > 27.0)?25.0:29.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dLHS' is dimensionless while '27.0' is in 'candela'.",
+        "The units in 'dRHS > 33.0' in '(dRHS > 33.0)?31.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dRHS' is dimensionless while '33.0' is in 'rooster'.",
+        "The units in 'dRHS > 37.0' in '(dRHS > 37.0)?35.0' in '(dRHS > 37.0)?35.0:39.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dRHS' is dimensionless while '37.0' is in 'cat'.",
         "The units in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' is in 'XXX' while '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' is in 'XXX'.",
         "The unit of '43.0' in '(43.0)?41.0' in '(43.0)?41.0:45.0' in equation 'eLHS = (43.0)?41.0:45.0' in component 'main' is not dimensionless. '43.0' is in 'second'.",
         "The unit of '43.0' in '(43.0)?41.0' in '(43.0)?41.0:45.0' in equation '(43.0)?41.0:45.0 = eRHS' in component 'main' is not dimensionless. '43.0' is in 'second'.",
@@ -1012,10 +1012,10 @@ TEST(AnalyserUnits, abs)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = abs(3.0)' in component 'main' are not the same. 'b' is dimensionless and 'abs(3.0)' is in 'second'.",
-        "The units in 'c = abs(5.0)' in component 'main' are not the same. 'c' is dimensionless and 'abs(5.0)' is in 'volt'.",
-        "The units in 'd = abs(7.0)' in component 'main' are not the same. 'd' is dimensionless and 'abs(7.0)' is in 'frog'.",
-        "The units in 'e = abs(9.0)' in component 'main' are not the same. 'e' is dimensionless and 'abs(9.0)' is in 'metre_per_second'.",
+        "The units in 'b = abs(3.0)' in component 'main' are not the same. 'b' is dimensionless while 'abs(3.0)' is in 'second'.",
+        "The units in 'c = abs(5.0)' in component 'main' are not the same. 'c' is dimensionless while 'abs(5.0)' is in 'volt'.",
+        "The units in 'd = abs(7.0)' in component 'main' are not the same. 'd' is dimensionless while 'abs(7.0)' is in 'frog'.",
+        "The units in 'e = abs(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'abs(9.0)' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
