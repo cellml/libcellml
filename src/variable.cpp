@@ -218,8 +218,8 @@ bool Variable::doEquals(const EntityPtr &other) const
     if (NamedEntity::doEquals(other)) {
         auto variable = std::dynamic_pointer_cast<libcellml::Variable>(other);
         if ((variable != nullptr)
-                && mPimpl->mInitialValue == variable->initialValue()
-                && mPimpl->mInterfaceType == variable->interfaceType()) {
+            && mPimpl->mInitialValue == variable->initialValue()
+            && mPimpl->mInterfaceType == variable->interfaceType()) {
             if (mPimpl->mUnits != nullptr) {
                 return mPimpl->mUnits->equals(variable->units());
             }
