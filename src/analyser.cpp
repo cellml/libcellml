@@ -424,12 +424,8 @@ struct Analyser::AnalyserImpl
     bool areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
                           const UnitsMaps &secondUnitsMaps);
     bool isDimensionlessUnitsMaps(const UnitsMaps &unitsMaps);
-    bool areSameUnitsMultipliers(double firstUnitsMultiplier,
-                                 double secondUnitsMultiplier,
-                                 std::string &unitsMismatchInformation);
     bool areSameUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
-                                 const UnitsMultipliers &secondUnitsMultipliers,
-                                 Strings &unitsMismatchesInformation);
+                                 const UnitsMultipliers &secondUnitsMultipliers);
     void updateUnitsMultiplier(const ModelPtr &model,
                                const std::string &unitsName,
                                double &newUnitsMultiplier,
@@ -1576,38 +1572,20 @@ bool Analyser::AnalyserImpl::isDimensionlessUnitsMaps(const UnitsMaps &unitsMaps
     return true;
 }
 
-bool Analyser::AnalyserImpl::areSameUnitsMultipliers(double firstUnitsMultiplier,
-                                                     double secondUnitsMultiplier,
-                                                     std::string &unitsMismatchInformation)
-{
-    // Return whether the units multipliers are equals.
-
-    unitsMismatchInformation = areEqual(firstUnitsMultiplier, secondUnitsMultiplier) ?
-                                   "" :
-                                   convertToString(firstUnitsMultiplier - secondUnitsMultiplier, false);
-
-    return unitsMismatchInformation.empty();
-}
-
 bool Analyser::AnalyserImpl::areSameUnitsMultipliers(const UnitsMultipliers &firstUnitsMultipliers,
-                                                     const UnitsMultipliers &secondUnitsMultipliers,
-                                                     Strings &unitsMismatchesInformation)
+                                                     const UnitsMultipliers &secondUnitsMultipliers)
 {
     // Return whether the units multipliers are equals.
-
-    std::string unitsMismatchInformation;
 
     for (const auto &firstUnitsMultiplier : firstUnitsMultipliers) {
         for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
-            if (!areSameUnitsMultipliers(firstUnitsMultiplier,
-                                         secondUnitsMultiplier,
-                                         unitsMismatchInformation)) {
-                unitsMismatchesInformation.push_back(unitsMismatchInformation);
+            if (!areEqual(firstUnitsMultiplier, secondUnitsMultiplier)) {
+                return false;
             }
         }
     }
 
-    return unitsMismatchesInformation.empty();
+    return true;
 }
 
 void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
@@ -1908,14 +1886,11 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)) {
-        Strings unitsMultipliersMismatchesInformation;
         bool sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
         bool sameUnitsMultipliers = (ast->mPimpl->mOwnedLeftChild == nullptr)
                                     || (ast->mPimpl->mOwnedRightChild == nullptr)
-                                    || areSameUnitsMultipliers(unitsMultipliers,
-                                                               rightUnitsMultipliers,
-                                                               unitsMultipliersMismatchesInformation);
+                                    || areSameUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
 
         if (!sameUnitsMaps || !sameUnitsMultipliers) {
             std::string issueDescription = "The units in " + expression(ast) + " are not the same. ";
