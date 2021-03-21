@@ -1888,8 +1888,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)) {
         bool sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
-        bool sameUnitsMultipliers = (ast->mPimpl->mOwnedLeftChild == nullptr)
-                                    || (ast->mPimpl->mOwnedRightChild == nullptr)
+        bool sameUnitsMultipliers = rightUnitsMaps.empty()
                                     || areSameUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
 
         if (!sameUnitsMaps || !sameUnitsMultipliers) {
