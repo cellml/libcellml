@@ -423,6 +423,7 @@ struct Analyser::AnalyserImpl
     std::string unitsMultipliersMismatchesInformation(const Strings &information);
     bool areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
                           const UnitsMaps &secondUnitsMaps);
+    bool isDimensionlessUnitsMaps(const UnitsMaps &unitsMaps);
     bool areSameUnitsMultipliers(double firstUnitsMultiplier,
                                  double secondUnitsMultiplier,
                                  std::string &unitsMismatchInformation);
@@ -1530,7 +1531,7 @@ std::string Analyser::AnalyserImpl::unitsMultipliersMismatchesInformation(const 
 bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
                                               const UnitsMaps &secondUnitsMaps)
 {
-    // Check whether the given units map are the same by checking their
+    // Check whether the given units maps are the same by checking their
     // exponents.
 
     for (const auto &firstUnitsMap : firstUnitsMaps) {
@@ -1553,6 +1554,21 @@ bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
                 if (!areEqual(units.second, 0.0)) {
                     return false;
                 }
+            }
+        }
+    }
+
+    return true;
+}
+
+bool Analyser::AnalyserImpl::isDimensionlessUnitsMaps(const UnitsMaps &unitsMaps)
+{
+    // Check whether the given units maps is dimensionless.
+
+    for (const auto &unitsMap : unitsMaps) {
+        for (const auto &units : unitsMap) {
+            if (units.first != "dimensionless") {
+                return false;
             }
         }
     }
@@ -1942,62 +1958,50 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)) {
-        Strings unitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMaps);
-        Strings rightUnitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMapsMismatchesInformation(rightUnitsMaps);
+        bool isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
+        bool isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
 
-        if (!unitsMapsMismatchesInformation.empty()
-            || !rightUnitsMapsMismatchesInformation.empty()) {
+        if (!isDimensionlessUnitsMaps || !isDimensionlessRightUnitsMaps) {
             std::string issueDescription = "The unit";
 
-            if (!unitsMapsMismatchesInformation.empty()
-                && !rightUnitsMapsMismatchesInformation.empty()) {
+            if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
                 issueDescription += "s";
             }
 
             issueDescription += " of ";
 
-            if (!unitsMapsMismatchesInformation.empty()) {
+            if (!isDimensionlessUnitsMaps) {
                 issueDescription += expression(ast->mPimpl->mOwnedLeftChild, false);
             }
 
-            if (!unitsMapsMismatchesInformation.empty()
-                && !rightUnitsMapsMismatchesInformation.empty()) {
+            if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
                 issueDescription += " and ";
             }
 
-            if (!rightUnitsMapsMismatchesInformation.empty()) {
+            if (!isDimensionlessRightUnitsMaps) {
                 issueDescription += expression(ast->mPimpl->mOwnedRightChild, false);
             }
 
             issueDescription += " in " + expression(ast);
 
-            if (!unitsMapsMismatchesInformation.empty()
-                && !rightUnitsMapsMismatchesInformation.empty()) {
+            if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
                 issueDescription += " are ";
             } else {
                 issueDescription += " is ";
             }
 
-            issueDescription += "not dimensionless. The unit ";
+            issueDescription += "not dimensionless. ";
 
-            if (!unitsMapsMismatchesInformation.empty()
-                && !rightUnitsMapsMismatchesInformation.empty()) {
-                issueDescription += "mismatches are ";
-            } else {
-                issueDescription += "mismatch is ";
+            if (!isDimensionlessUnitsMaps) {
+                issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps);
             }
 
-            if (!unitsMapsMismatchesInformation.empty()) {
-                issueDescription += Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation, false);
+            if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
+                issueDescription += " while ";
             }
 
-            if (!unitsMapsMismatchesInformation.empty()
-                && !rightUnitsMapsMismatchesInformation.empty()) {
-                issueDescription += " and ";
-            }
-
-            if (!rightUnitsMapsMismatchesInformation.empty()) {
-                issueDescription += Analyser::AnalyserImpl::unitsMapsMismatchesInformation(rightUnitsMapsMismatchesInformation, false);
+            if (!isDimensionlessRightUnitsMaps) {
+                issueDescription += expressionUnits(ast->mPimpl->mOwnedRightChild, rightUserUnitsMaps);
             }
 
             issueDescription += ".";
