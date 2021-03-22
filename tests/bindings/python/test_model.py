@@ -72,8 +72,8 @@ class ModelTestCase(unittest.TestCase):
 
         # bool removeUnits(const UnitsPtr &units)
         m = Model()
-        u1 = Units()
-        u2 = Units()
+        u1 = Units("metre")
+        u2 = Units("second")
         self.assertFalse(m.removeUnits(u1))
         m.addUnits(u1)
         self.assertFalse(m.removeUnits(u2))
@@ -206,7 +206,7 @@ class ModelTestCase(unittest.TestCase):
         a = Units()
         m.addUnits(a)
         b = Units()
-        self.assertFalse(m.replaceUnits(b, a))
+        self.assertTrue(m.replaceUnits(b, a))
         self.assertTrue(m.replaceUnits(a, b))
         self.assertTrue(m.replaceUnits(b, a))
         del [m, a, b]

@@ -122,7 +122,13 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h

@@ -233,7 +233,7 @@ private:
     explicit AnalyserExternalVariable(const VariablePtr &variable); /**< Constructor */
 
     struct AnalyserExternalVariableImpl;
-    AnalyserExternalVariableImpl *mPimpl;
+    AnalyserExternalVariableImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
