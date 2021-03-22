@@ -124,7 +124,6 @@ public:
      */
     ImportSourcePtr clone() const;
 
-
 protected:
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
