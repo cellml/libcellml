@@ -500,10 +500,10 @@ public:
                                 const VariablePtr &variable2);
 
 private:
-    AnalyserModel(); /**< Constructor. */
+    AnalyserModel(); /**< Constructor, @private. */
 
     struct AnalyserModelImpl;
-    AnalyserModelImpl *mPimpl;
+    AnalyserModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
