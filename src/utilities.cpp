@@ -19,6 +19,7 @@ limitations under the License.
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstring>
 #include <iomanip>
 #include <limits>
 #include <numeric>
