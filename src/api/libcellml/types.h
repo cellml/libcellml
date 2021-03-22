@@ -94,7 +94,7 @@ class LIBCELLML_EXPORT Unit
 {
 public:
     ~Unit(); /**< Destructor. */
-    Unit() = delete; /**< Constructor. */
+    Unit() = delete; /**< Constructor, @private. */
     Unit(const Unit &rhs) = delete; /**< Copy constructor. */
     Unit(Unit &&rhs) noexcept = delete; /**< Move constructor. */
     Unit &operator=(Unit rhs) = delete; /**< Assignment operator. */
@@ -142,8 +142,8 @@ public:
 private:
     explicit Unit(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
 
-    struct UnitImpl; /**< Forward declaration for pImpl idiom. */
-    UnitImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct UnitImpl; /**< Forward declaration for pImpl idiom, @private. */
+    UnitImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 /**
@@ -158,7 +158,7 @@ class LIBCELLML_EXPORT VariablePair
 {
 public:
     ~VariablePair(); /**< Destructor. */
-    VariablePair() = delete; /**< Constructor. */
+    VariablePair() = delete; /**< Constructor, @private. */
     VariablePair(const VariablePair &rhs) = delete; /**< Copy constructor. */
     VariablePair(VariablePair &&rhs) noexcept = delete; /**< Move constructor. */
     VariablePair &operator=(VariablePair rhs) = delete; /**< Assignment operator. */
@@ -206,8 +206,8 @@ public:
 private:
     explicit VariablePair(const VariablePtr &variable1, const VariablePtr &variable2); /**< Constructor with two variables as parameters. */
 
-    struct VariablePairImpl; /**< Forward declaration for pImpl idiom. */
-    VariablePairImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct VariablePairImpl; /**< Forward declaration for pImpl idiom, @private. */
+    VariablePairImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 /**
