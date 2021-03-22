@@ -358,7 +358,7 @@ public:
      *
      * @return @c true if the import source item is added or @c false otherwise.
      */
-    bool addImportSource(const ImportSourcePtr &importSrc);
+    bool addImportSource(const ImportSourcePtr &importSource);
 
     /**
      * @brief Get the number of import source items in the model.
