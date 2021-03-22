@@ -73,7 +73,6 @@ public:
      * and the previous model's units list is updated.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p units pointer already exists in this model; or
      *  - The @p units is @c nullptr.
      *
      * @param units The units to add.
@@ -426,13 +425,15 @@ public:
     bool hasImportSource(const ImportSourcePtr &importSrc) const;
 
 private:
-    Model(); /**< Constructor. */
-    explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
+    Model(); /**< Constructor, @private. */
+    explicit Model(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
-    bool doAddComponent(const ComponentPtr &component) override;
+    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual implementation method for addComponent, @private. */
 
-    struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    ModelImpl *mPimpl; /**< Private member to implementation pointer. */
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
+    struct ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

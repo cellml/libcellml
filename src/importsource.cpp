@@ -287,6 +287,17 @@ bool ImportSource::removeAllUnits()
     return status;
 }
 
+bool ImportSource::doEquals(const EntityPtr &other) const
+{
+    if (Entity::doEquals(other)) {
+        auto importSource = std::dynamic_pointer_cast<ImportSource>(other);
+        if (importSource != nullptr) {
+            return mPimpl->mUrl == importSource->url();
+        }
+    }
+    return false;
+}
+
 void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it)
 {
     // Find current index for the item to remove.
