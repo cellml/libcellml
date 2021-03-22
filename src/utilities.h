@@ -340,17 +340,34 @@ bool isCellMLInteger(const std::string &candidate);
 bool isCellMLReal(const std::string &candidate);
 
 /**
- * @brief Test if @p value1 @c double and @p value2 @c double are equal.
+ * @brief Test if @p a @c double and @p b @c double are equal.
  *
- * Return @c true if @p value1 @c double and @p value2 @c double are equal,
+ * Return @c true if @p a @c double and @p b @c double are equal,
  * otherwise return @c false.
  *
- * @param value1 The first @c double value to test.
- * @param value2 The second @c double value to test.
+ * @param a The first @c double value to test.
+ * @param b The second @c double value to test.
  *
- * @return @c true if @p value1 and @p value2 are equal and @c false otherwise.
+ * @return @c true if @p a and @p b are equal and @c false otherwise.
  */
-bool areEqual(double value1, double value2);
+bool areEqual(double a, double b);
+
+/**
+ * @brief Decide if two doubles are nearly equal.
+ *
+ * Test two doubles to determine if they are close enough
+ * to be considered equal.
+ *
+ * Uses a modified form of comparing floats:
+ *
+ *   https://bitbashing.io/comparing-floats.html
+ *
+ * @param a A @c double to test.
+ * @param b A @c double to test.
+ *
+ * @return @c true if the given doubles are considered close, @c false otherwise.
+ */
+bool areNearlyEqual(double a, double b);
 
 /**
  * @brief Compare strings to determine if they are equal.

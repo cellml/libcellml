@@ -1965,7 +1965,7 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserV
     std::string scalingFactorCode;
     auto scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
 
-    if (!areEqual(scalingFactor, 1.0)) {
+    if (!areNearlyEqual(scalingFactor, 1.0)) {
         scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mLockedProfile->timesString();
     }
 
