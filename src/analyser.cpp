@@ -1868,6 +1868,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     // Check the left and right children.
 
+    auto oldNbOfIssueDescriptions = issueDescriptions.size();
     UnitsMaps rightUnitsMaps;
     UnitsMaps rightUserUnitsMaps;
     UnitsMultipliers rightUnitsMultipliers;
@@ -1891,24 +1892,26 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         bool sameUnitsMultipliers = rightUnitsMaps.empty()
                                     || areSameUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
 
-        if (!sameUnitsMaps || !sameUnitsMultipliers) {
+        if (sameUnitsMaps && sameUnitsMultipliers) {
+            // Relational operators result in a dimensionless unit.
+
+            if ((ast->mPimpl->mType == AnalyserEquationAst::Type::EQ)
+                || (ast->mPimpl->mType == AnalyserEquationAst::Type::NEQ)
+                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LT)
+                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
+                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
+                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)) {
+                defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
+            }
+        } else if (issueDescriptions.size() == oldNbOfIssueDescriptions) {
+            // Only report inner issues.
+
             std::string issueDescription = "The units in " + expression(ast) + " are not the same. ";
 
             issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + " while "
                                 + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUserUnitsMaps) + ".";
 
             issueDescriptions.push_back(issueDescription);
-        }
-
-        // Relational operators result in a dimensionless unit.
-
-        if ((ast->mPimpl->mType == AnalyserEquationAst::Type::EQ)
-            || (ast->mPimpl->mType == AnalyserEquationAst::Type::NEQ)
-            || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LT)
-            || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
-            || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
-            || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)) {
-            defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
         }
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::PIECEWISE) {
         unitsMaps.insert(std::end(unitsMaps),
@@ -1982,8 +1985,6 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             issueDescriptions.push_back(issueDescription);
         }
-
-        defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
     } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE)) {
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps,

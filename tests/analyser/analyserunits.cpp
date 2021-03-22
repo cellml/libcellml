@@ -798,15 +798,13 @@ TEST(AnalyserUnits, plus)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst+3.0' in equation 'b = bCst+3.0' in component 'main' are not the same. The unit mismatch is second^1.",
-        "The units in 'b = bCst+3.0' in component 'main' are not the same. The unit mismatch is second^-1.",
-        "The units in 'cCst+5.0' in equation 'c = cCst+5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'c = cCst+5.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'dCst+7.0' in equation 'd = dCst+7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
-        "The units in 'd = dCst+7.0' in component 'main' are not the same. The unit mismatch is frog^-1.",
+        "The units in 'bCst+3.0' in equation 'b = bCst+3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
+        "The units in 'cCst+5.0' in equation 'c = cCst+5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
+        "The units in 'dCst+7.0' in equation 'd = dCst+7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
+        "The units in 'eCst+9.0' in equation 'e = eCst+9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
+        "The units in 'fCst+11.0' in equation 'f = fCst+11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -819,10 +817,8 @@ TEST(AnalyserUnits, plus)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
