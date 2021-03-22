@@ -1807,7 +1807,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     //  - Arithmetic operators:
     //     - 'plus', 'times' and 'divide': the two operands should have
     //       the same unit.
-    //     - 'minus': if there is one operand, then it can have any unit. It
+    //     - 'minus': if there is one operand, then it can have any unit. If
     //       there are two operands, then they should have the same unit.
     //     - 'power': the base can have any unit while the exponent should be
     //       dimensionless.
