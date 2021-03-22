@@ -1018,13 +1018,19 @@ TEST(AnalyserUnits, power)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'b = pow(bCst, 3.0)' in component 'main' are not the same. The unit mismatch is second^-3.",
-        "The units in 'c = pow(cCst, 5.0)' in component 'main' are not the same. The unit mismatch is ampere^5 x kilogram^-5 x metre^-10 x second^15.",
-        "The units in 'd = pow(dCst, 7.0)' in component 'main' are not the same. The unit mismatch is frog^-7.",
-        "The unit of '9.0' in 'pow(eCst, 9.0)' in equation 'e = pow(eCst, 9.0)' in component 'main' is not dimensionless. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'e = pow(eCst, 9.0)' in component 'main' are not the same. The unit mismatch is second^-9.",
+        "The unit of '3.0' in 'pow(bCst, 3.0)' in equation 'b = pow(bCst, 3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
+        "The unit of '5.0' in 'pow(cCst, 5.0)' in equation 'c = pow(cCst, 5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
+        "The unit of '7.0' in 'pow(dCst, 7.0)' in equation 'd = pow(dCst, 7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
+        "The unit of '9.0' in 'pow(eCst, 9.0)' in equation 'e = pow(eCst, 9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The units in 'f = pow(fCst, 11.0)' in component 'main' are not the same. 'f' is dimensionless while 'pow(fCst, 11.0)' is in 'second^11'.",
+        "The units in 'g = pow(gCst, 13.0)' in component 'main' are not the same. 'g' is dimensionless while 'pow(gCst, 13.0)' is in 'volt^13'.",
+        "The units in 'h = pow(hCst, 15.0)' in component 'main' are not the same. 'h' is dimensionless while 'pow(hCst, 15.0)' is in 'frog^15'.",
+        "The units in 'i = pow(iCst, 17.0)' in component 'main' are not the same. 'i' is dimensionless while 'pow(iCst, 17.0)' is in 'metre_per_second^17'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -1037,8 +1043,14 @@ TEST(AnalyserUnits, power)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,

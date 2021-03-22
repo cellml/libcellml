@@ -1995,26 +1995,27 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                           ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
-        // Make sure that our power/root value, if any, is dimensionless.
-
         if ((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER)
             || (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE)) {
-            Strings unitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMapsMismatchesInformation((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
-                                                                                                                rightUnitsMaps :
-                                                                                                                unitsMaps);
+            bool isDimensionlessExponent = Analyser::AnalyserImpl::isDimensionlessUnitsMaps((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                                                                                                rightUnitsMaps :
+                                                                                                unitsMaps);
 
-            if (!unitsMapsMismatchesInformation.empty()) {
-                AnalyserEquationAstPtr astChild = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
-                                                      ast->mPimpl->mOwnedRightChild :
-                                                      ast->mPimpl->mOwnedLeftChild;
+            if (!isDimensionlessExponent) {
+                auto baseAst = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                                   ast->mPimpl->mOwnedRightChild :
+                                   ast->mPimpl->mOwnedLeftChild;
+                auto exponentUserUnitsMaps = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                                                 rightUserUnitsMaps :
+                                                 userUnitsMaps;
 
-                issueDescriptions.push_back("The unit of " + expression(astChild)
+                issueDescriptions.push_back("The unit of " + expression(baseAst)
                                             + " is not dimensionless. "
-                                            + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation) + ".");
+                                            + expressionUnits(baseAst, exponentUserUnitsMaps) + ".");
             }
         }
 
-        // Retrieve the power/root value and apply it to our units maps and multipliers.
+        // Retrieve the exponent and apply it to our units maps and multipliers.
 
         double powerRootValue = 0.0;
 
