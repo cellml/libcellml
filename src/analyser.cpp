@@ -1190,7 +1190,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
             auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable());
 
-            if (!areEqual(scalingFactor, 1.0)) {
+            if (!areNearlyEqual(scalingFactor, 1.0)) {
                 // We need to scale using the inverse of the scaling factor, but
                 // how we do it depends on whether the rate is to be computed or
                 // used.
@@ -1216,7 +1216,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
             auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->variable());
 
-            if (!areEqual(scalingFactor, 1.0)) {
+            if (!areNearlyEqual(scalingFactor, 1.0)) {
                 if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
                     scaleAst(astParent, astParent->parent(), scalingFactor);
                 } else {

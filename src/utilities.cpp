@@ -174,9 +174,56 @@ bool isCellMLReal(const std::string &candidate)
     return isReal;
 }
 
-bool areEqual(double value1, double value2)
+bool areEqual(double a, double b)
 {
-    return std::abs(value1 - value2) < std::numeric_limits<double>::epsilon();
+    return convertToString(a) == convertToString(b);
+}
+
+ptrdiff_t ulpsDistance(double a, double b)
+{
+    static const auto max = std::numeric_limits<ptrdiff_t>::max();
+
+    // Max distance for NaN.
+    if (std::isnan(a) || std::isnan(b)) {
+        return max;
+    }
+
+    // If one's infinite and they're not equal, max distance.
+    if (std::isinf(a) != std::isinf(b)) {
+        return max;
+    }
+
+    static const int SIZE_OF_DOUBLE = sizeof(double);
+
+    ptrdiff_t ia;
+    ptrdiff_t ib;
+    memcpy(&ia, &a, SIZE_OF_DOUBLE);
+    memcpy(&ib, &b, SIZE_OF_DOUBLE);
+
+    // Return the absolute value of the distance in ULPs.
+    ptrdiff_t distance = ia - ib;
+    if (distance < 0) {
+        return -distance;
+    }
+
+    return distance;
+}
+
+bool areNearlyEqual(double a, double b)
+{
+    static const double fixedEpsilon = std::numeric_limits<double>::epsilon();
+    static const ptrdiff_t ulpsEpsilon = 1;
+
+    if (fabs(a - b) <= fixedEpsilon) {
+        return true;
+    }
+
+    // If they are not the same sign then return false.
+    if ((a < 0.0) != (b < 0.0)) {
+        return false;
+    }
+
+    return ulpsDistance(a, b) <= ulpsEpsilon;
 }
 
 // The below code is used to compute the SHA-1 value of a string, based on the
