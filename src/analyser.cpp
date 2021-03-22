@@ -1988,8 +1988,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE)) {
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps,
                                             ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
-        unitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps,
-                                            ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
+        userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps,
+                                                ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
         unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers,
                                                           ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
