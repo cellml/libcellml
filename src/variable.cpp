@@ -213,6 +213,23 @@ VariablePtr Variable::create(const std::string &name) noexcept
     return std::shared_ptr<Variable> {new Variable {name}};
 }
 
+bool Variable::doEquals(const EntityPtr &other) const
+{
+    if (NamedEntity::doEquals(other)) {
+        auto variable = std::dynamic_pointer_cast<libcellml::Variable>(other);
+        if ((variable != nullptr)
+            && mPimpl->mInitialValue == variable->initialValue()
+            && mPimpl->mInterfaceType == variable->interfaceType()) {
+            if (mPimpl->mUnits != nullptr) {
+                return mPimpl->mUnits->equals(variable->units());
+            }
+
+            return variable->units() == nullptr;
+        }
+    }
+    return false;
+}
+
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     if ((variable1 != nullptr) && (variable2 != nullptr)) {

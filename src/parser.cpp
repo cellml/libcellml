@@ -393,95 +393,6 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     mParser->addIssues(issueList);
 }
 
-std::string cleanMath(const std::string &math)
-{
-    // Clean up the given math string so that all its lines have the same
-    // indentation reference. Indeed, say that we parse the following code:
-    //
-    // <model xmlns="http://www.cellml.org/cellml/2.0#"
-    //        xmlns:cellml="http://www.cellml.org/cellml/2.0#"
-    //        xmlns:xlink="http://www.w3.org/1999/xlink" name="sin" id="sin">
-    //   <component name="sin" id="sin">
-    //     <variable name="x" units="dimensionless"
-    //               interface="public_and_private"/>
-    //     <variable id="sin" units="dimensionless" name="sin"
-    //               interface="public_and_private"/>
-    //     <math xmlns="http://www.w3.org/1998/Math/MathML">
-    //       <apply id="actual_sin">
-    //         <eq/>
-    //         <ci>sin</ci>
-    //         <apply>
-    //           <sin/>
-    //           <ci>x</ci>
-    //         </apply>
-    //       </apply>
-    //     </math>
-    //   </component>
-    // </model>
-    //
-    // Then, Parser::ParserImpl::loadComponent() will eventually call
-    // Component::appendMath() with a math string value of:
-    //
-    // <math xmlns="http://www.w3.org/1998/Math/MathML">
-    //       <apply id="actual_sin">
-    //         <eq/>
-    //         <ci>sin</ci>
-    //         <apply>
-    //           <sin/>
-    //           <ci>x</ci>
-    //         </apply>
-    //       </apply>
-    //     </math>
-    //
-    // So, we need to clean it to get:
-    //
-    // <math xmlns="http://www.w3.org/1998/Math/MathML">
-    //   <apply id="actual_sin">
-    //     <eq/>
-    //     <ci>sin</ci>
-    //     <apply>
-    //       <sin/>
-    //       <ci>x</ci>
-    //     </apply>
-    //   </apply>
-    // </math>
-
-    std::istringstream lines(math);
-    std::string line;
-    bool skipLine = true;
-    size_t indentSize = std::numeric_limits<size_t>::max();
-
-    while (std::getline(lines, line)) {
-        if (skipLine) {
-            skipLine = false;
-        } else {
-            size_t crtIndentSize = 0;
-            for (const char &c : line) {
-                if (c == ' ') {
-                    ++crtIndentSize;
-                }
-            }
-            indentSize = std::min(crtIndentSize, indentSize);
-        }
-    }
-
-    std::string cleanMath;
-
-    lines = std::istringstream(math);
-    skipLine = true;
-
-    while (std::getline(lines, line)) {
-        if (skipLine) {
-            cleanMath += line + '\n';
-            skipLine = false;
-        } else {
-            cleanMath += line.substr(indentSize) + '\n';
-        }
-    }
-
-    return cleanMath;
-}
-
 void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node) const
 {
     XmlAttributePtr attribute = node->firstAttribute();
@@ -521,7 +432,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             }
 
             // Append a self contained math XML document to the component.
-            std::string math = cleanMath(childNode->convertToString(true) + "\n");
+            std::string math = childNode->convertToString() + "\n";
             component->appendMath(math);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
@@ -1269,7 +1180,7 @@ void Parser::ParserImpl::loadResetChild(const std::string &childType, const Rese
     XmlNodePtr mathNode = node->firstChild();
     while (mathNode) {
         if (mathNode->isMathmlElement("math")) {
-            std::string math = mathNode->convertToString(true) + "\n";
+            std::string math = mathNode->convertToString() + "\n";
             if (childType == "test_value") {
                 reset->appendTestValue(math);
             } else {

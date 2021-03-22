@@ -19,6 +19,7 @@ limitations under the License.
 #include <algorithm>
 #include <fstream>
 #include <map>
+#include <numeric>
 #include <sstream>
 #include <stack>
 #include <utility>
@@ -49,26 +50,42 @@ struct Model::ModelImpl
     std::vector<UnitsPtr> mUnits;
     std::vector<ImportSourceWeakPtr> mImports;
 
-    std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
-    std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
-
     void cleanExpiredImportSources();
+
+    std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
+    std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
+    std::vector<ImportSourceWeakPtr>::const_iterator findImportSource(const ImportSourcePtr &importSource) const;
+
+    bool equalUnits(const ModelPtr &other) const;
 };
 
-std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
+std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const std::string &name) const
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return u->name() == name; });
 }
 
-std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
+std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const UnitsPtr &units) const
 {
     auto result = std::find(mUnits.begin(), mUnits.end(), units);
     if (result != mUnits.end()) {
         return result;
     }
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::equivalent(u, units); });
+                        [=](const UnitsPtr &u) -> bool { return u->equals(units); });
+}
+
+std::vector<ImportSourceWeakPtr>::const_iterator Model::ModelImpl::findImportSource(const ImportSourcePtr &importSource) const
+{
+    return std::find_if(mImports.begin(), mImports.end(),
+                        [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSource->equals(importSourceWeak.lock()); });
+}
+
+bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
+{
+    std::vector<EntityPtr> entities;
+    std::copy(mUnits.begin(), mUnits.end(), std::back_inserter(entities));
+    return equalEntities(other, entities);
 }
 
 Model::Model()
@@ -109,13 +126,13 @@ void registerPossibleImportSource(const ModelPtr &model, const ComponentPtr &com
 
 bool Model::doAddComponent(const ComponentPtr &component)
 {
-    if (component->hasParent()) {
-        auto parent = component->parent();
-        removeComponentFromEntity(parent, component);
+    auto thisModel = shared_from_this();
+    if (component->hasParent() && (thisModel != component->parent())) {
+        removeComponentFromEntity(component->parent(), component);
     }
-    component->setParent(shared_from_this());
+    component->setParent(thisModel);
 
-    registerPossibleImportSource(shared_from_this(), component);
+    registerPossibleImportSource(thisModel, component);
 
     return ComponentEntity::doAddComponent(component);
 }
@@ -126,18 +143,14 @@ bool Model::addUnits(const UnitsPtr &units)
         return false;
     }
 
-    // Prevent adding multiple times to list.
-    if (hasUnits(units)) {
-        return false;
-    }
-
     // Prevent adding to multiple models: move units to this model.
-    if (units->hasParent()) {
+    auto thisModel = shared_from_this();
+    if (units->hasParent() && (units->parent() != thisModel)) {
         auto otherParent = std::dynamic_pointer_cast<Model>(units->parent());
         otherParent->removeUnits(units);
     }
     mPimpl->mUnits.push_back(units);
-    units->setParent(shared_from_this());
+    units->setParent(thisModel);
 
     if (units->isImport()) {
         addImportSource(units->importSource());
@@ -245,7 +258,7 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 {
     bool status = false;
     if (removeUnits(index)) {
-        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + int64_t(index), units);
+        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + ptrdiff_t(index), units);
 
         if (units->isImport()) {
             addImportSource(units->importSource());
@@ -278,26 +291,29 @@ void Model::ModelImpl::cleanExpiredImportSources()
 
 bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
 {
-    return std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
-                        [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSrc == importSourceWeak.lock(); })
-           != mPimpl->mImports.end();
+    return mPimpl->findImportSource(importSrc) != mPimpl->mImports.end();
 }
 
-bool Model::addImportSource(const ImportSourcePtr &importSrc)
+bool Model::addImportSource(const ImportSourcePtr &importSource)
 {
-    if (importSrc == nullptr) {
+    if (importSource == nullptr) {
         return false;
     }
-    if (hasImportSource(importSrc)) {
+
+    // Prevent adding the same import source.
+
+    if (std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
+        [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSource == importSourceWeak.lock(); }) != mPimpl->mImports.end()) {
         return false;
     }
-    auto otherModel = owningModel(importSrc);
+
+    auto otherModel = owningModel(importSource);
     if (otherModel != nullptr) {
-        otherModel->removeImportSource(importSrc);
+        otherModel->removeImportSource(importSource);
     }
-    importSrc->setParent(shared_from_this());
+    importSource->setParent(shared_from_this());
     // Add an entirely separate copy to the model's list.
-    mPimpl->mImports.push_back(importSrc);
+    mPimpl->mImports.push_back(importSource);
     return true;
 }
 
@@ -330,8 +346,7 @@ bool Model::removeImportSource(const ImportSourcePtr &importSrc)
     mPimpl->cleanExpiredImportSources();
 
     bool status = false;
-    auto result = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
-                               [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSrc == importSourceWeak.lock(); });
+    auto result = mPimpl->findImportSource(importSrc);
     if (result != mPimpl->mImports.end()) {
         importSrc->removeParent();
         mPimpl->mImports.erase(result);
@@ -524,6 +539,17 @@ bool Model::fixVariableInterfaces()
     }
 
     return allOk;
+}
+
+bool Model::doEquals(const EntityPtr &other) const
+{
+    if (ComponentEntity::doEquals(other)) {
+        auto model = std::dynamic_pointer_cast<Model>(other);
+        if ((model != nullptr) && mPimpl->equalUnits(model)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } // namespace libcellml
