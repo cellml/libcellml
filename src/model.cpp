@@ -302,7 +302,8 @@ bool Model::addImportSource(const ImportSourcePtr &importSource)
 
     // Prevent adding the same import source.
     if (std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
-        [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSource == importSourceWeak.lock(); }) != mPimpl->mImports.end()) {
+                     [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSource == importSourceWeak.lock(); })
+        != mPimpl->mImports.end()) {
         return false;
     }
 
