@@ -235,10 +235,10 @@ public:
     AnalyserModelPtr model() const;
 
 private:
-    Analyser(); /**< Constructor. */
+    Analyser(); /**< Constructor, @private. */
 
     struct AnalyserImpl;
-    AnalyserImpl *mPimpl;
+    AnalyserImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
