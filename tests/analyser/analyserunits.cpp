@@ -841,15 +841,15 @@ TEST(AnalyserUnits, minus)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst-3.0' in equation 'b = bCst-3.0' in component 'main' are not the same. The unit mismatch is second^1.",
-        "The units in 'b = bCst-3.0' in component 'main' are not the same. The unit mismatch is second^-1.",
-        "The units in 'cCst-5.0' in equation 'c = cCst-5.0' in component 'main' are not the same. The unit mismatch is ampere^-1 x kilogram^1 x metre^2 x second^-3.",
-        "The units in 'c = cCst-5.0' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'dCst-7.0' in equation 'd = dCst-7.0' in component 'main' are not the same. The unit mismatch is frog^1.",
-        "The units in 'd = dCst-7.0' in component 'main' are not the same. The unit mismatch is frog^-1.",
-        "The units in 'f = -fCst' in component 'main' are not the same. The unit mismatch is second^-1.",
-        "The units in 'g = -gCst' in component 'main' are not the same. The unit mismatch is ampere^1 x kilogram^-1 x metre^-2 x second^3.",
-        "The units in 'h = -hCst' in component 'main' are not the same. The unit mismatch is frog^-1.",
+        "The units in 'b = -bCst' in component 'main' are not the same. 'b' is dimensionless while '-bCst' is in 'second'.",
+        "The units in 'c = -cCst' in component 'main' are not the same. 'c' is dimensionless while '-cCst' is in 'volt'.",
+        "The units in 'd = -dCst' in component 'main' are not the same. 'd' is dimensionless while '-dCst' is in 'frog'.",
+        "The units in 'e = -eCst' in component 'main' are not the same. 'e' is dimensionless while '-eCst' is in 'metre_per_second'.",
+        "The units in 'gCst-3.0' in equation 'g = gCst-3.0' in component 'main' are not the same. 'gCst' is in 'second' while '3.0' is dimensionless.",
+        "The units in 'hCst-5.0' in equation 'h = hCst-5.0' in component 'main' are not the same. 'hCst' is in 'volt' while '5.0' is dimensionless.",
+        "The units in 'iCst-7.0' in equation 'i = iCst-7.0' in component 'main' are not the same. 'iCst' is in 'frog' while '7.0' is dimensionless.",
+        "The units in 'jCst-9.0' in equation 'j = jCst-9.0' in component 'main' are not the same. 'jCst' is in 'metre_per_second' while '9.0' is dimensionless.",
+        "The units in 'kCst-11.0' in equation 'k = kCst-11.0' in component 'main' are not the same. 'kCst' is in 'second' while '11.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
