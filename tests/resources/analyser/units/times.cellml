@@ -1,6 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="times" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="frog"/>
+    <units name="metre_per_second">
+        <unit units="metre"/>
+        <unit exponent="-1" units="second"/>
+    </units>
     <units name="second_by_volt">
         <unit units="second"/>
         <unit units="volt"/>
@@ -13,27 +17,39 @@
         <unit units="frog"/>
         <unit units="volt"/>
     </units>
+    <units name="metre_per_second_by_volt">
+        <unit units="metre_per_second"/>
+        <unit units="volt"/>
+    </units>
     <component name="main">
         <variable name="a" units="dimensionless"/>
         <variable name="b" units="dimensionless"/>
         <variable name="c" units="dimensionless"/>
         <variable name="d" units="dimensionless"/>
-        <variable name="e" units="second_by_volt"/>
-        <variable name="f" units="volt_by_volt"/>
-        <variable name="g" units="frog_by_volt"/>
-        <variable name="h" units="second_by_volt"/>
-        <variable name="i" units="volt_by_volt"/>
-        <variable name="j" units="frog_by_volt"/>
+        <variable name="e" units="dimensionless"/>
+        <variable name="f" units="dimensionless"/>
+        <variable name="g" units="second_by_volt"/>
+        <variable name="h" units="volt_by_volt"/>
+        <variable name="i" units="frog_by_volt"/>
+        <variable name="j" units="metre_per_second_by_volt"/>
+        <variable name="k" units="second_by_volt"/>
+        <variable name="l" units="volt_by_volt"/>
+        <variable name="m" units="frog_by_volt"/>
+        <variable name="n" units="metre_per_second_by_volt"/>
         <variable initial_value="1" name="aCst" units="dimensionless"/>
         <variable initial_value="3" name="bCst" units="second"/>
         <variable initial_value="5" name="cCst" units="volt"/>
         <variable initial_value="7" name="dCst" units="frog"/>
-        <variable initial_value="9" name="eCst" units="second"/>
-        <variable initial_value="11" name="fCst" units="volt"/>
-        <variable initial_value="13" name="gCst" units="frog"/>
-        <variable initial_value="15" name="hCst" units="second"/>
-        <variable initial_value="17" name="iCst" units="volt"/>
-        <variable initial_value="19" name="jCst" units="frog"/>
+        <variable initial_value="9" name="eCst" units="metre_per_second"/>
+        <variable initial_value="11" name="fCst" units="second"/>
+        <variable initial_value="13" name="gCst" units="second"/>
+        <variable initial_value="15" name="hCst" units="volt"/>
+        <variable initial_value="17" name="iCst" units="frog"/>
+        <variable initial_value="19" name="jCst" units="metre_per_second"/>
+        <variable initial_value="21" name="kCst" units="second"/>
+        <variable initial_value="23" name="lCst" units="volt"/>
+        <variable initial_value="25" name="mCst" units="frog"/>
+        <variable initial_value="27" name="nCst" units="metre_per_second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -86,7 +102,7 @@
                 <apply>
                     <times/>
                     <ci>fCst</ci>
-                    <cn cellml:units="dimensionless">11</cn>
+                    <cn cellml:units="metre_per_second">11</cn>
                 </apply>
             </apply>
             <apply>
@@ -104,7 +120,7 @@
                 <apply>
                     <times/>
                     <ci>hCst</ci>
-                    <cn cellml:units="volt">15</cn>
+                    <cn cellml:units="dimensionless">15</cn>
                 </apply>
             </apply>
             <apply>
@@ -113,7 +129,7 @@
                 <apply>
                     <times/>
                     <ci>iCst</ci>
-                    <cn cellml:units="volt">17</cn>
+                    <cn cellml:units="dimensionless">17</cn>
                 </apply>
             </apply>
             <apply>
@@ -122,7 +138,43 @@
                 <apply>
                     <times/>
                     <ci>jCst</ci>
-                    <cn cellml:units="volt">19</cn>
+                    <cn cellml:units="dimensionless">19</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>k</ci>
+                <apply>
+                    <times/>
+                    <ci>kCst</ci>
+                    <cn cellml:units="volt">21</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>l</ci>
+                <apply>
+                    <times/>
+                    <ci>lCst</ci>
+                    <cn cellml:units="volt">23</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>m</ci>
+                <apply>
+                    <times/>
+                    <ci>mCst</ci>
+                    <cn cellml:units="volt">25</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>n</ci>
+                <apply>
+                    <times/>
+                    <ci>nCst</ci>
+                    <cn cellml:units="volt">27</cn>
                 </apply>
             </apply>
         </math>
