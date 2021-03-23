@@ -99,9 +99,6 @@ Refactoring means improving the code without adding features, and the tests prov
 
 For simple or obvious bugs which have fallen through the testing gaps, simply submitting a pull request with the repaired implementation and no extra tests is fine.
 
-**TODO** check above is true.
-
-
 GitHub pull requests
 ====================
 Once some changes have been made and local commits committed, push your changes to your Github libCellML repository (refer to :numref:`git_branching`).
