@@ -233,7 +233,7 @@ TEST(Model, removeComponent)
 
     m->addComponent(c1);
 
-    // Remove the first occurence of "child1".
+    // Remove the first occurrence of "child1".
     EXPECT_TRUE(m->removeComponent("child1"));
     EXPECT_EQ(size_t(1), m->componentCount());
     a = printer->printModel(m);
@@ -484,11 +484,11 @@ TEST(Model, setAndCheckIdsAllEntities)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-different-model.xml\" id=\"i2id\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>\n"
+        "  </import>\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>\n"
-        "  </import>\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i2id\">\n"
-        "    <units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>\n"
         "  </import>\n"
         "  <units name=\"u2name\" id=\"u2id\"/>\n"
         "  <units name=\"u3name\" id=\"u3id\"/>\n"
@@ -515,7 +515,7 @@ TEST(Model, setAndCheckIdsAllEntities)
     i1->setUrl("some-other-model.xml");
     c1->setSourceComponent(i1, "a_component_in_that_model");
 
-    i2->setUrl("some-other-model.xml");
+    i2->setUrl("some-other-different-model.xml");
     u1->setSourceUnits(i2, "a_units_in_that_model");
 
     m->setName("mname");
@@ -580,174 +580,6 @@ TEST(Model, equivalentVariableCountReportsCorrectlyAfterUsingRemoveComponent)
     EXPECT_EQ(nullptr, model->component(0)->variable(0)->equivalentVariable(0));
 }
 
-TEST(Model, missingUnitsFromImportOfCnTerms)
-{
-    // This test is intended to show that parsing a model and importing
-    // it have the same end result.  Previously (see #519) any units
-    // defined in the model but not used by a variable (ie: only used by <cn> tags)
-    // were not imported.
-    auto validator = libcellml::Validator::create();
-    auto model = libcellml::Model::create("model_from_imports");
-    auto c = libcellml::Component::create("c");
-
-    auto imp = libcellml::ImportSource::create();
-    imp->setUrl("units_in_cn.cellml");
-
-    c->setImportReference("myComponent");
-    c->setImportSource(imp);
-    model->addComponent(c);
-
-    EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
-    EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
-
-    // Confirm that the bug reported in #519 wherein units used solely by <cn> items
-    // in imported components were not being imported is now fixed.
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-}
-
-TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
-{
-    const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "  <units name=\"myUnitsThatIUse\">\n"
-        "    <unit units=\"metre\"/>\n"
-        "  </units>\n"
-        "  <units name=\"myUnitsThatIUse_1\">\n"
-        "    <unit units=\"second\"/>\n"
-        "  </units>\n"
-        "  <component name=\"c\">\n"
-        "    <variable name=\"a\" units=\"second\"/>\n"
-        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "      <apply>\n"
-        "        <eq/>\n"
-        "        <ci>a</ci>\n"
-        "        <cn cellml:units=\"myUnitsThatIUse_1\">1</cn>\n"
-        "      </apply>\n"
-        "    </math>\n"
-        "  </component>\n"
-        "</model>\n";
-
-    const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "  <units name=\"myUnitsThatIUse\">\n"
-        "    <unit units=\"second\"/>\n"
-        "  </units>\n"
-        "   <component name=\"myComponent\">\n"
-        "       <variable name=\"a\" units=\"second\"/>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply>"
-        "             <eq/>\n"
-        "             <ci>a</ci>\n"
-        "             <cn cellml:units=\"myUnitsThatIUse\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "   </component>\n"
-        "</model>";
-
-    // Create the model by parsing the string above.
-    auto parser = libcellml::Parser::create();
-    auto importedModel = parser->parseModel(in);
-
-    auto validator = libcellml::Validator::create();
-
-    // No problems with the imported model.
-    validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
-    // The model myModel already has myUnitsThatIUse defined.
-    auto model = libcellml::Model::create("myModel");
-    auto u = libcellml::Units::create("myUnitsThatIUse");
-    u->addUnit("metre");
-    model->addUnits(u);
-
-    auto c = libcellml::Component::create("c");
-
-    auto importSource = libcellml::ImportSource::create();
-    importSource->setUrl("not_required_resolving_import_manually");
-    importSource->setModel(importedModel);
-
-    c->setImportReference("myComponent");
-    c->setImportSource(importSource);
-    model->addComponent(c);
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
-
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
-    // I would expect that the name of the cn elements units would need
-    // to change as the importing model already has units of that name.
-    auto printer = libcellml::Printer::create();
-    EXPECT_EQ(e, printer->printModel(model));
-}
-
-TEST(Model, importUnitsDuplicated)
-{
-    const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
-        "  <units name=\"millisecond\">\n"
-        "    <unit prefix=\"milli\" units=\"second\"/>\n"
-        "  </units>\n"
-        "  <units name=\"per_millisecond\">\n"
-        "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
-        "  </units>\n"
-        "  <component name=\"c\">\n"
-        "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
-        "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
-        "  </component>\n"
-        "</model>\n";
-
-    const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myImportedModel\">\n"
-        "  <units name=\"millisecond\">\n"
-        "    <unit prefix=\"milli\" units=\"second\"/>\n"
-        "  </units>\n"
-        "  <units name=\"per_millisecond\">\n"
-        "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
-        "  </units>\n"
-        "  <component name=\"myComponent\">\n"
-        "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
-        "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
-        "  </component>\n"
-        "</model>";
-
-    // Create the model by parsing the string above.
-    auto parser = libcellml::Parser::create();
-    auto importedModel = parser->parseModel(in);
-
-    auto validator = libcellml::Validator::create();
-    validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
-    auto model = libcellml::Model::create("model");
-    auto c = libcellml::Component::create("c");
-
-    auto importSource = libcellml::ImportSource::create();
-    importSource->setUrl("not_required_resolving_import_manually");
-    importSource->setModel(importedModel);
-
-    c->setImportReference("myComponent");
-    c->setImportSource(importSource);
-    model->addComponent(c);
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
-
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
-    auto printer = libcellml::Printer::create();
-    EXPECT_EQ(e, printer->printModel(model));
-}
-
 TEST(Model, removeComponentInsensitiveToOrder)
 {
     const std::string e =
@@ -782,11 +614,11 @@ TEST(Model, removeComponentInsensitiveToOrder)
 
     // If the order of operations is switched the behaviour is the same:
 
-    // Get a pointer to the second componet in the parsed model
+    // Get a pointer to the second component in the parsed model.
     auto c2Parsed = modelParsed->component("c2");
-    // Remove it from the parsed model
+    // Remove it from the parsed model.
     modelParsed->removeComponent(c2Parsed);
-    // Add it to the api model
+    // Add it to the api model.
     modelApi->addComponent(c2Parsed);
 
     EXPECT_EQ(size_t(0), modelParsed->componentCount());

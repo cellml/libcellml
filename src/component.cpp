@@ -17,9 +17,13 @@ limitations under the License.
 #include "libcellml/component.h"
 
 #include <algorithm>
+#include <iterator>
+#include <numeric>
 #include <string>
 #include <vector>
 
+#include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
@@ -41,27 +45,44 @@ struct Component::ComponentImpl
     std::vector<ResetPtr> mResets;
     std::vector<VariablePtr> mVariables;
 
-    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
-    std::vector<VariablePtr>::iterator findVariable(const std::string &name);
-    std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
+    std::vector<ResetPtr>::const_iterator findReset(const ResetPtr &reset) const;
+    std::vector<VariablePtr>::const_iterator findVariable(const std::string &name) const;
+    std::vector<VariablePtr>::const_iterator findVariable(const VariablePtr &variable) const;
+
+    bool equalVariables(const ComponentPtr &other) const;
+    bool equalResets(const ComponentPtr &other) const;
 };
 
-std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
+std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
                         [=](const VariablePtr &v) -> bool { return v->name() == name; });
 }
 
-std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const VariablePtr &variable)
+std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const VariablePtr &variable) const
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v == variable; });
+                        [=](const VariablePtr &v) -> bool { return v->equals(variable); });
 }
 
-std::vector<ResetPtr>::iterator Component::ComponentImpl::findReset(const ResetPtr &reset)
+std::vector<ResetPtr>::const_iterator Component::ComponentImpl::findReset(const ResetPtr &reset) const
 {
     return std::find_if(mResets.begin(), mResets.end(),
-                        [=](const ResetPtr &r) -> bool { return r == reset; });
+                        [=](const ResetPtr &r) -> bool { return r->equals(reset); });
+}
+
+bool Component::ComponentImpl::equalVariables(const ComponentPtr &other) const
+{
+    std::vector<EntityPtr> entities;
+    std::copy(mVariables.begin(), mVariables.end(), std::back_inserter(entities));
+    return equalEntities(other, entities);
+}
+
+bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
+{
+    std::vector<EntityPtr> entities;
+    std::copy(mResets.begin(), mResets.end(), std::back_inserter(entities));
+    return equalEntities(other, entities);
 }
 
 Component::Component()
@@ -97,23 +118,55 @@ ComponentPtr Component::create(const std::string &name) noexcept
 
 bool Component::doAddComponent(const ComponentPtr &component)
 {
+    auto newParent = shared_from_this();
     bool hasParent = component->hasParent();
     if (hasParent) {
         if (hasAncestor(component)) {
             return false;
         }
         auto parent = component->parent();
-        removeComponentFromEntity(parent, component);
+        if (parent != newParent) {
+            removeComponentFromEntity(parent, component);
+        }
     } else if (!hasParent && hasAncestor(component)) {
         return false;
-    } else if (shared_from_this() == component) {
+    } else if (newParent == component) {
         return false;
     }
-    component->setParent(shared_from_this());
+    component->setParent(newParent);
+
+    if (component->isImport()) {
+        auto model = owningModel(newParent);
+        if (model != nullptr) {
+            model->addImportSource(component->importSource());
+        }
+    }
+
     return ComponentEntity::doAddComponent(component);
 }
 
-void Component::setSourceComponent(const ImportSourcePtr &importSource, const std::string &name)
+void Component::doSetImportSource(const ImportSourcePtr &importSource)
+{
+    auto component = shared_from_this();
+    auto oldImportSource = component->importSource();
+
+    if (importSource != nullptr) {
+        importSource->addComponent(component);
+    }
+
+    auto model = owningModel(component);
+    if (model != nullptr) {
+        model->addImportSource(importSource);
+    }
+
+    if (oldImportSource != nullptr) {
+        oldImportSource->removeComponent(component, false);
+    }
+
+    ImportedEntity::doSetImportSource(importSource);
+}
+
+void Component::setSourceComponent(ImportSourcePtr &importSource, const std::string &name)
 {
     setImportSource(importSource);
     setImportReference(name);
@@ -139,17 +192,30 @@ void Component::removeMath()
     mPimpl->mMath.clear();
 }
 
-void Component::addVariable(const VariablePtr &variable)
+bool Component::addVariable(const VariablePtr &variable)
 {
+    // Prevent adding null pointer.
+    if (variable == nullptr) {
+        return false;
+    }
+
+    // Prevent adding to multiple components.
+    auto thisComponent = shared_from_this();
+    if (variable->hasParent() && (thisComponent != variable->parent())) {
+        auto otherParent = std::dynamic_pointer_cast<Component>(variable->parent());
+        otherParent->removeVariable(variable);
+    }
+
+    variable->setParent(thisComponent);
     mPimpl->mVariables.push_back(variable);
-    variable->setParent(shared_from_this());
+    return true;
 }
 
 bool Component::removeVariable(size_t index)
 {
     if (index < mPimpl->mVariables.size()) {
         auto variable = mPimpl->mVariables[index];
-        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + ssize_t(index));
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + ptrdiff_t(index));
         variable->removeParent();
         return true;
     }
@@ -210,10 +276,14 @@ VariablePtr Component::variable(const std::string &name) const
 
 VariablePtr Component::takeVariable(size_t index)
 {
-    VariablePtr res = variable(index);
-    removeVariable(index);
+    VariablePtr variable = nullptr;
+    if (index < mPimpl->mVariables.size()) {
+        variable = mPimpl->mVariables.at(index);
+        removeVariable(index);
+        variable->removeParent();
+    }
 
-    return res;
+    return variable;
 }
 
 VariablePtr Component::takeVariable(const std::string &name)
@@ -239,19 +309,31 @@ bool Component::hasVariable(const std::string &name) const
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
 }
 
-void Component::addReset(const ResetPtr &reset)
+bool Component::addReset(const ResetPtr &reset)
 {
+    // Prevent adding null pointer.
+    if (reset == nullptr) {
+        return false;
+    }
+
+    // Prevent adding to multiple components.
+    auto thisComponent = shared_from_this();
+    if (reset->hasParent() && (thisComponent != reset->parent())) {
+        auto otherParent = std::dynamic_pointer_cast<Component>(reset->parent());
+        otherParent->removeReset(reset);
+    }
+    reset->setParent(thisComponent);
     mPimpl->mResets.push_back(reset);
-    reset->setParent(shared_from_this());
+    return true;
 }
 
 bool Component::removeReset(size_t index)
 {
     if (index < mPimpl->mResets.size()) {
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + ssize_t(index));
+        mPimpl->mResets.at(index)->removeParent();
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + ptrdiff_t(index));
         return true;
     }
-
     return false;
 }
 
@@ -259,16 +341,31 @@ bool Component::removeReset(const ResetPtr &reset)
 {
     auto result = mPimpl->findReset(reset);
     if (result != mPimpl->mResets.end()) {
+        (*result)->removeParent();
         mPimpl->mResets.erase(result);
         return true;
     }
-
     return false;
 }
 
 void Component::removeAllResets()
 {
+    for (const auto &reset : mPimpl->mResets) {
+        reset->removeParent();
+    }
     mPimpl->mResets.clear();
+}
+
+ResetPtr Component::takeReset(size_t index)
+{
+    ResetPtr reset = nullptr;
+    if (index < mPimpl->mResets.size()) {
+        reset = mPimpl->mResets.at(index);
+        removeReset(index);
+        reset->removeParent();
+    }
+
+    return reset;
 }
 
 ResetPtr Component::reset(size_t index) const
@@ -278,18 +375,6 @@ ResetPtr Component::reset(size_t index) const
     }
 
     return nullptr;
-}
-
-ResetPtr Component::takeReset(size_t index)
-{
-    ResetPtr reset = nullptr;
-    if (index < mPimpl->mResets.size()) {
-        reset = mPimpl->mResets.at(index);
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + ssize_t(index));
-        reset->removeParent();
-    }
-
-    return reset;
 }
 
 size_t Component::resetCount() const
@@ -325,7 +410,11 @@ ComponentPtr Component::clone() const
     c->setName(name());
     c->setMath(math());
 
-    c->setImportSource(importSource());
+    if (isImport()) {
+        auto imp = importSource()->clone();
+        c->setImportSource(imp);
+    }
+
     c->setImportReference(importReference());
 
     for (size_t index = 0; index < variableCount(); ++index) {
@@ -355,6 +444,58 @@ ComponentPtr Component::clone() const
     }
 
     return c;
+}
+
+bool doRequiresImport(const ComponentPtr &thisComponent)
+{
+    if (thisComponent->isImport()) {
+        return true;
+    }
+    for (size_t c = 0; c < thisComponent->componentCount(); ++c) {
+        if (doRequiresImport(thisComponent->component(c))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Component::requiresImports()
+{
+    return doRequiresImport(shared_from_this());
+}
+
+bool Component::doIsResolved() const
+{
+    bool resolved = true;
+    if (isImport()) {
+        auto model = importSource()->model();
+        if (model == nullptr) {
+            resolved = false;
+        } else {
+            auto importedComponent = model->component(importReference());
+            if (importedComponent == nullptr) {
+                resolved = false;
+            } else {
+                resolved = importedComponent->isResolved();
+            }
+        }
+    }
+    for (size_t i = 0; (i < componentCount()) && resolved; ++i) {
+        resolved = component(i)->isResolved();
+    }
+
+    return resolved;
+}
+
+bool Component::doEquals(const EntityPtr &other) const
+{
+    if (ComponentEntity::doEquals(other)) {
+        auto component = std::dynamic_pointer_cast<Component>(other);
+        return (component != nullptr) && areEqual(mPimpl->mMath, component->math())
+               && mPimpl->equalResets(component) && mPimpl->equalVariables(component)
+               && ImportedEntity::doEquals(component);
+    }
+    return false;
 }
 
 } // namespace libcellml

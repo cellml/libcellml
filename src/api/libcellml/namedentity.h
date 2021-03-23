@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT NamedEntity: public Entity
 {
 public:
-    ~NamedEntity() override; /**< Destructor */
-    NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor */
-    NamedEntity(NamedEntity &&rhs) noexcept = delete; /**< Move constructor */
-    NamedEntity &operator=(NamedEntity rhs) = delete; /**< Assignment operator */
+    ~NamedEntity() override; /**< Destructor. */
+    NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor. */
+    NamedEntity(NamedEntity &&rhs) noexcept = delete; /**< Move constructor. */
+    NamedEntity &operator=(NamedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Set the name for the Entity.
@@ -57,11 +57,13 @@ public:
     std::string name() const;
 
 protected:
-    NamedEntity(); /**< Constructor */
+    NamedEntity(); /**< Constructor, @private. */
+
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
 private:
-    struct NamedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    NamedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct NamedEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    NamedEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

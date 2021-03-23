@@ -21,7 +21,6 @@ limitations under the License.
 #include "libcellml/generatorprofile.h"
 
 #include <cmath>
-#include <string>
 
 #include "utilities.h"
 
@@ -81,7 +80,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mSquareString;
     std::string mAbsoluteValueString;
     std::string mExponentialString;
-    std::string mNapierianLogarithmString;
+    std::string mNaturalLogarithmString;
     std::string mCommonLogarithmString;
     std::string mCeilingString;
     std::string mFloorString;
@@ -189,10 +188,12 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mImplementationVariableCountString;
 
     std::string mVariableTypeObjectString;
+    std::string mVariableTypeObjectExternalTypeString;
 
     std::string mConstantVariableTypeString;
     std::string mComputedConstantVariableTypeString;
     std::string mAlgebraicVariableTypeString;
+    std::string mExternalVariableTypeString;
 
     std::string mVariableInfoObjectString;
     std::string mVariableInfoWithTypeObjectString;
@@ -215,6 +216,10 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
+    std::string mExternalVariableMethodTypeDefinitionString;
+    std::string mExternalVariableMethodParameterString;
+    std::string mExternalVariableMethodCallString;
+
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
 
@@ -224,8 +229,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceDeleteArrayMethodString;
     std::string mImplementationDeleteArrayMethodString;
 
-    std::string mInterfaceInitializeStatesAndConstantsMethodString;
-    std::string mImplementationInitializeStatesAndConstantsMethodString;
+    std::string mInterfaceInitialiseStatesAndConstantsMethodString;
+    std::string mImplementationInitialiseStatesAndConstantsMethodString;
 
     std::string mInterfaceComputeComputedConstantsMethodString;
     std::string mImplementationComputeComputedConstantsMethodString;
@@ -240,8 +245,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mIndentString;
 
-    std::string mOpenArrayInitializerString;
-    std::string mCloseArrayInitializerString;
+    std::string mOpenArrayInitialiserString;
+    std::string mCloseArrayInitialiserString;
 
     std::string mOpenArrayString;
     std::string mCloseArrayString;
@@ -303,7 +308,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mSquareString = "";
         mAbsoluteValueString = "fabs";
         mExponentialString = "exp";
-        mNapierianLogarithmString = "log";
+        mNaturalLogarithmString = "log";
         mCommonLogarithmString = "log10";
         mCeilingString = "ceil";
         mFloorString = "floor";
@@ -453,7 +458,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.1.0\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.2.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
@@ -467,12 +472,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableTypeObjectString = "typedef enum {\n"
                                     "    CONSTANT,\n"
                                     "    COMPUTED_CONSTANT,\n"
-                                    "    ALGEBRAIC\n"
+                                    "    ALGEBRAIC<OPTIONAL_TYPE>\n"
                                     "} VariableType;\n";
+        mVariableTypeObjectExternalTypeString = ",\n    EXTERNAL";
 
         mConstantVariableTypeString = "CONSTANT";
         mComputedConstantVariableTypeString = "COMPUTED_CONSTANT";
         mAlgebraicVariableTypeString = "ALGEBRAIC";
+        mExternalVariableTypeString = "EXTERNAL";
 
         mVariableInfoObjectString = "typedef struct {\n"
                                     "    char name[<NAME_SIZE>];\n"
@@ -508,6 +515,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
+        mExternalVariableMethodTypeDefinitionString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
+        mExternalVariableMethodParameterString = ", ExternalVariable externalVariable";
+        mExternalVariableMethodCallString = "externalVariable(voi, states, rates, variables, <INDEX>)";
+
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
                                                        "{\n"
@@ -526,8 +537,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables);\n";
-        mImplementationInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables)\n"
+        mInterfaceInitialiseStatesAndConstantsMethodString = "void initialiseStatesAndConstants(double *states, double *variables);\n";
+        mImplementationInitialiseStatesAndConstantsMethodString = "void initialiseStatesAndConstants(double *states, double *variables)\n"
                                                                   "{\n"
                                                                   "<CODE>"
                                                                   "}\n";
@@ -538,13 +549,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                               "<CODE>"
                                                               "}\n";
 
-        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n";
+        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n{\n"
                                                   "<CODE>"
                                                   "}\n";
 
-        mInterfaceComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n"
+        mInterfaceComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n";
+        mImplementationComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n"
                                                       "{\n"
                                                       "<CODE>"
                                                       "}\n";
@@ -553,8 +564,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mOpenArrayInitializerString = "{";
-        mCloseArrayInitializerString = "}";
+        mOpenArrayInitialiserString = "{";
+        mCloseArrayInitialiserString = "}";
 
         mOpenArrayString = "[";
         mCloseArrayString = "]";
@@ -608,7 +619,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mSquareString = "";
         mAbsoluteValueString = "fabs";
         mExponentialString = "exp";
-        mNapierianLogarithmString = "log";
+        mNaturalLogarithmString = "log";
         mCommonLogarithmString = "log10";
         mCeilingString = "ceil";
         mFloorString = "floor";
@@ -758,7 +769,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.1.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.2.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
@@ -773,12 +784,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "class VariableType(Enum):\n"
                                     "    CONSTANT = 1\n"
                                     "    COMPUTED_CONSTANT = 2\n"
-                                    "    ALGEBRAIC = 3\n"
+                                    "    ALGEBRAIC = 3<OPTIONAL_TYPE>\n"
                                     "\n";
+        mVariableTypeObjectExternalTypeString = "\n    EXTERNAL = 4";
 
         mConstantVariableTypeString = "VariableType.CONSTANT";
         mComputedConstantVariableTypeString = "VariableType.COMPUTED_CONSTANT";
         mAlgebraicVariableTypeString = "VariableType.ALGEBRAIC";
+        mExternalVariableTypeString = "VariableType.EXTERNAL";
 
         mVariableInfoObjectString = "";
         mVariableInfoWithTypeObjectString = "";
@@ -805,6 +818,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
+        mExternalVariableMethodTypeDefinitionString = "";
+        mExternalVariableMethodParameterString = ", external_variable";
+        mExternalVariableMethodCallString = "external_variable(voi, states, rates, variables, <INDEX>)";
+
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
                                                        "def create_states_array():\n"
@@ -818,9 +835,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
 
-        mInterfaceInitializeStatesAndConstantsMethodString = "";
-        mImplementationInitializeStatesAndConstantsMethodString = "\n"
-                                                                  "def initialize_states_and_constants(states, variables):\n"
+        mInterfaceInitialiseStatesAndConstantsMethodString = "";
+        mImplementationInitialiseStatesAndConstantsMethodString = "\n"
+                                                                  "def initialise_states_and_constants(states, variables):\n"
                                                                   "<CODE>";
 
         mInterfaceComputeComputedConstantsMethodString = "";
@@ -830,20 +847,20 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeRatesMethodString = "";
         mImplementationComputeRatesMethodString = "\n"
-                                                  "def compute_rates(voi, states, rates, variables):\n"
+                                                  "def compute_rates(voi, states, rates, variables<OPTIONAL_PARAMETER>):\n"
                                                   "<CODE>";
 
         mInterfaceComputeVariablesMethodString = "";
         mImplementationComputeVariablesMethodString = "\n"
-                                                      "def compute_variables(voi, states, rates, variables):\n"
+                                                      "def compute_variables(voi, states, rates, variables<OPTIONAL_PARAMETER>):\n"
                                                       "<CODE>";
 
         mEmptyMethodString = "pass\n";
 
         mIndentString = "    ";
 
-        mOpenArrayInitializerString = "[";
-        mCloseArrayInitializerString = "]";
+        mOpenArrayInitialiserString = "[";
+        mCloseArrayInitialiserString = "]";
 
         mOpenArrayString = "[";
         mCloseArrayString = "]";
@@ -1192,14 +1209,14 @@ void GeneratorProfile::setExponentialString(const std::string &exponentialString
     mPimpl->mExponentialString = exponentialString;
 }
 
-std::string GeneratorProfile::napierianLogarithmString() const
+std::string GeneratorProfile::naturalLogarithmString() const
 {
-    return mPimpl->mNapierianLogarithmString;
+    return mPimpl->mNaturalLogarithmString;
 }
 
-void GeneratorProfile::setNapierianLogarithmString(const std::string &napierianLogarithmString)
+void GeneratorProfile::setNaturalLogarithmString(const std::string &naturalLogarithmString)
 {
-    mPimpl->mNapierianLogarithmString = napierianLogarithmString;
+    mPimpl->mNaturalLogarithmString = naturalLogarithmString;
 }
 
 std::string GeneratorProfile::commonLogarithmString() const
@@ -2002,6 +2019,16 @@ void GeneratorProfile::setVariableTypeObjectString(const std::string &variableTy
     mPimpl->mVariableTypeObjectString = variableTypeObjectString;
 }
 
+std::string GeneratorProfile::variableTypeObjectExternalTypeString() const
+{
+    return mPimpl->mVariableTypeObjectExternalTypeString;
+}
+
+void GeneratorProfile::setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString)
+{
+    mPimpl->mVariableTypeObjectExternalTypeString = variableTypeObjectExternalTypeString;
+}
+
 std::string GeneratorProfile::constantVariableTypeString() const
 {
     return mPimpl->mConstantVariableTypeString;
@@ -2030,6 +2057,16 @@ std::string GeneratorProfile::algebraicVariableTypeString() const
 void GeneratorProfile::setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString)
 {
     mPimpl->mAlgebraicVariableTypeString = algebraicVariableTypeString;
+}
+
+std::string GeneratorProfile::externalVariableTypeString() const
+{
+    return mPimpl->mExternalVariableTypeString;
+}
+
+void GeneratorProfile::setExternalVariableTypeString(const std::string &externalVariableTypeString)
+{
+    mPimpl->mExternalVariableTypeString = externalVariableTypeString;
 }
 
 std::string GeneratorProfile::variableInfoObjectString() const
@@ -2172,6 +2209,36 @@ void GeneratorProfile::setVariablesArrayString(const std::string &variablesArray
     mPimpl->mVariablesArrayString = variablesArrayString;
 }
 
+std::string GeneratorProfile::externalVariableMethodTypeDefinitionString() const
+{
+    return mPimpl->mExternalVariableMethodTypeDefinitionString;
+}
+
+void GeneratorProfile::setExternalVariableMethodTypeDefinitionString(const std::string &externalVariableMethodTypeDefinitionString)
+{
+    mPimpl->mExternalVariableMethodTypeDefinitionString = externalVariableMethodTypeDefinitionString;
+}
+
+std::string GeneratorProfile::externalVariableMethodParameterString() const
+{
+    return mPimpl->mExternalVariableMethodParameterString;
+}
+
+void GeneratorProfile::setExternalVariableMethodParameterString(const std::string &externalVariableMethodParameterString)
+{
+    mPimpl->mExternalVariableMethodParameterString = externalVariableMethodParameterString;
+}
+
+std::string GeneratorProfile::externalVariableMethodCallString() const
+{
+    return mPimpl->mExternalVariableMethodCallString;
+}
+
+void GeneratorProfile::setExternalVariableMethodCallString(const std::string &externalVariableMethodCallString)
+{
+    mPimpl->mExternalVariableMethodCallString = externalVariableMethodCallString;
+}
+
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
 {
     return mPimpl->mInterfaceCreateStatesArrayMethodString;
@@ -2232,24 +2299,24 @@ void GeneratorProfile::setImplementationDeleteArrayMethodString(const std::strin
     mPimpl->mImplementationDeleteArrayMethodString = implementationDeleteArrayMethodString;
 }
 
-std::string GeneratorProfile::interfaceInitializeStatesAndConstantsMethodString() const
+std::string GeneratorProfile::interfaceInitialiseStatesAndConstantsMethodString() const
 {
-    return mPimpl->mInterfaceInitializeStatesAndConstantsMethodString;
+    return mPimpl->mInterfaceInitialiseStatesAndConstantsMethodString;
 }
 
-void GeneratorProfile::setInterfaceInitializeStatesAndConstantsMethodString(const std::string &interfaceInitializeStatesAndConstantsMethodString)
+void GeneratorProfile::setInterfaceInitialiseStatesAndConstantsMethodString(const std::string &interfaceInitialiseStatesAndConstantsMethodString)
 {
-    mPimpl->mInterfaceInitializeStatesAndConstantsMethodString = interfaceInitializeStatesAndConstantsMethodString;
+    mPimpl->mInterfaceInitialiseStatesAndConstantsMethodString = interfaceInitialiseStatesAndConstantsMethodString;
 }
 
-std::string GeneratorProfile::implementationInitializeStatesAndConstantsMethodString() const
+std::string GeneratorProfile::implementationInitialiseStatesAndConstantsMethodString() const
 {
-    return mPimpl->mImplementationInitializeStatesAndConstantsMethodString;
+    return mPimpl->mImplementationInitialiseStatesAndConstantsMethodString;
 }
 
-void GeneratorProfile::setImplementationInitializeStatesAndConstantsMethodString(const std::string &implementationInitializeStatesAndConstantsMethodString)
+void GeneratorProfile::setImplementationInitialiseStatesAndConstantsMethodString(const std::string &implementationInitialiseStatesAndConstantsMethodString)
 {
-    mPimpl->mImplementationInitializeStatesAndConstantsMethodString = implementationInitializeStatesAndConstantsMethodString;
+    mPimpl->mImplementationInitialiseStatesAndConstantsMethodString = implementationInitialiseStatesAndConstantsMethodString;
 }
 
 std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString() const
@@ -2332,24 +2399,24 @@ void GeneratorProfile::setIndentString(const std::string &indentString)
     mPimpl->mIndentString = indentString;
 }
 
-std::string GeneratorProfile::openArrayInitializerString() const
+std::string GeneratorProfile::openArrayInitialiserString() const
 {
-    return mPimpl->mOpenArrayInitializerString;
+    return mPimpl->mOpenArrayInitialiserString;
 }
 
-void GeneratorProfile::setOpenArrayInitializerString(const std::string &openArrayInitializerString)
+void GeneratorProfile::setOpenArrayInitialiserString(const std::string &openArrayInitialiserString)
 {
-    mPimpl->mOpenArrayInitializerString = openArrayInitializerString;
+    mPimpl->mOpenArrayInitialiserString = openArrayInitialiserString;
 }
 
-std::string GeneratorProfile::closeArrayInitializerString() const
+std::string GeneratorProfile::closeArrayInitialiserString() const
 {
-    return mPimpl->mCloseArrayInitializerString;
+    return mPimpl->mCloseArrayInitialiserString;
 }
 
-void GeneratorProfile::setCloseArrayInitializerString(const std::string &closeArrayInitializerString)
+void GeneratorProfile::setCloseArrayInitialiserString(const std::string &closeArrayInitialiserString)
 {
-    mPimpl->mCloseArrayInitializerString = closeArrayInitializerString;
+    mPimpl->mCloseArrayInitialiserString = closeArrayInitialiserString;
 }
 
 std::string GeneratorProfile::openArrayString() const

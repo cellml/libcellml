@@ -89,35 +89,30 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
     // This test resulted from https://github.com/cellml/libcellml/issues/183
     const std::string e1 =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "  <apply>\n"
-        "    <eq/>\n"
-        "    <ci>a1</ci>\n"
-        "    <apply>\n"
-        "      <plus/>\n"
-        "      <ci>b1</ci>\n"
-        "      <ci>c1</ci>\n"
-        "    </apply>\n"
-        "  </apply>\n"
-        "</math>\n";
+        "\t\t\t<apply><eq/>\n"
+        "\t\t\t\t<ci>a1</ci>\n"
+        "\t\t\t\t<apply><plus/>\n"
+        "\t\t\t\t\t<ci>b1</ci>\n"
+        "\t\t\t\t\t<ci>c1</ci>\n"
+        "\t\t\t\t</apply>\n"
+        "\t\t\t</apply>\n"
+        "\t\t</math>\n";
     const std::string e2 =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "  <apply>\n"
-        "    <eq/>\n"
-        "    <ci>b2</ci>\n"
-        "    <apply>\n"
-        "      <times/>\n"
-        "      <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n"
-        "      <ci>d</ci>\n"
-        "    </apply>\n"
-        "  </apply>\n"
-        "</math>\n"
+        "\t\t\t<apply><eq/>\n"
+        "\t\t\t\t<ci>b2</ci>\n"
+        "\t\t\t\t<apply><times/>\n"
+        "\t\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n"
+        "\t\t\t\t\t<ci>d</ci>\n"
+        "\t\t\t\t</apply>\n"
+        "\t\t\t</apply>\n"
+        "\t\t</math>\n"
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "  <apply>\n"
-        "    <eq/>\n"
-        "    <ci>d</ci>\n"
-        "    <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\" type=\"e-notation\">0.5<sep/>1</cn>\n"
-        "  </apply>\n"
-        "</math>\n";
+        "\t\t\t<apply><eq/>\n"
+        "\t\t\t\t<ci>d</ci>\n"
+        "\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\" type=\"e-notation\">0.5<sep/>1</cn>\n"
+        "\t\t\t</apply>\n"
+        "\t\t</math>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("a_plus_b.cellml"));
@@ -134,24 +129,36 @@ TEST(Parser, simpleGeneratorModel)
 {
     const std::string e =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <apply>\n"
-        "    <eq/>\n"
-        "    <apply>\n"
-        "      <diff/>\n"
-        "      <bvar>\n"
-        "        <ci>time</ci>\n"
-        "      </bvar>\n"
-        "      <ci>x</ci>\n"
-        "    </apply>\n"
-        "    <cn cellml:units=\"per_second\">1</cn>\n"
-        "  </apply>\n"
-        "</math>\n";
+        "            <apply>\n"
+        "                <eq/>\n"
+        "                <apply>\n"
+        "                    <diff/>\n"
+        "                    <bvar>\n"
+        "                        <ci>time</ci>\n"
+        "                    </bvar>\n"
+        "                    <ci>x</ci>\n"
+        "                </apply>\n"
+        "                <cn cellml:units=\"per_second\">1</cn>\n"
+        "            </apply>\n"
+        "        </math>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr model = p->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
+    libcellml::ModelPtr model = p->parseModel(fileContents("analyser/initialised_variable_of_integration.cellml"));
 
     EXPECT_EQ(size_t(0), p->issueCount());
 
     std::string a = model->component("my_component")->math();
     EXPECT_EQ(e, a);
+}
+
+TEST(Parser, parseModelWithImportedEquivVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto modelContents = fileContents("importingModel.cellml");
+    auto model = parser->parseModel(modelContents);
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(modelContents, serialisedModel);
 }

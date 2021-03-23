@@ -19,16 +19,26 @@ limitations under the License.
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstring>
 #include <iomanip>
 #include <limits>
+#include <numeric>
 #include <set>
 #include <sstream>
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/importsource.h"
+#include "libcellml/issue.h"
+#include "libcellml/logger.h"
 #include "libcellml/model.h"
 #include "libcellml/namedentity.h"
+#include "libcellml/reset.h"
 #include "libcellml/units.h"
+#include "libcellml/variable.h"
+
+#include "xmldoc.h"
+#include "xmlutils.h"
 
 namespace libcellml {
 
@@ -108,26 +118,26 @@ bool isCellMLExponent(const std::string &candidate)
     return isCellMLInteger(candidate);
 }
 
-std::vector<size_t> findOccurences(const std::string &candidate, const std::string &sub)
+std::vector<size_t> findOccurrences(const std::string &candidate, const std::string &sub)
 {
-    std::vector<size_t> occurences;
+    std::vector<size_t> occurrences;
     size_t pos = candidate.find(sub, 0);
     while (pos != std::string::npos) {
-        occurences.push_back(pos);
+        occurrences.push_back(pos);
         pos = candidate.find(sub, pos + 1);
     }
-    return occurences;
+    return occurrences;
 }
 
 bool isCellMLBasicReal(const std::string &candidate)
 {
     if (!candidate.empty()) {
-        std::vector<size_t> decimalOccurences = findOccurences(candidate, ".");
-        if (decimalOccurences.size() < 2) {
+        std::vector<size_t> decimalOccurrences = findOccurrences(candidate, ".");
+        if (decimalOccurrences.size() < 2) {
             bool beginsMinus = *candidate.begin() == '-';
             std::string numbersOnlyCandidate = candidate;
-            if (decimalOccurences.size() == 1) {
-                numbersOnlyCandidate.erase(decimalOccurences.at(0), 1);
+            if (decimalOccurrences.size() == 1) {
+                numbersOnlyCandidate.erase(decimalOccurrences.at(0), 1);
             }
             if (beginsMinus) {
                 numbersOnlyCandidate.erase(0, 1);
@@ -143,15 +153,15 @@ bool isCellMLReal(const std::string &candidate)
     bool isReal = false;
     if (!candidate.empty()) {
         std::string normalisedCandidate = candidate;
-        std::vector<size_t> eOccurences = findOccurences(candidate, "E");
-        for (const auto &ePos : eOccurences) {
+        std::vector<size_t> eOccurrences = findOccurrences(candidate, "E");
+        for (const auto &ePos : eOccurrences) {
             normalisedCandidate.replace(ePos, 1, "e");
         }
-        std::vector<size_t> lowerEOccurences = findOccurences(normalisedCandidate, "e");
-        size_t eIndicatorCount = lowerEOccurences.size();
+        std::vector<size_t> lowerEOccurrences = findOccurrences(normalisedCandidate, "e");
+        size_t eIndicatorCount = lowerEOccurrences.size();
         if (eIndicatorCount < 2) {
             if (eIndicatorCount == 1) {
-                size_t ePos = lowerEOccurences.at(0);
+                size_t ePos = lowerEOccurrences.at(0);
                 std::string significand = normalisedCandidate.substr(0, ePos);
                 std::string exponent = normalisedCandidate.substr(ePos + 1, std::string::npos);
                 if (isCellMLBasicReal(significand) && isCellMLExponent(exponent)) {
@@ -165,9 +175,56 @@ bool isCellMLReal(const std::string &candidate)
     return isReal;
 }
 
-bool areEqual(double value1, double value2)
+bool areEqual(double a, double b)
 {
-    return std::abs(value1 - value2) < std::numeric_limits<double>::epsilon();
+    return convertToString(a) == convertToString(b);
+}
+
+ptrdiff_t ulpsDistance(double a, double b)
+{
+    static const auto max = std::numeric_limits<ptrdiff_t>::max();
+
+    // Max distance for NaN.
+    if (std::isnan(a) || std::isnan(b)) {
+        return max;
+    }
+
+    // If one's infinite and they're not equal, max distance.
+    if (std::isinf(a) != std::isinf(b)) {
+        return max;
+    }
+
+    static const int SIZE_OF_DOUBLE = sizeof(double);
+
+    ptrdiff_t ia;
+    ptrdiff_t ib;
+    memcpy(&ia, &a, SIZE_OF_DOUBLE);
+    memcpy(&ib, &b, SIZE_OF_DOUBLE);
+
+    // Return the absolute value of the distance in ULPs.
+    ptrdiff_t distance = ia - ib;
+    if (distance < 0) {
+        return -distance;
+    }
+
+    return distance;
+}
+
+bool areNearlyEqual(double a, double b)
+{
+    static const double fixedEpsilon = std::numeric_limits<double>::epsilon();
+    static const ptrdiff_t ulpsEpsilon = 1;
+
+    if (fabs(a - b) <= fixedEpsilon) {
+        return true;
+    }
+
+    // If they are not the same sign then return false.
+    if ((a < 0.0) != (b < 0.0)) {
+        return false;
+    }
+
+    return ulpsDistance(a, b) <= ulpsEpsilon;
 }
 
 // The below code is used to compute the SHA-1 value of a string, based on the
@@ -409,23 +466,6 @@ std::string sha1(const std::string &string)
     return result.str();
 }
 
-ModelPtr owningModel(const EntityPtr &entity)
-{
-    auto model = std::dynamic_pointer_cast<Model>(entity->parent());
-    auto component = std::dynamic_pointer_cast<Component>(entity->parent());
-    while (!model && component && component->parent()) {
-        model = std::dynamic_pointer_cast<Model>(component->parent());
-        component = std::dynamic_pointer_cast<Component>(component->parent());
-    }
-
-    return model;
-}
-
-ComponentPtr owningComponent(const EntityPtr &entity)
-{
-    return std::dynamic_pointer_cast<Component>(entity->parent());
-}
-
 bool isStandardUnitName(const std::string &name)
 {
     return standardUnitsList.count(name) != 0;
@@ -462,6 +502,12 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
     return index;
 }
 
+bool areEquivalentVariables(const VariablePtr &variable1,
+                            const VariablePtr &variable2)
+{
+    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
+}
+
 bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
 {
     return entity1->parent() == entity2;
@@ -481,7 +527,7 @@ using PublicPrivateRequiredPair = std::pair<bool, bool>;
  * Determine whether a public and/or private interface is required for the given @p variable.  Returns
  * a pair of booleans where the first item in the pair indicates whether a public interface is required,
  * the second item in the pair indicates whether a private interface is required, and if both items
- * in the pair are @c false then this indicates an error has occured and the interface type cannot be
+ * in the pair are @c false then this indicates an error has occurred and the interface type cannot be
  * determined.
  *
  * @param variable The variable to detect the interface type required.
@@ -554,6 +600,669 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     for (size_t index = 0; index < component->componentCount(); ++index) {
         findAllVariablesWithEquivalences(component->component(index), variables);
     }
+}
+
+NameList findCnUnitsNames(const XmlNodePtr &node);
+NameList findComponentCnUnitsNames(const ComponentPtr &component);
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
+IndexStack reverseEngineerIndexStack(const VariablePtr &variable);
+VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model);
+void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model);
+IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
+void componentNames(const ComponentPtr &component, NameList &names);
+std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units);
+
+NameList findCnUnitsNames(const XmlNodePtr &node)
+{
+    NameList names;
+    XmlNodePtr childNode = node->firstChild();
+    while (childNode != nullptr) {
+        if (childNode->isMathmlElement("cn")) {
+            std::string u = childNode->attribute("units");
+            if (!u.empty() && !isStandardUnitName(u)) {
+                names.push_back(u);
+            }
+        }
+        auto childNames = findCnUnitsNames(childNode);
+        names.insert(names.end(), childNames.begin(), childNames.end());
+        childNode = childNode->next();
+    }
+
+    return names;
+}
+
+NameList findComponentCnUnitsNames(const ComponentPtr &component)
+{
+    NameList names;
+    // Inspect the MathML in this component for any specified constant <cn> units.
+    std::string mathContent = component->math();
+    if (mathContent.empty()) {
+        return names;
+    }
+    std::vector<XmlDocPtr> mathDocs = multiRootXml(mathContent);
+    for (const auto &doc : mathDocs) {
+        auto rootNode = doc->rootNode();
+        if (rootNode->isMathmlElement("math")) {
+            auto nodesNames = findCnUnitsNames(rootNode);
+            names.insert(names.end(), nodesNames.begin(), nodesNames.end());
+        }
+    }
+
+    return names;
+}
+
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap)
+{
+    XmlNodePtr childNode = node->firstChild();
+    while (childNode != nullptr) {
+        if (childNode->isMathmlElement("cn")) {
+            std::string unitsName = childNode->attribute("units");
+            auto foundNameIter = replaceMap.find(unitsName);
+            if (foundNameIter != replaceMap.end()) {
+                childNode->setAttribute("units", foundNameIter->second.c_str());
+            }
+        }
+        findAndReplaceCnUnitsNames(childNode, replaceMap);
+        childNode = childNode->next();
+    }
+}
+
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
+{
+    std::string mathContent = component->math();
+    if (mathContent.empty()) {
+        return;
+    }
+    bool contentModified = false;
+    std::string newMathContent;
+    std::vector<XmlDocPtr> mathDocs = multiRootXml(mathContent);
+    for (const auto &doc : mathDocs) {
+        auto rootNode = doc->rootNode();
+        if (rootNode->isMathmlElement("math")) {
+            auto originalMath = rootNode->convertToString();
+            findAndReplaceCnUnitsNames(rootNode, replaceMap);
+            auto newMath = rootNode->convertToString();
+            newMathContent += newMath;
+            if (newMath != originalMath) {
+                contentModified = true;
+            }
+        }
+    }
+
+    if (contentModified) {
+        component->setMath(newMathContent);
+    }
+}
+
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
+{
+    findAndReplaceComponentCnUnitsNames(component, replaceMap);
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto childComponent = component->component(index);
+        findAndReplaceComponentCnUnitsNames(childComponent, replaceMap);
+    }
+}
+
+size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component)
+{
+    size_t index = 0;
+    bool found = false;
+    while ((index < componentParent->componentCount()) && !found) {
+        if (componentParent->component(index) == component) {
+            found = true;
+        } else {
+            ++index;
+        }
+    }
+
+    return index;
+}
+
+IndexStack reverseEngineerIndexStack(const ComponentPtr &component)
+{
+    auto dummyVariable = Variable::create();
+    component->addVariable(dummyVariable);
+    IndexStack indexStack = reverseEngineerIndexStack(dummyVariable);
+    indexStack.pop_back();
+    component->removeVariable(dummyVariable);
+
+    return indexStack;
+}
+
+IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack)
+{
+    auto rebasedStack = stack;
+
+    rebasedStack.resize(originStack.size(), SIZE_MAX);
+    if (rebasedStack == originStack) {
+        rebasedStack = destinationStack;
+        auto offsetIt = stack.begin() + ptrdiff_t(originStack.size());
+        rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
+    } else {
+        rebasedStack.clear();
+    }
+
+    return rebasedStack;
+}
+
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack)
+{
+    EquivalenceMap rebasedMap;
+    for (const auto &entry : map) {
+        auto key = entry.first;
+        auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
+        if (!rebasedKey.empty()) {
+            auto vector = entry.second;
+            std::vector<IndexStack> rebasedVector;
+            for (auto stack : vector) {
+                // Temporarily remove the variable index whilst we rebase the component part of the stack.
+                size_t variableIndex = stack.back();
+                stack.pop_back();
+                auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
+                if (!rebasedTarget.empty()) {
+                    rebasedTarget.push_back(variableIndex);
+                    rebasedVector.push_back(rebasedTarget);
+                }
+            }
+
+            if (!rebasedVector.empty()) {
+                rebasedMap[rebasedKey] = rebasedVector;
+            }
+        }
+    }
+
+    return rebasedMap;
+}
+
+void componentNames(const ComponentPtr &component, NameList &names)
+{
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        names.push_back(c->name());
+        componentNames(c, names);
+    }
+}
+
+NameList componentNames(const ModelPtr &model)
+{
+    NameList names;
+    for (size_t index = 0; index < model->componentCount(); ++index) {
+        auto component = model->component(index);
+        names.push_back(component->name());
+        componentNames(component, names);
+    }
+    return names;
+}
+
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
+{
+    ComponentNameMap nameMap;
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        nameMap[c->name()] = c;
+        ComponentNameMap childrenNameMap = createComponentNamesMap(c);
+        nameMap.insert(childrenNameMap.begin(), childrenNameMap.end());
+    }
+
+    return nameMap;
+}
+
+std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units)
+{
+    std::vector<UnitsPtr> requiredUnits;
+
+    std::string ref;
+    std::string pre;
+    std::string id;
+    double expMult;
+    double uExp;
+
+    for (size_t index = 0; index < units->unitCount(); ++index) {
+        units->unitAttributes(index, ref, pre, uExp, expMult, id);
+        if (!isStandardUnitName(ref)) {
+            auto refUnits = model->units(ref);
+            if (refUnits != nullptr) {
+                auto requiredUnitsUnits = referencedUnits(model, refUnits);
+                requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
+                requiredUnits.push_back(refUnits);
+            }
+        }
+    }
+
+    return requiredUnits;
+}
+
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component)
+{
+    std::vector<UnitsPtr> usedUnits;
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto v = component->variable(i);
+        auto u = v->units();
+        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+            usedUnits.push_back(u);
+        }
+    }
+    auto componentCnUnitsNames = findComponentCnUnitsNames(component);
+    for (const auto &unitsName : componentCnUnitsNames) {
+        auto u = model->units(unitsName);
+        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+            usedUnits.push_back(u);
+        }
+    }
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        auto childComponent = component->component(i);
+        auto childUsedUnits = unitsUsed(model, childComponent);
+        usedUnits.insert(usedUnits.end(), childUsedUnits.begin(), childUsedUnits.end());
+    }
+
+    return usedUnits;
+}
+
+NameList unitsNamesUsed(const ComponentPtr &component)
+{
+    auto unitNames = findComponentCnUnitsNames(component);
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto u = component->variable(i)->units();
+        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+            unitNames.push_back(u->name());
+        }
+    }
+    return unitNames;
+}
+
+IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
+{
+    IndexStack indexStack;
+    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+    indexStack.push_back(getVariableIndexInComponent(component, variable));
+
+    ComponentEntityPtr parent = component;
+    ComponentEntityPtr grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
+    while (grandParent != nullptr) {
+        indexStack.push_back(getComponentIndexInComponentEntity(grandParent, parent));
+        parent = grandParent;
+        grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
+    }
+
+    std::reverse(std::begin(indexStack), std::end(indexStack));
+
+    return indexStack;
+}
+
+void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack)
+{
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto variable = component->variable(index);
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            if (j == 0) {
+                indexStack.push_back(index);
+            }
+            auto equivalentVariable = variable->equivalentVariable(j);
+            auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
+            if (equivalenceMap.count(indexStack) == 0) {
+                equivalenceMap[indexStack] = std::vector<IndexStack>();
+            }
+            equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
+        }
+        if (variable->equivalentVariableCount() > 0) {
+            indexStack.pop_back();
+        }
+    }
+}
+
+void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack)
+{
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        indexStack.push_back(index);
+        auto c = component->component(index);
+        recordVariableEquivalences(c, map, indexStack);
+        generateEquivalenceMap(c, map, indexStack);
+        indexStack.pop_back();
+    }
+}
+
+VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model)
+{
+    ComponentPtr component;
+    for (size_t index = 0; index < stack.size() - 1; ++index) {
+        if (index == 0) {
+            component = model->component(stack.at(index));
+        } else {
+            component = component->component(stack.at(index));
+        }
+    }
+
+    return component->variable(stack.back());
+}
+
+void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model)
+{
+    auto v1 = getVariableLocatedAt(stack1, model);
+    auto v2 = getVariableLocatedAt(stack2, model);
+    Variable::addEquivalence(v1, v2);
+}
+
+void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model)
+{
+    for (const auto &iter : map) {
+        auto key = iter.first;
+        auto vector = iter.second;
+        for (auto vectorIter = vector.begin(); vectorIter < vector.end(); ++vectorIter) {
+            makeEquivalence(key, *vectorIter, model);
+        }
+    }
+}
+
+void listComponentIds(const ComponentPtr &component, IdList &idList)
+{
+    std::string id = component->id();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+    // Imports.
+    if (component->isImport()) {
+        if (component->importSource() != nullptr) {
+            id = component->importSource()->id();
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+        }
+    }
+    // Component reference in encapsulation structure.
+    id = component->encapsulationId();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+    // Variables.
+    for (size_t v = 0; v < component->variableCount(); ++v) {
+        id = component->variable(v)->id();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+
+        for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+            // Equivalent variable mappings.
+            id = Variable::equivalenceMappingId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+            // Connections.
+            id = Variable::equivalenceConnectionId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+        }
+    }
+    // Resets.
+    for (size_t r = 0; r < component->resetCount(); ++r) {
+        id = component->reset(r)->id();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        id = component->reset(r)->testValueId();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        id = component->reset(r)->resetValueId();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+    }
+
+    // NB ids on component and reset MathML blocks and their children are not yet included.
+
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        listComponentIds(component->component(c), idList);
+    }
+}
+
+IdList listIds(const ModelPtr &model)
+{
+    // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
+    // invalid models (with duplicated ids) too.
+
+    std::unordered_set<std::string> idList;
+    // Model.
+    std::string id = model->id();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+    // Units.
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        auto units = model->units(u);
+        id = units->id();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        // Imports.
+        if (units->isImport()) {
+            if (units->importSource() != nullptr) {
+                id = units->importSource()->id();
+                if (!id.empty()) {
+                    idList.insert(id);
+                }
+            }
+        }
+        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
+            std::string prefix;
+            std::string reference;
+            double exponent;
+            double multiplier;
+            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+        }
+    }
+    // Components.
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        listComponentIds(model->component(c), idList);
+    }
+    // Encapsulation.
+    id = model->encapsulationId();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+
+    return idList;
+}
+
+std::string makeUniqueId(IdList &idList)
+{
+    // Because the hexadecimal counter starts high enough that it will always have a letter as the first character,
+    // we don't need to prefix it with any other string to be valid.
+    int counter = 0xb4da55;
+    std::stringstream stream;
+    stream << std::hex << counter;
+    std::string id = stream.str();
+    stream.str(std::string());
+
+    while (idList.count(id) != 0) {
+        ++counter;
+        stream << std::hex << counter;
+        id = stream.str();
+        stream.str(std::string());
+    }
+    idList.insert(id);
+    return id;
+}
+
+ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    ConnectionMap map;
+
+    ComponentPtr component1 = owningComponent(variable1);
+    ComponentPtr component2 = owningComponent(variable2);
+    if ((component1 != nullptr) && (component2 != nullptr)) {
+        for (size_t i = 0; i < component1->variableCount(); ++i) {
+            auto v = component1->variable(i);
+            for (const auto &vEquiv : equivalentVariables(v)) {
+                if (owningComponent(vEquiv) == component2) {
+                    map.insert(std::make_pair(v, vEquiv));
+                }
+            }
+        }
+    }
+
+    return map;
+}
+
+void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables)
+{
+    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
+        VariablePtr equivalentVariable = variable->equivalentVariable(i);
+
+        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
+            equivalentVariables.push_back(equivalentVariable);
+
+            recursiveEquivalentVariables(equivalentVariable, equivalentVariables);
+        }
+    }
+}
+
+std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
+{
+    std::vector<VariablePtr> res = {variable};
+
+    recursiveEquivalentVariables(variable, res);
+
+    return res;
+}
+
+bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList)
+{
+    bool status = true;
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            if (model == owningModel(v)) {
+                // Units are already linked, and exist in this model.
+                continue;
+            }
+            if ((model == nullptr) && !isStandardUnit(u)) {
+                model = owningModel(component);
+                if (model->hasUnits(u->name())) {
+                    v->setUnits(model->units(u->name()));
+                } else {
+                    auto issue = Issue::create();
+                    issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
+                    issue->setLevel(Issue::Level::WARNING);
+                    issue->setVariable(v);
+                    issueList.push_back(issue);
+                    status = false;
+                }
+            } else if (model != nullptr) {
+                auto issue = Issue::create();
+                issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
+                issue->setLevel(Issue::Level::WARNING);
+                issue->setVariable(v);
+                issueList.push_back(issue);
+                status = false;
+            }
+        }
+    }
+    return status;
+}
+
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity)
+{
+    std::vector<IssuePtr> issueList;
+    return traverseComponentEntityTreeLinkingUnits(componentEntity, issueList);
+}
+
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList)
+{
+    auto component = std::dynamic_pointer_cast<Component>(componentEntity);
+    bool status = (component != nullptr) ?
+                      linkComponentVariableUnits(component, issueList) :
+                      true;
+    for (size_t index = 0; index < componentEntity->componentCount(); ++index) {
+        auto c = componentEntity->component(index);
+        status = traverseComponentEntityTreeLinkingUnits(c, issueList) && status;
+    }
+    return status;
+}
+
+bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
+{
+    bool unlinked = false;
+    for (size_t index = 0; index < component->variableCount() && !unlinked; ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            unlinked = ((model == nullptr) && !isStandardUnit(u)) || (owningModel(component) != model);
+        }
+    }
+    return unlinked;
+}
+
+std::string replace(std::string string, const std::string &from, const std::string &to)
+{
+    auto index = string.find(from);
+
+    return (index == std::string::npos) ?
+               string :
+               string.replace(index, from.length(), to);
+}
+
+bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities)
+{
+    std::vector<size_t> unmatchedIndex(entities.size());
+    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
+    for (const auto &entity : entities) {
+        bool entityFound = false;
+        size_t index = 0;
+        for (index = 0; index < unmatchedIndex.size() && !entityFound; ++index) {
+            size_t currentIndex = unmatchedIndex.at(index);
+            auto model = std::dynamic_pointer_cast<Model>(owner);
+            if (model != nullptr) {
+                auto unitsOther = model->units(currentIndex);
+                if (entity->equals(unitsOther)) {
+                    entityFound = true;
+                }
+            } else {
+                auto component = std::dynamic_pointer_cast<Component>(owner);
+                auto variable = std::dynamic_pointer_cast<Variable>(entity);
+                if (variable != nullptr) {
+                    auto variableOther = component->variable(currentIndex);
+                    if (variable->equals(variableOther)) {
+                        entityFound = true;
+                    }
+                } else {
+                    auto reset = std::dynamic_pointer_cast<Reset>(entity);
+                    auto resetOther = component->reset(currentIndex);
+                    if (reset->equals(resetOther)) {
+                        entityFound = true;
+                    }
+                }
+            }
+        }
+        if (entityFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
+            // We are going to assume here that nobody is going to add more
+            // than 2,147,483,647 units to this component. And much more than
+            // that in a 64-bit environment.
+            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool areEqual(const std::string &str1, const std::string &str2)
+{
+    return str1 == str2;
 }
 
 } // namespace libcellml

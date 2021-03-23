@@ -71,6 +71,11 @@ other variables), this component will not be serialised in the connection.";
 %feature("docstring") libcellml::Component::addReset
 "Add a reset `reset` to this component.";
 
+%feature("docstring") libcellml::Component::takeReset
+"Removes a reset and returns it from this component, specified by index.
+
+Returns the `Reset` on success.";
+
 %feature("docstring") libcellml::Component::removeReset
 "Remove the reset at the given index from this component.
 If the index is not valid @c false is returned, the valid
@@ -95,6 +100,11 @@ resets and False otherwise.";
 %feature("docstring") libcellml::Component::clone
 "Create a copy of this component.";
 
+%feature("docstring") libcellml::Component::requiresImports
+"Determines whether this component relies on any imports.  If this component 
+or any of its encapsulated components are imported, returns @c true, 
+otherwise @c false.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Component {
@@ -113,9 +123,11 @@ resets and False otherwise.";
 #include "libcellml/component.h"
 %}
 
-%shared_ptr(libcellml::Component);
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Component)
 %create_name_constructor(Component)
 
-%include "libcellml/types.h"
 %include "libcellml/component.h"

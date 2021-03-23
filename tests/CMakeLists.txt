@@ -27,11 +27,16 @@ mark_as_advanced(gtest_force_shared_crt)
 # to the LIBCELLML_TESTS list.  Any source files for the
 # test must be set to <test_name>_SRCS, likewise for
 # header files <test_name>_HDRS.
+include(analyser/tests.cmake)
+include(annotator/tests.cmake)
 include(clone/tests.cmake)
 include(component/tests.cmake)
 include(connection/tests.cmake)
 include(coverage/tests.cmake)
+include(equality/tests.cmake)
 include(generator/tests.cmake)
+include(import_source/tests.cmake)
+include(importer/tests.cmake)
 include(isolated/tests.cmake)
 include(issue/tests.cmake)
 include(logger/tests.cmake)
@@ -40,7 +45,6 @@ include(model/tests.cmake)
 include(parser/tests.cmake)
 include(printer/tests.cmake)
 include(reset/tests.cmake)
-include(resolve_imports/tests.cmake)
 include(units/tests.cmake)
 include(validator/tests.cmake)
 include(variable/tests.cmake)
@@ -81,7 +85,9 @@ foreach(TEST ${LIBCELLML_TESTS})
 
   set_target_properties(${CURRENT_TEST} PROPERTIES FOLDER tests)
 
-  configure_clang_and_clang_tidy_settings(${CURRENT_TEST})
+  if(LIBCELLML_CLANG_TIDY)
+    configure_clang_and_clang_tidy_settings(${CURRENT_TEST})
+  endif()
 
   if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
     target_warnings_as_errors(${CURRENT_TEST})
@@ -168,7 +174,7 @@ if(LIBCELLML_LLVM_COVERAGE)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running LLVM coverage tests")
 
-  add_custom_target(llvm_coverage_missing_lines
+  add_custom_target(llvm_coverage_report
     COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=html -Xdemangler c++filt -Xdemangler -n -o coverage_report
     DEPENDS prepare_llvm_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

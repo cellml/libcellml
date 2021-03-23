@@ -26,6 +26,10 @@ limitations under the License.
 
 #include "test_resources.h"
 
+#define TEST_UTILS
+#include "../src/commonutils.cpp"
+#undef TEST_UTILS
+
 std::string resourcePath(const std::string &resourceRelativePath)
 {
     return TESTS_RESOURCE_LOCATION + "/" + resourceRelativePath;
@@ -41,102 +45,146 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
-void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
+std::chrono::steady_clock::time_point timeNow()
+{
+    return std::chrono::steady_clock::now();
+}
+
+int elapsedTime(const std::chrono::steady_clock::time_point &startTime)
+{
+    return int(std::chrono::duration_cast<std::chrono::milliseconds>(timeNow() - startTime).count());
+}
+
+void printIssues(const libcellml::LoggerPtr &l, bool headings, bool cellmlElementTypes, bool rule)
 {
     int width = int(floor(log10(l->errorCount())));
     for (size_t i = 0; i < l->issueCount(); ++i) {
-        std::cout << "Issue " << std::setw(width) << i + 1 << ": ";
+        switch (l->issue(i)->level()) {
+        case libcellml::Issue::Level::ERROR:
+            std::cout << "Error " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::WARNING:
+            std::cout << "Warning " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::HINT:
+            std::cout << "Hint " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::MESSAGE:
+            std::cout << "Message " << std::setw(width) << i + 1 << ": ";
+            break;
+        default:
+            break;
+        }
+
         if (headings) {
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
-        if (causes) {
-            std::cout << ", " << static_cast<int>(l->issue(i)->cause());
+        if (cellmlElementTypes) {
+            std::cout << ", " << static_cast<int>(l->issue(i)->cellmlElementType());
         }
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
         }
-        std::cout << std::endl;
+        std::cout << std::endl
+                  << l->issue(i)->description() << std::endl;
     }
 }
 
-void printModel(const libcellml::ModelPtr &model)
+static const std::string FIXED_INDENT = "    ";
+
+void printComponent(const libcellml::ComponentPtr &component, size_t c, const std::string &indent, bool includeMaths)
 {
-    std::cout << "The model name is: '" << model->name() << "'" << std::endl;
-    if (model->id() != "") {
-        std::cout << "The model id is: '" << model->id() << "'" << std::endl;
+    if (c == -1) {
+        std::cout << "COMPONENT: '" << component->name() << "'";
+    } else {
+        std::cout << indent << "[" << c + 1 << "]: " << component->name();
     }
 
-    // 2.a    Print any custom units of the model
-    std::cout << "The model defines " << model->unitsCount()
-              << " custom units:" << std::endl;
-    for (size_t u = 0; u < model->unitsCount(); ++u) {
-        std::cout << "  Units[" << u << "] is '" << model->units(u)->name() << "'"
-                  << std::endl;
-    }
-
-    // 2.b    Print the components of the model
-    std::cout << "The model has " << model->componentCount()
-              << " components:" << std::endl;
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        // 2.c  Printing the attributes of the component
-        auto component = model->component(c);
-        std::string spacer = "  ";
-        printComponent(component, c, spacer);
-    }
-}
-
-void printComponent(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer)
-{
-    std::cout << spacer << "Component[" << c << "] has name: '"
-              << component->name() << "'" << std::endl;
     if (component->id() != "") {
-        std::cout << spacer << "Component[" << c << "] has id: '"
-                  << component->id() << "'" << std::endl;
+        std::cout << ", id: " << component->id();
     }
 
-    std::cout << spacer << "Component[" << c << "] has "
-              << component->variableCount()
-              << " variables:" << std::endl;
+    std::cout << std::endl;
+    std::cout << indent << FIXED_INDENT << "VARIABLES: " << component->variableCount() << " variables" << std::endl;
 
-    // Printing the variables within the component
-    for (size_t vIndex = 0; vIndex < component->variableCount(); vIndex++) {
-        auto v = component->variable(vIndex);
-        std::cout << spacer << "  Variable[" << vIndex << "] has name: '"
-                  << v->name() << "'" << std::endl;
-        if (v->initialValue() != "") {
-            std::cout << spacer << "  Variable[" << vIndex << "] has initial_value: '"
-                      << v->initialValue() << "'"
-                      << std::endl;
+    // Printing the variables within the component.
+    for (size_t v = 0; v < component->variableCount(); ++v) {
+        std::cout << indent << FIXED_INDENT << FIXED_INDENT;
+        std::cout << "[" << v + 1 << "]: " << component->variable(v)->name();
+        if (component->variable(v)->units() != nullptr) {
+            std::cout << " [" << component->variable(v)->units()->name() << "]";
         }
-        if (v->units() != nullptr) {
-            std::cout << spacer << "  Variable[" << vIndex << "] has units: '"
-                      << v->units()->name() << "'" << std::endl;
-        }
-        std::cout << spacer << "  Variable[" << vIndex << "] has " << v->equivalentVariableCount() << " equivalent variable(s): ";
-        for (size_t eIndex = 0; eIndex < v->equivalentVariableCount(); ++eIndex) {
-            auto equivVariable = v->equivalentVariable(eIndex);
-            std::cout << equivVariable->name() << ", ";
+        if (component->variable(v)->initialValue() != "") {
+            std::cout << ", initial = " << component->variable(v)->initialValue();
         }
         std::cout << std::endl;
+        if (component->variable(v)->equivalentVariableCount() > 0) {
+            std::cout << indent << FIXED_INDENT << FIXED_INDENT << FIXED_INDENT;
+            std::string con = "  └──> ";
+            for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+                auto ev = component->variable(v)->equivalentVariable(e);
+                if (ev == nullptr) {
+                    std::cout << "WHOOPS! Null equivalent variable!";
+                    continue;
+                }
+                libcellml::ComponentPtr ev_parent = std::dynamic_pointer_cast<libcellml::Component>(ev->parent());
+                if (ev_parent == nullptr) {
+                    std::cout << "WHOOPS! Null parent component for equivalent variable!";
+                    continue;
+                }
+                std::cout << con << ev_parent->name() << ":" << ev->name();
+                if (ev->units() != nullptr) {
+                    std::cout << " [" << ev->units()->name() << "]";
+                }
+                con = ", ";
+            }
+            std::cout << std::endl;
+        }
     }
 
-    // Print the maths within the component
-    if (component->math() != "") {
-        std::cout << spacer << "  Maths in the component is:" << std::endl;
-        std::cout << component->math() << std::endl;
+    // Print the maths within the component.
+    if (includeMaths) {
+        if (component->math() != "") {
+            std::cout << indent << "  Maths in the component is:" << std::endl;
+            std::cout << component->math() << std::endl;
+        }
     }
 
     // Print the encapsulated components
     if (component->componentCount() > 0) {
-        std::cout << spacer << "Component[" << c << "] has "
-                  << component->componentCount()
-                  << " child components:" << std::endl;
+        std::cout << indent << FIXED_INDENT << "CHILD COMPONENTS: " << component->componentCount()
+                  << " child components" << std::endl;
+        std::string newIndent = indent + FIXED_INDENT + FIXED_INDENT;
 
-        for (size_t c2 = 0; c2 < component->componentCount(); c2++) {
+        for (size_t c2 = 0; c2 < component->componentCount(); ++c2) {
             auto child = component->component(c2);
-            std::string oneMoreSpacer = spacer + "  ";
-            printComponent(child, c2, oneMoreSpacer);
+            printComponent(child, c2, newIndent, includeMaths);
         }
+    }
+}
+
+void printComponent(const libcellml::ComponentPtr &component, bool includeMaths)
+{
+    printComponent(component, -1, {}, includeMaths);
+}
+
+void printModel(const libcellml::ModelPtr &model, bool includeMaths)
+{
+    std::cout << "MODEL: '" << model->name() << "'";
+    if (model->id() != "") {
+        std::cout << ", id: '" << model->id() << "'";
+    }
+    std::cout << std::endl;
+
+    std::cout << FIXED_INDENT << "UNITS: " << model->unitsCount() << " custom units" << std::endl;
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        std::cout << FIXED_INDENT << FIXED_INDENT << "[" << u + 1 << "]: " << model->units(u)->name() << std::endl;
+    }
+
+    std::cout << FIXED_INDENT << "COMPONENTS: " << model->componentCount() << " components" << std::endl;
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        auto component = model->component(c);
+        printComponent(component, c, FIXED_INDENT + FIXED_INDENT, includeMaths);
     }
 }
 
@@ -161,15 +209,20 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
-void expectEqualIssuesCauses(const std::vector<std::string> &issues,
-                             const std::vector<libcellml::Issue::Cause> &causes,
-                             const libcellml::LoggerPtr &logger)
+void expectEqualIssuesCellmlElementTypesLevelsReferenceRules(const std::vector<std::string> &issues,
+                                                             const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
+                                                             const std::vector<libcellml::Issue::Level> &levels,
+                                                             const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
+                                                             const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
-    EXPECT_EQ(causes.size(), logger->issueCount());
+    EXPECT_EQ(cellmlElementTypes.size(), logger->issueCount());
+    EXPECT_EQ(levels.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
-        EXPECT_EQ(causes.at(i), logger->issue(i)->cause());
+        EXPECT_EQ(cellmlElementTypes.at(i), logger->issue(i)->cellmlElementType());
+        EXPECT_EQ(levels.at(i), logger->issue(i)->level());
+        EXPECT_EQ(referenceRules.at(i), logger->issue(i)->referenceRule());
     }
 }
 
@@ -188,11 +241,11 @@ libcellml::ComponentPtr createComponentInModel(const libcellml::ModelPtr &model,
     return component;
 }
 
-libcellml::ModelPtr createModelWithComponent(const std::string &name)
+libcellml::ModelPtr createModelWithComponent(const std::string &modelName, const std::string &componentName)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
-    model->setName(name);
-    createComponentInModel(model, "");
+    model->setName(modelName);
+    createComponentInModel(model, componentName);
     return model;
 }
 
@@ -222,4 +275,137 @@ libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::strin
     c2->addVariable(v2);
 
     return model;
+}
+
+void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
+{
+    EXPECT_EQ(u1->unitCount(), u2->unitCount());
+
+    std::string reference1;
+    std::string prefix1;
+    std::string id1;
+    std::string reference2;
+    std::string prefix2;
+    std::string id2;
+    double exponent1;
+    double multiplier1;
+    double exponent2;
+    double multiplier2;
+    for (size_t index = 0; index < u1->unitCount(); ++index) {
+        u1->unitAttributes(index, reference1, prefix1, exponent1, multiplier1, id1);
+        u2->unitAttributes(index, reference2, prefix2, exponent2, multiplier2, id2);
+
+        EXPECT_EQ(reference1, reference2);
+        EXPECT_EQ(prefix1, prefix2);
+        EXPECT_EQ(exponent1, exponent2);
+        EXPECT_EQ(multiplier1, multiplier2);
+        EXPECT_EQ(id1, id2);
+    }
+}
+
+void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent)
+{
+    EXPECT_EQ(u1->id(), u2->id());
+    EXPECT_EQ(u1->isBaseUnit(), u2->isBaseUnit());
+    EXPECT_EQ(u1->isImport(), u2->isImport());
+    EXPECT_EQ(u1->importReference(), u2->importReference());
+    EXPECT_EQ(u1->name(), u2->name());
+    EXPECT_EQ(expectedParent, u2->parent());
+
+    compareUnit(u1, u2);
+}
+
+void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent)
+{
+    EXPECT_EQ(c1->name(), c2->name());
+    EXPECT_EQ(c1->id(), c2->id());
+    EXPECT_EQ(c1->isImport(), c2->isImport());
+    if (c1->isImport() && c2->isImport()) {
+        EXPECT_EQ(c1->importSource()->url(), c2->importSource()->url());
+        EXPECT_EQ(c1->importSource()->id(), c2->importSource()->id());
+    }
+    EXPECT_EQ(c1->importReference(), c2->importReference());
+    EXPECT_EQ(c1->componentCount(), c2->componentCount());
+    EXPECT_EQ(c1->resetCount(), c2->resetCount());
+    EXPECT_EQ(c1->variableCount(), c2->variableCount());
+
+    EXPECT_EQ(expectedParent, c2->parent());
+
+    for (size_t index = 0; index < c1->componentCount(); ++index) {
+        auto c1i = c1->component(index);
+        auto c2i = c2->component(index);
+        compareComponent(c1i, c2i, c2);
+    }
+    for (size_t index = 0; index < c2->resetCount(); ++index) {
+        auto r = c2->reset(index);
+        if (r->variable() != nullptr) {
+            EXPECT_TRUE(c2->hasVariable(r->variable()));
+        }
+        if (r->testVariable() != nullptr) {
+            EXPECT_TRUE(c2->hasVariable(r->testVariable()));
+        }
+    }
+}
+
+void compareImportSource(const libcellml::ImportSourcePtr &i1, const libcellml::ImportSourcePtr &i2, const libcellml::ModelPtr &m2)
+{
+    EXPECT_EQ(i1->url(), i2->url());
+
+    EXPECT_EQ(i1->unitsCount(), i2->unitsCount());
+    for (size_t index = 0; index < i1->unitsCount(); ++index) {
+        auto u1 = i1->units(index);
+        auto u2 = i2->units(index);
+        compareUnits(u1, u2, m2);
+    }
+
+    EXPECT_EQ(i1->componentCount(), i2->componentCount());
+    for (size_t index = 0; index < i1->componentCount(); ++index) {
+        auto c1 = i1->component(index);
+        auto c2 = i2->component(index);
+        compareComponent(c1, c2, m2);
+    }
+}
+
+void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
+{
+    EXPECT_EQ(m1->id(), m2->id());
+    EXPECT_EQ(m1->name(), m2->name());
+
+    EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
+    EXPECT_EQ(m1->componentCount(), m2->componentCount());
+    EXPECT_EQ(m1->importSourceCount(), m2->importSourceCount());
+
+    for (size_t index = 0; index < m1->unitsCount(); ++index) {
+        auto u1 = m1->units(index);
+        auto u2 = m2->units(index);
+        compareUnits(u1, u2, m2);
+    }
+
+    for (size_t index = 0; index < m1->componentCount(); ++index) {
+        auto c1 = m1->component(index);
+        auto c2 = m2->component(index);
+        compareComponent(c1, c2, m2);
+    }
+
+    for (size_t index = 0; index < m1->importSourceCount(); ++index) {
+        auto i1 = m1->importSource(index);
+        auto i2 = m2->importSource(index);
+        compareImportSource(i1, i2, m2);
+    }
+}
+
+void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
+{
+    EXPECT_EQ(r1->id(), r2->id());
+    EXPECT_EQ(r1->order(), r2->order());
+    if (r1->variable() != nullptr) {
+        EXPECT_NE(r1->variable(), r2->variable());
+        EXPECT_EQ(r1->variable()->name(), r2->variable()->name());
+    }
+    if (r1->testVariable() != nullptr) {
+        EXPECT_NE(r1->testVariable(), r2->testVariable());
+        EXPECT_EQ(r1->testVariable()->name(), r2->testVariable()->name());
+    }
+    EXPECT_EQ(r1->testValueId(), r2->testValueId());
+    EXPECT_EQ(r1->resetValueId(), r2->resetValueId());
 }

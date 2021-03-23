@@ -88,8 +88,11 @@
 #include "libcellml/reset.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Reset)
 
 %include "libcellml/types.h"
 %include "libcellml/reset.h"
-

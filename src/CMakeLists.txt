@@ -45,12 +45,22 @@ configure_file(
 )
 
 set(SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/annotator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/enums.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
@@ -59,6 +69,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/types.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/validator.cpp
@@ -71,12 +82,21 @@ set(SOURCE_FILES
 )
 
 set(GIT_API_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyser.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequation.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequationast.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserexternalvariable.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analysermodel.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyservariable.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/annotator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/componententity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enums.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorprofile.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/issue.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
@@ -102,6 +122,13 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
@@ -154,7 +181,7 @@ else()
 endif()
 
 # Use target compile features to propogate features to consuming projects.
-target_compile_features(cellml PUBLIC cxx_std_11)
+target_compile_features(cellml PUBLIC cxx_std_17)
 
 set_target_properties(cellml PROPERTIES
   CXX_VISIBILITY_PRESET hidden
@@ -175,7 +202,7 @@ set(DEBUG_HEADER_FILES
 
 add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
 
-target_compile_features(cellml_debug_utilities PUBLIC cxx_std_11)
+target_compile_features(cellml_debug_utilities PUBLIC cxx_std_17)
 
 target_include_directories(cellml_debug_utilities
   PUBLIC
@@ -190,7 +217,9 @@ group_source_to_dir_structure(
   ${DEBUG_HEADER_FILES}
 )
 
-configure_clang_and_clang_tidy_settings(cellml)
+if(LIBCELLML_CLANG_TIDY)
+  configure_clang_and_clang_tidy_settings(cellml)
+endif()
 
 if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
   set_target_properties(cellml PROPERTIES

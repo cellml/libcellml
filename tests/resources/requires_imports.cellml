@@ -6,7 +6,7 @@
     <units name="dada">
         <unit units="son"/>
     </units>
-    <import xlink:href="units_definitions.cellml" 
+    <import xlink:href="units_definitions.cellml"
         xmlns:xlink="http://www.w3.org/1999/xlink">
         <units units_ref="ms" name="son"/>
     </import>

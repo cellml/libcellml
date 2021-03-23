@@ -34,8 +34,8 @@ using XmlAttributePtr = std::shared_ptr<XmlAttribute>; /**< Type definition for 
 class XmlAttribute
 {
 public:
-    XmlAttribute(); /**< Constructor */
-    ~XmlAttribute(); /**< Destructor */
+    XmlAttribute(); /**< Constructor, @private. */
+    ~XmlAttribute(); /**< Destructor. */
 
     /**
      * @brief Set the internal xmlAttribute for this XmlAttribute wrapper.
@@ -149,8 +149,8 @@ public:
     void removeAttribute();
 
 private:
-    struct XmlAttributeImpl; /**< Forward declaration for pImpl idiom. */
-    XmlAttributeImpl *mPimpl; /**< Private member to implementation pointer */
+    struct XmlAttributeImpl; /**< Forward declaration for pImpl idiom, @private. */
+    XmlAttributeImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

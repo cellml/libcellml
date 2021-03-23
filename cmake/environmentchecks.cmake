@@ -22,11 +22,14 @@ find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
 if (EMSCRIPTEN)
     find_program(NODE_EXE NAMES ${PREFERRED_NODE_NAMES} node)
     find_program(NPM_EXE NAMES ${PREFERRED_NPM_NAMES} npm)
-    message(STATUS "NODE_EXE: ${NODE_EXE}")
-    message(STATUS "NPM_EXE: ${NPM_EXE}")
 else ()
   find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
+  if(WIN32)
+    find_program(CLCACHE_EXE clcache)
+  else()
+    find_program(CCACHE_EXE ccache)
+  endif()
   find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
   find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
   find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
@@ -34,6 +37,24 @@ else ()
   find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
   find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
   find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
+
+
+  if(Python_Interpreter_FOUND)
+    if(NOT DEFINED TEST_COVERAGE_RESULT)
+      set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
+      message(STATUS "Performing Test HAVE_COVERAGE")
+      get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
+      execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/python_package_check.py exclude-until-coverage-plugin
+        RESULT_VARIABLE TEST_COVERAGE_RESULT OUTPUT_QUIET ERROR_QUIET)
+      if(TEST_COVERAGE_RESULT EQUAL 0)
+        set(HAVE_COVERAGE TRUE)
+        message(STATUS "Performing Test HAVE_COVERAGE - Success")
+      else()
+        set(HAVE_COVERAGE FALSE)
+        message(STATUS "Performing Test HAVE_COVERAGE - Failed")
+      endif()
+    endif()
+  endif()
 
   find_package(Doxygen)
   find_package(Sphinx)
@@ -69,7 +90,7 @@ set(HAVE_LIBXML2_CONFIG FALSE)
 # If we want to use config packages we need to have two find_package calls and explicitly state that
 # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
 # is the preferred method so we will try this first quietly.
-find_package(LibXml2 CONFIG)
+find_package(LibXml2 CONFIG QUIET)
 
 # This does change how we get information about include paths and such so we
 # need to track how we found LibXml2.
@@ -87,8 +108,28 @@ else()
   endif()
 endif()
 
+if(WIN32)
+  if(CLCACHE_EXE)
+    set(CLCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
+  endif()
+else()
+  if(CCACHE_EXE)
+    set(CCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
+  endif()
+endif()
+
 if(CLANG_FORMAT_EXE AND GIT_EXE)
-  set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
+  set(CLANG_FORMAT_VERSION_MINIMUM 11)
+  execute_process(COMMAND ${CLANG_FORMAT_EXE} -version
+                  OUTPUT_VARIABLE CLANG_FORMAT_VERSION
+                  ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REGEX REPLACE "clang-format version ([.0-9]+).*" "\\1" CLANG_FORMAT_VERSION "${CLANG_FORMAT_VERSION}")
+
+  if(CLANG_FORMAT_VERSION VERSION_LESS CLANG_FORMAT_VERSION_MINIMUM)
+    message(STATUS "ClangFormat ${CLANG_FORMAT_VERSION} was found, but version ${CLANG_FORMAT_VERSION_MINIMUM}+ is needed to run the ClangFormat test")
+  else()
+    set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
+  endif()
 endif()
 
 if(CLANG_TIDY_EXE)
@@ -112,6 +153,10 @@ if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FL
 endif()
 
 if(WIN32 AND NOT EMSCRIPTEN)
+  if(HAVE_COVERAGE)
+    set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Module required to run Python coverage testing is available.")
+  endif()
+
   find_program(MAKENSIS_EXE NAMES ${PREFERRED_NSIS_NAMES} makensis
     HINTS "C:/Program\ Files/NSIS/" "C:/Program\ Files\ (x86)/NSIS/")
   mark_as_advanced(MAKENSIS_EXE)

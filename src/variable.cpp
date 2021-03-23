@@ -213,9 +213,35 @@ VariablePtr Variable::create(const std::string &name) noexcept
     return std::shared_ptr<Variable> {new Variable {name}};
 }
 
+bool Variable::doEquals(const EntityPtr &other) const
+{
+    if (NamedEntity::doEquals(other)) {
+        auto variable = std::dynamic_pointer_cast<libcellml::Variable>(other);
+        if ((variable != nullptr)
+            && mPimpl->mInitialValue == variable->initialValue()
+            && mPimpl->mInterfaceType == variable->interfaceType()) {
+            if (mPimpl->mUnits != nullptr) {
+                return mPimpl->mUnits->equals(variable->units());
+            }
+
+            return variable->units() == nullptr;
+        }
+    }
+    return false;
+}
+
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    return (variable1 != nullptr && variable2 != nullptr && variable1->mPimpl->setEquivalentTo(variable2) && variable2->mPimpl->setEquivalentTo(variable1));
+    if ((variable1 != nullptr) && (variable2 != nullptr)) {
+        bool canAdd1 = variable1->mPimpl->setEquivalentTo(variable2);
+        bool canAdd2 = variable2->mPimpl->setEquivalentTo(variable1);
+        if (canAdd1 && !canAdd2) {
+            // Remove connection from variable1, since it can't be added to variable2.
+            variable1->mPimpl->unsetEquivalentTo(variable2);
+        }
+        return canAdd1 && canAdd2;
+    }
+    return false;
 }
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId)
@@ -476,6 +502,19 @@ bool Variable::hasInterfaceType(InterfaceType interfaceType) const
     return mPimpl->mInterfaceType == interfaceTypeToString.find(interfaceType)->second;
 }
 
+bool Variable::permitsInterfaceType(InterfaceType interfaceType) const
+{
+    std::string testString = interfaceTypeToString.find(interfaceType)->second;
+
+    if ((testString == "none") || testString.empty()) {
+        return true;
+    }
+    if (mPimpl->mInterfaceType == "public_and_private") {
+        return true;
+    }
+    return testString == mPimpl->mInterfaceType;
+}
+
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
 {
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
@@ -487,8 +526,15 @@ void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const Varia
 void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &connectionId)
 {
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        variable1->mPimpl->setEquivalentConnectionId(variable2, connectionId);
-        variable2->mPimpl->setEquivalentConnectionId(variable1, connectionId);
+        auto map = createConnectionMap(variable1, variable2);
+        for (auto &it : map) {
+            it.first->mPimpl->setEquivalentConnectionId(it.second, connectionId);
+            it.second->mPimpl->setEquivalentConnectionId(it.first, connectionId);
+        }
+        if (map.empty()) {
+            variable1->mPimpl->setEquivalentConnectionId(variable2, connectionId);
+            variable2->mPimpl->setEquivalentConnectionId(variable1, connectionId);
+        }
     }
 }
 
@@ -496,11 +542,7 @@ std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const V
 {
     std::string id;
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        std::string id_1 = variable1->mPimpl->equivalentMappingId(variable2);
-        std::string id_2 = variable2->mPimpl->equivalentMappingId(variable1);
-        if (id_1 == id_2) {
-            id = id_1;
-        }
+        id = variable1->mPimpl->equivalentMappingId(variable2);
     }
     return id;
 }
@@ -509,10 +551,12 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 {
     std::string id;
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        std::string id_1 = variable1->mPimpl->equivalentConnectionId(variable2);
-        std::string id_2 = variable2->mPimpl->equivalentConnectionId(variable1);
-        if (id_1 == id_2) {
-            id = id_1;
+        auto map = createConnectionMap(variable1, variable2);
+        for (auto &it : map) {
+            id = it.first->mPimpl->equivalentConnectionId(it.second);
+        }
+        if (id.empty()) {
+            id = variable1->mPimpl->equivalentConnectionId(variable2);
         }
     }
     return id;

@@ -28,7 +28,13 @@ limitations under the License.
 // macro gets defined for backward compatibility, so we can safely undefine it.
 // (See https://stackoverflow.com/questions/2774171/what-is-far-pascal for more
 // information.)
-#undef PASCAL
+#ifdef PASCAL
+#    undef PASCAL
+#endif
+
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Units>;
+#endif
 
 namespace libcellml {
 
@@ -37,12 +43,16 @@ namespace libcellml {
  * Class for Units.
  */
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
+#ifndef SWIG
+    ,
+                              public std::enable_shared_from_this<Units>
+#endif
 {
 public:
-    ~Units() override; /**< Destructor */
-    Units(const Units &rhs) = delete; /**< Copy constructor */
-    Units(Units &&rhs) noexcept = delete; /**< Move constructor */
-    Units &operator=(Units rhs) = delete; /**< Assignment operator */
+    ~Units() override; /**< Destructor. */
+    Units(const Units &rhs) = delete; /**< Copy constructor. */
+    Units(Units &&rhs) noexcept = delete; /**< Move constructor. */
+    Units &operator=(Units rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Units object.
@@ -320,42 +330,53 @@ public:
     void unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent,
                         double &multiplier, std::string &id) const;
 
-    std::string unitAttributeReferenceByIndex(size_t index) {
-        std::string ref;
-        std::string pre;
-        double exp;
-        double mult;
-        std::string id;
-        unitAttributes(index, ref, pre, exp, mult, id);
-        return ref;
-    }
-    std::string unitAttributePrefixByIndex(size_t index) {
-        std::string ref;
-        std::string pre;
-        double exp;
-        double mult;
-        std::string id;
-        unitAttributes(index, ref, pre, exp, mult, id);
-        return pre;
-    }
-    double unitAttributeExponentByIndex(size_t index) {
-        std::string ref;
-        std::string pre;
-        double exp;
-        double mult;
-        std::string id;
-        unitAttributes(index, ref, pre, exp, mult, id);
-        return exp;
-    }
-    double unitAttributeMultiplierByIndex(size_t index) {
-        std::string ref;
-        std::string pre;
-        double exp;
-        double mult;
-        std::string id;
-        unitAttributes(index, ref, pre, exp, mult, id);
-        return mult;
-    }
+    /**
+     * @brief Get the reference attribute for the unit at the given @p index.
+     *
+     * Get the reference attribute for the unit at the given @p index. The index must
+     * be in the range [0, \#unit).  Defaults to an empty string if there is no reference
+     * set or if the @p index is out of range.
+     *
+     * @param index The index of the @c unit in this units to get the reference attribute for.
+     * @return The @c std::string reference for the unit at index @p index.
+     */
+    std::string unitAttributeReference(size_t index);
+
+    /**
+     * @brief Get the prefix attribute for the unit at the given @p index.
+     *
+     * Get the prefix attribute for the unit at the given @p index. The index must
+     * be in the range [0, \#unit).  Defaults to an empty string if there is no prefix
+     * set or if the @p index is out of range.
+     *
+     * @param index The index of the @c unit in this units to get the prefix attribute for.
+     * @return The @c std::string reference for the unit at index @p index.
+     */
+    std::string unitAttributePrefix(size_t index);
+
+    /**
+     * @brief Get the exponent attribute for the unit at the given @p index.
+     *
+     * Get the exponent attribute for the unit at the given @p index. The index must
+     * be in the range [0, \#unit).  Defaults to 1.0 if there is no exponent
+     * set or if the @p index is out of range.
+     *
+     * @param index The index of the @c unit in this units to get the exponent attribute for.
+     * @return The @c double exponent for the unit at index @p index.
+     */
+    double unitAttributeExponent(size_t index);
+
+    /**
+     * @brief Get the multiplier attribute for the unit at the given @p index.
+     *
+     * Get the multiplier attribute for the unit at the given @p index. The index must
+     * be in the range [0, \#unit).  Defaults to 1.0 if there is no multiplier
+     * set or if the @p index is out of range.
+     *
+     * @param index The index of the @c unit in this units to get the multiplier attribute for.
+     * @return The @c double multiplier for the unit at index @p index.
+     */
+    double unitAttributeMultiplier(size_t index);
 
     /**
      * @overload
@@ -438,12 +459,13 @@ public:
      * @brief Set the source of the units for this Units.
      *
      * Make this Units an imported units by defining an import model
-     * from which to extract the named Units from.
+     * from which to extract the named Units.  This Units will be added to the
+     * importSource's list of dependent entities.
      *
      * @param importSource The import source from which the named Units originates.
      * @param name The name of the Units in the imported model to use.
      */
-    void setSourceUnits(const ImportSourcePtr &importSource, const std::string &name);
+    void setSourceUnits(ImportSourcePtr &importSource, const std::string &name);
 
     /**
      * @brief Get the number of units that compose this units.
@@ -457,8 +479,10 @@ public:
     /**
      * @brief Check whether there are any imported child @c Units.
      *
-     * @return @c true when these @c Units rely on @c Units which are imported,
-     * or @c false otherwise.
+     * Test to determine whether this units has any imported units.
+     *
+     * @return @c true when this @c Units relies on @c Units which are imported,
+     * @c false otherwise.
      */
     bool requiresImports() const;
 
@@ -518,12 +542,47 @@ public:
      */
     UnitsPtr clone() const;
 
-private:
-    Units(); /**< Constructor */
-    explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
+    /**
+     * @brief Set the id of the unit at the given @p index.
+     *
+     *  The operation will return @c true if the id is assigned, or @c false
+     *  if the @p index is out of range.
+     *
+     * @return @c true if successful, @c false otherwise.
+     */
+    bool setUnitId(size_t index, const std::string &id) const;
 
-    struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl *mPimpl; /**< Private member to implementation pointer */
+    /**
+     * @brief Return the id string of the unit at the given @p index.
+     *
+     * Return the id string of the unit at the given @p index.  If the
+     * given index is out of range then the empty string is returned.
+     *
+     * @return An id string.
+     */
+    std::string unitId(size_t index);
+
+private:
+    Units(); /**< Constructor, @private. */
+    explicit Units(const std::string &name); /**< Constructor with std::string parameter, @private. */
+
+    /**
+     * @brief Set the import source of this units.
+     *
+     * Virtual method implementing ImportedEntity::setImportSource, @private.
+     * If these units are already located in a Model instance, then the
+     * import source is added to the Model too.
+     *
+     * @param importSource The @c ImportSourcePtr to add to this @ref Units.
+     */
+    void doSetImportSource(const ImportSourcePtr &importSource) override;
+
+    bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
+
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
+    struct UnitsImpl; /**< Forward declaration for pImpl idiom, @private. */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

@@ -34,9 +34,10 @@ TEST(Parser, invalidXMLElements)
         "  <Wizard>Gandalf</SomeGuyWithAStaff>\n"
         "  <Elf>\n"
         "</fellows>\n";
-    const std::vector<std::string> expectedIssues = {
-        "Specification mandate value for attribute bearded.",
-        "Specification mandates value for attribute bearded.",
+
+    // Depending on the libXML2 version the error messages differ.
+    const std::vector<std::string> expectedIssues_2_2 = {
+        "LibXml2 error: Specification mandate value for attribute bearded.",
         "LibXml2 error: Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
         "LibXml2 error: Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
         "LibXml2 error: Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
@@ -44,18 +45,24 @@ TEST(Parser, invalidXMLElements)
         "LibXml2 error: Premature end of data in tag fellowship line 2.",
         "Could not get a valid XML root node from the provided input.",
     };
+    const std::vector<std::string> expectedIssues_2_9_10 = {
+        "LibXml2 error: Specification mandates value for attribute bearded.",
+        "LibXml2 error: Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Wizard line 2 and SomeGuyWithAStaff.",
+        "LibXml2 error: Opening and ending tag mismatch: Elf line 2 and fellows.",
+        "LibXml2 error: EndTag: '</' not found.",
+        "Could not get a valid XML root node from the provided input.",
+    };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
 
-    EXPECT_EQ(expectedIssues.size() - 1, p->issueCount());
+    EXPECT_EQ(expectedIssues_2_2.size(), p->issueCount());
+
     for (size_t i = 0; i < p->issueCount(); ++i) {
-        if (i == 0) {
-            EXPECT_TRUE((p->issue(i)->description() != expectedIssues.at(0))
-                        || (p->issue(i)->description() != expectedIssues.at(1)));
-        } else {
-            EXPECT_EQ(expectedIssues.at(i + 1), p->issue(i)->description());
-        }
+        auto message = p->issue(i)->description();
+        EXPECT_TRUE((expectedIssues_2_2.at(i) == message) || (expectedIssues_2_9_10.at(i) == message));
     }
 }
 
@@ -101,7 +108,7 @@ TEST(Parser, emptyModelString)
 {
     const std::string e;
     const std::vector<std::string> expectedIssues = {
-        "Model is empty.",
+        "Model string is empty.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -951,6 +958,7 @@ TEST(Parser, variableAttributeAndChildIssues)
         "  </component>\n"
         "</model>\n";
     const std::string expectError1 = "Variable 'Na' has an invalid attribute 'lame'.";
+    const std::string expectWarning1 = "Model does not contain the units 'daves' required by variable 'Na' in component 'randy'.";
     const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
@@ -965,14 +973,16 @@ TEST(Parser, variableAttributeAndChildIssues)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in1);
-    EXPECT_EQ(size_t(1), p->issueCount());
-    EXPECT_EQ(expectError1, p->issue(0)->description());
+    EXPECT_EQ(size_t(1), p->errorCount());
+    EXPECT_EQ(size_t(1), p->warningCount());
+    EXPECT_EQ(expectError1, p->error(0)->description());
+    EXPECT_EQ(expectWarning1, p->warning(0)->description());
 
     p->removeAllIssues();
     p->parseModel(in2);
-    EXPECT_EQ(size_t(2), p->issueCount());
-    EXPECT_EQ(expectError2, p->issue(0)->description());
-    EXPECT_EQ(expectError3, p->issue(1)->description());
+    EXPECT_EQ(size_t(2), p->errorCount());
+    EXPECT_EQ(expectError2, p->error(0)->description());
+    EXPECT_EQ(expectError3, p->error(1)->description());
 }
 
 TEST(Parser, emptyConnections)
@@ -985,7 +995,25 @@ TEST(Parser, emptyConnections)
     const std::vector<std::string> expectedIssues = {
         "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
         "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
-        "Connection in model 'model_name' does not contain any 'map_variables' elements.",
+        "Connection in model 'model_name' does not contain any 'map_variables' elements and will be disregarded.",
+    };
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+    EXPECT_EQ_ISSUES(expectedIssues, p);
+}
+
+TEST(Parser, emptyConnectionWithId)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <connection id=\"myId\"/>\n"
+        "</model>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
+        "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
+        "Connection in model 'model_name' has an id of 'myId' but does not contain any 'map_variables' elements. The connection will be disregarded and the associated id will be lost.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1105,8 +1133,8 @@ TEST(Parser, connectionErrorNoMapVariables)
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' has an invalid connection attribute 'component_3'.",
-        "Connection in model '' does not contain any 'map_variables' elements.",
-        "Connection in model '' does not contain any 'map_variables' elements.",
+        "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
+        "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1134,6 +1162,23 @@ TEST(Parser, importedComponent2Connection)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(e);
     EXPECT_EQ(size_t(0), parser->issueCount());
+}
+
+TEST(Parser, emptyImportWithAndWithoutId)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <import/>"
+        "  <import id = \"import_id\" />\n"
+        "</model>\n";
+    std::vector<std::string> e = {
+        "Import from '' is empty and will be disregarded.",
+        "Import from '' has an id of 'import_id' but is empty. The import will be disregarded and the associated id will be lost.",
+    };
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto m = parser->parseModel(in);
+    EXPECT_EQ_ISSUES(e, parser);
 }
 
 TEST(Parser, validConnectionMapVariablesFirst)
@@ -1266,6 +1311,8 @@ TEST(Parser, connectionVariable1Missing)
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' does not have a valid variable_1 in a map_variables element.",
+        "Model does not contain the units 'scrat' required by variable 'variable_bob' in component 'component_bob'.",
+        "Model does not contain the units 'gone' required by variable 'variable_dave' in component 'component_dave'.",
     };
 
     // Parse
@@ -1292,6 +1339,8 @@ TEST(Parser, connectionErrorNoMapVariablesType)
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' has an invalid child element 'map_variabels'.",
         "Connection in model '' does not have a map_variables element.",
+        "Model does not contain the units 'scrat' required by variable 'variable1' in component 'component1'.",
+        "Model does not contain the units 'phils' required by variable 'variable2' in component 'component2'.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1321,9 +1370,9 @@ TEST(Parser, invalidImportsAndGetIssue)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
-        "  </import>\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"\" name=\"frank\"/>\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
+        "    <units units_ref=\"\" name=\"fido\"/>\n"
         "  </import>\n"
         "</model>\n";
 
@@ -1349,12 +1398,12 @@ TEST(Parser, invalidImportsAndGetIssue)
     EXPECT_EQ(import, importFromIssue);
 }
 
-TEST(Parser, invalidModelWithAllCausesOfIssues)
+TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
 {
-    // Check for all causes of issues.
-    std::vector<bool> foundCause(9, false);
+    // Check for all item types of issues.
+    std::vector<bool> foundCellmlElementType(7, false);
 
-    // Trigger CellML entity issues
+    // Trigger CellML entity issues.
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\" episode=\"four\">\n"
@@ -1370,6 +1419,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
     const std::vector<std::string> expectedIssues = {
         "Model 'starwars' has an invalid attribute 'episode'.",
         "Import from '' has an invalid attribute 'princess'.",
+        "Import from '' is empty and will be disregarded.",
         "Units '' has an invalid attribute 'jedi'.",
         "Component '' has an invalid attribute 'ship'.",
         "Variable '' has an invalid attribute 'pilot'.",
@@ -1378,7 +1428,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
         "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
         "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
-        "Connection in model 'starwars' does not contain any 'map_variables' elements.",
+        "Connection in model 'starwars' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
     // Parse and check for CellML issues.
@@ -1388,68 +1438,54 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 
     for (size_t i = 0; i < parser->issueCount(); ++i) {
-        switch (parser->issue(i)->cause()) {
-        case libcellml::Issue::Cause::COMPONENT:
-            foundCause.at(0) = true;
+        switch (parser->issue(i)->cellmlElementType()) {
+        case libcellml::CellmlElementType::COMPONENT:
+            foundCellmlElementType.at(0) = true;
             break;
-        case (libcellml::Issue::Cause::CONNECTION):
-            foundCause.at(1) = true;
+        case libcellml::CellmlElementType::ENCAPSULATION:
+            foundCellmlElementType.at(1) = true;
             break;
-        case (libcellml::Issue::Cause::ENCAPSULATION):
-            foundCause.at(2) = true;
+        case libcellml::CellmlElementType::IMPORT:
+            foundCellmlElementType.at(2) = true;
             break;
-        case (libcellml::Issue::Cause::IMPORT):
-            foundCause.at(3) = true;
+        case libcellml::CellmlElementType::MODEL:
+            foundCellmlElementType.at(3) = true;
             break;
-        case (libcellml::Issue::Cause::MODEL):
-            foundCause.at(4) = true;
+        case libcellml::CellmlElementType::UNITS:
+            foundCellmlElementType.at(4) = true;
             break;
-        case (libcellml::Issue::Cause::UNITS):
-            foundCause.at(5) = true;
+        case libcellml::CellmlElementType::VARIABLE:
+            foundCellmlElementType.at(5) = true;
             break;
-        case (libcellml::Issue::Cause::VARIABLE):
-            foundCause.at(6) = true;
-            break;
-        case libcellml::Issue::Cause::MATHML:
-        case libcellml::Issue::Cause::RESET:
-        case libcellml::Issue::Cause::UNDEFINED:
-        case libcellml::Issue::Cause::XML:
-        case libcellml::Issue::Cause::GENERATOR:
+        case libcellml::CellmlElementType::COMPONENT_REF:
+        case libcellml::CellmlElementType::CONNECTION:
+        case libcellml::CellmlElementType::MAP_VARIABLES:
+        case libcellml::CellmlElementType::MATH:
+        case libcellml::CellmlElementType::RESET:
+        case libcellml::CellmlElementType::RESET_VALUE:
+        case libcellml::CellmlElementType::TEST_VALUE:
+        case libcellml::CellmlElementType::UNDEFINED:
+        case libcellml::CellmlElementType::UNIT:
             break;
         }
     }
 
-    // Trigger undefined issue
+    // Trigger undefined issue.
     libcellml::ParserPtr parser2 = libcellml::Parser::create();
-    // Add an undefined issue
+    // Add an undefined issue.
     libcellml::IssuePtr undefinedIssue = libcellml::Issue::create();
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->cause() == libcellml::Issue::Cause::UNDEFINED) {
-        foundCause.at(7) = true;
+    if (parser2->issue(0)->cellmlElementType() == libcellml::CellmlElementType::UNDEFINED) {
+        foundCellmlElementType.at(6) = true;
     }
 
-    // Trigger an XML issue
-    const std::string input3 = "jarjarbinks";
-    const std::vector<std::string> expectedIssues3 = {
-        "LibXml2 error: Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided input.",
-    };
-    libcellml::ParserPtr parser3 = libcellml::Parser::create();
-    parser3->parseModel(input3);
-    EXPECT_EQ_ISSUES(expectedIssues3, parser3);
-    for (size_t i = 0; i < parser3->issueCount(); ++i) {
-        if (parser3->issue(i)->cause() == libcellml::Issue::Cause::XML) {
-            foundCause.at(8) = true;
-        }
+    // Check that we've found all the possible issue types.
+    size_t index = std::numeric_limits<size_t>::max();
+    for (auto state : foundCellmlElementType) {
+        SCOPED_TRACE(++index);
+        EXPECT_TRUE(state);
     }
-
-    // Check that we've found all the possible issue types
-    bool foundAllCauses = false;
-    if (std::all_of(foundCause.begin(), foundCause.end(), [](bool i) { return i; })) {
-        foundAllCauses = true;
-    }
-    EXPECT_TRUE(foundAllCauses);
 }
 
 TEST(Parser, invalidModelWithTextInAllElements)
@@ -1516,6 +1552,9 @@ TEST(Parser, invalidModelWithTextInAllElements)
 
 TEST(Parser, parseIds)
 {
+    std::vector<std::string> e = {
+        "Model does not contain the units 'blob' required by variable 'variable1' in component 'component2'.",
+    };
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
@@ -1535,7 +1574,7 @@ TEST(Parser, parseIds)
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(in);
 
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ_ISSUES(e, p);
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
     EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
@@ -1547,7 +1586,7 @@ TEST(Parser, parseIds)
     EXPECT_EQ("vid", model->component("component2")->variable("variable1")->id());
 }
 
-TEST(Parser, parseIdsOnEverythingButMath)
+TEST(Parser, parseIdsOnEntities)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1616,6 +1655,100 @@ TEST(Parser, parseIdsOnEverythingButMath)
     EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
     EXPECT_EQ("tv1id", model->component("component2")->reset(0)->testValueId());
     EXPECT_EQ("rv1id", model->component("component2")->reset(0)->resetValueId());
+
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    EXPECT_EQ(in, printer->printModel(model));
+}
+
+TEST(Parser, parseIdsOnEverythingExceptMath)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"mid\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i2id\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>\n"
+        "  </import>\n"
+        "  <units name=\"units2\" id=\"u2id\">\n"
+        "    <unit units=\"second\" id=\"unit1id\"/>\n"
+        "  </units>\n"
+        "  <units name=\"units3\" id=\"u3id\"/>\n"
+        "  <units name=\"blob\"/>\n"
+        "  <component name=\"component2\" id=\"c2id\">\n"
+        "    <variable name=\"variable1\" units=\"blob\" interface=\"private\" id=\"v1id\"/>\n"
+        "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"r1id\">\n"
+        "      <test_value id=\"tv1id\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          <apply>\n"
+        "            <eq/>\n"
+        "            <ci>variable1</ci>\n"
+        "            <cn>3.4</cn>\n"
+        "          </apply>\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value id=\"rv1id\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          <apply>\n"
+        "            <eq/>\n"
+        "            <ci>variable1</ci>\n"
+        "            <cn>9.0</cn>\n"
+        "          </apply>\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>variable1</ci>\n"
+        "        <cn>9.0</cn>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "  <component name=\"component3\" id=\"c3id\">\n"
+        "    <variable name=\"variable2\" units=\"ampere\" interface=\"public\" id=\"c3v2id\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component2\" component_2=\"component3\" id=\"con1id\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\" id=\"map1id\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation id=\"encap1id\">\n"
+        "    <component_ref component=\"component2\" id=\"cref1id\">\n"
+        "      <component_ref component=\"component3\" id=\"crefchild1id\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(in);
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    // Entity objects.
+    EXPECT_EQ("mid", model->id());
+    EXPECT_EQ("c1id", model->component("component1")->id());
+    EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
+    EXPECT_EQ("u1id", model->units("units1")->id());
+    EXPECT_EQ("i2id", model->units("units1")->importSource()->id());
+    EXPECT_EQ("u2id", model->units("units2")->id());
+    EXPECT_EQ("c2id", model->component("component2")->id());
+    EXPECT_EQ("u3id", model->units("units3")->id());
+    EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->id());
+    EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
+    EXPECT_EQ("tv1id", model->component("component2")->reset(0)->testValueId());
+    EXPECT_EQ("rv1id", model->component("component2")->reset(0)->resetValueId());
+
+    // Non-entity objects: connections, mappings, encapsulation, and maths.
+    EXPECT_EQ("encap1id", model->encapsulationId());
+    EXPECT_EQ("map1id", libcellml::Variable::equivalenceMappingId(
+                            model->component("component2")->variable("variable1"),
+                            model->component("component3")->variable("variable2")));
+    EXPECT_EQ("con1id", libcellml::Variable::equivalenceConnectionId(
+                            model->component("component2")->variable("variable1"),
+                            model->component("component3")->variable("variable2")));
+    EXPECT_EQ("cref1id", model->component("component2")->encapsulationId());
+    EXPECT_EQ("crefchild1id", model->component("component3")->encapsulationId());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     EXPECT_EQ(in, printer->printModel(model));
@@ -2039,4 +2172,80 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
     std::string output2 = printer->printModel(model2);
 
     EXPECT_EQ(in, output2);
+}
+
+TEST(Parser, parseAndPrintSeparateAndCombinedImports)
+{
+    const std::string separateInString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    const std::string combinedInString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\"/>\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto modelSeparate = parser->parseModel(separateInString);
+    auto modelCombined = parser->parseModel(combinedInString);
+
+    EXPECT_EQ(size_t(2), modelSeparate->importSourceCount());
+    EXPECT_EQ(size_t(1), modelCombined->importSourceCount());
+
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(separateInString, printer->printModel(modelSeparate));
+    EXPECT_EQ(combinedInString, printer->printModel(modelCombined));
+}
+
+TEST(Parser, raiseIssueMissingUnits)
+{
+    std::vector<std::string> expectedIssues = {
+        "Model does not contain the units 'nothing_to_find_here' required by variable 'my_units_are_missing' in component 'component'.",
+    };
+    std::string modelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                              "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+                              "  <component name=\"component\">\n"
+                              "    <variable name=\"my_units_are_missing\" units=\"nothing_to_find_here\"/>\n"
+                              "  </component>\n"
+                              "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+    EXPECT_EQ_ISSUES(expectedIssues, parser);
+}
+
+TEST(Parser, parserDoesNotDeleteChildrenOfInvalidEncapsulation)
+{
+    auto inString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"segfault\">\n"
+        "   <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"importMe.cellml\">\n"
+        "        <component component_ref=\"importMe\" name=\"importedChild\"/>\n"
+        "   </import>\n"
+        "   <component name=\"parentName!\"/>\n"
+        "   <encapsulation>\n"
+        "       <component_ref component=\"parentName\">\n"
+        "           <component_ref component=\"importedChild\"/>\n"
+        "       </component_ref>\n"
+        "   </encapsulation>\n"
+        "</model>";
+
+    std::vector<std::string> expectedIssues = {
+        "Encapsulation in model 'segfault' specifies 'parentName' as a component in a component_ref but it does not exist in the model.",
+        "Encapsulation in model 'segfault' specifies an invalid parent component_ref that also does not have any children."};
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(inString);
+    EXPECT_EQ(size_t(2), parser->errorCount());
+    EXPECT_EQ_ISSUES(expectedIssues, parser);
 }

@@ -211,6 +211,8 @@
                 </apply>
                 <cn cellml:units="per_second">1</cn>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnEq</ci>
@@ -233,6 +235,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnNeq</ci>
@@ -255,6 +259,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnLt</ci>
@@ -264,6 +270,8 @@
                     <ci>n</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnLeq</ci>
@@ -273,6 +281,8 @@
                     <ci>n</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnGt</ci>
@@ -282,6 +292,8 @@
                     <ci>n</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnGeq</ci>
@@ -291,6 +303,8 @@
                     <ci>n</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnAnd</ci>
@@ -527,6 +541,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnOr</ci>
@@ -763,6 +779,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnXor</ci>
@@ -999,6 +1017,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnNot</ci>
@@ -1007,6 +1027,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnPlus</ci>
@@ -1051,6 +1073,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnMinus</ci>
@@ -1130,6 +1154,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnTimes</ci>
@@ -1298,6 +1324,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnDivide</ci>
@@ -1490,6 +1518,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnPowerSqrt</ci>
@@ -1777,6 +1807,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnRootSqrt</ci>
@@ -2069,6 +2101,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnAbs</ci>
@@ -2077,6 +2111,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnExp</ci>
@@ -2085,6 +2121,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnLn</ci>
@@ -2093,6 +2131,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnLog</ci>
@@ -2134,6 +2174,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCeiling</ci>
@@ -2142,6 +2184,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnFloor</ci>
@@ -2150,6 +2194,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnMin</ci>
@@ -2169,6 +2215,8 @@
                     <ci>o</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnMax</ci>
@@ -2188,6 +2236,8 @@
                     <ci>o</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnRem</ci>
@@ -2197,6 +2247,8 @@
                     <ci>n</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnSin</ci>
@@ -2205,6 +2257,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCos</ci>
@@ -2213,6 +2267,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnTan</ci>
@@ -2221,6 +2277,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnSec</ci>
@@ -2229,6 +2287,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCsc</ci>
@@ -2237,6 +2297,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCot</ci>
@@ -2245,6 +2307,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnSinh</ci>
@@ -2253,6 +2317,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCosh</ci>
@@ -2261,6 +2327,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnTanh</ci>
@@ -2269,6 +2337,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnSech</ci>
@@ -2277,6 +2347,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCsch</ci>
@@ -2285,6 +2357,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCoth</ci>
@@ -2293,6 +2367,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArcsin</ci>
@@ -2301,6 +2377,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArccos</ci>
@@ -2309,6 +2387,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArctan</ci>
@@ -2317,6 +2397,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArcsec</ci>
@@ -2325,6 +2407,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArccsc</ci>
@@ -2333,6 +2417,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArccot</ci>
@@ -2341,6 +2427,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArcsinh</ci>
@@ -2349,6 +2437,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArccosh</ci>
@@ -2357,6 +2447,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArctanh</ci>
@@ -2369,6 +2461,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArcsech</ci>
@@ -2377,6 +2471,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArccsch</ci>
@@ -2385,6 +2481,8 @@
                     <ci>m</ci>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnArccoth</ci>
@@ -2397,6 +2495,8 @@
                     </apply>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnPiecewisePiece</ci>
@@ -2491,6 +2591,8 @@
                     </otherwise>
                 </piecewise>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnWithPiecewise</ci>
@@ -2509,56 +2611,86 @@
                     </piecewise>
                 </apply>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCnInteger</ci>
-                <cn cellml:units="dimensionless">123</cn>
+                <cn cellml:units="dimensionless">
+                    123
+                </cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>eqnCnDouble</ci>
-                <cn cellml:units="dimensionless">123.456789</cn>
+                <cn cellml:units="dimensionless">
+                    123.456789
+                </cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>eqnCnIntegerWithExponent</ci>
-                <cn cellml:units="dimensionless" type="e-notation">123<sep/>99</cn>
+                <cn cellml:units="dimensionless" type="e-notation">
+                    123
+                    <sep/>
+                    99
+                </cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>eqnCnDoubleWithExponent</ci>
-                <cn cellml:units="dimensionless" type="e-notation">123.456789<sep/>99</cn>
+                <cn cellml:units="dimensionless" type="e-notation">
+                    123.456789
+                    <sep/>
+                    99
+                </cn>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnCi</ci>
-                <ci>m</ci>
+                <ci>
+                    m
+                </ci>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnTrue</ci>
                 <true/>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnFalse</ci>
                 <false/>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnExponentiale</ci>
                 <exponentiale/>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnPi</ci>
                 <pi/>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnInfinity</ci>
                 <infinity/>
             </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
                 <ci>eqnNotanumber</ci>
