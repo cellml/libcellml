@@ -1995,11 +1995,13 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                           ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
+        bool isDimensionlessExponent = true;
+
         if ((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER)
             || (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE)) {
-            bool isDimensionlessExponent = Analyser::AnalyserImpl::isDimensionlessUnitsMaps((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
-                                                                                                rightUnitsMaps :
-                                                                                                unitsMaps);
+            isDimensionlessExponent = Analyser::AnalyserImpl::isDimensionlessUnitsMaps((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                                                                                           rightUnitsMaps :
+                                                                                           unitsMaps);
 
             if (!isDimensionlessExponent) {
                 auto baseAst = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
@@ -2017,33 +2019,35 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
         // Retrieve the exponent and apply it to our units maps and multipliers.
 
-        double powerRootValue = 0.0;
+        if (isDimensionlessExponent) {
+            double powerRootValue = 0.0;
 
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
-            powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
-        } else {
-            // Root case.
-
-            if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
-                unitsMaps = rightUnitsMaps;
-                userUnitsMaps = rightUserUnitsMaps;
-                unitsMultipliers = rightUnitsMultipliers;
-
-                powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
+            if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
+                powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
             } else {
-                // No DEGREE element, which means that we are dealing with a
-                // square root.
+                // Root case.
 
-                powerRootValue = 2.0;
+                if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
+                    unitsMaps = rightUnitsMaps;
+                    userUnitsMaps = rightUserUnitsMaps;
+                    unitsMultipliers = rightUnitsMultipliers;
+
+                    powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
+                } else {
+                    // No DEGREE element, which means that we are dealing with a
+                    // square root.
+
+                    powerRootValue = 2.0;
+                }
             }
-        }
 
-        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue,
-                                            ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
-        userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerRootValue,
+            unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue,
                                                 ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
-        unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue,
-                                                     ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
+            userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerRootValue,
+                                                    ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
+            unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue,
+                                                         ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
+        }
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
