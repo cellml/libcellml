@@ -1722,7 +1722,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     //     - 'exp' and 'ln': the argument should be dimensionless.
     //     - 'log': the argument and the base, if present, should be
     //       dimensionless.
-    //     - 'min' and 'max': the arguments should have the same unit.
+    //     - 'floor' and 'ceiling': the argument can have any unit.
+    //     - 'min' and 'max': all the arguments should have the same unit.
     //     - 'rem': the two arguments should have the same unit.
     //  - Calculus elements ('diff'): the differentiated variable can have any
     //    unit. (See 'bvar' below for the bounding variable.)

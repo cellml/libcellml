@@ -1251,3 +1251,81 @@ TEST(AnalyserUnits, log)
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
+
+TEST(AnalyserUnits, floor)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/units/floor.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "The units in 'b = floor(3.0)' in component 'main' are not the same. 'b' is dimensionless while 'floor(3.0)' is in 'second'.",
+        "The units in 'c = floor(5.0)' in component 'main' are not the same. 'c' is dimensionless while 'floor(5.0)' is in 'volt'.",
+        "The units in 'd = floor(7.0)' in component 'main' are not the same. 'd' is dimensionless while 'floor(7.0)' is in 'frog'.",
+        "The units in 'e = floor(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'floor(9.0)' is in 'metre_per_second'.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
+
+TEST(AnalyserUnits, ceiling)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/units/ceiling.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "The units in 'b = ceil(3.0)' in component 'main' are not the same. 'b' is dimensionless while 'ceil(3.0)' is in 'second'.",
+        "The units in 'c = ceil(5.0)' in component 'main' are not the same. 'c' is dimensionless while 'ceil(5.0)' is in 'volt'.",
+        "The units in 'd = ceil(7.0)' in component 'main' are not the same. 'd' is dimensionless while 'ceil(7.0)' is in 'frog'.",
+        "The units in 'e = ceil(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'ceil(9.0)' is in 'metre_per_second'.",
+    };
+    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+        libcellml::CellmlElementType::UNDEFINED,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
+    };
+    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+}
