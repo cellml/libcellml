@@ -24,8 +24,8 @@ Example code will be provided that demonstrates how such tasks can be achieved u
 Continuous Integration
 ----------------------
 
-libCellML makes use of :buildbot:`Buildbot<>` for continuous integration testing, all code is run through the test suite when a pull request is created or added to.
-More information on how :buildbot:`Buildbot<>` is integrated in to the development process is available from the documentation at https://libcellml.org/.
+libCellML makes use of `Buildbot <https://buildbot.net/>`_  for continuous integration testing, all code is run through the test suite when a pull request is created or added to.
+More information on how `Buildbot <https://buildbot.net/>`_  is integrated in to the development process is available from the documentation at https://libcellml.org/.
 
 Contribute
 ----------
