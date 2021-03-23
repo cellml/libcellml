@@ -466,6 +466,12 @@ Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     profile->setNaturalLogarithmString("ln");
     profile->setCommonLogarithmString("log");
     profile->setRemString("rem");
+    profile->setTrueString("true");
+    profile->setFalseString("false");
+    profile->setEString("exponentiale");
+    profile->setPiString("pi");
+    profile->setInfString("infinity");
+    profile->setNanString("notanumber");
 
     // Retrieve our generator's profile.
 
@@ -2004,6 +2010,13 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         }
 
         unitsMultipliers = multiplyDivideUnitsMultipliers(0.0, unitsMultipliers, false);
+    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TRUE)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::FALSE)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::E)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PI)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::INF)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NAN)) {
+        defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
     }
 }
 
