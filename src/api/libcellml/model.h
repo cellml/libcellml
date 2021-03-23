@@ -354,7 +354,7 @@ public:
      *  - The @p importSrc pointer already exists in this model; or
      *  - The @p importSrc is @c nullptr.
      *
-     * @param importSrc The import source to add.
+     * @param importSource The import source to add.
      *
      * @return @c true if the import source item is added or @c false otherwise.
      */
@@ -399,11 +399,11 @@ public:
      *
      * @brief Remove the import source at the given reference.
      *
-     * @param importSrc The pointer to the import source to remove.
+     * @param importSource The pointer to the import source to remove.
      *
      * @return @c true if the import source was removed, @c false otherwise.
      */
-    bool removeImportSource(const ImportSourcePtr &importSrc);
+    bool removeImportSource(const ImportSourcePtr &importSource);
 
     /**
      * @brief Remove all import sources stored in this model.
@@ -418,11 +418,11 @@ public:
      * Tests to see if the given import source is contained within this model.
      * Returns @c true if the import source is in the model and @c false otherwise.
      *
-     * @param importSrc The import source to test for existence in this model.
+     * @param importSource The import source to test for existence in this model.
      *
      * @return @c true if the import source is in the model and @c false otherwise.
      */
-    bool hasImportSource(const ImportSourcePtr &importSrc) const;
+    bool hasImportSource(const ImportSourcePtr &importSource) const;
 
 private:
     Model(); /**< Constructor, @private. */
