@@ -1924,12 +1924,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                 std::begin(rightUnitsMultipliers),
                                 std::end(rightUnitsMultipliers));
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::PIECE) {
-        Strings unitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMapsMismatchesInformation(rightUnitsMaps);
-
-        if (!unitsMapsMismatchesInformation.empty()) {
+        if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps)) {
             issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedRightChild)
                                         + " is not dimensionless. "
-                                        + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation) + ".");
+                                        + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUserUnitsMaps) + ".");
         }
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
@@ -2081,9 +2079,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
-        bool isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
-
-        if (!isDimensionlessUnitsMaps) {
+        if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps)) {
             issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedLeftChild)
                                         + " is not dimensionless. "
                                         + expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + ".");
