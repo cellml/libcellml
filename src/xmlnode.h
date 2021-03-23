@@ -41,7 +41,7 @@ using XmlNamespaceMap = std::map<std::string, std::string>;
 class XmlNode
 {
 public:
-    XmlNode(); /**< Constructor. */
+    XmlNode(); /**< Constructor, @private. */
     ~XmlNode(); /**< Destructor. */
 
     /**
@@ -281,12 +281,9 @@ public:
      * Converts the content in this @c XmlNode (including all children and
      * attributes) into a @c std::string.
      *
-     * @param format The @c bool specifying whether formatting should
-     * be used during the conversion.
-     *
      * @return The @c std::string representation of the content for this @c XmlNode.
      */
-    std::string convertToString(bool format = false) const;
+    std::string convertToString() const;
 
     /**
      * @brief Convert this @c XmlNode content into a stripped @c std::string.
@@ -300,8 +297,8 @@ public:
     std::string convertToStrippedString() const;
 
 private:
-    struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */
-    XmlNodeImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct XmlNodeImpl; /**< Forward declaration for pImpl idiom, @private. */
+    XmlNodeImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
