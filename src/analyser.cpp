@@ -2081,15 +2081,13 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
-        Strings unitsMapsMismatchesInformation = Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMaps);
+        bool isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
 
-        if (!unitsMapsMismatchesInformation.empty()) {
+        if (!isDimensionlessUnitsMaps) {
             issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedLeftChild)
                                         + " is not dimensionless. "
-                                        + Analyser::AnalyserImpl::unitsMapsMismatchesInformation(unitsMapsMismatchesInformation) + ".");
+                                        + expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + ".");
         }
-
-        defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
     } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIFF) {
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps);
         userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps);
