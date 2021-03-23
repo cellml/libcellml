@@ -993,10 +993,12 @@ TEST(Analyser, unitsInMathmlStrings)
         "The units in 'i = a+b' in component 'direct_comparison_operators' are not the same. 'i' is in 'volt_per_farad' while 'a+b' is in 'metre_per_second'.",
         "The units in 'a+pow(b, 2.0)' in equation 'j = a+pow(b, 2.0)' in component 'direct_comparison_operators' are not the same. 'a' is in 'metre_per_second' while 'pow(b, 2.0)' is in 'metre_per_second^2'.",
         "The unit of 'a' in 'tan(a)' in equation 'i = tan(a)' in component 'trigonometric_operators' is not dimensionless. 'a' is in 'second'.",
-        "The units in 'log(a)/log(2.0)' in equation 'i = log(a)/log(2.0)' in component 'logarithmic_operators' are not consistent with the base. ???.",
+        "The unit of 'a' in 'log(a)/log(2.0)' in equation 'i = log(a)/log(2.0)' in component 'logarithmic_operators' is not dimensionless. 'a' is in 'second'.",
+        "The units of '3.0' and 'a' in 'log(a)/log(3.0)' in equation 'j = log(a)/log(3.0)' in component 'logarithmic_operators' are not dimensionless. '3.0' is in 'second' while 'a' is in 'second'.",
         "The unit of '2.0' in 'pow(a, 2.0)' in equation 'l = pow(a, 2.0)' in component 'power_root_operators' is not dimensionless. '2.0' is in 'second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -1009,8 +1011,10 @@ TEST(Analyser, unitsInMathmlStrings)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -1021,6 +1025,7 @@ TEST(Analyser, unitsInMathmlStrings)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
+    printIssues(analyser);
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }

@@ -1835,7 +1835,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)) {
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
+               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
         bool isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
         bool isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
 
@@ -1949,15 +1952,6 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue,
                                                          ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
         }
-    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
-        if (!areSameUnitsMaps(rightUnitsMaps, unitsMaps)) {
-            issueDescriptions.push_back("The units in " + expression(ast)
-                                        + " are not consistent with the base. XXX.");
-        }
-
-        defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
     } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SIN)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COS)
                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TAN)
