@@ -257,22 +257,11 @@ TEST(AnalyserUnits, piecewise)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The units in 'bLHS > 13.0' in '(bLHS > 13.0)?11.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. 'bLHS' is dimensionless while '13.0' is in 'metre'.",
-        "The units in 'bLHS > 17.0' in '(bLHS > 17.0)?15.0' in '(bLHS > 17.0)?15.0:19.0' in '(bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in equation 'bLHS = (bLHS > 13.0)?11.0:(bLHS > 17.0)?15.0:19.0' in component 'main' are not the same. 'bLHS' is dimensionless while '17.0' is in 'candela'.",
-        "The units in 'bRHS > 13.0' in '(bRHS > 13.0)?11.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. 'bRHS' is dimensionless while '13.0' is in 'metre'.",
-        "The units in 'bRHS > 17.0' in '(bRHS > 17.0)?15.0' in '(bRHS > 17.0)?15.0:19.0' in '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0' in equation '(bRHS > 13.0)?11.0:(bRHS > 17.0)?15.0:19.0 = bRHS' in component 'main' are not the same. 'bRHS' is dimensionless while '17.0' is in 'candela'.",
-        "The units in 'cLHS > 23.0' in '(cLHS > 23.0)?21.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. 'cLHS' is dimensionless while '23.0' is in 'rooster'.",
-        "The units in 'cLHS > 27.0' in '(cLHS > 27.0)?25.0' in '(cLHS > 27.0)?25.0:29.0' in '(cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in equation 'cLHS = (cLHS > 23.0)?21.0:(cLHS > 27.0)?25.0:29.0' in component 'main' are not the same. 'cLHS' is dimensionless while '27.0' is in 'cat'.",
-        "The units in 'cRHS > 23.0' in '(cRHS > 23.0)?21.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. 'cRHS' is dimensionless while '23.0' is in 'rooster'.",
-        "The units in 'cRHS > 27.0' in '(cRHS > 27.0)?25.0' in '(cRHS > 27.0)?25.0:29.0' in '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0' in equation '(cRHS > 23.0)?21.0:(cRHS > 27.0)?25.0:29.0 = cRHS' in component 'main' are not the same. 'cRHS' is dimensionless while '27.0' is in 'cat'.",
-        "The units in 'dLHS > 23.0' in '(dLHS > 23.0)?21.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dLHS' is dimensionless while '23.0' is in 'metre'.",
-        "The units in 'dLHS > 27.0' in '(dLHS > 27.0)?25.0' in '(dLHS > 27.0)?25.0:29.0' in '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dLHS' is dimensionless while '27.0' is in 'candela'.",
-        "The units in 'dRHS > 33.0' in '(dRHS > 33.0)?31.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dRHS' is dimensionless while '33.0' is in 'rooster'.",
-        "The units in 'dRHS > 37.0' in '(dRHS > 37.0)?35.0' in '(dRHS > 37.0)?35.0:39.0' in '(dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in equation '(dLHS > 23.0)?21.0:(dLHS > 27.0)?25.0:29.0 = (dRHS > 33.0)?31.0:(dRHS > 37.0)?35.0:39.0' in component 'main' are not the same. 'dRHS' is dimensionless while '37.0' is in 'cat'.",
-        "The unit of '43.0' in '(43.0)?41.0' in '(43.0)?41.0:45.0' in equation 'eLHS = (43.0)?41.0:45.0' in component 'main' is not dimensionless. '43.0' is in 'second'.",
-        "The unit of '43.0' in '(43.0)?41.0' in '(43.0)?41.0:45.0' in equation '(43.0)?41.0:45.0 = eRHS' in component 'main' is not dimensionless. '43.0' is in 'second'.",
-        "Variable 'dLHS' in component 'main' is unused.",
-        "Variable 'dRHS' in component 'main' is unused.",
+        "The units in 'b > 9.0' in '(b > 9.0)?7.0' in '(b > 9.0)?7.0:11.0' in equation 'b = (b > 9.0)?7.0:11.0' in component 'main' are not the same. 'b' is dimensionless while '9.0' is in 'second'.",
+        "The units in 'c > 15.0' in '(c > 15.0)?13.0' in '(c > 15.0)?13.0:17.0' in equation 'c = (c > 15.0)?13.0:17.0' in component 'main' are not the same. 'c' is dimensionless while '15.0' is in 'volt'.",
+        "The units in 'd > 21.0' in '(d > 21.0)?19.0' in '(d > 21.0)?19.0:23.0' in equation 'd = (d > 21.0)?19.0:23.0' in component 'main' are not the same. 'd' is dimensionless while '21.0' is in 'frog'.",
+        "The units in 'e > 27.0' in '(e > 27.0)?25.0' in '(e > 27.0)?25.0:29.0' in equation 'e = (e > 27.0)?25.0:29.0' in component 'main' are not the same. 'e' is dimensionless while '27.0' is in 'metre_per_second'.",
+        "The units in 'f = (f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' in component 'main' are not the same. 'f' is dimensionless while '(f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' is in 'second', 'volt', 'frog' and 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -280,17 +269,6 @@ TEST(AnalyserUnits, piecewise)
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::VARIABLE,
-        libcellml::CellmlElementType::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::MESSAGE,
@@ -298,17 +276,6 @@ TEST(AnalyserUnits, piecewise)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::MESSAGE,
-        libcellml::Issue::Level::ERROR,
-        libcellml::Issue::Level::ERROR,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -316,17 +283,6 @@ TEST(AnalyserUnits, piecewise)
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
     };
 
     auto analyser = libcellml::Analyser::create();

@@ -1,246 +1,151 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="piecewise" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="frog"/>
-    <units name="rooster"/>
-    <units name="dog"/>
-    <units name="cat"/>
-    <units name="dove"/>
     <units name="metre_per_second">
         <unit units="metre"/>
         <unit exponent="-1" units="second"/>
     </units>
     <component name="main">
-        <variable name="aLHS" units="dimensionless"/>
-        <variable name="bLHS" units="dimensionless"/>
-        <variable name="cLHS" units="dimensionless"/>
-        <variable name="dLHS" units="dimensionless"/>
-        <variable name="eLHS" units="dimensionless"/>
-        <variable name="aRHS" units="dimensionless"/>
-        <variable name="bRHS" units="dimensionless"/>
-        <variable name="cRHS" units="dimensionless"/>
-        <variable name="dRHS" units="dimensionless"/>
-        <variable name="eRHS" units="dimensionless"/>
+        <variable name="a" units="dimensionless"/>
+        <variable name="b" units="dimensionless"/>
+        <variable name="c" units="dimensionless"/>
+        <variable name="d" units="dimensionless"/>
+        <variable name="e" units="dimensionless"/>
+        <variable name="f" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>aLHS</ci>
+                <ci>a</ci>
                 <piecewise>
                     <piece>
                         <cn cellml:units="dimensionless">1</cn>
                         <apply>
                             <gt/>
-                            <ci>aLHS</ci>
+                            <ci>a</ci>
                             <cn cellml:units="dimensionless">3</cn>
                         </apply>
                     </piece>
-                    <piece>
+                    <otherwise>
                         <cn cellml:units="dimensionless">5</cn>
-                        <apply>
-                            <gt/>
-                            <ci>aLHS</ci>
-                            <cn cellml:units="dimensionless">7</cn>
-                        </apply>
-                    </piece>
-                    <otherwise>
-                        <cn cellml:units="dimensionless">9</cn>
                     </otherwise>
                 </piecewise>
             </apply>
             <apply>
                 <eq/>
+                <ci>b</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="dimensionless">1</cn>
+                        <cn cellml:units="dimensionless">7</cn>
                         <apply>
                             <gt/>
-                            <ci>aRHS</ci>
-                            <cn cellml:units="dimensionless">3</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="dimensionless">5</cn>
-                        <apply>
-                            <gt/>
-                            <ci>aRHS</ci>
-                            <cn cellml:units="dimensionless">7</cn>
+                            <ci>b</ci>
+                            <cn cellml:units="second">9</cn>
                         </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="dimensionless">9</cn>
-                    </otherwise>
-                </piecewise>
-                <ci>aRHS</ci>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>bLHS</ci>
-                <piecewise>
-                    <piece>
-                        <cn cellml:units="second">11</cn>
-                        <apply>
-                            <gt/>
-                            <ci>bLHS</ci>
-                            <cn cellml:units="metre">13</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="ampere">15</cn>
-                        <apply>
-                            <gt/>
-                            <ci>bLHS</ci>
-                            <cn cellml:units="candela">17</cn>
-                        </apply>
-                    </piece>
-                    <otherwise>
-                        <cn cellml:units="mole">19</cn>
+                        <cn cellml:units="dimensionless">11</cn>
                     </otherwise>
                 </piecewise>
             </apply>
             <apply>
                 <eq/>
+                <ci>c</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="second">11</cn>
+                        <cn cellml:units="dimensionless">13</cn>
                         <apply>
                             <gt/>
-                            <ci>bRHS</ci>
-                            <cn cellml:units="metre">13</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="ampere">15</cn>
-                        <apply>
-                            <gt/>
-                            <ci>bRHS</ci>
-                            <cn cellml:units="candela">17</cn>
+                            <ci>c</ci>
+                            <cn cellml:units="volt">15</cn>
                         </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="mole">19</cn>
-                    </otherwise>
-                </piecewise>
-                <ci>bRHS</ci>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>cLHS</ci>
-                <piecewise>
-                    <piece>
-                        <cn cellml:units="frog">21</cn>
-                        <apply>
-                            <gt/>
-                            <ci>cLHS</ci>
-                            <cn cellml:units="rooster">23</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="dog">25</cn>
-                        <apply>
-                            <gt/>
-                            <ci>cLHS</ci>
-                            <cn cellml:units="cat">27</cn>
-                        </apply>
-                    </piece>
-                    <otherwise>
-                        <cn cellml:units="dove">29</cn>
+                        <cn cellml:units="dimensionless">17</cn>
                     </otherwise>
                 </piecewise>
             </apply>
             <apply>
                 <eq/>
+                <ci>d</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="frog">21</cn>
+                        <cn cellml:units="dimensionless">19</cn>
                         <apply>
                             <gt/>
-                            <ci>cRHS</ci>
-                            <cn cellml:units="rooster">23</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="dog">25</cn>
-                        <apply>
-                            <gt/>
-                            <ci>cRHS</ci>
-                            <cn cellml:units="cat">27</cn>
+                            <ci>d</ci>
+                            <cn cellml:units="frog">21</cn>
                         </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="dove">29</cn>
-                    </otherwise>
-                </piecewise>
-                <ci>cRHS</ci>
-            </apply>
-            <apply>
-                <eq/>
-                <piecewise>
-                    <piece>
-                        <cn cellml:units="second">21</cn>
-                        <apply>
-                            <gt/>
-                            <ci>dLHS</ci>
-                            <cn cellml:units="metre">23</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="ampere">25</cn>
-                        <apply>
-                            <gt/>
-                            <ci>dLHS</ci>
-                            <cn cellml:units="candela">27</cn>
-                        </apply>
-                    </piece>
-                    <otherwise>
-                        <cn cellml:units="mole">29</cn>
-                    </otherwise>
-                </piecewise>
-                <piecewise>
-                    <piece>
-                        <cn cellml:units="frog">31</cn>
-                        <apply>
-                            <gt/>
-                            <ci>dRHS</ci>
-                            <cn cellml:units="rooster">33</cn>
-                        </apply>
-                    </piece>
-                    <piece>
-                        <cn cellml:units="dog">35</cn>
-                        <apply>
-                            <gt/>
-                            <ci>dRHS</ci>
-                            <cn cellml:units="cat">37</cn>
-                        </apply>
-                    </piece>
-                    <otherwise>
-                        <cn cellml:units="dove">39</cn>
+                        <cn cellml:units="dimensionless">23</cn>
                     </otherwise>
                 </piecewise>
             </apply>
             <apply>
                 <eq/>
-                <ci>eLHS</ci>
+                <ci>e</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="metre_per_second">41</cn>
-                        <cn cellml:units="second">43</cn>
+                        <cn cellml:units="dimensionless">25</cn>
+                        <apply>
+                            <gt/>
+                            <ci>e</ci>
+                            <cn cellml:units="metre_per_second">27</cn>
+                        </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="dimensionless">45</cn>
+                        <cn cellml:units="dimensionless">29</cn>
                     </otherwise>
                 </piecewise>
             </apply>
             <apply>
                 <eq/>
+                <ci>f</ci>
                 <piecewise>
                     <piece>
-                        <cn cellml:units="metre_per_second">41</cn>
-                        <cn cellml:units="second">43</cn>
+                        <cn cellml:units="dimensionless">31</cn>
+                        <apply>
+                            <gt/>
+                            <ci>f</ci>
+                            <cn cellml:units="dimensionless">33</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="second">35</cn>
+                        <apply>
+                            <gt/>
+                            <ci>f</ci>
+                            <cn cellml:units="dimensionless">37</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="volt">39</cn>
+                        <apply>
+                            <gt/>
+                            <ci>f</ci>
+                            <cn cellml:units="dimensionless">41</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="frog">43</cn>
+                        <apply>
+                            <gt/>
+                            <ci>f</ci>
+                            <cn cellml:units="dimensionless">45</cn>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <cn cellml:units="metre_per_second">47</cn>
+                        <apply>
+                            <gt/>
+                            <ci>f</ci>
+                            <cn cellml:units="dimensionless">49</cn>
+                        </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="dimensionless">45</cn>
+                        <cn cellml:units="dimensionless">51</cn>
                     </otherwise>
                 </piecewise>
-                <ci>eRHS</ci>
             </apply>
         </math>
     </component>
