@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/importedentity.h"
 
+#include "libcellml/importsource.h"
+
 namespace libcellml {
 
 /**
@@ -32,8 +34,6 @@ struct ImportedEntity::ImportedEntityImpl
 ImportedEntity::ImportedEntity()
     : mPimpl(new ImportedEntityImpl())
 {
-    mPimpl->mImportSource = nullptr;
-    mPimpl->mImportReference = "";
 }
 
 ImportedEntity::~ImportedEntity()
@@ -53,6 +53,11 @@ ImportSourcePtr ImportedEntity::importSource() const
 
 void ImportedEntity::setImportSource(const ImportSourcePtr &importSource)
 {
+    doSetImportSource(importSource);
+}
+
+void ImportedEntity::doSetImportSource(const ImportSourcePtr &importSource)
+{
     mPimpl->mImportSource = importSource;
 }
 
@@ -64,6 +69,22 @@ std::string ImportedEntity::importReference() const
 void ImportedEntity::setImportReference(const std::string &reference)
 {
     mPimpl->mImportReference = reference;
+}
+
+bool ImportedEntity::isResolved() const
+{
+    return doIsResolved();
+}
+
+bool ImportedEntity::doEquals(const ImportedEntityPtr &other) const
+{
+    bool isImportLocal = isImport();
+    bool importMatches = isImportLocal == other->isImport();
+    if (isImportLocal && importMatches
+        && mPimpl->mImportReference == other->importReference()) {
+        return mPimpl->mImportSource->equals(other->importSource());
+    }
+    return importMatches;
 }
 
 } // namespace libcellml

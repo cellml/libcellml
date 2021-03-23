@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.1.0";
+const char VERSION[] = "0.2.0";
 const char LIBCELLML_VERSION[] = "0.2.0";
 
 const size_t STATE_COUNT = 2;
@@ -36,7 +36,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initializeStatesAndConstants(double *states, double *variables)
+void initialiseStatesAndConstants(double *states, double *variables)
 {
     states[0] = 3.0;
     states[1] = 7.0;

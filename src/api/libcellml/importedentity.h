@@ -32,10 +32,9 @@ namespace libcellml {
 class LIBCELLML_EXPORT ImportedEntity
 {
 public:
-    virtual ~ImportedEntity(); /**< Destructor */
-    ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor */
-    ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor */
-    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator */
+    virtual ~ImportedEntity(); /**< Destructor. */
+    ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor. */
+    ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor. */
 
     /**
      * @brief Test if this entity is an imported entity.
@@ -95,12 +94,49 @@ public:
      */
     void setImportReference(const std::string &reference);
 
+    /**
+     * @brief Test whether this entity has been resolved.
+     *
+     * Test whether this entity is resolved or not.
+     *
+     * An entity that is not imported is always resolved so this method
+     * returns @c true. Alternatively, if this entity is imported then
+     * it returns @c true if every entity that this imported entity requires
+     * can be found. That is, return @c true if this imported entity is resolvable.
+     * In all other cases, this method returns @c false.
+     *
+     * @return @c true if the import is resolved, @c false otherwise.
+     */
+    bool isResolved() const;
+
 protected:
-    ImportedEntity(); /**< Constructor */
+    ImportedEntity(); /**< Constructor, @private. */
+
+    /**
+     * @brief Virtual set import source method to be implemented by derived classes.
+     *
+     * Virtual setImportSource method to allow the units and component classes to
+     * implement their own versions.
+     *
+     * @param importSource The import source to set.
+     */
+    virtual void doSetImportSource(const ImportSourcePtr &importSource);
+
+    /**
+     * @brief Virtual is resolved method to be implemented by derived classes.
+     *
+     * Virtual isResolved method to allow the @ref Units and @ref Component classes to
+     * implement their own versions.
+     *
+     * @return @c true if this imported entity is resolved and @c false otherwise.
+     */
+    virtual bool doIsResolved() const = 0;
+
+    bool doEquals(const ImportedEntityPtr &other) const; /**< Implementation method for equals, @private. */
 
 private:
-    struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ImportedEntityImpl;
+    ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

@@ -5,7 +5,6 @@
 %include <std_string.i>
 
 %import "createconstructor.i"
-%import "logger.i"
 %import "types.i"
 
 %feature("docstring") libcellml::Printer
@@ -18,7 +17,10 @@
 #include "libcellml/printer.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Printer)
 
-%include "libcellml/types.h"
 %include "libcellml/printer.h"

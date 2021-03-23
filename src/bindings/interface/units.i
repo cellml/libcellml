@@ -88,6 +88,24 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::clone
 "Create a copy of this units.";
 
+%feature("docstring") libcellml::Units::unitId
+"Returns the id string of the Unit item at the given index.";
+
+%feature("docstring") libcellml::Units::setUnitId
+"Sets the id string of the Unit item at the given index.";
+
+%feature("docstring") libcellml::Units::unitAttributeReference
+"Get the reference from the unit attribute.";
+
+%feature("docstring") libcellml::Units::unitAttributePrefix
+"Get the prefix from the unit attribute.";
+
+%feature("docstring") libcellml::Units::unitAttributeExponent
+"Get the exponent from the unit attribute.";
+
+%feature("docstring") libcellml::Units::unitAttributeMultiplier
+"Get the multiplier from the unit attribute.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
@@ -100,6 +118,10 @@ extract the units with the given `name`.";
 
 %{
 #include "libcellml/units.h"
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 // The name 'reference' has been typemapped above, which causes an issue for
@@ -115,5 +137,4 @@ extract the units with the given `name`.";
 %create_constructor(Units)
 %create_name_constructor(Units)
 
-%include "libcellml/types.h"
 %include "libcellml/units.h"

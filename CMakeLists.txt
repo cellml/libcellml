@@ -15,8 +15,8 @@
 cmake_minimum_required(VERSION 3.10.2)
 
 set(PROJECT_NAME libCellML)
-set(PROJECT_DEVELOPER_VERSION -rc.171)
-project(${PROJECT_NAME} VERSION 0.3.0 LANGUAGES CXX)
+set(PROJECT_DEVELOPER_VERSION -dev.0)
+project(${PROJECT_NAME} VERSION 0.2.0 LANGUAGES CXX)
 
 # Set policies that affect the build.
 if(POLICY CMP0078)
@@ -33,6 +33,35 @@ include(environmentchecks)
 
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
+
+# COMPILER_CACHE  ==> LIBCELLML_COMPILER_CACHE
+set(_PARAM_ANNOTATION "Enable compiler cache.")
+if((WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE))
+  set(LIBCELLML_COMPILER_CACHE ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif()
+if(DEFINED COMPILER_CACHE AND ((WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE)))
+  set(LIBCELLML_COMPILER_CACHE "${COMPILER_CACHE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(COMPILER_CACHE)
+  if(WIN32)
+    set(COMPILER_CACHE_TOOL clcache)
+  else()
+    set(COMPILER_CACHE_TOOL ccache)
+  endif()
+  message(WARNING "compiler cache is requested but ${COMPILER_CACHE_TOOL} not found!")
+endif()
+unset(COMPILER_CACHE CACHE)
+
+# CLANG_TIDY ==> LIBCELLML_CLANG_TIDY
+set(_PARAM_ANNOTATION "Enable Clang-Tidy.")
+if(CLANG_TIDY_AVAILABLE)
+  set(LIBCELLML_CLANG_TIDY ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif()
+if(DEFINED CLANG_TIDY AND CLANG_TIDY_AVAILABLE)
+  set(LIBCELLML_CLANG_TIDY "${CLANG_TIDY}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(CLANG_TIDY)
+  message(WARNING "Clang-Tidy is requested but not found!")
+endif()
+unset(CLANG_TIDY CACHE)
 
 # COVERAGE ==> LIBCELLML_COVERAGE
 set(_PARAM_ANNOTATION "Enable coverage testing.")
@@ -72,11 +101,13 @@ unset(MEMCHECK CACHE)
 
 # BINDINGS_PYTHON ==> LIBCELLML_BINDINGS_PYTHON
 set(_PARAM_ANNOTATION "Build Python wrappers.")
-if(BINDINGS_AVAILABLE AND Python_FOUND)
+if(BINDINGS_AVAILABLE AND Python_Development_FOUND)
   set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL ${_PARAM_ANNOTATION})
 endif()
-if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE AND Python_FOUND)
+if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE AND Python_Development_FOUND)
   set(LIBCELLML_BINDINGS_PYTHON "${BINDINGS_PYTHON}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(BINDINGS_PYTHON)
+  message(WARNING "Python bindings requested but development files for Python or SWIG were not found!")
 endif()
 unset(BINDINGS_PYTHON CACHE)
 
@@ -88,6 +119,18 @@ if(NOT DEFINED EMSCRIPTEN)
     set(LIBCELLML_UNIT_TESTS "${UNIT_TESTS}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
   endif()
   unset(UNIT_TESTS CACHE)
+
+  # PYTHON_COVERAGE ==> LIBCELLML_PYTHON_COVERAGE
+  set(_PARAM_ANNOTATION "Enable Python coverage testing.")
+  if(PYTHON_COVERAGE_TESTING_AVAILABLE)
+    set(LIBCELLML_PYTHON_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION})
+  endif()
+  if(DEFINED PYTHON_COVERAGE AND PYTHON_COVERAGE_TESTING_AVAILABLE)
+    set(LIBCELLML_PYTHON_COVERAGE "${PYTHON_COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+  elseif(PYTHON_COVERAGE)
+    message(WARNING "Python coverage testing requested but the Python and/or the Python Coverage module were not found!")
+  endif()
+  unset(PYTHON_COVERAGE CACHE)
 endif()
 
 if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
@@ -143,6 +186,24 @@ else()
     set(LIBCELLML_BUILD_SHARED ${BUILD_SHARED} CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
   endif()
   unset(BUILD_SHARED CACHE)
+endif()
+
+# If available and wanted, use compiler cache.
+if(LIBCELLML_COMPILER_CACHE)
+  if(WIN32)
+    if(CLCACHE_EXE)
+      set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
+      execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
+                      RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
+      if(RESULT EQUAL 0)
+        set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
+      endif()
+    endif()
+  else()
+    if(CCACHE_EXE)
+      set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXE})
+    endif()
+  endif()
 endif()
 
 # Uninstall target

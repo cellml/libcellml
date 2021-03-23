@@ -20,44 +20,6 @@ limitations under the License.
 
 #include "test_utils.h"
 
-void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
-{
-    EXPECT_EQ(u1->unitCount(), u2->unitCount());
-
-    std::string reference1;
-    std::string prefix1;
-    std::string id1;
-    std::string reference2;
-    std::string prefix2;
-    std::string id2;
-    double exponent1;
-    double multiplier1;
-    double exponent2;
-    double multiplier2;
-    for (size_t index = 0; index < u1->unitCount(); ++index) {
-        u1->unitAttributes(index, reference1, prefix1, exponent1, multiplier1, id1);
-        u2->unitAttributes(index, reference2, prefix2, exponent2, multiplier2, id2);
-
-        EXPECT_EQ(reference1, reference2);
-        EXPECT_EQ(prefix1, prefix2);
-        EXPECT_EQ(exponent1, exponent2);
-        EXPECT_EQ(multiplier1, multiplier2);
-        EXPECT_EQ(id1, id2);
-    }
-}
-
-void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent = nullptr)
-{
-    EXPECT_EQ(u1->id(), u2->id());
-    EXPECT_EQ(u1->isBaseUnit(), u2->isBaseUnit());
-    EXPECT_EQ(u1->isImport(), u2->isImport());
-    EXPECT_EQ(u1->importReference(), u2->importReference());
-    EXPECT_EQ(u1->name(), u2->name());
-    EXPECT_EQ(expectedParent, u2->parent());
-
-    compareUnit(u1, u2);
-}
-
 TEST(Clone, importSource)
 {
     auto i = libcellml::ImportSource::create();
@@ -88,7 +50,6 @@ TEST(Clone, unitsBaseUnits)
 TEST(Clone, unitsImportedUnits)
 {
     auto u = libcellml::Units::create();
-
     auto import = libcellml::ImportSource::create();
     import->setUrl("some-other-model.xml");
 
@@ -99,6 +60,11 @@ TEST(Clone, unitsImportedUnits)
     auto uClone = u->clone();
 
     compareUnits(u, uClone);
+
+    auto model = libcellml::Model::create();
+    auto printer = libcellml::Printer::create();
+    model->addUnits(u);
+    EXPECT_EQ(printer->printModel(model), printer->printModel(model->clone()));
 }
 
 TEST(Clone, unitsWithUnit)
@@ -108,7 +74,7 @@ TEST(Clone, unitsWithUnit)
     u->setId("unique_id");
     u->setName("units");
     u->addUnit(libcellml::Units::StandardUnit::LUMEN);
-    u->addUnit("meter", "milli", -2.0);
+    u->addUnit("metre", "milli", -2.0);
 
     auto uClone = u->clone();
 
@@ -216,20 +182,6 @@ TEST(Clone, variableInModel)
     EXPECT_EQ(nullptr, vClone->units()->parent());
 }
 
-void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
-{
-    EXPECT_EQ(r1->id(), r2->id());
-    EXPECT_EQ(r1->order(), r2->order());
-    if (r1->variable() != nullptr) {
-        EXPECT_NE(r1->variable(), r2->variable());
-        EXPECT_EQ(r1->variable()->name(), r2->variable()->name());
-    }
-    if (r1->testVariable() != nullptr) {
-        EXPECT_NE(r1->testVariable(), r2->testVariable());
-        EXPECT_EQ(r1->testVariable()->name(), r2->testVariable()->name());
-    }
-}
-
 TEST(Clone, reset)
 {
     auto r = libcellml::Reset::create();
@@ -292,33 +244,6 @@ TEST(Clone, resetAllIdsSet)
     auto rClone = r->clone();
 
     compareReset(r, rClone);
-}
-
-void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr)
-{
-    EXPECT_EQ(c1->name(), c2->name());
-    EXPECT_EQ(c1->id(), c2->id());
-    EXPECT_EQ(c1->isImport(), c2->isImport());
-    EXPECT_EQ(c1->importSource(), c2->importSource());
-    EXPECT_EQ(c1->importReference(), c2->importReference());
-    EXPECT_EQ(c1->componentCount(), c2->componentCount());
-    EXPECT_EQ(c1->resetCount(), c2->resetCount());
-    EXPECT_EQ(c1->variableCount(), c2->variableCount());
-    EXPECT_EQ(expectedParent, c2->parent());
-    for (size_t index = 0; index < c1->componentCount(); ++index) {
-        auto c1i = c1->component(index);
-        auto c2i = c2->component(index);
-        compareComponent(c1i, c2i, c2);
-    }
-    for (size_t index = 0; index < c2->resetCount(); ++index) {
-        auto r = c2->reset(index);
-        if (r->variable() != nullptr) {
-            EXPECT_TRUE(c2->hasVariable(r->variable()));
-        }
-        if (r->testVariable() != nullptr) {
-            EXPECT_TRUE(c2->hasVariable(r->testVariable()));
-        }
-    }
 }
 
 TEST(Clone, component)
@@ -464,27 +389,6 @@ TEST(Clone, componentWithImportAndChildren)
     compareComponent(c, cClone);
 }
 
-void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
-{
-    EXPECT_EQ(m1->id(), m2->id());
-    EXPECT_EQ(m1->name(), m2->name());
-
-    EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
-    EXPECT_EQ(m1->componentCount(), m2->componentCount());
-
-    for (size_t index = 0; index < m1->unitsCount(); ++index) {
-        auto u1 = m1->units(index);
-        auto u2 = m2->units(index);
-        compareUnits(u1, u2, m2);
-    }
-
-    for (size_t index = 0; index < m1->componentCount(); ++index) {
-        auto c1 = m1->component(index);
-        auto c2 = m2->component(index);
-        compareComponent(c1, c2, m2);
-    }
-}
-
 TEST(Clone, model)
 {
     auto m = libcellml::Model::create();
@@ -587,16 +491,77 @@ TEST(Clone, generateFromClonedModel)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
     auto clonedModel = model->clone();
 
     compareModel(model, clonedModel);
 
-    generator->processModel(clonedModel);
+    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(clonedModel);
+
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+
+    generator->setModel(analyser->model());
+
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
 
     libcellml::PrinterPtr p = libcellml::Printer::create();
 
     EXPECT_EQ(p->printModel(model), p->printModel(clonedModel));
+}
+
+TEST(Clone, modelWithComponentVariableUnits)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    auto component = libcellml::Component::create("component");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    model->addComponent(component);
+    model->addUnits(units);
+    component->addVariable(v1);
+    component->addVariable(v2);
+    v1->setUnits(units);
+    v2->setUnits(units);
+
+    EXPECT_EQ(model->component(0)->variable(0)->units(), model->component(0)->variable(1)->units());
+    EXPECT_EQ(model->units(0), model->component(0)->variable(0)->units());
+    EXPECT_EQ(model->units(0), model->component(0)->variable(1)->units());
+
+    auto clonedModel = model->clone();
+
+    EXPECT_EQ(clonedModel->component(0)->variable(0)->units(), clonedModel->component(0)->variable(1)->units());
+    EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(0)->units());
+    EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(1)->units());
+}
+
+TEST(Clone, modelWithImportedItems)
+{
+    std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import1.cellml\">\n"
+        "    <component component_ref=\"componentToFetch\" name=\"importedComponent1a\"/>\n"
+        "    <units units_ref=\"unitsToFetch\" name=\"importedUnits1a\"/>\n"
+        "    <component component_ref=\"componentToFetch\" name=\"importedComponent1b\"/>\n"
+        "    <units units_ref=\"unitsToFetch\" name=\"importedUnits1b\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import2.cellml\">\n"
+        "    <component component_ref=\"componentToFetch\" name=\"importedComponent2\"/>\n"
+        "    <units units_ref=\"unitsToFetch\" name=\"importedUnits2\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import2.cellml\">\n"
+        "    <component component_ref=\"componentToFetch\" name=\"importedComponent3\"/>\n"
+        "    <units units_ref=\"unitsToFetch\" name=\"importedUnits4\"/>\n"
+        "  </import>\n"
+        "</model>";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+
+    auto clonedModel = model->clone();
+
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(printer->printModel(model), printer->printModel(clonedModel));
+    compareModel(model, clonedModel);
 }

@@ -2,6 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_shared_ptr.i>
+%include <std_vector.i>
+
 %import "types.i"
 
 %feature("docstring") libcellml::Logger
@@ -37,6 +40,12 @@
 %feature("docstring") libcellml::Logger::hintCount
 "Returns the number of issues of level HINT currently stored in the logger.";
 
+%feature("docstring") libcellml::Logger::message
+"Returns the issue of level MESSAGE at the specified ``index``.";
+
+%feature("docstring") libcellml::Logger::messageCount
+"Returns the number of issues of level MESSAGE currently stored in the logger.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Logger {
@@ -51,7 +60,12 @@
 #include "libcellml/logger.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %ignore libcellml::Logger::Logger();
+%ignore libcellml::Logger::addIssues;
 
 %include "libcellml/types.h"
 %include "libcellml/logger.h"

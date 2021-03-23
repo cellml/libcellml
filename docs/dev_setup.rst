@@ -19,6 +19,11 @@ The libCellML codebase is hosted on `GitHub <https://github.com/>`_ and therefor
 #. Toolchain for building software (dependent on the operating system).
 #. `LibXml2 <http://xmlsoft.org/>`_.
 
+Some optional tools can also be used to speed up compilation:
+
+1. `Ninja <https://ninja-build.org/>`_.
+#. `clcache <https://github.com/frerich/clcache>`_ (on `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_) / `ccache <https://ccache.dev/>`_ (on `Linux <https://en.wikipedia.org/wiki/Linux>`_ and `macOS <https://en.wikipedia.org/wiki/MacOS>`_).
+
 Pre-requisite acquisition
 =========================
 
@@ -37,7 +42,7 @@ We commonly use `Git for windows <http://gitforwindows.org/>`_, but other popula
   - `GitKracken <https://www.gitkraken.com/>`_
   - `Git SCM <https://git-scm.com/>`_
 
-* `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions) `Git <https://git-scm.com/>`_ can be installed using the package manager with the command ``sudo apt-get install git``.
+* `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions) `Git <https://git-scm.com/>`_ can be installed using the package manager with the command ``sudo apt install git``.
 * `macOS <https://en.wikipedia.org/wiki/MacOS>`_ `Git <https://git-scm.com/>`_ is pre-installed and available from the command line.
 
 CMake
@@ -47,7 +52,7 @@ CMake
 `CMake <https://cmake.org/>`_ is used to control the software compilation process using simple platform and compiler independent configuration files, and to generate native makefiles and workspaces that can be used in the compiler environment of your choice.
 
 Again, installation of `CMake <https://cmake.org/>`_ is particular to each operating system.
-For `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions), `CMake <https://cmake.org/>`_ can be installed using the package manager with the command ``sudo apt-get install cmake``.
+For `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions), `CMake <https://cmake.org/>`_ can be installed using the package manager with the command ``sudo apt install cmake``.
 For `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_ and `macOS <https://en.wikipedia.org/wiki/MacOS>`_, `CMake <https://cmake.org/>`_ provides `installation binaries <https://cmake.org/download/>`_.
 Choose the binary appropriate for your operating system and follow the installation instructions.
 
@@ -83,6 +88,36 @@ Python bindings
 Optional Python bindings are provided using `SWIG <http://www.swig.org/>`_.
 To compile the bindings, a `SWIG <http://www.swig.org/>`_ installation is required, as well as a Python 2 or Python 3 installation (including the development packages on `Linux <https://en.wikipedia.org/wiki/Linux>`_ systems, e.g. ``python-dev``).
 Creation of Python bindings can be enabled/disabled at configuration time.
+
+Optional tools
+==============
+
+Ninja
+-----
+
+`Ninja <https://ninja-build.org/>`_ is a replacement for `make`.
+It can be downloaded from `here <https://github.com/ninja-build/ninja/releases>`_.
+Alternatively, on `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions), it can be installed using the package manager with the command ``sudo apt install ninja-build``.
+On macOS, it can be installed using `Homebrew <https://brew.sh/>`_ with the command ``brew install ninja``.
+
+clcache / ccache
+----------------
+
+`clcache <https://github.com/frerich/clcache>`_ (on `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_) and `ccache <https://ccache.dev/>`_ (on `Linux <https://en.wikipedia.org/wiki/Linux>`_ and `macOS <https://en.wikipedia.org/wiki/MacOS>`_) are compiler caches.
+They cache compilations, which means that the first time they are used, compilation will be slower than normal.
+However, subsequent compilations will be significantly faster.
+
+`clcache <https://github.com/frerich/clcache>`_ can be downloaded and installed from `here <https://github.com/frerich/clcache/releases/>`_.
+Note that it will only work with paths that do *not* contain spaces.
+So, if you installed the recommended implementation of `LibXml2 <http://xmlsoft.org/>`_, you will need to move it to a location that does not contain spaces and update your `PATH` accordingly (or uninstall LibXml2 and reinstall it in a `PATH` that does not contain spaces).
+
+On `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions), `ccache <https://ccache.dev/>`_ can be installed using the package manager with the command ``sudo apt install ccache``.
+Alternatively, you can get the latest version from `here <https://ccache.dev/download.html>`_, and build it and install it yourself::
+  ./configure --prefix=/usr
+  make -j
+  sudo make install
+
+On `macOS <https://en.wikipedia.org/wiki/MacOS>`_, `ccache <https://ccache.dev/>`_ can be installed using `Homebrew <https://brew.sh/>`_ with the command ``brew install ccache``.
 
 Setting up the codebase
 =======================

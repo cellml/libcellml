@@ -188,108 +188,136 @@ TEST(Reset, printResetWithOrderAndVariable)
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, addRemoveResetFromComponentMethods)
+TEST(Reset, addReset)
 {
-    std::string a;
-    const std::string in = "valid_name";
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
-    const std::string e1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"valid_name\">\n"
-        "    <variable name=\"variable1\"/>\n"
-        "    <variable name=\"variable2\"/>\n"
-        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
-        "      <test_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
-        "      </test_value>\n"
-        "      <reset_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
-        "      </reset_value>\n"
-        "    </reset>\n"
-        "  </component>\n"
-        "</model>\n";
-    const std::string e2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"valid_name\">\n"
-        "    <variable name=\"variable1\"/>\n"
-        "    <variable name=\"variable2\"/>\n"
-        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"2\">\n" // only difference is order of reset
-        "      <test_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
-        "      </test_value>\n"
-        "      <reset_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
-        "      </reset_value>\n"
-        "    </reset>\n"
-        "  </component>\n"
-        "</model>\n";
-    const std::string e3 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"valid_name\">\n"
-        "    <variable name=\"variable1\"/>\n"
-        "    <variable name=\"variable2\"/>\n"
-        "  </component>\n"
-        "</model>\n";
+    EXPECT_EQ(size_t(0), c->resetCount());
 
-    libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->component(0);
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
+}
+
+TEST(Reset, addResetThatHasAParentComponent)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    EXPECT_EQ(size_t(0), c1->resetCount());
+    EXPECT_EQ(size_t(0), c2->resetCount());
+
+    // Add r to c1.
+    EXPECT_TRUE(c1->addReset(r));
+    EXPECT_EQ(size_t(1), c1->resetCount());
+    EXPECT_EQ(size_t(0), c2->resetCount());
+
+    // Add r to c2, which effectively moves it from c1 to c2.
+    EXPECT_TRUE(c2->addReset(r));
+    EXPECT_EQ(size_t(0), c1->resetCount());
+    EXPECT_EQ(size_t(1), c2->resetCount());
+}
+
+TEST(Reset, addResetInvalidArguments)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    EXPECT_EQ(size_t(0), c->resetCount());
+
+    // Add r to c.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
+
+    // Add r to c again.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(2), c->resetCount());
+
+    // Try to add a nullptr to c, which cannot be done.
+    EXPECT_FALSE(c->addReset(nullptr));
+    EXPECT_EQ(size_t(2), c->resetCount());
+}
+
+TEST(Reset, removeReset)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::ResetPtr r1 = libcellml::Reset::create();
     libcellml::ResetPtr r2 = libcellml::Reset::create();
     libcellml::ResetPtr r3 = libcellml::Reset::create();
-    libcellml::PrinterPtr printer = libcellml::Printer::create();
 
-    c->setName(in);
-    v1->setName("variable1");
-    v2->setName("variable2");
-
-    r1->setVariable(v1);
-    r1->setTestVariable(v2);
-    r1->setOrder(1);
-    r1->setResetValue(EMPTY_MATH);
-    r1->setTestValue(EMPTY_MATH);
-
-    c->addReset(r1);
-    c->addVariable(v1);
-    c->addVariable(v2);
-
-    a = printer->printModel(m);
-    EXPECT_EQ(e1, a);
-
-    // Add another reset
-    r2->setVariable(v1);
-    r2->setTestVariable(v2);
-    r2->setOrder(2);
-    r2->setResetValue(EMPTY_MATH);
-    r2->setTestValue(EMPTY_MATH);
-    c->addReset(r2);
-
-    // Remove the first one and print the model
-    c->removeReset(r1);
-    a = printer->printModel(m);
-    EXPECT_EQ(e2, a);
-
-    // Remove the second one and print the model
-    c->removeReset(0);
-    a = printer->printModel(m);
-    EXPECT_EQ(e3, a);
-
-    // Add them both back in and use removeAllResets to remove them
-    c->addReset(r1);
-    c->addReset(r2);
+    // Add r1 and r2 to c.
+    EXPECT_TRUE(c->addReset(r1));
+    EXPECT_TRUE(c->addReset(r2));
     EXPECT_EQ(size_t(2), c->resetCount());
 
-    c->removeAllResets();
-    a = printer->printModel(m);
-    EXPECT_EQ(e3, a);
+    // Remove r1 from c.
+    EXPECT_TRUE(c->removeReset(r1));
+    EXPECT_EQ(nullptr, r1->parent());
+    EXPECT_EQ(size_t(1), c->resetCount());
 
-    // Try and remove the ones which don't exist so we trigger the 'false' return statement
+    // Remove r2 by index.
+    EXPECT_TRUE(c->removeReset(0));
+    EXPECT_EQ(size_t(0), c->resetCount());
+
+    // Add r1, r2 and r3 to c, and use removeAllResets to remove them.
+    EXPECT_TRUE(c->addReset(r1));
+    EXPECT_TRUE(c->addReset(r2));
+    EXPECT_TRUE(c->addReset(r3));
+    EXPECT_EQ(size_t(3), c->resetCount());
+
+    c->removeAllResets();
+    EXPECT_EQ(size_t(0), c->resetCount());
+}
+
+TEST(Reset, removeResetInvalidArguments)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    r1->setOrder(2);
+
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+
+    // Add r1 to c.
+    EXPECT_TRUE(c->addReset(r1));
+
+    // Try and remove the ones which don't exist so we trigger the 'false' return statement.
     EXPECT_FALSE(c->removeReset(1));
-    EXPECT_FALSE(c->removeReset(r1));
+    EXPECT_EQ(size_t(1), c->resetCount());
+    EXPECT_FALSE(c->removeReset(r2));
+    EXPECT_EQ(size_t(1), c->resetCount());
+}
+
+TEST(Reset, takeReset)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    // Add r to c.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
+
+    // Retrieve r by index.
+    auto taken_r = c->takeReset(0);
+    EXPECT_EQ(r, taken_r);
+    EXPECT_EQ(nullptr, r->parent());
+    EXPECT_EQ(nullptr, taken_r->parent());
+    EXPECT_EQ(size_t(0), c->resetCount());
+}
+
+TEST(Reset, takeNonExistentReset)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    // Add r to c.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
+
+    // Retrieve a non-existent reset from c.
+    auto taken_r = c->takeReset(1);
+    EXPECT_EQ(nullptr, taken_r);
+    EXPECT_EQ(size_t(1), c->resetCount());
 }
 
 TEST(Reset, resetFromComponentMethod)
@@ -309,15 +337,15 @@ TEST(Reset, resetFromComponentMethod)
 
     EXPECT_EQ(size_t(4), c->resetCount());
 
-    // Get by index
+    // Get by index.
     libcellml::ResetPtr rMethod1 = c->reset(1);
     EXPECT_EQ(r2.get(), rMethod1.get());
 
-    // Get const by index
+    // Get const by index.
     const libcellml::ResetPtr vMethod2 = c->reset(3);
     EXPECT_EQ(r4.get(), vMethod2.get());
 
-    // Get invalid index
+    // Get invalid index.
     EXPECT_EQ(nullptr, c->reset(7));
 }
 
@@ -328,9 +356,13 @@ TEST(Reset, hasResetFromComponentMethod)
     c->setName(in);
 
     libcellml::ResetPtr r1 = libcellml::Reset::create();
+    r1->setTestValue("r1s test value");
     c->addReset(r1);
+
     libcellml::ResetPtr r2 = libcellml::Reset::create();
+    r2->setTestValue("r2s test value");
     c->addReset(r2);
+
     libcellml::ResetPtr r3 = libcellml::Reset::create();
 
     EXPECT_TRUE(c->hasReset(r2));
@@ -408,12 +440,12 @@ TEST(Reset, testValueSetClear)
     const std::string out1 = p->printModel(m);
     EXPECT_EQ(test1, out1);
 
-    // Test setting of test_value block
+    // Test setting of test_value block.
     r->setTestValue(EMPTY_MATH);
     const std::string out2 = p->printModel(m);
     EXPECT_EQ(test2, out2);
 
-    // Test clearing of test_value block
+    // Test clearing of test_value block.
     r->removeTestValue();
     const std::string out3 = p->printModel(m);
     EXPECT_EQ(test1, out3);
@@ -459,7 +491,7 @@ TEST(Reset, testValueAppend)
     r->setOrder(1);
     c->addReset(r);
 
-    // Test appending of test_value block
+    // Test appending of test_value block.
     r->appendTestValue(firstMaths);
     r->appendTestValue(secondMaths);
 
@@ -507,12 +539,12 @@ TEST(Reset, resetValueSetClear)
     const std::string out1 = p->printModel(m);
     EXPECT_EQ(test1, out1);
 
-    // Test setting of reset_value block
+    // Test setting of reset_value block.
     r->setResetValue(EMPTY_MATH);
     const std::string out2 = p->printModel(m);
     EXPECT_EQ(test2, out2);
 
-    // Test clearing of reset_value block
+    // Test clearing of reset_value block.
     r->removeResetValue();
     const std::string out3 = p->printModel(m);
     EXPECT_EQ(test1, out3);
@@ -550,7 +582,7 @@ TEST(Reset, resetValueAppend)
     r->setOrder(1);
     c->addReset(r);
 
-    // Test appending of reset_value block
+    // Test appending of reset_value block.
     r->appendResetValue(firstMaths);
     r->appendResetValue(secondMaths);
 

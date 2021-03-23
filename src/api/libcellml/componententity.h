@@ -32,9 +32,9 @@ class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
 public:
     ~ComponentEntity() override; /**< ComponentEntity Destructor. */
-    ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor */
-    ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor */
-    ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator */
+    ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor. */
+    ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor. */
+    ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Add a child component to this component entity.
@@ -304,11 +304,13 @@ protected:
      */
     virtual bool doAddComponent(const ComponentPtr &component);
 
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
     ComponentEntity(); /**< ComponentEntity Constructor. */
 
 private:
-    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer */
+    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

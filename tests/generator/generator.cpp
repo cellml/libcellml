@@ -24,405 +24,17 @@ static const std::string EMPTY_STRING;
 
 TEST(Generator, emptyModel)
 {
-    libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    libcellml::ModelPtr model = libcellml::Model::create("empty_model");
+    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::UNKNOWN, generator->modelType());
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
 
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, initializedVariableOfIntegration)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'my_component' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised.",
-    };
-    const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::GENERATOR,
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, initializedVariableOfIntegrationInNonFirstComponent)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/initialized_variable_of_integration_in_non_first_component.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'environment' of model 'initialized_variable_of_integration_in_non_first_component' cannot be both a variable of integration and initialised.",
-    };
-    const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::GENERATOR,
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, twoVariablesOfIntegration)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/two_variables_of_integration.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be the variable of integration.",
-    };
-    const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::GENERATOR,
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, nonFirstOrderOdes)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_first_order_odes.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The differential equation for variable 'x' in component 'main' of model 'non_first_order_odes' must be of the first order.",
-        "The differential equation for variable 'y' in component 'sub' of model 'non_first_order_odes' must be of the first order.",
-        "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order.",
-    };
-    const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::GENERATOR,
-        libcellml::Issue::Cause::GENERATOR,
-        libcellml::Issue::Cause::GENERATOR,
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, undefinedVariables)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/undefined_variables.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'a' in component 'my_component' of model 'undefined_variables' is referenced in an equation, but it is not defined anywhere.",
-        "Variable 'b' in component 'my_component' of model 'undefined_variables' is referenced in an equation, but it is not defined anywhere.",
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, variableInitializedTwice)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/variable_initialized_twice.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore both be initialised.",
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, nonConstantInitialisingVariable)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_constant_initialising_variable.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' of model 'my_model' is initialised using variable 'k2', but it is not a constant.",
-    };
-    const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::GENERATOR,
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, nonExistingInitialisingVariable)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_existing_initialising_variable.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' of model 'my_model' is initialised using variable 'k', but it is not defined anywhere.",
-    };
-    const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::GENERATOR,
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, nonInitializedState)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_initialized_state.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' of model 'non_initialized_state' is used in an ODE, but it is not initialised.",
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::UNDERCONSTRAINED, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, underconstrained)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/underconstrained.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::UNDERCONSTRAINED, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, overconstrained)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/overconstrained.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' of model 'my_model' is computed more than once.",
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::OVERCONSTRAINED, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, unsuitablyConstrained)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/unsuitably_constrained.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
-        "Variable 'y' in component 'my_component' of model 'my_model' is computed more than once.",
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::UNSUITABLY_CONSTRAINED, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
@@ -430,31 +42,40 @@ TEST(Generator, unsuitablyConstrained)
 
 TEST(Generator, algebraicEqnComputedVarOnRhs)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
 
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -464,31 +85,40 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
 
 TEST(Generator, algebraicEqnConstVarOnRhs)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
 
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(1), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -498,31 +128,40 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
 
 TEST(Generator, algebraicEqnConstantOnRhs)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_constant_on_rhs/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_constant_on_rhs/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
 
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(1), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_constant_on_rhs/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_constant_on_rhs/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -532,32 +171,41 @@ TEST(Generator, algebraicEqnConstantOnRhs)
 
 TEST(Generator, algebraicEqnDerivativeOnRhs)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -567,32 +215,41 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
 
 TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -602,32 +259,41 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 
 TEST(Generator, algebraicEqnStateVarOnRhs)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -637,32 +303,41 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
 
 TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -672,32 +347,41 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
 TEST(Generator, odeComputedVarOnRhs)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_computed_var_on_rhs/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_computed_var_on_rhs/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -707,32 +391,41 @@ TEST(Generator, odeComputedVarOnRhs)
 
 TEST(Generator, odeComputedVarOnRhsOneComponent)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_computed_var_on_rhs_one_component/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_computed_var_on_rhs_one_component/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs_one_component/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs_one_component/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -742,32 +435,41 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
 
 TEST(Generator, odeConstVarOnRhs)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_const_var_on_rhs/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_const_var_on_rhs/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(1), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -777,32 +479,41 @@ TEST(Generator, odeConstVarOnRhs)
 
 TEST(Generator, odeConstVarOnRhsOneComponent)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_const_var_on_rhs_one_component/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_const_var_on_rhs_one_component/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(1), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs_one_component/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs_one_component/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -812,31 +523,40 @@ TEST(Generator, odeConstVarOnRhsOneComponent)
 
 TEST(Generator, odeConstantOnRhs)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_constant_on_rhs/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_constant_on_rhs/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_EQ(nullptr, generator->variable(0));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+    EXPECT_EQ(size_t(1), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_constant_on_rhs/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_constant_on_rhs/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -846,31 +566,40 @@ TEST(Generator, odeConstantOnRhs)
 
 TEST(Generator, odeConstantOnRhsOneComponent)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_constant_on_rhs_one_component/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_constant_on_rhs_one_component/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_EQ(nullptr, generator->variable(0));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+    EXPECT_EQ(size_t(1), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_constant_on_rhs_one_component/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_constant_on_rhs_one_component/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -880,32 +609,41 @@ TEST(Generator, odeConstantOnRhsOneComponent)
 
 TEST(Generator, odeMultipleDependentOdes)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -915,32 +653,41 @@ TEST(Generator, odeMultipleDependentOdes)
 
 TEST(Generator, odeMultipleDependentOdesOneComponent)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes_one_component/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes_one_component/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes_one_component/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes_one_component/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -950,32 +697,41 @@ TEST(Generator, odeMultipleDependentOdesOneComponent)
 
 TEST(Generator, odeMultipleOdesWithSameName)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_multiple_odes_with_same_name/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_multiple_odes_with_same_name/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/ode_multiple_odes_with_same_name/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_multiple_odes_with_same_name/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -985,32 +741,41 @@ TEST(Generator, odeMultipleOdesWithSameName)
 
 TEST(Generator, cellmlMappingsAndEncapsulations)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_mappings_and_encapsulations/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_mappings_and_encapsulations/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(4), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_mappings_and_encapsulations/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_mappings_and_encapsulations/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1020,32 +785,41 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
 
 TEST(Generator, cellmlStateInitialisedUsingVariable)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_state_initialised_using_variable/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_state_initialised_using_variable/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(1), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_state_initialised_using_variable/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_state_initialised_using_variable/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1055,32 +829,41 @@ TEST(Generator, cellmlStateInitialisedUsingVariable)
 
 TEST(Generator, cellmlUnitScalingVoiIndirect)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi_indirect/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi_indirect/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_EQ(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1090,32 +873,41 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
 
 TEST(Generator, cellmlUnitScalingVoiDirect)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi_direct/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi_direct/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_EQ(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1125,32 +917,41 @@ TEST(Generator, cellmlUnitScalingVoiDirect)
 
 TEST(Generator, cellmlUnitScalingConstant)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_constant/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_unit_scaling_constant/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(3), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
 
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(3), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_constant/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_constant/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1160,32 +961,41 @@ TEST(Generator, cellmlUnitScalingConstant)
 
 TEST(Generator, cellmlUnitScalingState)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1195,32 +1005,41 @@ TEST(Generator, cellmlUnitScalingState)
 
 TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_EQ(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1230,32 +1049,41 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
 
 TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1265,32 +1093,41 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
 
 TEST(Generator, cellmlUnitScalingRate)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_rate/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cellml_unit_scaling_rate/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_rate/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_rate/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1300,32 +1137,41 @@ TEST(Generator, cellmlUnitScalingRate)
 
 TEST(Generator, dependentEqns)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/dependent_eqns/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/dependent_eqns/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(2), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/dependent_eqns/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/dependent_eqns/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1335,32 +1181,41 @@ TEST(Generator, dependentEqns)
 
 TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(33), generator->stateCount());
-    EXPECT_EQ(size_t(217), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(33), analyserModel->stateCount());
+    EXPECT_EQ(size_t(217), analyserModel->variableCount());
+    EXPECT_EQ(size_t(159), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1370,32 +1225,41 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 
 TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(15), generator->stateCount());
-    EXPECT_EQ(size_t(185), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(15), analyserModel->stateCount());
+    EXPECT_EQ(size_t(185), analyserModel->variableCount());
+    EXPECT_EQ(size_t(90), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1405,32 +1269,41 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(4), generator->stateCount());
-    EXPECT_EQ(size_t(18), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1438,34 +1311,587 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
 }
 
-TEST(Generator, nobleModel1962)
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateAsExternalVariable)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/noble_model_1962/model.cellml"));
+    // Generate some code for the HH52 model with sodium_channel.m (i.e. not a
+    // primary variable) as an external variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("m")));
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(size_t(4), generator->stateCount());
-    EXPECT_EQ(size_t(17), generator->variableCount());
+    auto analyserModel = analyser->model();
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(3), analyserModel->stateCount());
+    EXPECT_EQ(size_t(19), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.state.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.py"), generator->implementationCode());
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariable)
+{
+    // Generate some code for the HH52 model with sodium_channel.m (i.e. not a
+    // primary variable) as an external variable which has a dependency on
+    // sodium_channel.V (i.e. not a primary variable), another state marked as
+    // an external variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto sodium_channel_V = model->component("sodium_channel")->variable("V");
+    auto external_sodium_channel_m = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("m"));
+
+    external_sodium_channel_m->addDependency(sodium_channel_V);
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_V));
+    analyser->addExternalVariable(external_sodium_channel_m);
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(20), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.dependent.state.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.py"), generator->implementationCode());
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
+{
+    // Generate some code for the HH52 model with membrane.Cm as an external
+    // variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(18), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.constant.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.py"), generator->implementationCode());
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentConstantAsExternalVariable)
+{
+    // Generate some code for the HH52 model with membrane.Cm as an external
+    // variable which has a dependency on sodium_channel.g_Na, another constant
+    // marked as an external variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto sodium_channel_g_Na = model->component("sodium_channel")->variable("g_Na");
+    auto external_sodium_channel_Cm = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm"));
+
+    external_sodium_channel_Cm->addDependency(sodium_channel_g_Na);
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_g_Na));
+    analyser->addExternalVariable(external_sodium_channel_Cm);
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(19), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.dependent.constant.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.py"), generator->implementationCode());
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVariable)
+{
+    // Generate some code for the HH52 model with leakage_current.E_L as an
+    // external variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("E_L")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.computed.constant.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.py"), generator->implementationCode());
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsExternalVariable)
+{
+    // Generate some code for the HH52 model with leakage_current.E_L as an
+    // external variable which has a dependency on potassium_channel.E_K,
+    // another computed constant marked as an external variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto potassium_channel_E_K = model->component("potassium_channel")->variable("E_K");
+    auto external_leakage_current_E_L = libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("E_L"));
+
+    external_leakage_current_E_L->addDependency(potassium_channel_E_K);
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_E_K));
+    analyser->addExternalVariable(external_leakage_current_E_L);
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.dependent.computed.constant.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.py"), generator->implementationCode());
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVariable)
+{
+    // Generate some code for the HH52 model with membrane.i_Stim as an external
+    // variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.algebraic.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.py"), generator->implementationCode());
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsExternalVariable)
+{
+    // Generate some code for the HH52 model with membrane.i_Stim as an external
+    // variable which has a dependency on potassium_channel_n_gate.beta_n,
+    // another algebraic variable marked as an external variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto potassium_channel_n_gate_beta_n = model->component("potassium_channel_n_gate")->variable("beta_n");
+    auto membrane_i_Stime = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim"));
+
+    membrane_i_Stime->addDependency(potassium_channel_n_gate_beta_n);
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_beta_n));
+    analyser->addExternalVariable(membrane_i_Stime);
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.dependent.algebraic.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py"), generator->implementationCode());
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
+{
+    // Generate some code for the HH52 model with sodium_channel.i_Na as an
+    // external variable which has a dependency on
+    // potassium_channel_n_gate.alpha_n, another external variable (which is
+    // going to be declared after i_Na, so that it ends up with a higher index,
+    // meaning that it would normally be computed after i_Na if there was no
+    // such a dependency), and on sodium_channel_h_gate.h, a state variable, so
+    // that i_Na ends up being computed both in the computeRates() and
+    // computeVariables() methods.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto potassium_channel_n_gate_alpha_n = model->component("potassium_channel_n_gate")->variable("alpha_n");
+    auto external_sodium_channel_i_Na = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na"));
+
+    external_sodium_channel_i_Na->addDependency(potassium_channel_n_gate_alpha_n);
+    external_sodium_channel_i_Na->addDependency(model->component("sodium_channel_h_gate")->variable("h"));
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(external_sodium_channel_i_Na);
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_alpha_n));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(3), analyserModel->stateCount());
+    EXPECT_EQ(size_t(19), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.external.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode());
+}
+
+#include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"
+
+double externalVariable(double /* unused */, double * /* unused */,
+                        double * /* unused */, double * /* unused */,
+                        size_t index)
+{
+    return 123.0 + double(index);
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariablesUse)
+{
+    double *states = createStatesArray();
+    double *rates = createStatesArray();
+    double *variables = createVariablesArray();
+
+    initialiseStatesAndConstants(states, variables);
+    computeComputedConstants(variables);
+    computeRates(0, states, rates, variables, externalVariable);
+    computeVariables(0, states, rates, variables, externalVariable);
+
+    ASSERT_DOUBLE_EQ(123.0, variables[0]);
+    ASSERT_DOUBLE_EQ(133.0, variables[10]);
+    ASSERT_DOUBLE_EQ(140.0, variables[17]);
+
+    deleteArray(states);
+    deleteArray(rates);
+    deleteArray(variables);
+}
+
+TEST(Generator, nobleModel1962)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/noble_model_1962/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(17), analyserModel->variableCount());
+    EXPECT_EQ(size_t(16), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/noble_model_1962/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/noble_model_1962/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1475,39 +1901,49 @@ TEST(Generator, nobleModel1962)
 
 TEST(Generator, sineImports)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("sine_approximations_import.xml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("sine_approximations_import.xml"));
+    auto importer = libcellml::Importer::create();
 
     EXPECT_EQ(size_t(0), parser->issueCount());
     EXPECT_TRUE(model->hasUnresolvedImports());
 
-    model->resolveImports(resourcePath());
+    importer->resolveImports(model, resourcePath());
 
     EXPECT_FALSE(model->hasUnresolvedImports());
 
-    model->flatten();
+    model = importer->flattenModel(model);
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(10), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(10), analyserModel->variableCount());
+    EXPECT_EQ(size_t(9), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
 
     EXPECT_EQ(fileContents("generator/sine_model_imports/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/sine_model_imports/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
@@ -1517,42 +1953,59 @@ TEST(Generator, sineImports)
 
 TEST(Generator, coverage)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/coverage/model.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/coverage/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto analyser = libcellml::Analyser::create();
 
-    generator->processModel(model);
+    analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    auto analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(1), generator->stateCount());
-    EXPECT_EQ(size_t(186), generator->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
-    EXPECT_NE(nullptr, generator->variable(0));
-    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(186), analyserModel->variableCount());
+    EXPECT_EQ(size_t(180), analyserModel->equationCount());
 
-    EXPECT_EQ(nullptr, generator->voi()->initialisingVariable());
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->voi()->equation());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->state(0)->equation());
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_NE(nullptr, analyserModel->equation(0)->variable());
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
-    for (size_t i = 0; i < generator->stateCount(); ++i) {
-        EXPECT_NE(nullptr, generator->state(i)->initialisingVariable());
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ(nullptr, analyserModel->voi()->initialisingVariable());
+
+    for (size_t i = 0; i < analyserModel->stateCount(); ++i) {
+        EXPECT_NE(nullptr, analyserModel->state(i)->initialisingVariable());
     }
 
-    for (size_t i = 0; i < generator->variableCount(); ++i) {
-        EXPECT_EQ(i < 7, generator->variable(i)->initialisingVariable() != nullptr);
+    for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
+        EXPECT_EQ(i < 7, analyserModel->variable(i)->initialisingVariable() != nullptr);
     }
 
+    EXPECT_EQ(nullptr, generator->model());
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(analyserModel, generator->model());
     EXPECT_EQ(fileContents("generator/coverage/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.c"), generator->implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = generator->profile();
+    auto profile = generator->profile();
 
     profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
     profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
@@ -1593,10 +2046,12 @@ TEST(Generator, coverage)
     profile->setImplementationVariableCountString("");
 
     profile->setVariableTypeObjectString("");
+    profile->setVariableTypeObjectExternalTypeString("");
 
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
     profile->setAlgebraicVariableTypeString("");
+    profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
     profile->setVariableInfoWithTypeObjectString("");
@@ -1616,9 +2071,8 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesMethodString("// We should have computeVariables() here, but we replaced it with this comment\n"
-                                                           "// and no code template that can be replaced so that our replace() method can\n"
-                                                           "// is forced to return an empty string, ensuring 100% coverage using llvm-cov...\n");
+    profile->setImplementationComputeVariablesMethodString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
+                                                           "// xxxxxxxxxxxxxxxxxxxxxxx\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode());
@@ -1664,10 +2118,12 @@ TEST(Generator, coverage)
     profile->setImplementationVariableCountString("");
 
     profile->setVariableTypeObjectString("");
+    profile->setVariableTypeObjectExternalTypeString("");
 
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
     profile->setAlgebraicVariableTypeString("");
+    profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
     profile->setVariableInfoWithTypeObjectString("");

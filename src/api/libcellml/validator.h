@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Validator: public Logger
 {
 public:
-    ~Validator() override; /**< Destructor */
-    Validator(const Validator &rhs) = delete; /**< Copy constructor */
-    Validator(Validator &&rhs) noexcept = delete; /**< Move constructor */
-    Validator &operator=(Validator rhs) = delete; /**< Assignment operator */
+    ~Validator() override; /**< Destructor. */
+    Validator(const Validator &rhs) = delete; /**< Copy constructor. */
+    Validator(Validator &&rhs) noexcept = delete; /**< Move constructor. */
+    Validator &operator=(Validator rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Validator object.
@@ -60,10 +60,10 @@ public:
     void validateModel(const ModelPtr &model);
 
 private:
-    Validator(); /**< Constructor */
+    Validator(); /**< Constructor, @private. */
 
-    struct ValidatorImpl; /**< Forward declaration for pImpl idiom. */
-    ValidatorImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ValidatorImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ValidatorImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
