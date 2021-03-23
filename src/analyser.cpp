@@ -413,14 +413,6 @@ struct Analyser::AnalyserImpl
                                                     bool multiply);
     UnitsMultipliers powerRootUnitsMultipliers(const UnitsMultipliers &unitsMultipliers,
                                                double factor, bool power);
-    std::string unitsMapMismatchInformation(const UnitsMap &unitsMap);
-    Strings unitsMapsMismatchesInformation(const UnitsMaps &unitsMaps);
-    std::string unitsMismatchesInformation(const Strings &information,
-                                           bool unitsMapsInformation,
-                                           bool includingForeword = true);
-    std::string unitsMapsMismatchesInformation(const Strings &information,
-                                               bool includingForeword = true);
-    std::string unitsMultipliersMismatchesInformation(const Strings &information);
     bool areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
                           const UnitsMaps &secondUnitsMaps);
     bool isDimensionlessUnitsMaps(const UnitsMaps &unitsMaps);
@@ -1433,95 +1425,6 @@ UnitsMultipliers Analyser::AnalyserImpl::powerRootUnitsMultipliers(const UnitsMu
     }
 
     return res;
-}
-
-std::string Analyser::AnalyserImpl::unitsMapMismatchInformation(const UnitsMap &unitsMap)
-{
-    // Retrieve the unit mismatch information for the given units map.
-
-    std::string res;
-
-    for (const auto &units : unitsMap) {
-        if ((units.first != "dimensionless")
-            && !areEqual(units.second, 0.0)) {
-            auto intExponent = int(units.second);
-            auto exponent = areEqual(units.second, intExponent) ?
-                                convertToString(intExponent) :
-                                convertToString(units.second, false);
-
-            if (!res.empty()) {
-                res += " x ";
-            }
-
-            res += units.first + "^" + exponent;
-        }
-    }
-
-    return res;
-}
-
-Strings Analyser::AnalyserImpl::unitsMapsMismatchesInformation(const UnitsMaps &unitsMaps)
-{
-    Strings res;
-    std::string unitsMapMismatchInformation;
-
-    for (const auto &unitsMap : unitsMaps) {
-        unitsMapMismatchInformation = Analyser::AnalyserImpl::unitsMapMismatchInformation(unitsMap);
-
-        if (!unitsMapMismatchInformation.empty()) {
-            res.push_back(unitsMapMismatchInformation);
-        }
-    }
-
-    return res;
-}
-
-std::string Analyser::AnalyserImpl::unitsMismatchesInformation(const Strings &information,
-                                                               bool unitsMapsInformation,
-                                                               bool includingForeword)
-{
-    std::string res;
-
-    if (includingForeword) {
-        if (unitsMapsInformation) {
-            res += "The unit ";
-        }
-
-        if (information.size() == 1) {
-            res += "mismatch is ";
-        } else {
-            res += "mismatches are ";
-        }
-    }
-
-    for (size_t i = 0; i < information.size(); ++i) {
-        if (i > 0) {
-            if (i == information.size() - 1) {
-                res += " and ";
-            } else {
-                res += ", ";
-            }
-        }
-
-        if (!unitsMapsInformation) {
-            res += "10^";
-        }
-
-        res += information[i];
-    }
-
-    return res;
-}
-
-std::string Analyser::AnalyserImpl::unitsMapsMismatchesInformation(const Strings &information,
-                                                                   bool includingForeword)
-{
-    return unitsMismatchesInformation(information, true, includingForeword);
-}
-
-std::string Analyser::AnalyserImpl::unitsMultipliersMismatchesInformation(const Strings &information)
-{
-    return unitsMismatchesInformation(information, false);
 }
 
 bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
