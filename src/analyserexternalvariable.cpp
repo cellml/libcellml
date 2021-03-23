@@ -88,7 +88,7 @@ bool AnalyserExternalVariable::addDependency(const VariablePtr &variable)
 bool AnalyserExternalVariable::removeDependency(size_t index)
 {
     if (index < mPimpl->mDependencies.size()) {
-        mPimpl->mDependencies.erase(mPimpl->mDependencies.begin() + int64_t(index));
+        mPimpl->mDependencies.erase(mPimpl->mDependencies.begin() + ptrdiff_t(index));
 
         return true;
     }

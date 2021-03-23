@@ -515,8 +515,8 @@ public:
     std::string unitId(size_t index);
 
 private:
-    Units(); /**< Constructor. */
-    explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
+    Units(); /**< Constructor, @private. */
+    explicit Units(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
     /**
      * @brief Set the import source of this units.
@@ -531,8 +531,10 @@ private:
 
     bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
 
-    struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl *mPimpl; /**< Private member to implementation pointer. */
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
+    struct UnitsImpl; /**< Forward declaration for pImpl idiom, @private. */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

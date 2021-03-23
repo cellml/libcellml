@@ -346,10 +346,10 @@ public:
     void setRightChild(const AnalyserEquationAstPtr &rightChild);
 
 private:
-    AnalyserEquationAst(); /**< Constructor. */
+    AnalyserEquationAst(); /**< Constructor, @private. */
 
     struct AnalyserEquationAstImpl;
-    AnalyserEquationAstImpl *mPimpl;
+    AnalyserEquationAstImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
