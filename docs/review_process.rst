@@ -16,12 +16,12 @@ Obviously, make sure that the last commit has a green tick before merging.
 The "Details" link at the bottom of the pull request web page will take you to the build records of the library.
 This page shows the results of the unit tests for each target operating system, the results of the coverage test, the results of the memory check test, and the results of the documentation build.
 
-The coverage statistics for the library (generated from :gcovr:`gcovr<>` ) can be reached through the :ref:`Coverage Statistics <coverage_statistics>` page **TODO** is this still true??
+The coverage statistics for the library (generated from :gcovr:`gcovr<>` ) can be reached through the :ref:`Coverage Statistics <coverage_statistics>` page.
 
 Read the documentation
 ======================
 
-**TODO** Not sure any of this is current??
+**TODO** Update needed now that documentation is integrated into libcellml.org.
 
 The documentation for the project is built as part of the testing process.
 
