@@ -84,30 +84,29 @@ mark_as_advanced(
 
 # Find libxml2
 set(HAVE_LIBXML2_CONFIG FALSE)
-if(MSVC)
-  # If we want to use config packages on Windows with Visual Studio,
-  # we need to have two find_package calls and explicitly state that
-  # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
-  # is the preferred method so we will try this first quietly.
-  #
-  # This does change how we get information about include paths and such so we
-  # need to track how we found LibXml2.
-  find_package(LibXml2 CONFIG QUIET)
-  if(LibXml2_FOUND)
-    set(HAVE_LIBXML2_CONFIG TRUE)
-    foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
-      if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
-        unset(${_XML2_VAR} CACHE)
-      endif()
-    endforeach()
-  else()
-    find_package(LibXml2 REQUIRED)
-    if(LibXml2_FOUND)
-      unset(LibXml2_DIR CACHE)
+# We want to use config mode for finding libXml2.
+# This is especially important on Windows with Visual Studio.
+# To do this we need to have two find_package calls and explicitly state that
+# we wish to use Config mode in the first call.  Finding LibXml2 in config mode
+# is the preferred method so we will try this first quietly.
+#
+# This does change how we get information about include paths and such so we
+# need to track how we found LibXml2.
+find_package(LibXml2 CONFIG QUIET)
+if(LibXml2_FOUND)
+  set(HAVE_LIBXML2_CONFIG TRUE)
+  # Clear out GUI variables created in module search mode.
+  foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
+    if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
+      unset(${_XML2_VAR} CACHE)
     endif()
-  endif()
+  endforeach()
 else()
   find_package(LibXml2 REQUIRED)
+  if(LibXml2_FOUND)
+    # Clear out GUI variable created in config search mode.
+    unset(LibXml2_DIR CACHE)
+  endif()
 endif()
 
 if(WIN32)
