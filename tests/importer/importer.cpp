@@ -647,12 +647,10 @@ TEST(Importer, importEncapsulatedChildren)
     auto model = parser->parseModel(fileContents("importer/trunk.cellml"));
 
     importer->resolveImports(model, resourcePath("importer/"));
-    printIssues(importer);
     EXPECT_FALSE(model->hasUnresolvedImports());
     EXPECT_EQ(size_t(2), importer->libraryCount());
-    printIssues(importer);
+
     auto flat = importer->flattenModel(model);
-    printIssues(importer);
     EXPECT_EQ(flatModelString, printer->printModel(flat));
 }
 
@@ -675,7 +673,6 @@ TEST(Importer, importFilesWithSameName)
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(0), importer->issueCount());
-    printIssues(importer);
 
     // 4 items in the library.
     EXPECT_EQ(size_t(4), importer->libraryCount());
