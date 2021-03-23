@@ -463,6 +463,8 @@ Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     auto profile = mGenerator->profile();
 
     profile->setAbsoluteValueString("abs");
+    profile->setNaturalLogarithmString("ln");
+    profile->setCommonLogarithmString("log");
 
     // Retrieve our generator's profile.
 
