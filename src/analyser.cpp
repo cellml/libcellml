@@ -465,6 +465,7 @@ Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     profile->setAbsoluteValueString("abs");
     profile->setNaturalLogarithmString("ln");
     profile->setCommonLogarithmString("log");
+    profile->setRemString("rem");
 
     // Retrieve our generator's profile.
 
@@ -1792,7 +1793,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PLUS)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
         || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)) {
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)
+        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::REM)) {
         bool sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
         bool sameUnitsMultipliers = rightUnitsMaps.empty()
