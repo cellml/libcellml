@@ -289,9 +289,9 @@ void Model::ModelImpl::cleanExpiredImportSources()
     mImports.erase(std::remove_if(mImports.begin(), mImports.end(), [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSourceWeak.expired(); }), mImports.end());
 }
 
-bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
+bool Model::hasImportSource(const ImportSourcePtr &importSource) const
 {
-    return mPimpl->findImportSource(importSrc) != mPimpl->mImports.end();
+    return mPimpl->findImportSource(importSource) != mPimpl->mImports.end();
 }
 
 bool Model::addImportSource(const ImportSourcePtr &importSource)
@@ -341,14 +341,14 @@ bool Model::removeImportSource(size_t index)
     return removeImportSource(importSrc);
 }
 
-bool Model::removeImportSource(const ImportSourcePtr &importSrc)
+bool Model::removeImportSource(const ImportSourcePtr &importSource)
 {
     mPimpl->cleanExpiredImportSources();
 
     bool status = false;
-    auto result = mPimpl->findImportSource(importSrc);
+    auto result = mPimpl->findImportSource(importSource);
     if (result != mPimpl->mImports.end()) {
-        importSrc->removeParent();
+        importSource->removeParent();
         mPimpl->mImports.erase(result);
         status = true;
     }
