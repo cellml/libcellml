@@ -1553,7 +1553,7 @@ std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &
 {
     // Return the name of the component in which the given AST is, by going
     // through the AST, if needed, and returning the component of the first
-    // variable we find. Note that we know that the AST is sound, so no need to
+    // variable we find on the LHS/RHS.
 
     auto variable = ast->variable();
 
