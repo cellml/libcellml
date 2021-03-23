@@ -12,6 +12,7 @@
         <variable name="d" units="dimensionless"/>
         <variable name="e" units="dimensionless"/>
         <variable name="f" units="dimensionless"/>
+        <variable name="g" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -144,6 +145,19 @@
                     </piece>
                     <otherwise>
                         <cn cellml:units="dimensionless">51</cn>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>g</ci>
+                <piecewise>
+                    <piece>
+                        <cn cellml:units="dimensionless">53</cn>
+                        <cn cellml:units="second">55</cn>
+                    </piece>
+                    <otherwise>
+                        <cn cellml:units="dimensionless">57</cn>
                     </otherwise>
                 </piecewise>
             </apply>
