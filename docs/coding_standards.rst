@@ -32,8 +32,6 @@ Test naming
 Variable naming
 ===============
 
-**TODO** This makes no sense ... !!
-
 The following rules for naming of variables should be followed.
 
  * Class member variables: :code:`mMyClassMemberVariable`.
