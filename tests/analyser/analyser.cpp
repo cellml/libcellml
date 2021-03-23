@@ -993,8 +993,8 @@ TEST(Analyser, unitsInMathmlStrings)
         "The units in 'i = a+b' in component 'direct_comparison_operators' are not the same. 'i' is in 'volt_per_farad' while 'a+b' is in 'metre_per_second'.",
         "The units in 'a+pow(b, 2.0)' in equation 'j = a+pow(b, 2.0)' in component 'direct_comparison_operators' are not the same. 'a' is in 'metre_per_second' while 'pow(b, 2.0)' is in 'metre_per_second^2'.",
         "The unit of 'a' in 'tan(a)' in equation 'i = tan(a)' in component 'trigonometric_operators' is not dimensionless. 'a' is in 'second'.",
-        "The unit of 'a' in 'log(a)/log(2.0)' in equation 'i = log(a)/log(2.0)' in component 'logarithmic_operators' is not dimensionless. 'a' is in 'second'.",
-        "The units of '3.0' and 'a' in 'log(a)/log(3.0)' in equation 'j = log(a)/log(3.0)' in component 'logarithmic_operators' are not dimensionless. '3.0' is in 'second' while 'a' is in 'second'.",
+        "The unit of 'a' in 'ln(a)/ln(2.0)' in equation 'i = ln(a)/ln(2.0)' in component 'logarithmic_operators' is not dimensionless. 'a' is in 'second'.",
+        "The units of '3.0' and 'a' in 'ln(a)/ln(3.0)' in equation 'j = ln(a)/ln(3.0)' in component 'logarithmic_operators' are not dimensionless. '3.0' is in 'second' while 'a' is in 'second'.",
         "The unit of '2.0' in 'pow(a, 2.0)' in equation 'l = pow(a, 2.0)' in component 'power_root_operators' is not dimensionless. '2.0' is in 'second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
@@ -1039,7 +1039,7 @@ TEST(Analyser, unitsMultiplierInMathmlStrings)
 
     const std::vector<std::string> expectedIssues = {
         "The units in 'k = pow(sqrt(c), 4.0)/100.0' in component 'simple_checks' are not the same. 'k' is in 'millivolt' while 'pow(sqrt(c), 4.0)/100.0' is in 'root_volt^2'.",
-        "The units in 'k = log10(1000.0)*pow(b, 2.0)/(b*3.0)*1000.0' in component 'complex_checks' are not the same. 'k' is in 'volt' while 'log10(1000.0)*pow(b, 2.0)/(b*3.0)*1000.0' is in 'kilo_microvolt'.",
+        "The units in 'k = log(1000.0)*pow(b, 2.0)/(b*3.0)*1000.0' in component 'complex_checks' are not the same. 'k' is in 'volt' while 'log(1000.0)*pow(b, 2.0)/(b*3.0)*1000.0' is in 'kilo_microvolt'.",
         "The units in 'n = pow(10000.0*a, 2.0)/a' in component 'complex_checks' are not the same. 'n' is in 'volt' while 'pow(10000.0*a, 2.0)/a' is in 'millivolt'.",
         "The units in 'o = pow(a, 1.0/3.0)' in component 'complex_checks' are not the same. 'o' is in 'millivolt' while 'pow(a, 1.0/3.0)' is in 'millivolt^0.333333'.",
     };
