@@ -314,7 +314,6 @@ TEST(ComponentImport, complexImportAndParse)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(1), model->importSourceCount());
-    printIssues(parser);
     a = printer->printModel(model);
     EXPECT_EQ(e, a);
 

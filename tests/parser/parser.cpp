@@ -2292,7 +2292,7 @@ TEST(Parser, importComponentMadeConcrete)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelString);
-    printIssues(parser);
+
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_TRUE(model->component("importedComponent")->isImport()); // Fails, false
 }
