@@ -110,7 +110,7 @@ public:
     bool isResolved() const;
 
 protected:
-    ImportedEntity(); /**< Constructor. */
+    ImportedEntity(); /**< Constructor, @private. */
 
     /**
      * @brief Virtual set import source method to be implemented by derived classes.
@@ -132,9 +132,11 @@ protected:
      */
     virtual bool doIsResolved() const = 0;
 
+    bool doEquals(const ImportedEntityPtr &other) const; /**< Implementation method for equals, @private. */
+
 private:
-    struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ImportedEntityImpl;
+    ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

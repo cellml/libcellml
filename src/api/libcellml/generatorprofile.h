@@ -3536,10 +3536,10 @@ public:
     void setCommandSeparatorString(const std::string &commandSeparatorString);
 
 private:
-    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor. */
+    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor, @private. */
 
     struct GeneratorProfileImpl;
-    GeneratorProfileImpl *mPimpl;
+    GeneratorProfileImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
