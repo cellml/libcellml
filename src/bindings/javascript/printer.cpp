@@ -8,7 +8,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_printer) {
 
-    class_<libcellml::Printer, base<libcellml::Logger>>("Printer")
+    class_<libcellml::Printer>("Printer")
         .smart_ptr_constructor("Printer", &libcellml::Printer::create)
         .function("printModel", &libcellml::Printer::printModel)
     ;

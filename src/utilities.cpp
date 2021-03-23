@@ -196,13 +196,13 @@ ptrdiff_t ulpsDistance(double a, double b)
 
     static const int SIZE_OF_DOUBLE = sizeof(double);
 
-    ptrdiff_t ia;
-    ptrdiff_t ib;
+    unsigned long long ia;
+    unsigned long long ib;
     memcpy(&ia, &a, SIZE_OF_DOUBLE);
     memcpy(&ib, &b, SIZE_OF_DOUBLE);
 
     // Return the absolute value of the distance in ULPs.
-    ptrdiff_t distance = ia - ib;
+    unsigned long long distance = ia - ib;
     if (distance < 0) {
         return -distance;
     }
