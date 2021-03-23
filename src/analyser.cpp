@@ -466,6 +466,18 @@ Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     profile->setNaturalLogarithmString("ln");
     profile->setCommonLogarithmString("log");
     profile->setRemString("rem");
+    profile->setAsinString("arcsin");
+    profile->setAcosString("arccos");
+    profile->setAtanString("arctan");
+    profile->setAsecString("arcsec");
+    profile->setAcscString("arccsc");
+    profile->setAcotString("arccot");
+    profile->setAsinhString("arcsinh");
+    profile->setAcoshString("arccosh");
+    profile->setAtanhString("arctanh");
+    profile->setAsechString("arcsech");
+    profile->setAcschString("arccsch");
+    profile->setAcothString("arccoth");
     profile->setTrueString("true");
     profile->setFalseString("false");
     profile->setEString("exponentiale");
