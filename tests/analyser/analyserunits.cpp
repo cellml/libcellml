@@ -1343,8 +1343,10 @@ TEST(AnalyserUnits, min)
         "The units in 'min(dCst, 7.0)' in equation 'd = min(dCst, 7.0)' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
         "The units in 'min(eCst, 9.0)' in equation 'e = min(eCst, 9.0)' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
         "The units in 'min(fCst, 11.0)' in equation 'f = min(fCst, 11.0)' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'min(13.0, 15.0)' in 'min(gCst, min(13.0, 15.0))' in equation 'g = min(gCst, min(13.0, 15.0))' in component 'main' are not the same. '13.0' is in 'frog' while '15.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -1357,8 +1359,10 @@ TEST(AnalyserUnits, min)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
@@ -1386,8 +1390,10 @@ TEST(AnalyserUnits, max)
         "The units in 'max(dCst, 7.0)' in equation 'd = max(dCst, 7.0)' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
         "The units in 'max(eCst, 9.0)' in equation 'e = max(eCst, 9.0)' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
         "The units in 'max(fCst, 11.0)' in equation 'f = max(fCst, 11.0)' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'max(13.0, 15.0)' in 'max(gCst, max(13.0, 15.0))' in equation 'g = max(gCst, max(13.0, 15.0))' in component 'main' are not the same. '13.0' is in 'frog' while '15.0' is in 'metre_per_second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
+        libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
         libcellml::CellmlElementType::UNDEFINED,
@@ -1400,8 +1406,10 @@ TEST(AnalyserUnits, max)
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
         libcellml::Issue::Level::MESSAGE,
+        libcellml::Issue::Level::MESSAGE,
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
+        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
         libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
