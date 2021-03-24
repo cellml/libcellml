@@ -647,10 +647,12 @@ TEST(Importer, importEncapsulatedChildren)
     auto model = parser->parseModel(fileContents("importer/trunk.cellml"));
 
     importer->resolveImports(model, resourcePath("importer/"));
+    printIssues(importer);
     EXPECT_FALSE(model->hasUnresolvedImports());
     EXPECT_EQ(size_t(2), importer->libraryCount());
 
     auto flat = importer->flattenModel(model);
+    printIssues(importer);
     EXPECT_EQ(flatModelString, printer->printModel(flat));
 }
 
@@ -1020,4 +1022,18 @@ TEST(Importer, isResolvedCircularImport)
     EXPECT_EQ(size_t(1), importer->issueCount());
 
     EXPECT_FALSE(u->isResolved());
+}
+
+TEST(Importer, removeAllModels)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/diamond.cellml"));
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+
+    EXPECT_EQ(size_t(3), importer->libraryCount());
+
+    importer->removeAllModels();
+
+    EXPECT_EQ(size_t(0), importer->libraryCount());
 }

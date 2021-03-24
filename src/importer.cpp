@@ -232,6 +232,7 @@ bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
     return false;
 }
 
+
 /**
  * @brief Resolve the path of the given filename using the given base.
  *
@@ -735,6 +736,11 @@ std::string Importer::key(const size_t &index)
         ++i;
     }
     return it->first;
+}
+
+void Importer::removeAllModels()
+{
+    mPimpl->mLibrary.clear();
 }
 
 } // namespace libcellml
