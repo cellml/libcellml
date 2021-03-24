@@ -725,8 +725,8 @@ TEST(Model, takeImportedUnitsByName)
     auto takeUnits1 = model->takeUnits("myImportedUnits");
     auto takeUnits2 = model->takeUnits("myConcreteUnits");
 
-    EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
 }
 
 TEST(Model, takeImportedUnitsByIndex)
@@ -751,8 +751,8 @@ TEST(Model, takeImportedUnitsByIndex)
     auto takeUnits1 = model->takeUnits(0);
     auto takeUnits2 = model->takeUnits(0);
 
-    EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
 }
 
 TEST(Model, replaceImportedUnitsByName)
