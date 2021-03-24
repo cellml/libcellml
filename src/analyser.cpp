@@ -1302,7 +1302,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                     } else {
                         updateUnitsMap(model, reference, unitsMap, userUnitsMap,
                                        exponent * unitsExponent,
-                                       unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
+                                       unitsMultiplier + (std::log10(multiplier) + standardPrefixList.at(prefix)) * unitsExponent);
                     }
                 }
             }
@@ -1536,7 +1536,7 @@ void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
                 } else {
                     updateUnitsMultiplier(model, reference, newUnitsMultiplier,
                                           exponent * unitsExponent,
-                                          unitsMultiplier + std::log10(multiplier) * unitsExponent + standardPrefixList.at(prefix) * unitsExponent);
+                                          unitsMultiplier + (std::log10(multiplier) + standardPrefixList.at(prefix)) * unitsExponent);
                 }
             }
         }
