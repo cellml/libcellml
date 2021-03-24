@@ -413,7 +413,7 @@ public:
     VariablePairPtr mapVariables(const std::string &id, size_t index);
 
     /**
-     * @brief Retrieve a @ref VariablePair item containing the two @ref Variables
+     * @brief Retrieve a @ref VariablePair item containing the two @ref Variable s
      *        whose mapping has the given @p id.
      *
      * Returns a @ref VariablePair with the given @p id.
@@ -711,7 +711,6 @@ public:
      * @overload
      *
      * @param importSource An @c ImportSourcePtr to which the new id will be assigned.
-     * @param type An @c CellmlElementType enum.
      *
      * @return the new id string.
      */

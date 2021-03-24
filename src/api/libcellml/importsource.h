@@ -58,41 +58,41 @@ public:
     static ImportSourcePtr create() noexcept;
 
     /**
-     * @brief Get the source @c Model's URL.
+     * @brief Get the source @ref Model's URL.
      *
-     * Get the source @c Model's URL set in this instance. If no source @c Model
+     * Get the source @ref Model's URL set in this instance. If no source @ref Model
      * URL is set then return an empty string.
      *
-     * @return The URL of the source @c Model if set otherwise the emtpy string.
+     * @return The URL of the source @ref Model if set otherwise the emtpy string.
      */
     std::string url() const;
 
     /**
-     * @brief Set the source @c Model's URL.
+     * @brief Set the source @ref Model's URL.
      *
-     * Set the source @c Model's URL that this @c ImportSource refers to.
+     * Set the source @ref Model's URL that this @c ImportSource refers to.
      *
-     * @param source The source @c Model's URL.
+     * @param url The source @ref Model's URL.
      */
     void setUrl(const std::string &url);
 
     /**
-     * @brief Get the @c Model that resolves the import.
+     * @brief Get the @ref Model that resolves the import.
      *
-     * Get the @c Model which has been assigned to resolve this @c ImportSource. If no @c Model
+     * Get the @ref Model which has been assigned to resolve this @c ImportSource. If no @ref Model
      * has been assigned then return the @c nullptr.
      *
-     * @return The @c Model used to resolve this @c ImportSource.
+     * @return The @ref Model used to resolve this @c ImportSource.
      */
     ModelPtr model() const;
 
     /**
-     * @brief Provide the @c Model used to resolve this import.
+     * @brief Provide the @ref Model used to resolve this import.
      *
-     * Uses the provided @c Model to resolve this @c ImportSource, which should correspond
+     * Uses the provided @ref Model to resolve this @c ImportSource, which should correspond
      * to the @c ImportSource identified by this import.
      *
-     * @param model The @c Model to use in resolving this @c ImportSource.
+     * @param model The @ref Model to use in resolving this @c ImportSource.
      */
     void setModel(const ModelPtr &model);
 
@@ -106,7 +106,7 @@ public:
     /**
      * @brief Test if this @c ImportSource is resolved.
      *
-     * Method to test if this @c ImportSource has been resolved, i.e. the source @c Model has
+     * Method to test if this @c ImportSource has been resolved, i.e. the source @ref Model has
      * been assigned. Returns @c true if the @c ImportSource is resolved otherwise returns
      * @c false.
      *

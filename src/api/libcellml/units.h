@@ -55,9 +55,9 @@ public:
     Units &operator=(Units rhs) = delete; /**< Assignment operator. */
 
     /**
-     * @brief Create a @c Units object.
+     * @brief Create a @ref Units object.
      *
-     * Factory method to create a @c Units.  Create a
+     * Factory method to create a @ref Units.  Create a
      * blank units with::
      *
      *   UnitsPtr units = libcellml::Units::create();
@@ -66,7 +66,7 @@ public:
      *
      *   UnitsPtr units = libcellml::Units::create("Units");
      *
-     * @return A smart pointer to a @c Units object.
+     * @return A smart pointer to a @ref Units object.
      */
     static UnitsPtr create() noexcept;
 
@@ -477,17 +477,17 @@ public:
     size_t unitCount() const;
 
     /**
-     * @brief Check whether there are any imported child @c Units.
+     * @brief Check whether there are any imported child @ref Units.
      *
      * Test to determine whether this units has any imported units.
      *
-     * @return @c true when this @c Units relies on @c Units which are imported,
+     * @return @c true when this @ref Units relies on @ref Units which are imported,
      * @c false otherwise.
      */
     bool requiresImports() const;
 
     /**
-     * @brief Return the scaling factor difference between two @c Units.
+     * @brief Return the scaling factor difference between two @ref Units.
      *
      * This can be interpreted as `factor`, where units2 = factor*units1.  If compatibility checking is
      * turned on and the units are not compatible the factor returned is 0.0.
@@ -503,30 +503,30 @@ public:
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool checkCompatibility = true);
 
     /**
-     * @brief Test to determine whether two @c Units are compatible or not.
+     * @brief Test to determine whether two @ref Units are compatible or not.
      *
-     * Two @c Units are considered to be compatible if they share the same units,
+     * Two @ref Units are considered to be compatible if they share the same units,
      * independently of their scaling (e.g. volt and volt are compatible as are
      * volt and millivolt).
      *
-     * @param1 units1 The first units to compare.
-     * @param2 units2 The second units to compare.
+     * @param units1 The first units to compare.
+     * @param units2 The second units to compare.
      *
-     * @return @c true if the two @c Units are compatible, @c false otherwise.
+     * @return @c true if the two @ref Units are compatible, @c false otherwise.
      */
     static bool compatible(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Test to determine whether two @c Units are equivalent or not.
+     * @brief Test to determine whether two @ref Units are equivalent or not.
      *
-     * Two @c Units are considered to be equivalent if they share the
+     * Two @ref Units are considered to be equivalent if they share the
      * same unit base as well as a scaling factor of 1.0 (e.g. volt and volt are equivalent but
      * volt and millivolt are not).
      *
-     * @param1 units1 The first units to compare.
-     * @param2 units2 The second units to compare.
+     * @param units1 The first units to compare.
+     * @param units2 The second units to compare.
      *
-     * @return @c true if the two @c Units are equivalent, @c false
+     * @return @c true if the two @ref Units are equivalent, @c false
      * otherwise.
      */
     static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
@@ -538,7 +538,7 @@ public:
      * the parent. Thus the cloned (returned) version of this units
      * will not have a parent set even if this units does.
      *
-     * @return a new @c UnitsPtr to the cloned units.
+     * @return a new @ref UnitsPtr to the cloned units.
      */
     UnitsPtr clone() const;
 
