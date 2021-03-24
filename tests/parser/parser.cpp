@@ -2268,7 +2268,7 @@ TEST(Parser, incorrectNumberOfImportSources)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelString);
-    EXPECT_EQ(size_t(1), model->importSourceCount()); // <<< model->importSourceCount() = 2!!
+    EXPECT_EQ(size_t(1), model->importSourceCount());
 }
 
 TEST(Parser, importComponentMadeConcrete)
@@ -2294,5 +2294,5 @@ TEST(Parser, importComponentMadeConcrete)
     auto model = parser->parseModel(modelString);
 
     EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_TRUE(model->component("importedComponent")->isImport()); // Fails, false
+    EXPECT_TRUE(model->component("importedComponent")->isImport());
 }
