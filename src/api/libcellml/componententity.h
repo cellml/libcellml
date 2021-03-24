@@ -208,11 +208,11 @@ public:
      * the range [0, \#components).
      *
      * @param index Index of the Component to replace.
-     * @param component The component to be used as a replacement.
+     * @param newComponent The component to be used as a replacement.
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(size_t index, const ComponentPtr &component);
+    bool replaceComponent(size_t index, const ComponentPtr &newComponent);
 
     /**
      * @overload
