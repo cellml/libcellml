@@ -305,7 +305,7 @@ public:
      * previous component's reset list is updated.
      *
      * The function will return @c false with no action taken if:
-     *  - the supplied @param reset pointer is @c nullptr.
+     *  - the supplied @p reset pointer is @c nullptr.
      *
      * @sa removeReset
      *

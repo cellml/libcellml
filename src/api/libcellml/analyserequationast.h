@@ -218,130 +218,129 @@ public:
     AnalyserEquationAst &operator=(AnalyserEquationAst rhs) = delete; /**< Assignment operator. */
 
     /**
-     * @brief Create an @c AnalyserEquationAst object.
+     * @brief Create an @ref AnalyserEquationAst object.
      *
-     * Factory method to create an @c AnalyserEquationAst. Create a blank
+     * Factory method to create an @ref AnalyserEquationAst. Create a blank
      * equation AST with::
      *
      * @code
      *   auto ast = libcellml::AnalyserEquationAst::create();
      * @endcode
      *
-     * @return A smart pointer to an @c AnalyserEquationAst object.
+     * @return A smart pointer to an @ref AnalyserEquationAst object.
      */
     static AnalyserEquationAstPtr create() noexcept;
 
     /**
-     * @brief Get the @c Type of this @c AnalyserEquationAst.
+     * @brief Get the @c Type of this @ref AnalyserEquationAst.
      *
-     * Return the @c Type of this @c AnalyserEquationAst.
+     * Return the @c Type of this @ref AnalyserEquationAst.
      *
      * @return The @c Type.
      */
     Type type() const;
 
     /**
-     * @brief Set the type of this @c AnalyserEquationAst.
+     * @brief Set the type of this @ref AnalyserEquationAst.
      *
-     * Set the type of this @c AnalyserEquationAst.
+     * Set the type of this @ref AnalyserEquationAst.
      *
-     * @param parent The @c AnalyserEquationAst to be set as the type of this
-     * @c AnalyserEquationAst.
+     * @param type The @ref AnalyserEquationAst type to be set.
      */
     void setType(Type type);
 
     /**
-     * @brief Get the value for this @c AnalyserEquationAst.
+     * @brief Get the value for this @ref AnalyserEquationAst.
      *
-     * Return the value for this @c AnalyserEquationAst.
+     * Return the value for this @ref AnalyserEquationAst.
      *
      * @return The value.
      */
     std::string value() const;
 
     /**
-     * @brief Set the value for this @c AnalyserEquationAst.
+     * @brief Set the value for this @ref AnalyserEquationAst.
      *
-     * Set the value for this @c AnalyserEquationAst.
+     * Set the value for this @ref AnalyserEquationAst.
      *
      * @param value The @c std::string to be set as the value for this
-     * @c AnalyserEquationAst.
+     * @ref AnalyserEquationAst.
      */
     void setValue(const std::string &value);
 
     /**
-     * @brief Get the @c Variable for this @c AnalyserEquationAst.
+     * @brief Get the @c Variable for this @ref AnalyserEquationAst.
      *
-     * Return the @c Variable for this @c AnalyserEquationAst.
+     * Return the @c Variable for this @ref AnalyserEquationAst.
      *
      * @return The variable.
      */
     VariablePtr variable() const;
 
     /**
-     * @brief Set the @c Variable for this @c AnalyserEquationAst.
+     * @brief Set the @c Variable for this @ref AnalyserEquationAst.
      *
-     * Set the @c Variable for this @c AnalyserEquationAst.
+     * Set the @c Variable for this @ref AnalyserEquationAst.
      *
      * @param variable The @c Variable to be set as the variable for this
-     * @c AnalyserEquationAst.
+     * @ref AnalyserEquationAst.
      */
     void setVariable(const VariablePtr &variable);
 
     /**
-     * @brief Get the parent of this @c AnalyserEquationAst.
+     * @brief Get the parent of this @ref AnalyserEquationAst.
      *
-     * Return the parent of this @c AnalyserEquationAst.
+     * Return the parent of this @ref AnalyserEquationAst.
      *
      * @return The parent.
      */
     AnalyserEquationAstPtr parent() const;
 
     /**
-     * @brief Set the parent of this @c AnalyserEquationAst.
+     * @brief Set the parent of this @ref AnalyserEquationAst.
      *
-     * Set the parent of this @c AnalyserEquationAst.
+     * Set the parent of this @ref AnalyserEquationAst.
      *
-     * @param parent The @c AnalyserEquationAst to be set as the parent of this
-     * @c AnalyserEquationAst.
+     * @param parent The @ref AnalyserEquationAst to be set as the parent of this
+     * @ref AnalyserEquationAst.
      */
     void setParent(const AnalyserEquationAstPtr &parent);
 
     /**
-     * @brief Get the left child for this @c AnalyserEquationAst.
+     * @brief Get the left child for this @ref AnalyserEquationAst.
      *
-     * Return the left child of this @c AnalyserEquationAst.
+     * Return the left child of this @ref AnalyserEquationAst.
      *
      * @return The left child.
      */
     AnalyserEquationAstPtr leftChild() const;
 
     /**
-     * @brief Set the left child of this @c AnalyserEquationAst.
+     * @brief Set the left child of this @ref AnalyserEquationAst.
      *
-     * Set the left child of this @c AnalyserEquationAst.
+     * Set the left child of this @ref AnalyserEquationAst.
      *
-     * @param leftChild The @c AnalyserEquationAst to be set as the left child
-     * of this @c AnalyserEquationAst.
+     * @param leftChild The @ref AnalyserEquationAst to be set as the left child
+     * of this @ref AnalyserEquationAst.
      */
     void setLeftChild(const AnalyserEquationAstPtr &leftChild);
 
     /**
-     * @brief Get the right child for this @c AnalyserEquationAst.
+     * @brief Get the right child for this @ref AnalyserEquationAst.
      *
-     * Return the right child of this @c AnalyserEquationAst.
+     * Return the right child of this @ref AnalyserEquationAst.
      *
      * @return The right child.
      */
     AnalyserEquationAstPtr rightChild() const;
 
     /**
-     * @brief Set the right child of this @c AnalyserEquationAst.
+     * @brief Set the right child of this @ref AnalyserEquationAst.
      *
-     * Set the right child of this @c AnalyserEquationAst.
+     * Set the right child of this @ref AnalyserEquationAst.
      *
-     * @param rightChild The @c AnalyserEquationAst to be set as the right child
-     * of this @c AnalyserEquationAst.
+     * @param rightChild The @ref AnalyserEquationAst to be set as the right child
+     * of this @ref AnalyserEquationAst.
      */
     void setRightChild(const AnalyserEquationAstPtr &rightChild);
 

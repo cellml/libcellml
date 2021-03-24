@@ -160,7 +160,7 @@ public:
      *
      * If the two variables are not equivalent the empty string is returned.
      *
-     * @param variable1Variable one of the equivalence.
+     * @param variable1 Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
      *
      * @return the @c std::string mapping id.
