@@ -1,27 +1,29 @@
 Options
 -------
 
-============== ============ =========================================
-Config         Default      Description
-============== ============ =========================================
-BUILD_SHARED   ON           Build shared libraries (so, dylib, DLLs).
--------------- ------------ -----------------------------------------
-BUILD_TYPE     Release      The type of build Release, Debug, etc.
--------------- ------------ -----------------------------------------
-COMPILER_CACHE ON           Enable compiler cache (if available).
--------------- ------------ -----------------------------------------
-COVERAGE       ON           Enable coverage testing (if available).
--------------- ------------ -----------------------------------------
-INSTALL_PREFIX /usr/lib     Install path prefix (platform specific).
--------------- ------------ -----------------------------------------
-MEMCHECK       ON           Enable memcheck testing (if available).
--------------- ------------ -----------------------------------------
-TWAE :sup:`*`  ON           Treat warnings as errors.
--------------- ------------ -----------------------------------------
-UNIT_TESTS     ON           Enable tests.
-============== ============ =========================================
+Some options are platform or tool dependent.
+For example, :code:`MEMCHECK` is only available if the valgrind tool is available.
 
-:sup:`*` In CMake GUI Configuration applications this option is given in full ``LIBCELLML_TREAT_WARNINGS_AS_ERRORS``
+======================== ============ ===========================================
+Config                    Default      Description
+======================== ============ ===========================================
+:code:`BUILD_SHARED`      ON           Build shared libraries (so, dylib, DLLs).
+------------------------ ------------ -------------------------------------------
+:code:`BUILD_TYPE`        Release      The type of build Release, Debug, etc.
+------------------------ ------------ -------------------------------------------
+:code:`COMPILER_CACHE`    ON           Enable compiler cache (if available).
+------------------------ ------------ -------------------------------------------
+:code:`COVERAGE`          ON           Enable coverage testing (if available).
+------------------------ ------------ -------------------------------------------
+:code:`INSTALL_PREFIX`    /usr/lib     Install path prefix (platform specific).
+------------------------ ------------ -------------------------------------------
+:code:`MEMCHECK`          ON           Enable memcheck testing (if available).
+------------------------ ------------ -------------------------------------------
+:code:`TWAE`              ON           Treat warnings as errors.
+------------------------ ------------ -------------------------------------------
+:code:`UNIT_TESTS`        ON           Enable tests.
+======================== ============ ===========================================
+
 
 .. note In CMake GUI Configuration applications the config variable is prefixed with 'LIBCELLML\_'
 

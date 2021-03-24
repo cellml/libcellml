@@ -58,4 +58,17 @@ void Entity::removeId()
     mPimpl->mId = "";
 }
 
+bool Entity::equals(const EntityPtr &other) const
+{
+    return doEquals(other);
+}
+
+bool Entity::doEquals(const EntityPtr &other) const
+{
+    if (other == nullptr) {
+        return false;
+    }
+    return mPimpl->mId == other->id();
+}
+
 } // namespace libcellml

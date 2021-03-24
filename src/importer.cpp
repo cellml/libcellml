@@ -194,44 +194,24 @@ bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
 {
     HistorySearchVector history;
 
-    auto importedUnits = getImportedUnits(model);
-    auto importedComponents = getImportedComponents(model);
-
-    for(const UnitsPtr &units : importedUnits) {
+    for (const UnitsPtr &units : getImportedUnits(model)) {
         if (checkUnitsForCycles(model, units, history)) {
             return true;
         }
     }
-    for (const ComponentPtr &component : importedComponents) {
+
+    for (const ComponentPtr &component : getImportedComponents(model)) {
         if (checkComponentForCycles(model, component, history)) {
             return true;
         }
     }
-//    for (size_t i = 0; i < model->importSourceCount(); ++i) {
-//        auto importSource = model->importSource(i);
-//        history.clear();
-
-//        for(const UnitsPtr &units : importedUnits) {
-//            if (units->importSource() == importSource && checkUnitsForCycles(model, units, history)) {
-//                return true;
-//            }
-//        }
-
-//        for (const ComponentPtr &component : importedComponents) {
-//            if (component->importSource() == importSource && checkComponentForCycles(model, component, history)) {
-//                return true;
-//            }
-//        }
-
-//    }
 
     return false;
 }
 
 bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
 {
-    auto importedUnits = getImportedUnits(model);
-    for(const UnitsPtr &units : importedUnits) {
+    for (const UnitsPtr &units : getImportedUnits(model)) {
         auto importSource = units->importSource();
         auto h = std::make_tuple(units->name(), units->importReference(), importSource->url());
         if (std::find(history.begin(), history.end(), h) != history.end()) {
@@ -240,8 +220,7 @@ bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
         }
     }
 
-    auto importedComponents = getImportedComponents(model);
-    for (const ComponentPtr &component : importedComponents) {
+    for (const ComponentPtr &component : getImportedComponents(model)) {
         auto importSource = component->importSource();
         auto h = std::make_tuple(component->name(), component->importReference(), importSource->url());
         if (std::find(history.begin(), history.end(), h) != history.end()) {
@@ -252,7 +231,6 @@ bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
 
     return false;
 }
-
 
 /**
  * @brief Resolve the path of the given filename using the given base.
@@ -472,7 +450,7 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
                                                            const std::string &action) const
 {
     std::string msg = "Cyclic dependencies were found when attempting to " + action + " "
-                      + std::string((type == Type::UNITS) ? "units" : "component") + " in model '"
+                      + std::string((type == Type::UNITS) ? "units" : "a component") + " in the model '"
                       + model->name() + "'. The dependency loop is:\n";
     std::tuple<std::string, std::string, std::string> h;
     auto hSize = history.size();
@@ -500,22 +478,19 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
 
 bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 {
-    HistorySearchVector history;
-
     bool status = true;
+    HistorySearchVector history;
 
     clearImports(model);
 
-    auto importedUnits = getImportedUnits(model);
-    for (const UnitsPtr &units : importedUnits) {
+    for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
         if (!mPimpl->fetchUnits(model, units, baseFile, history)) {
             status = false;
         }
     }
 
-    auto importedComponents = getImportedComponents(model);
-    for (const ComponentPtr &component : importedComponents) {
+    for (const ComponentPtr &component : getImportedComponents(model)) {
         history.clear();
         if (!mPimpl->fetchComponent(model, component, baseFile, history)) {
             status = false;

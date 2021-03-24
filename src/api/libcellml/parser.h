@@ -63,10 +63,10 @@ public:
     ModelPtr parseModel(const std::string &input);
 
 private:
-    Parser(); /**< Constructor. */
+    Parser(); /**< Constructor, @private. */
 
-    struct ParserImpl; /**< Forward declaration for pImpl idiom. */
-    ParserImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ParserImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ParserImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
