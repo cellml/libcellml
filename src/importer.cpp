@@ -450,7 +450,7 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
                                                            const std::string &action) const
 {
     std::string msg = "Cyclic dependencies were found when attempting to " + action + " "
-                      + std::string((type == Type::UNITS) ? "units" : "component") + " in model '"
+                      + std::string((type == Type::UNITS) ? "units" : "a component") + " in the model '"
                       + model->name() + "'. The dependency loop is:\n";
     std::tuple<std::string, std::string, std::string> h;
     auto hSize = history.size();
