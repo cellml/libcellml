@@ -490,7 +490,7 @@ void Units::doSetImportSource(const ImportSourcePtr &importSource)
     auto thisUnits = shared_from_this();
     auto model = owningModel(thisUnits);
 
-    if (importSource != nullptr && model != nullptr) {
+    if ((importSource != nullptr) && (model != nullptr)) {
         model->addImportSource(importSource);
     }
 
