@@ -480,22 +480,19 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
 
 bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 {
-    HistorySearchVector history;
-
     bool status = true;
+    HistorySearchVector history;
 
     clearImports(model);
 
-    auto importedUnits = getImportedUnits(model);
-    for (const UnitsPtr &units : importedUnits) {
+    for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
         if (!mPimpl->fetchUnits(model, units, baseFile, history)) {
             status = false;
         }
     }
 
-    auto importedComponents = getImportedComponents(model);
-    for (const ComponentPtr &component : importedComponents) {
+    for (const ComponentPtr &component : getImportedComponents(model)) {
         history.clear();
         if (!mPimpl->fetchComponent(model, component, baseFile, history)) {
             status = false;
