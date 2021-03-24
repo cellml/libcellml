@@ -1,7 +1,7 @@
 const libCellMLModule = require('libcellml.js/libcellml.common')
 let libcellml = null
 
-describe("Version tests", () => {
+describe("Model tests", () => {
   beforeAll(async () => {
         libcellml = await libCellMLModule();
     });
