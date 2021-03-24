@@ -166,7 +166,7 @@ TEST(AnalyserUnits, ci)
         "The units in 'b = bCst' in component 'main' are not the same. 'b' is dimensionless while 'bCst' is in 'second'.",
         "The units in 'c = cCst' in component 'main' are not the same. 'c' is dimensionless while 'cCst' is in 'volt'.",
         "The units in 'd = dCst' in component 'main' are not the same. 'd' is dimensionless while 'dCst' is in 'frog'.",
-        "The units in 'e = eCst' in component 'main' are not the same. 'e' is dimensionless while 'eCst' is in 'metre_per_second'.",
+        "The units in 'e = eCst' in component 'main' are not the same. 'e' is dimensionless while 'eCst' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -205,11 +205,11 @@ TEST(AnalyserUnits, cn)
         "The units in 'b = 3.0' in component 'main' are not the same. 'b' is dimensionless while '3.0' is in 'second'.",
         "The units in 'c = 5.0' in component 'main' are not the same. 'c' is dimensionless while '5.0' is in 'volt'.",
         "The units in 'd = 7.0' in component 'main' are not the same. 'd' is dimensionless while '7.0' is in 'frog'.",
-        "The units in 'e = 9.0' in component 'main' are not the same. 'e' is dimensionless while '9.0' is in 'metre_per_second'.",
+        "The units in 'e = 9.0' in component 'main' are not the same. 'e' is dimensionless while '9.0' is in 'imaginary'.",
         "The units in 'g = 13.0e3' in component 'main' are not the same. 'g' is dimensionless while '13.0e3' is in 'second'.",
         "The units in 'h = 15.0e5' in component 'main' are not the same. 'h' is dimensionless while '15.0e5' is in 'volt'.",
         "The units in 'i = 17.0e7' in component 'main' are not the same. 'i' is dimensionless while '17.0e7' is in 'frog'.",
-        "The units in 'j = 19.0e9' in component 'main' are not the same. 'j' is dimensionless while '19.0e9' is in 'metre_per_second'.",
+        "The units in 'j = 19.0e9' in component 'main' are not the same. 'j' is dimensionless while '19.0e9' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -260,8 +260,8 @@ TEST(AnalyserUnits, piecewise)
         "The units in 'b > 9.0' in '(b > 9.0)?7.0' in '(b > 9.0)?7.0:11.0' in equation 'b = (b > 9.0)?7.0:11.0' in component 'main' are not the same. 'b' is dimensionless while '9.0' is in 'second'.",
         "The units in 'c > 15.0' in '(c > 15.0)?13.0' in '(c > 15.0)?13.0:17.0' in equation 'c = (c > 15.0)?13.0:17.0' in component 'main' are not the same. 'c' is dimensionless while '15.0' is in 'volt'.",
         "The units in 'd > 21.0' in '(d > 21.0)?19.0' in '(d > 21.0)?19.0:23.0' in equation 'd = (d > 21.0)?19.0:23.0' in component 'main' are not the same. 'd' is dimensionless while '21.0' is in 'frog'.",
-        "The units in 'e > 27.0' in '(e > 27.0)?25.0' in '(e > 27.0)?25.0:29.0' in equation 'e = (e > 27.0)?25.0:29.0' in component 'main' are not the same. 'e' is dimensionless while '27.0' is in 'metre_per_second'.",
-        "The units in 'f = (f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' in component 'main' are not the same. 'f' is dimensionless while '(f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' is in 'second', 'volt', 'frog' and 'metre_per_second'.",
+        "The units in 'e > 27.0' in '(e > 27.0)?25.0' in '(e > 27.0)?25.0:29.0' in equation 'e = (e > 27.0)?25.0:29.0' in component 'main' are not the same. 'e' is dimensionless while '27.0' is in 'imaginary'.",
+        "The units in 'f = (f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' in component 'main' are not the same. 'f' is dimensionless while '(f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' is in 'second', 'volt', 'frog' and 'imaginary'.",
         "The unit of '55.0' in '(55.0)?53.0' in '(55.0)?53.0:57.0' in equation 'g = (55.0)?53.0:57.0' in component 'main' is not dimensionless. '55.0' is in 'second'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
@@ -307,8 +307,8 @@ TEST(AnalyserUnits, eq)
         "The units in 'bCst == 3.0' in equation 'b = bCst == 3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'cCst == 5.0' in equation 'c = cCst == 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst == 7.0' in equation 'd = dCst == 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'eCst == 9.0' in equation 'e = eCst == 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'fCst == 11.0' in equation 'f = fCst == 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'eCst == 9.0' in equation 'e = eCst == 9.0' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'fCst == 11.0' in equation 'f = fCst == 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -350,8 +350,8 @@ TEST(AnalyserUnits, neq)
         "The units in 'bCst != 3.0' in equation 'b = bCst != 3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'cCst != 5.0' in equation 'c = cCst != 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst != 7.0' in equation 'd = dCst != 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'eCst != 9.0' in equation 'e = eCst != 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'fCst != 11.0' in equation 'f = fCst != 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'eCst != 9.0' in equation 'e = eCst != 9.0' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'fCst != 11.0' in equation 'f = fCst != 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -393,8 +393,8 @@ TEST(AnalyserUnits, lt)
         "The units in 'bCst < 3.0' in equation 'b = bCst < 3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'cCst < 5.0' in equation 'c = cCst < 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst < 7.0' in equation 'd = dCst < 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'eCst < 9.0' in equation 'e = eCst < 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'fCst < 11.0' in equation 'f = fCst < 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'eCst < 9.0' in equation 'e = eCst < 9.0' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'fCst < 11.0' in equation 'f = fCst < 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -436,8 +436,8 @@ TEST(AnalyserUnits, leq)
         "The units in 'bCst <= 3.0' in equation 'b = bCst <= 3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'cCst <= 5.0' in equation 'c = cCst <= 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst <= 7.0' in equation 'd = dCst <= 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'eCst <= 9.0' in equation 'e = eCst <= 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'fCst <= 11.0' in equation 'f = fCst <= 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'eCst <= 9.0' in equation 'e = eCst <= 9.0' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'fCst <= 11.0' in equation 'f = fCst <= 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -479,8 +479,8 @@ TEST(AnalyserUnits, gt)
         "The units in 'bCst > 3.0' in equation 'b = bCst > 3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'cCst > 5.0' in equation 'c = cCst > 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst > 7.0' in equation 'd = dCst > 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'eCst > 9.0' in equation 'e = eCst > 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'fCst > 11.0' in equation 'f = fCst > 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'eCst > 9.0' in equation 'e = eCst > 9.0' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'fCst > 11.0' in equation 'f = fCst > 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -522,8 +522,8 @@ TEST(AnalyserUnits, geq)
         "The units in 'bCst >= 3.0' in equation 'b = bCst >= 3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'cCst >= 5.0' in equation 'c = cCst >= 5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst >= 7.0' in equation 'd = dCst >= 7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'eCst >= 9.0' in equation 'e = eCst >= 9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'fCst >= 11.0' in equation 'f = fCst >= 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'eCst >= 9.0' in equation 'e = eCst >= 9.0' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'fCst >= 11.0' in equation 'f = fCst >= 11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -565,8 +565,8 @@ TEST(AnalyserUnits, andOp)
         "The unit of 'bCst' in 'bCst && 3.0' in equation 'b = bCst && 3.0' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in 'cCst && 5.0' in equation 'c = cCst && 5.0' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
         "The unit of 'dCst' in 'dCst && 7.0' in equation 'd = dCst && 7.0' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'eCst && 9.0' in equation 'e = eCst && 9.0' in component 'main' is not dimensionless. 'eCst' is in 'metre_per_second'.",
-        "The units of 'fCst' and '11.0' in 'fCst && 11.0' in equation 'f = fCst && 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The unit of 'eCst' in 'eCst && 9.0' in equation 'e = eCst && 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
+        "The units of 'fCst' and '11.0' in 'fCst && 11.0' in equation 'f = fCst && 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -608,8 +608,8 @@ TEST(AnalyserUnits, orOp)
         "The unit of 'bCst' in 'bCst || 3.0' in equation 'b = bCst || 3.0' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in 'cCst || 5.0' in equation 'c = cCst || 5.0' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
         "The unit of 'dCst' in 'dCst || 7.0' in equation 'd = dCst || 7.0' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'eCst || 9.0' in equation 'e = eCst || 9.0' in component 'main' is not dimensionless. 'eCst' is in 'metre_per_second'.",
-        "The units of 'fCst' and '11.0' in 'fCst || 11.0' in equation 'f = fCst || 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The unit of 'eCst' in 'eCst || 9.0' in equation 'e = eCst || 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
+        "The units of 'fCst' and '11.0' in 'fCst || 11.0' in equation 'f = fCst || 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -651,8 +651,8 @@ TEST(AnalyserUnits, xorOp)
         "The unit of 'bCst' in 'xor(bCst, 3.0)' in equation 'b = xor(bCst, 3.0)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in 'xor(cCst, 5.0)' in equation 'c = xor(cCst, 5.0)' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
         "The unit of 'dCst' in 'xor(dCst, 7.0)' in equation 'd = xor(dCst, 7.0)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'xor(eCst, 9.0)' in equation 'e = xor(eCst, 9.0)' in component 'main' is not dimensionless. 'eCst' is in 'metre_per_second'.",
-        "The units of 'fCst' and '11.0' in 'xor(fCst, 11.0)' in equation 'f = xor(fCst, 11.0)' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The unit of 'eCst' in 'xor(eCst, 9.0)' in equation 'e = xor(eCst, 9.0)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
+        "The units of 'fCst' and '11.0' in 'xor(fCst, 11.0)' in equation 'f = xor(fCst, 11.0)' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -694,7 +694,7 @@ TEST(AnalyserUnits, notOp)
         "The unit of 'bCst' in '!bCst' in equation 'b = !bCst' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in '!cCst' in equation 'c = !cCst' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
         "The unit of 'dCst' in '!dCst' in equation 'd = !dCst' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in '!eCst' in equation 'e = !eCst' in component 'main' is not dimensionless. 'eCst' is in 'metre_per_second'.",
+        "The unit of 'eCst' in '!eCst' in equation 'e = !eCst' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -733,8 +733,8 @@ TEST(AnalyserUnits, plus)
         "The units in 'bCst+3.0' in equation 'b = bCst+3.0' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'cCst+5.0' in equation 'c = cCst+5.0' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'dCst+7.0' in equation 'd = dCst+7.0' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'eCst+9.0' in equation 'e = eCst+9.0' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'fCst+11.0' in equation 'f = fCst+11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'eCst+9.0' in equation 'e = eCst+9.0' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'fCst+11.0' in equation 'f = fCst+11.0' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -776,12 +776,12 @@ TEST(AnalyserUnits, minus)
         "The units in 'b = -bCst' in component 'main' are not the same. 'b' is dimensionless while '-bCst' is in 'second'.",
         "The units in 'c = -cCst' in component 'main' are not the same. 'c' is dimensionless while '-cCst' is in 'volt'.",
         "The units in 'd = -dCst' in component 'main' are not the same. 'd' is dimensionless while '-dCst' is in 'frog'.",
-        "The units in 'e = -eCst' in component 'main' are not the same. 'e' is dimensionless while '-eCst' is in 'metre_per_second'.",
+        "The units in 'e = -eCst' in component 'main' are not the same. 'e' is dimensionless while '-eCst' is in 'imaginary'.",
         "The units in 'gCst-3.0' in equation 'g = gCst-3.0' in component 'main' are not the same. 'gCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'hCst-5.0' in equation 'h = hCst-5.0' in component 'main' are not the same. 'hCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'iCst-7.0' in equation 'i = iCst-7.0' in component 'main' are not the same. 'iCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'jCst-9.0' in equation 'j = jCst-9.0' in component 'main' are not the same. 'jCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'kCst-11.0' in equation 'k = kCst-11.0' in component 'main' are not the same. 'kCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'jCst-9.0' in equation 'j = jCst-9.0' in component 'main' are not the same. 'jCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'kCst-11.0' in equation 'k = kCst-11.0' in component 'main' are not the same. 'kCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -835,12 +835,12 @@ TEST(AnalyserUnits, times)
         "The units in 'b = bCst*3.0' in component 'main' are not the same. 'b' is dimensionless while 'bCst*3.0' is in 'second'.",
         "The units in 'c = cCst*5.0' in component 'main' are not the same. 'c' is dimensionless while 'cCst*5.0' is in 'volt'.",
         "The units in 'd = dCst*7.0' in component 'main' are not the same. 'd' is dimensionless while 'dCst*7.0' is in 'frog'.",
-        "The units in 'e = eCst*9.0' in component 'main' are not the same. 'e' is dimensionless while 'eCst*9.0' is in 'metre_per_second'.",
-        "The units in 'f = fCst*11.0' in component 'main' are not the same. 'f' is dimensionless while 'fCst*11.0' is in 'metre_per_second x second'.",
+        "The units in 'e = eCst*9.0' in component 'main' are not the same. 'e' is dimensionless while 'eCst*9.0' is in 'imaginary'.",
+        "The units in 'f = fCst*11.0' in component 'main' are not the same. 'f' is dimensionless while 'fCst*11.0' is in 'imaginary x second'.",
         "The units in 'g = gCst*13.0' in component 'main' are not the same. 'g' is in 'second_by_volt' while 'gCst*13.0' is in 'second'.",
         "The units in 'h = hCst*15.0' in component 'main' are not the same. 'h' is in 'volt_by_volt' while 'hCst*15.0' is in 'volt'.",
         "The units in 'i = iCst*17.0' in component 'main' are not the same. 'i' is in 'frog_by_volt' while 'iCst*17.0' is in 'frog'.",
-        "The units in 'j = jCst*19.0' in component 'main' are not the same. 'j' is in 'metre_per_second_by_volt' while 'jCst*19.0' is in 'metre_per_second'.",
+        "The units in 'j = jCst*19.0' in component 'main' are not the same. 'j' is in 'imaginary_by_volt' while 'jCst*19.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -894,12 +894,12 @@ TEST(AnalyserUnits, divide)
         "The units in 'b = bCst/3.0' in component 'main' are not the same. 'b' is dimensionless while 'bCst/3.0' is in 'second'.",
         "The units in 'c = cCst/5.0' in component 'main' are not the same. 'c' is dimensionless while 'cCst/5.0' is in 'volt'.",
         "The units in 'd = dCst/7.0' in component 'main' are not the same. 'd' is dimensionless while 'dCst/7.0' is in 'frog'.",
-        "The units in 'e = eCst/9.0' in component 'main' are not the same. 'e' is dimensionless while 'eCst/9.0' is in 'metre_per_second'.",
-        "The units in 'f = fCst/11.0' in component 'main' are not the same. 'f' is dimensionless while 'fCst/11.0' is in 'metre_per_second^-1 x second'.",
+        "The units in 'e = eCst/9.0' in component 'main' are not the same. 'e' is dimensionless while 'eCst/9.0' is in 'imaginary'.",
+        "The units in 'f = fCst/11.0' in component 'main' are not the same. 'f' is dimensionless while 'fCst/11.0' is in 'imaginary^-1 x second'.",
         "The units in 'g = gCst/13.0' in component 'main' are not the same. 'g' is in 'second_per_volt' while 'gCst/13.0' is in 'second'.",
         "The units in 'h = hCst/15.0' in component 'main' are not the same. 'h' is in 'volt_per_volt' while 'hCst/15.0' is in 'volt'.",
         "The units in 'i = iCst/17.0' in component 'main' are not the same. 'i' is in 'frog_per_volt' while 'iCst/17.0' is in 'frog'.",
-        "The units in 'j = jCst/19.0' in component 'main' are not the same. 'j' is in 'metre_per_second_per_volt' while 'jCst/19.0' is in 'metre_per_second'.",
+        "The units in 'j = jCst/19.0' in component 'main' are not the same. 'j' is in 'imaginary_per_volt' while 'jCst/19.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -953,11 +953,11 @@ TEST(AnalyserUnits, power)
         "The unit of '3.0' in 'pow(bCst, 3.0)' in equation 'b = pow(bCst, 3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'pow(cCst, 5.0)' in equation 'c = pow(cCst, 5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'pow(dCst, 7.0)' in equation 'd = pow(dCst, 7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'pow(eCst, 9.0)' in equation 'e = pow(eCst, 9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'pow(eCst, 9.0)' in equation 'e = pow(eCst, 9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
         "The units in 'f = pow(fCst, 11.0)' in component 'main' are not the same. 'f' is dimensionless while 'pow(fCst, 11.0)' is in 'second^11'.",
         "The units in 'g = pow(gCst, 13.0)' in component 'main' are not the same. 'g' is dimensionless while 'pow(gCst, 13.0)' is in 'volt^13'.",
         "The units in 'h = pow(hCst, 15.0)' in component 'main' are not the same. 'h' is dimensionless while 'pow(hCst, 15.0)' is in 'frog^15'.",
-        "The units in 'i = pow(iCst, 17.0)' in component 'main' are not the same. 'i' is dimensionless while 'pow(iCst, 17.0)' is in 'metre_per_second^17'.",
+        "The units in 'i = pow(iCst, 17.0)' in component 'main' are not the same. 'i' is dimensionless while 'pow(iCst, 17.0)' is in 'imaginary^17'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -993,6 +993,7 @@ TEST(AnalyserUnits, power)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
+    printIssues(analyser);
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
@@ -1008,15 +1009,15 @@ TEST(AnalyserUnits, root)
         "The units in 'b = sqrt(bCst)' in component 'main' are not the same. 'b' is dimensionless while 'sqrt(bCst)' is in 'second^0.5'.",
         "The units in 'c = sqrt(cCst)' in component 'main' are not the same. 'c' is dimensionless while 'sqrt(cCst)' is in 'volt^0.5'.",
         "The units in 'd = sqrt(dCst)' in component 'main' are not the same. 'd' is dimensionless while 'sqrt(dCst)' is in 'frog^0.5'.",
-        "The units in 'e = sqrt(eCst)' in component 'main' are not the same. 'e' is dimensionless while 'sqrt(eCst)' is in 'metre_per_second^0.5'.",
+        "The units in 'e = sqrt(eCst)' in component 'main' are not the same. 'e' is dimensionless while 'sqrt(eCst)' is in 'imaginary^0.5'.",
         "The unit of '3.0' in 'pow(kCst, 1.0/3.0)' in equation 'k = pow(kCst, 1.0/3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'pow(lCst, 1.0/5.0)' in equation 'l = pow(lCst, 1.0/5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'pow(mCst, 1.0/7.0)' in equation 'm = pow(mCst, 1.0/7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'pow(nCst, 1.0/9.0)' in equation 'n = pow(nCst, 1.0/9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'pow(nCst, 1.0/9.0)' in equation 'n = pow(nCst, 1.0/9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
         "The units in 'o = pow(oCst, 1.0/11.0)' in component 'main' are not the same. 'o' is dimensionless while 'pow(oCst, 1.0/11.0)' is in 'second^0.0909091'.",
         "The units in 'p = pow(pCst, 1.0/13.0)' in component 'main' are not the same. 'p' is dimensionless while 'pow(pCst, 1.0/13.0)' is in 'volt^0.0769231'.",
         "The units in 'q = pow(qCst, 1.0/15.0)' in component 'main' are not the same. 'q' is dimensionless while 'pow(qCst, 1.0/15.0)' is in 'frog^0.0666667'.",
-        "The units in 'r = pow(rCst, 1.0/17.0)' in component 'main' are not the same. 'r' is dimensionless while 'pow(rCst, 1.0/17.0)' is in 'metre_per_second^0.0588235'.",
+        "The units in 'r = pow(rCst, 1.0/17.0)' in component 'main' are not the same. 'r' is dimensionless while 'pow(rCst, 1.0/17.0)' is in 'imaginary^0.0588235'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1064,6 +1065,7 @@ TEST(AnalyserUnits, root)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
+    printIssues(analyser);
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
@@ -1079,7 +1081,7 @@ TEST(AnalyserUnits, abs)
         "The units in 'b = abs(3.0)' in component 'main' are not the same. 'b' is dimensionless while 'abs(3.0)' is in 'second'.",
         "The units in 'c = abs(5.0)' in component 'main' are not the same. 'c' is dimensionless while 'abs(5.0)' is in 'volt'.",
         "The units in 'd = abs(7.0)' in component 'main' are not the same. 'd' is dimensionless while 'abs(7.0)' is in 'frog'.",
-        "The units in 'e = abs(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'abs(9.0)' is in 'metre_per_second'.",
+        "The units in 'e = abs(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'abs(9.0)' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1118,7 +1120,7 @@ TEST(AnalyserUnits, exp)
         "The unit of 'bCst' in 'exp(bCst)' in equation 'b = exp(bCst)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in 'exp(cCst)' in equation 'c = exp(cCst)' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
         "The unit of 'dCst' in 'exp(dCst)' in equation 'd = exp(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'exp(eCst)' in equation 'e = exp(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'metre_per_second'.",
+        "The unit of 'eCst' in 'exp(eCst)' in equation 'e = exp(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1157,7 +1159,7 @@ TEST(AnalyserUnits, ln)
         "The unit of 'bCst' in 'ln(bCst)' in equation 'b = ln(bCst)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in 'ln(cCst)' in equation 'c = ln(cCst)' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
         "The unit of 'dCst' in 'ln(dCst)' in equation 'd = ln(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'ln(eCst)' in equation 'e = ln(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'metre_per_second'.",
+        "The unit of 'eCst' in 'ln(eCst)' in equation 'e = ln(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1196,15 +1198,15 @@ TEST(AnalyserUnits, log)
         "The unit of 'bCst' in 'log(bCst)' in equation 'b = log(bCst)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
         "The unit of 'cCst' in 'log(cCst)' in equation 'c = log(cCst)' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
         "The unit of 'dCst' in 'log(dCst)' in equation 'd = log(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'log(eCst)' in equation 'e = log(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'metre_per_second'.",
+        "The unit of 'eCst' in 'log(eCst)' in equation 'e = log(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
         "The units of '3.0' and 'gCst' in 'ln(gCst)/ln(3.0)' in equation 'g = ln(gCst)/ln(3.0)' in component 'main' are not dimensionless. '3.0' is in 'second' while 'gCst' is in 'second'.",
         "The units of '5.0' and 'hCst' in 'ln(hCst)/ln(5.0)' in equation 'h = ln(hCst)/ln(5.0)' in component 'main' are not dimensionless. '5.0' is in 'volt' while 'hCst' is in 'volt'.",
         "The units of '7.0' and 'iCst' in 'ln(iCst)/ln(7.0)' in equation 'i = ln(iCst)/ln(7.0)' in component 'main' are not dimensionless. '7.0' is in 'frog' while 'iCst' is in 'frog'.",
-        "The units of '9.0' and 'jCst' in 'ln(jCst)/ln(9.0)' in equation 'j = ln(jCst)/ln(9.0)' in component 'main' are not dimensionless. '9.0' is in 'metre_per_second' while 'jCst' is in 'metre_per_second'.",
+        "The units of '9.0' and 'jCst' in 'ln(jCst)/ln(9.0)' in equation 'j = ln(jCst)/ln(9.0)' in component 'main' are not dimensionless. '9.0' is in 'imaginary' while 'jCst' is in 'imaginary'.",
         "The unit of '13.0' in 'ln(lCst)/ln(13.0)' in equation 'l = ln(lCst)/ln(13.0)' in component 'main' is not dimensionless. '13.0' is in 'second'.",
         "The unit of '15.0' in 'ln(mCst)/ln(15.0)' in equation 'm = ln(mCst)/ln(15.0)' in component 'main' is not dimensionless. '15.0' is in 'volt'.",
         "The unit of '17.0' in 'ln(nCst)/ln(17.0)' in equation 'n = ln(nCst)/ln(17.0)' in component 'main' is not dimensionless. '17.0' is in 'frog'.",
-        "The unit of '19.0' in 'ln(oCst)/ln(19.0)' in equation 'o = ln(oCst)/ln(19.0)' in component 'main' is not dimensionless. '19.0' is in 'metre_per_second'.",
+        "The unit of '19.0' in 'ln(oCst)/ln(19.0)' in equation 'o = ln(oCst)/ln(19.0)' in component 'main' is not dimensionless. '19.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1267,7 +1269,7 @@ TEST(AnalyserUnits, floor)
         "The units in 'b = floor(3.0)' in component 'main' are not the same. 'b' is dimensionless while 'floor(3.0)' is in 'second'.",
         "The units in 'c = floor(5.0)' in component 'main' are not the same. 'c' is dimensionless while 'floor(5.0)' is in 'volt'.",
         "The units in 'd = floor(7.0)' in component 'main' are not the same. 'd' is dimensionless while 'floor(7.0)' is in 'frog'.",
-        "The units in 'e = floor(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'floor(9.0)' is in 'metre_per_second'.",
+        "The units in 'e = floor(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'floor(9.0)' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1306,7 +1308,7 @@ TEST(AnalyserUnits, ceiling)
         "The units in 'b = ceil(3.0)' in component 'main' are not the same. 'b' is dimensionless while 'ceil(3.0)' is in 'second'.",
         "The units in 'c = ceil(5.0)' in component 'main' are not the same. 'c' is dimensionless while 'ceil(5.0)' is in 'volt'.",
         "The units in 'd = ceil(7.0)' in component 'main' are not the same. 'd' is dimensionless while 'ceil(7.0)' is in 'frog'.",
-        "The units in 'e = ceil(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'ceil(9.0)' is in 'metre_per_second'.",
+        "The units in 'e = ceil(9.0)' in component 'main' are not the same. 'e' is dimensionless while 'ceil(9.0)' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1345,9 +1347,9 @@ TEST(AnalyserUnits, min)
         "The units in 'min(bCst, 3.0)' in equation 'b = min(bCst, 3.0)' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'min(cCst, 5.0)' in equation 'c = min(cCst, 5.0)' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'min(dCst, 7.0)' in equation 'd = min(dCst, 7.0)' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'min(eCst, 9.0)' in equation 'e = min(eCst, 9.0)' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'min(fCst, 11.0)' in equation 'f = min(fCst, 11.0)' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
-        "The units in 'min(13.0, 15.0)' in 'min(gCst, min(13.0, 15.0))' in equation 'g = min(gCst, min(13.0, 15.0))' in component 'main' are not the same. '13.0' is in 'frog' while '15.0' is in 'metre_per_second'.",
+        "The units in 'min(eCst, 9.0)' in equation 'e = min(eCst, 9.0)' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'min(fCst, 11.0)' in equation 'f = min(fCst, 11.0)' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
+        "The units in 'min(13.0, 15.0)' in 'min(gCst, min(13.0, 15.0))' in equation 'g = min(gCst, min(13.0, 15.0))' in component 'main' are not the same. '13.0' is in 'frog' while '15.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1392,9 +1394,9 @@ TEST(AnalyserUnits, max)
         "The units in 'max(bCst, 3.0)' in equation 'b = max(bCst, 3.0)' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'max(cCst, 5.0)' in equation 'c = max(cCst, 5.0)' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'max(dCst, 7.0)' in equation 'd = max(dCst, 7.0)' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'max(eCst, 9.0)' in equation 'e = max(eCst, 9.0)' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'max(fCst, 11.0)' in equation 'f = max(fCst, 11.0)' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
-        "The units in 'max(13.0, 15.0)' in 'max(gCst, max(13.0, 15.0))' in equation 'g = max(gCst, max(13.0, 15.0))' in component 'main' are not the same. '13.0' is in 'frog' while '15.0' is in 'metre_per_second'.",
+        "The units in 'max(eCst, 9.0)' in equation 'e = max(eCst, 9.0)' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'max(fCst, 11.0)' in equation 'f = max(fCst, 11.0)' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
+        "The units in 'max(13.0, 15.0)' in 'max(gCst, max(13.0, 15.0))' in equation 'g = max(gCst, max(13.0, 15.0))' in component 'main' are not the same. '13.0' is in 'frog' while '15.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1439,8 +1441,8 @@ TEST(AnalyserUnits, rem)
         "The units in 'rem(bCst, 3.0)' in equation 'b = rem(bCst, 3.0)' in component 'main' are not the same. 'bCst' is in 'second' while '3.0' is dimensionless.",
         "The units in 'rem(cCst, 5.0)' in equation 'c = rem(cCst, 5.0)' in component 'main' are not the same. 'cCst' is in 'volt' while '5.0' is dimensionless.",
         "The units in 'rem(dCst, 7.0)' in equation 'd = rem(dCst, 7.0)' in component 'main' are not the same. 'dCst' is in 'frog' while '7.0' is dimensionless.",
-        "The units in 'rem(eCst, 9.0)' in equation 'e = rem(eCst, 9.0)' in component 'main' are not the same. 'eCst' is in 'metre_per_second' while '9.0' is dimensionless.",
-        "The units in 'rem(fCst, 11.0)' in equation 'f = rem(fCst, 11.0)' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'metre_per_second'.",
+        "The units in 'rem(eCst, 9.0)' in equation 'e = rem(eCst, 9.0)' in component 'main' are not the same. 'eCst' is in 'imaginary' while '9.0' is dimensionless.",
+        "The units in 'rem(fCst, 11.0)' in equation 'f = rem(fCst, 11.0)' in component 'main' are not the same. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1482,7 +1484,7 @@ TEST(AnalyserUnits, sin)
         "The unit of '3.0' in 'sin(3.0)' in equation 'b = sin(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'sin(5.0)' in equation 'c = sin(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'sin(7.0)' in equation 'd = sin(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'sin(9.0)' in equation 'e = sin(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'sin(9.0)' in equation 'e = sin(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1521,7 +1523,7 @@ TEST(AnalyserUnits, cos)
         "The unit of '3.0' in 'cos(3.0)' in equation 'b = cos(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'cos(5.0)' in equation 'c = cos(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'cos(7.0)' in equation 'd = cos(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'cos(9.0)' in equation 'e = cos(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'cos(9.0)' in equation 'e = cos(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1560,7 +1562,7 @@ TEST(AnalyserUnits, tan)
         "The unit of '3.0' in 'tan(3.0)' in equation 'b = tan(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'tan(5.0)' in equation 'c = tan(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'tan(7.0)' in equation 'd = tan(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'tan(9.0)' in equation 'e = tan(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'tan(9.0)' in equation 'e = tan(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1599,7 +1601,7 @@ TEST(AnalyserUnits, sec)
         "The unit of '3.0' in 'sec(3.0)' in equation 'b = sec(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'sec(5.0)' in equation 'c = sec(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'sec(7.0)' in equation 'd = sec(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'sec(9.0)' in equation 'e = sec(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'sec(9.0)' in equation 'e = sec(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1638,7 +1640,7 @@ TEST(AnalyserUnits, csc)
         "The unit of '3.0' in 'csc(3.0)' in equation 'b = csc(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'csc(5.0)' in equation 'c = csc(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'csc(7.0)' in equation 'd = csc(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'csc(9.0)' in equation 'e = csc(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'csc(9.0)' in equation 'e = csc(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1677,7 +1679,7 @@ TEST(AnalyserUnits, cot)
         "The unit of '3.0' in 'cot(3.0)' in equation 'b = cot(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'cot(5.0)' in equation 'c = cot(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'cot(7.0)' in equation 'd = cot(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'cot(9.0)' in equation 'e = cot(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'cot(9.0)' in equation 'e = cot(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1716,7 +1718,7 @@ TEST(AnalyserUnits, sinh)
         "The unit of '3.0' in 'sinh(3.0)' in equation 'b = sinh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'sinh(5.0)' in equation 'c = sinh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'sinh(7.0)' in equation 'd = sinh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'sinh(9.0)' in equation 'e = sinh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'sinh(9.0)' in equation 'e = sinh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1755,7 +1757,7 @@ TEST(AnalyserUnits, cosh)
         "The unit of '3.0' in 'cosh(3.0)' in equation 'b = cosh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'cosh(5.0)' in equation 'c = cosh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'cosh(7.0)' in equation 'd = cosh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'cosh(9.0)' in equation 'e = cosh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'cosh(9.0)' in equation 'e = cosh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1794,7 +1796,7 @@ TEST(AnalyserUnits, tanh)
         "The unit of '3.0' in 'tanh(3.0)' in equation 'b = tanh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'tanh(5.0)' in equation 'c = tanh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'tanh(7.0)' in equation 'd = tanh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'tanh(9.0)' in equation 'e = tanh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'tanh(9.0)' in equation 'e = tanh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1833,7 +1835,7 @@ TEST(AnalyserUnits, sech)
         "The unit of '3.0' in 'sech(3.0)' in equation 'b = sech(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'sech(5.0)' in equation 'c = sech(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'sech(7.0)' in equation 'd = sech(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'sech(9.0)' in equation 'e = sech(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'sech(9.0)' in equation 'e = sech(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1872,7 +1874,7 @@ TEST(AnalyserUnits, csch)
         "The unit of '3.0' in 'csch(3.0)' in equation 'b = csch(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'csch(5.0)' in equation 'c = csch(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'csch(7.0)' in equation 'd = csch(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'csch(9.0)' in equation 'e = csch(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'csch(9.0)' in equation 'e = csch(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1911,7 +1913,7 @@ TEST(AnalyserUnits, coth)
         "The unit of '3.0' in 'coth(3.0)' in equation 'b = coth(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'coth(5.0)' in equation 'c = coth(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'coth(7.0)' in equation 'd = coth(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'coth(9.0)' in equation 'e = coth(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'coth(9.0)' in equation 'e = coth(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1950,7 +1952,7 @@ TEST(AnalyserUnits, arcsin)
         "The unit of '3.0' in 'arcsin(3.0)' in equation 'b = arcsin(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arcsin(5.0)' in equation 'c = arcsin(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arcsin(7.0)' in equation 'd = arcsin(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arcsin(9.0)' in equation 'e = arcsin(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arcsin(9.0)' in equation 'e = arcsin(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -1989,7 +1991,7 @@ TEST(AnalyserUnits, arccos)
         "The unit of '3.0' in 'arccos(3.0)' in equation 'b = arccos(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arccos(5.0)' in equation 'c = arccos(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arccos(7.0)' in equation 'd = arccos(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccos(9.0)' in equation 'e = arccos(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arccos(9.0)' in equation 'e = arccos(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2028,7 +2030,7 @@ TEST(AnalyserUnits, arctan)
         "The unit of '3.0' in 'arctan(3.0)' in equation 'b = arctan(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arctan(5.0)' in equation 'c = arctan(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arctan(7.0)' in equation 'd = arctan(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arctan(9.0)' in equation 'e = arctan(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arctan(9.0)' in equation 'e = arctan(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2067,7 +2069,7 @@ TEST(AnalyserUnits, arcsec)
         "The unit of '3.0' in 'arcsec(3.0)' in equation 'b = arcsec(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arcsec(5.0)' in equation 'c = arcsec(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arcsec(7.0)' in equation 'd = arcsec(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arcsec(9.0)' in equation 'e = arcsec(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arcsec(9.0)' in equation 'e = arcsec(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2106,7 +2108,7 @@ TEST(AnalyserUnits, arccsc)
         "The unit of '3.0' in 'arccsc(3.0)' in equation 'b = arccsc(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arccsc(5.0)' in equation 'c = arccsc(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arccsc(7.0)' in equation 'd = arccsc(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccsc(9.0)' in equation 'e = arccsc(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arccsc(9.0)' in equation 'e = arccsc(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2145,7 +2147,7 @@ TEST(AnalyserUnits, arccot)
         "The unit of '3.0' in 'arccot(3.0)' in equation 'b = arccot(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arccot(5.0)' in equation 'c = arccot(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arccot(7.0)' in equation 'd = arccot(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccot(9.0)' in equation 'e = arccot(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arccot(9.0)' in equation 'e = arccot(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2184,7 +2186,7 @@ TEST(AnalyserUnits, arcsinh)
         "The unit of '3.0' in 'arcsinh(3.0)' in equation 'b = arcsinh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arcsinh(5.0)' in equation 'c = arcsinh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arcsinh(7.0)' in equation 'd = arcsinh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arcsinh(9.0)' in equation 'e = arcsinh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arcsinh(9.0)' in equation 'e = arcsinh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2223,7 +2225,7 @@ TEST(AnalyserUnits, arccosh)
         "The unit of '3.0' in 'arccosh(3.0)' in equation 'b = arccosh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arccosh(5.0)' in equation 'c = arccosh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arccosh(7.0)' in equation 'd = arccosh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccosh(9.0)' in equation 'e = arccosh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arccosh(9.0)' in equation 'e = arccosh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2262,7 +2264,7 @@ TEST(AnalyserUnits, arctanh)
         "The unit of '3.0' in 'arctanh(3.0)' in equation 'b = arctanh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arctanh(5.0)' in equation 'c = arctanh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arctanh(7.0)' in equation 'd = arctanh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arctanh(9.0)' in equation 'e = arctanh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arctanh(9.0)' in equation 'e = arctanh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2301,7 +2303,7 @@ TEST(AnalyserUnits, arcsech)
         "The unit of '3.0' in 'arcsech(3.0)' in equation 'b = arcsech(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arcsech(5.0)' in equation 'c = arcsech(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arcsech(7.0)' in equation 'd = arcsech(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arcsech(9.0)' in equation 'e = arcsech(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arcsech(9.0)' in equation 'e = arcsech(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2340,7 +2342,7 @@ TEST(AnalyserUnits, arccsch)
         "The unit of '3.0' in 'arccsch(3.0)' in equation 'b = arccsch(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arccsch(5.0)' in equation 'c = arccsch(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arccsch(7.0)' in equation 'd = arccsch(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccsch(9.0)' in equation 'e = arccsch(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arccsch(9.0)' in equation 'e = arccsch(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2379,7 +2381,7 @@ TEST(AnalyserUnits, arccoth)
         "The unit of '3.0' in 'arccoth(3.0)' in equation 'b = arccoth(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
         "The unit of '5.0' in 'arccoth(5.0)' in equation 'c = arccoth(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
         "The unit of '7.0' in 'arccoth(7.0)' in equation 'd = arccoth(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccoth(9.0)' in equation 'e = arccoth(9.0)' in component 'main' is not dimensionless. '9.0' is in 'metre_per_second'.",
+        "The unit of '9.0' in 'arccoth(9.0)' in equation 'e = arccoth(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,
@@ -2465,7 +2467,7 @@ TEST(AnalyserUnits, multipliers)
         "The units in 'a = 1.0' in component 'main' are not the same. 'a' is in 'second' while '1.0' is in 'millisecond'.",
         "The units in 'b = 3.0' in component 'main' are not the same. 'b' is in 'volt' while '3.0' is in 'millivolt'.",
         "The units in 'c = 5.0' in component 'main' are not the same. 'c' is in 'frog' while '5.0' is in 'millifrog'.",
-        "The units in 'd = 7.0' in component 'main' are not the same. 'd' is in 'metre_per_second' while '7.0' is in 'millimetre_per_second'.",
+        "The units in 'd = 7.0' in component 'main' are not the same. 'd' is in 'imaginary' while '7.0' is in 'milliimaginary'.",
     };
     const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
         libcellml::CellmlElementType::UNDEFINED,

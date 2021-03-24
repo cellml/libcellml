@@ -10,18 +10,22 @@
     <units name="millifrog">
         <unit prefix="milli" units="frog"/>
     </units>
-    <units name="metre_per_second">
-        <unit units="metre"/>
-        <unit exponent="-1" units="second"/>
+    <units name="imaginary">
+        <unit exponent="1" units="second"/>
+        <unit exponent="1" prefix="milli" units="second"/>
+        <unit exponent="3" units="volt"/>
+        <unit exponent="3" prefix="micro" units="volt"/>
+        <unit exponent="5" units="frog"/>
+        <unit exponent="5" prefix="nano" units="frog"/>
     </units>
-    <units name="millimetre_per_second">
-        <unit prefix="milli" units="metre_per_second"/>
+    <units name="milliimaginary">
+        <unit prefix="milli" units="imaginary"/>
     </units>
     <component name="main">
         <variable name="a" units="second"/>
         <variable name="b" units="volt"/>
         <variable name="c" units="frog"/>
-        <variable name="d" units="metre_per_second"/>
+        <variable name="d" units="imaginary"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -41,7 +45,7 @@
             <apply>
                 <eq/>
                 <ci>d</ci>
-                <cn cellml:units="millimetre_per_second">7</cn>
+                <cn cellml:units="milliimaginary">7</cn>
             </apply>
         </math>
     </component>
