@@ -1,9 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="root" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="frog"/>
-    <units name="metre_per_second">
-        <unit units="metre"/>
-        <unit exponent="-1" units="second"/>
+    <units name="imaginary">
+        <unit exponent="1" units="second"/>
+        <unit exponent="1" prefix="milli" units="second"/>
+        <unit exponent="3" units="volt"/>
+        <unit exponent="3" prefix="micro" units="volt"/>
+        <unit exponent="5" units="frog"/>
+        <unit exponent="5" prefix="nano" units="frog"/>
     </units>
     <units name="second_1_2">
         <unit exponent="0.5" units="second"/>
@@ -14,8 +18,8 @@
     <units name="frog_1_2">
         <unit exponent="0.5" units="frog"/>
     </units>
-    <units name="metre_per_second_1_2">
-        <unit exponent="0.5" units="metre_per_second"/>
+    <units name="imaginary_1_2">
+        <unit exponent="0.5" units="imaginary"/>
     </units>
     <units name="second_1_100">
         <unit exponent="0.01" units="second"/>
@@ -26,8 +30,8 @@
     <units name="frog_1_400">
         <unit exponent="0.0025" units="frog"/>
     </units>
-    <units name="metre_per_second_1_800">
-        <unit exponent="0.00125" units="metre_per_second"/>
+    <units name="imaginary_1_800">
+        <unit exponent="0.00125" units="imaginary"/>
     </units>
     <component name="main">
         <variable name="a" units="dimensionless"/>
@@ -38,7 +42,7 @@
         <variable name="f" units="second_1_2"/>
         <variable name="g" units="volt_1_2"/>
         <variable name="h" units="frog_1_2"/>
-        <variable name="i" units="metre_per_second_1_2"/>
+        <variable name="i" units="imaginary_1_2"/>
         <variable name="j" units="dimensionless"/>
         <variable name="k" units="dimensionless"/>
         <variable name="l" units="dimensionless"/>
@@ -51,29 +55,29 @@
         <variable name="s" units="second_1_100"/>
         <variable name="t" units="volt_1_200"/>
         <variable name="u" units="frog_1_400"/>
-        <variable name="v" units="metre_per_second_1_800"/>
+        <variable name="v" units="imaginary_1_800"/>
         <variable initial_value="1" name="aCst" units="dimensionless"/>
         <variable initial_value="3" name="bCst" units="second"/>
         <variable initial_value="5" name="cCst" units="volt"/>
         <variable initial_value="7" name="dCst" units="frog"/>
-        <variable initial_value="9" name="eCst" units="metre_per_second"/>
+        <variable initial_value="9" name="eCst" units="imaginary"/>
         <variable initial_value="11" name="fCst" units="second"/>
         <variable initial_value="13" name="gCst" units="volt"/>
         <variable initial_value="15" name="hCst" units="frog"/>
-        <variable initial_value="17" name="iCst" units="metre_per_second"/>
+        <variable initial_value="17" name="iCst" units="imaginary"/>
         <variable initial_value="19" name="jCst" units="dimensionless"/>
         <variable initial_value="21" name="kCst" units="second"/>
         <variable initial_value="23" name="lCst" units="volt"/>
         <variable initial_value="25" name="mCst" units="frog"/>
-        <variable initial_value="27" name="nCst" units="metre_per_second"/>
+        <variable initial_value="27" name="nCst" units="imaginary"/>
         <variable initial_value="29" name="oCst" units="second"/>
         <variable initial_value="31" name="pCst" units="volt"/>
         <variable initial_value="33" name="qCst" units="frog"/>
-        <variable initial_value="35" name="rCst" units="metre_per_second"/>
+        <variable initial_value="35" name="rCst" units="imaginary"/>
         <variable initial_value="100" name="sCst" units="second"/>
         <variable initial_value="200" name="tCst" units="volt"/>
         <variable initial_value="400" name="uCst" units="frog"/>
-        <variable initial_value="800" name="vCst" units="metre_per_second"/>
+        <variable initial_value="800" name="vCst" units="imaginary"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -197,7 +201,7 @@
                 <apply>
                     <root/>
                     <degree>
-                        <cn cellml:units="metre_per_second">9</cn>
+                        <cn cellml:units="imaginary">9</cn>
                     </degree>
                     <ci>nCst</ci>
                 </apply>

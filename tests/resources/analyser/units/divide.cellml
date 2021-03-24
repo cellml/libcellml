@@ -1,9 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="divide" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="frog"/>
-    <units name="metre_per_second">
-        <unit units="metre"/>
-        <unit exponent="-1" units="second"/>
+    <units name="imaginary">
+        <unit exponent="1" units="second"/>
+        <unit exponent="1" prefix="milli" units="second"/>
+        <unit exponent="3" units="volt"/>
+        <unit exponent="3" prefix="micro" units="volt"/>
+        <unit exponent="5" units="frog"/>
+        <unit exponent="5" prefix="nano" units="frog"/>
     </units>
     <units name="second_per_volt">
         <unit units="second"/>
@@ -17,8 +21,8 @@
         <unit units="frog"/>
         <unit exponent="-1" units="volt"/>
     </units>
-    <units name="metre_per_second_per_volt">
-        <unit units="metre_per_second"/>
+    <units name="imaginary_per_volt">
+        <unit units="imaginary"/>
         <unit exponent="-1" units="volt"/>
     </units>
     <component name="main">
@@ -31,25 +35,25 @@
         <variable name="g" units="second_per_volt"/>
         <variable name="h" units="volt_per_volt"/>
         <variable name="i" units="frog_per_volt"/>
-        <variable name="j" units="metre_per_second_per_volt"/>
+        <variable name="j" units="imaginary_per_volt"/>
         <variable name="k" units="second_per_volt"/>
         <variable name="l" units="volt_per_volt"/>
         <variable name="m" units="frog_per_volt"/>
-        <variable name="n" units="metre_per_second_per_volt"/>
+        <variable name="n" units="imaginary_per_volt"/>
         <variable initial_value="1" name="aCst" units="dimensionless"/>
         <variable initial_value="3" name="bCst" units="second"/>
         <variable initial_value="5" name="cCst" units="volt"/>
         <variable initial_value="7" name="dCst" units="frog"/>
-        <variable initial_value="9" name="eCst" units="metre_per_second"/>
+        <variable initial_value="9" name="eCst" units="imaginary"/>
         <variable initial_value="11" name="fCst" units="second"/>
         <variable initial_value="13" name="gCst" units="second"/>
         <variable initial_value="15" name="hCst" units="volt"/>
         <variable initial_value="17" name="iCst" units="frog"/>
-        <variable initial_value="19" name="jCst" units="metre_per_second"/>
+        <variable initial_value="19" name="jCst" units="imaginary"/>
         <variable initial_value="21" name="kCst" units="second"/>
         <variable initial_value="23" name="lCst" units="volt"/>
         <variable initial_value="25" name="mCst" units="frog"/>
-        <variable initial_value="27" name="nCst" units="metre_per_second"/>
+        <variable initial_value="27" name="nCst" units="imaginary"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -102,7 +106,7 @@
                 <apply>
                     <divide/>
                     <ci>fCst</ci>
-                    <cn cellml:units="metre_per_second">11</cn>
+                    <cn cellml:units="imaginary">11</cn>
                 </apply>
             </apply>
             <apply>
