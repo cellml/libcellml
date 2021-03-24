@@ -194,15 +194,13 @@ bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
 {
     HistorySearchVector history;
 
-    auto importedUnits = getImportedUnits(model);
-    auto importedComponents = getImportedComponents(model);
-
-    for (const UnitsPtr &units : importedUnits) {
+    for (const UnitsPtr &units : getImportedUnits(model)) {
         if (checkUnitsForCycles(model, units, history)) {
             return true;
         }
     }
-    for (const ComponentPtr &component : importedComponents) {
+
+    for (const ComponentPtr &component : getImportedComponents(model)) {
         if (checkComponentForCycles(model, component, history)) {
             return true;
         }
