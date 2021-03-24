@@ -50,7 +50,7 @@ struct Model::ModelImpl
     std::vector<UnitsPtr> mUnits;
     std::vector<ImportSourceWeakPtr> mImports;
 
-    void cleanExpiredImportSources();
+    void clearExpiredImportSources();
 
     std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
     std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
@@ -283,7 +283,7 @@ size_t Model::unitsCount() const
     return mPimpl->mUnits.size();
 }
 
-void Model::ModelImpl::cleanExpiredImportSources()
+void Model::ModelImpl::clearExpiredImportSources()
 {
     mImports.erase(std::remove_if(mImports.begin(), mImports.end(), [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSourceWeak.expired(); }), mImports.end());
 }
@@ -318,13 +318,13 @@ bool Model::addImportSource(const ImportSourcePtr &importSource)
 
 size_t Model::importSourceCount() const
 {
-    mPimpl->cleanExpiredImportSources();
+    mPimpl->clearExpiredImportSources();
     return mPimpl->mImports.size();
 }
 
 ImportSourcePtr Model::importSource(size_t index) const
 {
-    mPimpl->cleanExpiredImportSources();
+    mPimpl->clearExpiredImportSources();
 
     ImportSourcePtr importSrc = nullptr;
     if (index < mPimpl->mImports.size()) {
@@ -342,7 +342,7 @@ bool Model::removeImportSource(size_t index)
 
 bool Model::removeImportSource(const ImportSourcePtr &importSource)
 {
-    mPimpl->cleanExpiredImportSources();
+    mPimpl->clearExpiredImportSources();
 
     bool status = false;
     auto result = mPimpl->findImportSource(importSource);
