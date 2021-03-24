@@ -105,4 +105,15 @@ ImportSourcePtr ImportSource::clone() const
     return i;
 }
 
+bool ImportSource::doEquals(const EntityPtr &other) const
+{
+    if (Entity::doEquals(other)) {
+        auto importSource = std::dynamic_pointer_cast<ImportSource>(other);
+        if (importSource != nullptr) {
+            return mPimpl->mUrl == importSource->url();
+        }
+    }
+    return false;
+}
+
 } // namespace libcellml

@@ -124,11 +124,14 @@ public:
      */
     ImportSourcePtr clone() const;
 
-private:
-    ImportSource(); /**< Constructor. */
+protected:
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-    struct ImportSourceImpl; /**< Forward declaration for pImpl idiom. */
-    ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
+private:
+    ImportSource(); /**< Constructor, @private. */
+
+    struct ImportSourceImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ImportSourceImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
