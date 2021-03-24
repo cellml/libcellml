@@ -1259,13 +1259,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
 
     if (userUnitsMap) {
         if (unitsName != "dimensionless") {
-            auto iter = unitsMap.find(unitsName);
-
-            if (iter == unitsMap.end()) {
-                unitsMap[unitsName] = unitsExponent;
-            } else {
-                unitsMap[iter->first] += iter->second * unitsExponent;
-            }
+            unitsMap[unitsName] = unitsExponent;
         }
     } else {
         if (isStandardUnitName(unitsName)) {
