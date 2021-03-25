@@ -166,14 +166,12 @@ public:
     void removeAllModels();
 
     /**
-     * @brief Add an import source item to this model.
+     * @brief Add an import source item to this importer.
      *
-     * Add import source by reference to the model. If the import
-     * source item was previously in a different model, it is moved
-     * to this one, and the previous model's import source list is updated.
+     * Add import source by reference to the importer.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p importSrc pointer already exists in this model; or
+     *  - The @p importSrc pointer already exists in this importer; or
      *  - The @p importSrc is @c nullptr.
      *
      * @param importSource The import source to add.
@@ -183,9 +181,9 @@ public:
     bool addImportSource(const ImportSourcePtr &importSource);
 
     /**
-     * @brief Get the number of import source items in the model.
+     * @brief Get the number of import source items in the importer.
      *
-     * Returns the number of import source items the model contains.
+     * Returns the number of import source items the importer contains.
      *
      * @return The number of import source items.
      */
@@ -207,7 +205,7 @@ public:
     /**
      * @brief Remove the import source at the given @p index.
      *
-     * Remove the import source from this model at the given @p index.
+     * Remove the import source from this importer at the given @p index.
      * @p index must be in the range [0, \#importSources).
      *
      * @param index The index of the import source to remove.
@@ -228,21 +226,21 @@ public:
     bool removeImportSource(const ImportSourcePtr &importSource);
 
     /**
-     * @brief Remove all import sources stored in this model.
+     * @brief Remove all import sources stored in this importer.
      *
-     * Clears all import sources that have been added to this model.
+     * Clears all import sources that have been added to this importer.
      */
     bool removeAllImportSources();
 
     /**
-     * @brief Tests to see if the import source is within this model.
+     * @brief Tests to see if the import source is within this importer.
      *
-     * Tests to see if the given import source is contained within this model.
-     * Returns @c true if the import source is in the model and @c false otherwise.
+     * Tests to see if the given import source is contained within this importer.
+     * Returns @c true if the import source is in the importer and @c false otherwise.
      *
-     * @param importSource The import source to test for existence in this model.
+     * @param importSource The import source to test for existence in this importer.
      *
-     * @return @c true if the import source is in the model and @c false otherwise.
+     * @return @c true if the import source is in the importer and @c false otherwise.
      */
     bool hasImportSource(const ImportSourcePtr &importSource) const;
 
