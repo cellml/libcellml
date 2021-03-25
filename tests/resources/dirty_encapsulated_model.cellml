@@ -7,7 +7,9 @@
   </component>
   <encapsulation>
     <component_ref component="component">
-      <component_ref component="emptyChildComponent"/>
+      <component_ref component="emptyChildComponent">
+        <component_ref/>
+      </component_ref>
       <component_ref component="nonEmptyComponent"/>
     </component_ref>
   </encapsulation>

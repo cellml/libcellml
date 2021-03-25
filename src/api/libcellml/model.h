@@ -425,12 +425,12 @@ public:
     bool hasImportSource(const ImportSourcePtr &importSource) const;
 
     /**
-     * @brief Remove any empty import sources and empty components from the model.
+     * @brief Remove any empty components and units from the model.
      * 
-     *  Remove any empty import sources, empty components, and unused units from the model.
-     *  In this context, "empty" items are:
-     *   - components with no resets, variables, maths, or non-empty child components; and
-     *   - import sources with no imported components or units.
+     *  Remove any empty components and units fom this model.
+     *  In this context, "empty" means:
+     *   - components with no name, id, resets, variables, maths, or non-empty child components; and
+     *   - units which have no name, id, or child unit's.
      *  This is applied recursively. In the situation where a component is only called
      *  non-empty because it has a child component, but that child is empty, both will be
      *  removed.
