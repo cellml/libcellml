@@ -183,7 +183,6 @@ bool areEqual(double a, double b)
 {
     // Note: we add 0.0 in case a is, for instance, equal to 0.0 and b is equal
     //       to -0.0.
-
     return convertToString(a + 0.0) == convertToString(b + 0.0);
 }
 
