@@ -164,178 +164,64 @@ TEST(AnalyserUnits, piecewise)
 
 TEST(AnalyserUnits, eq)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/eq.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst == 3.0' in equation 'b = bCst == 3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
-        "The units in 'cCst == 5.0' in equation 'c = cCst == 5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
-        "The units in 'dCst == 7.0' in equation 'd = dCst == 7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'eCst == 9.0' in equation 'e = eCst == 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
-        "The units in 'fCst == 11.0' in equation 'f = fCst == 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
+    std::vector<std::pair<std::string, std::string>> operators = {
+        {"eq", "=="},
+        {"neq", "!="},
+        {"lt", "<"},
+        {"leq", "<="},
+        {"gt", ">"},
+        {"geq", ">="},
     };
 
-    auto analyser = libcellml::Analyser::create();
+    for (const auto &op : operators) {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(fileContents("analyser/units/" + op.first + ".cellml"));
 
-    analyser->analyseModel(model);
+        EXPECT_EQ(size_t(0), parser->issueCount());
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+        const std::vector<std::string> expectedIssues = {
+            "The units in 'bCst " + op.second + " 3.0' in equation 'b = bCst " + op.second + " 3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
+            "The units in 'cCst " + op.second + " 5.0' in equation 'c = cCst " + op.second + " 5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
+            "The units in 'dCst " + op.second + " 7.0' in equation 'd = dCst " + op.second + " 7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
+            "The units in 'eCst " + op.second + " 9.0' in equation 'e = eCst " + op.second + " 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
+            "The units in 'fCst " + op.second + " 11.0' in equation 'f = fCst " + op.second + " 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
+        };
+
+        auto analyser = libcellml::Analyser::create();
+
+        analyser->analyseModel(model);
+
+        EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    }
 }
 
-TEST(AnalyserUnits, neq)
+TEST(AnalyserUnits, andOrOperators)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/neq.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst != 3.0' in equation 'b = bCst != 3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
-        "The units in 'cCst != 5.0' in equation 'c = cCst != 5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
-        "The units in 'dCst != 7.0' in equation 'd = dCst != 7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'eCst != 9.0' in equation 'e = eCst != 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
-        "The units in 'fCst != 11.0' in equation 'f = fCst != 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
+    std::vector<std::pair<std::string, std::string>> operators = {
+        {"and", "&&"},
+        {"or", "||"},
     };
 
-    auto analyser = libcellml::Analyser::create();
+    for (const auto &op : operators) {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(fileContents("analyser/units/" + op.first + ".cellml"));
 
-    analyser->analyseModel(model);
+        EXPECT_EQ(size_t(0), parser->issueCount());
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
+        const std::vector<std::string> expectedIssues = {
+            "The unit of 'bCst' in 'bCst " + op.second + " 3.0' in equation 'b = bCst " + op.second + " 3.0' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
+            "The unit of 'cCst' in 'cCst " + op.second + " 5.0' in equation 'c = cCst " + op.second + " 5.0' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
+            "The unit of 'dCst' in 'dCst " + op.second + " 7.0' in equation 'd = dCst " + op.second + " 7.0' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
+            "The unit of 'eCst' in 'eCst " + op.second + " 9.0' in equation 'e = eCst " + op.second + " 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
+            "The units of 'fCst' and '11.0' in 'fCst " + op.second + " 11.0' in equation 'f = fCst " + op.second + " 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
+        };
 
-TEST(AnalyserUnits, lt)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/lt.cellml"));
+        auto analyser = libcellml::Analyser::create();
 
-    EXPECT_EQ(size_t(0), parser->issueCount());
+        analyser->analyseModel(model);
 
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst < 3.0' in equation 'b = bCst < 3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
-        "The units in 'cCst < 5.0' in equation 'c = cCst < 5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
-        "The units in 'dCst < 7.0' in equation 'd = dCst < 7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'eCst < 9.0' in equation 'e = eCst < 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
-        "The units in 'fCst < 11.0' in equation 'f = fCst < 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, leq)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/leq.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst <= 3.0' in equation 'b = bCst <= 3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
-        "The units in 'cCst <= 5.0' in equation 'c = cCst <= 5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
-        "The units in 'dCst <= 7.0' in equation 'd = dCst <= 7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'eCst <= 9.0' in equation 'e = eCst <= 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
-        "The units in 'fCst <= 11.0' in equation 'f = fCst <= 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, gt)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/gt.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst > 3.0' in equation 'b = bCst > 3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
-        "The units in 'cCst > 5.0' in equation 'c = cCst > 5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
-        "The units in 'dCst > 7.0' in equation 'd = dCst > 7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'eCst > 9.0' in equation 'e = eCst > 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
-        "The units in 'fCst > 11.0' in equation 'f = fCst > 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, geq)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/geq.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'bCst >= 3.0' in equation 'b = bCst >= 3.0' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
-        "The units in 'cCst >= 5.0' in equation 'c = cCst >= 5.0' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
-        "The units in 'dCst >= 7.0' in equation 'd = dCst >= 7.0' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'eCst >= 9.0' in equation 'e = eCst >= 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
-        "The units in 'fCst >= 11.0' in equation 'f = fCst >= 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, andOp)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/and.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of 'bCst' in 'bCst && 3.0' in equation 'b = bCst && 3.0' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
-        "The unit of 'cCst' in 'cCst && 5.0' in equation 'c = cCst && 5.0' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
-        "The unit of 'dCst' in 'dCst && 7.0' in equation 'd = dCst && 7.0' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'eCst && 9.0' in equation 'e = eCst && 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
-        "The units of 'fCst' and '11.0' in 'fCst && 11.0' in equation 'f = fCst && 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, orOp)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/or.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of 'bCst' in 'bCst || 3.0' in equation 'b = bCst || 3.0' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
-        "The unit of 'cCst' in 'cCst || 5.0' in equation 'c = cCst || 5.0' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
-        "The unit of 'dCst' in 'dCst || 7.0' in equation 'd = dCst || 7.0' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'eCst || 9.0' in equation 'e = eCst || 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
-        "The units of 'fCst' and '11.0' in 'fCst || 11.0' in equation 'f = fCst || 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+        EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    }
 }
 
 TEST(AnalyserUnits, xorOp)
@@ -556,25 +442,33 @@ TEST(AnalyserUnits, abs)
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
-TEST(AnalyserUnits, exp)
+TEST(AnalyserUnits, expLnOperators)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/exp.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of 'bCst' in 'exp(bCst)' in equation 'b = exp(bCst)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
-        "The unit of 'cCst' in 'exp(cCst)' in equation 'c = exp(cCst)' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
-        "The unit of 'dCst' in 'exp(dCst)' in equation 'd = exp(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
-        "The unit of 'eCst' in 'exp(eCst)' in equation 'e = exp(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
+    std::vector<std::string> operators = {
+        // clang-format off
+        "exp", "ln",
+        // clang-format on
     };
 
-    auto analyser = libcellml::Analyser::create();
+    for (const auto &op : operators) {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(fileContents("analyser/units/" + op + ".cellml"));
 
-    analyser->analyseModel(model);
+        EXPECT_EQ(size_t(0), parser->issueCount());
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+        const std::vector<std::string> expectedIssues = {
+            "The unit of 'bCst' in '" + op + "(bCst)' in equation 'b = " + op + "(bCst)' in component 'main' is not dimensionless. 'bCst' is in 'second'.",
+            "The unit of 'cCst' in '" + op + "(cCst)' in equation 'c = " + op + "(cCst)' in component 'main' is not dimensionless. 'cCst' is in 'volt'.",
+            "The unit of 'dCst' in '" + op + "(dCst)' in equation 'd = " + op + "(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
+            "The unit of 'eCst' in '" + op + "(eCst)' in equation 'e = " + op + "(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
+        };
+
+        auto analyser = libcellml::Analyser::create();
+
+        analyser->analyseModel(model);
+
+        EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    }
 }
 
 TEST(AnalyserUnits, ln)
@@ -627,92 +521,63 @@ TEST(AnalyserUnits, log)
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
-TEST(AnalyserUnits, floor)
+TEST(AnalyserUnits, floorCeilingOperators)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/floor.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'b = floor(3.0)' in component 'main' are not equivalent. 'b' is 'dimensionless' while 'floor(3.0)' is in 'second'.",
-        "The units in 'c = floor(5.0)' in component 'main' are not equivalent. 'c' is 'dimensionless' while 'floor(5.0)' is in 'volt'.",
-        "The units in 'd = floor(7.0)' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'floor(7.0)' is in 'frog'.",
-        "The units in 'e = floor(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'floor(9.0)' is in 'imaginary'.",
+    std::vector<std::pair<std::string, std::string>> operators = {
+        {"floor", "floor"},
+        {"ceiling", "ceil"},
     };
 
-    auto analyser = libcellml::Analyser::create();
+    for (const auto &op : operators) {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(fileContents("analyser/units/" + op.first + ".cellml"));
 
-    analyser->analyseModel(model);
+        EXPECT_EQ(size_t(0), parser->issueCount());
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+        const std::vector<std::string> expectedIssues = {
+            "The units in 'b = " + op.second + "(3.0)' in component 'main' are not equivalent. 'b' is 'dimensionless' while '" + op.second + "(3.0)' is in 'second'.",
+            "The units in 'c = " + op.second + "(5.0)' in component 'main' are not equivalent. 'c' is 'dimensionless' while '" + op.second + "(5.0)' is in 'volt'.",
+            "The units in 'd = " + op.second + "(7.0)' in component 'main' are not equivalent. 'd' is 'dimensionless' while '" + op.second + "(7.0)' is in 'frog'.",
+            "The units in 'e = " + op.second + "(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while '" + op.second + "(9.0)' is in 'imaginary'.",
+        };
+
+        auto analyser = libcellml::Analyser::create();
+
+        analyser->analyseModel(model);
+
+        EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    }
 }
 
-TEST(AnalyserUnits, ceiling)
+TEST(AnalyserUnits, minMaxOperators)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/ceiling.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'b = ceil(3.0)' in component 'main' are not equivalent. 'b' is 'dimensionless' while 'ceil(3.0)' is in 'second'.",
-        "The units in 'c = ceil(5.0)' in component 'main' are not equivalent. 'c' is 'dimensionless' while 'ceil(5.0)' is in 'volt'.",
-        "The units in 'd = ceil(7.0)' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'ceil(7.0)' is in 'frog'.",
-        "The units in 'e = ceil(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'ceil(9.0)' is in 'imaginary'.",
+    std::vector<std::string> operators = {
+        // clang-format off
+        "min", "max",
+        // clang-format on
     };
 
-    auto analyser = libcellml::Analyser::create();
+    for (const auto &op : operators) {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(fileContents("analyser/units/" + op + ".cellml"));
 
-    analyser->analyseModel(model);
+        EXPECT_EQ(size_t(0), parser->issueCount());
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
+        const std::vector<std::string> expectedIssues = {
+            "The units in '" + op + "(bCst, 3.0)' in equation 'b = " + op + "(bCst, 3.0)' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
+            "The units in '" + op + "(cCst, 5.0)' in equation 'c = " + op + "(cCst, 5.0)' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
+            "The units in '" + op + "(dCst, 7.0)' in equation 'd = " + op + "(dCst, 7.0)' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
+            "The units in '" + op + "(eCst, 9.0)' in equation 'e = " + op + "(eCst, 9.0)' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
+            "The units in '" + op + "(fCst, 11.0)' in equation 'f = " + op + "(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
+            "The units in '" + op + "(13.0, 15.0)' in '" + op + "(gCst, " + op + "(13.0, 15.0))' in equation 'g = " + op + "(gCst, " + op + "(13.0, 15.0))' in component 'main' are not equivalent. '13.0' is in 'frog' while '15.0' is in 'imaginary'.",
+        };
 
-TEST(AnalyserUnits, min)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/min.cellml"));
+        auto analyser = libcellml::Analyser::create();
 
-    EXPECT_EQ(size_t(0), parser->issueCount());
+        analyser->analyseModel(model);
 
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'min(bCst, 3.0)' in equation 'b = min(bCst, 3.0)' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
-        "The units in 'min(cCst, 5.0)' in equation 'c = min(cCst, 5.0)' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
-        "The units in 'min(dCst, 7.0)' in equation 'd = min(dCst, 7.0)' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'min(eCst, 9.0)' in equation 'e = min(eCst, 9.0)' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
-        "The units in 'min(fCst, 11.0)' in equation 'f = min(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
-        "The units in 'min(13.0, 15.0)' in 'min(gCst, min(13.0, 15.0))' in equation 'g = min(gCst, min(13.0, 15.0))' in component 'main' are not equivalent. '13.0' is in 'frog' while '15.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, max)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/max.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The units in 'max(bCst, 3.0)' in equation 'b = max(bCst, 3.0)' in component 'main' are not equivalent. 'bCst' is in 'second' while '3.0' is 'dimensionless'.",
-        "The units in 'max(cCst, 5.0)' in equation 'c = max(cCst, 5.0)' in component 'main' are not equivalent. 'cCst' is in 'volt' while '5.0' is 'dimensionless'.",
-        "The units in 'max(dCst, 7.0)' in equation 'd = max(dCst, 7.0)' in component 'main' are not equivalent. 'dCst' is in 'frog' while '7.0' is 'dimensionless'.",
-        "The units in 'max(eCst, 9.0)' in equation 'e = max(eCst, 9.0)' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
-        "The units in 'max(fCst, 11.0)' in equation 'f = max(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
-        "The units in 'max(13.0, 15.0)' in 'max(gCst, max(13.0, 15.0))' in equation 'g = max(gCst, max(13.0, 15.0))' in component 'main' are not equivalent. '13.0' is in 'frog' while '15.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+        EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    }
 }
 
 TEST(AnalyserUnits, rem)
@@ -737,508 +602,36 @@ TEST(AnalyserUnits, rem)
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
-TEST(AnalyserUnits, sin)
+TEST(AnalyserUnits, trigonometricOperators)
 {
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/sin.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'sin(3.0)' in equation 'b = sin(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'sin(5.0)' in equation 'c = sin(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'sin(7.0)' in equation 'd = sin(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'sin(9.0)' in equation 'e = sin(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
+    std::vector<std::string> operators = {
+        // clang-format off
+        "sin", "cos", "tan", "sec", "csc", "cot",
+        "sinh", "cosh", "tanh", "sech", "csch", "coth",
+        "arcsin", "arccos", "arctan", "arcsec", "arccsc", "arccot",
+        "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth",
+        // clang-format on
     };
 
-    auto analyser = libcellml::Analyser::create();
+    for (const auto &op : operators) {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(fileContents("analyser/units/" + op + ".cellml"));
 
-    analyser->analyseModel(model);
+        EXPECT_EQ(size_t(0), parser->issueCount());
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
+        const std::vector<std::string> expectedIssues = {
+            "The unit of '3.0' in '" + op + "(3.0)' in equation 'b = " + op + "(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
+            "The unit of '5.0' in '" + op + "(5.0)' in equation 'c = " + op + "(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
+            "The unit of '7.0' in '" + op + "(7.0)' in equation 'd = " + op + "(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
+            "The unit of '9.0' in '" + op + "(9.0)' in equation 'e = " + op + "(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
+        };
 
-TEST(AnalyserUnits, cos)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/cos.cellml"));
+        auto analyser = libcellml::Analyser::create();
 
-    EXPECT_EQ(size_t(0), parser->issueCount());
+        analyser->analyseModel(model);
 
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'cos(3.0)' in equation 'b = cos(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'cos(5.0)' in equation 'c = cos(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'cos(7.0)' in equation 'd = cos(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'cos(9.0)' in equation 'e = cos(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, tan)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/tan.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'tan(3.0)' in equation 'b = tan(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'tan(5.0)' in equation 'c = tan(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'tan(7.0)' in equation 'd = tan(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'tan(9.0)' in equation 'e = tan(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, sec)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/sec.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'sec(3.0)' in equation 'b = sec(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'sec(5.0)' in equation 'c = sec(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'sec(7.0)' in equation 'd = sec(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'sec(9.0)' in equation 'e = sec(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, csc)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/csc.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'csc(3.0)' in equation 'b = csc(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'csc(5.0)' in equation 'c = csc(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'csc(7.0)' in equation 'd = csc(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'csc(9.0)' in equation 'e = csc(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, cot)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/cot.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'cot(3.0)' in equation 'b = cot(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'cot(5.0)' in equation 'c = cot(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'cot(7.0)' in equation 'd = cot(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'cot(9.0)' in equation 'e = cot(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, sinh)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/sinh.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'sinh(3.0)' in equation 'b = sinh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'sinh(5.0)' in equation 'c = sinh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'sinh(7.0)' in equation 'd = sinh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'sinh(9.0)' in equation 'e = sinh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, cosh)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/cosh.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'cosh(3.0)' in equation 'b = cosh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'cosh(5.0)' in equation 'c = cosh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'cosh(7.0)' in equation 'd = cosh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'cosh(9.0)' in equation 'e = cosh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, tanh)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/tanh.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'tanh(3.0)' in equation 'b = tanh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'tanh(5.0)' in equation 'c = tanh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'tanh(7.0)' in equation 'd = tanh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'tanh(9.0)' in equation 'e = tanh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, sech)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/sech.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'sech(3.0)' in equation 'b = sech(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'sech(5.0)' in equation 'c = sech(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'sech(7.0)' in equation 'd = sech(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'sech(9.0)' in equation 'e = sech(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, csch)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/csch.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'csch(3.0)' in equation 'b = csch(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'csch(5.0)' in equation 'c = csch(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'csch(7.0)' in equation 'd = csch(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'csch(9.0)' in equation 'e = csch(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, coth)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/coth.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'coth(3.0)' in equation 'b = coth(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'coth(5.0)' in equation 'c = coth(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'coth(7.0)' in equation 'd = coth(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'coth(9.0)' in equation 'e = coth(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arcsin)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arcsin.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arcsin(3.0)' in equation 'b = arcsin(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arcsin(5.0)' in equation 'c = arcsin(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arcsin(7.0)' in equation 'd = arcsin(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arcsin(9.0)' in equation 'e = arcsin(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arccos)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arccos.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arccos(3.0)' in equation 'b = arccos(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arccos(5.0)' in equation 'c = arccos(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arccos(7.0)' in equation 'd = arccos(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccos(9.0)' in equation 'e = arccos(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arctan)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arctan.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arctan(3.0)' in equation 'b = arctan(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arctan(5.0)' in equation 'c = arctan(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arctan(7.0)' in equation 'd = arctan(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arctan(9.0)' in equation 'e = arctan(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arcsec)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arcsec.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arcsec(3.0)' in equation 'b = arcsec(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arcsec(5.0)' in equation 'c = arcsec(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arcsec(7.0)' in equation 'd = arcsec(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arcsec(9.0)' in equation 'e = arcsec(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arccsc)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arccsc.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arccsc(3.0)' in equation 'b = arccsc(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arccsc(5.0)' in equation 'c = arccsc(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arccsc(7.0)' in equation 'd = arccsc(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccsc(9.0)' in equation 'e = arccsc(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arccot)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arccot.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arccot(3.0)' in equation 'b = arccot(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arccot(5.0)' in equation 'c = arccot(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arccot(7.0)' in equation 'd = arccot(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccot(9.0)' in equation 'e = arccot(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arcsinh)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arcsinh.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arcsinh(3.0)' in equation 'b = arcsinh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arcsinh(5.0)' in equation 'c = arcsinh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arcsinh(7.0)' in equation 'd = arcsinh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arcsinh(9.0)' in equation 'e = arcsinh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arccosh)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arccosh.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arccosh(3.0)' in equation 'b = arccosh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arccosh(5.0)' in equation 'c = arccosh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arccosh(7.0)' in equation 'd = arccosh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccosh(9.0)' in equation 'e = arccosh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arctanh)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arctanh.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arctanh(3.0)' in equation 'b = arctanh(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arctanh(5.0)' in equation 'c = arctanh(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arctanh(7.0)' in equation 'd = arctanh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arctanh(9.0)' in equation 'e = arctanh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arcsech)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arcsech.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arcsech(3.0)' in equation 'b = arcsech(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arcsech(5.0)' in equation 'c = arcsech(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arcsech(7.0)' in equation 'd = arcsech(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arcsech(9.0)' in equation 'e = arcsech(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arccsch)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arccsch.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arccsch(3.0)' in equation 'b = arccsch(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arccsch(5.0)' in equation 'c = arccsch(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arccsch(7.0)' in equation 'd = arccsch(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccsch(9.0)' in equation 'e = arccsch(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
-}
-
-TEST(AnalyserUnits, arccoth)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/units/arccoth.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "The unit of '3.0' in 'arccoth(3.0)' in equation 'b = arccoth(3.0)' in component 'main' is not dimensionless. '3.0' is in 'second'.",
-        "The unit of '5.0' in 'arccoth(5.0)' in equation 'c = arccoth(5.0)' in component 'main' is not dimensionless. '5.0' is in 'volt'.",
-        "The unit of '7.0' in 'arccoth(7.0)' in equation 'd = arccoth(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
-        "The unit of '9.0' in 'arccoth(9.0)' in equation 'e = arccoth(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+        EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    }
 }
 
 TEST(AnalyserUnits, constants)
