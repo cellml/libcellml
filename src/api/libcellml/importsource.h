@@ -16,8 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/exportdefinitions.h"
 #include "libcellml/entity.h"
+#include "libcellml/exportdefinitions.h"
 
 #ifndef SWIG
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::ImportSource>;
