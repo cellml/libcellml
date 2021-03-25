@@ -20,6 +20,16 @@ limitations under the License.
 
 #include <libcellml>
 
+template<typename T>
+std::vector<T> expectedTypes(size_t size, T type)
+{
+    std::vector<T> res;
+
+    res.assign(size, type);
+
+    return res;
+}
+
 TEST(AnalyserUnits, builtInUnits)
 {
     auto parser = libcellml::Parser::create();
@@ -57,102 +67,16 @@ TEST(AnalyserUnits, builtInUnits)
         "The units in 'watt = 1.0' in component 'main' are not equivalent. 'watt' is in 'watt' while '1.0' is 'dimensionless'.",
         "The units in 'weber = 1.0' in component 'main' are not equivalent. 'weber' is in 'weber' while '1.0' is 'dimensionless'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues,
+                                                              expectedTypes<libcellml::CellmlElementType>(expectedIssues.size(), libcellml::CellmlElementType::UNDEFINED),
+                                                              expectedTypes<libcellml::Issue::Level>(expectedIssues.size(), libcellml::Issue::Level::WARNING),
+                                                              expectedTypes<libcellml::Issue::ReferenceRule>(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_UNITS),
+                                                              analyser);
 }
 
 TEST(AnalyserUnits, basic)
@@ -182,30 +106,12 @@ TEST(AnalyserUnits, ci)
         "The units in 'd = dCst' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'dCst' is in 'frog'.",
         "The units in 'e = eCst' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'eCst' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, cn)
@@ -225,42 +131,12 @@ TEST(AnalyserUnits, cn)
         "The units in 'i = 17.0e7' in component 'main' are not equivalent. 'i' is 'dimensionless' while '17.0e7' is in 'frog'.",
         "The units in 'j = 19.0e9' in component 'main' are not equivalent. 'j' is 'dimensionless' while '19.0e9' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, piecewise)
@@ -278,36 +154,12 @@ TEST(AnalyserUnits, piecewise)
         "The units in 'f = (f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' in component 'main' are not equivalent. 'f' is 'dimensionless' while '(f > 33.0)?31.0:(f > 37.0)?35.0:(f > 41.0)?39.0:(f > 45.0)?43.0:(f > 49.0)?47.0:51.0' is in 'second', 'volt', 'frog' and 'imaginary'.",
         "The unit of '55.0' in '(55.0)?53.0' in '(55.0)?53.0:57.0' in equation 'g = (55.0)?53.0:57.0' in component 'main' is not dimensionless. '55.0' is in 'second'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, eq)
@@ -324,33 +176,12 @@ TEST(AnalyserUnits, eq)
         "The units in 'eCst == 9.0' in equation 'e = eCst == 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'fCst == 11.0' in equation 'f = fCst == 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, neq)
@@ -367,33 +198,12 @@ TEST(AnalyserUnits, neq)
         "The units in 'eCst != 9.0' in equation 'e = eCst != 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'fCst != 11.0' in equation 'f = fCst != 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, lt)
@@ -410,33 +220,12 @@ TEST(AnalyserUnits, lt)
         "The units in 'eCst < 9.0' in equation 'e = eCst < 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'fCst < 11.0' in equation 'f = fCst < 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, leq)
@@ -453,33 +242,12 @@ TEST(AnalyserUnits, leq)
         "The units in 'eCst <= 9.0' in equation 'e = eCst <= 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'fCst <= 11.0' in equation 'f = fCst <= 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, gt)
@@ -496,33 +264,12 @@ TEST(AnalyserUnits, gt)
         "The units in 'eCst > 9.0' in equation 'e = eCst > 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'fCst > 11.0' in equation 'f = fCst > 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, geq)
@@ -539,33 +286,12 @@ TEST(AnalyserUnits, geq)
         "The units in 'eCst >= 9.0' in equation 'e = eCst >= 9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'fCst >= 11.0' in equation 'f = fCst >= 11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, andOp)
@@ -582,33 +308,12 @@ TEST(AnalyserUnits, andOp)
         "The unit of 'eCst' in 'eCst && 9.0' in equation 'e = eCst && 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
         "The units of 'fCst' and '11.0' in 'fCst && 11.0' in equation 'f = fCst && 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, orOp)
@@ -625,33 +330,12 @@ TEST(AnalyserUnits, orOp)
         "The unit of 'eCst' in 'eCst || 9.0' in equation 'e = eCst || 9.0' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
         "The units of 'fCst' and '11.0' in 'fCst || 11.0' in equation 'f = fCst || 11.0' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, xorOp)
@@ -668,33 +352,12 @@ TEST(AnalyserUnits, xorOp)
         "The unit of 'eCst' in 'xor(eCst, 9.0)' in equation 'e = xor(eCst, 9.0)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
         "The units of 'fCst' and '11.0' in 'xor(fCst, 11.0)' in equation 'f = xor(fCst, 11.0)' in component 'main' are not dimensionless. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, notOp)
@@ -710,30 +373,12 @@ TEST(AnalyserUnits, notOp)
         "The unit of 'dCst' in '!dCst' in equation 'd = !dCst' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
         "The unit of 'eCst' in '!eCst' in equation 'e = !eCst' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, plus)
@@ -750,33 +395,12 @@ TEST(AnalyserUnits, plus)
         "The units in 'eCst+9.0' in equation 'e = eCst+9.0' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'fCst+11.0' in equation 'f = fCst+11.0' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, minus)
@@ -797,45 +421,12 @@ TEST(AnalyserUnits, minus)
         "The units in 'jCst-9.0' in equation 'j = jCst-9.0' in component 'main' are not equivalent. 'jCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'kCst-11.0' in equation 'k = kCst-11.0' in component 'main' are not equivalent. 'kCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, times)
@@ -856,45 +447,12 @@ TEST(AnalyserUnits, times)
         "The units in 'i = iCst*17.0' in component 'main' are not equivalent. 'i' is in 'frog_by_volt' while 'iCst*17.0' is in 'frog'.",
         "The units in 'j = jCst*19.0' in component 'main' are not equivalent. 'j' is in 'imaginary_by_volt' while 'jCst*19.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, divide)
@@ -915,45 +473,12 @@ TEST(AnalyserUnits, divide)
         "The units in 'i = iCst/17.0' in component 'main' are not equivalent. 'i' is in 'frog_per_volt' while 'iCst/17.0' is in 'frog'.",
         "The units in 'j = jCst/19.0' in component 'main' are not equivalent. 'j' is in 'imaginary_per_volt' while 'jCst/19.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, power)
@@ -973,42 +498,12 @@ TEST(AnalyserUnits, power)
         "The units in 'h = pow(hCst, 15.0)' in component 'main' are not equivalent. 'h' is 'dimensionless' while 'pow(hCst, 15.0)' is in 'frog^15'.",
         "The units in 'i = pow(iCst, 17.0)' in component 'main' are not equivalent. 'i' is 'dimensionless' while 'pow(iCst, 17.0)' is in 'imaginary^17'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, root)
@@ -1032,54 +527,12 @@ TEST(AnalyserUnits, root)
         "The units in 'q = pow(qCst, 1.0/15.0)' in component 'main' are not equivalent. 'q' is 'dimensionless' while 'pow(qCst, 1.0/15.0)' is in 'frog^0.0666667'.",
         "The units in 'r = pow(rCst, 1.0/17.0)' in component 'main' are not equivalent. 'r' is 'dimensionless' while 'pow(rCst, 1.0/17.0)' is in 'imaginary^0.0588235'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, abs)
@@ -1095,30 +548,12 @@ TEST(AnalyserUnits, abs)
         "The units in 'd = abs(7.0)' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'abs(7.0)' is in 'frog'.",
         "The units in 'e = abs(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'abs(9.0)' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, exp)
@@ -1134,30 +569,12 @@ TEST(AnalyserUnits, exp)
         "The unit of 'dCst' in 'exp(dCst)' in equation 'd = exp(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
         "The unit of 'eCst' in 'exp(eCst)' in equation 'e = exp(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, ln)
@@ -1173,30 +590,12 @@ TEST(AnalyserUnits, ln)
         "The unit of 'dCst' in 'ln(dCst)' in equation 'd = ln(dCst)' in component 'main' is not dimensionless. 'dCst' is in 'frog'.",
         "The unit of 'eCst' in 'ln(eCst)' in equation 'e = ln(eCst)' in component 'main' is not dimensionless. 'eCst' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, log)
@@ -1220,54 +619,12 @@ TEST(AnalyserUnits, log)
         "The unit of '17.0' in 'ln(nCst)/ln(17.0)' in equation 'n = ln(nCst)/ln(17.0)' in component 'main' is not dimensionless. '17.0' is in 'frog'.",
         "The unit of '19.0' in 'ln(oCst)/ln(19.0)' in equation 'o = ln(oCst)/ln(19.0)' in component 'main' is not dimensionless. '19.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, floor)
@@ -1283,30 +640,12 @@ TEST(AnalyserUnits, floor)
         "The units in 'd = floor(7.0)' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'floor(7.0)' is in 'frog'.",
         "The units in 'e = floor(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'floor(9.0)' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, ceiling)
@@ -1322,30 +661,12 @@ TEST(AnalyserUnits, ceiling)
         "The units in 'd = ceil(7.0)' in component 'main' are not equivalent. 'd' is 'dimensionless' while 'ceil(7.0)' is in 'frog'.",
         "The units in 'e = ceil(9.0)' in component 'main' are not equivalent. 'e' is 'dimensionless' while 'ceil(9.0)' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, min)
@@ -1363,36 +684,12 @@ TEST(AnalyserUnits, min)
         "The units in 'min(fCst, 11.0)' in equation 'f = min(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
         "The units in 'min(13.0, 15.0)' in 'min(gCst, min(13.0, 15.0))' in equation 'g = min(gCst, min(13.0, 15.0))' in component 'main' are not equivalent. '13.0' is in 'frog' while '15.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, max)
@@ -1410,36 +707,12 @@ TEST(AnalyserUnits, max)
         "The units in 'max(fCst, 11.0)' in equation 'f = max(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
         "The units in 'max(13.0, 15.0)' in 'max(gCst, max(13.0, 15.0))' in equation 'g = max(gCst, max(13.0, 15.0))' in component 'main' are not equivalent. '13.0' is in 'frog' while '15.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, rem)
@@ -1456,33 +729,12 @@ TEST(AnalyserUnits, rem)
         "The units in 'rem(eCst, 9.0)' in equation 'e = rem(eCst, 9.0)' in component 'main' are not equivalent. 'eCst' is in 'imaginary' while '9.0' is 'dimensionless'.",
         "The units in 'rem(fCst, 11.0)' in equation 'f = rem(fCst, 11.0)' in component 'main' are not equivalent. 'fCst' is in 'second' while '11.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, sin)
@@ -1498,30 +750,12 @@ TEST(AnalyserUnits, sin)
         "The unit of '7.0' in 'sin(7.0)' in equation 'd = sin(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'sin(9.0)' in equation 'e = sin(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, cos)
@@ -1537,30 +771,12 @@ TEST(AnalyserUnits, cos)
         "The unit of '7.0' in 'cos(7.0)' in equation 'd = cos(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'cos(9.0)' in equation 'e = cos(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, tan)
@@ -1576,30 +792,12 @@ TEST(AnalyserUnits, tan)
         "The unit of '7.0' in 'tan(7.0)' in equation 'd = tan(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'tan(9.0)' in equation 'e = tan(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, sec)
@@ -1615,30 +813,12 @@ TEST(AnalyserUnits, sec)
         "The unit of '7.0' in 'sec(7.0)' in equation 'd = sec(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'sec(9.0)' in equation 'e = sec(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, csc)
@@ -1654,30 +834,12 @@ TEST(AnalyserUnits, csc)
         "The unit of '7.0' in 'csc(7.0)' in equation 'd = csc(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'csc(9.0)' in equation 'e = csc(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, cot)
@@ -1693,30 +855,12 @@ TEST(AnalyserUnits, cot)
         "The unit of '7.0' in 'cot(7.0)' in equation 'd = cot(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'cot(9.0)' in equation 'e = cot(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, sinh)
@@ -1732,30 +876,12 @@ TEST(AnalyserUnits, sinh)
         "The unit of '7.0' in 'sinh(7.0)' in equation 'd = sinh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'sinh(9.0)' in equation 'e = sinh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, cosh)
@@ -1771,30 +897,12 @@ TEST(AnalyserUnits, cosh)
         "The unit of '7.0' in 'cosh(7.0)' in equation 'd = cosh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'cosh(9.0)' in equation 'e = cosh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, tanh)
@@ -1810,30 +918,12 @@ TEST(AnalyserUnits, tanh)
         "The unit of '7.0' in 'tanh(7.0)' in equation 'd = tanh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'tanh(9.0)' in equation 'e = tanh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, sech)
@@ -1849,30 +939,12 @@ TEST(AnalyserUnits, sech)
         "The unit of '7.0' in 'sech(7.0)' in equation 'd = sech(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'sech(9.0)' in equation 'e = sech(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, csch)
@@ -1888,30 +960,12 @@ TEST(AnalyserUnits, csch)
         "The unit of '7.0' in 'csch(7.0)' in equation 'd = csch(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'csch(9.0)' in equation 'e = csch(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, coth)
@@ -1927,30 +981,12 @@ TEST(AnalyserUnits, coth)
         "The unit of '7.0' in 'coth(7.0)' in equation 'd = coth(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'coth(9.0)' in equation 'e = coth(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arcsin)
@@ -1966,30 +1002,12 @@ TEST(AnalyserUnits, arcsin)
         "The unit of '7.0' in 'arcsin(7.0)' in equation 'd = arcsin(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arcsin(9.0)' in equation 'e = arcsin(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arccos)
@@ -2005,30 +1023,12 @@ TEST(AnalyserUnits, arccos)
         "The unit of '7.0' in 'arccos(7.0)' in equation 'd = arccos(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arccos(9.0)' in equation 'e = arccos(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arctan)
@@ -2044,30 +1044,12 @@ TEST(AnalyserUnits, arctan)
         "The unit of '7.0' in 'arctan(7.0)' in equation 'd = arctan(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arctan(9.0)' in equation 'e = arctan(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arcsec)
@@ -2083,30 +1065,12 @@ TEST(AnalyserUnits, arcsec)
         "The unit of '7.0' in 'arcsec(7.0)' in equation 'd = arcsec(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arcsec(9.0)' in equation 'e = arcsec(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arccsc)
@@ -2122,30 +1086,12 @@ TEST(AnalyserUnits, arccsc)
         "The unit of '7.0' in 'arccsc(7.0)' in equation 'd = arccsc(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arccsc(9.0)' in equation 'e = arccsc(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arccot)
@@ -2161,30 +1107,12 @@ TEST(AnalyserUnits, arccot)
         "The unit of '7.0' in 'arccot(7.0)' in equation 'd = arccot(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arccot(9.0)' in equation 'e = arccot(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arcsinh)
@@ -2200,30 +1128,12 @@ TEST(AnalyserUnits, arcsinh)
         "The unit of '7.0' in 'arcsinh(7.0)' in equation 'd = arcsinh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arcsinh(9.0)' in equation 'e = arcsinh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arccosh)
@@ -2239,30 +1149,12 @@ TEST(AnalyserUnits, arccosh)
         "The unit of '7.0' in 'arccosh(7.0)' in equation 'd = arccosh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arccosh(9.0)' in equation 'e = arccosh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arctanh)
@@ -2278,30 +1170,12 @@ TEST(AnalyserUnits, arctanh)
         "The unit of '7.0' in 'arctanh(7.0)' in equation 'd = arctanh(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arctanh(9.0)' in equation 'e = arctanh(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arcsech)
@@ -2317,30 +1191,12 @@ TEST(AnalyserUnits, arcsech)
         "The unit of '7.0' in 'arcsech(7.0)' in equation 'd = arcsech(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arcsech(9.0)' in equation 'e = arcsech(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arccsch)
@@ -2356,30 +1212,12 @@ TEST(AnalyserUnits, arccsch)
         "The unit of '7.0' in 'arccsch(7.0)' in equation 'd = arccsch(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arccsch(9.0)' in equation 'e = arccsch(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, arccoth)
@@ -2395,30 +1233,12 @@ TEST(AnalyserUnits, arccoth)
         "The unit of '7.0' in 'arccoth(7.0)' in equation 'd = arccoth(7.0)' in component 'main' is not dimensionless. '7.0' is in 'frog'.",
         "The unit of '9.0' in 'arccoth(9.0)' in equation 'e = arccoth(9.0)' in component 'main' is not dimensionless. '9.0' is in 'imaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, constants)
@@ -2436,36 +1256,12 @@ TEST(AnalyserUnits, constants)
         "The units in 'e = infinity' in component 'main' are not equivalent. 'e' is in 'second' while 'infinity' is 'dimensionless'.",
         "The units in 'f = notanumber' in component 'main' are not equivalent. 'f' is in 'second' while 'notanumber' is 'dimensionless'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, multipliers)
@@ -2481,30 +1277,12 @@ TEST(AnalyserUnits, multipliers)
         "The units in 'c = 5.0' in component 'main' are not equivalent. 'c' is in 'frog' while '5.0' is in 'millifrog'.",
         "The units in 'd = 7.0' in component 'main' are not equivalent. 'd' is in 'imaginary' while '7.0' is in 'milliimaginary'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(AnalyserUnits, rhs)
@@ -2517,19 +1295,10 @@ TEST(AnalyserUnits, rhs)
     const std::vector<std::string> expectedIssues = {
         "The unit of '1.0' in 'sin(1.0)' in equation 'sin(1.0) = a' in component 'main' is not dimensionless. '1.0' is in 'second'.",
     };
-    const std::vector<libcellml::CellmlElementType> expectedCellmlElementTypes = {
-        libcellml::CellmlElementType::UNDEFINED,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-    };
-    const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_UNITS,
-    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
