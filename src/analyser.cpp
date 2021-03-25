@@ -1825,7 +1825,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         } else if (issueDescriptions.size() == oldNbOfIssueDescriptions) {
             // Only report inner issues.
 
-            std::string issueDescription = "The units in " + expression(ast) + " are not the same. ";
+            std::string issueDescription = "The units in " + expression(ast) + " are not equivalent. ";
 
             issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + " while "
                                 + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUserUnitsMaps) + ".";
@@ -2191,7 +2191,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 auto issue = Issue::create();
 
                 issue->setDescription(issueDescription);
-                issue->setLevel(Issue::Level::MESSAGE);
+                issue->setLevel(Issue::Level::WARNING);
                 issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
 
                 mAnalyser->addIssue(issue);
