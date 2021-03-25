@@ -613,7 +613,7 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
                 }
                 model->addUnits(u);
                 if (originalName != u->name()) {
-                    unitsNamesToReplace[originalName] = u->name();
+                    unitsNamesToReplace.emplace(originalName, u->name());
                 }
             }
         }

@@ -804,7 +804,7 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
             }
 
             if (!rebasedVector.empty()) {
-                rebasedMap[rebasedKey] = rebasedVector;
+                rebasedMap.emplace(rebasedKey, rebasedVector);
             }
         }
     }
@@ -837,7 +837,7 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     ComponentNameMap nameMap;
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto c = component->component(index);
-        nameMap[c->name()] = c;
+        nameMap.emplace(c->name(), c);
         ComponentNameMap childrenNameMap = createComponentNamesMap(c);
         nameMap.insert(childrenNameMap.begin(), childrenNameMap.end());
     }
@@ -943,7 +943,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
             auto equivalentVariable = variable->equivalentVariable(j);
             auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
             if (equivalenceMap.count(indexStack) == 0) {
-                equivalenceMap[indexStack] = std::vector<IndexStack>();
+                equivalenceMap.emplace(indexStack, std::vector<IndexStack>());
             }
             equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
         }

@@ -937,7 +937,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, astParent);
 
-        mCiCnUnits[ast] = variable->units();
+        mCiCnUnits.emplace(ast, variable->units());
     } else if (node->isMathmlElement("cn")) {
         // Add the number to our AST and keep track of its unit. Note that in
         // the case of a standard unit, we need to create a units since it's
@@ -957,12 +957,15 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             auto iter = mStandardUnits.find(unitsName);
 
             if (iter == mStandardUnits.end()) {
-                mCiCnUnits[ast] = mStandardUnits[unitsName] = libcellml::Units::create(unitsName);
+                auto units = libcellml::Units::create(unitsName);
+
+                mCiCnUnits.emplace(ast, units);
+                mStandardUnits.emplace(unitsName, units);
             } else {
-                mCiCnUnits[ast] = iter->second;
+                mCiCnUnits.emplace(ast, iter->second);
             }
         } else {
-            mCiCnUnits[ast] = owningModel(component)->units(unitsName);
+            mCiCnUnits.emplace(ast, owningModel(component)->units(unitsName));
         }
 
         // Qualifier elements.
@@ -1255,13 +1258,13 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
 
     if (userUnitsMap) {
         if (unitsName != "dimensionless") {
-            unitsMap[unitsName] = unitsExponent;
+            unitsMap.emplace(unitsName, unitsExponent);
         }
     } else {
         if (isStandardUnitName(unitsName)) {
             for (const auto &iter : standardUnitsList.at(unitsName)) {
                 if (unitsMap.find(iter.first) == unitsMap.end()) {
-                    unitsMap[iter.first] = 0.0;
+                    unitsMap.emplace(iter.first, 0.0);
                 }
 
                 unitsMap[iter.first] += iter.second * unitsExponent;
@@ -1273,7 +1276,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                 auto iter = unitsMap.find(unitsName);
 
                 if (iter == unitsMap.end()) {
-                    unitsMap[unitsName] = unitsExponent;
+                    unitsMap.emplace(unitsName, unitsExponent);
                 } else {
                     unitsMap[iter->first] += unitsExponent;
                 }
@@ -1290,7 +1293,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                     if (isStandardUnitName(reference)) {
                         for (const auto &iter : standardUnitsList.at(reference)) {
                             if (unitsMap.find(iter.first) == unitsMap.end()) {
-                                unitsMap[iter.first] = 0.0;
+                                unitsMap.emplace(iter.first, 0.0);
                             }
 
                             unitsMap[iter.first] += iter.second * exponent * unitsExponent;
@@ -1320,7 +1323,7 @@ UnitsMap Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMap &firstUn
         auto it = res.find(units.first);
 
         if (it == res.end()) {
-            res[units.first] = sign * units.second;
+            res.emplace(units.first, sign * units.second);
         } else {
             it->second += sign * units.second;
 
@@ -2344,7 +2347,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                 dependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
                             }
 
-                            externalVariables[internalVariable] = dependencies;
+                            externalVariables.emplace(internalVariable, dependencies);
                         }
                     }
                 }
@@ -2445,7 +2448,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
 
             for (const auto &internalEquation : mInternalEquations) {
-                equationMappings[internalEquation->mVariable->mVariable] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
+                equationMappings.emplace(internalEquation->mVariable->mVariable, std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}});
             }
 
             // Make our internal variables available through our API.
@@ -2490,7 +2493,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                                   internalVariable->mVariable,
                                                   equation);
 
-                variableMappings[equation] = stateOrVariable;
+                variableMappings.emplace(equation, stateOrVariable);
 
                 if (type == AnalyserVariable::Type::STATE) {
                     mModel->mPimpl->mStates.push_back(stateOrVariable);
