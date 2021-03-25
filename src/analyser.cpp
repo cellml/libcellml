@@ -1794,18 +1794,18 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers, issueDescriptions);
     analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers, issueDescriptions);
 
-    if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EQ)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NEQ)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LT)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PLUS)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MINUS)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MIN)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::MAX)
-        || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::REM)) {
+    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::EQ)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::NEQ)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::LT)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::LEQ)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::GT)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::GEQ)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::PLUS)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::MINUS)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::MIN)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::MAX)
+        || (ast->mPimpl->mType == AnalyserEquationAst::Type::REM)) {
         bool sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
         bool sameUnitsMultipliers = rightUnitsMaps.empty()
@@ -1816,10 +1816,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             if ((ast->mPimpl->mType == AnalyserEquationAst::Type::EQ)
                 || (ast->mPimpl->mType == AnalyserEquationAst::Type::NEQ)
-                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LT)
-                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LEQ)
-                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GT)
-                || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::GEQ)) {
+                || (ast->mPimpl->mType == AnalyserEquationAst::Type::LT)
+                || (ast->mPimpl->mType == AnalyserEquationAst::Type::LEQ)
+                || (ast->mPimpl->mType == AnalyserEquationAst::Type::GT)
+                || (ast->mPimpl->mType == AnalyserEquationAst::Type::GEQ)) {
                 defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
             }
         } else if (issueDescriptions.size() == oldNbOfIssueDescriptions) {
@@ -1848,13 +1848,13 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                         + " is not dimensionless. "
                                         + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUserUnitsMaps) + ".");
         }
-    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::AND)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::OR)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::XOR)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NOT)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::EXP)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LN)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::LOG)) {
+    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::AND)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::OR)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::XOR)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::NOT)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::EXP)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::LN)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::LOG)) {
         bool isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
         bool isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
 
@@ -1906,15 +1906,15 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             issueDescriptions.push_back(issueDescription);
         }
     } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIVIDE)) {
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::DIVIDE)) {
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps,
                                             ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
         userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps,
                                                 ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
         unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers,
                                                           ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
-    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ROOT)) {
+    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ROOT)) {
         bool isDimensionlessExponent = true;
 
         if ((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER)
@@ -1962,46 +1962,46 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             }
 
             unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue,
-                                                ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
+                                                ast->mPimpl->mType == AnalyserEquationAst::Type::POWER);
             userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerRootValue,
-                                                    ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
+                                                    ast->mPimpl->mType == AnalyserEquationAst::Type::POWER);
             unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue,
-                                                         ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::POWER);
+                                                         ast->mPimpl->mType == AnalyserEquationAst::Type::POWER);
         }
-    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SIN)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COS)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TAN)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SEC)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSC)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COT)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SINH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COSH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TANH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::SECH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::CSCH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::COTH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASIN)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOS)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATAN)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASEC)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSC)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOT)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASINH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOSH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ATANH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ASECH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACSCH)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::ACOTH)) {
+    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::SIN)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::COS)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::TAN)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::SEC)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::CSC)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::COT)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::SINH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::COSH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::TANH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::SECH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::CSCH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::COTH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ASIN)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACOS)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ATAN)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ASEC)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACSC)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACOT)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ASINH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACOSH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ATANH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ASECH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACSCH)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACOTH)) {
         if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps)) {
             issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedLeftChild)
                                         + " is not dimensionless. "
                                         + expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + ".");
         }
-    } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::DIFF) {
+    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps);
         userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps);
         unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
-    } else if (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::BVAR) {
+    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::BVAR) {
         for (auto &unitsMap : unitsMaps) {
             for (auto &units : unitsMap) {
                 units.second *= -1.0;
@@ -2015,12 +2015,12 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         }
 
         unitsMultipliers = multiplyDivideUnitsMultipliers(0.0, unitsMultipliers, false);
-    } else if ((ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::TRUE)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::FALSE)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::E)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::PI)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::INF)
-               || (ast->mPimpl->mType == libcellml::AnalyserEquationAst::Type::NAN)) {
+    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::TRUE)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::FALSE)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::E)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::PI)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::INF)
+               || (ast->mPimpl->mType == AnalyserEquationAst::Type::NAN)) {
         defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
     }
 }
