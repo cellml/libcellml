@@ -1328,7 +1328,7 @@ UnitsMap Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMap &firstUn
         } else {
             it->second += sign * units.second;
 
-            if (areEqual(it->second, 0.0)) {
+            if (areNearlyEqual(it->second, 0.0)) {
                 // The units has now an exponent value of zero, so no need to
                 // track it anymore.
 
@@ -1465,7 +1465,7 @@ bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
             }
 
             for (const auto &units : unitsMap) {
-                if (!areEqual(units.second, 0.0)) {
+                if (!areNearlyEqual(units.second, 0.0)) {
                     return false;
                 }
             }
@@ -1497,7 +1497,7 @@ bool Analyser::AnalyserImpl::areSameUnitsMultipliers(const UnitsMultipliers &fir
 
     for (const auto &firstUnitsMultiplier : firstUnitsMultipliers) {
         for (const auto &secondUnitsMultiplier : secondUnitsMultipliers) {
-            if (!areEqual(firstUnitsMultiplier, secondUnitsMultiplier)) {
+            if (!areNearlyEqual(firstUnitsMultiplier, secondUnitsMultiplier)) {
                 return false;
             }
         }
@@ -1586,7 +1586,7 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast)
         }
 
         if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIVIDE) {
-            return areEqual(powerValue(ast->mPimpl->mOwnedRightChild), 0.0) ?
+            return areNearlyEqual(powerValue(ast->mPimpl->mOwnedRightChild), 0.0) ?
                        0.0 :
                        powerValue(ast->mPimpl->mOwnedLeftChild) / powerValue(ast->mPimpl->mOwnedRightChild);
         }
@@ -1654,9 +1654,9 @@ std::string Analyser::AnalyserImpl::expressionUnits(const AnalyserEquationAstPtr
 
         for (const auto &userUnits : userUnitsMap) {
             if ((userUnits.first != "dimensionless")
-                && !areEqual(userUnits.second, 0.0)) {
+                && !areNearlyEqual(userUnits.second, 0.0)) {
                 auto intExponent = int(userUnits.second);
-                auto exponent = areEqual(userUnits.second, intExponent) ?
+                auto exponent = areNearlyEqual(userUnits.second, intExponent) ?
                                     convertToString(intExponent) :
                                     convertToString(userUnits.second, false);
 
