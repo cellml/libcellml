@@ -1397,7 +1397,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItem &item) const
     } else if (type == CellmlElementType::UNITS) {
         modelBased = owningModel(std::any_cast<UnitsPtr>(item.second)) == model;
     } else if (type == CellmlElementType::IMPORT) {
-        modelBased = owningModel(std::any_cast<ImportSourcePtr>(item.second)) == model;
+        modelBased = true;
     } else if (type == CellmlElementType::VARIABLE) {
         modelBased = owningModel(std::any_cast<VariablePtr>(item.second)) == model;
     } else if ((type == CellmlElementType::COMPONENT)
