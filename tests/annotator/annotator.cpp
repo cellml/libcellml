@@ -1253,7 +1253,6 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponent.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponentRef.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePairPtr>(itemConnection.second)->variable1()));
-    EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ImportSourcePtr>(itemImportSource.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePairPtr>(itemMapVariables.second)->variable1()));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ResetPtr>(itemReset.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ResetPtr>(itemResetValue.second)));
@@ -1341,7 +1340,6 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponent.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponentRef.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePairPtr>(itemConnection.second)->variable1()));
-    EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ImportSourcePtr>(itemImportSource.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePairPtr>(itemMapVariables.second)->variable1()));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ResetPtr>(itemReset.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ResetPtr>(itemResetValue.second)));
@@ -1403,7 +1401,6 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     EXPECT_EQ("", annotator->assignId(itemComponentRef));
     EXPECT_EQ("", annotator->assignId(itemConnection));
     EXPECT_EQ("", annotator->assignId(itemEncapsulation));
-    EXPECT_EQ("", annotator->assignId(itemImportSource));
     EXPECT_EQ("", annotator->assignId(itemMapVariables));
     EXPECT_EQ("", annotator->assignId(itemModel));
     EXPECT_EQ("", annotator->assignId(itemReset));
@@ -1412,6 +1409,9 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     EXPECT_EQ("", annotator->assignId(itemUnit));
     EXPECT_EQ("", annotator->assignId(itemUnits));
     EXPECT_EQ("", annotator->assignId(itemVariable));
+
+    // Import sources don't belong to a model so an id will be assigned.
+    EXPECT_EQ("b4da55", annotator->assignId(itemImportSource));
 }
 
 TEST(Annotator, issueIdWithModelThatWasDeleted)
