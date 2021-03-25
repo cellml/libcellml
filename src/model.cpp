@@ -552,7 +552,9 @@ bool findAndRemoveEmptyComponent(const ComponentPtr &component)
 
     return (component->variableCount() + component->resetCount() + component->componentCount() == 0)
            && component->math().empty()
-           && !component->isImport();
+           && !component->isImport()
+           && component->name().empty()
+           && component->id().empty();
 }
 
 void Model::clean()
@@ -561,6 +563,17 @@ void Model::clean()
     for (size_t i = componentCount() - 1; i != MAX_SIZE_T; --i) {
         if (findAndRemoveEmptyComponent(component(size_t(i)))) {
             removeComponent(size_t(i));
+        }
+    }
+
+    // Remove empty units
+    for (size_t i = unitsCount() - 1; i != MAX_SIZE_T; --i) {
+        auto u = units(i);
+        if (!u->isImport()
+            && u->name().empty()
+            && u->id().empty()
+            && (u->unitCount() == 0)) {
+            removeUnits(i);
         }
     }
 }

@@ -625,36 +625,71 @@ TEST(Model, removeComponentInsensitiveToOrder)
     EXPECT_EQ(size_t(2), modelApi->componentCount());
 }
 
+TEST(Model, cleanCreatedModel)
+{
+    auto model = libcellml::Model::create();
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create();
+    c2->setId("c2");
+    auto c3 = libcellml::Component::create();
+    auto c4 = libcellml::Component::create();
+    auto u1 = libcellml::Units::create("used");
+    auto u2 = libcellml::Units::create();
+    u2->setId("u2");
+    auto u3 = libcellml::Units::create();
+    auto v = libcellml::Variable::create("x");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    model->addComponent(c3);
+    model->addComponent(c4);
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+
+    c3->addVariable(v);
+
+    EXPECT_EQ(size_t(4), model->componentCount());
+    EXPECT_EQ(size_t(3), model->unitsCount());
+
+    auto p = libcellml::Printer::create();
+    std::cout << p->printModel(model) << std::endl;
+
+    // Call the Model::clean() function to remove empty components and units.
+    model->clean();
+
+    std::cout << p->printModel(model) << std::endl;
+
+    EXPECT_EQ(size_t(3), model->componentCount());
+    EXPECT_EQ(size_t(2), model->unitsCount());
+}
+
 TEST(Model, cleanModel)
 {
     // Make a model with empty components and empty import sources.
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"dirtyModel\">\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"importedModel.cellml\">\n"
-        "    <component component_ref=\"importMe\" name=\"importedComponent\"/>\n"
-        "  </import>\n"
-        "  <units name=\"unrequiredUnits\"/>\n"
-        "  <units name=\"requiredUnits\"/>\n"
+        "  <units name=\"namedEmptyUnits\"/>\n"
+        "  <units id=\"nonEmptyId\"/>\n"
+        "  <component name=\"namedEmptyComponent\"/>\n"
         "  <component name=\"nonEmptyComponent\">\n"
         "    <variable name=\"x\" units=\"requiredUnits\"/>\n"
         "  </component>\n"
+        "  <component id=\"nonEmptyComponentId\"/>\n"
         "</model>\n";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("dirty_model.cellml"));
     auto printer = libcellml::Printer::create();
 
-    EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(size_t(3), model->componentCount());
-    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(4), model->componentCount());
+    EXPECT_EQ(size_t(3), model->unitsCount());
 
-    // Call the Model::clean() function to remove them.
+    // Call the Model::clean() function to remove empty components and units.
     model->clean();
 
-    EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(3), model->componentCount());
     EXPECT_EQ(size_t(2), model->unitsCount());
-
     EXPECT_EQ(e, printer->printModel(model));
 }
 
@@ -665,11 +700,13 @@ TEST(Model, cleanEncapsulatedModel)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"dirtyModel\">\n"
         "  <component name=\"component\"/>\n"
+        "  <component name=\"emptyChildComponent\"/>\n"
         "  <component name=\"nonEmptyComponent\">\n"
         "    <variable name=\"x\" units=\"dimensionless\"/>\n"
         "  </component>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"component\">\n"
+        "      <component_ref component=\"emptyChildComponent\"/>\n"
         "      <component_ref component=\"nonEmptyComponent\"/>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
