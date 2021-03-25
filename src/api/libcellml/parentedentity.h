@@ -27,7 +27,7 @@ namespace libcellml {
 /**
  * @brief The Parented Entity class.
  *
- * Base class for all libCellML that have a parent.
+ * Base class for all libCellML classes that have a parent.
  */
 class LIBCELLML_EXPORT ParentedEntity: public Entity
 {
@@ -46,7 +46,7 @@ public:
     ParentedEntityPtr parent() const;
 
     /**
-     * @brief Sets the entity as the parent of this entity.
+     * @brief Sets the given entity as the parent of this entity.
      *
      * Set the parent of the entity to the entity given.
      *
@@ -66,7 +66,7 @@ public:
      *
      * Tests the given entity to determine if the entity has a parent.
      * If the entity has a parent then @c true is returned otherwise
-     * @c false is returned.m
+     * @c false is returned.
      *
      * @return @c true if this entity has a parent, @c false otherwise.
      */
@@ -75,15 +75,15 @@ public:
     /**
      * @brief Test to see if the given entity is an ancestor of this entity.
      *
-     * Tests the given entity to determine if the entity or
-     * any of its parent entities already has this entity as a parent.
+     * Tests the given entity to determine if this entity or
+     * any of its parent entities already has the given entity as a parent.
      * This allows for a test against creating cycles. If the given entity
-     * is a parent of the current entity then the result is @c true otherwise the
-     * result is false.
+     * is an ancestor of the current entity then the result is @c true otherwise the
+     * result is @c false.
      *
-     * @param component The entity to test against.
+     * @param entity The entity to test against.
      *
-     * @return @c true if this entity has the given entity as a parent, @c false otherwise.
+     * @return @c true if this entity has the given entity as an ancestor, @c false otherwise.
      */
     bool hasAncestor(const ParentedEntityPtr &entity) const;
 
