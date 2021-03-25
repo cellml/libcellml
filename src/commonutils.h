@@ -33,7 +33,7 @@ namespace libcellml {
  * @param entity The entity to get the owning model for.
  * @return The owning @c Model or the @c nullptr if no model owns this entity.
  */
-libcellml::ModelPtr TEST_EXPORT owningModel(const libcellml::EntityConstPtr &entity);
+libcellml::ModelPtr TEST_EXPORT owningModel(const libcellml::ParentedEntityConstPtr &entity);
 
 /**
  * @brief Get the @c Component that the variable is owned by.
@@ -43,7 +43,7 @@ libcellml::ModelPtr TEST_EXPORT owningModel(const libcellml::EntityConstPtr &ent
  * @param entity The entity to get the owning component for.
  * @return The owning @c Component of this entity.
  */
-libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::EntityConstPtr &entity);
+libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::ParentedEntityConstPtr &entity);
 
 #ifndef TEST_UTILS
 } // namespace libcellml
