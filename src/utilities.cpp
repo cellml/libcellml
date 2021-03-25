@@ -264,6 +264,7 @@ std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model)
     auto importedComponents = getImportedComponents(model);
     auto importedUnits = getImportedUnits(model);
 
+    importSources.reserve(importedComponents.size() + importedUnits.size());
     for(auto &component : importedComponents) {
         importSources.push_back(component->importSource());
     }
