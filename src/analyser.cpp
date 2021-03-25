@@ -1707,7 +1707,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     // CellML 2.0 normative specification; see https://bit.ly/3vBbyO5):
     //  - Simple operands ('ci' and 'cn'; note: 'sep' is not relevant here): the
     //    operand can have any unit.
-    //  - Basic strucural (note: 'apply' is not relevant here):
+    //  - Basic structural (note: 'apply' is not relevant here):
     //     - 'piecewise': the returned value of the different 'piece' and
     //       'otherwise' statements should have the same unit .
     //     - 'piece': the returned value can have any unit while the condition
