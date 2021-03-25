@@ -378,7 +378,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('/* <CODE> */\n', g.commentString())
+        self.assertEqual('/* [CODE] */\n', g.commentString())
         g.setCommentString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.commentString())
 
@@ -405,7 +405,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual(':<ELSE_STATEMENT>', g.conditionalOperatorElseString())
+        self.assertEqual(':[ELSE_STATEMENT]', g.conditionalOperatorElseString())
         g.setConditionalOperatorElseString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.conditionalOperatorElseString())
 
@@ -414,7 +414,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('(<CONDITION>)?<IF_STATEMENT>', g.conditionalOperatorIfString())
+        self.assertEqual('([CONDITION])?[IF_STATEMENT]', g.conditionalOperatorIfString())
         g.setConditionalOperatorIfString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.conditionalOperatorIfString())
 
@@ -738,7 +738,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *variables)\n{\n<CODE>}\n',
+        self.assertEqual('void computeComputedConstants(double *variables)\n{\n[CODE]}\n',
                          g.implementationComputeComputedConstantsMethodString())
         g.setImplementationComputeComputedConstantsMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeComputedConstantsMethodString())
@@ -749,7 +749,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n{\n<CODE>}\n',
+            'void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n{\n[CODE]}\n',
             g.implementationComputeRatesMethodString())
         g.setImplementationComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString())
@@ -760,7 +760,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n{\n<CODE>}\n',
+            'void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n{\n[CODE]}\n',
             g.implementationComputeVariablesMethodString())
         g.setImplementationComputeVariablesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString())
@@ -802,7 +802,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('#include "<INTERFACE_FILE_NAME>"\n\n#include <math.h>\n#include <stdlib.h>\n',
+        self.assertEqual('#include "[INTERFACE_FILE_NAME]"\n\n#include <math.h>\n#include <stdlib.h>\n',
                          g.implementationHeaderString())
         g.setImplementationHeaderString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationHeaderString())
@@ -812,7 +812,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void initialiseStatesAndConstants(double *states, double *variables)\n{\n<CODE>}\n',
+        self.assertEqual('void initialiseStatesAndConstants(double *states, double *variables)\n{\n[CODE]}\n',
                          g.implementationInitialiseStatesAndConstantsMethodString())
         g.setImplementationInitialiseStatesAndConstantsMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseStatesAndConstantsMethodString())
@@ -822,7 +822,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const char LIBCELLML_VERSION[] = "<LIBCELLML_VERSION>";\n',
+        self.assertEqual('const char LIBCELLML_VERSION[] = "[LIBCELLML_VERSION]";\n',
                          g.implementationLibcellmlVersionString())
         g.setImplementationLibcellmlVersionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationLibcellmlVersionString())
@@ -832,7 +832,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const size_t STATE_COUNT = <STATE_COUNT>;\n', g.implementationStateCountString())
+        self.assertEqual('const size_t STATE_COUNT = [STATE_COUNT];\n', g.implementationStateCountString())
         g.setImplementationStateCountString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationStateCountString())
 
@@ -841,7 +841,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const VariableInfo STATE_INFO[] = {\n<CODE>};\n', g.implementationStateInfoString())
+        self.assertEqual('const VariableInfo STATE_INFO[] = {\n[CODE]};\n', g.implementationStateInfoString())
         g.setImplementationStateInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationStateInfoString())
 
@@ -850,7 +850,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n', g.implementationVariableCountString())
+        self.assertEqual('const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n', g.implementationVariableCountString())
         g.setImplementationVariableCountString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVariableCountString())
 
@@ -859,7 +859,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const VariableInfoWithType VARIABLE_INFO[] = {\n<CODE>};\n',
+        self.assertEqual('const VariableInfoWithType VARIABLE_INFO[] = {\n[CODE]};\n',
                          g.implementationVariableInfoString())
         g.setImplementationVariableInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVariableInfoString())
@@ -878,7 +878,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const VariableInfo VOI_INFO = <CODE>;\n', g.implementationVoiInfoString())
+        self.assertEqual('const VariableInfo VOI_INFO = [CODE];\n', g.implementationVoiInfoString())
         g.setImplementationVoiInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVoiInfoString())
 
@@ -916,7 +916,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n',
+            'void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n',
             g.interfaceComputeRatesMethodString())
         g.setInterfaceComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString())
@@ -927,7 +927,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n',
+            'void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n',
             g.interfaceComputeVariablesMethodString())
         g.setInterfaceComputeVariablesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString())
@@ -1227,7 +1227,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.',
+            'The content of this file was generated using [PROFILE_INFORMATION] libCellML [LIBCELLML_VERSION].',
             g.originCommentString())
         g.setOriginCommentString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.originCommentString())
@@ -1426,7 +1426,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('{"<NAME>", "<UNITS>", "<COMPONENT>"}', g.variableInfoEntryString())
+        self.assertEqual('{"[NAME]", "[UNITS]", "[COMPONENT]"}', g.variableInfoEntryString())
         g.setVariableInfoEntryString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableInfoEntryString())
 
@@ -1436,7 +1436,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'typedef struct {\n    char name[<NAME_SIZE>];\n    char units[<UNITS_SIZE>];\n    char component[<COMPONENT_SIZE>];\n} VariableInfo;\n',
+            'typedef struct {\n    char name[[NAME_SIZE]];\n    char units[[UNITS_SIZE]];\n    char component[[COMPONENT_SIZE]];\n} VariableInfo;\n',
             g.variableInfoObjectString())
         g.setVariableInfoObjectString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableInfoObjectString())
@@ -1446,7 +1446,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('{"<NAME>", "<UNITS>", "<COMPONENT>", <TYPE>}', g.variableInfoWithTypeEntryString())
+        self.assertEqual('{"[NAME]", "[UNITS]", "[COMPONENT]", [TYPE]}', g.variableInfoWithTypeEntryString())
         g.setVariableInfoWithTypeEntryString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableInfoWithTypeEntryString())
 
@@ -1456,7 +1456,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'typedef struct {\n    char name[<NAME_SIZE>];\n    char units[<UNITS_SIZE>];\n    char component[<COMPONENT_SIZE>];\n    VariableType type;\n} VariableInfoWithType;\n',
+            'typedef struct {\n    char name[[NAME_SIZE]];\n    char units[[UNITS_SIZE]];\n    char component[[COMPONENT_SIZE]];\n    VariableType type;\n} VariableInfoWithType;\n',
             g.variableInfoWithTypeObjectString())
         g.setVariableInfoWithTypeObjectString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableInfoWithTypeObjectString())
@@ -1467,7 +1467,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC<OPTIONAL_TYPE>\n} VariableType;\n',
+            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC[OPTIONAL_TYPE]\n} VariableType;\n',
             g.variableTypeObjectString())
         g.setVariableTypeObjectString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString())
@@ -1516,7 +1516,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('externalVariable(voi, states, rates, variables, <INDEX>)',
+        self.assertEqual('externalVariable(voi, states, rates, variables, [INDEX])',
                          g.externalVariableMethodCallString())
         g.setExternalVariableMethodCallString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString())
