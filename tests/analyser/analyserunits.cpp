@@ -1007,7 +1007,6 @@ TEST(AnalyserUnits, power)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
-    printIssues(analyser);
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
@@ -1079,7 +1078,6 @@ TEST(AnalyserUnits, root)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
-    printIssues(analyser);
 
     EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues, expectedCellmlElementTypes, expectedLevels, expectedReferenceRules, analyser);
 }
