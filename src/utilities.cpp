@@ -234,6 +234,36 @@ bool areNearlyEqual(double a, double b)
     return ulpsDistance(a, b) <= ulpsEpsilon;
 }
 
+std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &componentEntity)
+{
+    std::vector<ComponentPtr> importedComponents;
+    for (size_t i = 0; i < componentEntity->componentCount(); ++i) {
+        auto component = componentEntity->component(i);
+        if (component->isImport()) {
+            importedComponents.push_back(component);
+        }
+
+        auto childImportedComponents = getImportedComponents(component);
+        importedComponents.reserve(importedComponents.size() + childImportedComponents.size());
+        importedComponents.insert(importedComponents.end(), childImportedComponents.begin(), childImportedComponents.end());
+    }
+
+    return importedComponents;
+}
+
+std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model)
+{
+    std::vector<UnitsPtr> importedUnits;
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        auto units = model->units(i);
+        if (units->isImport()) {
+            importedUnits.push_back(units);
+        }
+    }
+
+    return importedUnits;
+}
+
 // The below code is used to compute the SHA-1 value of a string, based on the
 // code available at https://github.com/vog/sha1.
 
