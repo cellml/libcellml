@@ -234,12 +234,6 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &newComp
     if (oldComponent != nullptr && oldComponent->hasParent()) {
         parent = oldComponent->parent();
     }
-    if (newComponent->isImport()) {
-        auto model = owningModel(oldComponent);
-        if (model != nullptr) {
-            model->addImportSource(newComponent->importSource());
-        }
-    }
 
     if (removeComponent(index)) {
         mPimpl->mComponents.insert(mPimpl->mComponents.begin() + ptrdiff_t(index), newComponent);

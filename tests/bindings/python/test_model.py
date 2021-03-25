@@ -347,38 +347,6 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual("public", v1.interfaceType())
         self.assertEqual("public", v2.interfaceType())
 
-    def test_imports(self):
-        from libcellml import Model, ImportSource, Units
-
-        m = Model()
-        u = Units()
-
-        u.setImportSource(ImportSource())
-
-        m.addUnits(u)
-        self.assertTrue(m.hasImports())
-
-        self.assertEqual(1, m.importSourceCount())
-
-        i = ImportSource()
-        i.setUrl('actual_url')
-
-        m.addImportSource(i)
-
-        self.assertEqual(2, m.importSourceCount())
-
-        i1 = m.importSource(0)
-
-        self.assertTrue(m.hasImportSource(i))
-
-        m.removeImportSource(0)
-
-        self.assertEqual(1, m.importSourceCount())
-
-        m.removeAllImportSources()
-
-        self.assertEqual(0, m.importSourceCount())
-
 
 if __name__ == '__main__':
     unittest.main()

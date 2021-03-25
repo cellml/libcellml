@@ -113,16 +113,6 @@ protected:
     ImportedEntity(); /**< Constructor, @private. */
 
     /**
-     * @brief Virtual set import source method to be implemented by derived classes.
-     *
-     * Virtual setImportSource method to allow the units and component classes to
-     * implement their own versions.
-     *
-     * @param importSource The import source to set.
-     */
-    virtual void doSetImportSource(const ImportSourcePtr &importSource);
-
-    /**
      * @brief Virtual is resolved method to be implemented by derived classes.
      *
      * Virtual isResolved method to allow the @ref Units and @ref Component classes to
