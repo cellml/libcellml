@@ -656,7 +656,6 @@ TEST(Model, cleanCreatedModel)
     EXPECT_EQ(size_t(3), model->unitsCount());
 
     auto p = libcellml::Printer::create();
-    std::cout << p->printModel(model) << std::endl;
 
     // Call the Model::clean() function to remove empty components and units.
     model->clean();
