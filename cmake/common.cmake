@@ -190,7 +190,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -readability-convert-member-functions-to-static
       -readability-magic-numbers
       -readability-qualified-auto
-      -readability-use-anyofallof
+#      -readability-use-anyofallof
       ${_DISABLED_READABILITY_CHECKS}
     )
     string(REPLACE ";" ","
