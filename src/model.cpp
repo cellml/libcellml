@@ -548,8 +548,8 @@ void Model::clean()
 {
     // Remove empty components.
     for (size_t i = componentCount() - 1; i != MAX_SIZE_T; --i) {
-        if (findAndRemoveEmptyComponent(component(size_t(i)))) {
-            removeComponent(size_t(i));
+        if (findAndRemoveEmptyComponent(component(i))) {
+            removeComponent(i);
         }
     }
 
