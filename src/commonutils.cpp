@@ -23,7 +23,7 @@ limitations under the License.
 namespace libcellml {
 #endif
 
-libcellml::ModelPtr owningModel(const libcellml::EntityConstPtr &entity)
+libcellml::ModelPtr owningModel(const libcellml::ParentedEntityConstPtr &entity)
 {
     auto model = std::dynamic_pointer_cast<libcellml::Model>(entity->parent());
     auto component = owningComponent(entity);
@@ -35,7 +35,7 @@ libcellml::ModelPtr owningModel(const libcellml::EntityConstPtr &entity)
     return model;
 }
 
-libcellml::ComponentPtr owningComponent(const libcellml::EntityConstPtr &entity)
+libcellml::ComponentPtr owningComponent(const libcellml::ParentedEntityConstPtr &entity)
 {
     return std::dynamic_pointer_cast<libcellml::Component>(entity->parent());
 }
