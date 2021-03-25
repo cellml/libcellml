@@ -423,14 +423,14 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
 
     std::vector<ImportSourcePtr> collatedImportSources;
     auto importedComponents = getImportedComponents(model);
-    for(auto &component : importedComponents) {
+    for (auto &component : importedComponents) {
         auto result = std::find(collatedImportSources.begin(), collatedImportSources.end(), component->importSource());
         if (result == collatedImportSources.end()) {
             collatedImportSources.push_back(component->importSource());
         }
     }
     auto importedUnits = getImportedUnits(model);
-    for(auto &units : importedUnits) {
+    for (auto &units : importedUnits) {
         auto result = std::find(collatedImportSources.begin(), collatedImportSources.end(), units->importSource());
         if (result == collatedImportSources.end()) {
             collatedImportSources.push_back(units->importSource());

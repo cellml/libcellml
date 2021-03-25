@@ -1069,7 +1069,7 @@ void Annotator::AnnotatorImpl::doSetImportSourceIds()
     // Import items.
     auto model = mModel.lock();
     auto importSources = getAllImportSources(model);
-    for(auto &importSource : importSources) {
+    for (auto &importSource : importSources) {
         if (importSource->id().empty()) {
             auto id = makeUniqueId();
             importSource->setId(id);
@@ -1725,7 +1725,7 @@ size_t Annotator::AnnotatorImpl::generateHash()
 
         auto importSources = getAllImportSources(model);
         i = 0;
-        for(auto &importSource : importSources) {
+        for (auto &importSource : importSources) {
             idsString += "i=" + std::to_string(i++) + importSource->id();
         }
 
