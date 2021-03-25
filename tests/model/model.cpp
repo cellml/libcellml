@@ -636,6 +636,8 @@ TEST(Model, cleanCreatedModel)
     c2->setId("c2");
     auto c3 = libcellml::Component::create();
     auto c4 = libcellml::Component::create();
+    auto c5 = libcellml::Component::create();
+    auto c6 = libcellml::Component::create();
     auto u1 = libcellml::Units::create("used");
     auto u2 = libcellml::Units::create();
     u2->setId("u2");
@@ -646,13 +648,18 @@ TEST(Model, cleanCreatedModel)
     model->addComponent(c2);
     model->addComponent(c3);
     model->addComponent(c4);
+
+    // test unnamed components in an encapsulation hierarchy
+    model->addComponent(c5);
+    c5->addComponent(c6);
+
     model->addUnits(u1);
     model->addUnits(u2);
     model->addUnits(u3);
 
     c3->addVariable(v);
 
-    EXPECT_EQ(size_t(4), model->componentCount());
+    EXPECT_EQ(size_t(5), model->componentCount());
     EXPECT_EQ(size_t(3), model->unitsCount());
 
     auto p = libcellml::Printer::create();
