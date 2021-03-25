@@ -1686,7 +1686,7 @@ std::string Analyser::AnalyserImpl::expressionUnits(const AnalyserEquationAstPtr
         unitsString += "'" + units[i] + "'";
     }
 
-    return expression(ast, false) + " is " + (unitsString.empty() ? "dimensionless" : "in " + unitsString);
+    return expression(ast, false) + " is " + (unitsString.empty() ? "'dimensionless'" : "in " + unitsString);
 }
 
 void Analyser::AnalyserImpl::defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
