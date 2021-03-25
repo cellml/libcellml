@@ -257,6 +257,23 @@ std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model)
     return importedUnits;
 }
 
+std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model)
+{
+    std::vector<ImportSourcePtr> importSources;
+
+    auto importedComponents = getImportedComponents(model);
+    auto importedUnits = getImportedUnits(model);
+
+    for(auto &component : importedComponents) {
+        importSources.push_back(component->importSource());
+    }
+    for(auto &units : importedUnits) {
+        importSources.push_back(units->importSource());
+    }
+
+    return importSources;
+}
+
 // The below code is used to compute the SHA-1 value of a string, based on the
 // code available at https://github.com/vog/sha1.
 

@@ -729,4 +729,11 @@ std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
  */
 bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities);
 
+/**
+ * @brief getAllImportSources
+ * @param model
+ * @return
+ */
+std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
+
 } // namespace libcellml
