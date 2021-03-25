@@ -175,28 +175,26 @@ TEST(ImportSource, importSourceMove)
     EXPECT_TRUE(units->isImport());
 }
 
-TEST(ImportSource, importSourceMoveModels)
+TEST(ImportSource, importSourceSharedAcrossModels)
 {
     auto m1 = libcellml::Model::create("m1");
     auto imp = libcellml::ImportSource::create();
 
     EXPECT_TRUE(m1->addImportSource(imp));
-    EXPECT_EQ(m1, imp->parent());
 
     // Add import source to another model.
     auto m2 = libcellml::Model::create("m2");
     EXPECT_TRUE(m2->addImportSource(imp));
-    EXPECT_EQ(m2, imp->parent());
 
-    // Expect that we can't delete from first model any more ...
-    EXPECT_EQ(size_t(0), m1->importSourceCount());
-    EXPECT_FALSE(m1->removeImportSource(imp));
+    // Expect that first model has an import source
+    EXPECT_EQ(size_t(1), m1->importSourceCount());
+    EXPECT_EQ(imp, m1->importSource(0));
+    EXPECT_TRUE(m1->removeImportSource(imp));
 
-    // ... but that we can get it and remove it from the second.
+    // and that we can get it and remove it from the second.
     EXPECT_EQ(size_t(1), m2->importSourceCount());
     EXPECT_EQ(imp, m2->importSource(0));
     EXPECT_TRUE(m2->removeImportSource(imp));
-    EXPECT_EQ(nullptr, imp->parent());
 }
 
 TEST(ImportSource, addRemoveFromModel)
@@ -257,10 +255,10 @@ TEST(ImportSource, moveToAnotherModel)
     model2->addImportSource(imp);
     EXPECT_EQ(size_t(1), model2->importSourceCount());
     EXPECT_EQ(imp, model2->importSource(0));
+
+    model1->removeImportSource(imp);
     EXPECT_EQ(size_t(0), model1->importSourceCount());
     EXPECT_EQ(nullptr, model1->importSource(0));
-
-    EXPECT_EQ(model2, imp->parent());
 }
 
 TEST(ImportSource, createLinkedMultiple)
