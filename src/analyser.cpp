@@ -354,10 +354,6 @@ struct Analyser::AnalyserImpl
     explicit AnalyserImpl(Analyser *analyser);
     ~AnalyserImpl();
 
-    //---GRY--- - Check that all our methods are still needed.
-    //          - Check whether we need to check against "dimensionless" here
-    //            and there.
-
     static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
                                                    const AnalyserInternalVariablePtr &variable2);
 
