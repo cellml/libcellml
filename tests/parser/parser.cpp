@@ -1369,10 +1369,10 @@ TEST(Parser, invalidImportsAndGetIssue)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-        "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
-        "    <component component_ref=\"\" name=\"frank\"/>\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
         "    <units units_ref=\"\" name=\"fido\"/>\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
+        "    <component component_ref=\"\" name=\"frank\"/>\n"
         "  </import>\n"
         "</model>\n";
 
@@ -2191,8 +2191,8 @@ TEST(Parser, parseAndPrintSeparateAndCombinedImports)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\"/>\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\"/>\n"
         "  </import>\n"
         "</model>\n";
 
@@ -2248,4 +2248,51 @@ TEST(Parser, parserDoesNotDeleteChildrenOfInvalidEncapsulation)
     auto model = parser->parseModel(inString);
     EXPECT_EQ(size_t(2), parser->errorCount());
     EXPECT_EQ_ISSUES(expectedIssues, parser);
+}
+
+TEST(Parser, incorrectNumberOfImportSources)
+{
+    std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import.cellml\">\n"
+        "    <component component_ref=\"myComponent\" name=\"myImportedComponent\"/>\n"
+        "  </import>\n"
+        "  <component name=\"myConcreteComponent\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"myConcreteComponent\">\n"
+        "      <component_ref component=\"myImportedComponent\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+}
+
+TEST(Parser, importComponentMadeConcrete)
+{
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"importMe\" name=\"importedComponent\"/>\n"
+        "  </import>\n"
+        "  <component name=\"parentComponent\"/>\n"
+        "  <component name=\"childComponent\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parentComponent\">\n"
+        "      <component_ref component=\"childComponent\">\n"
+        "        <component_ref component=\"importedComponent\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_TRUE(model->component("importedComponent")->isImport());
 }

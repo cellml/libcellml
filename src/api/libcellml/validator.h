@@ -60,10 +60,10 @@ public:
     void validateModel(const ModelPtr &model);
 
 private:
-    Validator(); /**< Constructor. */
+    Validator(); /**< Constructor, @private. */
 
-    struct ValidatorImpl; /**< Forward declaration for pImpl idiom. */
-    ValidatorImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ValidatorImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ValidatorImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

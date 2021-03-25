@@ -340,17 +340,70 @@ bool isCellMLInteger(const std::string &candidate);
 bool isCellMLReal(const std::string &candidate);
 
 /**
- * @brief Test if @p value1 @c double and @p value2 @c double are equal.
+ * @brief Test if @p a @c double and @p b @c double are equal.
  *
- * Return @c true if @p value1 @c double and @p value2 @c double are equal,
+ * Return @c true if @p a @c double and @p b @c double are equal,
  * otherwise return @c false.
  *
- * @param value1 The first @c double value to test.
- * @param value2 The second @c double value to test.
+ * @param a The first @c double value to test.
+ * @param b The second @c double value to test.
  *
- * @return @c true if @p value1 and @p value2 are equal and @c false otherwise.
+ * @return @c true if @p a and @p b are equal and @c false otherwise.
  */
-bool areEqual(double value1, double value2);
+bool areEqual(double a, double b);
+
+/**
+ * @brief Decide if two doubles are nearly equal.
+ *
+ * Test two doubles to determine if they are close enough
+ * to be considered equal.
+ *
+ * Uses a modified form of comparing floats:
+ *
+ *   https://bitbashing.io/comparing-floats.html
+ *
+ * @param a A @c double to test.
+ * @param b A @c double to test.
+ *
+ * @return @c true if the given doubles are considered close, @c false otherwise.
+ */
+bool areNearlyEqual(double a, double b);
+
+/**
+ * @brief Compare strings to determine if they are equal.
+ *
+ * Compare the given strings to determine if they are equal or not.
+ * The current test is a simplistic comparison of string equality.
+ *
+ * @param str1 The first parameter to compare against parameter two.
+ * @param str2 The second parameter to compare against parameter one.
+ *
+ * @return Return @c true if the @p str1 is equal to @p str2, @c false otherwise.
+ */
+bool areEqual(const std::string &str1, const std::string &str2);
+
+/**
+ * @brief Get all the imported components from the given component entity.
+ *
+ * Get all the imported components from the given component entity.  Tracing
+ * through the component hierarchy to find them.
+ *
+ * @param componentEntity The component entity to search.
+ *
+ * @return A vector of @ref ComponentPtr that are imported components.
+ */
+std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &componentEntity);
+
+/**
+ * @brief Get all imported units from a model.
+ *
+ * Get all imported units from a model.
+ *
+ * @param model The model to search for imported units.
+ *
+ * @return A vector of @ref UnitsPtr that are imported units.
+ */
+std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model);
 
 /**
  * @brief Compute the SHA-1 value of the @p string @c std::string.
@@ -661,5 +714,19 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
  * @return A @c std::vector of @ref VariablePtr.
  */
 std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
+
+/**
+ * @brief Test the given @p entities are equal to entities in @p owner.
+ *
+ * Test to see if all the entities given in @p entities are equal to
+ * entities in @p owner.  The order that the entities appear in is not
+ * taken into account.
+ *
+ * @param owner The owner to compare entities with.
+ * @param entities The list of entities to equate.
+ *
+ * @return @c true if all the entities in @p entities are equal to entites in the @p owner.
+ */
+bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities);
 
 } // namespace libcellml

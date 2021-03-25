@@ -2029,13 +2029,13 @@ TEST(Generator, coverage)
     profile->setSquareString("sqr");
     profile->setHasPowerOperator(true);
 
-    profile->setPiecewiseIfString("piecewise(<CONDITION>, <IF_STATEMENT>");
-    profile->setPiecewiseElseString(", <ELSE_STATEMENT>)");
+    profile->setPiecewiseIfString("piecewise([CONDITION], [IF_STATEMENT]");
+    profile->setPiecewiseElseString(", [ELSE_STATEMENT])");
     profile->setHasConditionalOperator(false);
 
     profile->setInterfaceFileNameString("customheaderfile.h");
 
-    profile->setImplementationHeaderString("#include \"<INTERFACE_FILE_NAME>\"\n");
+    profile->setImplementationHeaderString("#include \"[INTERFACE_FILE_NAME]\"\n");
 
     profile->setImplementationVersionString("");
 

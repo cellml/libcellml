@@ -60,10 +60,10 @@ public:
     std::string printModel(const ModelPtr &model, bool autoIds = false) const;
 
 private:
-    Printer(); /**< Constructor. */
+    Printer(); /**< Constructor, @private. */
 
-    struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
-    PrinterImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct PrinterImpl; /**< Forward declaration for pImpl idiom, @private. */
+    PrinterImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

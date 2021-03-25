@@ -14,11 +14,11 @@ This document simply outlines some of the current rationale that has an influenc
   - No avenue to retrieve remote external references.
 
 - Serialise and deserialise from a string.
-- Present a useful interface not one tied to the `XML <https://www.w3.org/XML/>`_ serialisation structure.
-- Validation is quite separate (you are free to make invalid `CellML <https://www.cellml.org/>`_ models).
+- Present a useful interface not one tied to the :xml:`XML<>` serialisation structure.
+- Validation is quite separate (you are free to make invalid :cellml:`CellML<>` models).
 - Public API treats MathML as strings only.
 
-  - Internal to the code generation we are currently creating our own `MathML <https://www.w3.org/Math/>`_ object model based on an abstract syntax tree.
+  - Internal to the code generation we are currently creating our own :mathml:`MathML<>` object model based on an abstract syntax tree.
   - Minimal implementation to support the immediate requirement of code generation.
   - Expect to provide another layer that would handle MathML as a separate thing, potentially linking back to the advanced functionality envisions for symbolic analysis of the model.
   - Internal to the validator, the MathML strings are parsed into a DOM for use in schema validation against the MathML schema.
