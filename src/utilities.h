@@ -283,6 +283,7 @@ std::string convertToString(size_t value);
  * @overload std::string convertToString(int value)
  *
  * @param value The @c double value number to convert.
+ * @param fullPrecision Whether the @p value is converted using full precision.
  *
  * @return @c std::string representation of the @p value.
  */
