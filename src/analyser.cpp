@@ -1279,7 +1279,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                 if (iter == unitsMap.end()) {
                     unitsMap[unitsName] = unitsExponent;
                 } else {
-                    unitsMap[iter->first] += iter->second * unitsExponent;
+                    unitsMap[iter->first] += unitsExponent;
                 }
             } else {
                 std::string reference;
