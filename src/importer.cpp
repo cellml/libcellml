@@ -232,7 +232,6 @@ bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
     return false;
 }
 
-
 /**
  * @brief Resolve the path of the given filename using the given base.
  *
