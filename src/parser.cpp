@@ -307,8 +307,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     std::vector<XmlNodePtr> encapsulationNodes;
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
-            const std::string name;
-            ComponentPtr component = Component::create(name);
+            auto component = Component::create();
             loadComponent(component, childNode);
             model->addComponent(component);
         } else if (childNode->isCellmlElement("units")) {
@@ -318,7 +317,6 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         } else if (childNode->isCellmlElement("import")) {
             ImportSourcePtr importSource = ImportSource::create();
             loadImport(importSource, model, childNode);
-            model->addImportSource(importSource);
         } else if (childNode->isCellmlElement("encapsulation")) {
             // An encapsulation should not have attributes other than an 'id' attribute.
             if (childNode->firstAttribute()) {

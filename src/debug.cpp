@@ -28,6 +28,14 @@ limitations under the License.
 
 namespace libcellml {
 
+void printHistory(const std::vector<std::tuple<std::string, std::string, std::string>> &history)
+{
+    for (auto tt : history) {
+        Debug() << std::get<0>(tt) << " " << std::get<1>(tt) << " " << std::get<2>(tt);
+    }
+
+}
+
 void printStack(const IndexStack &stack)
 {
     bool first = true;

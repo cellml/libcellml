@@ -383,6 +383,29 @@ bool areNearlyEqual(double a, double b);
 bool areEqual(const std::string &str1, const std::string &str2);
 
 /**
+ * @brief Get all the imported components from the given component entity.
+ *
+ * Get all the imported components from the given component entity.  Tracing
+ * through the component hierarchy to find them.
+ *
+ * @param componentEntity The component entity to search.
+ *
+ * @return A vector of @ref ComponentPtr that are imported components.
+ */
+std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &componentEntity);
+
+/**
+ * @brief Get all imported units from a model.
+ *
+ * Get all imported units from a model.
+ *
+ * @param model The model to search for imported units.
+ *
+ * @return A vector of @ref UnitsPtr that are imported units.
+ */
+std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model);
+
+/**
  * @brief Compute the SHA-1 value of the @p string @c std::string.
  *
  * Compute and return the SHA-1 value of the @p string @c std::string.
