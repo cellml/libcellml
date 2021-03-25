@@ -446,11 +446,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mLockedProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "60d16843c0cb0180f147a4a562aa7a434634e929";
+        res = profileContentsSha1 != "55939677baad00995bc0f3cc43ebbb34fe4aebfa";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "1532797cc47546dd18bbe4d30fd69a046cf011ea";
+        res = profileContentsSha1 != "87ece1d387a8b01130bee2bbd57949754e17cc5e";
 
         break;
     }
@@ -480,7 +480,7 @@ void Generator::GeneratorImpl::addOriginCommentCode()
         profileInformation += " profile of";
 
         mCode += replace(mLockedProfile->commentString(),
-                         "<CODE>", replace(replace(mLockedProfile->originCommentString(), "<PROFILE_INFORMATION>", profileInformation), "<LIBCELLML_VERSION>", versionString()));
+                         "[CODE]", replace(replace(mLockedProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
     }
 }
 
@@ -509,7 +509,7 @@ void Generator::GeneratorImpl::addImplementationHeaderCode()
         }
 
         mCode += replace(mLockedProfile->implementationHeaderString(),
-                         "<INTERFACE_FILE_NAME>", mLockedProfile->interfaceFileNameString());
+                         "[INTERFACE_FILE_NAME]", mLockedProfile->interfaceFileNameString());
     }
 }
 
@@ -537,7 +537,7 @@ void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
         versionAndLibcellmlCode += interface ?
                                        mLockedProfile->interfaceLibcellmlVersionString() :
                                        replace(mLockedProfile->implementationLibcellmlVersionString(),
-                                               "<LIBCELLML_VERSION>", versionString());
+                                               "[LIBCELLML_VERSION]", versionString());
     }
 
     if (!versionAndLibcellmlCode.empty()) {
@@ -556,7 +556,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         stateAndVariableCountCode += interface ?
                                          mLockedProfile->interfaceStateCountString() :
                                          replace(mLockedProfile->implementationStateCountString(),
-                                                 "<STATE_COUNT>", std::to_string(mLockedModel->stateCount()));
+                                                 "[STATE_COUNT]", std::to_string(mLockedModel->stateCount()));
     }
 
     if ((interface && !mLockedProfile->interfaceVariableCountString().empty())
@@ -564,7 +564,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         stateAndVariableCountCode += interface ?
                                          mLockedProfile->interfaceVariableCountString() :
                                          replace(mLockedProfile->implementationVariableCountString(),
-                                                 "<VARIABLE_COUNT>", std::to_string(mLockedModel->variableCount()));
+                                                 "[VARIABLE_COUNT]", std::to_string(mLockedModel->variableCount()));
     }
 
     if (!stateAndVariableCountCode.empty()) {
@@ -584,7 +584,7 @@ void Generator::GeneratorImpl::addVariableTypeObjectCode()
         }
 
         mCode += replace(mLockedProfile->variableTypeObjectString(),
-                         "<OPTIONAL_TYPE>", mLockedModel->hasExternalVariables() ? mLockedProfile->variableTypeObjectExternalTypeString() : "");
+                         "[OPTIONAL_TYPE]", mLockedModel->hasExternalVariables() ? mLockedProfile->variableTypeObjectExternalTypeString() : "");
     }
 }
 
@@ -607,9 +607,9 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     }
 
     return replace(replace(replace(objectString,
-                                   "<COMPONENT_SIZE>", std::to_string(componentSize)),
-                           "<NAME_SIZE>", std::to_string(nameSize)),
-                   "<UNITS_SIZE>", std::to_string(unitsSize));
+                                   "[COMPONENT_SIZE]", std::to_string(componentSize)),
+                           "[NAME_SIZE]", std::to_string(nameSize)),
+                   "[UNITS_SIZE]", std::to_string(unitsSize));
 }
 
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
@@ -639,9 +639,9 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                                                                     const std::string &component) const
 {
     return replace(replace(replace(mLockedProfile->variableInfoEntryString(),
-                                   "<NAME>", name),
-                           "<UNITS>", units),
-                   "<COMPONENT>", component);
+                                   "[NAME]", name),
+                           "[UNITS]", units),
+                   "[COMPONENT]", component);
 }
 
 void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
@@ -680,7 +680,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode()
         auto component = (mLockedModel->voi() != nullptr) ? owningComponent(mLockedModel->voi()->variable())->name() : "";
 
         mCode += replace(mLockedProfile->implementationVoiInfoString(),
-                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
+                         "[CODE]", generateVariableInfoEntryCode(name, units, component));
     }
 }
 
@@ -711,7 +711,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
         }
 
         mCode += replace(mLockedProfile->implementationStateInfoString(),
-                         "<CODE>", infoElementsCode);
+                         "[CODE]", infoElementsCode);
     }
 }
 
@@ -749,10 +749,10 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 
             infoElementsCode += mLockedProfile->indentString()
                                 + replace(replace(replace(replace(mLockedProfile->variableInfoWithTypeEntryString(),
-                                                                  "<NAME>", variable->variable()->name()),
-                                                          "<UNITS>", variable->variable()->units()->name()),
-                                                  "<COMPONENT>", owningComponent(variable->variable())->name()),
-                                          "<TYPE>", variableType);
+                                                                  "[NAME]", variable->variable()->name()),
+                                                          "[UNITS]", variable->variable()->units()->name()),
+                                                  "[COMPONENT]", owningComponent(variable->variable())->name()),
+                                          "[TYPE]", variableType);
         }
 
         if (!infoElementsCode.empty()) {
@@ -760,7 +760,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
         }
 
         mCode += replace(mLockedProfile->implementationVariableInfoString(),
-                         "<CODE>", infoElementsCode);
+                         "[CODE]", infoElementsCode);
     }
 }
 
@@ -1448,8 +1448,8 @@ std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string 
     return replace(replace(mLockedProfile->hasConditionalOperator() ?
                                mLockedProfile->conditionalOperatorIfString() :
                                mLockedProfile->piecewiseIfString(),
-                           "<CONDITION>", condition),
-                   "<IF_STATEMENT>", value);
+                           "[CONDITION]", condition),
+                   "[IF_STATEMENT]", value);
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value) const
@@ -1457,7 +1457,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
     return replace(mLockedProfile->hasConditionalOperator() ?
                        mLockedProfile->conditionalOperatorElseString() :
                        mLockedProfile->piecewiseElseString(),
-                   "<ELSE_STATEMENT>", value);
+                   "[ELSE_STATEMENT]", value);
 }
 
 std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast) const
@@ -1915,7 +1915,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
             res += mLockedProfile->indentString() + generateVariableNameCode(equation->variable()->variable()) + " = "
                    + replace(mLockedProfile->externalVariableMethodCallString(),
-                             "<INDEX>", index.str())
+                             "[INDEX]", index.str())
                    + mLockedProfile->commandSeparatorString() + "\n";
         } else {
             res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
@@ -1943,14 +1943,14 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
         && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
             || !mLockedModel->hasExternalVariables())) {
         interfaceComputeModelMethodsCode += replace(mLockedProfile->interfaceComputeRatesMethodString(),
-                                                    "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
+                                                    "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
     }
 
     if (!mLockedProfile->interfaceComputeVariablesMethodString().empty()
         && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
             || !mLockedModel->hasExternalVariables())) {
         interfaceComputeModelMethodsCode += replace(mLockedProfile->interfaceComputeVariablesMethodString(),
-                                                    "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
+                                                    "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
     }
 
     if (!interfaceComputeModelMethodsCode.empty()) {
@@ -1986,7 +1986,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseStatesAndConstantsMeth
         }
 
         mCode += replace(mLockedProfile->implementationInitialiseStatesAndConstantsMethodString(),
-                         "<CODE>", generateMethodBodyCode(methodBody));
+                         "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2006,7 +2006,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
         }
 
         mCode += replace(mLockedProfile->implementationComputeComputedConstantsMethodString(),
-                         "<CODE>", generateMethodBodyCode(methodBody));
+                         "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2028,8 +2028,8 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
         }
 
         mCode += replace(replace(mLockedProfile->implementationComputeRatesMethodString(),
-                                 "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
-                         "<CODE>", generateMethodBodyCode(methodBody));
+                                 "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
+                         "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2056,8 +2056,8 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
         }
 
         mCode += replace(replace(mLockedProfile->implementationComputeVariablesMethodString(),
-                                 "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
-                         "<CODE>", generateMethodBodyCode(methodBody));
+                                 "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
+                         "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
