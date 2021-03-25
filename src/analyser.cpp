@@ -386,6 +386,9 @@ struct Analyser::AnalyserImpl
 
     void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
+    void updateUnitsMapWithStandardUnit(const std::string &unitsName,
+                                        UnitsMap &unitsMap,
+                                        double unitsExponent);
     void updateUnitsMap(const ModelPtr &model, const std::string &unitsName,
                         UnitsMap &unitsMap, bool userUnitsMap = false,
                         double unitsExponent = 1.0,
@@ -1247,6 +1250,21 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     analyseEquationAst(ast->mPimpl->mOwnedRightChild);
 }
 
+void Analyser::AnalyserImpl::updateUnitsMapWithStandardUnit(const std::string &unitsName,
+                                                            UnitsMap &unitsMap,
+                                                            double unitsExponent)
+{
+    // Update the given units map using the given standard unit.
+
+    for (const auto &iter : standardUnitsList.at(unitsName)) {
+        if (unitsMap.find(iter.first) == unitsMap.end()) {
+            unitsMap.emplace(iter.first, 0.0);
+        }
+
+        unitsMap[iter.first] += iter.second * unitsExponent;
+    }
+}
+
 void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                                             const std::string &unitsName,
                                             UnitsMap &unitsMap,
@@ -1262,13 +1280,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
         }
     } else {
         if (isStandardUnitName(unitsName)) {
-            for (const auto &iter : standardUnitsList.at(unitsName)) {
-                if (unitsMap.find(iter.first) == unitsMap.end()) {
-                    unitsMap.emplace(iter.first, 0.0);
-                }
-
-                unitsMap[iter.first] += iter.second * unitsExponent;
-            }
+            updateUnitsMapWithStandardUnit(unitsName, unitsMap, unitsExponent);
         } else {
             UnitsPtr units = model->units(unitsName);
 
@@ -1291,13 +1303,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                     units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
 
                     if (isStandardUnitName(reference)) {
-                        for (const auto &iter : standardUnitsList.at(reference)) {
-                            if (unitsMap.find(iter.first) == unitsMap.end()) {
-                                unitsMap.emplace(iter.first, 0.0);
-                            }
-
-                            unitsMap[iter.first] += iter.second * exponent * unitsExponent;
-                        }
+                        updateUnitsMapWithStandardUnit(reference, unitsMap, exponent * unitsExponent);
                     } else {
                         updateUnitsMap(model, reference, unitsMap, userUnitsMap,
                                        exponent * unitsExponent,
