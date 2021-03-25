@@ -347,8 +347,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Piecewise statement.
 
-        mConditionalOperatorIfString = "(<CONDITION>)?<IF_STATEMENT>";
-        mConditionalOperatorElseString = ":<ELSE_STATEMENT>";
+        mConditionalOperatorIfString = "([CONDITION])?[IF_STATEMENT]";
+        mConditionalOperatorElseString = ":[ELSE_STATEMENT]";
 
         mHasConditionalOperator = true;
 
@@ -444,15 +444,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous.
 
-        mCommentString = "/* <CODE> */\n";
-        mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
+        mCommentString = "/* [CODE] */\n";
+        mOriginCommentString = "The content of this file was generated using [PROFILE_INFORMATION] libCellML [LIBCELLML_VERSION].";
 
         mInterfaceFileNameString = "model.h";
 
         mInterfaceHeaderString = "#pragma once\n"
                                  "\n"
                                  "#include <stddef.h>\n";
-        mImplementationHeaderString = "#include \"<INTERFACE_FILE_NAME>\"\n"
+        mImplementationHeaderString = "#include \"[INTERFACE_FILE_NAME]\"\n"
                                       "\n"
                                       "#include <math.h>\n"
                                       "#include <stdlib.h>\n";
@@ -461,18 +461,18 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mImplementationVersionString = "const char VERSION[] = \"0.2.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
-        mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
+        mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n";
 
         mInterfaceStateCountString = "extern const size_t STATE_COUNT;\n";
-        mImplementationStateCountString = "const size_t STATE_COUNT = <STATE_COUNT>;\n";
+        mImplementationStateCountString = "const size_t STATE_COUNT = [STATE_COUNT];\n";
 
         mInterfaceVariableCountString = "extern const size_t VARIABLE_COUNT;\n";
-        mImplementationVariableCountString = "const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n";
+        mImplementationVariableCountString = "const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n";
 
         mVariableTypeObjectString = "typedef enum {\n"
                                     "    CONSTANT,\n"
                                     "    COMPUTED_CONSTANT,\n"
-                                    "    ALGEBRAIC<OPTIONAL_TYPE>\n"
+                                    "    ALGEBRAIC[OPTIONAL_TYPE]\n"
                                     "} VariableType;\n";
         mVariableTypeObjectExternalTypeString = ",\n    EXTERNAL";
 
@@ -482,32 +482,32 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableTypeString = "EXTERNAL";
 
         mVariableInfoObjectString = "typedef struct {\n"
-                                    "    char name[<NAME_SIZE>];\n"
-                                    "    char units[<UNITS_SIZE>];\n"
-                                    "    char component[<COMPONENT_SIZE>];\n"
+                                    "    char name[[NAME_SIZE]];\n"
+                                    "    char units[[UNITS_SIZE]];\n"
+                                    "    char component[[COMPONENT_SIZE]];\n"
                                     "} VariableInfo;\n";
         mVariableInfoWithTypeObjectString = "typedef struct {\n"
-                                            "    char name[<NAME_SIZE>];\n"
-                                            "    char units[<UNITS_SIZE>];\n"
-                                            "    char component[<COMPONENT_SIZE>];\n"
+                                            "    char name[[NAME_SIZE]];\n"
+                                            "    char units[[UNITS_SIZE]];\n"
+                                            "    char component[[COMPONENT_SIZE]];\n"
                                             "    VariableType type;\n"
                                             "} VariableInfoWithType;\n";
 
         mInterfaceVoiInfoString = "extern const VariableInfo VOI_INFO;\n";
-        mImplementationVoiInfoString = "const VariableInfo VOI_INFO = <CODE>;\n";
+        mImplementationVoiInfoString = "const VariableInfo VOI_INFO = [CODE];\n";
 
         mInterfaceStateInfoString = "extern const VariableInfo STATE_INFO[];\n";
         mImplementationStateInfoString = "const VariableInfo STATE_INFO[] = {\n"
-                                         "<CODE>"
+                                         "[CODE]"
                                          "};\n";
 
         mInterfaceVariableInfoString = "extern const VariableInfoWithType VARIABLE_INFO[];\n";
         mImplementationVariableInfoString = "const VariableInfoWithType VARIABLE_INFO[] = {\n"
-                                            "<CODE>"
+                                            "[CODE]"
                                             "};\n";
 
-        mVariableInfoEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}";
-        mVariableInfoWithTypeEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}";
+        mVariableInfoEntryString = "{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\"}";
+        mVariableInfoWithTypeEntryString = "{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\", [TYPE]}";
 
         mVoiString = "voi";
 
@@ -517,7 +517,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mExternalVariableMethodTypeDefinitionString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
         mExternalVariableMethodParameterString = ", ExternalVariable externalVariable";
-        mExternalVariableMethodCallString = "externalVariable(voi, states, rates, variables, <INDEX>)";
+        mExternalVariableMethodCallString = "externalVariable(voi, states, rates, variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
@@ -540,24 +540,24 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceInitialiseStatesAndConstantsMethodString = "void initialiseStatesAndConstants(double *states, double *variables);\n";
         mImplementationInitialiseStatesAndConstantsMethodString = "void initialiseStatesAndConstants(double *states, double *variables)\n"
                                                                   "{\n"
-                                                                  "<CODE>"
+                                                                  "[CODE]"
                                                                   "}\n";
 
         mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables);\n";
         mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n"
                                                               "{\n"
-                                                              "<CODE>"
+                                                              "[CODE]"
                                                               "}\n";
 
-        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n";
-        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n{\n"
-                                                  "<CODE>"
+        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n";
+        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n{\n"
+                                                  "[CODE]"
                                                   "}\n";
 
-        mInterfaceComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n";
-        mImplementationComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n"
+        mInterfaceComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n";
+        mImplementationComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n"
                                                       "{\n"
-                                                      "<CODE>"
+                                                      "[CODE]"
                                                       "}\n";
 
         mEmptyMethodString = "";
@@ -658,8 +658,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Piecewise statement.
 
-        mConditionalOperatorIfString = "<IF_STATEMENT> if <CONDITION>";
-        mConditionalOperatorElseString = " else <ELSE_STATEMENT>";
+        mConditionalOperatorIfString = "[IF_STATEMENT] if [CONDITION]";
+        mConditionalOperatorElseString = " else [ELSE_STATEMENT]";
 
         mHasConditionalOperator = true;
 
@@ -758,8 +758,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous.
 
-        mCommentString = "# <CODE>\n";
-        mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
+        mCommentString = "# [CODE]\n";
+        mOriginCommentString = "The content of this file was generated using [PROFILE_INFORMATION] libCellML [LIBCELLML_VERSION].";
 
         mInterfaceFileNameString = "";
 
@@ -772,19 +772,19 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mImplementationVersionString = "__version__ = \"0.2.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
-        mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
+        mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
 
         mInterfaceStateCountString = "";
-        mImplementationStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
+        mImplementationStateCountString = "STATE_COUNT = [STATE_COUNT]\n";
 
         mInterfaceVariableCountString = "";
-        mImplementationVariableCountString = "VARIABLE_COUNT = <VARIABLE_COUNT>\n";
+        mImplementationVariableCountString = "VARIABLE_COUNT = [VARIABLE_COUNT]\n";
 
         mVariableTypeObjectString = "\n"
                                     "class VariableType(Enum):\n"
                                     "    CONSTANT = 1\n"
                                     "    COMPUTED_CONSTANT = 2\n"
-                                    "    ALGEBRAIC = 3<OPTIONAL_TYPE>\n"
+                                    "    ALGEBRAIC = 3[OPTIONAL_TYPE]\n"
                                     "\n";
         mVariableTypeObjectExternalTypeString = "\n    EXTERNAL = 4";
 
@@ -797,20 +797,20 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableInfoWithTypeObjectString = "";
 
         mInterfaceVoiInfoString = "";
-        mImplementationVoiInfoString = "VOI_INFO = <CODE>\n";
+        mImplementationVoiInfoString = "VOI_INFO = [CODE]\n";
 
         mInterfaceStateInfoString = "";
         mImplementationStateInfoString = "STATE_INFO = [\n"
-                                         "<CODE>"
+                                         "[CODE]"
                                          "]\n";
 
         mInterfaceVariableInfoString = "";
         mImplementationVariableInfoString = "VARIABLE_INFO = [\n"
-                                            "<CODE>"
+                                            "[CODE]"
                                             "]\n";
 
-        mVariableInfoEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\"}";
-        mVariableInfoWithTypeEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\", \"type\": <TYPE>}";
+        mVariableInfoEntryString = "{\"name\": \"[NAME]\", \"units\": \"[UNITS]\", \"component\": \"[COMPONENT]\"}";
+        mVariableInfoWithTypeEntryString = "{\"name\": \"[NAME]\", \"units\": \"[UNITS]\", \"component\": \"[COMPONENT]\", \"type\": [TYPE]}";
 
         mVoiString = "voi";
 
@@ -820,7 +820,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mExternalVariableMethodTypeDefinitionString = "";
         mExternalVariableMethodParameterString = ", external_variable";
-        mExternalVariableMethodCallString = "external_variable(voi, states, rates, variables, <INDEX>)";
+        mExternalVariableMethodCallString = "external_variable(voi, states, rates, variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
@@ -838,22 +838,22 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceInitialiseStatesAndConstantsMethodString = "";
         mImplementationInitialiseStatesAndConstantsMethodString = "\n"
                                                                   "def initialise_states_and_constants(states, variables):\n"
-                                                                  "<CODE>";
+                                                                  "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
         mImplementationComputeComputedConstantsMethodString = "\n"
                                                               "def compute_computed_constants(variables):\n"
-                                                              "<CODE>";
+                                                              "[CODE]";
 
         mInterfaceComputeRatesMethodString = "";
         mImplementationComputeRatesMethodString = "\n"
-                                                  "def compute_rates(voi, states, rates, variables<OPTIONAL_PARAMETER>):\n"
-                                                  "<CODE>";
+                                                  "def compute_rates(voi, states, rates, variables[OPTIONAL_PARAMETER]):\n"
+                                                  "[CODE]";
 
         mInterfaceComputeVariablesMethodString = "";
         mImplementationComputeVariablesMethodString = "\n"
-                                                      "def compute_variables(voi, states, rates, variables<OPTIONAL_PARAMETER>):\n"
-                                                      "<CODE>";
+                                                      "def compute_variables(voi, states, rates, variables[OPTIONAL_PARAMETER]):\n"
+                                                      "[CODE]";
 
         mEmptyMethodString = "pass\n";
 
