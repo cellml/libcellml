@@ -23,6 +23,9 @@ class EntityTestCase(unittest.TestCase):
         x.setId(idx)
         self.assertEqual(x.id(), idx)
 
+        x.removeId()
+        self.assertEqual(x.id(), '')
+
     def test_parent(self):
         from libcellml import Model, Component
 
