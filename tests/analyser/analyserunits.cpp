@@ -695,3 +695,33 @@ TEST(AnalyserUnits, rhs)
 
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
+
+TEST(AnalyserUnits, fabbriFantiniWildersSeveriHumanSanModel2017WithIncompatibleUnits)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/units/fabbri_fantini_wilders_severi_human_san_model_2017_with_incompatible_units.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "The unit of '1.2' in 'pow(Km_Kp/Ko, 1.2)' in '1.0+pow(Km_Kp/Ko, 1.2)' in 'pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)' in 'pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)*pow(1.0+pow(Km_Nap/Nai, 1.3), -1.0)*pow(1.0+exp(-(V-E_Na+110.0)/20.0), -1.0)' in 'i_NaK_max*pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)*pow(1.0+pow(Km_Nap/Nai, 1.3), -1.0)*pow(1.0+exp(-(V-E_Na+110.0)/20.0), -1.0)' in 'Iso_increase*i_NaK_max*pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)*pow(1.0+pow(Km_Nap/Nai, 1.3), -1.0)*pow(1.0+exp(-(V-E_Na+110.0)/20.0), -1.0)' in equation 'i_NaK = Iso_increase*i_NaK_max*pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)*pow(1.0+pow(Km_Nap/Nai, 1.3), -1.0)*pow(1.0+exp(-(V-E_Na+110.0)/20.0), -1.0)' in component 'i_NaK' is not dimensionless. '1.2' is in 'second'.",
+        "The units in 'ACh > 0.0' in '(ACh > 0.0)?0.7*ACh/(0.00009+ACh)' in '(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in '(Iso_1_uM > 0.0)?-0.25:(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in equation 'b_up = (Iso_1_uM > 0.0)?-0.25:(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in component 'Ca_intracellular_fluxes' are not equivalent. 'ACh' is in 'millimolar' while '0.0' is in 'millimolar4'.",
+        "The unit of 'ACh > 0.0' in '(ACh > 0.0)?0.7*ACh/(0.00009+ACh)' in '(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in '(Iso_1_uM > 0.0)?-0.25:(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in equation 'b_up = (Iso_1_uM > 0.0)?-0.25:(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in component 'Ca_intracellular_fluxes' is not dimensionless. 'ACh > 0.0' is in 'millimolar'.",
+        "The units in '-1.0-9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423)' in '(ACh > 0.0)?-1.0-9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423)' in '(ACh > 0.0)?-1.0-9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423):0.0' in equation 'ACh_shift = (ACh > 0.0)?-1.0-9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423):0.0' in component 'i_f_y_gate' are not equivalent. '-1.0' is in 'millivolt' while '9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423)' is in 'volt'.",
+        "The units in '0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)+0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift)))' in '1.0/(0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)+0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift))))' in '1.0/(0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)+0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift))))-0.054' in equation 'tau_y = 1.0/(0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)+0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift))))-0.054' in component 'i_f_y_gate' are not equivalent. '0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)' is 'dimensionless' while '0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift)))' is in 'millivolt x per_millivolt_second'.",
+        "The units in '0.01329+0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752))' in '(V < -(80.0-ACh_shift-Iso_shift-y_shift))?0.01329+0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752))' in '(V < -(80.0-ACh_shift-Iso_shift-y_shift))?0.01329+0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752)):0.0002501*exp(-(V-ACh_shift-Iso_shift-y_shift)/12.861)' in equation 'y_infinity = (V < -(80.0-ACh_shift-Iso_shift-y_shift))?0.01329+0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752)):0.0002501*exp(-(V-ACh_shift-Iso_shift-y_shift)/12.861)' in component 'i_f_y_gate' are not equivalent. '0.01329' is 'dimensionless' while '0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752))' is in 'ampere'.",
+        "The units in 'V+42.0504' in '-(V+42.0504)' in '-(V+42.0504)/8.3106' in 'exp(-(V+42.0504)/8.3106)' in '1.0+exp(-(V+42.0504)/8.3106)' in '1.0/(1.0+exp(-(V+42.0504)/8.3106))' in equation 'm_infinity = 1.0/(1.0+exp(-(V+42.0504)/8.3106))' in component 'i_Na_m_gate' are not equivalent. 'V' is in 'millivolt' while '42.0504' is in 'per_millivolt'.",
+        "The units in '1.0+exp((V+69.804)/4.4565)' in '1.0/(1.0+exp((V+69.804)/4.4565))' in equation 'h_infinity = 1.0/(1.0+exp((V+69.804)/4.4565))' in component 'i_Na_h_gate' are not equivalent. '1.0' is 'dimensionless' while 'exp((V+69.804)/4.4565)' is in 'millivolt x volt^-1'.",
+        "The units in '320.0*exp(-0.1*(V+75.0))+1.0' in '2000.0/(320.0*exp(-0.1*(V+75.0))+1.0)' in equation 'beta_h = 2000.0/(320.0*exp(-0.1*(V+75.0))+1.0)' in component 'i_Na_h_gate' are not equivalent. '320.0*exp(-0.1*(V+75.0))' is in 'millivolt x per_millivolt x per_second' while '1.0' is 'dimensionless'.",
+        "The units in 'i_CaL = (i_siCa+i_siK+i_siNa)*(1.0-ACh_block)*1.0*Iso_increase' in component 'i_CaL' are not equivalent. 'i_CaL' is in 'nanoA' while '(i_siCa+i_siK+i_siNa)*(1.0-ACh_block)*1.0*Iso_increase' is in 'millivolt x nanoA'.",
+        "The units in '-0.02839*(adVm+41.8)/(exp(-(adVm+41.8)/2.5)-1.0)-0.0849*(adVm+6.8)/(exp(-(adVm+6.8)/4.8)-1.0)' in equation 'alpha_dL = -0.02839*(adVm+41.8)/(exp(-(adVm+41.8)/2.5)-1.0)-0.0849*(adVm+6.8)/(exp(-(adVm+6.8)/4.8)-1.0)' in component 'i_CaL_dL_gate' are not equivalent. '-0.02839*(adVm+41.8)/(exp(-(adVm+41.8)/2.5)-1.0)' is in 'millivolt x per_millivolt_second' while '0.0849*(adVm+6.8)/(exp(-(adVm+6.8)/4.8)-1.0)' is in 'millivolt x per_second'.",
+        "The unit of '-pow((V+36.0)/10.0, 2.0)' in 'exp(-pow((V+36.0)/10.0, 2.0))' in '230.0*exp(-pow((V+36.0)/10.0, 2.0))' in '44.3+230.0*exp(-pow((V+36.0)/10.0, 2.0))' in '0.001*(44.3+230.0*exp(-pow((V+36.0)/10.0, 2.0)))' in equation 'tau_fL = 0.001*(44.3+230.0*exp(-pow((V+36.0)/10.0, 2.0)))' in component 'i_CaL_fL_gate' is not dimensionless. '-pow((V+36.0)/10.0, 2.0)' is in 'ampere^-2 x millivolt^2'.",
+        "The units in 'i_KACh = (ACh > 0.0)?ACh_on*g_KACh*(V-E_K)*(1.0+exp((V+20.0)/20.0))*a:0.0' in component 'i_KACh' are not equivalent. 'i_KACh' is in 'nanoA' while '(ACh > 0.0)?ACh_on*g_KACh*(V-E_K)*(1.0+exp((V+20.0)/20.0))*a:0.0' is in 'microS x millivolt' and 'ampere'.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+}
