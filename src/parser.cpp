@@ -992,7 +992,6 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
 void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
 {
     XmlNodePtr componentRefNode = node;
-//    model->removeAllImportSources();
     while (componentRefNode) {
         ComponentPtr parentComponent = nullptr;
         std::string encapsulationId;
