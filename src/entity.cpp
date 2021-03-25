@@ -55,6 +55,11 @@ std::string Entity::id() const
     return mPimpl->mId;
 }
 
+bool Entity::equals(const EntityPtr &other) const
+{
+    return doEquals(other);
+}
+
 EntityPtr Entity::parent() const
 {
     return mPimpl->mParent.lock();
@@ -92,6 +97,14 @@ bool Entity::hasAncestor(const EntityPtr &entity) const
     }
 
     return hasAncestor;
+}
+
+bool Entity::doEquals(const EntityPtr &other) const
+{
+    if (other == nullptr) {
+        return false;
+    }
+    return mPimpl->mId == other->id();
 }
 
 } // namespace libcellml
