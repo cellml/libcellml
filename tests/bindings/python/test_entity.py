@@ -91,6 +91,14 @@ class EntityTestCase(unittest.TestCase):
         self.assertTrue(u1.equals(u2))
 
 
+class ParentedEntityTestCase(unittest.TestCase):
+
+    def test_create(self):
+        from libcellml.parentedentity import ParentedEntity
+
+        self.assertRaises(AttributeError, ParentedEntity)
+
+
 class NamedEntityTestCase(unittest.TestCase):
 
     def test_create(self):
