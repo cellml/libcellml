@@ -26,6 +26,9 @@ TEST(Model, setGetId)
     libcellml::ModelPtr m = libcellml::Model::create();
     m->setId(id);
     EXPECT_EQ(id, m->id());
+
+    m->removeId();
+    EXPECT_EQ("", m->id());
 }
 
 TEST(Model, name)

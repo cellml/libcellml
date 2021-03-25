@@ -39,6 +39,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/logger.i
     ../interface/model.i
     ../interface/namedentity.i
+    ../interface/parentedentity.i
     ../interface/parser.i
     ../interface/printer.i
     ../interface/reset.i

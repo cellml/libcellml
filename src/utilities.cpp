@@ -538,12 +538,12 @@ bool areEquivalentVariables(const VariablePtr &variable1,
     return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
-bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
+bool isEntityChildOf(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     return entity1->parent() == entity2;
 }
 
-bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2)
+bool areEntitiesSiblings(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     auto entity1Parent = entity1->parent();
     return entity1Parent != nullptr && entity1Parent == entity2->parent();
