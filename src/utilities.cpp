@@ -265,10 +265,10 @@ std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model)
     auto importedUnits = getImportedUnits(model);
 
     importSources.reserve(importedComponents.size() + importedUnits.size());
-    for(auto &component : importedComponents) {
+    for (auto &component : importedComponents) {
         importSources.push_back(component->importSource());
     }
-    for(auto &units : importedUnits) {
+    for (auto &units : importedUnits) {
         importSources.push_back(units->importSource());
     }
 
