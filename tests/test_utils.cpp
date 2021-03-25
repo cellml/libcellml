@@ -347,25 +347,6 @@ void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::Compon
     }
 }
 
-void compareImportSource(const libcellml::ImportSourcePtr &i1, const libcellml::ImportSourcePtr &i2, const libcellml::ModelPtr &m2)
-{
-    EXPECT_EQ(i1->url(), i2->url());
-
-    EXPECT_EQ(i1->unitsCount(), i2->unitsCount());
-    for (size_t index = 0; index < i1->unitsCount(); ++index) {
-        auto u1 = i1->units(index);
-        auto u2 = i2->units(index);
-        compareUnits(u1, u2, m2);
-    }
-
-    EXPECT_EQ(i1->componentCount(), i2->componentCount());
-    for (size_t index = 0; index < i1->componentCount(); ++index) {
-        auto c1 = i1->component(index);
-        auto c2 = i2->component(index);
-        compareComponent(c1, c2, m2);
-    }
-}
-
 void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
 {
     EXPECT_EQ(m1->id(), m2->id());
@@ -390,7 +371,7 @@ void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
     for (size_t index = 0; index < m1->importSourceCount(); ++index) {
         auto i1 = m1->importSource(index);
         auto i2 = m2->importSource(index);
-        compareImportSource(i1, i2, m2);
+        EXPECT_EQ(i1->url(), i2->url());
     }
 }
 
