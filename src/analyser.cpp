@@ -1370,7 +1370,7 @@ UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &units
 
     for (auto &unitsMap : res) {
         for (auto &units : unitsMap) {
-            units.second = realFactor * units.second;
+            units.second *= realFactor;
         }
     }
 
