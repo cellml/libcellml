@@ -257,7 +257,6 @@ public:
      * @return A smart pointer to a @ref AnyItem object.
      */
     static AnyItemPtr create(CellmlElementType type, const std::any &item) noexcept;
-    // KRM
     static AnyItemPtr create(CellmlElementType type, const ComponentPtr &item) noexcept;
     static AnyItemPtr create(CellmlElementType type, const ImportSourcePtr &item) noexcept;
     static AnyItemPtr create(CellmlElementType type, const ModelPtr &item) noexcept;
