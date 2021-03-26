@@ -51,4 +51,15 @@ std::string NamedEntity::name() const
     return mPimpl->mName;
 }
 
+bool NamedEntity::doEquals(const EntityPtr &other) const
+{
+    if (Entity::doEquals(other)) {
+        auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(other);
+        if (namedEntity != nullptr) {
+            return mPimpl->mName == namedEntity->name();
+        }
+    }
+    return false;
+}
+
 } // namespace libcellml
