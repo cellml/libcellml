@@ -310,7 +310,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
         EXPECT_EQ("2.16.3", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION:
-        EXPECT_EQ("", e->referenceHeading());
+        EXPECT_EQ("3.10.9", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::XML:
         EXPECT_EQ("1.2.1", e->referenceHeading());
