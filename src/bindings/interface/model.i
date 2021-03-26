@@ -84,6 +84,9 @@ Only the first matching Units is removed and returned.";
 %feature("docstring") libcellml::Model::hasImportSource
 "Test whether this Model already contains the given ImportSource.";
 
+%feature("docstring") libcellml::Model::clean
+"Remove any empty units and any empty components from the model."
+
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)

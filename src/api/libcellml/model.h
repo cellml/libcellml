@@ -413,16 +413,27 @@ public:
     bool removeAllImportSources();
 
     /**
-     * @brief Tests to see if the import source is within this model.
+     * @brief Test to see if the import source is within this model.
      *
-     * Tests to see if the given import source is contained within this model.
-     * Returns @c true if the import source is in the model and @c false otherwise.
+     * Test to see if the given import source is contained within this model.
+     * Return @c true if the import source is in the model and @c false otherwise.
      *
      * @param importSource The import source to test for existence in this model.
      *
      * @return @c true if the import source is in the model and @c false otherwise.
      */
     bool hasImportSource(const ImportSourcePtr &importSource) const;
+
+    /**
+     * @brief Remove any empty components and units from the model.
+     * 
+     *  Remove any empty components and units fom this model.
+     *  In this context, "empty" means:
+     *   - components with no name, id, resets, variables, maths, or non-empty child components; and
+     *   - units which have no name, id, or child units.
+     *  For components, this is applied recursively from the leaves of the encapsulation hierarchy.
+     */
+    void clean();
 
 private:
     Model(); /**< Constructor, @private. */
