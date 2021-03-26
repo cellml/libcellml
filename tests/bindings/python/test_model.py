@@ -350,38 +350,6 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual("public", v1.interfaceType())
         self.assertEqual("public", v2.interfaceType())
 
-    def test_imports(self):
-        from libcellml import Model, ImportSource, Units
-
-        m = Model()
-        u = Units()
-
-        u.setImportSource(ImportSource())
-
-        m.addUnits(u)
-        self.assertTrue(m.hasImports())
-
-        self.assertEqual(1, m.importSourceCount())
-
-        i = ImportSource()
-        i.setUrl('actual_url')
-
-        m.addImportSource(i)
-
-        self.assertEqual(2, m.importSourceCount())
-
-        i1 = m.importSource(0)
-
-        self.assertTrue(m.hasImportSource(i))
-
-        m.removeImportSource(0)
-
-        self.assertEqual(1, m.importSourceCount())
-
-        m.removeAllImportSources()
-
-        self.assertEqual(0, m.importSourceCount())
-
     def test_clean(self):
 
         from libcellml import Component, Model, Units, Variable, Printer
@@ -405,7 +373,7 @@ class ModelTestCase(unittest.TestCase):
         model.addUnits(u1)
         model.addUnits(u2)
         model.addUnits(u3)
-        
+
         c3.addVariable(v)
 
         self.assertEqual(4, model.componentCount())
