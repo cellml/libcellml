@@ -458,27 +458,25 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
                                                            HistorySearchVector &history,
                                                            const std::string &action) const
 {
-    std::string msg = "Cyclic dependencies were found when attempting to " + action + " "
-                      + std::string((type == Type::UNITS) ? "units" : "a component") + " in the model '"
+    std::string typeString = (type == Type::COMPONENT) ? "component" : "units";
+    std::string msg1 = "Cyclic dependencies were found when attempting to " + action + " "
+                      + std::string((typeString == "component") ? "a " : "") + typeString + " in the model '"
                       + model->name() + "'. The dependency loop is:\n";
     std::tuple<std::string, std::string, std::string> h;
-    auto hSize = history.size();
-    std::string typeString = (type == Type::UNITS) ? "units" : "component";
-    for (size_t i = 0; i < hSize; ++i) {
+    std::string eol = "; and\n";
+    size_t i = history.size() - 1;
+    std::string msg2;
+    while (i != MAX_SIZE_T) {
         h = history[i];
-        msg += " - " + typeString + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'";
-        if (i != hSize - 1) {
-            msg += ";";
-            if (i == hSize - 2) {
-                msg += " and";
-            }
-            msg += "\n";
-        } else {
-            msg += ".";
-        }
+        msg2 = eol + " - " + typeString + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'" + msg2;
+                eol = ";\n";
+                --i;
     }
+    msg2.erase(0, 2);
+    msg2 += ".";
+
     auto issue = Issue::create();
-    issue->setDescription(msg);
+    issue->setDescription(msg1 + msg2);
     issue->setLevel(Issue::Level::ERROR);
     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
     history.clear();
@@ -495,6 +493,8 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
     for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
         if (!mPimpl->fetchUnits(model, units, baseFile, history)) {
+            // Get the last issue recorded and change its object to be the top-level importing item.
+            issue(issueCount() - 1)->setUnits(units);
             status = false;
         }
     }
@@ -502,6 +502,7 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
     for (const ComponentPtr &component : getImportedComponents(model)) {
         history.clear();
         if (!mPimpl->fetchComponent(model, component, baseFile, history)) {
+            issue(issueCount() - 1)->setComponent(component);
             status = false;
         }
     }
