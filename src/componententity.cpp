@@ -21,7 +21,10 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/model.h"
 #include "libcellml/units.h"
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -50,7 +53,7 @@ std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findCo
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component)
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr &c) -> bool { return c == component; });
+                        [=](const ComponentPtr &c) -> bool { return c->equals(component); });
 }
 
 // Interface class Model implementation
@@ -69,6 +72,7 @@ bool ComponentEntity::addComponent(const ComponentPtr &component)
     if (component == nullptr) {
         return false;
     }
+
     return doAddComponent(component);
 }
 
@@ -100,7 +104,7 @@ bool ComponentEntity::removeComponent(size_t index)
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
         auto component = mPimpl->mComponents[index];
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + ptrdiff_t(index));
         component->removeParent();
         status = true;
     }
@@ -113,7 +117,7 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     bool status = false;
     auto result = mPimpl->findComponent(component);
     if (result != mPimpl->mComponents.end()) {
-        (*result)->removeParent();
+        component->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
@@ -127,7 +131,7 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
 
 void ComponentEntity::removeAllComponents()
 {
-    for (const auto &component : mPimpl->mComponents) {
+    for (auto &component : mPimpl->mComponents) {
         component->removeParent();
     }
     mPimpl->mComponents.clear();
@@ -198,7 +202,7 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     ComponentPtr component = nullptr;
     if (index < mPimpl->mComponents.size()) {
         component = mPimpl->mComponents.at(index);
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + ptrdiff_t(index));
         component->removeParent();
     }
 
@@ -222,17 +226,24 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     return foundComponent;
 }
 
-bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &component)
+bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &newComponent)
 {
     bool status = false;
-    ComponentEntityPtr oldComponent = ComponentEntity::component(index);
-    EntityPtr parent = nullptr;
+    auto oldComponent = component(index);
+    ParentedEntityPtr parent = nullptr;
     if (oldComponent != nullptr && oldComponent->hasParent()) {
         parent = oldComponent->parent();
     }
+    if (newComponent->isImport()) {
+        auto model = owningModel(oldComponent);
+        if (model != nullptr) {
+            model->addImportSource(newComponent->importSource());
+        }
+    }
+
     if (removeComponent(index)) {
-        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), component);
-        component->setParent(parent);
+        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + ptrdiff_t(index), newComponent);
+        newComponent->setParent(parent);
         status = true;
     }
 
@@ -254,6 +265,7 @@ bool ComponentEntity::replaceComponent(const std::string &name, const ComponentP
 bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated)
 {
     bool status = replaceComponent(size_t(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin()), newComponent);
+
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
             status = component(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
@@ -271,6 +283,25 @@ void ComponentEntity::setEncapsulationId(const std::string &id)
 std::string ComponentEntity::encapsulationId() const
 {
     return mPimpl->mEncapsulationId;
+}
+
+bool ComponentEntity::doEquals(const EntityPtr &other) const
+{
+    if (NamedEntity::doEquals(other)) {
+        auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(other);
+        if ((componentEntity != nullptr)
+            && mPimpl->mEncapsulationId == componentEntity->encapsulationId()
+            && mPimpl->mComponents.size() == componentEntity->componentCount()) {
+            for (const auto &component : mPimpl->mComponents) {
+                if (!componentEntity->containsComponent(component, false)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace libcellml

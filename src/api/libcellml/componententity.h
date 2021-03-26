@@ -208,11 +208,11 @@ public:
      * the range [0, \#components).
      *
      * @param index Index of the Component to replace.
-     * @param component The component to be used as a replacement.
+     * @param newComponent The component to be used as a replacement.
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(size_t index, const ComponentPtr &component);
+    bool replaceComponent(size_t index, const ComponentPtr &newComponent);
 
     /**
      * @overload
@@ -304,11 +304,13 @@ protected:
      */
     virtual bool doAddComponent(const ComponentPtr &component);
 
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
     ComponentEntity(); /**< ComponentEntity Constructor. */
 
 private:
-    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

@@ -18,8 +18,8 @@ limitations under the License.
 
 #include <string>
 
-#include "libcellml/entity.h"
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/parentedentity.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -29,7 +29,7 @@ namespace libcellml {
  *
  * Base class for all nameable libCellML classes.
  */
-class LIBCELLML_EXPORT NamedEntity: public Entity
+class LIBCELLML_EXPORT NamedEntity: public ParentedEntity
 {
 public:
     ~NamedEntity() override; /**< Destructor. */
@@ -57,11 +57,13 @@ public:
     std::string name() const;
 
 protected:
-    NamedEntity(); /**< Constructor. */
+    NamedEntity(); /**< Constructor, @private. */
+
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
 private:
-    struct NamedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    NamedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct NamedEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    NamedEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

@@ -26,6 +26,9 @@ TEST(Model, setGetId)
     libcellml::ModelPtr m = libcellml::Model::create();
     m->setId(id);
     EXPECT_EQ(id, m->id());
+
+    m->removeId();
+    EXPECT_EQ("", m->id());
 }
 
 TEST(Model, name)
@@ -623,4 +626,390 @@ TEST(Model, removeComponentInsensitiveToOrder)
 
     EXPECT_EQ(size_t(0), modelParsed->componentCount());
     EXPECT_EQ(size_t(2), modelApi->componentCount());
+}
+
+libcellml::ModelPtr commonSetupImportedUnits()
+{
+    auto model = libcellml::Model::create();
+    auto myConcreteUnits = libcellml::Units::create("myConcreteUnits");
+    auto myImportedUnits = libcellml::Units::create("myImportedUnits");
+
+    auto import = libcellml::ImportSource::create();
+    import->setUrl("import.cellml");
+    myImportedUnits->setImportSource(import);
+
+    model->addUnits(myConcreteUnits);
+    model->addUnits(myImportedUnits);
+
+    EXPECT_TRUE(model->units("myImportedUnits")->isImport());
+    EXPECT_FALSE(model->units("myConcreteUnits")->isImport());
+
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    return model;
+}
+
+TEST(Model, removeImportedUnitsByName)
+{
+    auto model = commonSetupImportedUnits();
+
+    EXPECT_TRUE(model->removeUnits("myConcreteUnits"));
+    EXPECT_TRUE(model->removeUnits("myImportedUnits"));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(0), model->importSourceCount());
+}
+
+TEST(Model, removeImportedUnitsByIndex)
+{
+    auto model = commonSetupImportedUnits();
+
+    EXPECT_TRUE(model->removeUnits(0));
+    EXPECT_TRUE(model->removeUnits(0));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(0), model->importSourceCount());
+}
+
+TEST(Model, removeImportedUnitsByReference)
+{
+    auto model = commonSetupImportedUnits();
+    auto myConcreteUnits = model->units(0);
+    auto myImportedUnits = model->units(1);
+
+    EXPECT_TRUE(model->removeUnits(myConcreteUnits));
+    EXPECT_TRUE(model->removeUnits(myImportedUnits));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+}
+
+TEST(Model, takeImportedUnitsByName)
+{
+    auto model = commonSetupImportedUnits();
+
+    auto takeUnits1 = model->takeUnits("myImportedUnits");
+    auto takeUnits2 = model->takeUnits("myConcreteUnits");
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+}
+
+TEST(Model, takeImportedUnitsByIndex)
+{
+    auto model = commonSetupImportedUnits();
+
+    auto takeUnits1 = model->takeUnits(0);
+    auto takeUnits2 = model->takeUnits(0);
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+}
+
+TEST(Model, replaceImportedUnitsByName)
+{
+    auto model = libcellml::Model::create();
+    auto myConcreteUnits1 = libcellml::Units::create("myConcreteUnits1");
+    auto myImportedUnits1 = libcellml::Units::create("myImportedUnits1");
+    auto myConcreteUnits2 = libcellml::Units::create("myConcreteUnits2");
+    auto myImportedUnits2 = libcellml::Units::create("myImportedUnits2");
+
+    auto import1 = libcellml::ImportSource::create();
+    auto import2 = libcellml::ImportSource::create();
+
+    import1->setUrl("import1.cellml");
+    import2->setUrl("import2.cellml");
+
+    myImportedUnits1->setImportSource(import1);
+    myImportedUnits2->setImportSource(import2);
+
+    model->addUnits(myConcreteUnits1);
+    model->addUnits(myImportedUnits2);
+
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    // REPLACE concrete -> imported by name.
+    EXPECT_TRUE(model->replaceUnits("myConcreteUnits1", myImportedUnits1));
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(import1, model->importSource(1));
+
+    // REPLACE imported -> concrete by name.
+    EXPECT_TRUE(model->replaceUnits("myImportedUnits2", myConcreteUnits2));
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+}
+
+TEST(Model, replaceImportedUnitsByIndex)
+{
+    auto model = libcellml::Model::create();
+    auto myConcreteUnits1 = libcellml::Units::create("myConcreteUnits1");
+    auto myImportedUnits1 = libcellml::Units::create("myImportedUnits1");
+    auto myConcreteUnits2 = libcellml::Units::create("myConcreteUnits2");
+    auto myImportedUnits2 = libcellml::Units::create("myImportedUnits2");
+
+    auto import1 = libcellml::ImportSource::create();
+    auto import2 = libcellml::ImportSource::create();
+
+    import1->setUrl("import1.cellml");
+    import2->setUrl("import2.cellml");
+
+    myImportedUnits1->setImportSource(import1);
+    myImportedUnits2->setImportSource(import2);
+
+    model->addUnits(myConcreteUnits1);
+    model->addUnits(myImportedUnits2);
+
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    // REPLACE concrete -> imported by index.
+    EXPECT_TRUE(model->replaceUnits(0, myImportedUnits1));
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(import1, model->importSource(1));
+
+    // REPLACE imported -> concrete by index.
+    EXPECT_TRUE(model->replaceUnits(1, myConcreteUnits2));
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+}
+
+TEST(Model, replaceImportedUnitsByReference)
+{
+    auto model = libcellml::Model::create();
+    auto myConcreteUnits1 = libcellml::Units::create("myConcreteUnits1");
+    auto myImportedUnits1 = libcellml::Units::create("myImportedUnits1");
+    auto myConcreteUnits2 = libcellml::Units::create("myConcreteUnits2");
+    auto myImportedUnits2 = libcellml::Units::create("myImportedUnits2");
+
+    auto import1 = libcellml::ImportSource::create();
+    auto import2 = libcellml::ImportSource::create();
+
+    import1->setUrl("import1.cellml");
+    import2->setUrl("import2.cellml");
+
+    myImportedUnits1->setImportSource(import1);
+    myImportedUnits2->setImportSource(import2);
+
+    model->addUnits(myConcreteUnits1);
+    model->addUnits(myImportedUnits2);
+
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    // REPLACE concrete -> imported by reference.
+    EXPECT_TRUE(model->replaceUnits(myConcreteUnits1, myImportedUnits1));
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(import2, model->importSource(0));
+
+    // REPLACE imported -> concrete by reference.
+    EXPECT_TRUE(model->replaceUnits(myImportedUnits2, myConcreteUnits2));
+
+    EXPECT_EQ(size_t(2), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+}
+
+libcellml::ModelPtr commonSetupImportedComponent()
+{
+    auto model = libcellml::Model::create();
+    auto myConcreteComponent = libcellml::Component::create("myConcreteComponent");
+    auto myImportedComponent = libcellml::Component::create("myImportedComponent");
+
+    auto import = libcellml::ImportSource::create();
+    import->setUrl("import.cellml");
+    myImportedComponent->setImportSource(import);
+
+    model->addComponent(myConcreteComponent);
+    model->addComponent(myImportedComponent);
+
+    EXPECT_TRUE(model->component("myImportedComponent")->isImport());
+    EXPECT_FALSE(model->component("myConcreteComponent")->isImport());
+
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    return model;
+}
+
+TEST(Model, removeImportedComponentByName)
+{
+    auto model = commonSetupImportedComponent();
+
+    EXPECT_TRUE(model->removeComponent("myConcreteComponent"));
+    EXPECT_TRUE(model->removeComponent("myImportedComponent"));
+
+    EXPECT_EQ(size_t(0), model->componentCount());
+    EXPECT_EQ(size_t(0), model->importSourceCount());
+}
+
+TEST(Model, removeImportedComponentByIndex)
+{
+    auto model = commonSetupImportedComponent();
+
+    EXPECT_TRUE(model->removeComponent(0));
+    EXPECT_TRUE(model->removeComponent(0));
+
+    EXPECT_EQ(size_t(0), model->componentCount());
+    EXPECT_EQ(size_t(0), model->importSourceCount());
+}
+
+TEST(Model, removeImportedComponentByReference)
+{
+    auto model = commonSetupImportedComponent();
+    auto myConcreteComponent = model->component(0);
+    auto myImportedComponent = model->component(1);
+
+    EXPECT_TRUE(model->removeComponent(myConcreteComponent));
+    EXPECT_TRUE(model->removeComponent(myImportedComponent));
+
+    EXPECT_EQ(size_t(0), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+}
+
+TEST(Model, takeImportedComponentByName)
+{
+    auto model = commonSetupImportedComponent();
+
+    auto takeComponent1 = model->takeComponent("myImportedComponent");
+    auto takeComponent2 = model->takeComponent("myConcreteComponent");
+
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(0), model->componentCount());
+}
+
+TEST(Model, takeImportedComponentByIndex)
+{
+    auto model = commonSetupImportedComponent();
+
+    auto takeComponent1 = model->takeComponent(0);
+    auto takeComponent2 = model->takeComponent(0);
+
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(0), model->componentCount());
+}
+
+TEST(Model, replaceImportedComponentByName)
+{
+    auto model = libcellml::Model::create();
+    auto myConcreteComponent1 = libcellml::Component::create("myConcreteComponent1");
+    auto myImportedComponent1 = libcellml::Component::create("myImportedComponent1");
+    auto myConcreteComponent2 = libcellml::Component::create("myConcreteComponent2");
+    auto myImportedComponent2 = libcellml::Component::create("myImportedComponent2");
+
+    auto import1 = libcellml::ImportSource::create();
+    auto import2 = libcellml::ImportSource::create();
+
+    import1->setUrl("import1.cellml");
+    import2->setUrl("import2.cellml");
+
+    myImportedComponent1->setImportSource(import1);
+    myImportedComponent2->setImportSource(import2);
+
+    model->addComponent(myConcreteComponent1);
+    model->addComponent(myImportedComponent2);
+
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    // REPLACE concrete -> imported by name.
+    EXPECT_TRUE(model->replaceComponent("myConcreteComponent1", myImportedComponent1));
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(import1, model->importSource(1));
+
+    // REPLACE imported -> concrete by name.
+    EXPECT_TRUE(model->replaceComponent("myImportedComponent2", myConcreteComponent2));
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+}
+
+TEST(Model, replaceImportedComponentByIndex)
+{
+    auto model = libcellml::Model::create();
+    auto myConcreteComponent1 = libcellml::Component::create("myConcreteComponent1");
+    auto myImportedComponent1 = libcellml::Component::create("myImportedComponent1");
+    auto myConcreteComponent2 = libcellml::Component::create("myConcreteComponent2");
+    auto myImportedComponent2 = libcellml::Component::create("myImportedComponent2");
+
+    auto import1 = libcellml::ImportSource::create();
+    auto import2 = libcellml::ImportSource::create();
+
+    import1->setUrl("import1.cellml");
+    import2->setUrl("import2.cellml");
+
+    myImportedComponent1->setImportSource(import1);
+    myImportedComponent2->setImportSource(import2);
+
+    model->addComponent(myConcreteComponent1);
+    model->addComponent(myImportedComponent2);
+
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    // REPLACE concrete -> imported by index.
+    EXPECT_TRUE(model->replaceComponent(0, myImportedComponent1));
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(import1, model->importSource(1));
+
+    // REPLACE imported -> concrete by index.
+    EXPECT_TRUE(model->replaceComponent(1, myConcreteComponent2));
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+}
+
+TEST(Model, replaceImportedComponentByReference)
+{
+    auto model = libcellml::Model::create();
+    auto myConcreteComponent1 = libcellml::Component::create("myConcreteComponent1");
+    auto myImportedComponent1 = libcellml::Component::create("myImportedComponent1");
+    auto myConcreteComponent2 = libcellml::Component::create("myConcreteComponent2");
+    auto myImportedComponent2 = libcellml::Component::create("myImportedComponent2");
+
+    auto import1 = libcellml::ImportSource::create();
+    auto import2 = libcellml::ImportSource::create();
+
+    import1->setUrl("import1.cellml");
+    import2->setUrl("import2.cellml");
+
+    myImportedComponent1->setImportSource(import1);
+    myImportedComponent2->setImportSource(import2);
+
+    model->addComponent(myConcreteComponent1);
+    model->addComponent(myImportedComponent2);
+
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    // REPLACE concrete -> imported by index.
+    EXPECT_TRUE(model->replaceComponent(myConcreteComponent1, myImportedComponent1));
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(import2, model->importSource(0));
+
+    // REPLACE imported -> concrete by index.
+    EXPECT_TRUE(model->replaceComponent(myImportedComponent2, myConcreteComponent2));
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+}
+
+TEST(Model, removeAllComponentsImportedChild)
+{
+    auto model = libcellml::Model::create();
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto import = libcellml::ImportSource::create();
+    c2->setImportSource(import);
+    model->addComponent(c2);
+    model->addComponent(c1);
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    model->removeAllComponents();
+    EXPECT_EQ(size_t(0), model->componentCount());
+    EXPECT_EQ(size_t(1), model->importSourceCount());
 }

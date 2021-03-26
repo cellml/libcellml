@@ -158,12 +158,19 @@ public:
      */
     void clearImports(ModelPtr &model);
 
-private:
-    Importer(); /**< Constructor. */
-    explicit Importer(const std::string &name); /**< Constructor with std::string parameter*/
+    /**
+     * @brief Remove all models from the library.
+     * 
+     * Remove all models from the library.
+     */
+    void removeAllModels();
 
-    struct ImporterImpl; /**< Forward declaration for pImpl idiom. */
-    ImporterImpl *mPimpl; /**< Private member to implementation pointer. */
+private:
+    Importer(); /**< Constructor, @private. */
+    explicit Importer(const std::string &name); /**< Constructor with std::string parameter, @private. */
+
+    struct ImporterImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ImporterImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
