@@ -662,48 +662,50 @@ TEST(AnalyserUnits, rhs)
 
 TEST(AnaylserUnits, compoundEquivalentUnits)
 {
-    auto model = libcellml::Model::create("compound_units");
-    auto component = libcellml::Component::create("main");
+    auto m = libcellml::Model::create("compound_units");
+    auto c = libcellml::Component::create("main");
     auto a = libcellml::Variable::create("a");
     auto o = libcellml::Variable::create("o");
 
     auto gas = libcellml::Units::create("gas_constant");
-    gas->addUnit(libcellml::Units::StandardUnit::PASCAL);
-    gas->addUnit(libcellml::Units::StandardUnit::MOLE, -1.0);
     gas->addUnit(libcellml::Units::StandardUnit::KELVIN, -1.0);
     gas->addUnit(libcellml::Units::StandardUnit::METRE, 3.0);
+    gas->addUnit(libcellml::Units::StandardUnit::MOLE, -1.0);
+    gas->addUnit(libcellml::Units::StandardUnit::PASCAL);
 
     auto apple = libcellml::Units::create("apple");
-    apple->addUnit(libcellml::Units::StandardUnit::PASCAL);
     apple->addUnit(libcellml::Units::StandardUnit::METRE, 3.0);
+    apple->addUnit(libcellml::Units::StandardUnit::PASCAL);
 
     auto orange = libcellml::Units::create("orange");
-    orange->addUnit(libcellml::Units::StandardUnit::MOLE);
     orange->addUnit("gas_constant");
     orange->addUnit(libcellml::Units::StandardUnit::KELVIN);
+    orange->addUnit(libcellml::Units::StandardUnit::MOLE);
 
-    component->addVariable(a);
+    c->addVariable(a);
     a->setUnits(apple);
-    component->addVariable(o);
+
+    c->addVariable(o);
     o->setUnits(orange);
     o->setInitialValue(3.5);
 
-    model->addUnits(apple);
-    model->addUnits(orange);
-    model->addUnits(gas);
-    model->addComponent(component);
+    m->addUnits(apple);
+    m->addUnits(orange);
+    m->addUnits(gas);
 
-    component->setMath(
+    m->addComponent(c);
+
+    c->setMath(
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-          "<apply>"
-            "<eq/>"
-            "<ci>a</ci>"
-            "<ci>o</ci>"
-          "</apply>"
+        "  <apply>"
+        "    <eq/>"
+        "    <ci>a</ci>"
+        "    <ci>o</ci>"
+        "  </apply>"
         "</math>");
 
     auto analyser = libcellml::Analyser::create();
-    analyser->analyseModel(model);
+    analyser->analyseModel(m);
 
     EXPECT_EQ(size_t(0), analyser->warningCount());
 }
@@ -714,48 +716,50 @@ TEST(AnaylserUnits, compoundEquivalentUnitsMismatch)
         "The units in 'a = o' in component 'main' are not equivalent. 'a' is in 'apple' (i.e. 'kilogram x metre^2 x second^-2') while 'o' is in 'orange' (i.e. 'ampere^-2 x kilogram x metre^5 x second^-3').",
     };
 
-    auto model = libcellml::Model::create("compound_units");
-    auto component = libcellml::Component::create("main");
+    auto m = libcellml::Model::create("compound_units");
+    auto c = libcellml::Component::create("main");
     auto a = libcellml::Variable::create("a");
     auto o = libcellml::Variable::create("o");
 
     auto gas = libcellml::Units::create("gas_constant");
-    gas->addUnit(libcellml::Units::StandardUnit::OHM);
-    gas->addUnit(libcellml::Units::StandardUnit::MOLE, -1.0);
     gas->addUnit(libcellml::Units::StandardUnit::KELVIN, -1.0);
     gas->addUnit(libcellml::Units::StandardUnit::METRE, 3.0);
+    gas->addUnit(libcellml::Units::StandardUnit::MOLE, -1.0);
+    gas->addUnit(libcellml::Units::StandardUnit::OHM);
 
     auto apple = libcellml::Units::create("apple");
-    apple->addUnit(libcellml::Units::StandardUnit::PASCAL);
     apple->addUnit(libcellml::Units::StandardUnit::METRE, 3.0);
+    apple->addUnit(libcellml::Units::StandardUnit::PASCAL);
 
     auto orange = libcellml::Units::create("orange");
-    orange->addUnit(libcellml::Units::StandardUnit::MOLE);
     orange->addUnit("gas_constant");
     orange->addUnit(libcellml::Units::StandardUnit::KELVIN);
+    orange->addUnit(libcellml::Units::StandardUnit::MOLE);
 
-    component->addVariable(a);
+    c->addVariable(a);
     a->setUnits(apple);
-    component->addVariable(o);
+
+    c->addVariable(o);
     o->setUnits(orange);
     o->setInitialValue(3.5);
 
-    model->addUnits(apple);
-    model->addUnits(orange);
-    model->addUnits(gas);
-    model->addComponent(component);
+    m->addUnits(apple);
+    m->addUnits(orange);
+    m->addUnits(gas);
 
-    component->setMath(
+    m->addComponent(c);
+
+    c->setMath(
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-          "<apply>"
-            "<eq/>"
-            "<ci>a</ci>"
-            "<ci>o</ci>"
-          "</apply>"
+        "  <apply>"
+        "    <eq/>"
+        "    <ci>a</ci>"
+        "    <ci>o</ci>"
+        "  </apply>"
         "</math>");
 
     auto analyser = libcellml::Analyser::create();
-    analyser->analyseModel(model);
+    analyser->analyseModel(m);
 
     EXPECT_EQ(size_t(1), analyser->warningCount());
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
