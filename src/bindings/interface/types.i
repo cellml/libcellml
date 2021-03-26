@@ -43,9 +43,6 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::VariablePair
 "A class for describing a variable pair.";
 
-%feature("docstring") libcellml::VariablePair::create
-"Create a variable pair object.";
-
 %feature("docstring") libcellml::VariablePair::variable1
 "Return the first variable in the pair of variables.";
 
@@ -57,9 +54,6 @@ Provides support for shared pointers declared in types.h.
 
 %feature("docstring") libcellml::Unit
 "A class for describing a unit.";
-
-%feature("docstring") libcellml::Unit::create
-"Create a Unit object.";
 
 %feature("docstring") libcellml::Unit::units
 "Return the units for the unit reference.";
