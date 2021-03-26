@@ -1766,7 +1766,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     //       should be dimensionless.
     //     - 'otherwise': the returned value can have any unit.
     //  - Relational operators ('eq', 'neq', 'gt', 'lt', 'geq' and 'leq'): the
-    //    two operands should have equivalent units.
+    //    two operands should have equivalent units. (The result of the
+    //    comparison is dimensionless.)
     //  - Logical operators:
     //     - 'and', 'or', 'xor': the two operands should be dimensionless.
     //     - 'not': the operand should be dimensionless.
