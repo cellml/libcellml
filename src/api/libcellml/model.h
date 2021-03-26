@@ -431,9 +431,8 @@ public:
      *  In this context, "empty" means:
      *   - components with no name, id, resets, variables, maths, or non-empty child components; and
      *   - units which have no name, id, or child units.
-     *  This is applied recursively. In the situation where a component is only called
-     *  non-empty because it has a child component, but that child is empty, both will be
-     *  removed.
+     *  For components, this is applied recursively from the leaves of the encapsulation hierarchy, so
+     *  components which only have empty descendents will be cleaned.
      */
     void clean();
 
