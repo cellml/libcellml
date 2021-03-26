@@ -25,7 +25,7 @@ TEST(ImportRequirement, create)
 {
     auto model = libcellml::Model::create("model");
 
-    auto requirements =  model->importRequirements();
+    auto requirements = model->importRequirements();
     EXPECT_EQ(size_t(0), requirements.size());
 }
 
