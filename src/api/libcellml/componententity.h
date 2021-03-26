@@ -294,7 +294,7 @@ public:
     /**
      * @brief Remove the encapsulation Id for this entity.
      *
-     * Clear the encapsulation identifier for this entity.
+     * Clear the encapsulation Id for this entity.
      */
     void removeEncapsulationId();
 
