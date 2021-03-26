@@ -286,10 +286,11 @@ std::string convertToString(size_t value);
  * @overload std::string convertToString(int value)
  *
  * @param value The @c double value number to convert.
+ * @param fullPrecision Whether the @p value is converted using full precision.
  *
  * @return @c std::string representation of the @p value.
  */
-std::string convertToString(double value);
+std::string convertToString(double value, bool fullPrecision = true);
 
 /**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.
