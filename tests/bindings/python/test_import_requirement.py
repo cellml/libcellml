@@ -12,10 +12,7 @@ class ImportRequirementTestCase(unittest.TestCase):
         from libcellml import Parser, Importer
         keys = [
             'complicatedComponents.cellml',
-            'components.cellml',
             'complicatedUnits.cellml',
-            'units1.cellml',
-            'units2.cellml'
         ]
 
         parser = Parser()
