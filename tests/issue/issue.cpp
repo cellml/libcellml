@@ -310,7 +310,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
         EXPECT_EQ("2.16.3", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION:
-        EXPECT_EQ("", e->referenceHeading());
+        EXPECT_EQ("3.10.9", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::XML:
         EXPECT_EQ("1.2.1", e->referenceHeading());
@@ -319,6 +319,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
         EXPECT_EQ("3.10.8", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::IMPORTER_NULL_MODEL:
+    case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_FILE:
     case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT:
     case libcellml::Issue::ReferenceRule::IMPORTER_MISSING_UNITS:
     case libcellml::Issue::ReferenceRule::INVALID_ARGUMENT:
@@ -333,6 +334,11 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL:
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI:
     case libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_ID_NOT_FOUND:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_NO_MODEL:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE:
+    case libcellml::Issue::ReferenceRule::ANNOTATOR_NULL_MODEL:
     case libcellml::Issue::ReferenceRule::UNSPECIFIED:
         EXPECT_EQ("", e->referenceHeading());
         break;
@@ -690,12 +696,21 @@ TEST(Issue, isMessage)
     EXPECT_EQ(e->level(), libcellml::Issue::Level::MESSAGE);
 }
 
-TEST(Issue, url)
+TEST(Issue, urlInformative)
 {
-    auto expectedUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=2.1.1";
+    auto expectedUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME";
 
     auto issue = libcellml::Issue::create();
     issue->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_NAME);
+    EXPECT_EQ(expectedUrl, issue->url());
+}
+
+TEST(Issue, urlDocs)
+{
+    auto expectedUrl = "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_STATE_NOT_INITIALISED";
+
+    auto issue = libcellml::Issue::create();
+    issue->setReferenceRule(libcellml::Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED);
     EXPECT_EQ(expectedUrl, issue->url());
 }
 
