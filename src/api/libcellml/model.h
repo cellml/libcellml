@@ -349,8 +349,8 @@ public:
      *
      *  Remove any empty components and units fom this model.
      *  In this context, "empty" means:
-     *   - components with no name, id, resets, variables, maths, or non-empty child components; and
-     *   - units which have no name, id, or child units.
+     *   - components with no name, identifier, resets, variables, maths, or non-empty child components; and
+     *   - units which have no name, identifier, or child units.
      *  For components, this is applied recursively from the leaves of the encapsulation hierarchy.
      */
     void clean();
