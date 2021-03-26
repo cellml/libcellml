@@ -458,9 +458,10 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
                                                            HistorySearchVector &history,
                                                            const std::string &action) const
 {
-    std::string typeString = (type == Type::COMPONENT) ? "component" : "units";
+    bool isComponent = type == Type::COMPONENT;
+    std::string typeString = isComponent ? "component" : "units";
     std::string msg1 = "Cyclic dependencies were found when attempting to " + action + " "
-                       + std::string((typeString == "component") ? "a " : "") + typeString + " in the model '"
+                       + (isComponent ? "a " : "") + typeString + " in the model '"
                        + model->name() + "'. The dependency loop is:\n";
     std::tuple<std::string, std::string, std::string> h;
     std::string eol = "; and\n";
