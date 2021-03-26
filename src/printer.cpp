@@ -437,7 +437,6 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
         }
     }
     for (auto &importSource : collatedImportSources) {
-
         repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + importSource->url() + "\"";
         if (!importSource->id().empty()) {
             repr += " id=\"" + importSource->id() + "\"";
