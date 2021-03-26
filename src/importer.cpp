@@ -20,7 +20,6 @@ limitations under the License.
 #include <cmath>
 #include <fstream>
 #include <libxml/uri.h>
-#include <set>
 #include <sstream>
 #include <stdexcept>
 
@@ -29,7 +28,6 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/parser.h"
 #include "libcellml/reset.h"
-#include "libcellml/types.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
