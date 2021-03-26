@@ -2174,7 +2174,7 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
     EXPECT_EQ(in, output2);
 }
 
-TEST(Parser, parseAndPrintSeparateAndCombinedImports)
+TEST(Parser, parseAndPrintSeparateImportsInString)
 {
     const std::string separateInString =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2187,6 +2187,15 @@ TEST(Parser, parseAndPrintSeparateAndCombinedImports)
         "  </import>\n"
         "</model>\n";
 
+    auto parser = libcellml::Parser::create();
+    auto modelSeparate = parser->parseModel(separateInString);
+
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(separateInString, printer->printModel(modelSeparate));
+}
+
+TEST(Parser, parseAndPrintCombinedImportsInString)
+{
     const std::string combinedInString =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
@@ -2197,14 +2206,9 @@ TEST(Parser, parseAndPrintSeparateAndCombinedImports)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
-    auto modelSeparate = parser->parseModel(separateInString);
     auto modelCombined = parser->parseModel(combinedInString);
 
-    EXPECT_EQ(size_t(2), modelSeparate->importSourceCount());
-    EXPECT_EQ(size_t(1), modelCombined->importSourceCount());
-
     auto printer = libcellml::Printer::create();
-    EXPECT_EQ(separateInString, printer->printModel(modelSeparate));
     EXPECT_EQ(combinedInString, printer->printModel(modelCombined));
 }
 
@@ -2268,7 +2272,8 @@ TEST(Parser, incorrectNumberOfImportSources)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelString);
-    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_TRUE(model->component("myImportedComponent")->isImport());
+    EXPECT_FALSE(model->component("myConcreteComponent")->isImport());
 }
 
 TEST(Parser, importComponentMadeConcrete)
@@ -2293,6 +2298,7 @@ TEST(Parser, importComponentMadeConcrete)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelString);
 
-    EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_TRUE(model->component("importedComponent")->isImport());
+    EXPECT_FALSE(model->component("childComponent")->isImport());
+    EXPECT_FALSE(model->component("parentComponent")->isImport());
 }

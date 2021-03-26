@@ -431,15 +431,6 @@ private:
 
     bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private. */
 
-    /**
-     * @brief Set the import source of this component.
-     *
-     * Virtual method implementing ImportedEntity::setImportSource, @private.
-     *
-     * @param importSource The @c ImportSourcePtr to add to this @c Component.
-     */
-    void doSetImportSource(const ImportSourcePtr &importSource) override;
-
     bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
