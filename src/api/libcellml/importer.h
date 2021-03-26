@@ -171,8 +171,8 @@ public:
      * Add import source by reference to the importer.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p importSrc pointer already exists in this importer; or
-     *  - The @p importSrc is @c nullptr.
+     *  - The @p importSource pointer already exists in this importer; or
+     *  - The @p importSource is @c nullptr.
      *
      * @param importSource The import source to add.
      *
