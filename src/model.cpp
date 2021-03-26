@@ -574,4 +574,11 @@ bool Model::doEquals(const EntityPtr &other) const
     return false;
 }
 
+std::vector<std::string> Model::importRequirements() const
+{
+    std::vector<std::string> requirements;
+
+    return requirements;
+}
+
 } // namespace libcellml

@@ -24,22 +24,28 @@ limitations under the License.
 TEST(ImportRequirement, create)
 {
     auto model = libcellml::Model::create("model");
+
+    auto requirements =  model->importRequirements();
+    EXPECT_EQ(size_t(0), requirements.size());
 }
 
 TEST(ImportRequirement, requirementsFixCircularRef)
 {
-    std::vector<std::string> expectedKeys = {
+    const std::vector<std::string> e = {
         "importExample2units.cellml",
         "importExample3.cellml",
         "importExample2components.cellml"};
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/requirements/importExample1.cellml"));
+
+    auto requirements = model->importRequirements();
+    EXPECT_EQ(e, requirements);
 }
 
 TEST(ImportRequirement, requirementsEncapsulationUnitsWithChildren)
 {
-    std::vector<std::string> expectedKeys = {
+    const std::vector<std::string> e = {
         "complicatedComponents.cellml",
         "components.cellml",
         "complicatedUnits.cellml",
@@ -48,4 +54,7 @@ TEST(ImportRequirement, requirementsEncapsulationUnitsWithChildren)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/requirements/complicatedExample.cellml"));
+
+    auto requirements = model->importRequirements();
+    EXPECT_EQ(e, requirements);
 }
