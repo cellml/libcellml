@@ -526,7 +526,7 @@ void updateUnitsMapWithStandardUnit(const std::string &name, UnitsMap &unitsMap,
     for (const auto &baseUnitsComponent : unitsListIter->second) {
         auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
         if (unitsMapIter == unitsMap.end()) {
-            unitsMap[baseUnitsComponent.first] = 0.0;
+            unitsMap.emplace(baseUnitsComponent.first, 0.0);
         }
         unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * exp;
     }
@@ -559,7 +559,7 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 if (model == nullptr) {
                     // We cannot resolve the reference for this units so we add
                     // what we do know.
-                    unitsMap[ref] = uExp * exp;
+                    unitsMap.emplace(ref, uExp * exp);
                 } else {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
