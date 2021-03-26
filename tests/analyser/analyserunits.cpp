@@ -445,9 +445,8 @@ TEST(AnalyserUnits, abs)
 TEST(AnalyserUnits, expLnOperators)
 {
     std::vector<std::string> operators = {
-        // clang-format off
-        "exp", "ln",
-        // clang-format on
+        "exp",
+        "ln",
     };
 
     for (const auto &op : operators) {
@@ -552,9 +551,8 @@ TEST(AnalyserUnits, floorCeilingOperators)
 TEST(AnalyserUnits, minMaxOperators)
 {
     std::vector<std::string> operators = {
-        // clang-format off
-        "min", "max",
-        // clang-format on
+        "min",
+        "max",
     };
 
     for (const auto &op : operators) {
@@ -605,12 +603,30 @@ TEST(AnalyserUnits, rem)
 TEST(AnalyserUnits, trigonometricOperators)
 {
     std::vector<std::string> operators = {
-        // clang-format off
-        "sin", "cos", "tan", "sec", "csc", "cot",
-        "sinh", "cosh", "tanh", "sech", "csch", "coth",
-        "arcsin", "arccos", "arctan", "arcsec", "arccsc", "arccot",
-        "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth",
-        // clang-format on
+        "sin",
+        "cos",
+        "tan",
+        "sec",
+        "csc",
+        "cot",
+        "sinh",
+        "cosh",
+        "tanh",
+        "sech",
+        "csch",
+        "coth",
+        "arcsin",
+        "arccos",
+        "arctan",
+        "arcsec",
+        "arccsc",
+        "arccot",
+        "arcsinh",
+        "arccosh",
+        "arctanh",
+        "arcsech",
+        "arccsch",
+        "arccoth",
     };
 
     for (const auto &op : operators) {
