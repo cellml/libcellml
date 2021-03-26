@@ -527,7 +527,7 @@ bool Model::fixVariableInterfaces()
     return allOk;
 }
 
-bool findAndRemoveEmptyComponent(const ComponentPtr &component)
+bool traverseHierarchyAndRemoveIfEmpty(const ComponentPtr &component)
 {
     for (size_t i = component->componentCount() - 1; i != MAX_SIZE_T; --i) {
         if (findAndRemoveEmptyComponent(component->component(i))) {
