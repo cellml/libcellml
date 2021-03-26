@@ -305,3 +305,4 @@ from libcellml.types import AnyItem
             itemsList.append(items_with_id)
         return itemsList
 %}
+}
