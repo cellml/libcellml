@@ -1726,7 +1726,7 @@ size_t Annotator::AnnotatorImpl::generateHash()
         auto importSources = getAllImportSources(model);
         i = 0;
         for (auto &importSource : importSources) {
-            idsString += "i=" + std::to_string(i++) + importSource->id();
+            idsString += "i=" + std::to_string(++i) + importSource->id();
         }
 
         for (i = 0; i < model->unitsCount(); ++i) {
