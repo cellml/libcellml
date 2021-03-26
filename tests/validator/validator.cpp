@@ -530,7 +530,7 @@ TEST(Validator, validMathInMultipleMathMLBlocksInvalidMathTagDuplicateIDs)
         "</math>\n";
     const std::vector<std::string> expectedIssues = {
         "Math root node is of invalid type 'banana' on component 'componentName'. A valid math root node should be of type 'math'.",
-        "Duplicated id attribute 'myId' has been found in:\n"
+        "Duplicated identifier attribute 'myId' has been found in:\n"
         " - MathML cn element in math in component 'componentName'; and\n"
         " - MathML ci element 'B' in math in component 'componentName'.\n",
     };
@@ -2701,7 +2701,7 @@ TEST(Validator, importedUnitsFoundByValidator)
 
 TEST(Validator, duplicateIdSimple)
 {
-    std::vector<std::string> e = {"Duplicated id attribute 'id' has been found in:\n"
+    std::vector<std::string> e = {"Duplicated identifier attribute 'id' has been found in:\n"
                                   " - model 'model';\n"
                                   " - component 'c1' in model 'model';\n"
                                   " - variable 'v1' in component 'c1';\n"
@@ -2729,7 +2729,7 @@ TEST(Validator, duplicateIdAll)
     expectedIssues.emplace_back("W3C MathML DTD error: ID id4 already defined.");
     expectedIssues.emplace_back("W3C MathML DTD error: ID id1 already defined.");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id1' has been found in:\n"
+        "Duplicated identifier attribute 'id1' has been found in:\n"
         " - model 'everything';\n"
         " - units 'units2' in model 'everything';\n"
         " - encapsulation in model 'everything';\n"
@@ -2739,7 +2739,7 @@ TEST(Validator, duplicateIdAll)
         " - MathML cn element in reset_value in reset 0 in component 'component2'; and\n"
         " - MathML ci element 'variable4' in math in component 'component3'.\n");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id2' has been found in:\n"
+        "Duplicated identifier attribute 'id2' has been found in:\n"
         " - unit in units 'units2' in model 'everything';\n"
         " - import source for component 'component1';\n"
         " - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable4' in component 'component3';\n"
@@ -2750,7 +2750,7 @@ TEST(Validator, duplicateIdAll)
         " - component 'component3' in component 'component2'; and\n"
         " - MathML eq element in math in component 'component3'.\n");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id3' has been found in:\n"
+        "Duplicated identifier attribute 'id3' has been found in:\n"
         " - units 'units3' in model 'everything';\n"
         " - imported component 'component1' in model 'everything';\n"
         " - test_value in reset at index 0 in component 'component2';\n"
@@ -2760,7 +2760,7 @@ TEST(Validator, duplicateIdAll)
         " - MathML apply element in math in component 'component3'; and\n"
         " - encapsulation component_ref to component 'component3'.\n");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id4' has been found in:\n"
+        "Duplicated identifier attribute 'id4' has been found in:\n"
         " - import source for units 'units1';\n"
         " - component 'component2' in model 'everything';\n"
         " - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2';\n"
@@ -2769,7 +2769,7 @@ TEST(Validator, duplicateIdAll)
         " - MathML apply element in reset_value in reset 0 in component 'component2'; and\n"
         " - MathML math element in math in component 'component3'.\n");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id5' has been found in:\n"
+        "Duplicated identifier attribute 'id5' has been found in:\n"
         " - imported units 'units1' in model 'everything';\n"
         " - variable 'variable1' in component 'component2';\n"
         " - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable2' in component 'component3';\n"

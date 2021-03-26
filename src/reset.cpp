@@ -37,9 +37,9 @@ struct Reset::ResetImpl
     VariablePtr mVariable; /**< The associated variable for the reset.*/
     VariablePtr mTestVariable; /**< The associated test_variable for the reset.*/
     std::string mTestValue; /**< The MathML string for the test_value.*/
-    std::string mTestValueId; /**< The id of the test_value block */
+    std::string mTestValueId; /**< The identifier of the test_value block */
     std::string mResetValue; /**< The MathML string for the reset_value.*/
-    std::string mResetValueId; /**< The id of the reset_value block */
+    std::string mResetValueId; /**< The identifier of the reset_value block */
 };
 
 Reset::Reset()

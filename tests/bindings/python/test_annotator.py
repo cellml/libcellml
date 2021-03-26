@@ -512,7 +512,7 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator = Annotator()
         parser = Parser()
 
-        message = 'Could not find an item with an id of \'i_dont_exist\' in the model.'
+        message = 'Could not find an item with an identifier of \'i_dont_exist\' in the model.'
 
         model = parser.parseModel(file_contents('annotator/unique_ids.cellml'))
         annotator.setModel(model)
@@ -527,7 +527,7 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator = Annotator()
         parser = Parser()
 
-        non_unique_message = 'The id \'duplicateId\' occurs 29 times in the model so a unique item cannot be located.'
+        non_unique_message = 'The identifier \'duplicateId\' occurs 29 times in the model so a unique item cannot be located.'
 
         model = parser.parseModel(file_contents('annotator/duplicate_ids.cellml'))
         annotator.setModel(model)
