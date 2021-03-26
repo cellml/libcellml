@@ -460,8 +460,8 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
 {
     std::string typeString = (type == Type::COMPONENT) ? "component" : "units";
     std::string msg1 = "Cyclic dependencies were found when attempting to " + action + " "
-                      + std::string((typeString == "component") ? "a " : "") + typeString + " in the model '"
-                      + model->name() + "'. The dependency loop is:\n";
+                       + std::string((typeString == "component") ? "a " : "") + typeString + " in the model '"
+                       + model->name() + "'. The dependency loop is:\n";
     std::tuple<std::string, std::string, std::string> h;
     std::string eol = "; and\n";
     size_t i = history.size() - 1;
@@ -469,8 +469,8 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
     while (i != MAX_SIZE_T) {
         h = history[i];
         msg2 = eol + " - " + typeString + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'" + msg2;
-                eol = ";\n";
-                --i;
+        eol = ";\n";
+        --i;
     }
     msg2.erase(0, 2);
     msg2 += ".";
