@@ -696,6 +696,27 @@ TEST(AnalyserUnits, rhs)
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
+TEST(AnalyserUnits, complexUnits)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/units/complex_units.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "The units in 'a = 1.0' in component 'main' are not equivalent. 'a' is in 'apple' while '1.0' is in 'orange'.",
+        "The units in 'b = 1.0/1.0' in component 'main' are not equivalent. 'b' is in 'apple' while '1.0/1.0' is in 'orange x second_2^-1'.",
+        "The units in 'c = 1.0/(1.0/1.0)' in component 'main' are not equivalent. 'c' is in 'apple' while '1.0/(1.0/1.0)' is in 'atto_second x orange x second_2^-1'.",
+        "The units in 'd = 1.0/(1.0/1.0)/1.0' in component 'main' are not equivalent. 'd' is in 'apple' while '1.0/(1.0/1.0)/1.0' is in 'atto_second x orange x second_2^-2'.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+}
+
 TEST(AnalyserUnits, fabbriFantiniWildersSeveriHumanSanModel2017WithIncompatibleUnits)
 {
     auto parser = libcellml::Parser::create();
