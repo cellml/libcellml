@@ -624,7 +624,7 @@ TEST(Printer, printModelWithAutomaticIdsSomeExistingNoMaths)
 
 TEST(Printer, noChangeToAutoIds)
 {
-    // This test is for coverage.  All entities have ids already, no change to the printed model.
+    // This test is for coverage.  All entities have identifiers already, no change to the printed model.
     const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"b4da55\">\n"
                            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"b4da56\">\n"
@@ -741,7 +741,7 @@ TEST(Printer, printMultipleChildrenOfImportsMixedOrder)
 
 TEST(Printer, noChangeToManualIds)
 {
-    // This test is for coverage.  All entities have ids already, no change to the printed model.
+    // This test is for coverage.  All entities have identifiers already, no change to the printed model.
     const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"id_4da55\">\n"
                            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"id_4da56\">\n"

@@ -1013,7 +1013,7 @@ TEST(Parser, emptyConnectionWithId)
     const std::vector<std::string> expectedIssues = {
         "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
         "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
-        "Connection in model 'model_name' has an id of 'myId' but does not contain any 'map_variables' elements. The connection will be disregarded and the associated id will be lost.",
+        "Connection in model 'model_name' has an identifier of 'myId' but does not contain any 'map_variables' elements. The connection will be disregarded and the associated identifier will be lost.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1174,7 +1174,7 @@ TEST(Parser, emptyImportWithAndWithoutId)
         "</model>\n";
     std::vector<std::string> e = {
         "Import from '' is empty and will be disregarded.",
-        "Import from '' has an id of 'import_id' but is empty. The import will be disregarded and the associated id will be lost.",
+        "Import from '' has an identifier of 'import_id' but is empty. The import will be disregarded and the associated identifier will be lost.",
     };
     libcellml::ParserPtr parser = libcellml::Parser::create();
     auto m = parser->parseModel(in);
