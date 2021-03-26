@@ -106,85 +106,85 @@ public:
      * Add a copy of @p variable1 to the set of equivalent variables for
      * @p variable2 if not already present. Also add a copy of @p variable2 to the
      * set of equivalent variables for @p variable1 if not already present.  Also set the
-     * mapping id of the equivalence and also optionally the connection id for the
+     * mapping identifier of the equivalence and also optionally the connection identifier for the
      * equivalence.
      *
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
      * @param variable2 The variable to copy to the equivalent variable set
      * for @p variable1.
-     * @param mappingId The @c std::string mapping id.
-     * @param connectionId The @c std::string connection id (optional).
+     * @param mappingId The @c std::string mapping identifier.
+     * @param connectionId The @c std::string connection identifier (optional).
      *
      * @return True if the equivalence was added, false otherwise.
      */
     static bool addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId = "");
 
     /**
-     * @brief Set the equivalent mapping id for this equivalence.
+     * @brief Set the equivalent mapping identifier for this equivalence.
      *
-     * Record the given id as the mapping id for the equivalence defined with the given
-     * variables.  The variables are commutative. This id appears in the 'map_variables'
+     * Record the given identifier as the mapping identifier for the equivalence defined with the given
+     * variables.  The variables are commutative. This identifier appears in the 'map_variables'
      * element of the model when serialised.
      *
-     * To clear an equivalence mapping id set it to the empty string. If the two variables are
-     * not equivalent the mapping id is not set.
+     * To clear an equivalence mapping identifier set it to the empty string. If the two variables are
+     * not equivalent the mapping identifier is not set.
      *
      * @param variable1 Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
-     * @param mappingId The @c std::string mapping id.
+     * @param mappingId The @c std::string mapping identifier.
      */
     static void setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId);
 
     /**
-     * @brief Set the equivalent connection id for this equivalence.
+     * @brief Set the equivalent connection identifier for this equivalence.
      *
-     * Record the given id as the connection id for the equivalence defined with the given
-     * variables.  The variables are commutative. This id appears in the 'connection'
+     * Record the given identifier as the connection identifier for the equivalence defined with the given
+     * variables.  The variables are commutative. This identifier appears in the 'connection'
      * element of the model when serialised.
      *
-     * To clear an equivalence connection id set it to the empty string. If the two variables are
-     * not equivalent the connection id is not set.
+     * To clear an equivalence connection identifier set it to the empty string. If the two variables are
+     * not equivalent the connection identifier is not set.
      *
      * @param variable1 Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
-     * @param connectionId The @c std::string connection id.
+     * @param connectionId The @c std::string connection identifier.
      */
     static void setEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &connectionId);
 
     /**
-     * @brief Get the equivalent mapping id for this equivalence.
+     * @brief Get the equivalent mapping identifier for this equivalence.
      *
-     * Get the mapping id set for the equivalence defined with the given variables.
-     * The variables are commutative.  If no mapping id is set the empty string is returned.
+     * Get the mapping identifier set for the equivalence defined with the given variables.
+     * The variables are commutative.  If no mapping identifier is set the empty string is returned.
      *
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
      *
-     * @return the @c std::string mapping id.
+     * @return the @c std::string mapping identifier.
      */
     static std::string equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
-     * @brief Get the equivalent connection id for this equivalence.
+     * @brief Get the equivalent connection identifier for this equivalence.
      *
-     * Get the connection id set for the equivalence defined with the given variables.
-     * The variables are commutative.  If no connection id is set the empty string is returned.
+     * Get the connection identifier set for the equivalence defined with the given variables.
+     * The variables are commutative.  If no connection identifier is set the empty string is returned.
      *
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1 Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
-     * @return the @c std::string connection id.
+     * @return the @c std::string connection identifier.
      */
     static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
-     * @brief Clear equivalent connection id for this equivalence.
+     * @brief Clear equivalent connection identifier for this equivalence.
      *
-     * Clears the equivalent connection id for the equivalence defined by the two
+     * Clears the equivalent connection identifier for the equivalence defined by the two
      * variables passed as arguments.
      *
      * @param variable1 Variable one of the equivalence.
@@ -193,9 +193,9 @@ public:
     static void removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
-     * @brief Clear the equivalent mapping id for this equivalence.
+     * @brief Clear the equivalent mapping identifier for this equivalence.
      *
-     * Clears the equivalent mapping id for the equivalence defined by the two
+     * Clears the equivalent mapping identifier for the equivalence defined by the two
      * variables passed as arguments.
      *
      * @param variable1 Variable one of the equivalence.
@@ -434,9 +434,9 @@ public:
      *
      * Test if this variable permits access through the @p interfaceType. The results
      * will be given according to this truth table:
-     * 
+     *
      *    Parameter (right) /
-     *   Stored value (below) | none | public | private | public_and_private  
+     *   Stored value (below) | none | public | private | public_and_private
      *   ---------------------+------+--------+---------+-------------------
      *                   none | T    | F      | F       | F
      *   ---------------------+------+--------+---------+-------------------

@@ -171,7 +171,7 @@ public:
      * @param prefix The string prefix for the unit.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param id The optional @c std::string id to set for this unit.
+     * @param id The optional @c std::string identifier to set for this unit.
      */
     void addUnit(const std::string &reference, const std::string &prefix, double exponent = 1.0,
                  double multiplier = 1.0, const std::string &id = "");
@@ -188,7 +188,7 @@ public:
      * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param id The optional @c std::string id to set for this unit.
+     * @param id The optional @c std::string identifier to set for this unit.
      */
     void addUnit(const std::string &reference, Prefix prefix, double exponent = 1.0,
                  double multiplier = 1.0, const std::string &id = "");
@@ -205,7 +205,7 @@ public:
      * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param id The optional @c std::string id to set for this unit.
+     * @param id The optional @c std::string identifier to set for this unit.
      */
     void addUnit(const std::string &reference, int prefix, double exponent,
                  double multiplier = 1.0, const std::string &id = "");
@@ -220,7 +220,7 @@ public:
      *
      * @param reference The @c std::string units reference to add.
      * @param exponent The exponent for the unit.
-     * @param id The optional @c std::string id to set for this unit.
+     * @param id The optional @c std::string identifier to set for this unit.
      */
     void addUnit(const std::string &reference, double exponent, const std::string &id = "");
 
@@ -248,7 +248,7 @@ public:
      * @param prefix The string prefix for the unit.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param id The optional @c std::string id to set for this unit.
+     * @param id The optional @c std::string identifier to set for this unit.
      */
     void addUnit(StandardUnit standardRef, const std::string &prefix, double exponent = 1.0,
                  double multiplier = 1.0, const std::string &id = "");
@@ -265,7 +265,7 @@ public:
      * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param id The optional @c std::string id to set for this unit.
+     * @param id The optional @c std::string identifier to set for this unit.
      */
     void addUnit(StandardUnit standardRef, Prefix prefix, double exponent = 1.0,
                  double multiplier = 1.0, const std::string &id = "");
@@ -282,7 +282,7 @@ public:
      * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param id The optional @c std::string id to set for this unit.
+     * @param id The optional @c std::string identifier to set for this unit.
      */
     void addUnit(StandardUnit standardRef, int prefix, double exponent,
                  double multiplier = 1.0, const std::string &id = "");
@@ -297,7 +297,7 @@ public:
      *
      * @param standardRef The @c StandardUnit enum units reference to add.
      * @param exponent The exponent for the unit.
-     * @param id The optional @c std::string id to set for this unit.
+     * @param id The optional @c std::string identifier to set for this unit.
      */
     void addUnit(StandardUnit standardRef, double exponent, const std::string &id = "");
 
@@ -325,7 +325,7 @@ public:
      * @param prefix The prefix for this @c unit. Defaults to empty string.
      * @param exponent The exponent for this @c unit. Defaults to 1.0.
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
-     * @param id The @c std::string id for this @c unit. Defaults to the empty string.
+     * @param id The @c std::string identifier for this @c unit. Defaults to the empty string.
      */
     void unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent,
                         double &multiplier, std::string &id) const;
@@ -342,7 +342,7 @@ public:
      * @param prefix The prefix for this @c unit. Defaults to empty string.
      * @param exponent The exponent for this @c unit. Defaults to 1.0.
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
-     * @param id The @c std::string id for this @c unit. Defaults to the empty string.
+     * @param id The @c std::string identifier for this @c unit. Defaults to the empty string.
      */
     void unitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 
@@ -358,7 +358,7 @@ public:
      * @param prefix The prefix for this @c unit. Defaults to empty string.
      * @param exponent The exponent for this @c unit. Defaults to 1.0.
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
-     * @param id The @c std::string id for this @c unit. Defaults to the empty string.
+     * @param id The @c std::string identifier for this @c unit. Defaults to the empty string.
      */
     void unitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 
@@ -495,9 +495,9 @@ public:
     UnitsPtr clone() const;
 
     /**
-     * @brief Set the id of the unit at the given @p index.
+     * @brief Set the identifier of the unit at the given @p index.
      *
-     *  The operation will return @c true if the id is assigned, or @c false
+     *  The operation will return @c true if the identifier is assigned, or @c false
      *  if the @p index is out of range.
      *
      * @return @c true if successful, @c false otherwise.
@@ -505,12 +505,12 @@ public:
     bool setUnitId(size_t index, const std::string &id) const;
 
     /**
-     * @brief Return the id string of the unit at the given @p index.
+     * @brief Return the identifier string of the unit at the given @p index.
      *
-     * Return the id string of the unit at the given @p index.  If the
+     * Return the identifier string of the unit at the given @p index.  If the
      * given index is out of range then the empty string is returned.
      *
-     * @return An id string.
+     * @return An identifier string.
      */
     std::string unitId(size_t index);
 
