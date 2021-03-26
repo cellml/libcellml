@@ -14,11 +14,10 @@
 not set.";
 
 %feature("docstring") libcellml::Entity::setId
-"Set the `id` document identifier for this entity (use empty string to
-unset).";
+"Sets the `id` document identifier for this entity.";
 
 %feature("docstring") libcellml::Entity::removeId
-"Removes id set for this entity.";
+"Removes the `id` document identifier set for this entity.";
 
 %{
 #include "libcellml/entity.h"

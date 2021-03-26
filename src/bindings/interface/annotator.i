@@ -11,112 +11,112 @@
 %include <std_vector.i>
 
 %feature("docstring") libcellml::Annotator
-"Interacts with CellML objects using their id attribute.";
+"Interacts with CellML objects using their identifier attribute.";
 
 %feature("docstring") libcellml::Annotator::setModel
 "Set the model for this Annotator to work with.";
 
 %feature("docstring") libcellml::Annotator::item
-"Return the item with the given id.";
+"Return the item with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::component
-"Return the component with the given id.";
+"Return the component with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::encapsulation
-"Return the model with the given encapsulation id.";
+"Return the model with the given encapsulation identifier.";
 
 %feature("docstring") libcellml::Annotator::model
-"Return the model assigned to this Annotator or the model with the given id.";
+"Return the model assigned to this Annotator or the model with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::variable
-"Return the variable with the given id.";
+"Return the variable with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::importSource
-"Return the import source with the given id.";
+"Return the import source with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::units
-"Return the units with the given id.";
+"Return the units with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::reset
-"Return the reset with the given id.";
+"Return the reset with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::testValue
-"Return the ResetPtr whose test_value has the given id.";
+"Return the ResetPtr whose test_value has the given identifier.";
 
 %feature("docstring") libcellml::Annotator::resetValue
-"Return the ResetPtr whose reset_value has the given id.";
+"Return the ResetPtr whose reset_value has the given identifier.";
 
 %feature("docstring") libcellml::Annotator::componentRef
-"Return the ComponentPtr with the given component_ref id.";
+"Return the ComponentPtr with the given component_ref identifier.";
 
 %feature("docstring") libcellml::Annotator::unit
-"Returns a Unit, a pair consisting of UnitsPtr and index which defines the Unit with the given id.";
+"Returns a Unit, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::connection
-"Return a VariablePair that defines a connection with given id.";
+"Return a VariablePair that defines a connection with given identifier.";
 
 %feature("docstring") libcellml::Annotator::mapVariables
-"Return a VariablePair that defines a map_variables with given id.";
+"Return a VariablePair that defines a map_variables with given identifier.";
 
 %feature("docstring") libcellml::Annotator::assignAllIds
-"Traverse the stored model and set any blank id fields to an automatically generated id.";
+"Traverse the stored model and set any blank identifier fields to an automatically generated identifier.";
 
 %feature("docstring") libcellml::Annotator::assignIds
 "Set all items of the given type in the stored model to automatically generated, unique strings.";
 
 %feature("docstring") libcellml::Annotator::clearAllIds
-"Clear all the id strings in the given or stored model.";
+"Clear all the identifier strings in the given or stored model.";
 
 %feature("docstring") libcellml::Annotator::isUnique
-"Return `true` if the given string occurs exactly once as an id in the stored model, `false` otherwise.";
+"Return `true` if the given string occurs exactly once as an identifier in the stored model, `false` otherwise.";
 
 %feature("docstring") libcellml::Annotator::ids
-"Return a list of all id strings within the stored model.";
+"Return a list of all identifier strings within the stored model.";
 
 %feature("docstring") libcellml::Annotator::duplicateIds
-"Return a list of id strings which are duplicated within the stored model.";
+"Return a list of identifier strings which are duplicated within the stored model.";
 
 %feature("docstring") libcellml::Annotator::assignComponentId
-"Assign an automatically generated, unique id to the given component.";
+"Assign an automatically generated, unique identifier to the given component.";
 
 %feature("docstring") libcellml::Annotator::assignComponentRefId
-"Assign an automatically generated, unique id to the given component's encapsulation.";
+"Assign an automatically generated, unique identifier to the given component's encapsulation.";
 
 %feature("docstring") libcellml::Annotator::assignConnectionId
-"Assign an automatically generated, unique id to the connection defined by the VariablePair.";
+"Assign an automatically generated, unique identifier to the connection defined by the VariablePair.";
 
 %feature("docstring") libcellml::Annotator::assignEncapsulationId
-"Assign an automatically generated, unique id to the encapsulation of the given model.";
+"Assign an automatically generated, unique identifier to the encapsulation of the given model.";
 
 %feature("docstring") libcellml::Annotator::assignImportSourceId
-"Assign an automatically generated, unique id to the given import source.";
+"Assign an automatically generated, unique identifier to the given import source.";
 
 %feature("docstring") libcellml::Annotator::assignMapVariablesId
-"Assign an automatically generated, unique id to the equivalence defined by the VariablePair.";
+"Assign an automatically generated, unique identifier to the equivalence defined by the VariablePair.";
 
 %feature("docstring") libcellml::Annotator::assignModelId
-"Assign an automatically generated, unique id to the given model.";
+"Assign an automatically generated, unique identifier to the given model.";
 
 %feature("docstring") libcellml::Annotator::assignResetId
-"Assign an automatically generated, unique id to the given reset.";
+"Assign an automatically generated, unique identifier to the given reset.";
 
 %feature("docstring") libcellml::Annotator::assignResetValueId
-"Assign an automatically generated, unique id to the reset value of the given reset.";
+"Assign an automatically generated, unique identifier to the reset value of the given reset.";
 
 %feature("docstring") libcellml::Annotator::assignTestValueId
-"Assign an automatically generated, unique id to the test value of the given reset.";
+"Assign an automatically generated, unique identifier to the test value of the given reset.";
 
 %feature("docstring") libcellml::Annotator::assignUnitId
-"Assign an automatically generated, unique id to the unit given by the units and index supplied.";
+"Assign an automatically generated, unique identifier to the unit given by the units and index supplied.";
 
 %feature("docstring") libcellml::Annotator::assignUnitsId
-"Assign an automatically generated, unique id to the given units.";
+"Assign an automatically generated, unique identifier to the given units.";
 
 %feature("docstring") libcellml::Annotator::assignVariableId
-"Assign an automatically generated, unique id to the given variable.";
+"Assign an automatically generated, unique identifier to the given variable.";
 
 %feature("docstring") libcellml::Annotator::itemCount
-"Return the number of items in the stored model with the given id.";
+"Return the number of items in the stored model with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::hasModel
 "Report whether the annotator has a model assigned or not.";
@@ -125,10 +125,10 @@
 // intended to be called from anywhere other than this file.
 
 %feature("docstring") libcellml::Annotator::_itemCellmlElement
-"Private: Utility function to retrieve item type integer based on id.";
+"Private: Utility function to retrieve item type integer based on identifier.";
 
 %feature("docstring") libcellml::Annotator::_assignId
-"Private: Utility function to assign an automatic id.";
+"Private: Utility function to assign an automatic identifier.";
 
 %{
 #include "libcellml/annotator.h"
@@ -250,8 +250,7 @@ from libcellml.types import AnyItem
         return _annotator.Annotator__assignId(self, args[0], args[1])
 
     def item(self, id, index=-1):
-
-        r"""Retrieve a unique item with the given id."""
+        r"""Retrieve a unique item with the given identifier."""
 
         from libcellml.types import AnyItem
 
@@ -276,7 +275,7 @@ from libcellml.types import AnyItem
             if num > 1:
                 from libcellml import Issue
                 issue = Issue()
-                issue.setDescription("The id '" + id + "' occurs " + str(num) + " times in the model so a unique item cannot be located.")
+                issue.setDescription("The identifier '" + id + "' occurs " + str(num) + " times in the model so a unique item cannot be located.")
                 issue.setLevel(Issue.Level.WARNING)
                 self.addIssue(issue)
                 return AnyItem()
@@ -284,7 +283,7 @@ from libcellml.types import AnyItem
             if num == 0:
                 from libcellml import Issue
                 issue = Issue()
-                issue.setDescription("Could not find an item with an id of '" + id + "' in the model.")
+                issue.setDescription("Could not find an item with an identifier of '" + id + "' in the model.")
                 issue.setLevel(Issue.Level.WARNING)
                 self.addIssue(issue)
                 return AnyItem()
@@ -298,13 +297,13 @@ from libcellml.types import AnyItem
         return AnyItem(CellmlElementType.UNDEFINED, None)
 
     def items(self, id):
-        r"""Returns everything with the given id as as list of (type, item) tuples."""
+        r"""Returns everything with the given identifier as as list of (type, item) tuples."""
         count = _annotator.Annotator_itemCount(self, id)
         itemsList = []
         for c in range(0, count):
             items_with_id = self.item(id, c)
             itemsList.append(items_with_id)
         return itemsList
-%}
-
+%
+}
 }
