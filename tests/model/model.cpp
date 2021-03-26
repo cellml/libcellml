@@ -717,7 +717,6 @@ TEST(Model, cleanEmptyUnits)
     // Check the correct units is being cleaned.
     auto p = libcellml::Printer::create();
     EXPECT_EQ(e, p->printModel(model));
-
 }
 
 TEST(Model, cleanEmptyComponentEncapsulation)
