@@ -151,7 +151,7 @@ XmlNamespaceMap XmlNode::definedNamespaces() const
             if (next->href != nullptr) {
                 href = std::string(reinterpret_cast<const char *>(next->href));
             }
-            namespaceMap[prefix] = href;
+            namespaceMap.emplace(prefix, href);
             next = next->next;
         }
     }
