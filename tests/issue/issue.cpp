@@ -696,12 +696,21 @@ TEST(Issue, isMessage)
     EXPECT_EQ(e->level(), libcellml::Issue::Level::MESSAGE);
 }
 
-TEST(Issue, url)
+TEST(Issue, urlInformative)
 {
     auto expectedUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME";
 
     auto issue = libcellml::Issue::create();
     issue->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_NAME);
+    EXPECT_EQ(expectedUrl, issue->url());
+}
+
+TEST(Issue, urlDocs)
+{
+    auto expectedUrl = "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_STATE_NOT_INITIALISED";
+
+    auto issue = libcellml::Issue::create();
+    issue->setReferenceRule(libcellml::Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED);
     EXPECT_EQ(expectedUrl, issue->url());
 }
 
