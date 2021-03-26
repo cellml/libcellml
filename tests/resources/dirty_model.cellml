@@ -5,9 +5,9 @@
   <units/>
   <units id="nonEmptyId"/>
   <component name="namedEmptyComponent"/>
-    <component name="nonEmptyComponent">
-        <variable name="x" units="requiredUnits"/>
-    </component>
+  <component name="nonEmptyComponent">
+    <variable name="x" units="requiredUnits"/>
+  </component>
   <component />
   <component id="nonEmptyComponentId"/>
 </model>

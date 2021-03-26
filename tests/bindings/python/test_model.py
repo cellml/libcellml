@@ -408,7 +408,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual(4, model.componentCount())
         self.assertEqual(3, model.unitsCount())
 
-        # Call the Model.clean() function to remove empty items.
+        # Call the Model.clean() function to remove the empty items (c4 and u3).
         model.clean()
 
         self.assertEqual(3, model.componentCount())

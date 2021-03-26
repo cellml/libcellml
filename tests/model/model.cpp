@@ -672,10 +672,10 @@ TEST(Model, cleanEmptyComponents)
     model->addComponent(c7);
 
     EXPECT_EQ(size_t(7), model->componentCount());
-    // Call the Model::clean() function to remove empty component
+    // Call the Model::clean() function to remove empty component.
     model->clean();
     EXPECT_EQ(size_t(6), model->componentCount());
-    // Check the correct component was cleaned
+    // Check the correct component was cleaned.
     auto p = libcellml::Printer::create();
     EXPECT_EQ(e, p->printModel(model));
 }
@@ -714,7 +714,7 @@ TEST(Model, cleanEmptyUnits)
     // Call the Model::clean() function to remove empty components and units.
     model->clean();
     EXPECT_EQ(size_t(4), model->unitsCount());
-    // check the correct units is being cleaned
+    // Check the correct units is being cleaned.
     auto p = libcellml::Printer::create();
     EXPECT_EQ(e, p->printModel(model));
 
@@ -754,7 +754,7 @@ TEST(Model, cleanEmptyComponentEncapsulation)
     c3->addComponent(c5);
     c5->addComponent(c6);
 
-    // Call the Model::clean() function to remove empty components
+    // Call the Model::clean() function to remove empty components.
     model->clean();
     auto p = libcellml::Printer::create();
     EXPECT_EQ(e, p->printModel(model));

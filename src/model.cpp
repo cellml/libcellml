@@ -551,7 +551,7 @@ void Model::clean()
         }
     }
 
-    // Remove empty units
+    // Remove empty units.
     for (size_t i = unitsCount() - 1; i != MAX_SIZE_T; --i) {
         auto u = units(i);
         if (!u->isImport()
