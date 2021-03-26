@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="units2">
-  <units name="u2">
-    <unit units="second"/>
-  </units>
-</model>

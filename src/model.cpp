@@ -48,13 +48,9 @@ namespace libcellml {
 struct Model::ModelImpl
 {
     std::vector<UnitsPtr> mUnits;
-    std::vector<ImportSourceWeakPtr> mImports;
-
-    void clearExpiredImportSources();
 
     std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
     std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
-    std::vector<ImportSourceWeakPtr>::const_iterator findImportSource(const ImportSourcePtr &importSource) const;
 
     bool equalUnits(const ModelPtr &other) const;
 };
@@ -73,12 +69,6 @@ std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const UnitsPtr
     }
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return u->equals(units); });
-}
-
-std::vector<ImportSourceWeakPtr>::const_iterator Model::ModelImpl::findImportSource(const ImportSourcePtr &importSource) const
-{
-    return std::find_if(mImports.begin(), mImports.end(),
-                        [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSource->equals(importSourceWeak.lock()); });
 }
 
 bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
@@ -114,16 +104,6 @@ Model::~Model()
     delete mPimpl;
 }
 
-void registerPossibleImportSource(const ModelPtr &model, const ComponentPtr &component)
-{
-    if (component->isImport()) {
-        model->addImportSource(component->importSource());
-    }
-    for (size_t index = 0; index < component->componentCount(); ++index) {
-        registerPossibleImportSource(model, component->component(index));
-    }
-}
-
 bool Model::doAddComponent(const ComponentPtr &component)
 {
     auto thisModel = shared_from_this();
@@ -131,8 +111,6 @@ bool Model::doAddComponent(const ComponentPtr &component)
         removeComponentFromEntity(component->parent(), component);
     }
     component->setParent(thisModel);
-
-    registerPossibleImportSource(thisModel, component);
 
     return ComponentEntity::doAddComponent(component);
 }
@@ -152,9 +130,6 @@ bool Model::addUnits(const UnitsPtr &units)
     mPimpl->mUnits.push_back(units);
     units->setParent(thisModel);
 
-    if (units->isImport()) {
-        addImportSource(units->importSource());
-    }
     return true;
 }
 
@@ -258,10 +233,6 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
     bool status = false;
     if (removeUnits(index)) {
         mPimpl->mUnits.insert(mPimpl->mUnits.begin() + ptrdiff_t(index), units);
-
-        if (units->isImport()) {
-            addImportSource(units->importSource());
-        }
         status = true;
     }
 
@@ -281,76 +252,6 @@ bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 size_t Model::unitsCount() const
 {
     return mPimpl->mUnits.size();
-}
-
-void Model::ModelImpl::clearExpiredImportSources()
-{
-    mImports.erase(std::remove_if(mImports.begin(), mImports.end(), [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSourceWeak.expired(); }), mImports.end());
-}
-
-bool Model::hasImportSource(const ImportSourcePtr &importSource) const
-{
-    return mPimpl->findImportSource(importSource) != mPimpl->mImports.end();
-}
-
-bool Model::addImportSource(const ImportSourcePtr &importSource)
-{
-    if (importSource == nullptr) {
-        return false;
-    }
-
-    // Prevent adding the same import source.
-    if (std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
-                     [=](const ImportSourceWeakPtr &importSourceWeak) -> bool { return importSource == importSourceWeak.lock(); })
-        != mPimpl->mImports.end()) {
-        return false;
-    }
-
-    mPimpl->mImports.push_back(importSource);
-    return true;
-}
-
-size_t Model::importSourceCount() const
-{
-    mPimpl->clearExpiredImportSources();
-    return mPimpl->mImports.size();
-}
-
-ImportSourcePtr Model::importSource(size_t index) const
-{
-    mPimpl->clearExpiredImportSources();
-
-    ImportSourcePtr importSrc = nullptr;
-    if (index < mPimpl->mImports.size()) {
-        importSrc = mPimpl->mImports.at(index).lock();
-    }
-
-    return importSrc;
-}
-
-bool Model::removeImportSource(size_t index)
-{
-    auto importSrc = importSource(index);
-    return removeImportSource(importSrc);
-}
-
-bool Model::removeImportSource(const ImportSourcePtr &importSource)
-{
-    mPimpl->clearExpiredImportSources();
-
-    bool status = false;
-    auto result = mPimpl->findImportSource(importSource);
-    if (result != mPimpl->mImports.end()) {
-        mPimpl->mImports.erase(result);
-        status = true;
-    }
-    return status;
-}
-
-bool Model::removeAllImportSources()
-{
-    mPimpl->mImports.clear();
-    return true;
 }
 
 bool Model::linkUnits()
@@ -456,39 +357,6 @@ ModelPtr Model::clone() const
 
     for (size_t index = 0; index < m->componentCount(); ++index) {
         fixComponentUnits(m, m->component(index));
-    }
-
-    // Remove all import sources from the cloned model as they will
-    // have lost their associations.  The proper associated imports
-    // will be copied below.
-    m->removeAllImportSources();
-
-    auto originalImportedUnits = getImportedUnits(shared_from_this());
-    auto clonedImportedUnits = getImportedUnits(m);
-
-    auto originalImportedComponents = getImportedComponents(shared_from_this());
-    auto clonedImportedComponents = getImportedComponents(m);
-
-    for (size_t index = 0; index < importSourceCount(); ++index) {
-        auto originalImportSource = importSource(index);
-        auto clonedImportSource = originalImportSource->clone();
-        m->addImportSource(clonedImportSource);
-
-        // Reset import associations for units.
-        for (size_t indexUnits = 0; indexUnits < originalImportedUnits.size(); ++indexUnits) {
-            auto originalUnits = originalImportedUnits.at(indexUnits);
-            if (originalUnits->importSource() == originalImportSource) {
-                clonedImportedUnits.at(indexUnits)->setImportSource(clonedImportSource);
-            }
-        }
-
-        // Reset import associations for components.
-        for (size_t indexComponents = 0; indexComponents < originalImportedComponents.size(); ++indexComponents) {
-            auto originalComponent = originalImportedComponents.at(indexComponents);
-            if (originalComponent->importSource() == originalImportSource) {
-                clonedImportedComponents.at(indexComponents)->setImportSource(clonedImportSource);
-            }
-        }
     }
 
     // Generate equivalence map starting from the models components.

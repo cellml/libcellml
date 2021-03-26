@@ -31,9 +31,10 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * Base URLs of specification and example sites from which the Issue::url() will be constructed.
+ * Base URLs of sites from which Issue::url() strings will be constructed.
  */
 static const std::string baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
+static const std::string docsUrl = "https://libcellml.org/documentation/guides/latest/runtime_codes/index";
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
@@ -285,10 +286,11 @@ std::string convertToString(size_t value);
  * @overload std::string convertToString(int value)
  *
  * @param value The @c double value number to convert.
+ * @param fullPrecision Whether the @p value is converted using full precision.
  *
  * @return @c std::string representation of the @p value.
  */
-std::string convertToString(double value);
+std::string convertToString(double value, bool fullPrecision = true);
 
 /**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.
@@ -730,5 +732,17 @@ std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
  * @return @c true if all the entities in @p entities are equal to entites in the @p owner.
  */
 bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities);
+
+/**
+ * @brief Get all the import sources in the @p model.
+ *
+ * Get all the import sources from the imported @ref Component s
+ * and @ref Units in the given @p model.
+ *
+ * @param model The model to find all import sources from.
+ *
+ * @return A @c std::vector of all the @ref ImportSource s found in the model.
+ */
+std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
 
 } // namespace libcellml

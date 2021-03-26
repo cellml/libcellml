@@ -2680,7 +2680,6 @@ TEST(Validator, importedUnitsFoundByValidator)
     auto component = libcellml::Component::create("component");
     auto importSource = libcellml::ImportSource::create();
     importSource->setUrl("somewhere.cellml");
-    model->addImportSource(importSource);
     model->addComponent(component);
 
     auto mV = libcellml::Units::create("mV");

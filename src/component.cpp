@@ -135,26 +135,7 @@ bool Component::doAddComponent(const ComponentPtr &component)
     }
     component->setParent(newParent);
 
-    if (component->isImport()) {
-        auto model = owningModel(newParent);
-        if (model != nullptr) {
-            model->addImportSource(component->importSource());
-        }
-    }
-
     return ComponentEntity::doAddComponent(component);
-}
-
-void Component::doSetImportSource(const ImportSourcePtr &importSource)
-{
-    auto component = shared_from_this();
-
-    auto model = owningModel(component);
-    if (model != nullptr) {
-        model->addImportSource(importSource);
-    }
-
-    ImportedEntity::doSetImportSource(importSource);
 }
 
 void Component::setSourceComponent(ImportSourcePtr &importSource, const std::string &name)
@@ -402,8 +383,7 @@ ComponentPtr Component::clone() const
     c->setMath(math());
 
     if (isImport()) {
-        auto imp = importSource()->clone();
-        c->setImportSource(imp);
+        c->setImportSource(importSource());
     }
 
     c->setImportReference(importReference());

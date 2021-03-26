@@ -16,7 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <set>
 #include <string>
 
 #include "libcellml/logger.h"
@@ -165,6 +164,85 @@ public:
      * Remove all models from the library.
      */
     void removeAllModels();
+
+    /**
+     * @brief Add an import source item to this importer.
+     *
+     * Add import source by reference to the importer.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p importSource pointer already exists in this importer; or
+     *  - The @p importSource is @c nullptr.
+     *
+     * @param importSource The import source to add.
+     *
+     * @return @c true if the import source item is added or @c false otherwise.
+     */
+    bool addImportSource(const ImportSourcePtr &importSource);
+
+    /**
+     * @brief Get the number of import source items in the importer.
+     *
+     * Returns the number of import source items the importer contains.
+     *
+     * @return The number of import source items.
+     */
+    size_t importSourceCount() const;
+
+    /**
+     * @brief Get the import source item at the given @p index.
+     *
+     * Returns a reference to an import source at the given @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the range of valid values for the
+     * index is [0, \#importSources).
+     *
+     * @param index The index of the import source to return.
+     *
+     * @return A reference to the import source at the given @p index on success, @c nullptr otherwise.
+     */
+    ImportSourcePtr importSource(size_t index) const;
+
+    /**
+     * @brief Remove the import source at the given @p index.
+     *
+     * Remove the import source from this importer at the given @p index.
+     * @p index must be in the range [0, \#importSources).
+     *
+     * @param index The index of the import source to remove.
+     *
+     * @return @c true if the import source was removed, @c false otherwise.
+     */
+    bool removeImportSource(size_t index);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the import source at the given reference.
+     *
+     * @param importSource The pointer to the import source to remove.
+     *
+     * @return @c true if the import source was removed, @c false otherwise.
+     */
+    bool removeImportSource(const ImportSourcePtr &importSource);
+
+    /**
+     * @brief Remove all import sources stored in this importer.
+     *
+     * Clears all import sources that have been added to this importer.
+     */
+    bool removeAllImportSources();
+
+    /**
+     * @brief Tests to see if the import source is within this importer.
+     *
+     * Tests to see if the given import source is contained within this importer.
+     * Returns @c true if the import source is in the importer and @c false otherwise.
+     *
+     * @param importSource The import source to test for existence in this importer.
+     *
+     * @return @c true if the import source is in the importer and @c false otherwise.
+     */
+    bool hasImportSource(const ImportSourcePtr &importSource) const;
 
 private:
     Importer(); /**< Constructor, @private. */
