@@ -212,7 +212,7 @@ target_include_directories(cellml_debug_utilities
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
 )
 
-target_link_libraries(cellml PRIVATE debug cellml_debug_utilities)
+target_link_libraries(cellml PRIVATE cellml_debug_utilities)
 
 group_source_to_dir_structure(
   ${DEBUG_SOURCE_FILES}

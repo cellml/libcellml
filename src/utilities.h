@@ -481,10 +481,22 @@ bool isStandardPrefixName(const std::string &name);
  *
  * @param component The @c ComponentPtr to search for the @c VariablePtr in.
  * @param variable The @c VariablePtr to return the index of.
+ *
  * @return The index of the @p variable found in the component.  Returns the
  * number of variables in the component if the variable was not found.
  */
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+
+/**
+ * @brief Get the index of the @p units in the @p model.
+ *
+ * @param model The @ref Model to searchh for the @ref Units in.
+ * @param units The @ref Units to return the index of.
+ *
+ * @return The index of the @p units found in the model.  Returns the number of units
+ * in the model if the units was not found.
+ */
+size_t getUnitsIndexInModel(const ModelPtr &model, const UnitsPtr &units);
 
 /**
  * @brief Test to determine if @p variable1 and @p variable2 are equivalent.
