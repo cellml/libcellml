@@ -24,7 +24,6 @@ Provides support for shared pointers declared in types.h.
 %shared_ptr(libcellml::Generator)
 %shared_ptr(libcellml::GeneratorProfile)
 %shared_ptr(libcellml::Importer)
-%shared_ptr(libcellml::ImportRequirement)
 %shared_ptr(libcellml::ImportSource)
 %shared_ptr(libcellml::ImportedEntity)
 %shared_ptr(libcellml::Issue)
@@ -64,15 +63,6 @@ Provides support for shared pointers declared in types.h.
 
 %feature("docstring") libcellml::Unit::isValid
 "Test if the unit reference is valid.";
-
-%feature("docstring") libcellml::ImportRequirement
-"A class containing a URL and referenced Model.";
-
-%feature("docstring") libcellml::ImportRequirement::url
-"Return the URL of this requirement, relative to the importing model.";
-
-%feature("docstring") libcellml::ImportRequirement::model
-"Return the Model used by this requirement.";
 
 %{
 #include "libcellml/types.h"
@@ -170,15 +160,6 @@ Provides support for shared pointers declared in types.h.
   }
 }
 
-%typemap(out) libcellml::ImportRequirement *ImportRequirement() {
-  /*
-  Here we take the returned value from the Constructor for this object and cast it
-  to the pointer that it actually is.  Once that is done we can set the required resultobj.
-  */
-  std::shared_ptr<  libcellml::ImportRequirement > *smartresult = reinterpret_cast<std::shared_ptr<  libcellml::ImportRequirement > *>(result);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__ImportRequirement_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
-}
-
 %typemap(out) libcellml::Unit *Unit() {
   /*
   Here we take the returned value from the Constructor for this object and cast it
@@ -197,13 +178,6 @@ Provides support for shared pointers declared in types.h.
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__VariablePair_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
 }
 
-%extend libcellml::ImportRequirement {
-    ImportRequirement(const std::string &url, const ModelPtr &model) {
-        auto ptr = new std::shared_ptr<libcellml::ImportRequirement>(libcellml::ImportRequirement::create(url, model));
-        return reinterpret_cast<libcellml::ImportRequirement *>(ptr);
-    }
-}
-
 %extend libcellml::Unit {
     Unit(const UnitsPtr &units, size_t index) {
         auto ptr = new std::shared_ptr<libcellml::Unit>(libcellml::Unit::create(units, index));
@@ -220,6 +194,5 @@ Provides support for shared pointers declared in types.h.
 
 %ignore libcellml::Unit::create;
 %ignore libcellml::VariablePair::create;
-%ignore libcellml::ImportRequirement::create;
 
 %include "libcellml/types.h"

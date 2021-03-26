@@ -32,9 +32,10 @@ TEST(ImportRequirement, create)
 TEST(ImportRequirement, requirementsFixCircularRef)
 {
     const std::vector<std::string> e = {
+        "importExample2components.cellml",
+        "circularImport1.cellml",
         "importExample2units.cellml",
-        "importExample3.cellml",
-        "importExample2components.cellml"};
+    };
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/requirements/importExample1.cellml"));
@@ -47,10 +48,8 @@ TEST(ImportRequirement, requirementsEncapsulationUnitsWithChildren)
 {
     const std::vector<std::string> e = {
         "complicatedComponents.cellml",
-        "components.cellml",
         "complicatedUnits.cellml",
-        "units1.cellml",
-        "units2.cellml"};
+    };
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/requirements/complicatedExample.cellml"));

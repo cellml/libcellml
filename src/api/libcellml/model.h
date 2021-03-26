@@ -437,8 +437,11 @@ public:
     void clean();
 
     /**
-     * @brief importRequirements
-     * @return
+     * @brief Return all URLs used by imports in the model.
+     *
+     * Return a @c std::vector of @c std::strings representing all URLs used by imports in this model.
+     *
+     * @return a @c std::vector of @c std::strings.
      */
     std::vector<std::string> importRequirements() const;
 
