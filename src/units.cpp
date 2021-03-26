@@ -22,7 +22,10 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <cstdint>
+#include <cstring>
 #include <map>
+#include <numeric>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -107,8 +110,8 @@ struct UnitDefinition
 {
     std::string mReference; /**< Reference to the units for the unit.*/
     std::string mPrefix; /**< String expression of the prefix for the unit.*/
-    std::string mExponent; /**< Exponent for the unit.*/
-    std::string mMultiplier; /**< Multiplier for the unit.*/
+    double mExponent = 1.0; /**< Exponent for the unit.*/
+    double mMultiplier = 1.0; /**< Multiplier for the unit.*/
     std::string mId; /**< Id for the unit.*/
 };
 
@@ -121,7 +124,7 @@ struct Units::UnitsImpl
 {
     std::vector<UnitDefinition> mUnits; /**< A vector of unit defined for this Units.*/
 
-    std::vector<UnitDefinition>::iterator findUnit(const std::string &reference);
+    std::vector<UnitDefinition>::const_iterator findUnit(const std::string &reference) const;
 
     /**
      * @brief Test if this units is a standard unit that is a base unit.
@@ -138,7 +141,7 @@ struct Units::UnitsImpl
     bool isBaseUnit(const std::string &name) const;
 };
 
-std::vector<UnitDefinition>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
+std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std::string &reference) const
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitDefinition &u) -> bool { return u.mReference == reference; });
@@ -265,6 +268,60 @@ bool Units::isBaseUnit() const
     return unitCount() == 0 && standardUnitCheck;
 }
 
+bool Units::doEquals(const EntityPtr &other) const
+{
+    if (!NamedEntity::doEquals(other)) {
+        return false;
+    }
+
+    auto units = std::dynamic_pointer_cast<Units>(other);
+
+    if ((units == nullptr)
+        || (mPimpl->mUnits.size() != units->unitCount())
+        || !ImportedEntity::doEquals(units)) {
+        return false;
+    }
+
+    // Check unit definitions match.
+    static const auto PTRDIFF_T_MAX = size_t(std::numeric_limits<ptrdiff_t>::max());
+
+    std::string reference;
+    std::string prefix;
+    double exponent;
+    double multiplier;
+    std::string id;
+    std::vector<size_t> unmatchedUnitIndex(mPimpl->mUnits.size());
+
+    std::iota(unmatchedUnitIndex.begin(), unmatchedUnitIndex.end(), 0);
+
+    for (const auto &unitDefinition : mPimpl->mUnits) {
+        bool unitFound = false;
+        size_t index = 0;
+
+        for (index = 0; (index < unmatchedUnitIndex.size()) && !unitFound; ++index) {
+            size_t currentIndex = unmatchedUnitIndex.at(index);
+
+            units->unitAttributes(currentIndex, reference, prefix, exponent, multiplier, id);
+
+            if (areNearlyEqual(unitDefinition.mExponent, exponent)
+                && (unitDefinition.mId == id)
+                && areNearlyEqual(unitDefinition.mMultiplier, multiplier)
+                && (unitDefinition.mPrefix == prefix)
+                && (unitDefinition.mReference == reference)) {
+                unitFound = true;
+            }
+        }
+
+        if (!unitFound || (index >= PTRDIFF_T_MAX)) {
+            return false;
+        }
+
+        unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ptrdiff_t(index) - 1);
+    }
+
+    return true;
+}
+
 void Units::addUnit(const std::string &reference, const std::string &prefix, double exponent,
                     double multiplier, const std::string &id)
 {
@@ -281,12 +338,8 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     } catch (std::out_of_range &) {
         ud.mPrefix = prefix;
     }
-    if (exponent != 1.0) {
-        ud.mExponent = convertToString(exponent);
-    }
-    if (multiplier != 1.0) {
-        ud.mMultiplier = convertToString(multiplier);
-    }
+    ud.mExponent = exponent;
+    ud.mMultiplier = multiplier;
     if (!id.empty()) {
         ud.mId = id;
     }
@@ -376,12 +429,8 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
     }
     reference = ud.mReference;
     prefix = ud.mPrefix;
-    if (ud.mExponent.empty() || !convertToDouble(ud.mExponent, exponent)) {
-        exponent = 1.0;
-    }
-    if (ud.mMultiplier.empty() || !convertToDouble(ud.mMultiplier, multiplier)) {
-        multiplier = 1.0;
-    }
+    exponent = ud.mExponent;
+    multiplier = ud.mMultiplier;
     id = ud.mId;
 }
 
@@ -418,7 +467,7 @@ bool Units::removeUnit(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ptrdiff_t(index));
         status = true;
     }
 
@@ -438,20 +487,13 @@ void Units::removeAllUnits()
 
 void Units::doSetImportSource(const ImportSourcePtr &importSource)
 {
-    auto model = owningModel(shared_from_this());
-    auto units = shared_from_this();
+    auto thisUnits = shared_from_this();
+    auto model = owningModel(thisUnits);
 
-    auto oldImportSource = units->importSource();
-
-    if (importSource != nullptr) {
-        if (model != nullptr) {
-            model->addImportSource(importSource);
-        }
-        importSource->addUnits(units);
-        if (oldImportSource != nullptr) {
-            oldImportSource->removeUnits(units, false);
-        }
+    if ((importSource != nullptr) && (model != nullptr)) {
+        model->addImportSource(importSource);
     }
+
     ImportedEntity::doSetImportSource(importSource);
 }
 

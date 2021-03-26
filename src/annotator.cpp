@@ -925,7 +925,7 @@ void Annotator::clearAllIds()
         for (size_t i = 0; i < model->componentCount(); ++i) {
             mPimpl->doClearComponentIds(model->component(i));
         }
-        model->setEncapsulationId("");
+        model->removeEncapsulationId();
 
         mPimpl->mIdList.clear();
         mPimpl->mHash = 0;
@@ -942,7 +942,7 @@ void Annotator::clearAllIds(ModelPtr &model)
 
 void Annotator::AnnotatorImpl::doClearComponentIds(const ComponentPtr &component)
 {
-    component->setEncapsulationId("");
+    component->removeEncapsulationId();
     component->setId("");
     for (size_t i = 0; i < component->variableCount(); ++i) {
         component->variable(i)->setId("");
@@ -1397,7 +1397,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItem &item) const
     } else if (type == CellmlElementType::UNITS) {
         modelBased = owningModel(std::any_cast<UnitsPtr>(item.second)) == model;
     } else if (type == CellmlElementType::IMPORT) {
-        modelBased = owningModel(std::any_cast<ImportSourcePtr>(item.second)) == model;
+        modelBased = true;
     } else if (type == CellmlElementType::VARIABLE) {
         modelBased = owningModel(std::any_cast<VariablePtr>(item.second)) == model;
     } else if ((type == CellmlElementType::COMPONENT)

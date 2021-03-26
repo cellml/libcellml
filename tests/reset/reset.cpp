@@ -230,13 +230,13 @@ TEST(Reset, addResetInvalidArguments)
     EXPECT_TRUE(c->addReset(r));
     EXPECT_EQ(size_t(1), c->resetCount());
 
-    // Try to add r to c again, which cannot be done.
-    EXPECT_FALSE(c->addReset(r));
-    EXPECT_EQ(size_t(1), c->resetCount());
+    // Add r to c again.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(2), c->resetCount());
 
     // Try to add a nullptr to c, which cannot be done.
     EXPECT_FALSE(c->addReset(nullptr));
-    EXPECT_EQ(size_t(1), c->resetCount());
+    EXPECT_EQ(size_t(2), c->resetCount());
 }
 
 TEST(Reset, removeReset)
@@ -274,6 +274,8 @@ TEST(Reset, removeResetInvalidArguments)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::ResetPtr r1 = libcellml::Reset::create();
+    r1->setOrder(2);
+
     libcellml::ResetPtr r2 = libcellml::Reset::create();
 
     // Add r1 to c.
@@ -354,9 +356,13 @@ TEST(Reset, hasResetFromComponentMethod)
     c->setName(in);
 
     libcellml::ResetPtr r1 = libcellml::Reset::create();
+    r1->setTestValue("r1s test value");
     c->addReset(r1);
+
     libcellml::ResetPtr r2 = libcellml::Reset::create();
+    r2->setTestValue("r2s test value");
     c->addReset(r2);
+
     libcellml::ResetPtr r3 = libcellml::Reset::create();
 
     EXPECT_TRUE(c->hasReset(r2));

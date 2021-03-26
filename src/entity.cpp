@@ -30,14 +30,12 @@ using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entit
  */
 struct Entity::EntityImpl
 {
-    EntityWeakPtr mParent; /**< Pointer to parent. */
     std::string mId; /**< String document identifier for this entity. */
 };
 
 Entity::Entity()
     : mPimpl(new EntityImpl())
 {
-    mPimpl->mParent = {};
 }
 
 Entity::~Entity()
@@ -55,43 +53,22 @@ std::string Entity::id() const
     return mPimpl->mId;
 }
 
-EntityPtr Entity::parent() const
+void Entity::removeId()
 {
-    return mPimpl->mParent.lock();
+    mPimpl->mId = "";
 }
 
-void Entity::setParent(const EntityPtr &parent)
+bool Entity::equals(const EntityPtr &other) const
 {
-    mPimpl->mParent = parent;
+    return doEquals(other);
 }
 
-void Entity::removeParent()
+bool Entity::doEquals(const EntityPtr &other) const
 {
-    mPimpl->mParent = {};
-}
-
-bool Entity::hasParent() const
-{
-    bool hasParent = false;
-    EntityPtr parent = mPimpl->mParent.lock();
-    if (parent) {
-        hasParent = true;
+    if (other == nullptr) {
+        return false;
     }
-
-    return hasParent;
-}
-
-bool Entity::hasAncestor(const EntityPtr &entity) const
-{
-    bool hasAncestor = false;
-    EntityPtr parent = mPimpl->mParent.lock();
-    if (parent == entity) {
-        hasAncestor = true;
-    } else if (parent) {
-        hasAncestor = parent->hasAncestor(entity);
-    }
-
-    return hasAncestor;
+    return mPimpl->mId == other->id();
 }
 
 } // namespace libcellml
