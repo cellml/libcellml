@@ -424,8 +424,12 @@ struct Analyser::AnalyserImpl
     double powerValue(const AnalyserEquationAstPtr &ast);
     std::string expression(const AnalyserEquationAstPtr &ast,
                            bool includeHierarchy = true);
+    std::string expressionUnits(const UnitsMaps &unitsMaps,
+                                const UnitsMultipliers &unitsMultipliers = {});
     std::string expressionUnits(const AnalyserEquationAstPtr &ast,
-                                const UnitsMaps &userUnitsMaps);
+                                const UnitsMaps &unitsMaps,
+                                const UnitsMaps &userUnitsMaps,
+                                const UnitsMultipliers &unitsMultipliers);
     void defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
                                         UnitsMaps &userUnitsMaps,
                                         UnitsMultipliers &unitsMultipliers);
@@ -1645,29 +1649,45 @@ std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast
     return res;
 }
 
-std::string Analyser::AnalyserImpl::expressionUnits(const AnalyserEquationAstPtr &ast,
-                                                    const UnitsMaps &userUnitsMaps)
+std::string Analyser::AnalyserImpl::expressionUnits(const UnitsMaps &unitsMaps,
+                                                    const UnitsMultipliers &unitsMultipliers)
 {
-    // Return a string version of the given AST and user units maps.
+    // Return a string version of the given units maps and units multipliers.
 
     Strings units;
 
-    for (const auto &userUnitsMap : userUnitsMaps) {
+    for (size_t i = 0; i < unitsMaps.size(); ++i) {
+        auto unitsMap = unitsMaps[i];
         std::string unit;
 
-        for (const auto &userUnits : userUnitsMap) {
-            if ((userUnits.first != "dimensionless")
-                && !areNearlyEqual(userUnits.second, 0.0)) {
-                auto intExponent = int(userUnits.second);
-                auto exponent = areNearlyEqual(userUnits.second, intExponent) ?
+        if (!unitsMultipliers.empty()) {
+            auto intExponent = int(unitsMultipliers[i]);
+            auto exponent = areNearlyEqual(unitsMultipliers[i], intExponent) ?
+                                convertToString(intExponent) :
+                                convertToString(unitsMultipliers[i], false);
+
+            if (exponent != "0") {
+                unit += "10";
+
+                if (exponent != "1") {
+                    unit += "^" + exponent;
+                }
+            }
+        }
+
+        for (const auto &units : unitsMap) {
+            if ((units.first != "dimensionless")
+                && !areNearlyEqual(units.second, 0.0)) {
+                auto intExponent = int(units.second);
+                auto exponent = areNearlyEqual(units.second, intExponent) ?
                                     convertToString(intExponent) :
-                                    convertToString(userUnits.second, false);
+                                    convertToString(units.second, false);
 
                 if (!unit.empty()) {
                     unit += " x ";
                 }
 
-                unit += userUnits.first;
+                unit += units.first;
 
                 if (exponent != "1") {
                     unit += "^" + exponent;
@@ -1690,7 +1710,32 @@ std::string Analyser::AnalyserImpl::expressionUnits(const AnalyserEquationAstPtr
         unitsString += "'" + units[i] + "'";
     }
 
-    return expression(ast, false) + " is " + (unitsString.empty() ? "'dimensionless'" : "in " + unitsString);
+    return unitsString;
+}
+
+std::string Analyser::AnalyserImpl::expressionUnits(const AnalyserEquationAstPtr &ast,
+                                                    const UnitsMaps &unitsMaps,
+                                                    const UnitsMaps &userUnitsMaps,
+                                                    const UnitsMultipliers &unitsMultipliers)
+{
+    // Return a string version of the given AST and (user) units maps and units
+    // multipliers.
+
+    auto res = expression(ast, false) + " is ";
+    auto unitsString = expressionUnits(unitsMaps, unitsMultipliers);
+    auto userUnitsString = expressionUnits(userUnitsMaps);
+
+    if (userUnitsString.empty()) {
+        res += "'dimensionless'";
+    } else {
+        res += "in " + userUnitsString;
+
+        if (!unitsString.empty() && (unitsString != userUnitsString)) {
+            res += " (i.e. " + unitsString + ")";
+        }
+    }
+
+    return res;
 }
 
 void Analyser::AnalyserImpl::defaultUnitsMapsAndMultipliers(UnitsMaps &unitsMaps,
@@ -1831,8 +1876,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             std::string issueDescription = "The units in " + expression(ast) + " are not equivalent. ";
 
-            issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + " while "
-                                + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUserUnitsMaps) + ".";
+            issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
+                                + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".";
 
             issueDescriptions.push_back(issueDescription);
         }
@@ -1850,7 +1895,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps)) {
             issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedRightChild)
                                         + " is not dimensionless. "
-                                        + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUserUnitsMaps) + ".");
+                                        + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".");
         }
     } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::AND)
                || (ast->mPimpl->mType == AnalyserEquationAst::Type::OR)
@@ -1894,7 +1939,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             issueDescription += "not dimensionless. ";
 
             if (!isDimensionlessUnitsMaps) {
-                issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps);
+                issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers);
             }
 
             if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
@@ -1902,7 +1947,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             }
 
             if (!isDimensionlessRightUnitsMaps) {
-                issueDescription += expressionUnits(ast->mPimpl->mOwnedRightChild, rightUserUnitsMaps);
+                issueDescription += expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers);
             }
 
             issueDescription += ".";
@@ -1931,13 +1976,19 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                 auto baseAst = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
                                    ast->mPimpl->mOwnedRightChild :
                                    ast->mPimpl->mOwnedLeftChild;
+                auto exponentUnitsMaps = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                                             rightUnitsMaps :
+                                             unitsMaps;
                 auto exponentUserUnitsMaps = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
                                                  rightUserUnitsMaps :
                                                  userUnitsMaps;
+                auto exponentUnitsMultipliers = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                                                    rightUnitsMultipliers :
+                                                    unitsMultipliers;
 
                 issueDescriptions.push_back("The unit of " + expression(baseAst)
                                             + " is not dimensionless. "
-                                            + expressionUnits(baseAst, exponentUserUnitsMaps) + ".");
+                                            + expressionUnits(baseAst, exponentUnitsMaps, exponentUserUnitsMaps, exponentUnitsMultipliers) + ".");
             }
         }
 
@@ -1999,7 +2050,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps)) {
             issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedLeftChild)
                                         + " is not dimensionless. "
-                                        + expressionUnits(ast->mPimpl->mOwnedLeftChild, userUnitsMaps) + ".");
+                                        + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + ".");
         }
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps);
