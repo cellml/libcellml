@@ -20,6 +20,19 @@ limitations under the License.
 
 #include <libcellml>
 
+TEST(Encapsulation, encapsulationId)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    EXPECT_EQ("", model->encapsulationId());
+
+    model->setEncapsulationId("my_id");
+    EXPECT_EQ("my_id", model->encapsulationId());
+
+    model->removeEncapsulationId();
+    EXPECT_EQ("", model->encapsulationId());
+}
+
 TEST(Encapsulation, reparentComponent)
 {
     const std::string e_parent_1 =
