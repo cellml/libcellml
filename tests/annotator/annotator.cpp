@@ -189,12 +189,12 @@ TEST(Annotator, errorHandling)
     model->setId("model_id"); // Add an identifier into the model and rebuild.
     annotator->setModel(model);
 
-    // Test that an Issue is created and logged when an identifier is not found:
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist").first);
+    // Test that an Issue is created and logged when an identifier is not found.
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
     EXPECT_EQ(size_t(1), annotator->issueCount());
 
-    // Test that repeated calls to the same unfound identifier generate new errors:
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist").first);
+    // Test that repeated calls to the same unfound identifier generate new errors.
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
     EXPECT_EQ(size_t(2), annotator->issueCount());
 }
 
