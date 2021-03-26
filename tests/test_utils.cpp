@@ -354,7 +354,6 @@ void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
 
     EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
     EXPECT_EQ(m1->componentCount(), m2->componentCount());
-    EXPECT_EQ(m1->importSourceCount(), m2->importSourceCount());
 
     for (size_t index = 0; index < m1->unitsCount(); ++index) {
         auto u1 = m1->units(index);
@@ -366,12 +365,6 @@ void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
         auto c1 = m1->component(index);
         auto c2 = m2->component(index);
         compareComponent(c1, c2, m2);
-    }
-
-    for (size_t index = 0; index < m1->importSourceCount(); ++index) {
-        auto i1 = m1->importSource(index);
-        auto i2 = m2->importSource(index);
-        EXPECT_EQ(i1->url(), i2->url());
     }
 }
 
