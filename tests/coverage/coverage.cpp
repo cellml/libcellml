@@ -105,7 +105,7 @@ TEST(Annotator, automaticIdUndefined)
 
     annotator->setModel(model);
 
-    auto pair = libcellml::AnyItem::create(libcellml::CellmlElementType::UNDEFINED, std::any(nullptr));
+    auto pair = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNDEFINED, std::any(nullptr));
 
     annotator->assignId(pair);
     EXPECT_TRUE(annotator->hasModel());

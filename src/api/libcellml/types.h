@@ -42,8 +42,8 @@ using AnalyserVariablePtr = std::shared_ptr<AnalyserVariable>; /**< Type definit
 class Annotator; /**< Forward declaration of Annotator class. */
 using AnnotatorPtr = std::shared_ptr<Annotator>; /**< Type definition for @c std::shared Annotator pointer. */
 
-class AnyItem; /**< Forward declaration of AnyItem class. */
-using AnyItemPtr = std::shared_ptr<AnyItem>; /**< Type definition for @c std::shared AnyItem pointer. */
+class AnyCellmlElement; /**< Forward declaration of AnyCellmlElement class. */
+using AnyItemPtr = std::shared_ptr<AnyCellmlElement>; /**< Type definition for @c std::shared AnyCellmlElement pointer. */
 
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
@@ -215,9 +215,9 @@ private:
 };
 
 /**
- * @brief The AnyItem class
+ * @brief The AnyCellmlElement class
  *
- * The AnyItem class contains a @c std::any item, and
+ * The AnyCellmlElement class contains a @c std::any item, and
  * the @ref CellmlElementType enum that describes which type is stored.
  *
  *  Casts to use for the stored item are mapped according to the following statements:
@@ -236,25 +236,25 @@ private:
  *  - CellmlElementType::UNITS => std::any_cast<UnitsPtr>.
  *  - CellmlElementType::VARIABLE => std::any_cast<VariablePtr>.
  */
-class LIBCELLML_EXPORT AnyItem
+class LIBCELLML_EXPORT AnyCellmlElement
 {
 public:
-    ~AnyItem(); /**< Destructor. */
-    AnyItem(const AnyItem &rhs) = delete; /**< Copy constructor. */
-    AnyItem(AnyItem &&rhs) noexcept = delete; /**< Move constructor. */
-    AnyItem &operator=(AnyItem rhs) = delete; /**< Assignment operator. */
+    ~AnyCellmlElement(); /**< Destructor. */
+    AnyCellmlElement(const AnyCellmlElement &rhs) = delete; /**< Copy constructor. */
+    AnyCellmlElement(AnyCellmlElement &&rhs) noexcept = delete; /**< Move constructor. */
+    AnyCellmlElement &operator=(AnyCellmlElement rhs) = delete; /**< Assignment operator. */
 
     static AnyItemPtr create() noexcept;
 
     /**
-     * @brief Create an AnyItem object.
+     * @brief Create an AnyCellmlElement object.
      *
      * Factory method to create a @ref AnyItemPtr.  Create with @c std::any item
      * and type with::
      *
-     *   auto anyItem = libcellml::AnyItem::create(item, type);
+     *   auto anyItem = libcellml::AnyCellmlElement::create(item, type);
      *
-     * @return A smart pointer to a @ref AnyItem object.
+     * @return A smart pointer to a @ref AnyCellmlElement object.
      */
     static AnyItemPtr create(CellmlElementType type, const std::any &item) noexcept;
     static AnyItemPtr create(CellmlElementType type, const ComponentPtr &item) noexcept;
@@ -303,16 +303,16 @@ public:
     void setType(CellmlElementType type);
 
 private:
-    AnyItem();
-    explicit AnyItem(CellmlElementType type, const std::any &item); /**< Constructor with two variables as parameters. */
-    explicit AnyItem(CellmlElementType type, const ComponentPtr &item);
-    explicit AnyItem(CellmlElementType type, const ImportSourcePtr &item);
-    explicit AnyItem(CellmlElementType type, const ModelPtr &item);
-    explicit AnyItem(CellmlElementType type, const ResetPtr &item);
-    explicit AnyItem(CellmlElementType type, const UnitPtr &item);
-    explicit AnyItem(CellmlElementType type, const UnitsPtr &item);
-    explicit AnyItem(CellmlElementType type, const VariablePairPtr &item);
-    explicit AnyItem(CellmlElementType type, const VariablePtr &item);
+    AnyCellmlElement();
+    explicit AnyCellmlElement(CellmlElementType type, const std::any &item); /**< Constructor with two variables as parameters. */
+    explicit AnyCellmlElement(CellmlElementType type, const ComponentPtr &item);
+    explicit AnyCellmlElement(CellmlElementType type, const ImportSourcePtr &item);
+    explicit AnyCellmlElement(CellmlElementType type, const ModelPtr &item);
+    explicit AnyCellmlElement(CellmlElementType type, const ResetPtr &item);
+    explicit AnyCellmlElement(CellmlElementType type, const UnitPtr &item);
+    explicit AnyCellmlElement(CellmlElementType type, const UnitsPtr &item);
+    explicit AnyCellmlElement(CellmlElementType type, const VariablePairPtr &item);
+    explicit AnyCellmlElement(CellmlElementType type, const VariablePtr &item);
 
     struct AnyItemImpl; /**< Forward declaration for pImpl idiom. */
     AnyItemImpl *mPimpl; /**< Private member to implementation pointer. */

@@ -20,7 +20,7 @@ Provides support for shared pointers declared in types.h.
 %shared_ptr(libcellml::AnalyserModel)
 %shared_ptr(libcellml::AnalyserVariable)
 %shared_ptr(libcellml::Annotator)
-%shared_ptr(libcellml::AnyItem)
+%shared_ptr(libcellml::AnyCellmlElement)
 %shared_ptr(libcellml::Component)
 %shared_ptr(libcellml::ComponentEntity)
 %shared_ptr(libcellml::Entity)
@@ -67,19 +67,19 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::Unit::isValid
 "Test if the unit reference is valid.";
 
-%feature("docstring") libcellml::AnyItem
+%feature("docstring") libcellml::AnyCellmlElement
 "A class for storing any kind of item.";
 
-%feature("docstring") libcellml::AnyItem::type
+%feature("docstring") libcellml::AnyCellmlElement::type
 "Get the type of the stored item.";
 
-%feature("docstring") libcellml::AnyItem::setType
+%feature("docstring") libcellml::AnyCellmlElement::setType
 "Set the type of the item.";
 
-%feature("docstring") libcellml::AnyItem::setItem
+%feature("docstring") libcellml::AnyCellmlElement::setItem
 "Set the item to store.";
 
-%ignore libcellml::AnyItem::item;
+%ignore libcellml::AnyCellmlElement::item;
 
 %{
 #include "libcellml/types.h"
@@ -201,13 +201,13 @@ Provides support for shared pointers declared in types.h.
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__VariablePair_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
 }
 
-%typemap(out) libcellml::AnyItem *AnyItem() {
+%typemap(out) libcellml::AnyCellmlElement *AnyCellmlElement() {
   /*
   Here we take the returned value from the Constructor for this object and cast it
   to the pointer that it actually is.  Once that is done we can set the required resultobj.
   */
-  std::shared_ptr<  libcellml::AnyItem > *smartresult = reinterpret_cast<std::shared_ptr<  libcellml::AnyItem > *>(result);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__AnyItem_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
+  std::shared_ptr<  libcellml::AnyCellmlElement > *smartresult = reinterpret_cast<std::shared_ptr<  libcellml::AnyCellmlElement > *>(result);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__AnyCellmlElement_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
 }
 
 %extend libcellml::Unit {
@@ -224,44 +224,44 @@ Provides support for shared pointers declared in types.h.
     }
 }
 
-%extend libcellml::AnyItem {
+%extend libcellml::AnyCellmlElement {
 
-    AnyItem(CellmlElementType type, ComponentPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement(CellmlElementType type, ComponentPtr &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
-    AnyItem(CellmlElementType type, ModelPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement(CellmlElementType type, ModelPtr &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
-    AnyItem(CellmlElementType type, VariablePtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement(CellmlElementType type, VariablePtr &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
-    AnyItem(CellmlElementType type, VariablePairPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement(CellmlElementType type, VariablePairPtr &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
-    AnyItem(CellmlElementType type, UnitsPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement(CellmlElementType type, UnitsPtr &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
-    AnyItem(CellmlElementType type, UnitPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement(CellmlElementType type, UnitPtr &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
-    AnyItem(CellmlElementType type, ImportSourcePtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement(CellmlElementType type, ImportSourcePtr &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
-    AnyItem(CellmlElementType type, ResetPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create(type, item));
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement(CellmlElementType type, ResetPtr &item) {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
 
-    AnyItem() {
-        auto ptr = new std::shared_ptr<libcellml::AnyItem>(libcellml::AnyItem::create());
-        return reinterpret_cast<libcellml::AnyItem *>(ptr);
+    AnyCellmlElement() {
+        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create());
+        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
 
     libcellml::ComponentPtr _component() {
@@ -325,19 +325,19 @@ Provides support for shared pointers declared in types.h.
     def item(self):
       """Get the stored item."""
       type_dict = {
-        CellmlElementType.COMPONENT: _types.AnyItem__component,
-        CellmlElementType.COMPONENT_REF: _types.AnyItem__componentRef,
-        CellmlElementType.CONNECTION: _types.AnyItem__connection,
-        CellmlElementType.ENCAPSULATION: _types.AnyItem__encapsulation,
-        CellmlElementType.IMPORT: _types.AnyItem__importSource,
-        CellmlElementType.MAP_VARIABLES: _types.AnyItem__mapVariables,
-        CellmlElementType.MODEL: _types.AnyItem__model,
-        CellmlElementType.RESET: _types.AnyItem__reset,
-        CellmlElementType.RESET_VALUE: _types.AnyItem__resetValue,
-        CellmlElementType.TEST_VALUE: _types.AnyItem__testValue,
-        CellmlElementType.UNIT: _types.AnyItem__unit,
-        CellmlElementType.UNITS: _types.AnyItem__units,
-        CellmlElementType.VARIABLE: _types.AnyItem__variable,
+        CellmlElementType.COMPONENT: _types.AnyCellmlElement__component,
+        CellmlElementType.COMPONENT_REF: _types.AnyCellmlElement__componentRef,
+        CellmlElementType.CONNECTION: _types.AnyCellmlElement__connection,
+        CellmlElementType.ENCAPSULATION: _types.AnyCellmlElement__encapsulation,
+        CellmlElementType.IMPORT: _types.AnyCellmlElement__importSource,
+        CellmlElementType.MAP_VARIABLES: _types.AnyCellmlElement__mapVariables,
+        CellmlElementType.MODEL: _types.AnyCellmlElement__model,
+        CellmlElementType.RESET: _types.AnyCellmlElement__reset,
+        CellmlElementType.RESET_VALUE: _types.AnyCellmlElement__resetValue,
+        CellmlElementType.TEST_VALUE: _types.AnyCellmlElement__testValue,
+        CellmlElementType.UNIT: _types.AnyCellmlElement__unit,
+        CellmlElementType.UNITS: _types.AnyCellmlElement__units,
+        CellmlElementType.VARIABLE: _types.AnyCellmlElement__variable,
       }
 
       t = self.type()
@@ -350,6 +350,6 @@ Provides support for shared pointers declared in types.h.
 
 %ignore libcellml::Unit::create;
 %ignore libcellml::VariablePair::create;
-%ignore libcellml::AnyItem::create;
+%ignore libcellml::AnyCellmlElement::create;
 
 %include "libcellml/types.h"

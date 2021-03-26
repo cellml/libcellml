@@ -951,19 +951,19 @@ TEST(Annotator, automaticIdAllItemsNoId)
 
     auto unit = libcellml::Unit::create(model->units(1), 0);
 
-    auto itemComponent = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, model->component("component1"));
-    auto itemComponentRef = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
-    auto itemConnection = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, p1);
-    auto itemEncapsulation = libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, model);
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
-    auto itemMapVariables = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, p2);
-    auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, model);
-    auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
-    auto itemResetValue = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET_VALUE, model->component("component2")->reset(0));
-    auto itemTestValue = libcellml::AnyItem::create(libcellml::CellmlElementType::TEST_VALUE, model->component("component2")->reset(0));
-    auto itemUnit = libcellml::AnyItem::create(libcellml::CellmlElementType::UNIT, unit);
-    auto itemUnits = libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, model->units(1));
-    auto itemVariable = libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, model->component("component2")->variable(0));
+    auto itemComponent = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, model->component("component1"));
+    auto itemComponentRef = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
+    auto itemConnection = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, p1);
+    auto itemEncapsulation = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::ENCAPSULATION, model);
+    auto itemImportSource = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
+    auto itemMapVariables = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, p2);
+    auto itemModel = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, model);
+    auto itemReset = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
+    auto itemResetValue = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET_VALUE, model->component("component2")->reset(0));
+    auto itemTestValue = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::TEST_VALUE, model->component("component2")->reset(0));
+    auto itemUnit = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNIT, unit);
+    auto itemUnits = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, model->units(1));
+    auto itemVariable = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, model->component("component2")->variable(0));
 
     annotator->setModel(model);
     EXPECT_TRUE(annotator->hasModel());
@@ -1000,8 +1000,8 @@ TEST(Annotator, automaticIdAllItemsNoId)
     // Doing the extra set of connections and mappings.
     auto r1 = libcellml::VariablePair::create(model->component("component2")->variable("variable1"), model->component("component4")->variable("variable1"));
     auto r2 = libcellml::VariablePair::create(model->component("component2")->variable("variable2"), model->component("component4")->variable("variable2"));
-    auto itemConnection2 = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, r1);
-    auto itemMapVariables2 = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, r2);
+    auto itemConnection2 = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, r1);
+    auto itemMapVariables2 = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, r2);
     EXPECT_EQ("b4da62", annotator->assignId(itemConnection2));
     EXPECT_EQ("b4da63", annotator->assignId(itemMapVariables2));
 }
@@ -1010,7 +1010,7 @@ TEST(Annotator, automaticIdResetItemBadInput)
 {
     auto annotator = libcellml::Annotator::create();
 
-    auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, std::any(nullptr));
+    auto itemReset = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET, std::any(nullptr));
     EXPECT_EQ("", annotator->assignId(itemReset));
 }
 
@@ -1019,7 +1019,7 @@ TEST(Annotator, assignModelIdBadInput)
     auto annotator = libcellml::Annotator::create();
     EXPECT_EQ("", annotator->assignModelId(nullptr));
 
-    auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, libcellml::Variable::create());
+    auto itemModel = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, libcellml::Variable::create());
     EXPECT_EQ("", annotator->assignId(itemModel));
 }
 
@@ -1048,7 +1048,7 @@ TEST(Annotator, assignUnitIdBadInput)
     EXPECT_EQ("", annotator->assignUnitId(libcellml::Unit::create(nullptr, 0)));
     EXPECT_EQ("", annotator->assignId(libcellml::Unit::create(nullptr, std::numeric_limits<size_t>::max())));
 
-    auto itemUnit = libcellml::AnyItem::create(libcellml::CellmlElementType::UNIT, libcellml::Variable::create());
+    auto itemUnit = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNIT, libcellml::Variable::create());
     EXPECT_EQ("", annotator->assignId(itemUnit));
 }
 
@@ -1065,7 +1065,7 @@ TEST(Annotator, assignImportSourceIdBadInput)
     auto annotator = libcellml::Annotator::create();
     EXPECT_EQ("", annotator->assignImportSourceId(nullptr));
 
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, libcellml::Variable::create());
+    auto itemImportSource = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, libcellml::Variable::create());
     EXPECT_EQ("", annotator->assignId(itemImportSource));
 }
 
@@ -1074,7 +1074,7 @@ TEST(Annotator, assignVariablePairIdBadInput)
     auto annotator = libcellml::Annotator::create();
     EXPECT_EQ("", annotator->assignConnectionId(libcellml::VariablePair::create(nullptr, nullptr)));
 
-    auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, libcellml::Variable::create());
+    auto itemModel = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, libcellml::Variable::create());
     EXPECT_EQ("", annotator->assignId(itemModel));
 }
 
@@ -1235,19 +1235,19 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
         model->component("component2")->variable("variable2")->equivalentVariable(0));
     auto unit = libcellml::Unit::create(model->units(1), 0);
 
-    auto itemComponent = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, model->component(0));
-    auto itemComponentRef = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
-    auto itemConnection = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, connection);
-    auto itemEncapsulation = libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, model);
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
-    auto itemMapVariables = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
-    auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, model);
-    auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
-    auto itemResetValue = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET_VALUE, model->component("component2")->reset(0));
-    auto itemTestValue = libcellml::AnyItem::create(libcellml::CellmlElementType::TEST_VALUE, model->component("component2")->reset(0));
-    auto itemUnit = libcellml::AnyItem::create(libcellml::CellmlElementType::UNIT, unit);
-    auto itemUnits = libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, model->units(1));
-    auto itemVariable = libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, model->component("component2")->variable(0));
+    auto itemComponent = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, model->component(0));
+    auto itemComponentRef = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
+    auto itemConnection = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, connection);
+    auto itemEncapsulation = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::ENCAPSULATION, model);
+    auto itemImportSource = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
+    auto itemMapVariables = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
+    auto itemModel = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, model);
+    auto itemReset = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
+    auto itemResetValue = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET_VALUE, model->component("component2")->reset(0));
+    auto itemTestValue = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::TEST_VALUE, model->component("component2")->reset(0));
+    auto itemUnit = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNIT, unit);
+    auto itemUnits = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, model->units(1));
+    auto itemVariable = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, model->component("component2")->variable(0));
 
     annotator->setModel(model);
 
@@ -1298,8 +1298,8 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
         model->component("component4")->variable("variable2")->equivalentVariable(0),
         model->component("component4")->variable("variable2"));
 
-    auto itemConnection2 = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, connection2);
-    auto itemMapVariables2 = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping2);
+    auto itemConnection2 = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, connection2);
+    auto itemMapVariables2 = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping2);
 
     EXPECT_EQ("b4da62", annotator->assignId(itemConnection2));
     EXPECT_EQ("b4da62", libcellml::Variable::equivalenceConnectionId(connection2->variable1(), connection2->variable2()));
@@ -1322,19 +1322,19 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
         model->component("component2")->variable(1)->equivalentVariable(0));
     auto unit = libcellml::Unit::create(model->units(1), 0);
 
-    auto itemComponent = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, model->component(0));
-    auto itemComponentRef = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
-    auto itemConnection = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, connection);
-    auto itemEncapsulation = libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, model);
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
-    auto itemMapVariables = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
-    auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, model);
-    auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
-    auto itemResetValue = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET_VALUE, model->component("component2")->reset(0));
-    auto itemTestValue = libcellml::AnyItem::create(libcellml::CellmlElementType::TEST_VALUE, model->component("component2")->reset(0));
-    auto itemUnit = libcellml::AnyItem::create(libcellml::CellmlElementType::UNIT, unit);
-    auto itemUnits = libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, model->units(1));
-    auto itemVariable = libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, model->component("component2")->variable(0));
+    auto itemComponent = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, model->component(0));
+    auto itemComponentRef = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
+    auto itemConnection = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, connection);
+    auto itemEncapsulation = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::ENCAPSULATION, model);
+    auto itemImportSource = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
+    auto itemMapVariables = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
+    auto itemModel = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, model);
+    auto itemReset = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
+    auto itemResetValue = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET_VALUE, model->component("component2")->reset(0));
+    auto itemTestValue = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::TEST_VALUE, model->component("component2")->reset(0));
+    auto itemUnit = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNIT, unit);
+    auto itemUnits = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, model->units(1));
+    auto itemVariable = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, model->component("component2")->variable(0));
 
     annotator->setModel(model);
 
@@ -1379,19 +1379,19 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
         model->component("component2")->variable(1)->equivalentVariable(0));
     auto unit = libcellml::Unit::create(model->units(1), 0);
 
-    auto itemComponent = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, model->component(0));
-    auto itemComponentRef = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
-    auto itemConnection = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, connection);
-    auto itemEncapsulation = libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, model);
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
-    auto itemMapVariables = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
-    auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, model);
-    auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
-    auto itemResetValue = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET_VALUE, model->component("component2")->reset(0));
-    auto itemTestValue = libcellml::AnyItem::create(libcellml::CellmlElementType::TEST_VALUE, model->component("component2")->reset(0));
-    auto itemUnit = libcellml::AnyItem::create(libcellml::CellmlElementType::UNIT, unit);
-    auto itemUnits = libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, model->units(1));
-    auto itemVariable = libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, model->component("component2")->variable(0));
+    auto itemComponent = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, model->component(0));
+    auto itemComponentRef = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
+    auto itemConnection = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, connection);
+    auto itemEncapsulation = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::ENCAPSULATION, model);
+    auto itemImportSource = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
+    auto itemMapVariables = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
+    auto itemModel = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, model);
+    auto itemReset = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
+    auto itemResetValue = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET_VALUE, model->component("component2")->reset(0));
+    auto itemTestValue = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::TEST_VALUE, model->component("component2")->reset(0));
+    auto itemUnit = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNIT, unit);
+    auto itemUnits = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, model->units(1));
+    auto itemVariable = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, model->component("component2")->variable(0));
 
     // Make a different model and build the annotator around that.
     auto model2 = libcellml::Model::create();
@@ -1425,7 +1425,7 @@ TEST(Annotator, issueIdWithModelThatWasDeleted)
     annotator->setModel(model);
 
     auto component = model->component(0);
-    auto itemComponent = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, model->component(0));
+    auto itemComponent = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, model->component(0));
     EXPECT_EQ("component_1", component->id());
 
     EXPECT_TRUE(annotator->hasModel());
@@ -1685,42 +1685,42 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
 
     std::map<std::string, std::vector<libcellml::AnyItemPtr>> expectedItems = {
         {"duplicateId1", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units2"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->component("component1")->importSource())),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c4v1, c2v1))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::TEST_VALUE, std::any(model->component("component2")->reset(0))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, std::any(model->component("component2")->component("component3"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(model->component("component2")->component("component3")->variable("variable2"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units2"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, std::any(model->component("component1")->importSource())),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c4v1, c2v1))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::TEST_VALUE, std::any(model->component("component2")->reset(0))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT_REF, std::any(model->component("component2")->component("component3"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(model->component("component2")->component("component3")->variable("variable2"))),
                          }},
         {"duplicateId2", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, std::any(model)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units1"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("blob"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c4v2, c2v2))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v2)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, std::any(model->component("component2"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, std::any(model->component("component2")->reset(0))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c3v1)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, std::any(model)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units1"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("blob"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c4v2, c2v2))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v2)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT_REF, std::any(model->component("component2"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET, std::any(model->component("component2")->reset(0))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c3v1)),
                          }},
         {"duplicateId3", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->units("units1")->importSource())),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units3"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v1)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v2)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v2, c4v2))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2")->component("component3"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, std::any(model)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, std::any(model->units("units1")->importSource())),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units3"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v1)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v2)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v2, c4v2))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2")->component("component3"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::ENCAPSULATION, std::any(model)),
                          }},
         {"duplicateId4", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNIT, std::any(libcellml::Unit::create(model->units("units2"), 0))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component1"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component4"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v1)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v2, c4v2))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::RESET_VALUE, std::any(model->component("component2")->reset(0))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNIT, std::any(libcellml::Unit::create(model->units("units2"), 0))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component1"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component4"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v1)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v2, c4v2))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET_VALUE, std::any(model->component("component2")->reset(0))),
                          }},
 
     };
@@ -1823,42 +1823,42 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
 
     std::map<std::string, std::vector<libcellml::AnyItemPtr>> expectedItems = {
         {"duplicateId1", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units2"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->component("component1")->importSource())),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c4v1, c2v1))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::TEST_VALUE, std::any(model->component("component2")->reset(0))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, std::any(model->component("component2")->component("component3"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(model->component("component2")->component("component3")->variable("variable2"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units2"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, std::any(model->component("component1")->importSource())),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c4v1, c2v1))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::TEST_VALUE, std::any(model->component("component2")->reset(0))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT_REF, std::any(model->component("component2")->component("component3"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(model->component("component2")->component("component3")->variable("variable2"))),
                          }},
         {"duplicateId2", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, std::any(model)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units1"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("blob"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c4v2, c2v2))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v2)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, std::any(model->component("component2"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, std::any(model->component("component2")->reset(0))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c3v1)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, std::any(model)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units1"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("blob"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c4v2, c2v2))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v2)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT_REF, std::any(model->component("component2"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET, std::any(model->component("component2")->reset(0))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c3v1)),
                          }},
         {"duplicateId3", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->units("units1")->importSource())),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units3"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v1)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v2)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v2, c4v2))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2")->component("component3"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, std::any(model)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, std::any(model->units("units1")->importSource())),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units3"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v1)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v2)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v2, c4v2))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2")->component("component3"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::ENCAPSULATION, std::any(model)),
                          }},
         {"duplicateId4", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::UNIT, std::any(libcellml::Unit::create(model->units("units2"), 0))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component1"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component4"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v1)),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v2, c4v2))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::RESET_VALUE, std::any(model->component("component2")->reset(0))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNIT, std::any(libcellml::Unit::create(model->units("units2"), 0))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component1"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component4"))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v1)),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c2v2, c4v2))),
+                             libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::RESET_VALUE, std::any(model->component("component2")->reset(0))),
                          }},
 
     };

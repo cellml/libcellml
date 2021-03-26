@@ -144,7 +144,7 @@
 # libCellML generated wrapper code starts here.
 
 from libcellml.enums import CellmlElementType
-from libcellml.types import AnyItem
+from libcellml.types import AnyCellmlElement
 %}
 
 %template() std::vector<std::string>;
@@ -252,7 +252,7 @@ from libcellml.types import AnyItem
     def item(self, id, index=-1):
         r"""Retrieve a unique item with the given identifier."""
 
-        from libcellml.types import AnyItem
+        from libcellml.types import AnyCellmlElement
 
         type_dict = {
             CellmlElementType.COMPONENT: _annotator.Annotator_component,
@@ -278,7 +278,7 @@ from libcellml.types import AnyItem
                 issue.setDescription("The identifier '" + id + "' occurs " + str(num) + " times in the model so a unique item cannot be located.")
                 issue.setLevel(Issue.Level.WARNING)
                 self.addIssue(issue)
-                return AnyItem()
+                return AnyCellmlElement()
 
             if num == 0:
                 from libcellml import Issue
@@ -286,15 +286,15 @@ from libcellml.types import AnyItem
                 issue.setDescription("Could not find an item with an identifier of '" + id + "' in the model.")
                 issue.setLevel(Issue.Level.WARNING)
                 self.addIssue(issue)
-                return AnyItem()
+                return AnyCellmlElement()
 
         if index == -1:
             index = 0
 
         type = _annotator.Annotator__itemCellmlElement(self, id, index)
         if type in type_dict:
-            return AnyItem(type, type_dict[type](self, id, index))
-        return AnyItem(CellmlElementType.UNDEFINED, None)
+            return AnyCellmlElement(type, type_dict[type](self, id, index))
+        return AnyCellmlElement(CellmlElementType.UNDEFINED, None)
 
     def items(self, id):
         r"""Returns everything with the given identifier as as list of (type, item) tuples."""
