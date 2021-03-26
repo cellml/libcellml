@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %include <std_shared_ptr.i>
+%include <std_vector.i>
 
 %import "componententity.i"
 %import "createconstructor.i"
@@ -69,6 +70,9 @@ Only the first matching Units is removed and returned.";
 %feature("docstring") libcellml::Model::clean
 "Remove any empty units and any empty components from the model."
 
+%feature("docstring") libcellml::Model::importRequirements
+"Return all URLs used by imports in the model."
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Model {
@@ -98,6 +102,8 @@ Only the first matching Units is removed and returned.";
 %pythoncode %{
 # libCellML generated wrapper code starts here.
 %}
+
+%template() std::vector<std::string>;
 
 %shared_ptr(libcellml::Model);
 %create_constructor(Model);
