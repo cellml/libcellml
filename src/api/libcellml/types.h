@@ -66,17 +66,17 @@ using ValidatorPtr = std::shared_ptr<Validator>; /**< Type definition for shared
 class Component; /**< Forward declaration of Component class. */
 using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
-using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Type definition for shared component entity const pointer. */
 using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
 class Entity; /**< Forward declaration of Entity class. */
 using EntityPtr = std::shared_ptr<Entity>; /**< Type definition for shared entity pointer. */
-using EntityConstPtr = std::shared_ptr<const Entity>; /**< Type definition for shared entity const pointer. */
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
 using ImportedEntityPtr = std::shared_ptr<ImportedEntity>; /**< Type definition for shared imported entity pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
 using ImportSourcePtr = std::shared_ptr<ImportSource>; /**< Type definition for shared import source pointer. */
 class Model; /**< Forward declaration of Model class. */
 using ModelPtr = std::shared_ptr<Model>; /**< Type definition for shared model pointer. */
+class ParentedEntity; /**< Forward declaration of parented entity class. */
+using ParentedEntityPtr = std::shared_ptr<ParentedEntity>; /**< Type definition for shared parented entity pointer. */
 class Reset; /**< Forward declaration of Reset class. */
 using ResetPtr = std::shared_ptr<Reset>; /**< Type definition for shared reset pointer. */
 class Unit; /**< Forward declaration of Unit class. */
@@ -98,7 +98,7 @@ class LIBCELLML_EXPORT Unit
 {
 public:
     ~Unit(); /**< Destructor. */
-    Unit() = delete; /**< Constructor. */
+    Unit() = delete; /**< Constructor, @private. */
     Unit(const Unit &rhs) = delete; /**< Copy constructor. */
     Unit(Unit &&rhs) noexcept = delete; /**< Move constructor. */
     Unit &operator=(Unit rhs) = delete; /**< Assignment operator. */
@@ -146,8 +146,8 @@ public:
 private:
     explicit Unit(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
 
-    struct UnitImpl; /**< Forward declaration for pImpl idiom. */
-    UnitImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct UnitImpl; /**< Forward declaration for pImpl idiom, @private. */
+    UnitImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 /**
@@ -162,7 +162,7 @@ class LIBCELLML_EXPORT VariablePair
 {
 public:
     ~VariablePair(); /**< Destructor. */
-    VariablePair() = delete; /**< Constructor. */
+    VariablePair() = delete; /**< Constructor, @private. */
     VariablePair(const VariablePair &rhs) = delete; /**< Copy constructor. */
     VariablePair(VariablePair &&rhs) noexcept = delete; /**< Move constructor. */
     VariablePair &operator=(VariablePair rhs) = delete; /**< Assignment operator. */
@@ -210,8 +210,8 @@ public:
 private:
     explicit VariablePair(const VariablePtr &variable1, const VariablePtr &variable2); /**< Constructor with two variables as parameters. */
 
-    struct VariablePairImpl; /**< Forward declaration for pImpl idiom. */
-    VariablePairImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct VariablePairImpl; /**< Forward declaration for pImpl idiom, @private. */
+    VariablePairImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 /**

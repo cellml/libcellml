@@ -73,7 +73,6 @@ public:
      * and the previous model's units list is updated.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p units pointer already exists in this model; or
      *  - The @p units is @c nullptr.
      *
      * @param units The units to add.
@@ -345,94 +344,26 @@ public:
     bool fixVariableInterfaces();
 
     /**
-     * @brief Add an import source item to this model.
+     * @brief Remove any empty components and units from the model.
      *
-     * Add import source by reference to the model. If the import
-     * source item was previously in a different model, it is moved
-     * to this one, and the previous model's import source list is updated.
-     *
-     * The function will return @c false and no action is taken if:
-     *  - The @p importSrc pointer already exists in this model; or
-     *  - The @p importSrc is @c nullptr.
-     *
-     * @param importSrc The import source to add.
-     *
-     * @return @c true if the import source item is added or @c false otherwise.
+     *  Remove any empty components and units fom this model.
+     *  In this context, "empty" means:
+     *   - components with no name, id, resets, variables, maths, or non-empty child components; and
+     *   - units which have no name, id, or child units.
+     *  For components, this is applied recursively from the leaves of the encapsulation hierarchy.
      */
-    bool addImportSource(const ImportSourcePtr &importSrc);
-
-    /**
-     * @brief Get the number of import source items in the model.
-     *
-     * Returns the number of import source items the model contains.
-     *
-     * @return The number of import source items.
-     */
-    size_t importSourceCount() const;
-
-    /**
-     * @brief Get the import source item at the given @p index.
-     *
-     * Returns a reference to an import source at the given @p index.  If the @p index
-     * is not valid a @c nullptr is returned, the range of valid values for the
-     * index is [0, \#importSources).
-     *
-     * @param index The index of the import source to return.
-     *
-     * @return A reference to the import source at the given @p index on success, @c nullptr otherwise.
-     */
-    ImportSourcePtr importSource(size_t index) const;
-
-    /**
-     * @brief Remove the import source at the given @p index.
-     *
-     * Remove the import source from this model at the given @p index.
-     * @p index must be in the range [0, \#importSources).
-     *
-     * @param index The index of the import source to remove.
-     *
-     * @return @c true if the import source was removed, @c false otherwise.
-     */
-    bool removeImportSource(size_t index);
-
-    /**
-     * @overload
-     *
-     * @brief Remove the import source at the given reference.
-     *
-     * @param importSrc The pointer to the import source to remove.
-     *
-     * @return @c true if the import source was removed, @c false otherwise.
-     */
-    bool removeImportSource(const ImportSourcePtr &importSrc);
-
-    /**
-     * @brief Remove all import sources stored in this model.
-     *
-     * Clears all import sources that have been added to this model.
-     */
-    bool removeAllImportSources();
-
-    /**
-     * @brief Tests to see if the import source is within this model.
-     *
-     * Tests to see if the given import source is contained within this model.
-     * Returns @c true if the import source is in the model and @c false otherwise.
-     *
-     * @param importSrc The import source to test for existence in this model.
-     *
-     * @return @c true if the import source is in the model and @c false otherwise.
-     */
-    bool hasImportSource(const ImportSourcePtr &importSrc) const;
+    void clean();
 
 private:
-    Model(); /**< Constructor. */
-    explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
+    Model(); /**< Constructor, @private. */
+    explicit Model(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
-    bool doAddComponent(const ComponentPtr &component) override;
+    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual implementation method for addComponent, @private. */
 
-    struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    ModelImpl *mPimpl; /**< Private member to implementation pointer. */
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
+    struct ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

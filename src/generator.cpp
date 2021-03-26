@@ -24,11 +24,11 @@ limitations under the License.
 #include "libcellml/analysermodel.h"
 #include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
-#include "libcellml/generatorprofile.h"
 #include "libcellml/units.h"
 #include "libcellml/version.h"
 
 #include "analyserequationast_p.h"
+#include "generator_p.h"
 #include "utilities.h"
 
 #ifdef NAN
@@ -36,118 +36,6 @@ limitations under the License.
 #endif
 
 namespace libcellml {
-
-using AnalyserModelWeakPtr = std::weak_ptr<AnalyserModel>; /**< Type definition for weak analyser model pointer. */
-using GeneratorProfileWeakPtr = std::weak_ptr<GeneratorProfile>; /**< Type definition for weak generator profile pointer. */
-
-/**
- * @brief The Generator::GeneratorImpl struct.
- *
- * The private implementation for the Generator class.
- */
-struct Generator::GeneratorImpl
-{
-    Generator *mGenerator = nullptr;
-
-    AnalyserModelWeakPtr mModel;
-    AnalyserModelPtr mLockedModel;
-
-    std::string mCode;
-
-    GeneratorProfilePtr mOwnedProfile = libcellml::GeneratorProfile::create();
-    GeneratorProfileWeakPtr mProfile;
-    GeneratorProfilePtr mLockedProfile;
-
-    bool retrieveLockedModelAndProfile();
-    void resetLockedModelAndProfile();
-
-    AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
-
-    double scalingFactor(const VariablePtr &variable) const;
-
-    bool isRelationalOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isAndOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isOrOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isXorOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isLogicalOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isPlusOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isMinusOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isTimesOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isDivideOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isPowerOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isRootOperator(const AnalyserEquationAstPtr &ast) const;
-    bool isPiecewiseStatement(const AnalyserEquationAstPtr &ast) const;
-
-    void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
-                                 size_t &unitsSize,
-                                 const AnalyserVariablePtr &variable) const;
-
-    bool modifiedProfile() const;
-
-    void addOriginCommentCode();
-
-    void addInterfaceHeaderCode();
-    void addImplementationHeaderCode();
-
-    void addVersionAndLibcellmlVersionCode(bool interface = false);
-
-    void addStateAndVariableCountCode(bool interface = false);
-
-    void addVariableTypeObjectCode();
-
-    std::string generateVariableInfoObjectCode(const std::string &objectString) const;
-
-    void addVariableInfoObjectCode();
-    void addVariableInfoWithTypeObjectCode();
-
-    std::string generateVariableInfoEntryCode(const std::string &name,
-                                              const std::string &units,
-                                              const std::string &component) const;
-
-    void addInterfaceVoiStateAndVariableInfoCode();
-    void addImplementationVoiInfoCode();
-    void addImplementationStateInfoCode();
-    void addImplementationVariableInfoCode();
-
-    void addArithmeticFunctionsCode();
-    void addTrigonometricFunctionsCode();
-
-    void addInterfaceCreateDeleteArrayMethodsCode();
-    void addExternalVariableMethodTypeDefinitionCode();
-    void addImplementationCreateStatesArrayMethodCode();
-    void addImplementationCreateVariablesArrayMethodCode();
-    void addImplementationDeleteArrayMethodCode();
-
-    std::string generateMethodBodyCode(const std::string &methodBody) const;
-
-    std::string generateDoubleCode(const std::string &value) const;
-    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
-    std::string generateVariableNameCode(const VariablePtr &variable,
-                                         const AnalyserEquationAstPtr &ast = nullptr) const;
-
-    std::string generateOperatorCode(const std::string &op,
-                                     const AnalyserEquationAstPtr &ast) const;
-    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const;
-    std::string generateOneParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast) const;
-    std::string generateTwoParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast) const;
-    std::string generatePiecewiseIfCode(const std::string &condition,
-                                        const std::string &value) const;
-    std::string generatePiecewiseElseCode(const std::string &value) const;
-    std::string generateCode(const AnalyserEquationAstPtr &ast) const;
-
-    std::string generateInitializationCode(const AnalyserVariablePtr &variable) const;
-    std::string generateEquationCode(const AnalyserEquationPtr &equation,
-                                     std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool onlyStateRateBasedEquations = false) const;
-
-    void addInterfaceComputeModelMethodsCode();
-    void addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
-    void addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
-};
 
 bool Generator::GeneratorImpl::retrieveLockedModelAndProfile()
 {
@@ -553,21 +441,9 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     // Compute and check the hash of our profile contents.
 
-    auto res = false;
-    auto profileContentsSha1 = sha1(profileContents);
-
-    switch (mLockedProfile->profile()) {
-    case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "60d16843c0cb0180f147a4a562aa7a434634e929";
-
-        break;
-    case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "1532797cc47546dd18bbe4d30fd69a046cf011ea";
-
-        break;
-    }
-
-    return res;
+    return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
+               sha1(profileContents) != "55939677baad00995bc0f3cc43ebbb34fe4aebfa" :
+               sha1(profileContents) != "87ece1d387a8b01130bee2bbd57949754e17cc5e";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -578,21 +454,13 @@ void Generator::GeneratorImpl::addOriginCommentCode()
                                              "a modified " :
                                              "the ";
 
-        switch (mLockedProfile->profile()) {
-        case GeneratorProfile::Profile::C:
-            profileInformation += "C";
-
-            break;
-        case GeneratorProfile::Profile::PYTHON:
-            profileInformation += "Python";
-
-            break;
-        }
-
+        profileInformation += (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
+                                  "C" :
+                                  "Python";
         profileInformation += " profile of";
 
         mCode += replace(mLockedProfile->commentString(),
-                         "<CODE>", replace(replace(mLockedProfile->originCommentString(), "<PROFILE_INFORMATION>", profileInformation), "<LIBCELLML_VERSION>", versionString()));
+                         "[CODE]", replace(replace(mLockedProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
     }
 }
 
@@ -609,13 +477,19 @@ void Generator::GeneratorImpl::addInterfaceHeaderCode()
 
 void Generator::GeneratorImpl::addImplementationHeaderCode()
 {
-    if (!mLockedProfile->implementationHeaderString().empty()) {
+    bool hasInterfaceFileName = mLockedProfile->implementationHeaderString().empty() ?
+                                    false :
+                                    (mLockedProfile->implementationHeaderString().find("[INTERFACE_FILE_NAME]") != std::string::npos);
+
+    if (!mLockedProfile->implementationHeaderString().empty()
+        && ((hasInterfaceFileName && !mLockedProfile->interfaceFileNameString().empty())
+            || !hasInterfaceFileName)) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
 
         mCode += replace(mLockedProfile->implementationHeaderString(),
-                         "<INTERFACE_FILE_NAME>", mLockedProfile->interfaceFileNameString());
+                         "[INTERFACE_FILE_NAME]", mLockedProfile->interfaceFileNameString());
     }
 }
 
@@ -643,7 +517,7 @@ void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
         versionAndLibcellmlCode += interface ?
                                        mLockedProfile->interfaceLibcellmlVersionString() :
                                        replace(mLockedProfile->implementationLibcellmlVersionString(),
-                                               "<LIBCELLML_VERSION>", versionString());
+                                               "[LIBCELLML_VERSION]", versionString());
     }
 
     if (!versionAndLibcellmlCode.empty()) {
@@ -662,7 +536,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         stateAndVariableCountCode += interface ?
                                          mLockedProfile->interfaceStateCountString() :
                                          replace(mLockedProfile->implementationStateCountString(),
-                                                 "<STATE_COUNT>", std::to_string(mLockedModel->stateCount()));
+                                                 "[STATE_COUNT]", std::to_string(mLockedModel->stateCount()));
     }
 
     if ((interface && !mLockedProfile->interfaceVariableCountString().empty())
@@ -670,7 +544,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
         stateAndVariableCountCode += interface ?
                                          mLockedProfile->interfaceVariableCountString() :
                                          replace(mLockedProfile->implementationVariableCountString(),
-                                                 "<VARIABLE_COUNT>", std::to_string(mLockedModel->variableCount()));
+                                                 "[VARIABLE_COUNT]", std::to_string(mLockedModel->variableCount()));
     }
 
     if (!stateAndVariableCountCode.empty()) {
@@ -690,7 +564,7 @@ void Generator::GeneratorImpl::addVariableTypeObjectCode()
         }
 
         mCode += replace(mLockedProfile->variableTypeObjectString(),
-                         "<OPTIONAL_TYPE>", mLockedModel->hasExternalVariables() ? mLockedProfile->variableTypeObjectExternalTypeString() : "");
+                         "[OPTIONAL_TYPE]", mLockedModel->hasExternalVariables() ? mLockedProfile->variableTypeObjectExternalTypeString() : "");
     }
 }
 
@@ -713,9 +587,9 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     }
 
     return replace(replace(replace(objectString,
-                                   "<COMPONENT_SIZE>", std::to_string(componentSize)),
-                           "<NAME_SIZE>", std::to_string(nameSize)),
-                   "<UNITS_SIZE>", std::to_string(unitsSize));
+                                   "[COMPONENT_SIZE]", std::to_string(componentSize)),
+                           "[NAME_SIZE]", std::to_string(nameSize)),
+                   "[UNITS_SIZE]", std::to_string(unitsSize));
 }
 
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
@@ -745,9 +619,9 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                                                                     const std::string &component) const
 {
     return replace(replace(replace(mLockedProfile->variableInfoEntryString(),
-                                   "<NAME>", name),
-                           "<UNITS>", units),
-                   "<COMPONENT>", component);
+                                   "[NAME]", name),
+                           "[UNITS]", units),
+                   "[COMPONENT]", component);
 }
 
 void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
@@ -786,7 +660,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode()
         auto component = (mLockedModel->voi() != nullptr) ? owningComponent(mLockedModel->voi()->variable())->name() : "";
 
         mCode += replace(mLockedProfile->implementationVoiInfoString(),
-                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
+                         "[CODE]", generateVariableInfoEntryCode(name, units, component));
     }
 }
 
@@ -817,7 +691,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
         }
 
         mCode += replace(mLockedProfile->implementationStateInfoString(),
-                         "<CODE>", infoElementsCode);
+                         "[CODE]", infoElementsCode);
     }
 }
 
@@ -855,10 +729,10 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 
             infoElementsCode += mLockedProfile->indentString()
                                 + replace(replace(replace(replace(mLockedProfile->variableInfoWithTypeEntryString(),
-                                                                  "<NAME>", variable->variable()->name()),
-                                                          "<UNITS>", variable->variable()->units()->name()),
-                                                  "<COMPONENT>", owningComponent(variable->variable())->name()),
-                                          "<TYPE>", variableType);
+                                                                  "[NAME]", variable->variable()->name()),
+                                                          "[UNITS]", variable->variable()->units()->name()),
+                                                  "[COMPONENT]", owningComponent(variable->variable())->name()),
+                                          "[TYPE]", variableType);
         }
 
         if (!infoElementsCode.empty()) {
@@ -866,7 +740,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
         }
 
         mCode += replace(mLockedProfile->implementationVariableInfoString(),
-                         "<CODE>", infoElementsCode);
+                         "[CODE]", infoElementsCode);
     }
 }
 
@@ -1207,6 +1081,15 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
                                                                const AnalyserEquationAstPtr &ast) const
 {
+    // Generate some code for a variable name, but only if we have a model. If
+    // we don't have a model, it means that we are using the generator from the
+    // analyser, in which case we just want to return the original name of the
+    // variable.
+
+    if (mLockedModel == nullptr) {
+        return variable->name();
+    }
+
     auto analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
 
     if (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
@@ -1235,8 +1118,10 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 {
     // Generate the code for the left and right branches of the given AST.
 
-    auto leftChild = generateCode(ast->leftChild());
-    auto rightChild = generateCode(ast->rightChild());
+    auto astLeftChild = ast->leftChild();
+    auto astRightChild = ast->rightChild();
+    auto astLeftChildCode = generateCode(astLeftChild);
+    auto astRightChildCode = generateCode(astRightChild);
 
     // Determine whether parentheses should be added around the left and/or
     // right piece of code, and this based on the precedence of the operators
@@ -1255,78 +1140,78 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     // 11. PIECEWISE (as an operator)                            [Right to left]
 
     if (isPlusOperator(ast)) {
-        if (isRelationalOperator(ast->leftChild())
-            || isLogicalOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
         }
 
-        if (isRelationalOperator(ast->rightChild())
-            || isLogicalOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
         }
     } else if (isMinusOperator(ast)) {
-        if (isRelationalOperator(ast->leftChild())
-            || isLogicalOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
         }
 
-        if (isRelationalOperator(ast->rightChild())
-            || isLogicalOperator(ast->rightChild())
-            || isMinusOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isPlusOperator(ast->rightChild())) {
-            if (ast->rightChild()->rightChild() != nullptr) {
-                rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isMinusOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
             }
         }
     } else if (isTimesOperator(ast)) {
-        if (isRelationalOperator(ast->leftChild())
-            || isLogicalOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isPlusOperator(ast->leftChild())
-                   || isMinusOperator(ast->leftChild())) {
-            if (ast->leftChild()->rightChild() != nullptr) {
-                leftChild = "(" + leftChild + ")";
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
             }
         }
 
-        if (isRelationalOperator(ast->rightChild())
-            || isLogicalOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isPlusOperator(ast->rightChild())
-                   || isMinusOperator(ast->rightChild())) {
-            if (ast->rightChild()->rightChild() != nullptr) {
-                rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
             }
         }
     } else if (isDivideOperator(ast)) {
-        if (isRelationalOperator(ast->leftChild())
-            || isLogicalOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isPlusOperator(ast->leftChild())
-                   || isMinusOperator(ast->leftChild())) {
-            if (ast->leftChild()->rightChild() != nullptr) {
-                leftChild = "(" + leftChild + ")";
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
             }
         }
 
-        if (isRelationalOperator(ast->rightChild())
-            || isLogicalOperator(ast->rightChild())
-            || isTimesOperator(ast->rightChild())
-            || isDivideOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isPlusOperator(ast->rightChild())
-                   || isMinusOperator(ast->rightChild())) {
-            if (ast->rightChild()->rightChild() != nullptr) {
-                rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isTimesOperator(astRightChild)
+            || isDivideOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
             }
         }
     } else if (isAndOperator(ast)) {
@@ -1335,36 +1220,36 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       better/clearer to have some around some other operators
         //       (agreed, this is somewhat subjective).
 
-        if (isRelationalOperator(ast->leftChild())
-            || isOrOperator(ast->leftChild())
-            || isXorOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isPlusOperator(ast->leftChild())
-                   || isMinusOperator(ast->leftChild())) {
-            if (ast->leftChild()->rightChild() != nullptr) {
-                leftChild = "(" + leftChild + ")";
+        if (isRelationalOperator(astLeftChild)
+            || isOrOperator(astLeftChild)
+            || isXorOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
             }
-        } else if (isPowerOperator(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isRootOperator(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
+        } else if (isPowerOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isRootOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
         }
 
-        if (isRelationalOperator(ast->rightChild())
-            || isOrOperator(ast->rightChild())
-            || isXorOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isPlusOperator(ast->rightChild())
-                   || isMinusOperator(ast->rightChild())) {
-            if (ast->rightChild()->rightChild() != nullptr) {
-                rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isOrOperator(astRightChild)
+            || isXorOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
             }
-        } else if (isPowerOperator(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isRootOperator(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
+        } else if (isPowerOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isRootOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
         }
     } else if (isOrOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
@@ -1372,36 +1257,36 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       to have some around some other operators (agreed, this is
         //       somewhat subjective).
 
-        if (isRelationalOperator(ast->leftChild())
-            || isAndOperator(ast->leftChild())
-            || isXorOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isPlusOperator(ast->leftChild())
-                   || isMinusOperator(ast->leftChild())) {
-            if (ast->leftChild()->rightChild() != nullptr) {
-                leftChild = "(" + leftChild + ")";
+        if (isRelationalOperator(astLeftChild)
+            || isAndOperator(astLeftChild)
+            || isXorOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
             }
-        } else if (isPowerOperator(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isRootOperator(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
+        } else if (isPowerOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isRootOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
         }
 
-        if (isRelationalOperator(ast->rightChild())
-            || isAndOperator(ast->rightChild())
-            || isXorOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isPlusOperator(ast->rightChild())
-                   || isMinusOperator(ast->rightChild())) {
-            if (ast->rightChild()->rightChild() != nullptr) {
-                rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isAndOperator(astRightChild)
+            || isXorOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
             }
-        } else if (isPowerOperator(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isRootOperator(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
+        } else if (isPowerOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isRootOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
         }
     } else if (isXorOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
@@ -1409,117 +1294,120 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       better/clearer to have some around some other operators
         //       (agreed, this is somewhat subjective).
 
-        if (isRelationalOperator(ast->leftChild())
-            || isAndOperator(ast->leftChild())
-            || isOrOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isPlusOperator(ast->leftChild())
-                   || isMinusOperator(ast->leftChild())) {
-            if (ast->leftChild()->rightChild() != nullptr) {
-                leftChild = "(" + leftChild + ")";
+        if (isRelationalOperator(astLeftChild)
+            || isAndOperator(astLeftChild)
+            || isOrOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
             }
-        } else if (isPowerOperator(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isRootOperator(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
+        } else if (isPowerOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isRootOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
         }
 
-        if (isRelationalOperator(ast->rightChild())
-            || isAndOperator(ast->rightChild())
-            || isOrOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isPlusOperator(ast->rightChild())
-                   || isMinusOperator(ast->rightChild())) {
-            if (ast->rightChild()->rightChild() != nullptr) {
-                rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isAndOperator(astRightChild)
+            || isOrOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
             }
-        } else if (isPowerOperator(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isRootOperator(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
+        } else if (isPowerOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isRootOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
         }
     } else if (isPowerOperator(ast)) {
-        if (isRelationalOperator(ast->leftChild())
-            || isLogicalOperator(ast->leftChild())
-            || isMinusOperator(ast->leftChild())
-            || isTimesOperator(ast->leftChild())
-            || isDivideOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isPlusOperator(ast->leftChild())) {
-            if (ast->leftChild()->rightChild() != nullptr) {
-                leftChild = "(" + leftChild + ")";
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isMinusOperator(astLeftChild)
+            || isTimesOperator(astLeftChild)
+            || isDivideOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
             }
         }
 
-        if (isRelationalOperator(ast->rightChild())
-            || isLogicalOperator(ast->rightChild())
-            || isMinusOperator(ast->leftChild())
-            || isTimesOperator(ast->rightChild())
-            || isDivideOperator(ast->rightChild())
-            || isPowerOperator(ast->rightChild())
-            || isRootOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isPlusOperator(ast->rightChild())) {
-            if (ast->rightChild()->rightChild() != nullptr) {
-                rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isMinusOperator(astLeftChild)
+            || isTimesOperator(astRightChild)
+            || isDivideOperator(astRightChild)
+            || isPowerOperator(astRightChild)
+            || isRootOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
             }
         }
     } else if (isRootOperator(ast)) {
-        if (isRelationalOperator(ast->rightChild())
-            || isLogicalOperator(ast->rightChild())
-            || isMinusOperator(ast->rightChild())
-            || isTimesOperator(ast->rightChild())
-            || isDivideOperator(ast->rightChild())
-            || isPiecewiseStatement(ast->rightChild())) {
-            rightChild = "(" + rightChild + ")";
-        } else if (isPlusOperator(ast->rightChild())) {
-            if (ast->rightChild()->rightChild() != nullptr) {
-                rightChild = "(" + rightChild + ")";
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isMinusOperator(astRightChild)
+            || isTimesOperator(astRightChild)
+            || isDivideOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
             }
         }
 
-        if (isRelationalOperator(ast->leftChild())
-            || isLogicalOperator(ast->leftChild())
-            || isMinusOperator(ast->leftChild())
-            || isTimesOperator(ast->leftChild())
-            || isDivideOperator(ast->leftChild())
-            || isPowerOperator(ast->leftChild())
-            || isRootOperator(ast->leftChild())
-            || isPiecewiseStatement(ast->leftChild())) {
-            leftChild = "(" + leftChild + ")";
-        } else if (isPlusOperator(ast->leftChild())) {
-            if (ast->leftChild()->rightChild() != nullptr) {
-                leftChild = "(" + leftChild + ")";
+        auto astLeftChildLeftChild = astLeftChild->leftChild();
+
+        if (isRelationalOperator(astLeftChildLeftChild)
+            || isLogicalOperator(astLeftChildLeftChild)
+            || isMinusOperator(astLeftChildLeftChild)
+            || isTimesOperator(astLeftChildLeftChild)
+            || isDivideOperator(astLeftChildLeftChild)
+            || isPowerOperator(astLeftChildLeftChild)
+            || isRootOperator(astLeftChildLeftChild)
+            || isPiecewiseStatement(astLeftChildLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChildLeftChild)) {
+            if (astLeftChildLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
             }
         }
 
-        return rightChild + op + "(1.0/" + leftChild + ")";
+        return astRightChildCode + op + "(1.0/" + astLeftChildCode + ")";
     }
 
-    return leftChild + op + rightChild;
+    return astLeftChildCode + op + astRightChildCode;
 }
 
 std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the left branch of the given AST.
 
-    auto left = generateCode(ast->leftChild());
+    auto astLeftChild = ast->leftChild();
+    auto code = generateCode(astLeftChild);
 
     // Determine whether parentheses should be added around the left code.
 
-    if (isRelationalOperator(ast->leftChild())
-        || isLogicalOperator(ast->leftChild())
-        || isPlusOperator(ast->leftChild())
-        || isMinusOperator(ast->leftChild())
-        || isPiecewiseStatement(ast->leftChild())) {
-        left = "(" + left + ")";
+    if (isRelationalOperator(astLeftChild)
+        || isLogicalOperator(astLeftChild)
+        || isPlusOperator(astLeftChild)
+        || isMinusOperator(astLeftChild)
+        || isPiecewiseStatement(astLeftChild)) {
+        code = "(" + code + ")";
     }
 
-    return mLockedProfile->minusString() + left;
+    return mLockedProfile->minusString() + code;
 }
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
@@ -1540,8 +1428,8 @@ std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string 
     return replace(replace(mLockedProfile->hasConditionalOperator() ?
                                mLockedProfile->conditionalOperatorIfString() :
                                mLockedProfile->piecewiseIfString(),
-                           "<CONDITION>", condition),
-                   "<IF_STATEMENT>", value);
+                           "[CONDITION]", condition),
+                   "[IF_STATEMENT]", value);
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value) const
@@ -1549,7 +1437,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
     return replace(mLockedProfile->hasConditionalOperator() ?
                        mLockedProfile->conditionalOperatorElseString() :
                        mLockedProfile->piecewiseElseString(),
-                   "<ELSE_STATEMENT>", value);
+                   "[ELSE_STATEMENT]", value);
 }
 
 std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast) const
@@ -1559,15 +1447,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     std::string code;
 
     switch (ast->type()) {
-        // Assignment.
-
     case AnalyserEquationAst::Type::ASSIGNMENT:
         code = generateOperatorCode(mLockedProfile->assignmentString(), ast);
 
         break;
-
-        // Relational and logical operators.
-
     case AnalyserEquationAst::Type::EQ:
         if (mLockedProfile->hasEqOperator()) {
             code = generateOperatorCode(mLockedProfile->eqString(), ast);
@@ -1648,9 +1531,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         }
 
         break;
-
-        // Arithmetic operators.
-
     case AnalyserEquationAst::Type::PLUS:
         if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mLockedProfile->plusString(), ast);
@@ -1690,47 +1570,46 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                        generateOperatorCode(mLockedProfile->powerString(), ast) :
                        mLockedProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
         }
-
-        break;
     }
-    case AnalyserEquationAst::Type::ROOT:
-        if (ast->rightChild() != nullptr) {
+
+    break;
+    case AnalyserEquationAst::Type::ROOT: {
+        auto astRightChild = ast->rightChild();
+
+        if (astRightChild != nullptr) {
+            auto astLeftChild = ast->leftChild();
             double doubleValue;
 
-            if (convertToDouble(generateCode(ast->leftChild()), doubleValue)
+            if (convertToDouble(generateCode(astLeftChild), doubleValue)
                 && areEqual(doubleValue, 2.0)) {
-                code = mLockedProfile->squareRootString() + "(" + generateCode(ast->rightChild()) + ")";
+                code = mLockedProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
             } else {
-                auto rootValueAst = AnalyserEquationAst::create();
+                if (mLockedProfile->hasPowerOperator()) {
+                    code = generateOperatorCode(mLockedProfile->powerString(), ast);
+                } else {
+                    auto rootValueAst = AnalyserEquationAst::create();
 
-                rootValueAst->setType(AnalyserEquationAst::Type::DIVIDE);
-                rootValueAst->setParent(ast);
+                    rootValueAst->setType(AnalyserEquationAst::Type::DIVIDE);
+                    rootValueAst->setParent(ast);
 
-                auto leftChild = AnalyserEquationAst::create();
-                auto rightChild = AnalyserEquationAst::create();
+                    auto leftChild = AnalyserEquationAst::create();
 
-                leftChild->setType(AnalyserEquationAst::Type::CN);
-                leftChild->setValue("1.0");
-                leftChild->setParent(rootValueAst);
+                    leftChild->setType(AnalyserEquationAst::Type::CN);
+                    leftChild->setValue("1.0");
+                    leftChild->setParent(rootValueAst);
 
-                rightChild->setType(ast->leftChild()->type());
-                rightChild->setVariable(ast->leftChild()->variable());
-                rightChild->setParent(rootValueAst);
-                rightChild->setLeftChild(ast->leftChild()->leftChild());
-                rightChild->setRightChild(ast->leftChild()->rightChild());
+                    rootValueAst->setLeftChild(leftChild);
+                    rootValueAst->setRightChild(astLeftChild->leftChild());
 
-                rootValueAst->setLeftChild(leftChild);
-                rootValueAst->setRightChild(rightChild);
-
-                code = mLockedProfile->hasPowerOperator() ?
-                           generateOperatorCode(mLockedProfile->powerString(), ast) :
-                           mLockedProfile->powerString() + "(" + generateCode(ast->rightChild()) + ", " + generateOperatorCode(mLockedProfile->divideString(), rootValueAst) + ")";
+                    code = mLockedProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mLockedProfile->divideString(), rootValueAst) + ")";
+                }
             }
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
         }
+    }
 
-        break;
+    break;
     case AnalyserEquationAst::Type::ABS:
         code = generateOneParameterFunctionCode(mLockedProfile->absoluteValueString(), ast);
 
@@ -1743,22 +1622,25 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateOneParameterFunctionCode(mLockedProfile->naturalLogarithmString(), ast);
 
         break;
-    case AnalyserEquationAst::Type::LOG:
-        if (ast->rightChild() != nullptr) {
+    case AnalyserEquationAst::Type::LOG: {
+        auto astRightChild = ast->rightChild();
+
+        if (astRightChild != nullptr) {
             auto stringValue = generateCode(ast->leftChild());
             double doubleValue;
 
             if (convertToDouble(stringValue, doubleValue)
                 && areEqual(doubleValue, 10.0)) {
-                code = mLockedProfile->commonLogarithmString() + "(" + generateCode(ast->rightChild()) + ")";
+                code = mLockedProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
             } else {
-                code = mLockedProfile->naturalLogarithmString() + "(" + generateCode(ast->rightChild()) + ")/" + mLockedProfile->naturalLogarithmString() + "(" + stringValue + ")";
+                code = mLockedProfile->naturalLogarithmString() + "(" + generateCode(astRightChild) + ")/" + mLockedProfile->naturalLogarithmString() + "(" + stringValue + ")";
             }
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->commonLogarithmString(), ast);
         }
+    }
 
-        break;
+    break;
     case AnalyserEquationAst::Type::CEILING:
         code = generateOneParameterFunctionCode(mLockedProfile->ceilingString(), ast);
 
@@ -1779,16 +1661,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateTwoParameterFunctionCode(mLockedProfile->remString(), ast);
 
         break;
-
-        // Calculus elements.
-
     case AnalyserEquationAst::Type::DIFF:
         code = generateCode(ast->rightChild());
 
         break;
-
-        // Trigonometric operators.
-
     case AnalyserEquationAst::Type::SIN:
         code = generateOneParameterFunctionCode(mLockedProfile->sinString(), ast);
 
@@ -1885,21 +1761,21 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateOneParameterFunctionCode(mLockedProfile->acothString(), ast);
 
         break;
+    case AnalyserEquationAst::Type::PIECEWISE: {
+        auto astRightChild = ast->rightChild();
 
-        // Piecewise statement.
-
-    case AnalyserEquationAst::Type::PIECEWISE:
-        if (ast->rightChild() != nullptr) {
-            if (ast->rightChild()->type() == AnalyserEquationAst::Type::PIECE) {
-                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(ast->rightChild()) + generatePiecewiseElseCode(mLockedProfile->nanString()));
+        if (astRightChild != nullptr) {
+            if (astRightChild->type() == AnalyserEquationAst::Type::PIECE) {
+                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(astRightChild) + generatePiecewiseElseCode(mLockedProfile->nanString()));
             } else {
-                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(ast->rightChild()));
+                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(astRightChild));
             }
         } else {
             code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mLockedProfile->nanString());
         }
+    }
 
-        break;
+    break;
     case AnalyserEquationAst::Type::PIECE:
         code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
 
@@ -1908,9 +1784,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateCode(ast->leftChild());
 
         break;
-
-        // Token elements.
-
     case AnalyserEquationAst::Type::CI:
         code = generateVariableNameCode(ast->variable(), ast);
 
@@ -1919,18 +1792,12 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateDoubleCode(ast->value());
 
         break;
-
-        // Qualifier elements.
-
     case AnalyserEquationAst::Type::DEGREE:
     case AnalyserEquationAst::Type::LOGBASE:
     case AnalyserEquationAst::Type::BVAR:
         code = generateCode(ast->leftChild());
 
         break;
-
-        // Constants.
-
     case AnalyserEquationAst::Type::TRUE:
         code = mLockedProfile->trueString();
 
@@ -1965,7 +1832,7 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserV
     std::string scalingFactorCode;
     auto scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
 
-    if (!areEqual(scalingFactor, 1.0)) {
+    if (!areNearlyEqual(scalingFactor, 1.0)) {
         scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mLockedProfile->timesString();
     }
 
@@ -2002,7 +1869,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
             res += mLockedProfile->indentString() + generateVariableNameCode(equation->variable()->variable()) + " = "
                    + replace(mLockedProfile->externalVariableMethodCallString(),
-                             "<INDEX>", index.str())
+                             "[INDEX]", index.str())
                    + mLockedProfile->commandSeparatorString() + "\n";
         } else {
             res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
@@ -2030,14 +1897,14 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
         && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
             || !mLockedModel->hasExternalVariables())) {
         interfaceComputeModelMethodsCode += replace(mLockedProfile->interfaceComputeRatesMethodString(),
-                                                    "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
+                                                    "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
     }
 
     if (!mLockedProfile->interfaceComputeVariablesMethodString().empty()
         && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
             || !mLockedModel->hasExternalVariables())) {
         interfaceComputeModelMethodsCode += replace(mLockedProfile->interfaceComputeVariablesMethodString(),
-                                                    "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
+                                                    "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
     }
 
     if (!interfaceComputeModelMethodsCode.empty()) {
@@ -2073,7 +1940,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseStatesAndConstantsMeth
         }
 
         mCode += replace(mLockedProfile->implementationInitialiseStatesAndConstantsMethodString(),
-                         "<CODE>", generateMethodBodyCode(methodBody));
+                         "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2093,7 +1960,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
         }
 
         mCode += replace(mLockedProfile->implementationComputeComputedConstantsMethodString(),
-                         "<CODE>", generateMethodBodyCode(methodBody));
+                         "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2115,8 +1982,8 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
         }
 
         mCode += replace(replace(mLockedProfile->implementationComputeRatesMethodString(),
-                                 "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
-                         "<CODE>", generateMethodBodyCode(methodBody));
+                                 "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
+                         "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2143,8 +2010,8 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
         }
 
         mCode += replace(replace(mLockedProfile->implementationComputeVariablesMethodString(),
-                                 "<OPTIONAL_PARAMETER>", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
-                         "<CODE>", generateMethodBodyCode(methodBody));
+                                 "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
+                         "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2191,8 +2058,6 @@ void Generator::setModel(const AnalyserModelPtr &model)
 
 std::string Generator::interfaceCode() const
 {
-    mPimpl->retrieveLockedModelAndProfile();
-
     if (!mPimpl->retrieveLockedModelAndProfile()
         || !mPimpl->mLockedModel->isValid()
         || !mPimpl->mLockedProfile->hasInterface()) {

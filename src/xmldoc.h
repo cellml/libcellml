@@ -35,7 +35,7 @@ using XmlDocPtr = std::shared_ptr<XmlDoc>; /**< Type definition for shared XML d
 class XmlDoc
 {
 public:
-    XmlDoc(); /**< Constructor. */
+    XmlDoc(); /**< Constructor, @private. */
     ~XmlDoc(); /**< Destructor. */
 
     /**
@@ -109,8 +109,8 @@ public:
     std::string xmlError(size_t index) const;
 
 private:
-    struct XmlDocImpl; /**< Forward declaration for pImpl idiom. */
-    XmlDocImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct XmlDocImpl; /**< Forward declaration for pImpl idiom, @private. */
+    XmlDocImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

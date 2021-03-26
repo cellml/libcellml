@@ -123,10 +123,10 @@ public:
     AnalyserEquationPtr equation() const;
 
 private:
-    AnalyserVariable(); /**< Constructor. */
+    AnalyserVariable(); /**< Constructor, @private. */
 
     struct AnalyserVariableImpl;
-    AnalyserVariableImpl *mPimpl;
+    AnalyserVariableImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
