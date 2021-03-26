@@ -40,7 +40,7 @@ struct Variable::VariableImpl
 {
     Variable *mVariable = nullptr;
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping identifierid map for equivalent variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping identifier map for equivalent variable.*/
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection identifier map for equivalent variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
     std::string mInterfaceType; /**< Interface type for this Variable.*/
