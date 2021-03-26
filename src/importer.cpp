@@ -465,7 +465,7 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
                        + model->name() + "'. The dependency loop is:\n";
     std::tuple<std::string, std::string, std::string> h;
     std::string eol = "; and\n";
-    size_t i = history.size() - 1;
+    auto i = history.size() - 1;
     std::string msg2;
     while (i != MAX_SIZE_T) {
         h = history[i];
