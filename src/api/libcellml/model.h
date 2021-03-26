@@ -343,6 +343,17 @@ public:
      */
     bool fixVariableInterfaces();
 
+    /**
+     * @brief Remove any empty components and units from the model.
+     *
+     *  Remove any empty components and units fom this model.
+     *  In this context, "empty" means:
+     *   - components with no name, id, resets, variables, maths, or non-empty child components; and
+     *   - units which have no name, id, or child units.
+     *  For components, this is applied recursively from the leaves of the encapsulation hierarchy.
+     */
+    void clean();
+
 private:
     Model(); /**< Constructor, @private. */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter, @private. */
