@@ -1772,10 +1772,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     //     - 'and', 'or', 'xor': the two operands should be dimensionless.
     //     - 'not': the operand should be dimensionless.
     //  - Arithmetic operators:
-    //     - 'plus', 'times', and 'divide': the two operands should have
-    //       equivalent units.
+    //     - 'plus': the two operands should have equivalent units.
     //     - 'minus': if there is one operand, then it can have any unit. If
     //       there are two operands, then they should have equivalent units.
+    //     - 'times' and 'divide': the two operands can have any units.
     //     - 'power': the base can have any unit while the exponent should be
     //       dimensionless.
     //     - 'root': the base can have any unit while the exponent, if present,
