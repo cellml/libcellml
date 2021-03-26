@@ -71,7 +71,7 @@ Only the first matching Units is removed and returned.";
 "Remove any empty units and any empty components from the model."
 
 %feature("docstring") libcellml::Model::importRequirements
-"Remove any empty units and any empty components from the model."
+"Return all URLs used by imports in the model."
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
