@@ -291,6 +291,13 @@ public:
      */
     std::string encapsulationId() const;
 
+    /**
+     * @brief Remove the encapsulation Id for this entity.
+     *
+     * Clear the encapsulation Id for this entity.
+     */
+    void removeEncapsulationId();
+
 protected:
     /**
      * @brief Virtual add component method to be implemented by derived classes.
