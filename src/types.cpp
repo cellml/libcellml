@@ -125,8 +125,8 @@ bool VariablePair::isValid() const
  */
 struct AnyItem::AnyItemImpl
 {
-    std::any mItem = nullptr; /**< std::any item cast for the item.*/
-    CellmlElementType mType = CellmlElementType::UNDEFINED; /**< Type for the item.*/
+    std::any mItem = nullptr; /**< std::any item cast for the item. */
+    CellmlElementType mType = CellmlElementType::UNDEFINED; /**< Type for the item. */
 };
 
 AnyItem::AnyItem()
