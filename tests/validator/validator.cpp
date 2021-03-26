@@ -2992,3 +2992,23 @@ TEST(Validator, importSecondGenComponentWithInvalidName)
     EXPECT_EQ(errorMessage, validator->issue(0)->description());
     EXPECT_EQ(model->component("c", true), validator->issue(0)->component());
 }
+
+TEST(Validator, highIndexUnitsImport)
+{
+    const std::string errorMessage =
+        "Import of units 'i_am_bad' from 'some_units.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("importer/import_from_some_units.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    validator->validateModel(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(errorMessage, validator->error(0)->description());
+    EXPECT_EQ(model->units(1), validator->issue(0)->units());
+}
