@@ -628,47 +628,136 @@ TEST(Model, removeComponentInsensitiveToOrder)
     EXPECT_EQ(size_t(2), modelApi->componentCount());
 }
 
-TEST(Model, cleanCreatedModel)
+TEST(Model, cleanEmptyComponents)
 {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"\">\n"
+        "    <component component_ref=\"\" name=\"\"/>\n"
+        "  </import>\n"
+        "  <component name=\"c1\"/>\n"
+        "  <component id=\"c2\"/>\n"
+        "  <component>\n"
+        "    <variable/>\n"
+        "  </component>\n"
+        "  <component>\n"
+        "    <reset/>\n"
+        "  </component>\n"
+        "  <component>abc</component>\n"
+        "</model>\n";
     auto model = libcellml::Model::create();
     auto c1 = libcellml::Component::create("c1");
     auto c2 = libcellml::Component::create();
     c2->setId("c2");
     auto c3 = libcellml::Component::create();
+    auto v = libcellml::Variable::create();
+    c3->addVariable(v);
     auto c4 = libcellml::Component::create();
+    auto r = libcellml::Reset::create();
+    c4->addReset(r);
     auto c5 = libcellml::Component::create();
+    c5->setMath("abc");
     auto c6 = libcellml::Component::create();
-    auto u1 = libcellml::Units::create("used");
-    auto u2 = libcellml::Units::create();
-    u2->setId("u2");
-    auto u3 = libcellml::Units::create();
-    auto v = libcellml::Variable::create("x");
+    auto importSource = libcellml::ImportSource::create();
+    c6->setImportSource(importSource);
+    auto c7 = libcellml::Component::create();
 
     model->addComponent(c1);
     model->addComponent(c2);
     model->addComponent(c3);
     model->addComponent(c4);
-
-    // test unnamed components in an encapsulation hierarchy
     model->addComponent(c5);
-    c5->addComponent(c6);
+    model->addComponent(c6);
+    model->addComponent(c7);
 
+    EXPECT_EQ(size_t(7), model->componentCount());
+    // Call the Model::clean() function to remove empty component
+    model->clean();
+    EXPECT_EQ(size_t(6), model->componentCount());
+    // Check the correct component was cleaned
+    auto p = libcellml::Printer::create();
+    EXPECT_EQ(e, p->printModel(model));
+}
+
+TEST(Model, cleanEmptyUnits)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"\">\n"
+        "    <units units_ref=\"\" name=\"\"/>\n"
+        "  </import>\n"
+        "  <units name=\"u1\"/>\n"
+        "  <units id=\"u2\"/>\n"
+        "  <units>\n"
+        "    <unit units=\"u4\"/>\n"
+        "  </units>\n"
+        "</model>\n";
+    auto model = libcellml::Model::create();
+    auto u1 = libcellml::Units::create("u1");
+    auto u2 = libcellml::Units::create();
+    u2->setId("u2");
+    auto u3 = libcellml::Units::create();
+    auto importSource = libcellml::ImportSource::create();
+    u3->setImportSource(importSource);
+    auto u4 = libcellml::Units::create();
+    u4->addUnit("u4");
+    auto u5 = libcellml::Units::create();
     model->addUnits(u1);
     model->addUnits(u2);
     model->addUnits(u3);
+    model->addUnits(u4);
+    model->addUnits(u5);
 
-    c3->addVariable(v);
-
-    EXPECT_EQ(size_t(5), model->componentCount());
-    EXPECT_EQ(size_t(3), model->unitsCount());
-
-    auto p = libcellml::Printer::create();
-
+    EXPECT_EQ(size_t(5), model->unitsCount());
     // Call the Model::clean() function to remove empty components and units.
     model->clean();
+    EXPECT_EQ(size_t(4), model->unitsCount());
+    // check the correct units is being cleaned
+    auto p = libcellml::Printer::create();
+    EXPECT_EQ(e, p->printModel(model));
 
-    EXPECT_EQ(size_t(3), model->componentCount());
-    EXPECT_EQ(size_t(2), model->unitsCount());
+}
+
+TEST(Model, cleanEmptyComponentEncapsulation)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "  <component name=\"c2\"/>\n"
+        "  <component/>\n"
+        "  <component name=\"c4\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref>\n"
+        "      <component_ref component=\"c2\"/>\n"
+        "      <component_ref>\n"
+        "        <component_ref component=\"c4\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto model = libcellml::Model::create();
+    auto c1 = libcellml::Component::create();
+    auto c2 = libcellml::Component::create("c2");
+    auto c3 = libcellml::Component::create();
+    auto c4 = libcellml::Component::create("c4");
+    auto c5 = libcellml::Component::create();
+    auto c6 = libcellml::Component::create();
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+    c1->addComponent(c3);
+    c3->addComponent(c4);
+    c3->addComponent(c5);
+    c5->addComponent(c6);
+
+    // Call the Model::clean() function to remove empty components
+    model->clean();
+    auto p = libcellml::Printer::create();
+    EXPECT_EQ(e, p->printModel(model));
 }
 
 TEST(Model, cleanModel)
