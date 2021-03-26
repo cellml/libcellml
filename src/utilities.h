@@ -615,20 +615,20 @@ static inline std::string trimCopy(std::string s)
 }
 
 /**
- * @brief Collect all existing id attributes within the given model.
+ * @brief Collect all existing identifier attributes within the given model.
  *
  * @param model The @c ModelPtr to interrogate.
  *
- * @return An @c IdList collection of existing ids.
+ * @return An @c IdList collection of existing identifiers.
  */
 IdList listIds(const ModelPtr &model);
 
 /**
- * @brief Creates an id string for a "type" object, unique in the context of @p idList.
+ * @brief Creates an identifier string for a "type" object, unique in the context of @p idList.
  *
- * The id format is a 6-digit hexadecimal string.
+ * The identifier format is a 6-digit hexadecimal string.
  *
- * @return A string representing a unique id.
+ * @return A string representing a unique identifier.
  */
 std::string makeUniqueId(IdList &idList);
 

@@ -473,7 +473,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
     if (model == nullptr) {
         return "";
     }
-    // Automatic ids.
+    // Automatic identifiers.
     IdList idList;
     if (autoIds) {
         idList = listIds(model);
