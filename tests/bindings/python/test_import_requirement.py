@@ -16,7 +16,7 @@ class ImportRequirementTestCase(unittest.TestCase):
         ]
 
         parser = Parser()
-        model = parser.parseModel(file_contents('importer/requirements/complicatedExample.cellml'))
+        model = parser.parseModel(file_contents('import-requirements/complicatedExample.cellml'))
         self.assertEqual(0, parser.issueCount())
 
         requirements = model.importRequirements()
