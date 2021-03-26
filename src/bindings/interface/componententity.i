@@ -78,7 +78,7 @@ the ``component_ref`` element that references the component it represents in
 the structure."
 
 %feature("docstring") libcellml::ComponentEntity::removeEncapsulationId
-"Removes the encapsulation id for this entity."
+"Removes the encapsulation Id for this entity."
 
 
 #if defined(SWIGPYTHON)
