@@ -486,18 +486,21 @@ bool isStandardPrefixName(const std::string &name);
  * @return The index of the @p variable found in the component.  Returns the
  * number of variables in the component if the variable was not found.
  */
-size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+size_t indexOf(const VariablePtr &variable, const ComponentConstPtr &component);
 
 /**
  * @brief Get the index of the @p units in the @p model.
  *
- * @param model The @ref Model to searchh for the @ref Units in.
- * @param units The @ref Units to return the index of.
+ * Get the index of the @p units in the @p model. If the units is not found in the
+ * model then the number of units in the model is returned.
  *
- * @return The index of the @p units found in the model.  Returns the number of units
+ * @param units The @ref Units to return the index of.
+ * @param model The @ref Model to search for the @ref Units in.
+ *
+ * @return The index of the @p units found in the model. Returns the number of units
  * in the model if the units was not found.
  */
-size_t getUnitsIndexInModel(const ModelPtr &model, const UnitsPtr &units);
+size_t indexOf(const UnitsPtr &units, const ModelPtr &model);
 
 /**
  * @brief Test to determine if @p variable1 and @p variable2 are equivalent.
@@ -694,18 +697,6 @@ bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &component
  */
 bool areComponentVariableUnitsUnlinked(const ComponentPtr &component);
 
-void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
-void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
-void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
-NameList componentNames(const ModelPtr &model);
-NameList unitsNamesUsed(const ComponentPtr &component);
-IndexStack reverseEngineerIndexStack(const ComponentPtr &component);
-EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
-std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
-ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
-void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
-std::string replace(std::string string, const std::string &from, const std::string &to);
-
 /**
  * @brief Create a connection map for the given variables.
  *
@@ -756,5 +747,28 @@ bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entitie
  * @return A @c std::vector of all the @ref ImportSource s found in the model.
  */
 std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
+
+/**
+ * @brief Return the @ref IndexStack for the given @p component.
+ *
+ * Return the @ref IndexStack for the given @p component.
+ *
+ * @param component The component to find the index stack for.
+ *
+ * @return An @ref IndexStack.
+ */
+IndexStack indexStackOf(const ComponentPtr &component);
+
+// Would be nice to add documentation to these.
+void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
+void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
+void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
+NameList componentNames(const ModelPtr &model);
+NameList unitsNamesUsed(const ComponentPtr &component);
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+std::string replace(std::string string, const std::string &from, const std::string &to);
 
 } // namespace libcellml

@@ -359,21 +359,6 @@ bool Component::hasReset(const ResetPtr &reset) const
     return mPimpl->findReset(reset) != mPimpl->mResets.end();
 }
 
-size_t getVariableIndexInComponent(const std::shared_ptr<const Component> &component, const VariablePtr &variable)
-{
-    size_t index = 0;
-    bool found = false;
-    while (index < component->variableCount() && !found) {
-        if (component->variable(index) == variable) {
-            found = true;
-        } else {
-            ++index;
-        }
-    }
-
-    return index;
-}
-
 ComponentPtr Component::clone() const
 {
     auto c = create();
@@ -397,12 +382,12 @@ ComponentPtr Component::clone() const
         auto r = reset(index);
         auto rClone = r->clone();
         c->addReset(rClone);
-        size_t variableIndex = getVariableIndexInComponent(shared_from_this(), r->variable());
+        size_t variableIndex = indexOf(r->variable(), shared_from_this());
         if (variableIndex < variableCount()) {
             auto v = c->variable(variableIndex);
             rClone->setVariable(v);
         }
-        size_t testVariableIndex = getVariableIndexInComponent(shared_from_this(), r->testVariable());
+        size_t testVariableIndex = indexOf(r->testVariable(), shared_from_this());
         if (testVariableIndex < variableCount()) {
             auto v = c->variable(testVariableIndex);
             rClone->setTestVariable(v);

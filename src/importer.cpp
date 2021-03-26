@@ -546,10 +546,10 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         NameList compNames = componentNames(model);
 
         // Determine the stack for the destination component.
-        IndexStack destinationComponentBaseIndexStack = reverseEngineerIndexStack(component);
+        IndexStack destinationComponentBaseIndexStack = indexStackOf(component);
 
         // Determine the stack for the source component.
-        IndexStack importedComponentBaseIndexStack = reverseEngineerIndexStack(importedComponent);
+        IndexStack importedComponentBaseIndexStack = indexStackOf(importedComponent);
 
         // Generate equivalence map for the source component.
         EquivalenceMap map;
