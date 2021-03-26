@@ -28,189 +28,165 @@ TEST(ImportSource, createImportSource)
 
 TEST(ImportSource, addImportSourceBadInput)
 {
-    auto model = libcellml::Model::create();
+    auto importer = libcellml::Importer::create();
 
-    EXPECT_FALSE(model->addImportSource(nullptr));
+    EXPECT_FALSE(importer->addImportSource(nullptr));
 }
 
-TEST(ImportSource, addToModel)
+TEST(ImportSource, addToImporter)
 {
-    auto model = libcellml::Model::create("so_much_importing");
+    auto importer = libcellml::Importer::create();
 
-    // Add component to model, then import to component:
+    // Add import source to importer:
     auto imp1 = libcellml::ImportSource::create();
     std::string url1 = "http://www.example.com#hello";
     imp1->setUrl(url1);
 
-    EXPECT_TRUE(model->addImportSource(imp1));
-    EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(imp1, model->importSource(0));
+    EXPECT_TRUE(importer->addImportSource(imp1));
+    EXPECT_EQ(size_t(1), importer->importSourceCount());
+    EXPECT_EQ(imp1, importer->importSource(0));
 
     // Add the same one again:
-    EXPECT_FALSE(model->addImportSource(imp1));
-    EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(imp1, model->importSource(0));
+    EXPECT_FALSE(importer->addImportSource(imp1));
+    EXPECT_EQ(size_t(1), importer->importSourceCount());
+    EXPECT_EQ(imp1, importer->importSource(0));
 
     // Add another with the same URL:
     auto imp2 = libcellml::ImportSource::create();
     imp2->setUrl(url1);
 
-    EXPECT_TRUE(model->addImportSource(imp2));
-    EXPECT_EQ(size_t(2), model->importSourceCount());
-    EXPECT_EQ(imp2, model->importSource(1));
+    EXPECT_TRUE(importer->addImportSource(imp2));
+    EXPECT_EQ(size_t(2), importer->importSourceCount());
+    EXPECT_EQ(imp2, importer->importSource(1));
 
     // Add another with a new URL:
     auto imp3 = libcellml::ImportSource::create();
     auto url3 = "http://www.example.com#bonjour";
     imp3->setUrl(url3);
 
-    EXPECT_TRUE(model->addImportSource(imp3));
-    EXPECT_EQ(size_t(3), model->importSourceCount());
-    EXPECT_EQ(imp3, model->importSource(2));
+    EXPECT_TRUE(importer->addImportSource(imp3));
+    EXPECT_EQ(size_t(3), importer->importSourceCount());
+    EXPECT_EQ(imp3, importer->importSource(2));
 }
 
 TEST(ImportSource, hasImportSource)
 {
-    auto model = libcellml::Model::create("has_import_source");
+    auto importer = libcellml::Importer::create();
 
     auto importSource = libcellml::ImportSource::create();
 
-    EXPECT_FALSE(model->hasImportSource(importSource));
+    EXPECT_FALSE(importer->hasImportSource(importSource));
 
-    model->addImportSource(importSource);
+    importer->addImportSource(importSource);
 
-    EXPECT_TRUE(model->hasImportSource(importSource));
+    EXPECT_TRUE(importer->hasImportSource(importSource));
 }
 
 TEST(ImportSource, hasImportSourceDifferentImportSources)
 {
-    auto model = libcellml::Model::create("has_import_source");
+    auto importer = libcellml::Importer::create();
 
     auto importSource1 = libcellml::ImportSource::create();
     importSource1->setUrl("some_url");
     auto importSource2 = libcellml::ImportSource::create();
     importSource2->setUrl("some_other_url");
 
-    EXPECT_FALSE(model->hasImportSource(importSource1));
-    EXPECT_FALSE(model->hasImportSource(importSource2));
+    EXPECT_FALSE(importer->hasImportSource(importSource1));
+    EXPECT_FALSE(importer->hasImportSource(importSource2));
 
-    model->addImportSource(importSource1);
+    importer->addImportSource(importSource1);
 
-    EXPECT_TRUE(model->hasImportSource(importSource1));
-    EXPECT_FALSE(model->hasImportSource(importSource2));
+    EXPECT_TRUE(importer->hasImportSource(importSource1));
+    EXPECT_FALSE(importer->hasImportSource(importSource2));
 }
 
 TEST(ImportSource, hasImportSourceEqualImportSources)
 {
-    auto model = libcellml::Model::create("has_import_source");
+    auto importer = libcellml::Importer::create();
 
     auto importSource1 = libcellml::ImportSource::create();
     importSource1->setUrl("same_url");
     auto importSource2 = libcellml::ImportSource::create();
     importSource2->setUrl("same_url");
 
-    EXPECT_FALSE(model->hasImportSource(importSource1));
-    EXPECT_FALSE(model->hasImportSource(importSource2));
+    EXPECT_FALSE(importer->hasImportSource(importSource1));
+    EXPECT_FALSE(importer->hasImportSource(importSource2));
 
-    model->addImportSource(importSource1);
+    importer->addImportSource(importSource1);
 
-    EXPECT_TRUE(model->hasImportSource(importSource1));
-    EXPECT_TRUE(model->hasImportSource(importSource2));
+    EXPECT_TRUE(importer->hasImportSource(importSource1));
+    EXPECT_TRUE(importer->hasImportSource(importSource2));
 }
 
 TEST(ImportSource, removeImportSourceByIndex)
 {
-    auto model = libcellml::Model::create("remove_import_source");
+    auto importer = libcellml::Importer::create();
 
     auto importSource = libcellml::ImportSource::create();
 
-    model->addImportSource(importSource);
+    importer->addImportSource(importSource);
 
-    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(1), importer->importSourceCount());
 
-    EXPECT_TRUE(model->removeImportSource(0));
+    EXPECT_TRUE(importer->removeImportSource(0));
 
-    EXPECT_EQ(size_t(0), model->importSourceCount());
+    EXPECT_EQ(size_t(0), importer->importSourceCount());
 
-    EXPECT_FALSE(model->removeImportSource(0));
+    EXPECT_FALSE(importer->removeImportSource(0));
 }
 
 TEST(ImportSource, removeImportSourceByReference)
 {
-    auto model = libcellml::Model::create("remove_import_source");
+    auto importer = libcellml::Importer::create();
 
     auto importSource = libcellml::ImportSource::create();
 
-    model->addImportSource(importSource);
+    importer->addImportSource(importSource);
 
-    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(size_t(1), importer->importSourceCount());
 
-    EXPECT_TRUE(model->removeImportSource(importSource));
+    EXPECT_TRUE(importer->removeImportSource(importSource));
 
-    EXPECT_EQ(size_t(0), model->importSourceCount());
+    EXPECT_EQ(size_t(0), importer->importSourceCount());
 
-    EXPECT_FALSE(model->removeImportSource(importSource));
+    EXPECT_FALSE(importer->removeImportSource(importSource));
 }
 
-TEST(ImportSource, importSourceMove)
+TEST(ImportSource, importSourceSharedAcrossImporters)
 {
-    auto imp1 = libcellml::ImportSource::create();
-    auto imp2 = libcellml::ImportSource::create();
-
-    auto component = libcellml::Component::create("component");
-    auto units = libcellml::Units::create("units");
-
-    EXPECT_FALSE(component->isImport());
-    EXPECT_FALSE(units->isImport());
-
-    component->setSourceComponent(imp1, "other_component");
-    units->setSourceUnits(imp1, "other_units");
-
-    EXPECT_TRUE(component->isImport());
-    EXPECT_TRUE(units->isImport());
-
-    component->setImportSource(imp2);
-    units->setImportSource(imp2);
-    EXPECT_TRUE(component->isImport());
-    EXPECT_TRUE(units->isImport());
-}
-
-TEST(ImportSource, importSourceMoveModels)
-{
-    auto m1 = libcellml::Model::create("m1");
+    auto i1 = libcellml::Importer::create();
     auto imp = libcellml::ImportSource::create();
 
-    EXPECT_TRUE(m1->addImportSource(imp));
-    EXPECT_EQ(m1, imp->parent());
+    // Add import source to an importer.
+    EXPECT_TRUE(i1->addImportSource(imp));
 
-    // Add import source to another model.
-    auto m2 = libcellml::Model::create("m2");
-    EXPECT_TRUE(m2->addImportSource(imp));
-    EXPECT_EQ(m2, imp->parent());
+    // Add import source to another importer.
+    auto i2 = libcellml::Importer::create();
+    EXPECT_TRUE(i2->addImportSource(imp));
 
-    // Expect that we can't delete from first model any more ...
-    EXPECT_EQ(size_t(0), m1->importSourceCount());
-    EXPECT_FALSE(m1->removeImportSource(imp));
+    // Expect that first importer has an import source
+    EXPECT_EQ(size_t(1), i1->importSourceCount());
+    EXPECT_EQ(imp, i1->importSource(0));
+    EXPECT_TRUE(i1->removeImportSource(imp));
 
-    // ... but that we can get it and remove it from the second.
-    EXPECT_EQ(size_t(1), m2->importSourceCount());
-    EXPECT_EQ(imp, m2->importSource(0));
-    EXPECT_TRUE(m2->removeImportSource(imp));
-    EXPECT_EQ(nullptr, imp->parent());
+    // and that we can get it and remove it from the second.
+    EXPECT_EQ(size_t(1), i2->importSourceCount());
+    EXPECT_EQ(imp, i2->importSource(0));
+    EXPECT_TRUE(i2->removeImportSource(imp));
 }
 
-TEST(ImportSource, addRemoveFromModel)
+TEST(ImportSource, addRemoveFromImporter)
 {
     auto imp = libcellml::ImportSource::create();
-    auto model = libcellml::Model::create();
+    auto importer = libcellml::Importer::create();
 
-    model->addImportSource(imp);
-    EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(imp, model->importSource(0));
+    importer->addImportSource(imp);
+    EXPECT_EQ(size_t(1), importer->importSourceCount());
+    EXPECT_EQ(imp, importer->importSource(0));
 
-    model->removeImportSource(imp);
-    EXPECT_EQ(size_t(0), model->importSourceCount());
-    EXPECT_EQ(nullptr, model->importSource(0));
+    importer->removeImportSource(imp);
+    EXPECT_EQ(size_t(0), importer->importSourceCount());
+    EXPECT_EQ(nullptr, importer->importSource(0));
 
     auto imp1 = libcellml::ImportSource::create();
     auto imp2 = libcellml::ImportSource::create();
@@ -229,71 +205,18 @@ TEST(ImportSource, addRemoveFromModel)
     EXPECT_TRUE(u1->isImport());
     EXPECT_TRUE(u2->isImport());
 
-    model->addImportSource(imp1);
-    model->addImportSource(imp2);
+    importer->addImportSource(imp1);
+    importer->addImportSource(imp2);
 
-    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(size_t(2), importer->importSourceCount());
 
-    model->removeAllImportSources();
+    importer->removeAllImportSources();
 
-    EXPECT_EQ(size_t(0), model->importSourceCount());
+    EXPECT_EQ(size_t(0), importer->importSourceCount());
 
     EXPECT_TRUE(c1->isImport());
     EXPECT_TRUE(c2->isImport());
     EXPECT_TRUE(u1->isImport());
-    EXPECT_TRUE(u2->isImport());
-}
-
-TEST(ImportSource, moveToAnotherModel)
-{
-    auto imp = libcellml::ImportSource::create();
-    auto model1 = libcellml::Model::create();
-    auto model2 = libcellml::Model::create();
-
-    model1->addImportSource(imp);
-    EXPECT_EQ(size_t(1), model1->importSourceCount());
-    EXPECT_EQ(imp, model1->importSource(0));
-
-    model2->addImportSource(imp);
-    EXPECT_EQ(size_t(1), model2->importSourceCount());
-    EXPECT_EQ(imp, model2->importSource(0));
-    EXPECT_EQ(size_t(0), model1->importSourceCount());
-    EXPECT_EQ(nullptr, model1->importSource(0));
-
-    EXPECT_EQ(model2, imp->parent());
-}
-
-TEST(ImportSource, createLinkedMultiple)
-{
-    auto model = libcellml::Model::create();
-    auto c1 = libcellml::Component::create("c1");
-    auto c2 = libcellml::Component::create("c2");
-    auto u1 = libcellml::Units::create("u1");
-    auto u2 = libcellml::Units::create("u2");
-    auto imp = libcellml::ImportSource::create();
-
-    model->addComponent(c1);
-    model->addComponent(c2);
-    model->addUnits(u1);
-    model->addUnits(u2);
-
-    c1->setImportSource(imp);
-    c2->setImportSource(imp);
-    u1->setImportSource(imp);
-    u2->setImportSource(imp);
-
-    EXPECT_EQ(size_t(1), model->importSourceCount());
-
-    // Change to another import source:
-    auto imp2 = libcellml::ImportSource::create();
-    c2->setImportSource(imp2);
-    u2->setImportSource(imp2);
-
-    EXPECT_EQ(size_t(2), model->importSourceCount());
-
-    EXPECT_TRUE(c1->isImport());
-    EXPECT_TRUE(u1->isImport());
-    EXPECT_TRUE(c2->isImport());
     EXPECT_TRUE(u2->isImport());
 }
 

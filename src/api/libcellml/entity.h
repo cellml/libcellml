@@ -60,54 +60,12 @@ public:
     std::string id() const;
 
     /**
-     * @brief Returns the parent of the CellML Entity.
+     * @brief Remove the identifier for this entity.
      *
-     * @return A pointer to the entity's parent if it has one,
-     * otherwise it returns the null pointer.
+     * Clear the identifier for this entity. Future calls to id() will
+     * return an empty string.
      */
-    EntityPtr parent() const;
-
-    /**
-     * @brief Sets the entity as the parent of this entity.
-     *
-     * Set the parent of the entity to the entity given.
-     *
-     * @param parent An @c Entity.
-     */
-    void setParent(const EntityPtr &parent);
-
-    /**
-     * @brief Clear the pointer to the parent entity.
-     *
-     * Clears the pointer to the parent entity.
-     */
-    void removeParent();
-
-    /**
-     * @brief Test to see if the given entity has a parent.
-     *
-     * Tests the given entity to determine if the entity has a parent.
-     * If the entity has a parent then @c true is returned otherwise
-     * @c false is returned.m
-     *
-     * @return @c true if this entity has a parent, @c false otherwise.
-     */
-    bool hasParent() const;
-
-    /**
-     * @brief Test to see if the given entity is an ancestor of this entity.
-     *
-     * Tests the given entity to determine if the entity or
-     * any of its parent entities already has this entity as a parent.
-     * This allows for a test against creating cycles. If the given entity
-     * is a parent of the current entity then the result is @c true otherwise the
-     * result is false.
-     *
-     * @param entity The entity to test against.
-     *
-     * @return @c true if this entity has the given entity as a parent, @c false otherwise.
-     */
-    bool hasAncestor(const EntityPtr &entity) const;
+    void removeId();
 
     /**
      * @brief Test to see if this entity is equal to the @p other entity.

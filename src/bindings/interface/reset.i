@@ -3,7 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %import "createconstructor.i"
-%import "entity.i"
+%import "parentedentity.i"
 %import "types.i"
 
 %feature("docstring") libcellml::Reset
@@ -58,22 +58,22 @@
 "Appends to the :class: reset_value MathML string of this reset.";
 
 %feature("docstring") libcellml::Reset::setTestValueId
-"Sets the :class: test_value id string of this reset.";
+"Sets the :class: test_value identifier string of this reset.";
 
 %feature("docstring") libcellml::Reset::removeTestValueId
-"Clears the :class: test_value id string of this reset.";
+"Clears the :class: test_value identifier string of this reset.";
 
 %feature("docstring") libcellml::Reset::setResetValueId
-"Sets the :class: reset_value id string of this reset.";
+"Sets the :class: reset_value identifier string of this reset.";
 
 %feature("docstring") libcellml::Reset::removeResetValueId
-"Clears the :class: reset_value id string of this reset.";
+"Clears the :class: reset_value identifier string of this reset.";
 
 %feature("docstring") libcellml::Reset::testValueId
-"Returns the :class: test_value id string of this reset.";
+"Returns the :class: test_value identifier string of this reset.";
 
 %feature("docstring") libcellml::Reset::resetValueId
-"Returns the :class: reset_value id string of this reset.";
+"Returns the :class: reset_value identifier string of this reset.";
 
 %feature("docstring") libcellml::Reset::clone
 "Create a copy of this reset.";

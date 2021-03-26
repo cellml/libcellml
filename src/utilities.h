@@ -31,9 +31,12 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * Base URLs of specification and example sites from which the Issue::url() will be constructed.
+ * Base URLs of sites from which Issue::url() strings will be constructed.
  */
 static const std::string baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
+static const std::string docsUrl = "https://libcellml.org/documentation/guides/latest/runtime_codes/index";
+
+static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
 /**
  * Vector of base units.
@@ -283,10 +286,11 @@ std::string convertToString(size_t value);
  * @overload std::string convertToString(int value)
  *
  * @param value The @c double value number to convert.
+ * @param fullPrecision Whether the @p value is converted using full precision.
  *
  * @return @c std::string representation of the @p value.
  */
-std::string convertToString(double value);
+std::string convertToString(double value, bool fullPrecision = true);
 
 /**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.
@@ -506,12 +510,12 @@ bool areEquivalentVariables(const VariablePtr &variable1,
  * Test to see if @p entity1 is a child of @p entity2.  Returns @c true if
  * @p entity1 is a child of @p entity2 and @c false otherwise.
  *
- * @param entity1 The @c Entity to test if it is a child of @p entity2.
- * @param entity2 The @c Entity that is potentially the parent of @p entity1.
+ * @param entity1 The @c ParentedEntity to test if it is a child of @p entity2.
+ * @param entity2 The @c ParentedEntity that is potentially the parent of @p entity1.
  *
  * @return @c true if @p entity1 is a child of @p entity2 and @c false otherwise.
  */
-bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
+bool isEntityChildOf(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2);
 
 /**
  * @brief Test to determine if @p entity1 and @p entity2 are siblings.
@@ -519,12 +523,12 @@ bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
  * Test to determine if @p entity1 and @p entity2 are siblings.  Returns
  * @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
  *
- * @param entity1 An @c Entity to test if it is a sibling to @p entity2.
- * @param entity2 An @c Entity to test if it is a sibling to @p entity1.
+ * @param entity1 An @c ParentedEntity to test if it is a sibling to @p entity2.
+ * @param entity2 An @c ParentedEntity to test if it is a sibling to @p entity1.
  *
  * @return @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
  */
-bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
+bool areEntitiesSiblings(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2);
 
 /**
  * @brief Determine the interface type of the @p variable.
@@ -611,20 +615,20 @@ static inline std::string trimCopy(std::string s)
 }
 
 /**
- * @brief Collect all existing id attributes within the given model.
+ * @brief Collect all existing identifier attributes within the given model.
  *
  * @param model The @c ModelPtr to interrogate.
  *
- * @return An @c IdList collection of existing ids.
+ * @return An @c IdList collection of existing identifiers.
  */
 IdList listIds(const ModelPtr &model);
 
 /**
- * @brief Creates an id string for a "type" object, unique in the context of @p idList.
+ * @brief Creates an identifier string for a "type" object, unique in the context of @p idList.
  *
- * The id format is a 6-digit hexadecimal string.
+ * The identifier format is a 6-digit hexadecimal string.
  *
- * @return A string representing a unique id.
+ * @return A string representing a unique identifier.
  */
 std::string makeUniqueId(IdList &idList);
 
@@ -728,5 +732,17 @@ std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
  * @return @c true if all the entities in @p entities are equal to entites in the @p owner.
  */
 bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities);
+
+/**
+ * @brief Get all the import sources in the @p model.
+ *
+ * Get all the import sources from the imported @ref Component s
+ * and @ref Units in the given @p model.
+ *
+ * @param model The model to find all import sources from.
+ *
+ * @return A @c std::vector of all the @ref ImportSource s found in the model.
+ */
+std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
 
 } // namespace libcellml

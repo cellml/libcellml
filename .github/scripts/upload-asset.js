@@ -3,6 +3,7 @@ const mime = require('mime');
 
 module.exports = ({github, context}) => {
   
+<<<<<<< HEAD
   console.log('=========')
   //console.log(github)
   //console.log(context)
@@ -15,6 +16,12 @@ module.exports = ({github, context}) => {
 
   const files = process.env.DATA.split(';')
   console.log(files)  
+=======
+  let upload_url = context.payload.release.upload_url
+  upload_url = upload_url.split('{').shift()
+  
+  const files = process.env.DATA.split(';')
+>>>>>>> main
   for (let index in files) {
     const assetPath = files[index]
     const contentType = mime.getType(assetPath);

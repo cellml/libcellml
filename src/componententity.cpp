@@ -230,15 +230,9 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &newComp
 {
     bool status = false;
     auto oldComponent = component(index);
-    EntityPtr parent = nullptr;
+    ParentedEntityPtr parent = nullptr;
     if (oldComponent != nullptr && oldComponent->hasParent()) {
         parent = oldComponent->parent();
-    }
-    if (newComponent->isImport()) {
-        auto model = owningModel(oldComponent);
-        if (model != nullptr) {
-            model->addImportSource(newComponent->importSource());
-        }
     }
 
     if (removeComponent(index)) {
@@ -283,6 +277,11 @@ void ComponentEntity::setEncapsulationId(const std::string &id)
 std::string ComponentEntity::encapsulationId() const
 {
     return mPimpl->mEncapsulationId;
+}
+
+void ComponentEntity::removeEncapsulationId()
+{
+    mPimpl->mEncapsulationId = "";
 }
 
 bool ComponentEntity::doEquals(const EntityPtr &other) const
