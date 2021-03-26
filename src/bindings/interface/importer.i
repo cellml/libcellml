@@ -49,6 +49,24 @@ library by index, or an empty string if the index is out of range."
 %feature("docstring") libcellml::Importer::removeAllModels
 "Removes all models from the library.";
 
+%feature("docstring") libcellml::Importer::addImportSource
+"Manually add an ImportSource to the Importer.";
+
+%feature("docstring") libcellml::Importer::importSourceCount
+"Return the number of ImportSource items in the Importer.";
+
+%feature("docstring") libcellml::Importer::importSource
+"Retrieve an ImportSource by index.";
+
+%feature("docstring") libcellml::Importer::removeImportSource
+"Remove an ImportSource from the Importer by index or reference.";
+
+%feature("docstring") libcellml::Importer::removeAllImportSources
+"Remove all ImportSource items from the Importer.";
+
+%feature("docstring") libcellml::Importer::hasImportSource
+"Test whether this Importer already contains the given ImportSource.";
+
 %{
 #include "libcellml/importer.h"
 %}

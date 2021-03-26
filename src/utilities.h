@@ -733,4 +733,16 @@ std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
  */
 bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities);
 
+/**
+ * @brief Get all the import sources in the @p model.
+ *
+ * Get all the import sources from the imported @ref Component s
+ * and @ref Units in the given @p model.
+ *
+ * @param model The model to find all import sources from.
+ *
+ * @return A @c std::vector of all the @ref ImportSource s found in the model.
+ */
+std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
+
 } // namespace libcellml

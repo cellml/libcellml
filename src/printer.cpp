@@ -401,12 +401,22 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
 {
     std::string repr;
 
-    std::vector<UnitsPtr> importedUnits = getImportedUnits(model);
-    std::vector<ComponentPtr> importedComponents = getImportedComponents(model);
-
-    for (size_t i = 0; i < model->importSourceCount(); ++i) {
-        auto importSource = model->importSource(i);
-
+    std::vector<ImportSourcePtr> collatedImportSources;
+    auto importedComponents = getImportedComponents(model);
+    for (auto &component : importedComponents) {
+        auto result = std::find(collatedImportSources.begin(), collatedImportSources.end(), component->importSource());
+        if (result == collatedImportSources.end()) {
+            collatedImportSources.push_back(component->importSource());
+        }
+    }
+    auto importedUnits = getImportedUnits(model);
+    for (auto &units : importedUnits) {
+        auto result = std::find(collatedImportSources.begin(), collatedImportSources.end(), units->importSource());
+        if (result == collatedImportSources.end()) {
+            collatedImportSources.push_back(units->importSource());
+        }
+    }
+    for (auto &importSource : collatedImportSources) {
         repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + importSource->url() + "\"";
         if (!importSource->id().empty()) {
             repr += " id=\"" + importSource->id() + "\"";
