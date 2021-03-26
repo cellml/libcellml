@@ -384,7 +384,7 @@ TEST(Annotator, castingOnRetrieval)
             EXPECT_TRUE((v1v2->variable2() == model->component("component2")->variable("variable1")) || (v1v2->variable2() == model->component("component2")->component("component3")->variable("variable1")));
             break;
         case libcellml::CellmlElementType::IMPORT:
-            EXPECT_EQ(model->importSource(0), std::any_cast<libcellml::ImportSourcePtr>(itemInfo->item()));
+            EXPECT_EQ(model->component("component1")->importSource(), std::any_cast<libcellml::ImportSourcePtr>(itemInfo->item()));
             break;
         case libcellml::CellmlElementType::ENCAPSULATION:
         case libcellml::CellmlElementType::MODEL:
@@ -432,8 +432,8 @@ TEST(Annotator, automaticIdsOnEverything)
     EXPECT_TRUE(annotator->assignAllIds());
 
     EXPECT_EQ("b4da55", model->id());
-    EXPECT_EQ("b4da56", model->importSource(0)->id());
-    EXPECT_EQ("b4da57", model->importSource(1)->id());
+    EXPECT_EQ("b4da56", model->component("component1")->importSource()->id());
+    EXPECT_EQ("b4da57", model->units("units1")->importSource()->id());
     EXPECT_EQ("b4da58", model->units(0)->id());
     EXPECT_EQ("b4da59", model->units(1)->id());
     EXPECT_EQ("b4da5a", model->units(2)->id());
@@ -602,8 +602,8 @@ TEST(Annotator, automaticIdsImportSource)
     annotator->setModel(model);
 
     EXPECT_EQ("", model->id());
-    EXPECT_EQ("", model->importSource(0)->id());
-    EXPECT_EQ("", model->importSource(1)->id());
+    EXPECT_EQ("", model->component("component1")->importSource()->id());
+    EXPECT_EQ("", model->units("units1")->importSource()->id());
     EXPECT_EQ("", model->units(0)->id());
     EXPECT_EQ("", model->component(0)->id());
 
@@ -611,8 +611,8 @@ TEST(Annotator, automaticIdsImportSource)
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
-    EXPECT_EQ("b4da55", model->importSource(0)->id());
-    EXPECT_EQ("b4da56", model->importSource(1)->id());
+    EXPECT_EQ("b4da55", model->component("component1")->importSource()->id());
+    EXPECT_EQ("b4da56", model->units("units1")->importSource()->id());
     EXPECT_EQ("", model->units(0)->id());
     EXPECT_EQ("", model->component(0)->id());
 }
@@ -955,7 +955,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
     auto itemComponentRef = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
     auto itemConnection = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, p1);
     auto itemEncapsulation = libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, model);
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->importSource(0));
+    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
     auto itemMapVariables = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, p2);
     auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, model);
     auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
@@ -986,7 +986,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
     EXPECT_EQ("b4da55", model->component(0)->id());
     EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
     EXPECT_EQ("b4da57", libcellml::Variable::equivalenceConnectionId(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable1")));
-    EXPECT_EQ("b4da58", model->importSource(0)->id());
+    EXPECT_EQ("b4da58", model->component("component1")->importSource()->id());
     EXPECT_EQ("b4da59", libcellml::Variable::equivalenceMappingId(model->component("component2")->variable("variable2"), model->component("component2")->component("component3")->variable("variable2")));
     EXPECT_EQ("b4da5a", model->id());
     EXPECT_EQ("b4da5b", model->component("component2")->reset(0)->id());
@@ -1084,7 +1084,7 @@ TEST(Annotator, assignImportSourceId)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringNoIds);
 
-    auto importSource = model->importSource(0);
+    auto importSource = model->component("component1")->importSource();
 
     annotator->setModel(model);
 
@@ -1239,7 +1239,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     auto itemComponentRef = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
     auto itemConnection = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, connection);
     auto itemEncapsulation = libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, model);
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->importSource(0));
+    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
     auto itemMapVariables = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
     auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, model);
     auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
@@ -1254,7 +1254,6 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponent->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponentRef->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePairPtr>(itemConnection->item())->variable1()));
-    EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ImportSourcePtr>(itemImportSource->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePairPtr>(itemMapVariables->item())->variable1()));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ResetPtr>(itemReset->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ResetPtr>(itemResetValue->item())));
@@ -1281,7 +1280,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ("b4da55", model->component(0)->id());
     EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
     EXPECT_EQ("b4da57", libcellml::Variable::equivalenceConnectionId(connection->variable1(), connection->variable2()));
-    EXPECT_EQ("b4da58", model->importSource(0)->id());
+    EXPECT_EQ("b4da58", model->component("component1")->importSource()->id());
     EXPECT_EQ("b4da59", libcellml::Variable::equivalenceMappingId(mapping->variable1(), mapping->variable2()));
     EXPECT_EQ("b4da5a", model->id());
     EXPECT_EQ("b4da5b", model->component("component2")->reset(0)->id());
@@ -1327,7 +1326,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     auto itemComponentRef = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
     auto itemConnection = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, connection);
     auto itemEncapsulation = libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, model);
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->importSource(0));
+    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
     auto itemMapVariables = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
     auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, model);
     auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
@@ -1342,7 +1341,6 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponent->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponentRef->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePairPtr>(itemConnection->item())->variable1()));
-    EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ImportSourcePtr>(itemImportSource->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePairPtr>(itemMapVariables->item())->variable1()));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ResetPtr>(itemReset->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ResetPtr>(itemResetValue->item())));
@@ -1385,7 +1383,7 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     auto itemComponentRef = libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT_REF, model->component("component2"));
     auto itemConnection = libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, connection);
     auto itemEncapsulation = libcellml::AnyItem::create(libcellml::CellmlElementType::ENCAPSULATION, model);
-    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->importSource(0));
+    auto itemImportSource = libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, model->component("component1")->importSource());
     auto itemMapVariables = libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, mapping);
     auto itemModel = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, model);
     auto itemReset = libcellml::AnyItem::create(libcellml::CellmlElementType::RESET, model->component("component2")->reset(0));
@@ -1404,7 +1402,6 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     EXPECT_EQ("", annotator->assignId(itemComponentRef));
     EXPECT_EQ("", annotator->assignId(itemConnection));
     EXPECT_EQ("", annotator->assignId(itemEncapsulation));
-    EXPECT_EQ("", annotator->assignId(itemImportSource));
     EXPECT_EQ("", annotator->assignId(itemMapVariables));
     EXPECT_EQ("", annotator->assignId(itemModel));
     EXPECT_EQ("", annotator->assignId(itemReset));
@@ -1413,6 +1410,9 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     EXPECT_EQ("", annotator->assignId(itemUnit));
     EXPECT_EQ("", annotator->assignId(itemUnits));
     EXPECT_EQ("", annotator->assignId(itemVariable));
+
+    // Import sources don't belong to a model so an identifier will be assigned.
+    EXPECT_EQ("b4da55", annotator->assignId(itemImportSource));
 }
 
 TEST(Annotator, issueIdWithModelThatWasDeleted)
@@ -1465,8 +1465,8 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     EXPECT_EQ("b4da58", annotator->assignId(model, libcellml::CellmlElementType::ENCAPSULATION));
     EXPECT_EQ("b4da58", model->encapsulationId());
 
-    EXPECT_EQ("b4da59", annotator->assignId(model->importSource(0)));
-    EXPECT_EQ("b4da59", model->importSource(0)->id());
+    EXPECT_EQ("b4da59", annotator->assignId(model->component("component1")->importSource()));
+    EXPECT_EQ("b4da59", model->component("component1")->importSource()->id());
 
     EXPECT_EQ("b4da5a", annotator->assignId(mapping));
     EXPECT_EQ("b4da5a", libcellml::Variable::equivalenceMappingId(mapping->variable1(), mapping->variable2()));
@@ -1686,7 +1686,7 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
     std::map<std::string, std::vector<libcellml::AnyItemPtr>> expectedItems = {
         {"duplicateId1", {
                              libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units2"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->importSource(0))),
+                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->component("component1")->importSource())),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c4v1, c2v1))),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2"))),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
@@ -1705,7 +1705,7 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                              libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c3v1)),
                          }},
         {"duplicateId3", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->importSource(1))),
+                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->units("units1")->importSource())),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units3"))),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v1)),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v2)),
@@ -1824,7 +1824,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
     std::map<std::string, std::vector<libcellml::AnyItemPtr>> expectedItems = {
         {"duplicateId1", {
                              libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units2"))),
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->importSource(0))),
+                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->component("component1")->importSource())),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::MAP_VARIABLES, std::any(libcellml::VariablePair::create(c4v1, c2v1))),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::COMPONENT, std::any(model->component("component2"))),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::CONNECTION, std::any(libcellml::VariablePair::create(c2v1, c3v1))),
@@ -1843,7 +1843,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
                              libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c3v1)),
                          }},
         {"duplicateId3", {
-                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->importSource(1))),
+                             libcellml::AnyItem::create(libcellml::CellmlElementType::IMPORT, std::any(model->units("units1")->importSource())),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units3"))),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c4v1)),
                              libcellml::AnyItem::create(libcellml::CellmlElementType::VARIABLE, std::any(c2v2)),
@@ -2084,10 +2084,10 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     EXPECT_EQ("b4da58", annotator->assignId(model, libcellml::CellmlElementType::ENCAPSULATION));
     EXPECT_EQ("b4da58", model->encapsulationId());
 
-    model->importSource(0)->setId("changed");
-    EXPECT_EQ("changed", model->importSource(0)->id());
-    EXPECT_EQ("b4da59", annotator->assignId(model->importSource(0)));
-    EXPECT_EQ("b4da59", model->importSource(0)->id());
+    model->component("component1")->importSource()->setId("changed");
+    EXPECT_EQ("changed", model->component("component1")->importSource()->id());
+    EXPECT_EQ("b4da59", annotator->assignId(model->component("component1")->importSource()));
+    EXPECT_EQ("b4da59", model->component("component1")->importSource()->id());
 
     auto mapping = libcellml::VariablePair::create(
         model->component("component2")->variable("variable2"),

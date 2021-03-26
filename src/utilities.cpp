@@ -19,8 +19,10 @@ limitations under the License.
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstring>
 #include <iomanip>
 #include <limits>
+#include <numeric>
 #include <set>
 #include <sstream>
 #include <vector>
@@ -55,10 +57,14 @@ bool hasNonWhitespaceCharacters(const std::string &input)
     return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
-std::string convertToString(double value)
+std::string convertToString(double value, bool fullPrecision)
 {
     std::ostringstream strs;
-    strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    if (fullPrecision) {
+        strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    } else {
+        strs << value;
+    }
     return strs.str();
 }
 
@@ -173,9 +179,106 @@ bool isCellMLReal(const std::string &candidate)
     return isReal;
 }
 
-bool areEqual(double value1, double value2)
+bool areEqual(double a, double b)
 {
-    return std::abs(value1 - value2) < std::numeric_limits<double>::epsilon();
+    // Note: we add 0.0 in case a is, for instance, equal to 0.0 and b is equal
+    //       to -0.0.
+    return convertToString(a + 0.0) == convertToString(b + 0.0);
+}
+
+ptrdiff_t ulpsDistance(double a, double b)
+{
+    static const auto max = std::numeric_limits<ptrdiff_t>::max();
+
+    // Max distance for NaN.
+    if (std::isnan(a) || std::isnan(b)) {
+        return max;
+    }
+
+    // If one's infinite and they're not equal, max distance.
+    if (std::isinf(a) != std::isinf(b)) {
+        return max;
+    }
+
+    static const int SIZE_OF_DOUBLE = sizeof(double);
+
+    ptrdiff_t ia;
+    ptrdiff_t ib;
+    memcpy(&ia, &a, SIZE_OF_DOUBLE);
+    memcpy(&ib, &b, SIZE_OF_DOUBLE);
+
+    // Return the absolute value of the distance in ULPs.
+    ptrdiff_t distance = ia - ib;
+    if (distance < 0) {
+        return -distance;
+    }
+
+    return distance;
+}
+
+bool areNearlyEqual(double a, double b)
+{
+    static const double fixedEpsilon = std::numeric_limits<double>::epsilon();
+    static const ptrdiff_t ulpsEpsilon = 1;
+
+    if (fabs(a - b) <= fixedEpsilon) {
+        return true;
+    }
+
+    // If they are not the same sign then return false.
+    if ((a < 0.0) != (b < 0.0)) {
+        return false;
+    }
+
+    return ulpsDistance(a, b) <= ulpsEpsilon;
+}
+
+std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &componentEntity)
+{
+    std::vector<ComponentPtr> importedComponents;
+    for (size_t i = 0; i < componentEntity->componentCount(); ++i) {
+        auto component = componentEntity->component(i);
+        if (component->isImport()) {
+            importedComponents.push_back(component);
+        }
+
+        auto childImportedComponents = getImportedComponents(component);
+        importedComponents.reserve(importedComponents.size() + childImportedComponents.size());
+        importedComponents.insert(importedComponents.end(), childImportedComponents.begin(), childImportedComponents.end());
+    }
+
+    return importedComponents;
+}
+
+std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model)
+{
+    std::vector<UnitsPtr> importedUnits;
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        auto units = model->units(i);
+        if (units->isImport()) {
+            importedUnits.push_back(units);
+        }
+    }
+
+    return importedUnits;
+}
+
+std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model)
+{
+    std::vector<ImportSourcePtr> importSources;
+
+    auto importedComponents = getImportedComponents(model);
+    auto importedUnits = getImportedUnits(model);
+
+    importSources.reserve(importedComponents.size() + importedUnits.size());
+    for (auto &component : importedComponents) {
+        importSources.push_back(component->importSource());
+    }
+    for (auto &units : importedUnits) {
+        importSources.push_back(units->importSource());
+    }
+
+    return importSources;
 }
 
 // The below code is used to compute the SHA-1 value of a string, based on the
@@ -424,7 +527,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && units->unitCount() == 0 && isStandardUnitName(units->name());
+    return (units != nullptr) && (units->unitCount() == 0) && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
@@ -459,12 +562,12 @@ bool areEquivalentVariables(const VariablePtr &variable1,
     return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
-bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
+bool isEntityChildOf(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     return entity1->parent() == entity2;
 }
 
-bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2)
+bool areEntitiesSiblings(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     auto entity1Parent = entity1->parent();
     return entity1Parent != nullptr && entity1Parent == entity2->parent();
@@ -689,7 +792,7 @@ IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originSta
     rebasedStack.resize(originStack.size(), SIZE_MAX);
     if (rebasedStack == originStack) {
         rebasedStack = destinationStack;
-        auto offsetIt = stack.begin() + int64_t(originStack.size());
+        auto offsetIt = stack.begin() + ptrdiff_t(originStack.size());
         rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
     } else {
         rebasedStack.clear();
@@ -719,7 +822,7 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
             }
 
             if (!rebasedVector.empty()) {
-                rebasedMap[rebasedKey] = rebasedVector;
+                rebasedMap.emplace(rebasedKey, rebasedVector);
             }
         }
     }
@@ -752,7 +855,7 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     ComponentNameMap nameMap;
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto c = component->component(index);
-        nameMap[c->name()] = c;
+        nameMap.emplace(c->name(), c);
         ComponentNameMap childrenNameMap = createComponentNamesMap(c);
         nameMap.insert(childrenNameMap.begin(), childrenNameMap.end());
     }
@@ -858,7 +961,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
             auto equivalentVariable = variable->equivalentVariable(j);
             auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
             if (equivalenceMap.count(indexStack) == 0) {
-                equivalenceMap[indexStack] = std::vector<IndexStack>();
+                equivalenceMap.emplace(indexStack, std::vector<IndexStack>());
             }
             equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
         }
@@ -1108,6 +1211,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                     auto issue = Issue::create();
                     issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
                     issue->setLevel(Issue::Level::WARNING);
+                    issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                     issue->setVariable(v);
                     issueList.push_back(issue);
                     status = false;
@@ -1116,6 +1220,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                 auto issue = Issue::create();
                 issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
                 issue->setLevel(Issue::Level::WARNING);
+                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                 issue->setVariable(v);
                 issueList.push_back(issue);
                 status = false;
@@ -1165,6 +1270,55 @@ std::string replace(std::string string, const std::string &from, const std::stri
     return (index == std::string::npos) ?
                string :
                string.replace(index, from.length(), to);
+}
+
+bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities)
+{
+    std::vector<size_t> unmatchedIndex(entities.size());
+    std::iota(unmatchedIndex.begin(), unmatchedIndex.end(), 0);
+    for (const auto &entity : entities) {
+        bool entityFound = false;
+        size_t index = 0;
+        for (index = 0; index < unmatchedIndex.size() && !entityFound; ++index) {
+            size_t currentIndex = unmatchedIndex.at(index);
+            auto model = std::dynamic_pointer_cast<Model>(owner);
+            if (model != nullptr) {
+                auto unitsOther = model->units(currentIndex);
+                if (entity->equals(unitsOther)) {
+                    entityFound = true;
+                }
+            } else {
+                auto component = std::dynamic_pointer_cast<Component>(owner);
+                auto variable = std::dynamic_pointer_cast<Variable>(entity);
+                if (variable != nullptr) {
+                    auto variableOther = component->variable(currentIndex);
+                    if (variable->equals(variableOther)) {
+                        entityFound = true;
+                    }
+                } else {
+                    auto reset = std::dynamic_pointer_cast<Reset>(entity);
+                    auto resetOther = component->reset(currentIndex);
+                    if (reset->equals(resetOther)) {
+                        entityFound = true;
+                    }
+                }
+            }
+        }
+        if (entityFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
+            // We are going to assume here that nobody is going to add more
+            // than 2,147,483,647 units to this component. And much more than
+            // that in a 64-bit environment.
+            unmatchedIndex.erase(unmatchedIndex.begin() + ptrdiff_t(index) - 1);
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool areEqual(const std::string &str1, const std::string &str2)
+{
+    return str1 == str2;
 }
 
 } // namespace libcellml

@@ -91,7 +91,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
             continue;
         }
         std::string mappingVariables;
-        VariablePairPtr variablePair = variableMap.at(componentMapIndex1);
+        const VariablePairPtr &variablePair = variableMap.at(componentMapIndex1);
         std::string connectionId = Variable::equivalenceConnectionId(variablePair->variable1(), variablePair->variable2());
         mappingVariables += printMapVariables(variablePair, idList, autoIds);
         // Check for subsequent variable equivalence pairs with the same parent components.
@@ -99,7 +99,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
             ComponentPtr nextComponent1 = iterPair2->first;
             ComponentPtr nextComponent2 = iterPair2->second;
-            VariablePairPtr variablePair2 = variableMap.at(componentMapIndex2);
+            const VariablePairPtr &variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
                 mappingVariables += printMapVariables(variablePair2, idList, autoIds);
                 connectionId = Variable::equivalenceConnectionId(variablePair2->variable1(), variablePair2->variable2());
@@ -306,7 +306,7 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, IdL
     std::string name = variable->name();
     std::string id = variable->id();
     std::string units = variable->units() != nullptr ? variable->units()->name() : "";
-    std::string intial_value = variable->initialValue();
+    std::string initial_value = variable->initialValue();
     std::string interface_type = variable->interfaceType();
     if (!name.empty()) {
         repr += " name=\"" + name + "\"";
@@ -314,8 +314,8 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, IdL
     if (!units.empty()) {
         repr += " units=\"" + units + "\"";
     }
-    if (!intial_value.empty()) {
-        repr += " initial_value=\"" + intial_value + "\"";
+    if (!initial_value.empty()) {
+        repr += " initial_value=\"" + initial_value + "\"";
     }
     if (!interface_type.empty()) {
         repr += " interface=\"" + interface_type + "\"";
@@ -401,9 +401,22 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
 {
     std::string repr;
 
-    for (size_t i = 0; i < model->importSourceCount(); ++i) {
-        auto importSource = model->importSource(i);
-
+    std::vector<ImportSourcePtr> collatedImportSources;
+    auto importedComponents = getImportedComponents(model);
+    for (auto &component : importedComponents) {
+        auto result = std::find(collatedImportSources.begin(), collatedImportSources.end(), component->importSource());
+        if (result == collatedImportSources.end()) {
+            collatedImportSources.push_back(component->importSource());
+        }
+    }
+    auto importedUnits = getImportedUnits(model);
+    for (auto &units : importedUnits) {
+        auto result = std::find(collatedImportSources.begin(), collatedImportSources.end(), units->importSource());
+        if (result == collatedImportSources.end()) {
+            collatedImportSources.push_back(units->importSource());
+        }
+    }
+    for (auto &importSource : collatedImportSources) {
         repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + importSource->url() + "\"";
         if (!importSource->id().empty()) {
             repr += " id=\"" + importSource->id() + "\"";
@@ -412,26 +425,27 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
         }
         repr += ">";
 
-        for (size_t c = 0; c < importSource->componentCount(); ++c) {
-            auto component = importSource->component(c);
-            repr += "<component component_ref=\"" + component->importReference() + "\" name=\"" + component->name() + "\"";
-            if (!component->id().empty()) {
-                repr += " id=\"" + component->id() + "\"";
-            } else if (autoIds) {
-                repr += " id=\"" + makeUniqueId(idList) + "\"";
+        for (const UnitsPtr &units : importedUnits) {
+            if (units->importSource() == importSource) {
+                repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
+                if (!units->id().empty()) {
+                    repr += " id=\"" + units->id() + "\"";
+                } else if (autoIds) {
+                    repr += " id=\"" + makeUniqueId(idList) + "\"";
+                }
+                repr += "/>";
             }
-            repr += "/>";
         }
-
-        for (size_t u = 0; u < importSource->unitsCount(); ++u) {
-            auto units = importSource->units(u);
-            repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
-            if (!units->id().empty()) {
-                repr += " id=\"" + units->id() + "\"";
-            } else if (autoIds) {
-                repr += " id=\"" + makeUniqueId(idList) + "\"";
+        for (const ComponentPtr &component : importedComponents) {
+            if (component->importSource() == importSource) {
+                repr += "<component component_ref=\"" + component->importReference() + "\" name=\"" + component->name() + "\"";
+                if (!component->id().empty()) {
+                    repr += " id=\"" + component->id() + "\"";
+                } else if (autoIds) {
+                    repr += " id=\"" + makeUniqueId(idList) + "\"";
+                }
+                repr += "/>";
             }
-            repr += "/>";
         }
         repr += "</import>";
     }

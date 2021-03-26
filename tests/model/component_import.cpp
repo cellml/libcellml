@@ -18,6 +18,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 /**
  * @todo Need a way to have resources which can be used in tests, such as the
  * source models used in these tests. But I guess not until we start validating
@@ -203,18 +205,18 @@ TEST(ComponentImport, multipleImportAndParse)
 
 TEST(ComponentImport, hierarchicalImportAndParse)
 {
-    const std::string e =
+    const std::string expected =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-        "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
+        "    <component component_ref=\"cc1\" name=\"importedComponent\"/>\n"
         "  </import>\n"
         "  <component name=\"dave\"/>\n"
         "  <component name=\"bob\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"dave\">\n"
         "      <component_ref component=\"bob\">\n"
-        "        <component_ref component=\"c1\"/>\n"
+        "        <component_ref component=\"importedComponent\"/>\n"
         "      </component_ref>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
@@ -224,36 +226,37 @@ TEST(ComponentImport, hierarchicalImportAndParse)
     libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
-    libcellml::ComponentPtr dave = libcellml::Component::create();
-    dave->setName("dave");
-    m->addComponent(dave);
+    libcellml::ComponentPtr component1 = libcellml::Component::create();
+    component1->setName("dave");
+    m->addComponent(component1);
 
-    libcellml::ComponentPtr bob = libcellml::Component::create();
-    bob->setName("bob");
-    dave->addComponent(bob);
+    libcellml::ComponentPtr component2 = libcellml::Component::create();
+    component2->setName("bob");
+    component1->addComponent(component2);
 
-    EXPECT_FALSE(dave->isImport());
+    EXPECT_FALSE(component1->isImport());
 
-    libcellml::ComponentPtr i1 = libcellml::Component::create();
-    i1->setName("c1");
-    i1->setSourceComponent(imp, "cc1");
+    libcellml::ComponentPtr importedComponent = libcellml::Component::create();
+    importedComponent->setName("importedComponent");
+    importedComponent->setSourceComponent(imp, "cc1");
 
-    EXPECT_TRUE(i1->isImport());
+    EXPECT_TRUE(importedComponent->isImport());
 
-    EXPECT_EQ(size_t(0), bob->componentCount());
-    bob->addComponent(i1);
-    EXPECT_EQ(size_t(1), bob->componentCount());
+    EXPECT_EQ(size_t(0), component2->componentCount());
+    component2->addComponent(importedComponent);
+    EXPECT_EQ(size_t(1), component2->componentCount());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
-    std::string a = printer->printModel(m);
-    EXPECT_EQ(e, a);
+    std::string actual = printer->printModel(m);
+    EXPECT_EQ(expected, actual);
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(expected);
     EXPECT_EQ(size_t(1), model->componentCount());
-    a = printer->printModel(model);
-    EXPECT_EQ(e, a);
+    EXPECT_TRUE(model->component("importedComponent", true)->isImport());
+    actual = printer->printModel(model);
+    EXPECT_EQ(expected, actual);
 }
 
 TEST(ComponentImport, complexImportAndParse)
@@ -318,63 +321,4 @@ TEST(ComponentImport, complexImportAndParse)
     EXPECT_EQ(size_t(1), constDave->componentCount());
     const libcellml::ComponentPtr constBob = constDave->component("bob");
     EXPECT_EQ(size_t(2), constBob->componentCount());
-}
-
-TEST(ComponentImport, importSourceComponentMethods)
-{
-    auto model = libcellml::Model::create("so_much_importing");
-
-    // Add component to model, then import to component:
-    auto imp1 = libcellml::ImportSource::create();
-    std::string url1 = "http://www.example.com#hello";
-    imp1->setUrl(url1);
-
-    auto component1 = libcellml::Component::create("importComponent1");
-    model->addComponent(component1);
-    component1->setImportSource(imp1);
-
-    EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(imp1, model->importSource(0));
-
-    // Add import to component, then component to model:
-    auto imp2 = libcellml::ImportSource::create();
-    std::string url2 = "http://www.example.com#bonjour";
-    imp2->setUrl(url2);
-
-    auto component2 = libcellml::Component::create("importComponent2");
-    component2->setImportSource(imp2);
-    model->addComponent(component2);
-
-    EXPECT_EQ(size_t(2), model->importSourceCount());
-    EXPECT_EQ(imp2, model->importSource(1));
-
-    // Add import to model directly:
-    auto imp3 = libcellml::ImportSource::create();
-    std::string url3 = "http://www.example.com#dag";
-    imp3->setUrl(url3);
-    EXPECT_TRUE(model->addImportSource(imp3));
-
-    EXPECT_EQ(size_t(3), model->importSourceCount());
-    EXPECT_EQ(imp3, model->importSource(2));
-
-    // Reuse an import source in another component:
-    auto component4 = libcellml::Component::create("importComponent4");
-    component4->setImportSource(imp2);
-    model->addComponent(component4);
-
-    EXPECT_EQ(size_t(3), model->importSourceCount());
-    EXPECT_EQ(imp2, model->component("importComponent2")->importSource());
-    EXPECT_EQ(imp2, model->component("importComponent4")->importSource());
-
-    // Add an already-present import source:
-    EXPECT_FALSE(model->addImportSource(imp3));
-
-    // Add a new import source with a URL that's already in the list:
-    // NB This has changed so that the new import source
-    // object will trigger an additional import block, even though the
-    // URL (and therefore the imported object) already exists.
-    auto imp4 = libcellml::ImportSource::create();
-    imp4->setUrl(url1);
-    EXPECT_TRUE(model->addImportSource(imp4));
-    EXPECT_EQ(size_t(4), model->importSourceCount());
 }

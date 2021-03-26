@@ -119,7 +119,6 @@ TEST(ModelFlattening, importedUnits)
     auto importer = libcellml::Importer::create();
 
     modelWithUnitsImports = importer->flattenModel(modelWithUnitsImports);
-    EXPECT_EQ(size_t(0), modelWithUnitsImports->importSourceCount());
 
     auto printer = libcellml::Printer::create();
 
@@ -208,8 +207,6 @@ TEST(ModelFlattening, importedComponent)
 
     auto importer = libcellml::Importer::create();
     modelWithComponentImport = importer->flattenModel(modelWithComponentImport);
-
-    EXPECT_EQ(size_t(0), modelWithComponentImport->importSourceCount());
 
     auto printer = libcellml::Printer::create();
 
@@ -835,7 +832,6 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
     auto importer = libcellml::Importer::create();
 
     modelUsingImports = importer->flattenModel(modelUsingImports);
-    EXPECT_EQ(size_t(0), modelUsingImports->importSourceCount());
 
     auto printer = libcellml::Printer::create();
 
@@ -846,13 +842,13 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
 TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 {
     const std::string resolveError =
-        "Cyclic dependencies were found when attempting to resolve components in model 'importExample2b'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to resolve a component in the model 'importExample2b'. The dependency loop is:\n"
         " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
         " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml'.";
     const std::string flattenError =
-        "Cyclic dependencies were found when attempting to flatten components in model 'importExample2b'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to flatten a component in the model 'importExample2b'. The dependency loop is:\n"
         " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
         " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
         " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
@@ -880,13 +876,13 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
 {
     const std::string resolveError =
-        "Cyclic dependencies were found when attempting to resolve units in model 'importExampleUnits'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to resolve units in the model 'importExampleUnits'. The dependency loop is:\n"
         " - units 'sideB' is imported from 'myChildIsCircular' in 'circularImport1units.cellml';\n"
         " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml';\n"
         " - units 'circular2' is imported from 'shared' in 'circularImport1units.cellml'; and\n"
         " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml'.";
     const std::string flattenError =
-        "Cyclic dependencies were found when attempting to flatten units in model 'importExampleUnits'. The dependency loop is:\n"
+        "Cyclic dependencies were found when attempting to flatten units in the model 'importExampleUnits'. The dependency loop is:\n"
         " - units 'sideB' is imported from 'myChildIsCircular' in 'circularImport1units.cellml';\n"
         " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml';\n"
         " - units 'circular2' is imported from 'shared' in 'circularImport1units.cellml'; and\n"

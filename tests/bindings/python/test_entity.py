@@ -23,6 +23,9 @@ class EntityTestCase(unittest.TestCase):
         x.setId(idx)
         self.assertEqual(x.id(), idx)
 
+        x.removeId()
+        self.assertEqual(x.id(), '')
+
     def test_parent(self):
         from libcellml import Model, Component
 
@@ -75,6 +78,25 @@ class EntityTestCase(unittest.TestCase):
         c2.setParent(c1)
         self.assertTrue(c2.hasAncestor(c1))
         self.assertTrue(c2.hasAncestor(x))
+
+    def test_equals(self):
+        from libcellml import Units
+
+        u1 = Units("second")
+        u1.setId('units_second')
+
+        u2 = Units("second")
+        u2.setId('units_second')
+
+        self.assertTrue(u1.equals(u2))
+
+
+class ParentedEntityTestCase(unittest.TestCase):
+
+    def test_create(self):
+        from libcellml.parentedentity import ParentedEntity
+
+        self.assertRaises(AttributeError, ParentedEntity)
 
 
 class NamedEntityTestCase(unittest.TestCase):

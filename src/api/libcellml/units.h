@@ -515,24 +515,15 @@ public:
     std::string unitId(size_t index);
 
 private:
-    Units(); /**< Constructor. */
-    explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
-
-    /**
-     * @brief Set the import source of this units.
-     *
-     * Virtual method implementing ImportedEntity::setImportSource, @private.
-     * If these units are already located in a Model instance, then the
-     * import source is added to the Model too.
-     *
-     * @param importSource The @c ImportSourcePtr to add to this @ref Units.
-     */
-    void doSetImportSource(const ImportSourcePtr &importSource) override;
+    Units(); /**< Constructor, @private. */
+    explicit Units(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
     bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
 
-    struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl *mPimpl; /**< Private member to implementation pointer. */
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
+    struct UnitsImpl; /**< Forward declaration for pImpl idiom, @private. */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

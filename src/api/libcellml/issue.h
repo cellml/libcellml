@@ -217,10 +217,12 @@ public:
 
         // Importer class issues:
         IMPORTER_NULL_MODEL,
+        IMPORTER_MISSING_FILE,
         IMPORTER_MISSING_COMPONENT,
         IMPORTER_MISSING_UNITS,
 
         // Analyser issues:
+        ANALYSER_UNITS,
         ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE,
         ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION,
         ANALYSER_VOI_INITIALISED,
@@ -232,6 +234,13 @@ public:
         ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL,
         ANALYSER_EXTERNAL_VARIABLE_VOI,
         ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE,
+
+        // Annotator issues:
+        ANNOTATOR_ID_NOT_FOUND,
+        ANNOTATOR_ID_NOT_UNIQUE,
+        ANNOTATOR_NO_MODEL,
+        ANNOTATOR_INCONSISTENT_TYPE,
+        ANNOTATOR_NULL_MODEL,
 
         // Placeholder for further references:
         UNSPECIFIED
@@ -639,7 +648,7 @@ public:
     void clear();
 
 private:
-    Issue(); /**< Constructor. */
+    Issue(); /**< Constructor, @private. */
 
     /**
      * @brief Constructs an Issue for the component.
@@ -704,8 +713,8 @@ private:
      */
     explicit Issue(const UnitPtr &unit);
 
-    struct IssueImpl; /**< Forward declaration for pImpl idiom. */
-    IssueImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct IssueImpl; /**< Forward declaration for pImpl idiom, @private. */
+    IssueImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
