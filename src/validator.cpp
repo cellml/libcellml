@@ -430,7 +430,7 @@ void Validator::validateModel(const ModelPtr &model, const std::string &baseLoca
         auto type = issue->cellmlElementType();
 
         if (type == CellmlElementType::COMPONENT) {
-            auto indexStack = reverseEngineerIndexStack(issue->component());
+            auto indexStack = indexStackOf(issue->component());
             auto component = model->component(indexStack.at(0));
             indexStack.erase(indexStack.begin());
             for (const auto &index : indexStack) {
@@ -438,7 +438,7 @@ void Validator::validateModel(const ModelPtr &model, const std::string &baseLoca
             }
             issue->setComponent(component);
         } else if (type == CellmlElementType::UNITS) {
-            auto index = getUnitsIndexInModel(clone, issue->units());
+            auto index = indexOf(issue->units(), clone);
             issue->setUnits(model->units(index));
         }
 

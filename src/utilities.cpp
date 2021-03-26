@@ -541,7 +541,7 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
     componentEntity->removeComponent(component, false);
 }
 
-size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable)
+size_t indexOf(const VariablePtr &variable, const ComponentConstPtr &component)
 {
     size_t index = 0;
     bool found = false;
@@ -556,7 +556,7 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
     return index;
 }
 
-size_t getUnitsIndexInModel(const ModelPtr &model, const UnitsPtr &units)
+size_t indexOf(const UnitsPtr &units, const ModelPtr &model)
 {
     size_t index = 0;
     bool found = false;
@@ -676,7 +676,7 @@ NameList findComponentCnUnitsNames(const ComponentPtr &component);
 void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
 void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
-IndexStack reverseEngineerIndexStack(const VariablePtr &variable);
+IndexStack indexStackOf(const VariablePtr &variable);
 VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model);
 void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model);
 IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
@@ -789,11 +789,11 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
     return index;
 }
 
-IndexStack reverseEngineerIndexStack(const ComponentPtr &component)
+IndexStack indexStackOf(const ComponentPtr &component)
 {
     auto dummyVariable = Variable::create();
     component->addVariable(dummyVariable);
-    IndexStack indexStack = reverseEngineerIndexStack(dummyVariable);
+    IndexStack indexStack = indexStackOf(dummyVariable);
     indexStack.pop_back();
     component->removeVariable(dummyVariable);
 
@@ -946,11 +946,11 @@ NameList unitsNamesUsed(const ComponentPtr &component)
     return unitNames;
 }
 
-IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
+IndexStack indexStackOf(const VariablePtr &variable)
 {
     IndexStack indexStack;
     ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-    indexStack.push_back(getVariableIndexInComponent(component, variable));
+    indexStack.push_back(indexOf(variable, component));
 
     ComponentEntityPtr parent = component;
     ComponentEntityPtr grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
@@ -974,7 +974,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
                 indexStack.push_back(index);
             }
             auto equivalentVariable = variable->equivalentVariable(j);
-            auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
+            auto equivalentVariableIndexStack = indexStackOf(equivalentVariable);
             if (equivalenceMap.count(indexStack) == 0) {
                 equivalenceMap.emplace(indexStack, std::vector<IndexStack>());
             }
