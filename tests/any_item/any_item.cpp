@@ -22,14 +22,14 @@ limitations under the License.
 
 TEST(AnyItemPtr, createDefault)
 {
-    auto anyItem = libcellml::AnyItem::create();
+    auto anyItem = libcellml::AnyCellmlElement::create();
     EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, anyItem->type());
 }
 
 TEST(AnyItemPtr, createWithArguments)
 {
     auto model = libcellml::Model::create();
-    auto item = libcellml::AnyItem::create(libcellml::CellmlElementType::MODEL, std::any(model));
+    auto item = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, std::any(model));
     EXPECT_EQ(libcellml::CellmlElementType::MODEL, item->type());
     EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(item->item()));
 }
