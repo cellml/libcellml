@@ -60,25 +60,25 @@ Returns `True` on success.";
 "Returns the number of components the component contains.  ";
 
 %feature("docstring") libcellml::ComponentEntity::encapsulationId
-"Returns the encapsulation id for this entity.
+"Returns the encapsulation identifier for this entity.
 
-The encapsulation Id is placed on the XML element for this entity. For the
+The encapsulation identifier is placed on the XML element for this entity. For the
 :class:`Model` class this is the ``encapsulation`` element that is the root
 element for the model's structure.  For the :class:`Component` class this is
 the ``component_ref`` element that references the component it represents in
 the structure."
 
 %feature("docstring") libcellml::ComponentEntity::setEncapsulationId
-"Sets the encapsulation id for this entity.
+"Sets the encapsulation identifier for this entity.
 
-The encapsulation Id is placed on the XML element for this entity. For the
+The encapsulation identifier is placed on the XML element for this entity. For the
 :class:`Model` class this is the ``encapsulation`` element that is the root
 element for the model's structure.  For the :class:`Component` class this is
 the ``component_ref`` element that references the component it represents in
 the structure."
 
 %feature("docstring") libcellml::ComponentEntity::removeEncapsulationId
-"Removes the encapsulation Id for this entity."
+"Removes the encapsulation identifier for this entity."
 
 
 #if defined(SWIGPYTHON)
