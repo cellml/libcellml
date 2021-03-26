@@ -257,6 +257,24 @@ std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model)
     return importedUnits;
 }
 
+std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model)
+{
+    std::vector<ImportSourcePtr> importSources;
+
+    auto importedComponents = getImportedComponents(model);
+    auto importedUnits = getImportedUnits(model);
+
+    importSources.reserve(importedComponents.size() + importedUnits.size());
+    for (auto &component : importedComponents) {
+        importSources.push_back(component->importSource());
+    }
+    for (auto &units : importedUnits) {
+        importSources.push_back(units->importSource());
+    }
+
+    return importSources;
+}
+
 // The below code is used to compute the SHA-1 value of a string, based on the
 // code available at https://github.com/vog/sha1.
 
@@ -1187,6 +1205,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                     auto issue = Issue::create();
                     issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
                     issue->setLevel(Issue::Level::WARNING);
+                    issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                     issue->setVariable(v);
                     issueList.push_back(issue);
                     status = false;
@@ -1195,6 +1214,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                 auto issue = Issue::create();
                 issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
                 issue->setLevel(Issue::Level::WARNING);
+                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                 issue->setVariable(v);
                 issueList.push_back(issue);
                 status = false;
