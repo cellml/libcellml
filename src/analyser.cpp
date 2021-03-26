@@ -1376,8 +1376,8 @@ UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &units
     double realFactor = multiply ? factor : 1.0 / factor;
 
     for (auto &unitsMap : res) {
-        for (auto &units : unitsMap) {
-            units.second *= realFactor;
+        for (auto &unitsItem : unitsMap) {
+            unitsItem.second *= realFactor;
         }
     }
 
@@ -1471,8 +1471,8 @@ bool Analyser::AnalyserImpl::areSameUnitsMaps(const UnitsMaps &firstUnitsMaps,
                 }
             }
 
-            for (const auto &units : unitsMap) {
-                if (!areNearlyEqual(units.second, 0.0)) {
+            for (const auto &unitsItem : unitsMap) {
+                if (!areNearlyEqual(unitsItem.second, 0.0)) {
                     return false;
                 }
             }
@@ -1487,8 +1487,8 @@ bool Analyser::AnalyserImpl::isDimensionlessUnitsMaps(const UnitsMaps &unitsMaps
     // Check whether the given units maps is dimensionless.
 
     for (const auto &unitsMap : unitsMaps) {
-        for (const auto &units : unitsMap) {
-            if (units.first != "dimensionless") {
+        for (const auto &unitsItem : unitsMap) {
+            if (unitsItem.first != "dimensionless") {
                 return false;
             }
         }
@@ -1675,19 +1675,19 @@ std::string Analyser::AnalyserImpl::expressionUnits(const UnitsMaps &unitsMaps,
             }
         }
 
-        for (const auto &units : unitsMap) {
-            if ((units.first != "dimensionless")
-                && !areNearlyEqual(units.second, 0.0)) {
-                auto intExponent = int(units.second);
-                auto exponent = areNearlyEqual(units.second, intExponent) ?
+        for (const auto &unitsItem : unitsMap) {
+            if ((unitsItem.first != "dimensionless")
+                && !areNearlyEqual(unitsItem.second, 0.0)) {
+                auto intExponent = int(unitsItem.second);
+                auto exponent = areNearlyEqual(unitsItem.second, intExponent) ?
                                     convertToString(intExponent) :
-                                    convertToString(units.second, false);
+                                    convertToString(unitsItem.second, false);
 
                 if (!unit.empty()) {
                     unit += " x ";
                 }
 
-                unit += units.first;
+                unit += unitsItem.first;
 
                 if (exponent != "1") {
                     unit += "^" + exponent;
@@ -2058,8 +2058,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
     } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::BVAR) {
         for (auto &unitsMap : unitsMaps) {
-            for (auto &units : unitsMap) {
-                units.second *= -1.0;
+            for (auto &unitsItem : unitsMap) {
+                unitsItem.second *= -1.0;
             }
         }
 
