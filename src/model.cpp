@@ -530,7 +530,7 @@ bool Model::fixVariableInterfaces()
 bool traverseHierarchyAndRemoveIfEmpty(const ComponentPtr &component)
 {
     for (size_t i = component->componentCount() - 1; i != MAX_SIZE_T; --i) {
-        if (findAndRemoveEmptyComponent(component->component(i))) {
+        if (traverseHierarchyAndRemoveIfEmpty(component->component(i))) {
             component->removeComponent(i);
         }
     }
@@ -546,7 +546,7 @@ void Model::clean()
 {
     // Remove empty components.
     for (size_t i = componentCount() - 1; i != MAX_SIZE_T; --i) {
-        if (findAndRemoveEmptyComponent(component(i))) {
+        if (traverseHierarchyAndRemoveIfEmpty(component(i))) {
             removeComponent(i);
         }
     }
