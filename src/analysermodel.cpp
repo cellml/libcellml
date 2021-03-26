@@ -388,7 +388,7 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
 
     bool res = libcellml::areEquivalentVariables(variable1, variable2);
 
-    mPimpl->mCachedEquivalentVariables[key] = res;
+    mPimpl->mCachedEquivalentVariables.emplace(key, res);
 
     return res;
 }
