@@ -40,8 +40,8 @@ struct Variable::VariableImpl
 {
     Variable *mVariable = nullptr;
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping id map for equivalent variable.*/
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping identifier map for equivalent variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection identifier map for equivalent variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
     std::string mInterfaceType; /**< Interface type for this Variable.*/
     UnitsPtr mUnits = nullptr; /**< The Units defined for this Variable.*/
@@ -112,60 +112,60 @@ struct Variable::VariableImpl
     bool hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     /**
-     * @brief Set the equivalent mapping id for this equivalence.
+     * @brief Set the equivalent mapping identifier for this equivalence.
      *
-     * Record the given id as the mapping id for the equivalence defined with this variable
-     * and the given one.  This id appears in the 'map_variables' element of the model when
+     * Record the given identifier as the mapping identifier for the equivalence defined with this variable
+     * and the given one.  This identifier appears in the 'map_variables' element of the model when
      * serialised.
      *
-     * To clear an equivalence mapping id set it to the empty string. If the two variables are
-     * not equivalent the mapping id is not set.
+     * To clear an equivalence mapping identifier set it to the empty string. If the two variables are
+     * not equivalent the mapping identifier is not set.
      *
-     * @param equivalentVariable The equivalent variable the id refers to.
-     * @param id @c std::string id to set.
+     * @param equivalentVariable The equivalent variable the identifier refers to.
+     * @param id @c std::string identifier to set.
      */
     void setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id);
 
     /**
-     * @brief Set the equivalent connection id for this equivalence.
+     * @brief Set the equivalent connection identifier for this equivalence.
      *
-     * Record the given id as the connection id for the equivalence defined with this variable
-     * and the given one.  This id appears in the 'connection' element of the model when serialised.
+     * Record the given identifier as the connection identifier for the equivalence defined with this variable
+     * and the given one.  This identifier appears in the 'connection' element of the model when serialised.
      *
-     * Where the same component pair has multiple equivalent variables only the last connection id
+     * Where the same component pair has multiple equivalent variables only the last connection identifier
      * found in the set will be serialised.
      *
-     * To clear an equivalence connection id set it to the empty string.  If the two variables are not
-     * equivalent the connection id is not set.
+     * To clear an equivalence connection identifier set it to the empty string.  If the two variables are not
+     * equivalent the connection identifier is not set.
      *
-     * @param equivalentVariable The equivalent variable the id refers to.
-     * @param id @c std::string id to set.
+     * @param equivalentVariable The equivalent variable the identifier refers to.
+     * @param id @c std::string identifier to set.
      */
     void setEquivalentConnectionId(const VariablePtr &equivalentVariable, const std::string &id);
 
     /**
-     * @brief Get the equivalent mapping id for this equivalence.
+     * @brief Get the equivalent mapping identifier for this equivalence.
      *
-     * Get the mapping id set for the equivalence defined by the this variable and the given one.
-     * If no mapping id is set the empty string is returned.
+     * Get the mapping identifier set for the equivalence defined by the this variable and the given one.
+     * If no mapping identifier is set the empty string is returned.
      *
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param equivalentVariable The variable this variable is equivalent to.
-     * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
+     * @return The @c std::string identifier of the equivalence if found otherwise returns the empty string.
      */
     std::string equivalentMappingId(const VariablePtr &equivalentVariable) const;
 
     /**
-     * @brief Get the equivalent connection id for this equivalence.
+     * @brief Get the equivalent connection identifier for this equivalence.
      *
-     * Get the connection id set for the equivalence defined by the this variable and the given one.
-     * If no connection id is set the empty string is returned.
+     * Get the connection identifier set for the equivalence defined by the this variable and the given one.
+     * If no connection identifier is set the empty string is returned.
      *
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param equivalentVariable The variable this variable is equivalent to.
-     * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
+     * @return The @c std::string identifier of the equivalence if found otherwise returns the empty string.
      */
     std::string equivalentConnectionId(const VariablePtr &equivalentVariable) const;
 

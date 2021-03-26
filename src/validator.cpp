@@ -361,30 +361,30 @@ struct Validator::ValidatorImpl
      */
     void checkUniqueIds(const ModelPtr &model);
 
-    /** @brief Utility function to construct a map of ids used within the model.
+    /** @brief Utility function to construct a map of identifiers used within the model.
      *
      * @param model The model to be checked.
-     * @return An IdMap of the items in the model with id fields.
+     * @return An IdMap of the items in the model with identifier fields.
      */
     IdMap buildModelIdMap(const ModelPtr &model);
 
-    /** @brief Utility function called recursively to construct a map of ids in a component.
+    /** @brief Utility function called recursively to construct a map of identifiers in a component.
      *
      * @param component The component to check.
      * @param idMap The IdMap object to construct.
-     * @param reportedConnections A set of connection ids to prevent duplicate reporting.
+     * @param reportedConnections A set of connection identifiers to prevent duplicate reporting.
      */
     void buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections);
 
     /** @brief Utility function to add an item to the idMap.
      *
-     * @param id A string id to add.
-     * @param info A string description of the item with this id.
+     * @param id A string identifier to add.
+     * @param info A string description of the item with this identifier.
      * @param idMap The IdMap under construction.
      */
     void addIdMapItem(const std::string &id, const std::string &info, IdMap &idMap);
 
-    /** @brief Utility function to parse MathML children and add element ids to idMap.
+    /** @brief Utility function to parse MathML children and add element identifiers to idMap.
      *
      * @param node XMLNode to read.
      * @param component Owning component of the MathML string.
@@ -392,7 +392,7 @@ struct Validator::ValidatorImpl
      */
     void buildMathChildIdMap(const XmlNodePtr &node, const std::string &infoRef, IdMap &idMap);
 
-    /** @brief Utility function to parse math and add element ids to idMap.
+    /** @brief Utility function to parse math and add element identifiers to idMap.
      *
      * @param component Component to investigate.
      * @param idMap The IdMap under construction.
@@ -560,7 +560,7 @@ void Validator::validateModel(const ModelPtr &model)
         // Validate any connections / variable equivalence networks in the model.
         mPimpl->validateConnections(model);
 
-        // Check ids across the model are unique.
+        // Check identifiers across the model are unique.
         mPimpl->checkUniqueIds(model);
     }
 }
@@ -1562,7 +1562,7 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
 
     for (const auto &id : idMap) {
         if (id.second.first > 1) {
-            auto desc = "Duplicated id attribute '" + id.first + "' has been found in:\n";
+            auto desc = "Duplicated identifier attribute '" + id.first + "' has been found in:\n";
             size_t i = 0;
             size_t iMax = id.second.second.size();
             for (const auto &item : id.second.second) {

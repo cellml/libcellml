@@ -1085,7 +1085,7 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
         }
     }
 
-    // NB ids on component and reset MathML blocks and their children are not yet included.
+    // Note: identifiers on component and reset MathML blocks and their children are not yet included.
 
     for (size_t c = 0; c < component->componentCount(); ++c) {
         listComponentIds(component->component(c), idList);
@@ -1094,8 +1094,8 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
 
 IdList listIds(const ModelPtr &model)
 {
-    // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
-    // invalid models (with duplicated ids) too.
+    // Collect all existing identifiers in a list and return. NB can't use a map or a set as we need to be able to print
+    // invalid models (with duplicated identifiers) too.
 
     std::unordered_set<std::string> idList;
     // Model.
