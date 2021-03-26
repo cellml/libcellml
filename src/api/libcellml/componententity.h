@@ -291,6 +291,13 @@ public:
      */
     std::string encapsulationId() const;
 
+    /**
+     * @brief Remove the encapsulation Id for this entity.
+     *
+     * Clear the encapsulation Id for this entity.
+     */
+    void removeEncapsulationId();
+
 protected:
     /**
      * @brief Virtual add component method to be implemented by derived classes.
@@ -304,11 +311,13 @@ protected:
      */
     virtual bool doAddComponent(const ComponentPtr &component);
 
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
     ComponentEntity(); /**< ComponentEntity Constructor. */
 
 private:
-    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

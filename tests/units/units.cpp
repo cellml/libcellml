@@ -2484,11 +2484,12 @@ TEST(Units, addUnitsMultipleTimes)
     EXPECT_TRUE(model->addUnits(units));
     EXPECT_EQ(size_t(1), model->unitsCount());
 
-    // Try to add the same units a second time.
-    EXPECT_FALSE(model->addUnits(units));
+    // Try to add the same units a second time. Rejected.
+    EXPECT_TRUE(model->addUnits(units));
+
     // We can't add the same units more than once, hence we still have one
     // units.
-    EXPECT_EQ(size_t(1), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->unitsCount());
 }
 
 TEST(Units, setGetUnitId)

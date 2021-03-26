@@ -49,8 +49,6 @@ limitations under the License.
 
 namespace libcellml {
 
-static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
-
 struct AnalyserInternalEquation;
 using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
 
@@ -1190,7 +1188,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
             auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable());
 
-            if (!areEqual(scalingFactor, 1.0)) {
+            if (!areNearlyEqual(scalingFactor, 1.0)) {
                 // We need to scale using the inverse of the scaling factor, but
                 // how we do it depends on whether the rate is to be computed or
                 // used.
@@ -1216,7 +1214,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
             auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->variable());
 
-            if (!areEqual(scalingFactor, 1.0)) {
+            if (!areNearlyEqual(scalingFactor, 1.0)) {
                 if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
                     scaleAst(astParent, astParent->parent(), scalingFactor);
                 } else {
@@ -1748,7 +1746,7 @@ bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVa
 bool Analyser::removeExternalVariable(size_t index)
 {
     if (index < mPimpl->mExternalVariables.size()) {
-        mPimpl->mExternalVariables.erase(mPimpl->mExternalVariables.begin() + int64_t(index));
+        mPimpl->mExternalVariables.erase(mPimpl->mExternalVariables.begin() + ptrdiff_t(index));
 
         return true;
     }

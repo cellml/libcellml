@@ -6,7 +6,7 @@ import unittest
 from test_resources import resource_path, file_contents
 
 
-class ValidatorTestCase(unittest.TestCase):
+class ImporterTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
         from libcellml import Importer
@@ -59,18 +59,14 @@ class ValidatorTestCase(unittest.TestCase):
 
         # Library should contain left, right, and one instance (not two) of the point.
         self.assertEqual(3, i.libraryCount())
-        self.assertEqual(resource_path(
-            'importer/diamond_left.cellml'), i.key(0))
-        self.assertEqual(resource_path(
-            'importer/diamond_point.cellml'), i.key(1))
-        self.assertEqual(resource_path(
-            'importer/diamond_right.cellml'), i.key(2))
+        self.assertEqual(resource_path('importer/diamond_left.cellml'), i.key(0))
+        self.assertEqual(resource_path('importer/diamond_point.cellml'), i.key(1))
+        self.assertEqual(resource_path('importer/diamond_right.cellml'), i.key(2))
 
         # Access library items by their URL.
         left = i.library(resource_path('importer/diamond_left.cellml'))
 
-        self.assertEqual(file_contents(
-            'importer/diamond_left.cellml'), printer.printModel(left))
+        self.assertEqual(file_contents('importer/diamond_left.cellml'), printer.printModel(left))
 
     def test_add_model(self):
         from libcellml import Component, Importer, Model, Parser
@@ -78,8 +74,7 @@ class ValidatorTestCase(unittest.TestCase):
         parser = Parser()
         importer = Importer()
 
-        model = parser.parseModel(file_contents(
-            'importer/generic_no_source.cellml'))
+        model = parser.parseModel(file_contents('importer/generic_no_source.cellml'))
 
         sourceModel = Model('source')
         sourceModel.addComponent(Component('a'))
@@ -101,8 +96,7 @@ class ValidatorTestCase(unittest.TestCase):
 
         parser = Parser()
 
-        model = parser.parseModel(file_contents(
-            'importer/generic_no_source.cellml'))
+        model = parser.parseModel(file_contents('importer/generic_no_source.cellml'))
 
         importer = Importer()
 
@@ -113,13 +107,10 @@ class ValidatorTestCase(unittest.TestCase):
         rightSourceModel.addComponent(Component('c'))
         rightSourceModel.addComponent(Component('d'))
 
-        self.assertTrue(importer.addModel(
-            wrongSourceModel, 'i_dont_exist.cellml'))
+        self.assertTrue(importer.addModel(wrongSourceModel, 'i_dont_exist.cellml'))
 
-        self.assertFalse(importer.replaceModel(
-            rightSourceModel, 'not_in_library'))
-        self.assertTrue(importer.replaceModel(
-            rightSourceModel, 'i_dont_exist.cellml'))
+        self.assertFalse(importer.replaceModel(rightSourceModel, 'not_in_library'))
+        self.assertTrue(importer.replaceModel(rightSourceModel, 'i_dont_exist.cellml'))
 
         importer.resolveImports(model, '')
 
@@ -145,8 +136,7 @@ class ValidatorTestCase(unittest.TestCase):
         parser = Parser()
         importer = Importer()
 
-        model = parser.parseModel(file_contents(
-            'importer/nested_components.cellml'))
+        model = parser.parseModel(file_contents('importer/nested_components.cellml'))
         self.assertEqual(0, parser.issueCount())
 
         importer.resolveImports(model, resource_path('importer/'))
@@ -157,32 +147,18 @@ class ValidatorTestCase(unittest.TestCase):
         importer.clearImports(model)
         self.assertTrue(model.hasUnresolvedImports())
 
-    def test_requirements(self):
+    def test_remove_all_models(self):
         from libcellml import Parser, Importer
-        keys = [
-            'complicatedComponents.cellml',
-            'components.cellml',
-            'complicatedUnits.cellml',
-            'units1.cellml',
-            'units2.cellml'
-        ]
-
         parser = Parser()
-        model = parser.parseModel(
-            file_contents('importer/requirements/complicatedExample.cellml'))
-        self.assertEqual(0, parser.issueCount())
-
+        model = parser.parseModel(file_contents('importer/diamond.cellml'))
         importer = Importer()
-        importer.resolveImports(model, resource_path('importer/requirements/'))
-        self.assertEqual(0, importer.issueCount())
+        importer.resolveImports(model, resource_path('importer/'))
 
-        requirements = importer.requirements(model)
+        self.assertEqual(3, importer.libraryCount())
 
-        i = 0
-        for r in requirements:
-            self.assertEqual(keys[i], r.url())
-            self.assertEqual(importer.library(resource_path('importer/requirements/'+keys[i])).name(), r.model().name())
-            i += 1
+        importer.removeAllModels()
+
+        self.assertEqual(0, importer.libraryCount())
 
     def test_is_resolved_units(self):
         from libcellml import Importer, Parser

@@ -18,8 +18,8 @@ limitations under the License.
 
 #include <string>
 
-#include "libcellml/entity.h"
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/parentedentity.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -28,7 +28,7 @@ namespace libcellml {
  * @brief The Reset class.
  * The Reset class is for describing a CellML reset.
  */
-class LIBCELLML_EXPORT Reset: public Entity
+class LIBCELLML_EXPORT Reset: public ParentedEntity
 {
 public:
     ~Reset() override; /**< Destructor. */
@@ -269,11 +269,13 @@ public:
     ResetPtr clone() const;
 
 private:
-    Reset(); /**< Constructor. */
-    explicit Reset(int order); /**< Constructor with int parameter */
+    Reset(); /**< Constructor, @private. */
+    explicit Reset(int order); /**< Constructor with int parameter, @private. */
 
-    struct ResetImpl; /**< Forward declaration for pImpl idiom. */
-    ResetImpl *mPimpl; /**< Private member to implementation pointer. */
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
+    struct ResetImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ResetImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

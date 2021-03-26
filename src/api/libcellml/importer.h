@@ -160,22 +160,18 @@ public:
     void clearImports(ModelPtr &model);
 
     /**
-     * @brief Return a vector of @ref ImportRequirement items which are the import requirements of the given @p model.
+     * @brief Remove all models from the library.
      * 
-     * Return a vector of @ref ImportRequirement items of the given @p model.
-     * 
-     * @param model A @c Model which imports other models.  
-     * 
-     * @return A @c std::vector of import requirements.
+     * Remove all models from the library.
      */
-    std::vector<ImportRequirementPtr> requirements(const ModelPtr &model);
+    void removeAllModels();
 
 private:
-    Importer(); /**< Constructor. */
-    explicit Importer(const std::string &name); /**< Constructor with std::string parameter*/
+    Importer(); /**< Constructor, @private. */
+    explicit Importer(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
-    struct ImporterImpl; /**< Forward declaration for pImpl idiom. */
-    ImporterImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ImporterImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ImporterImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

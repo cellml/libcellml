@@ -47,15 +47,14 @@ and False if the URL key does not exist."
 "Returns a string corresponding to the key at which a model is stored in the 
 library by index, or an empty string if the index is out of range."
 
-%feature("docstring") libcellml::Importer::requirements
-"Returns a list of keys which are the import requirements of the given model."
+%feature("docstring") libcellml::Importer::removeAllModels
+"Removes all models from the library.";
 
 %{
 #include "libcellml/importer.h"
 %}
 
 %template(StringPair) std::pair<std::string, std::string>;
-%template(VectorImportRequirements) std::vector<libcellml::ImportRequirementPtr>;
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.
