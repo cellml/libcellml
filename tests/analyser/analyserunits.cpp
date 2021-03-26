@@ -444,10 +444,7 @@ TEST(AnalyserUnits, abs)
 
 TEST(AnalyserUnits, expLnOperators)
 {
-    std::vector<std::string> operators = {
-        "exp",
-        "ln",
-    };
+    std::vector<std::string> operators = {"exp", "ln"};
 
     for (const auto &op : operators) {
         auto parser = libcellml::Parser::create();
@@ -550,10 +547,7 @@ TEST(AnalyserUnits, floorCeilingOperators)
 
 TEST(AnalyserUnits, minMaxOperators)
 {
-    std::vector<std::string> operators = {
-        "min",
-        "max",
-    };
+    std::vector<std::string> operators = {"min", "max"};
 
     for (const auto &op : operators) {
         auto parser = libcellml::Parser::create();
@@ -602,32 +596,7 @@ TEST(AnalyserUnits, rem)
 
 TEST(AnalyserUnits, trigonometricOperators)
 {
-    std::vector<std::string> operators = {
-        "sin",
-        "cos",
-        "tan",
-        "sec",
-        "csc",
-        "cot",
-        "sinh",
-        "cosh",
-        "tanh",
-        "sech",
-        "csch",
-        "coth",
-        "arcsin",
-        "arccos",
-        "arctan",
-        "arcsec",
-        "arccsc",
-        "arccot",
-        "arcsinh",
-        "arccosh",
-        "arctanh",
-        "arcsech",
-        "arccsch",
-        "arccoth",
-    };
+    std::vector<std::string> operators = {"sin", "cos", "tan", "sec", "csc", "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth", "arcsin", "arccos", "arctan", "arcsec", "arccsc", "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth"};
 
     for (const auto &op : operators) {
         auto parser = libcellml::Parser::create();
