@@ -66,6 +66,9 @@ Only the first matching Units is removed and returned.";
 %feature("docstring") libcellml::Model::fixVariableInterfaces
 "Fix variable interfaces throughout the model.";
 
+%feature("docstring") libcellml::Model::clean
+"Remove any empty units and any empty components from the model."
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Model {
