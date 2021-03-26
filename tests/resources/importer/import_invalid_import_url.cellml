@@ -3,4 +3,10 @@
   <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="invalid_import_url.cellml">
     <component component_ref="c" name="c"/>
   </import>
+  <component name="c_base"/>
+  <encapsulation>
+    <component_ref component="c_base">
+      <component_ref component="c"/>
+    </component_ref>
+  </encapsulation>
 </model>
