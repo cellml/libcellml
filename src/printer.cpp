@@ -397,26 +397,6 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, IdList &idLi
     return repr;
 }
 
-//std::string printImportedEntity(const EntityPtr &importedEntity, IdList &idList, bool autoIds)
-//{
-//    std::string repr;
-//    auto componentEntity = std::dynamic_pointer_cast<Component>(importedEntity);
-//    if (componentEntity) {
-//        repr += "<component component_ref=\"" + componentEntity->importReference() + "\" name=\"" + componentEntity->name() + "\"";
-//    } else {
-//        auto unitsEntity = std::dynamic_pointer_cast<Units>(importedEntity);
-//        repr += "<units units_ref=\"" + componentEntity->importReference() + "\" name=\"" + componentEntity->name() + "\"";
-//    }
-//    if (!importedEntity->id().empty()) {
-//        repr += " id=\"" + importedEntity->id() + "\"";
-//    } else if (autoIds) {
-//        repr += " id=\"" + makeUniqueId(idList) + "\"";
-//    }
-//    repr += "/>";
-
-//    return repr;
-//}
-
 std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &idList, bool autoIds)
 {
     std::string repr;
