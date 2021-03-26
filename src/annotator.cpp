@@ -278,7 +278,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
                 // either.
                 bool found = false;
                 if (idList.count(id) != 0) {
-                    // Get the range of items with this id:
+                    // Get the range of items with this identifier:
                     auto rangePair = idList.equal_range(id);
                     for (auto it = rangePair.first; it != rangePair.second; ++it) {
                         // Make sure it's also a MAP_VARIABLES item.
@@ -308,7 +308,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
                 // either.
                 bool found = false;
                 if (idList.count(id) != 0) {
-                    // Get the range of items with this id:
+                    // Get the range of items with this identifier:
                     auto rangePair = idList.equal_range(id);
                     for (auto it = rangePair.first; it != rangePair.second; ++it) {
                         // Make sure it's also a CONNECTION item.
@@ -358,7 +358,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
 
 ItemList listIdsAndItems(const ModelPtr &model)
 {
-    // Collect all existing ids in a list and return.
+    // Collect all existing identifiers in a list and return.
     //    auto model = weakModel.lock();
     ItemList idList;
     // Model.
@@ -438,7 +438,7 @@ void Annotator::setModel(const ModelPtr &model)
 void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
 {
     auto issue = Issue::create();
-    issue->setDescription("Could not find an item with an id of '" + id + "' in the model.");
+    issue->setDescription("Could not find an item with an identifier of '" + id + "' in the model.");
     issue->setLevel(Issue::Level::WARNING);
     issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_FOUND);
     mAnnotator->addIssue(issue);
@@ -447,7 +447,7 @@ void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
 void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id) const
 {
     auto issue = Issue::create();
-    issue->setDescription("The id '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
+    issue->setDescription("The identifier '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
     issue->setLevel(Issue::Level::WARNING);
     issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE);
     mAnnotator->addIssue(issue);
@@ -1300,7 +1300,7 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
 {
     // Because the hexadecimal counter starts high enough that it will always have a letter as the first character,
     // we don't need to prefix it with any other string to be valid.  This is stored in the mCounter variable
-    // so that "holes" in the automatic id list are not filled; they will always build from the previous
+    // so that "holes" in the automatic identifier list are not filled; they will always build from the previous
     // maximum value.
 
     std::stringstream stream;
@@ -1314,7 +1314,7 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
         id = stream.str();
         stream.str(std::string());
     }
-    // NB: This is only as unique as the information in mIdList permits.  That array must be updated
+    // Note: this is only as unique as the information in mIdList permits.  That array must be updated
     // outside this function.
     return id;
 }
@@ -1709,7 +1709,7 @@ void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &compone
         idsString += "r=" + std::to_string(i) + reset->id() + "rv=" + reset->resetValueId() + "tv=" + reset->testValueId();
     }
 
-    // Note that MathML ids are not yet included.
+    // Note that MathML identifiers are not yet included.
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
         auto child = component->component(i);
@@ -1720,7 +1720,7 @@ void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &compone
 
 size_t Annotator::AnnotatorImpl::generateHash()
 {
-    // Serialise the stored model into a (very) simplified string of id-ed items, and create a hash.
+    // Serialise the stored model into a (very) simplified string of identifier-based items, and create a hash.
     size_t hash = 0;
     auto model = mModel.lock();
     if (model != nullptr) {

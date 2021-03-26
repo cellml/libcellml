@@ -147,7 +147,7 @@ TEST(Annotator, getVariablePairFromId)
     EXPECT_EQ(units, std::any_cast<libcellml::UnitPtr>(annotator->item("unit3_id")->item())->units());
     EXPECT_EQ(size_t(2), std::any_cast<libcellml::UnitPtr>(annotator->item("unit3_id")->item())->index());
 
-    // Connections and map variables are returned as VariablePairs.  Note that connection ids could be
+    // Connections and map variables are returned as VariablePairs.  Note that connection identifiers could be
     // represented by any one of the pairs of variables in that connection.
     EXPECT_EQ(libcellml::CellmlElementType::MAP_VARIABLES, annotator->item("map_id")->type());
     auto vpm = std::any_cast<libcellml::VariablePairPtr>(annotator->item("map_id")->item());
@@ -186,22 +186,22 @@ TEST(Annotator, errorHandling)
     EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
     EXPECT_EQ(size_t(1), annotator->issueCount());
 
-    model->setId("model_id"); // Add an id into the model and rebuild.
+    model->setId("model_id"); // Add an identifier into the model and rebuild.
     annotator->setModel(model);
 
-    // Test that an Issue is created and logged when an id is not found:
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
+    // Test that an Issue is created and logged when an identifier is not found:
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist").first);
     EXPECT_EQ(size_t(1), annotator->issueCount());
 
-    // Test that repeated calls to the same unfound id generate new errors:
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
+    // Test that repeated calls to the same unfound identifier generate new errors:
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist").first);
     EXPECT_EQ(size_t(2), annotator->issueCount());
 }
 
 TEST(Annotator, duplicateIdBehaviour)
 {
     std::vector<std::string> expectedErrors = {
-        "The id 'duplicateId' occurs 3 times in the model so a unique item cannot be located.",
+        "The identifier 'duplicateId' occurs 3 times in the model so a unique item cannot be located.",
     };
     auto model = libcellml::Model::create("model");
     auto annotator = libcellml::Annotator::create();
@@ -329,7 +329,7 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     EXPECT_EQ(size_t(13), annotator->issueCount());
     EXPECT_EQ(size_t(13), annotator->warningCount());
     for (size_t i = 0; i < annotator->issueCount(); ++i) {
-        EXPECT_EQ("The id 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(i)->description());
+        EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(i)->description());
     }
 }
 
@@ -968,7 +968,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
     annotator->setModel(model);
     EXPECT_TRUE(annotator->hasModel());
 
-    // Expect each have had a change of id.
+    // Expect each have had a change of identifier.
     EXPECT_EQ("b4da55", annotator->assignId(itemComponent));
     EXPECT_EQ("b4da56", annotator->assignId(itemComponentRef));
     EXPECT_EQ("b4da57", annotator->assignId(itemConnection));
@@ -1262,7 +1262,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::UnitsPtr>(itemUnits->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePtr>(itemVariable->item())));
 
-    // Expect each have had a change of id.
+    // Expect each have had a change of identifier.
     EXPECT_EQ("b4da55", annotator->assignId(itemComponent));
     EXPECT_EQ("b4da56", annotator->assignId(itemComponentRef));
     EXPECT_EQ("b4da57", annotator->assignId(itemConnection));
@@ -1349,7 +1349,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::UnitsPtr>(itemUnits->item())));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePtr>(itemVariable->item())));
 
-    // Expect each to change, even though the existing ids were fine.
+    // Expect each to change, even though the existing identifiers were fine.
     EXPECT_EQ("b4da55", annotator->assignId(itemComponent));
     EXPECT_EQ("b4da56", annotator->assignId(itemComponentRef));
     EXPECT_EQ("b4da57", annotator->assignId(itemConnection));
@@ -1452,7 +1452,7 @@ TEST(Annotator, automaticIdAllItemsEntityType)
 
     annotator->setModel(model);
 
-    // Expect each to change since there were no ids in the first place.
+    // Expect each to change since there were no identifiers in the first place.
     EXPECT_EQ("b4da55", annotator->assignId(model->component(0)));
     EXPECT_EQ("b4da55", model->component(0)->id());
 
@@ -2023,16 +2023,16 @@ TEST(Annotator, hashChangesAndUpdates)
 
     EXPECT_FALSE(annotator->hasModel());
 
-    // Model is set and the id map is not created.
+    // Model is set and the identifier map is not created.
     annotator->setModel(model);
 
-    // Can set id manually, this does not trigger a rebuild of the id map.
+    // Can set identifier manually, this does not trigger a rebuild of the identifier map.
     model->setId("iHaveChanged");
 
-    // The id map is built when a query is made.
+    // The identifier map is built when a query is made.
     EXPECT_EQ(nullptr, annotator->model("model_1"));
 
-    // Can set id automatically, this does not trigger a rebuild of the id map.
+    // Can set identifier automatically, this does not trigger a rebuild of the identifier map.
     EXPECT_EQ("b4da55", annotator->assignId(model->component(0)));
 
     EXPECT_NE(nullptr, annotator->encapsulation("encapsulation_1"));
@@ -2040,7 +2040,7 @@ TEST(Annotator, hashChangesAndUpdates)
 
 TEST(Annotator, hashUpdatedWithAllAutomaticIds)
 {
-    // Expect that using the annotator functionality to set automatic ids will
+    // Expect that using the annotator functionality to set automatic identifiers will
     // not make the build hash out of date.
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringUniqueIds);
