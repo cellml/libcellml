@@ -1193,6 +1193,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                     auto issue = Issue::create();
                     issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
                     issue->setLevel(Issue::Level::WARNING);
+                    issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                     issue->setVariable(v);
                     issueList.push_back(issue);
                     status = false;
@@ -1201,6 +1202,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                 auto issue = Issue::create();
                 issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
                 issue->setLevel(Issue::Level::WARNING);
+                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                 issue->setVariable(v);
                 issueList.push_back(issue);
                 status = false;

@@ -1761,20 +1761,21 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     //    operand can have any unit.
     //  - Basic structural (note: 'apply' is not relevant here):
     //     - 'piecewise': the returned value of the different 'piece' and
-    //       'otherwise' statements should have the same unit .
+    //       'otherwise' statements should have equivalent units.
     //     - 'piece': the returned value can have any unit while the condition
     //       should be dimensionless.
     //     - 'otherwise': the returned value can have any unit.
     //  - Relational operators ('eq', 'neq', 'gt', 'lt', 'geq' and 'leq'): the
-    //    two operands should have the same unit.
+    //    two operands should have equivalent units. (The result of the
+    //    comparison is dimensionless.)
     //  - Logical operators:
     //     - 'and', 'or', 'xor': the two operands should be dimensionless.
     //     - 'not': the operand should be dimensionless.
     //  - Arithmetic operators:
-    //     - 'plus', 'times', and 'divide': the two operands should have
-    //       the same unit.
+    //     - 'plus': the two operands should have equivalent units.
     //     - 'minus': if there is one operand, then it can have any unit. If
-    //       there are two operands, then they should have the same unit.
+    //       there are two operands, then they should have equivalent units.
+    //     - 'times' and 'divide': the two operands can have any units.
     //     - 'power': the base can have any unit while the exponent should be
     //       dimensionless.
     //     - 'root': the base can have any unit while the exponent, if present,
@@ -1784,8 +1785,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     //     - 'log': the argument and the base, if present, should be
     //       dimensionless.
     //     - 'floor' and 'ceiling': the argument can have any unit.
-    //     - 'min' and 'max': all the arguments should have the same unit.
-    //     - 'rem': the two arguments should have the same unit.
+    //     - 'min' and 'max': all the arguments should have equivalent units.
+    //     - 'rem': the two arguments should have equivalent units.
     //  - Calculus elements ('diff'): the differentiated variable can have any
     //    unit. (See 'bvar' below for the bounding variable.)
     //  - Qualifier elements:
