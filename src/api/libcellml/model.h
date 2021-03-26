@@ -435,6 +435,12 @@ public:
      */
     void clean();
 
+    /**
+     * @brief importRequirements
+     * @return
+     */
+    std::vector<std::string> importRequirements() const;
+
 private:
     Model(); /**< Constructor, @private. */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter, @private. */
