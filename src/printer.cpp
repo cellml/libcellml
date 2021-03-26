@@ -91,7 +91,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
             continue;
         }
         std::string mappingVariables;
-        VariablePairPtr variablePair = variableMap.at(componentMapIndex1);
+        const VariablePairPtr &variablePair = variableMap.at(componentMapIndex1);
         std::string connectionId = Variable::equivalenceConnectionId(variablePair->variable1(), variablePair->variable2());
         mappingVariables += printMapVariables(variablePair, idList, autoIds);
         // Check for subsequent variable equivalence pairs with the same parent components.
@@ -99,7 +99,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
             ComponentPtr nextComponent1 = iterPair2->first;
             ComponentPtr nextComponent2 = iterPair2->second;
-            VariablePairPtr variablePair2 = variableMap.at(componentMapIndex2);
+            const VariablePairPtr &variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
                 mappingVariables += printMapVariables(variablePair2, idList, autoIds);
                 connectionId = Variable::equivalenceConnectionId(variablePair2->variable1(), variablePair2->variable2());
