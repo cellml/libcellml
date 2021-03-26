@@ -245,6 +245,7 @@ public:
     AnyItem &operator=(AnyItem rhs) = delete; /**< Assignment operator. */
 
     static AnyItemPtr create() noexcept;
+
     /**
      * @brief Create an AnyItem object.
      *
