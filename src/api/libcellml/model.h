@@ -430,7 +430,7 @@ public:
      *  Remove any empty components and units fom this model.
      *  In this context, "empty" means:
      *   - components with no name, id, resets, variables, maths, or non-empty child components; and
-     *   - units which have no name, id, or child unit's.
+     *   - units which have no name, id, or child units.
      *  This is applied recursively. In the situation where a component is only called
      *  non-empty because it has a child component, but that child is empty, both will be
      *  removed.
