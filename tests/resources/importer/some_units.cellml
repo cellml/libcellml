@@ -2,9 +2,6 @@
 <model xmlns="http://www.cellml.org/cellml/2.0#"
   xmlns:cellml="http://www.cellml.org/cellml/2.0#"
   xmlns:xlink="http://www.w3.org/1999/xlink" name="some_units">
-  <units name="ms">
-      <unit prefix="milli" units="second"/>
-  </units>
   <units name="ns">
       <unit prefix="nano" units="second"/>
   </units>
