@@ -628,7 +628,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::MAP_VARIABLES_UNIQUE, {"MAP_VARIABLES_UNIQUE", "2.16.3", baseSpecificationUrl, "specB16"}},
     {Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE, {"MAP_VARIABLES_AVAILABLE_INTERFACE", "3.10.8", baseSpecificationUrl, "specC10"}},
     {Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, {"MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION", "3.10.9", baseSpecificationUrl, "specC10"}},
-    
+
     // Importer and Validator
     {Issue::ReferenceRule::INVALID_ARGUMENT, {"INVALID_ARGUMENT", "", docsUrl, ""}},
 
