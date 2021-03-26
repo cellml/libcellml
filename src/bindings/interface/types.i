@@ -320,7 +320,7 @@ Provides support for shared pointers declared in types.h.
     }
 
 
-%pythoncode %{ 
+%pythoncode %{
 
     def item(self):
       """Get the stored item."""

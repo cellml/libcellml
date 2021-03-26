@@ -219,7 +219,7 @@ private:
  *
  * The AnyItem class contains a @c std::any item, and
  * the @ref CellmlElementType enum that describes which type is stored.
- * 
+ *
  *  Casts to use for the stored item are mapped according to the following statements:
  *  - CellmlElementType::COMPONENT => std::any_cast<ComponentPtr>.
  *  - CellmlElementType::COMPONENT_REF => std::any_cast<ComponentPtr>.
@@ -286,18 +286,18 @@ public:
 
     /**
      * @brief Set the item.
-     * 
+     *
      * Set the item.
-     * 
+     *
      * @param item A @c std::any item to be stored.
      */
     void setItem(const std::any &item);
 
     /**
      * @brief Set the type of the item.
-     * 
+     *
      * Set the @c CellmlElementType of the item.
-     * 
+     *
      * @param type a @ref CellmlElementType enum.
      */
     void setType(CellmlElementType type);
