@@ -340,7 +340,7 @@ public:
      * @param index The index of the @c unit in this units to get the reference attribute for.
      * @return The @c std::string reference for the unit at index @p index.
      */
-    std::string unitAttributeReference(size_t index);
+    std::string unitAttributeReference(size_t index) const;
 
     /**
      * @brief Get the prefix attribute for the unit at the given @p index.
@@ -352,7 +352,7 @@ public:
      * @param index The index of the @c unit in this units to get the prefix attribute for.
      * @return The @c std::string reference for the unit at index @p index.
      */
-    std::string unitAttributePrefix(size_t index);
+    std::string unitAttributePrefix(size_t index) const;
 
     /**
      * @brief Get the exponent attribute for the unit at the given @p index.
@@ -364,7 +364,7 @@ public:
      * @param index The index of the @c unit in this units to get the exponent attribute for.
      * @return The @c double exponent for the unit at index @p index.
      */
-    double unitAttributeExponent(size_t index);
+    double unitAttributeExponent(size_t index) const;
 
     /**
      * @brief Get the multiplier attribute for the unit at the given @p index.
@@ -376,7 +376,7 @@ public:
      * @param index The index of the @c unit in this units to get the multiplier attribute for.
      * @return The @c double multiplier for the unit at index @p index.
      */
-    double unitAttributeMultiplier(size_t index);
+    double unitAttributeMultiplier(size_t index) const;
 
     /**
      * @overload
@@ -560,7 +560,7 @@ public:
      *
      * @return An identifier string.
      */
-    std::string unitId(size_t index);
+    std::string unitId(size_t index) const;
 
 private:
     Units(); /**< Constructor, @private. */

@@ -434,7 +434,8 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
     id = ud.mId;
 }
 
-std::string Units::unitAttributeReference(size_t index) {
+std::string Units::unitAttributeReference(size_t index) const
+{
     std::string ref;
     std::string pre;
     double exp;
@@ -444,7 +445,8 @@ std::string Units::unitAttributeReference(size_t index) {
     return ref;
 }
 
-std::string Units::unitAttributePrefix(size_t index) {
+std::string Units::unitAttributePrefix(size_t index) const
+{
     std::string ref;
     std::string pre;
     double exp;
@@ -454,7 +456,8 @@ std::string Units::unitAttributePrefix(size_t index) {
     return pre;
 }
 
-double Units::unitAttributeExponent(size_t index) {
+double Units::unitAttributeExponent(size_t index) const
+{
     std::string ref;
     std::string pre;
     double exp;
@@ -464,7 +467,8 @@ double Units::unitAttributeExponent(size_t index) {
     return exp;
 }
 
-double Units::unitAttributeMultiplier(size_t index) {
+double Units::unitAttributeMultiplier(size_t index) const
+{
     std::string ref;
     std::string pre;
     double exp;
@@ -483,7 +487,7 @@ bool Units::setUnitId(size_t index, const std::string &id) const
     return false;
 }
 
-std::string Units::unitId(size_t index)
+std::string Units::unitId(size_t index) const
 {
     if (index < mPimpl->mUnits.size()) {
         return mPimpl->mUnits.at(index).mId;
