@@ -63,6 +63,9 @@ struct Importer::ImporterImpl
                                        HistorySearchVector &history,
                                        const std::string &action) const;
 
+    std::vector<ImportSourcePtr> mImports;
+    std::vector<ImportSourcePtr>::const_iterator findImportSource(const ImportSourcePtr &importSource) const;
+
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchImportSource(const ModelPtr &origModel, const ImportSourcePtr &importSource, Type type, const std::string &baseFile, HistorySearchVector &history);
 
@@ -88,6 +91,12 @@ ImporterPtr Importer::create() noexcept
 Importer::~Importer()
 {
     delete mPimpl;
+}
+
+std::vector<ImportSourcePtr>::const_iterator Importer::ImporterImpl::findImportSource(const ImportSourcePtr &importSource) const
+{
+    return std::find_if(mImports.begin(), mImports.end(),
+                        [=](const ImportSourcePtr &importSrc) -> bool { return importSource->equals(importSrc); });
 }
 
 bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistorySearchVector &history)
@@ -671,8 +680,6 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
 
     flatModel->linkUnits();
 
-    flatModel->removeAllImportSources();
-
     return flatModel;
 }
 
@@ -740,6 +747,66 @@ std::string Importer::key(const size_t &index)
 void Importer::removeAllModels()
 {
     mPimpl->mLibrary.clear();
+}
+
+bool Importer::hasImportSource(const ImportSourcePtr &importSource) const
+{
+    return mPimpl->findImportSource(importSource) != mPimpl->mImports.end();
+}
+
+bool Importer::addImportSource(const ImportSourcePtr &importSource)
+{
+    if (importSource == nullptr) {
+        return false;
+    }
+
+    // Prevent adding the same import source.
+    if (std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
+                     [=](const ImportSourcePtr &importSrc) -> bool { return importSource == importSrc; })
+        != mPimpl->mImports.end()) {
+        return false;
+    }
+
+    mPimpl->mImports.push_back(importSource);
+    return true;
+}
+
+size_t Importer::importSourceCount() const
+{
+    return mPimpl->mImports.size();
+}
+
+ImportSourcePtr Importer::importSource(size_t index) const
+{
+    ImportSourcePtr importSrc = nullptr;
+    if (index < mPimpl->mImports.size()) {
+        importSrc = mPimpl->mImports.at(index);
+    }
+
+    return importSrc;
+}
+
+bool Importer::removeImportSource(size_t index)
+{
+    auto importSrc = importSource(index);
+    return removeImportSource(importSrc);
+}
+
+bool Importer::removeImportSource(const ImportSourcePtr &importSource)
+{
+    bool status = false;
+    auto result = mPimpl->findImportSource(importSource);
+    if (result != mPimpl->mImports.end()) {
+        mPimpl->mImports.erase(result);
+        status = true;
+    }
+    return status;
+}
+
+bool Importer::removeAllImportSources()
+{
+    mPimpl->mImports.clear();
+    return true;
 }
 
 } // namespace libcellml

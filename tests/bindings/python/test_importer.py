@@ -194,6 +194,44 @@ class ImporterTestCase(unittest.TestCase):
 
         self.assertFalse(c.isResolved())
 
+    def test_imports(self):
+        from libcellml import Model, Importer, ImportSource, Units
+
+        m = Model()
+        u = Units()
+        im = Importer()
+
+        u.setImportSource(ImportSource())
+
+        m.addUnits(u)
+        self.assertTrue(m.hasImports())
+
+        self.assertEqual(0, im.importSourceCount())
+
+        i = ImportSource()
+        i.setUrl('actual_url')
+
+        im.addImportSource(i)
+        self.assertEqual(1, im.importSourceCount())
+
+        i1 = im.importSource(0)
+
+        self.assertTrue(im.hasImportSource(i))
+
+        im.removeImportSource(0)
+        i2 = ImportSource()
+
+        self.assertEqual(0, im.importSourceCount())
+
+        im.addImportSource(i2)
+
+        self.assertEqual(1, im.importSourceCount())
+
+        im.removeAllImportSources()
+
+        self.assertEqual(0, im.importSourceCount())
+
+
 
 if __name__ == '__main__':
     unittest.main()
