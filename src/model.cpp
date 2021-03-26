@@ -527,8 +527,6 @@ bool Model::fixVariableInterfaces()
     return allOk;
 }
 
-static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
-
 bool findAndRemoveEmptyComponent(const ComponentPtr &component)
 {
     for (size_t i = component->componentCount() - 1; i != MAX_SIZE_T; --i) {
