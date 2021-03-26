@@ -24,6 +24,7 @@ limitations under the License.
 #include <stdexcept>
 
 #include "libcellml/component.h"
+#include "libcellml/importer.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
@@ -34,6 +35,8 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
+
+#include "debug.h"
 
 namespace libcellml {
 
@@ -413,6 +416,40 @@ Validator::~Validator()
 ValidatorPtr Validator::create() noexcept
 {
     return std::shared_ptr<Validator> {new Validator {}};
+}
+
+void Validator::validateModel(const ModelPtr &model, const std::string &baseLocation)
+{
+    validateModel(model);
+
+    auto importer = Importer::create();
+    auto clone = model->clone();
+    importer->resolveImports(clone, baseLocation);
+
+    // Transfer the objects stored in any importer issues to the original model instead of the clone.
+    for (size_t i = 0; i < importer->issueCount(); ++i) {
+        auto issue = importer->issue(i);
+        auto type = issue->cellmlElementType();
+
+        Debug() << "----------- " << (type == CellmlElementType::COMPONENT);
+        if (type == CellmlElementType::COMPONENT) {
+            auto indexStack = reverseEngineerIndexStack(issue->component());
+            Debug() << issue->component();
+            printStack(indexStack);
+            auto component = model->component(indexStack.at(0));
+            Debug() << component;
+            indexStack.erase(indexStack.begin());
+            for (const auto &index : indexStack) {
+                component = component->component(index);
+            }
+            issue->setComponent(component);
+        } else if (type == CellmlElementType::UNITS) {
+            auto index = getUnitsIndexInModel(clone, issue->units());
+            issue->setUnits(model->units(index));
+        }
+
+        addIssue(issue);
+    }
 }
 
 void Validator::validateModel(const ModelPtr &model)

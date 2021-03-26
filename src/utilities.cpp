@@ -550,6 +550,21 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
     return index;
 }
 
+size_t getUnitsIndexInModel(const ModelPtr &model, const UnitsPtr &units)
+{
+    size_t index = 0;
+    bool found = false;
+    while (index < model->unitsCount() && !found) {
+        if (model->units(index)->equals(units)) {
+            found = true;
+        } else {
+            ++index;
+        }
+    }
+
+    return index;
+}
+
 bool areEquivalentVariables(const VariablePtr &variable1,
                             const VariablePtr &variable2)
 {
