@@ -1376,7 +1376,7 @@ bool unitsAreEquivalent(const ModelPtr &model,
     std::map<std::string, double> unitMap = {};
 
     for (const auto &baseUnits : baseUnitsList) {
-        unitMap[baseUnits] = 0.0;
+        unitMap.emplace(baseUnits, 0.0);
     }
 
     std::string ref;
@@ -1471,7 +1471,7 @@ void updateBaseUnitCount(const ModelPtr &model,
                 }
             }
         } else if (unitMap.find(uName) == unitMap.end()) {
-            unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
+            unitMap.emplace(uName, direction * uExp);
             multiplier += direction * logMult;
         }
     } else if (isStandardUnitName(uName)) {
@@ -1600,7 +1600,7 @@ void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::st
     } else {
         std::vector<std::string> infos;
         infos.emplace_back(info);
-        idMap[id] = std::make_pair(1, infos);
+        idMap.emplace(id, std::make_pair(1, infos));
     }
 }
 

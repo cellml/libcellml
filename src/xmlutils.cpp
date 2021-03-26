@@ -35,7 +35,7 @@ XmlNamespaceMap attributeNamespaces(const XmlNodePtr &node)
     XmlNamespaceMap namespaceMap;
     auto tempAttribute = node->firstAttribute();
     while (tempAttribute != nullptr) {
-        namespaceMap[tempAttribute->namespacePrefix()] = tempAttribute->namespaceUri();
+        namespaceMap.emplace(tempAttribute->namespacePrefix(), tempAttribute->namespaceUri());
         tempAttribute = tempAttribute->next();
     }
     return namespaceMap;
@@ -48,7 +48,7 @@ XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1,
     for (it = namespaceMap1.begin(); it != namespaceMap1.end(); ++it) {
         auto result = namespaceMap2.find(it->first);
         if (result == namespaceMap2.end()) {
-            undefinedNamespaces[it->first] = it->second;
+            undefinedNamespaces.emplace(it->first, it->second);
         }
     }
     return undefinedNamespaces;

@@ -57,10 +57,14 @@ bool hasNonWhitespaceCharacters(const std::string &input)
     return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
-std::string convertToString(double value)
+std::string convertToString(double value, bool fullPrecision)
 {
     std::ostringstream strs;
-    strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    if (fullPrecision) {
+        strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    } else {
+        strs << value;
+    }
     return strs.str();
 }
 
@@ -177,7 +181,9 @@ bool isCellMLReal(const std::string &candidate)
 
 bool areEqual(double a, double b)
 {
-    return convertToString(a) == convertToString(b);
+    // Note: we add 0.0 in case a is, for instance, equal to 0.0 and b is equal
+    //       to -0.0.
+    return convertToString(a + 0.0) == convertToString(b + 0.0);
 }
 
 ptrdiff_t ulpsDistance(double a, double b)
@@ -521,7 +527,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && units->unitCount() == 0 && isStandardUnitName(units->name());
+    return (units != nullptr) && (units->unitCount() == 0) && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
@@ -831,7 +837,7 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
             }
 
             if (!rebasedVector.empty()) {
-                rebasedMap[rebasedKey] = rebasedVector;
+                rebasedMap.emplace(rebasedKey, rebasedVector);
             }
         }
     }
@@ -864,7 +870,7 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     ComponentNameMap nameMap;
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto c = component->component(index);
-        nameMap[c->name()] = c;
+        nameMap.emplace(c->name(), c);
         ComponentNameMap childrenNameMap = createComponentNamesMap(c);
         nameMap.insert(childrenNameMap.begin(), childrenNameMap.end());
     }
@@ -970,7 +976,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
             auto equivalentVariable = variable->equivalentVariable(j);
             auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
             if (equivalenceMap.count(indexStack) == 0) {
-                equivalenceMap[indexStack] = std::vector<IndexStack>();
+                equivalenceMap.emplace(indexStack, std::vector<IndexStack>());
             }
             equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
         }
