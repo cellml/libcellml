@@ -285,6 +285,11 @@ std::string ComponentEntity::encapsulationId() const
     return mPimpl->mEncapsulationId;
 }
 
+void ComponentEntity::removeEncapsulationId()
+{
+    mPimpl->mEncapsulationId = "";
+}
+
 bool ComponentEntity::doEquals(const EntityPtr &other) const
 {
     if (NamedEntity::doEquals(other)) {
