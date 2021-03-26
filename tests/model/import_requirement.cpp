@@ -38,7 +38,7 @@ TEST(ImportRequirement, requirementsFixCircularRef)
     };
 
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importer/requirements/importExample1.cellml"));
+    auto model = parser->parseModel(fileContents("import-requirements/importExample1.cellml"));
 
     auto requirements = model->importRequirements();
     EXPECT_EQ(e, requirements);
@@ -52,7 +52,7 @@ TEST(ImportRequirement, requirementsEncapsulationUnitsWithChildren)
     };
 
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importer/requirements/complicatedExample.cellml"));
+    auto model = parser->parseModel(fileContents("import-requirements/complicatedExample.cellml"));
 
     auto requirements = model->importRequirements();
     EXPECT_EQ(e, requirements);
