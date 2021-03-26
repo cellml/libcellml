@@ -441,21 +441,9 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     // Compute and check the hash of our profile contents.
 
-    auto res = false;
-    auto profileContentsSha1 = sha1(profileContents);
-
-    switch (mLockedProfile->profile()) {
-    case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "55939677baad00995bc0f3cc43ebbb34fe4aebfa";
-
-        break;
-    case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "87ece1d387a8b01130bee2bbd57949754e17cc5e";
-
-        break;
-    }
-
-    return res;
+    return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
+               sha1(profileContents) != "55939677baad00995bc0f3cc43ebbb34fe4aebfa" :
+               sha1(profileContents) != "87ece1d387a8b01130bee2bbd57949754e17cc5e";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -466,17 +454,9 @@ void Generator::GeneratorImpl::addOriginCommentCode()
                                              "a modified " :
                                              "the ";
 
-        switch (mLockedProfile->profile()) {
-        case GeneratorProfile::Profile::C:
-            profileInformation += "C";
-
-            break;
-        case GeneratorProfile::Profile::PYTHON:
-            profileInformation += "Python";
-
-            break;
-        }
-
+        profileInformation += (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
+                                  "C" :
+                                  "Python";
         profileInformation += " profile of";
 
         mCode += replace(mLockedProfile->commentString(),
@@ -1467,15 +1447,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     std::string code;
 
     switch (ast->type()) {
-        // Assignment.
-
     case AnalyserEquationAst::Type::ASSIGNMENT:
         code = generateOperatorCode(mLockedProfile->assignmentString(), ast);
 
         break;
-
-        // Relational and logical operators.
-
     case AnalyserEquationAst::Type::EQ:
         if (mLockedProfile->hasEqOperator()) {
             code = generateOperatorCode(mLockedProfile->eqString(), ast);
@@ -1556,9 +1531,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         }
 
         break;
-
-        // Arithmetic operators.
-
     case AnalyserEquationAst::Type::PLUS:
         if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mLockedProfile->plusString(), ast);
@@ -1598,9 +1570,9 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                        generateOperatorCode(mLockedProfile->powerString(), ast) :
                        mLockedProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
         }
-
-        break;
     }
+
+    break;
     case AnalyserEquationAst::Type::ROOT: {
         auto astRightChild = ast->rightChild();
 
@@ -1635,9 +1607,9 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
         }
-
-        break;
     }
+
+    break;
     case AnalyserEquationAst::Type::ABS:
         code = generateOneParameterFunctionCode(mLockedProfile->absoluteValueString(), ast);
 
@@ -1666,9 +1638,9 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->commonLogarithmString(), ast);
         }
-
-        break;
     }
+
+    break;
     case AnalyserEquationAst::Type::CEILING:
         code = generateOneParameterFunctionCode(mLockedProfile->ceilingString(), ast);
 
@@ -1689,16 +1661,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateTwoParameterFunctionCode(mLockedProfile->remString(), ast);
 
         break;
-
-        // Calculus elements.
-
     case AnalyserEquationAst::Type::DIFF:
         code = generateCode(ast->rightChild());
 
         break;
-
-        // Trigonometric operators.
-
     case AnalyserEquationAst::Type::SIN:
         code = generateOneParameterFunctionCode(mLockedProfile->sinString(), ast);
 
@@ -1795,9 +1761,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateOneParameterFunctionCode(mLockedProfile->acothString(), ast);
 
         break;
-
-        // Piecewise statement.
-
     case AnalyserEquationAst::Type::PIECEWISE: {
         auto astRightChild = ast->rightChild();
 
@@ -1810,9 +1773,9 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mLockedProfile->nanString());
         }
-
-        break;
     }
+
+    break;
     case AnalyserEquationAst::Type::PIECE:
         code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
 
@@ -1821,9 +1784,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateCode(ast->leftChild());
 
         break;
-
-        // Token elements.
-
     case AnalyserEquationAst::Type::CI:
         code = generateVariableNameCode(ast->variable(), ast);
 
@@ -1832,18 +1792,12 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateDoubleCode(ast->value());
 
         break;
-
-        // Qualifier elements.
-
     case AnalyserEquationAst::Type::DEGREE:
     case AnalyserEquationAst::Type::LOGBASE:
     case AnalyserEquationAst::Type::BVAR:
         code = generateCode(ast->leftChild());
 
         break;
-
-        // Constants.
-
     case AnalyserEquationAst::Type::TRUE:
         code = mLockedProfile->trueString();
 
