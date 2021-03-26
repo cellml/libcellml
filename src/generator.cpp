@@ -499,7 +499,7 @@ void Generator::GeneratorImpl::addImplementationHeaderCode()
 {
     bool hasInterfaceFileName = mLockedProfile->implementationHeaderString().empty() ?
                                     false :
-                                    (mLockedProfile->implementationHeaderString().find("<INTERFACE_FILE_NAME>") != std::string::npos);
+                                    (mLockedProfile->implementationHeaderString().find("[INTERFACE_FILE_NAME]") != std::string::npos);
 
     if (!mLockedProfile->implementationHeaderString().empty()
         && ((hasInterfaceFileName && !mLockedProfile->interfaceFileNameString().empty())
