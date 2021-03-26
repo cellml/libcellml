@@ -147,7 +147,6 @@ class ImporterTestCase(unittest.TestCase):
         importer.clearImports(model)
         self.assertTrue(model.hasUnresolvedImports())
 
-
     def test_remove_all_models(self):
         from libcellml import Parser, Importer
         parser = Parser()

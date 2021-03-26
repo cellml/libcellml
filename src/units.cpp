@@ -601,6 +601,9 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
 bool Units::requiresImports() const
 {
     // Function to check child unit dependencies for imports.
+    if (isImport()) {
+        return true;
+    }
 
     auto model = owningModel(shared_from_this());
     if (model != nullptr) {
@@ -616,7 +619,7 @@ bool Units::requiresImports() const
             if (child == nullptr) {
                 continue;
             }
-            if (child->isImport() || child->requiresImports()) {
+            if (child->requiresImports()) {
                 return true;
             }
         }
