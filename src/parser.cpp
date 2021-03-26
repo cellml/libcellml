@@ -641,7 +641,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
 
 void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node) const
 {
-    // Define types for variable and component pairs, and their ids.
+    // Define types for variable and component pairs, and their identifiers.
     using NameInfo = std::vector<std::string>;
     using NameInfoMap = std::vector<NameInfo>;
     using NamePair = std::pair<std::string, std::string>;
@@ -705,8 +705,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         if (connectionId.empty()) {
             des += " does not contain any 'map_variables' elements and will be disregarded.";
         } else {
-            des += " has an id of '" + connectionId + "' but does not contain any 'map_variables' elements.";
-            des += " The connection will be disregarded and the associated id will be lost.";
+            des += " has an identifier of '" + connectionId + "' but does not contain any 'map_variables' elements.";
+            des += " The connection will be disregarded and the associated identifier will be lost.";
         }
         issue->setDescription(des);
         issue->setModel(model);
@@ -1073,7 +1073,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
         if (id.empty()) {
             issue->setDescription("Import from '" + node->attribute("href") + "' is empty and will be disregarded.");
         } else {
-            issue->setDescription("Import from '" + node->attribute("href") + "' has an id of '" + id + "' but is empty. The import will be disregarded and the associated id will be lost.");
+            issue->setDescription("Import from '" + node->attribute("href") + "' has an identifier of '" + id + "' but is empty. The import will be disregarded and the associated identifier will be lost.");
         }
         issue->setImportSource(importSource);
         issue->setLevel(libcellml::Issue::Level::WARNING);
