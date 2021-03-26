@@ -36,8 +36,6 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 /**
@@ -431,13 +429,9 @@ void Validator::validateModel(const ModelPtr &model, const std::string &baseLoca
         auto issue = importer->issue(i);
         auto type = issue->cellmlElementType();
 
-        Debug() << "----------- " << (type == CellmlElementType::COMPONENT);
         if (type == CellmlElementType::COMPONENT) {
             auto indexStack = reverseEngineerIndexStack(issue->component());
-            Debug() << issue->component();
-            printStack(indexStack);
             auto component = model->component(indexStack.at(0));
-            Debug() << component;
             indexStack.erase(indexStack.begin());
             for (const auto &index : indexStack) {
                 component = component->component(index);

@@ -2862,7 +2862,6 @@ TEST(Validator, circularImportReferencesComponent)
     EXPECT_EQ(size_t(0), validator->issueCount());
 
     validator->validateModel(model, resourcePath("importer/"));
-    printIssues(validator);
     EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(size_t(1), validator->errorCount());
     EXPECT_EQ(errorMessage, validator->error(0)->description());
@@ -2908,7 +2907,6 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
     auto model = parser->parseModel(fileContents("importer/circularUnits_1_duplicated_name.cellml"));
-    printIssues(parser);
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
@@ -2956,42 +2954,40 @@ TEST(Validator, importComponentWithInvalidName)
     const std::vector<std::string> errorMessages = {
         "Import of component 'c' has an invalid URI in the xlink:href attribute.",
         "The attempt to resolve imports with the model at '"
-            + resourcePath()
+            + resourcePath("importer/")
             + "i am broken and invalid.cellml' failed: the file could not be opened."};
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
-    auto model = parser->parseModel(fileContents("invalid_import_url.cellml"));
+    auto model = parser->parseModel(fileContents("importer/invalid_import_url.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
-    printIssues(validator);
-//    EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
+    EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
 
-    validator->validateModel(model, resourcePath(""));
+    validator->validateModel(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(2), validator->issueCount());
     EXPECT_EQ_ISSUES(errorMessages, validator);
-//    EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
-//    EXPECT_EQ(model->component("c")->importSource(), validator->error(1)->importSource());
+    EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
 }
 
 TEST(Validator, importSecondGenComponentWithInvalidName)
 {
     const std::string errorMessage =
         "The attempt to resolve imports with the model at '"
-        + resourcePath()
+        + resourcePath("importer/")
         + "i am broken and invalid.cellml' failed: the file could not be opened.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
-    auto model = parser->parseModel(fileContents("import_invalid_import_url.cellml"));
+    auto model = parser->parseModel(fileContents("importer/import_invalid_import_url.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
-    validator->validateModel(model, resourcePath(""));
+    validator->validateModel(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(errorMessage, validator->issue(0)->description());
     EXPECT_EQ(model->component("c", true), validator->issue(0)->component());
