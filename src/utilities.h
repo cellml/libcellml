@@ -35,6 +35,8 @@ namespace libcellml {
  */
 static const std::string baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
 
+static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
+
 /**
  * Vector of base units.
  */

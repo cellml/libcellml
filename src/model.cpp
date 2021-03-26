@@ -395,6 +395,42 @@ bool Model::fixVariableInterfaces()
     return allOk;
 }
 
+bool traverseHierarchyAndRemoveIfEmpty(const ComponentPtr &component)
+{
+    for (size_t i = component->componentCount() - 1; i != MAX_SIZE_T; --i) {
+        if (traverseHierarchyAndRemoveIfEmpty(component->component(i))) {
+            component->removeComponent(i);
+        }
+    }
+
+    return (component->variableCount() + component->resetCount() + component->componentCount() == 0)
+           && component->math().empty()
+           && !component->isImport()
+           && component->name().empty()
+           && component->id().empty();
+}
+
+void Model::clean()
+{
+    // Remove empty components.
+    for (size_t i = componentCount() - 1; i != MAX_SIZE_T; --i) {
+        if (traverseHierarchyAndRemoveIfEmpty(component(i))) {
+            removeComponent(i);
+        }
+    }
+
+    // Remove empty units.
+    for (size_t i = unitsCount() - 1; i != MAX_SIZE_T; --i) {
+        auto u = units(i);
+        if (!u->isImport()
+            && u->name().empty()
+            && u->id().empty()
+            && (u->unitCount() == 0)) {
+            removeUnits(i);
+        }
+    }
+}
+
 bool Model::doEquals(const EntityPtr &other) const
 {
     if (ComponentEntity::doEquals(other)) {

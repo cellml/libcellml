@@ -926,7 +926,7 @@ void Annotator::clearAllIds()
         for (size_t i = 0; i < model->componentCount(); ++i) {
             mPimpl->doClearComponentIds(model->component(i));
         }
-        model->setEncapsulationId("");
+        model->removeEncapsulationId();
 
         mPimpl->mIdList.clear();
         mPimpl->mHash = 0;
@@ -943,7 +943,7 @@ void Annotator::clearAllIds(ModelPtr &model)
 
 void Annotator::AnnotatorImpl::doClearComponentIds(const ComponentPtr &component)
 {
-    component->setEncapsulationId("");
+    component->removeEncapsulationId();
     component->removeId();
     if (component->isImport()) {
         component->importSource()->removeId();

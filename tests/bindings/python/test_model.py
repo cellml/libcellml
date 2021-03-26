@@ -282,6 +282,9 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual('main_model', m.id())
         self.assertEqual('model_encapsulation', m.encapsulationId())
 
+        m.removeEncapsulationId()
+        self.assertEqual('', m.encapsulationId())
+
     def test_clone(self):
         from libcellml import Component, Model, Units, Variable
 
@@ -347,6 +350,6 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual("public", v1.interfaceType())
         self.assertEqual("public", v2.interfaceType())
 
-
+        
 if __name__ == '__main__':
     unittest.main()
