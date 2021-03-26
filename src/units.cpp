@@ -112,7 +112,7 @@ struct UnitDefinition
     std::string mPrefix; /**< String expression of the prefix for the unit.*/
     double mExponent = 1.0; /**< Exponent for the unit.*/
     double mMultiplier = 1.0; /**< Multiplier for the unit.*/
-    std::string mId; /**< Id for the unit.*/
+    std::string mId; /**< Identifier for the unit.*/
 };
 
 /**
