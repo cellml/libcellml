@@ -69,32 +69,32 @@ reference.";
 InterfaceType.";
 
 %feature("docstring") libcellml::Variable::setEquivalenceMappingId
-"Record the given id as the mapping id for the equivalence defined with the given
-variables.  The variables are commutative. This id appears in the 'map_variables'
+"Record the given identifier as the mapping identifier for the equivalence defined with the given
+variables.  The variables are commutative. This identifier appears in the 'map_variables'
 element of the model when serialised.
 
-To clear an equivalence mapping id set it to the empty string. If the two variables are
-not equivalent the mapping id is not set.";
+To clear an equivalence mapping identifier set it to the empty string. If the two variables are
+not equivalent the mapping identifier is not set.";
 
 %feature("docstring") libcellml::Variable::setEquivalenceConnectionId
-"Record the given id as the connection id for the equivalence defined with the given
-variables.  The variables are commutative. This id appears in the 'connection'
+"Record the given identifier as the connection identifier for the equivalence defined with the given
+variables.  The variables are commutative. This identifier appears in the 'connection'
 element of the model when serialised.
 
-To clear an equivalence connection id set it to the empty string. If the two variables are
-not equivalent the connection id is not set.";
+To clear an equivalence connection identifier set it to the empty string. If the two variables are
+not equivalent the connection identifier is not set.";
 
 %feature("docstring") libcellml::Variable::equivalenceMappingId
-"Get the mapping id set for the equivalence defined with the given variables.";
+"Get the mapping identifier set for the equivalence defined with the given variables.";
 
 %feature("docstring") libcellml::Variable::equivalenceConnectionId
-"Get the connection id set for the equivalence defined with the given variables.";
+"Get the connection identifier set for the equivalence defined with the given variables.";
 
 %feature("docstring") libcellml::Variable::removeEquivalenceConnectionId
-"Remove the connection id for the equivalence defined with the given variables.";
+"Remove the connection identifier for the equivalence defined with the given variables.";
 
 %feature("docstring") libcellml::Variable::removeEquivalenceMappingId
-"Remove the mapping id for the equivalence defined with the given variables.";
+"Remove the mapping identifier for the equivalence defined with the given variables.";
 
 %feature("docstring") libcellml::Variable::clone
 "Create a copy of this variable.";

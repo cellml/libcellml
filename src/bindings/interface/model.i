@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %include <std_shared_ptr.i>
+%include <std_vector.i>
 
 %import "componententity.i"
 %import "createconstructor.i"
@@ -66,24 +67,11 @@ Only the first matching Units is removed and returned.";
 %feature("docstring") libcellml::Model::fixVariableInterfaces
 "Fix variable interfaces throughout the model.";
 
-%feature("docstring") libcellml::Model::addImportSource
-"Manually add an ImportSource to the Model.";
+%feature("docstring") libcellml::Model::clean
+"Remove any empty units and any empty components from the model."
 
-%feature("docstring") libcellml::Model::importSourceCount
-"Return the number of ImportSource items in the Model.";
-
-%feature("docstring") libcellml::Model::importSource
-"Retrieve an ImportSource by index.";
-
-%feature("docstring") libcellml::Model::removeImportSource
-"Remove an ImportSource from the Model by index or reference.";
-
-%feature("docstring") libcellml::Model::removeAllImportSources
-"Remove all ImportSource items from the Model.";
-
-%feature("docstring") libcellml::Model::hasImportSource
-"Test whether this Model already contains the given ImportSource.";
-
+%feature("docstring") libcellml::Model::importRequirements
+"Return all URLs used by imports in the model."
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
@@ -114,6 +102,8 @@ Only the first matching Units is removed and returned.";
 %pythoncode %{
 # libCellML generated wrapper code starts here.
 %}
+
+%template() std::vector<std::string>;
 
 %shared_ptr(libcellml::Model);
 %create_constructor(Model);

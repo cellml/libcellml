@@ -237,7 +237,7 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator.assignResetValueId(r)
         self.assertEqual("b4da5f", r.resetValueId())
 
-        i = model.importSource(0)
+        i = model.component("component1").importSource()
 
         self.assertEqual("", i.id())
         annotator.assignImportSourceId(i)
@@ -261,8 +261,8 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator.assignAllIds()
 
         self.assertEqual("b4da55", model.id())
-        self.assertEqual("b4da56", model.importSource(0).id())
-        self.assertEqual("b4da57", model.importSource(1).id())
+        self.assertEqual("b4da56", model.component("component1").importSource().id())
+        self.assertEqual("b4da57", model.units("units1").importSource().id())
         self.assertEqual("b4da58", model.units(0).id())
         self.assertEqual("b4da59", model.units(1).id())
         self.assertEqual("b4da5a", model.units(2).id())
@@ -398,8 +398,8 @@ class AnnotatorTestCase(unittest.TestCase):
             model.component("component2").variable("variable1"),
             model.component("component2").variable("variable1").equivalentVariable(0)))
 
-        self.assertEqual("b4da58", annotator.assignId(model.importSource(0)))
-        self.assertEqual("b4da58", model.importSource(0).id())
+        self.assertEqual("b4da58", annotator.assignId(model.component("component1").importSource()))
+        self.assertEqual("b4da58", model.component("component1").importSource().id())
 
         self.assertEqual("b4da59", annotator.assignId(VariablePair(model.component("component2").variable("variable2"),
                                                                    model.component("component2").variable(
@@ -458,7 +458,7 @@ class AnnotatorTestCase(unittest.TestCase):
         expected_items = {
             "duplicateId1": (
                 (CellmlElementType.UNITS, model.units("units2")),
-                (CellmlElementType.IMPORT, model.importSource(0)),
+                (CellmlElementType.IMPORT, model.component("component1").importSource()),
                 (CellmlElementType.MAP_VARIABLES, (c4v1, c2v1)),
                 (CellmlElementType.COMPONENT, model.component("component2")),
                 (CellmlElementType.CONNECTION, (c2v1, c3v1)),
@@ -478,7 +478,7 @@ class AnnotatorTestCase(unittest.TestCase):
                 (CellmlElementType.VARIABLE, c3v1),
             ),
             "duplicateId3": (
-                (CellmlElementType.IMPORT, model.importSource(1)),
+                (CellmlElementType.IMPORT, model.units("units1").importSource()),
                 (CellmlElementType.UNITS, model.units("units3")),
                 (CellmlElementType.VARIABLE, c4v1),
                 (CellmlElementType.VARIABLE, c2v2),
@@ -512,7 +512,7 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator = Annotator()
         parser = Parser()
 
-        message = 'Could not find an item with an id of \'i_dont_exist\' in the model.'
+        message = 'Could not find an item with an identifier of \'i_dont_exist\' in the model.'
 
         model = parser.parseModel(file_contents('annotator/unique_ids.cellml'))
         annotator.setModel(model)
@@ -527,7 +527,7 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator = Annotator()
         parser = Parser()
 
-        non_unique_message = 'The id \'duplicateId\' occurs 29 times in the model so a unique item cannot be located.'
+        non_unique_message = 'The identifier \'duplicateId\' occurs 29 times in the model so a unique item cannot be located.'
 
         model = parser.parseModel(file_contents('annotator/duplicate_ids.cellml'))
         annotator.setModel(model)

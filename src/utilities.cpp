@@ -57,10 +57,14 @@ bool hasNonWhitespaceCharacters(const std::string &input)
     return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
-std::string convertToString(double value)
+std::string convertToString(double value, bool fullPrecision)
 {
     std::ostringstream strs;
-    strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    if (fullPrecision) {
+        strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    } else {
+        strs << value;
+    }
     return strs.str();
 }
 
@@ -177,7 +181,9 @@ bool isCellMLReal(const std::string &candidate)
 
 bool areEqual(double a, double b)
 {
-    return convertToString(a) == convertToString(b);
+    // Note: we add 0.0 in case a is, for instance, equal to 0.0 and b is equal
+    //       to -0.0.
+    return convertToString(a + 0.0) == convertToString(b + 0.0);
 }
 
 ptrdiff_t ulpsDistance(double a, double b)
@@ -255,6 +261,24 @@ std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model)
     }
 
     return importedUnits;
+}
+
+std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model)
+{
+    std::vector<ImportSourcePtr> importSources;
+
+    auto importedComponents = getImportedComponents(model);
+    auto importedUnits = getImportedUnits(model);
+
+    importSources.reserve(importedComponents.size() + importedUnits.size());
+    for (auto &component : importedComponents) {
+        importSources.push_back(component->importSource());
+    }
+    for (auto &units : importedUnits) {
+        importSources.push_back(units->importSource());
+    }
+
+    return importSources;
 }
 
 // The below code is used to compute the SHA-1 value of a string, based on the
@@ -503,7 +527,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && units->unitCount() == 0 && isStandardUnitName(units->name());
+    return (units != nullptr) && (units->unitCount() == 0) && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
@@ -538,12 +562,12 @@ bool areEquivalentVariables(const VariablePtr &variable1,
     return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
-bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
+bool isEntityChildOf(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     return entity1->parent() == entity2;
 }
 
-bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2)
+bool areEntitiesSiblings(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     auto entity1Parent = entity1->parent();
     return entity1Parent != nullptr && entity1Parent == entity2->parent();
@@ -798,7 +822,7 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
             }
 
             if (!rebasedVector.empty()) {
-                rebasedMap[rebasedKey] = rebasedVector;
+                rebasedMap.emplace(rebasedKey, rebasedVector);
             }
         }
     }
@@ -831,7 +855,7 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     ComponentNameMap nameMap;
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto c = component->component(index);
-        nameMap[c->name()] = c;
+        nameMap.emplace(c->name(), c);
         ComponentNameMap childrenNameMap = createComponentNamesMap(c);
         nameMap.insert(childrenNameMap.begin(), childrenNameMap.end());
     }
@@ -937,7 +961,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
             auto equivalentVariable = variable->equivalentVariable(j);
             auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
             if (equivalenceMap.count(indexStack) == 0) {
-                equivalenceMap[indexStack] = std::vector<IndexStack>();
+                equivalenceMap.emplace(indexStack, std::vector<IndexStack>());
             }
             equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
         }
@@ -1046,7 +1070,7 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
         }
     }
 
-    // NB ids on component and reset MathML blocks and their children are not yet included.
+    // Note: identifiers on component and reset MathML blocks and their children are not yet included.
 
     for (size_t c = 0; c < component->componentCount(); ++c) {
         listComponentIds(component->component(c), idList);
@@ -1055,8 +1079,8 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
 
 IdList listIds(const ModelPtr &model)
 {
-    // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
-    // invalid models (with duplicated ids) too.
+    // Collect all existing identifiers in a list and return. NB can't use a map or a set as we need to be able to print
+    // invalid models (with duplicated identifiers) too.
 
     std::unordered_set<std::string> idList;
     // Model.
@@ -1187,6 +1211,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                     auto issue = Issue::create();
                     issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
                     issue->setLevel(Issue::Level::WARNING);
+                    issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                     issue->setVariable(v);
                     issueList.push_back(issue);
                     status = false;
@@ -1195,6 +1220,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                 auto issue = Issue::create();
                 issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
                 issue->setLevel(Issue::Level::WARNING);
+                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                 issue->setVariable(v);
                 issueList.push_back(issue);
                 status = false;

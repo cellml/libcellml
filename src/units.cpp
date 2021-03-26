@@ -112,7 +112,7 @@ struct UnitDefinition
     std::string mPrefix; /**< String expression of the prefix for the unit.*/
     double mExponent = 1.0; /**< Exponent for the unit.*/
     double mMultiplier = 1.0; /**< Multiplier for the unit.*/
-    std::string mId; /**< Id for the unit.*/
+    std::string mId; /**< Identifier for the unit.*/
 };
 
 /**
@@ -525,18 +525,6 @@ void Units::removeAllUnits()
     mPimpl->mUnits.clear();
 }
 
-void Units::doSetImportSource(const ImportSourcePtr &importSource)
-{
-    auto thisUnits = shared_from_this();
-    auto model = owningModel(thisUnits);
-
-    if ((importSource != nullptr) && (model != nullptr)) {
-        model->addImportSource(importSource);
-    }
-
-    ImportedEntity::doSetImportSource(importSource);
-}
-
 void Units::setSourceUnits(ImportSourcePtr &importSource, const std::string &name)
 {
     setImportSource(importSource);
@@ -578,7 +566,7 @@ void updateUnitsMapWithStandardUnit(const std::string &name, UnitsMap &unitsMap,
     for (const auto &baseUnitsComponent : unitsListIter->second) {
         auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
         if (unitsMapIter == unitsMap.end()) {
-            unitsMap[baseUnitsComponent.first] = 0.0;
+            unitsMap.emplace(baseUnitsComponent.first, 0.0);
         }
         unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * exp;
     }
@@ -611,7 +599,7 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 if (model == nullptr) {
                     // We cannot resolve the reference for this units so we add
                     // what we do know.
-                    unitsMap[ref] = uExp * exp;
+                    unitsMap.emplace(ref, uExp * exp);
                 } else {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
@@ -653,6 +641,9 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
 bool Units::requiresImports() const
 {
     // Function to check child unit dependencies for imports.
+    if (isImport()) {
+        return true;
+    }
 
     auto model = owningModel(shared_from_this());
     if (model != nullptr) {
@@ -668,7 +659,7 @@ bool Units::requiresImports() const
             if (child == nullptr) {
                 continue;
             }
-            if (child->isImport() || child->requiresImports()) {
+            if (child->requiresImports()) {
                 return true;
             }
         }
@@ -729,8 +720,7 @@ UnitsPtr Units::clone() const
     units->setName(name());
 
     if (isImport()) {
-        auto imp = importSource()->clone();
-        units->setImportSource(imp);
+        units->setImportSource(importSource());
     }
 
     units->setImportReference(importReference());

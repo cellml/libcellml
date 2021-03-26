@@ -278,7 +278,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
                 // either.
                 bool found = false;
                 if (idList.count(id) != 0) {
-                    // Get the range of items with this id:
+                    // Get the range of items with this identifier:
                     auto rangePair = idList.equal_range(id);
                     for (auto it = rangePair.first; it != rangePair.second; ++it) {
                         // Make sure it's also a MAP_VARIABLES item.
@@ -308,7 +308,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
                 // either.
                 bool found = false;
                 if (idList.count(id) != 0) {
-                    // Get the range of items with this id:
+                    // Get the range of items with this identifier:
                     auto rangePair = idList.equal_range(id);
                     for (auto it = rangePair.first; it != rangePair.second; ++it) {
                         // Make sure it's also a CONNECTION item.
@@ -358,7 +358,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
 
 ItemList listIdsAndItems(const ModelPtr &model)
 {
-    // Collect all existing ids in a list and return.
+    // Collect all existing identifiers in a list and return.
     //    auto model = weakModel.lock();
     ItemList idList;
     // Model.
@@ -438,16 +438,18 @@ void Annotator::setModel(const ModelPtr &model)
 void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
 {
     auto issue = Issue::create();
-    issue->setDescription("Could not find an item with an id of '" + id + "' in the model.");
+    issue->setDescription("Could not find an item with an identifier of '" + id + "' in the model.");
     issue->setLevel(Issue::Level::WARNING);
+    issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_FOUND);
     mAnnotator->addIssue(issue);
 }
 
 void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id) const
 {
     auto issue = Issue::create();
-    issue->setDescription("The id '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
+    issue->setDescription("The identifier '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
     issue->setLevel(Issue::Level::WARNING);
+    issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE);
     mAnnotator->addIssue(issue);
 }
 
@@ -456,6 +458,7 @@ void Annotator::AnnotatorImpl::addIssueNoModel() const
     auto issue = Issue::create();
     issue->setDescription("This Annotator object does not have a model to work with.");
     issue->setLevel(Issue::Level::ERROR);
+    issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NO_MODEL);
     mAnnotator->addIssue(issue);
 }
 
@@ -465,6 +468,7 @@ void Annotator::AnnotatorImpl::addInvalidArgument(CellmlElementType type) const
     auto description = "The item is internally inconsistent: the enum type '" + cellmlElementTypeAsString(type) + "' cannot be used with the stored item.";
     issue->setDescription(description);
     issue->setLevel(Issue::Level::ERROR);
+    issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE);
     mAnnotator->addIssue(issue);
 }
 
@@ -912,20 +916,21 @@ void Annotator::clearAllIds()
 {
     auto model = mPimpl->mModel.lock();
     if (model != nullptr) {
-        model->setId("");
-        for (size_t i = 0; i < model->importSourceCount(); ++i) {
-            model->importSource(i)->setId("");
-        }
+        model->removeId();
         for (size_t i = 0; i < model->unitsCount(); ++i) {
-            model->units(i)->setId("");
-            for (size_t j = 0; j < model->units(i)->unitCount(); ++j) {
-                model->units(i)->setUnitId(j, "");
+            auto units = model->units(i);
+            units->removeId();
+            if (units->isImport()) {
+                units->importSource()->removeId();
+            }
+            for (size_t j = 0; j < units->unitCount(); ++j) {
+                units->setUnitId(j, "");
             }
         }
         for (size_t i = 0; i < model->componentCount(); ++i) {
             mPimpl->doClearComponentIds(model->component(i));
         }
-        model->setEncapsulationId("");
+        model->removeEncapsulationId();
 
         mPimpl->mIdList.clear();
         mPimpl->mHash = 0;
@@ -942,19 +947,24 @@ void Annotator::clearAllIds(ModelPtr &model)
 
 void Annotator::AnnotatorImpl::doClearComponentIds(const ComponentPtr &component)
 {
-    component->setEncapsulationId("");
-    component->setId("");
+    component->removeEncapsulationId();
+    component->removeId();
+    if (component->isImport()) {
+        component->importSource()->removeId();
+    }
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        component->variable(i)->setId("");
-        for (size_t j = 0; j < component->variable(i)->equivalentVariableCount(); ++j) {
-            Variable::setEquivalenceConnectionId(component->variable(i), component->variable(i)->equivalentVariable(j), "");
-            Variable::setEquivalenceMappingId(component->variable(i), component->variable(i)->equivalentVariable(j), "");
+        auto variable = component->variable(i);
+        variable->removeId();
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            Variable::setEquivalenceConnectionId(variable, variable->equivalentVariable(j), "");
+            Variable::setEquivalenceMappingId(variable, variable->equivalentVariable(j), "");
         }
     }
     for (size_t i = 0; i < component->resetCount(); ++i) {
-        component->reset(i)->setId("");
-        component->reset(i)->setResetValueId("");
-        component->reset(i)->setTestValueId("");
+        auto reset = component->reset(i);
+        reset->removeId();
+        reset->removeResetValueId();
+        reset->removeTestValueId();
     }
     for (size_t i = 0; i < component->componentCount(); ++i) {
         doClearComponentIds(component->component(i));
@@ -978,6 +988,7 @@ bool Annotator::assignAllIds(ModelPtr &model)
         auto issue = Issue::create();
         issue->setDescription("The Model supplied is a nullptr. No action has been taken.");
         issue->setLevel(Issue::Level::ERROR);
+        issue->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NULL_MODEL);
         return false;
     }
     setModel(model);
@@ -1062,12 +1073,12 @@ void Annotator::AnnotatorImpl::doSetImportSourceIds()
 {
     // Import items.
     auto model = mModel.lock();
-    for (size_t i = 0; i < model->importSourceCount(); ++i) {
-        auto is = model->importSource(i);
-        if (is->id().empty()) {
+    auto importSources = getAllImportSources(model);
+    for (auto &importSource : importSources) {
+        if (importSource->id().empty()) {
             auto id = makeUniqueId();
-            is->setId(id);
-            auto entry = convertToWeak(std::make_pair(CellmlElementType::IMPORT, is));
+            importSource->setId(id);
+            auto entry = convertToWeak(std::make_pair(CellmlElementType::IMPORT, importSource));
             mIdList.insert(std::make_pair(id, entry));
         }
     }
@@ -1289,7 +1300,7 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
 {
     // Because the hexadecimal counter starts high enough that it will always have a letter as the first character,
     // we don't need to prefix it with any other string to be valid.  This is stored in the mCounter variable
-    // so that "holes" in the automatic id list are not filled; they will always build from the previous
+    // so that "holes" in the automatic identifier list are not filled; they will always build from the previous
     // maximum value.
 
     std::stringstream stream;
@@ -1303,7 +1314,7 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
         id = stream.str();
         stream.str(std::string());
     }
-    // NB: This is only as unique as the information in mIdList permits.  That array must be updated
+    // Note: this is only as unique as the information in mIdList permits.  That array must be updated
     // outside this function.
     return id;
 }
@@ -1397,7 +1408,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItem &item) const
     } else if (type == CellmlElementType::UNITS) {
         modelBased = owningModel(std::any_cast<UnitsPtr>(item.second)) == model;
     } else if (type == CellmlElementType::IMPORT) {
-        modelBased = owningModel(std::any_cast<ImportSourcePtr>(item.second)) == model;
+        modelBased = true;
     } else if (type == CellmlElementType::VARIABLE) {
         modelBased = owningModel(std::any_cast<VariablePtr>(item.second)) == model;
     } else if ((type == CellmlElementType::COMPONENT)
@@ -1698,7 +1709,7 @@ void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &compone
         idsString += "r=" + std::to_string(i) + reset->id() + "rv=" + reset->resetValueId() + "tv=" + reset->testValueId();
     }
 
-    // Note that MathML ids are not yet included.
+    // Note that MathML identifiers are not yet included.
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
         auto child = component->component(i);
@@ -1709,30 +1720,32 @@ void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &compone
 
 size_t Annotator::AnnotatorImpl::generateHash()
 {
-    // Serialise the stored model into a (very) simplified string of id-ed items, and create a hash.
+    // Serialise the stored model into a (very) simplified string of identifier-based items, and create a hash.
     size_t hash = 0;
     auto model = mModel.lock();
     if (model != nullptr) {
         std::string idsString;
+        size_t i;
         idsString += "m=" + model->id() + "me=" + model->encapsulationId();
 
-        for (size_t u = 0; u < model->importSourceCount(); ++u) {
-            auto import = model->importSource(u);
-            idsString += "i=" + std::to_string(u) + import->id();
+        auto importSources = getAllImportSources(model);
+        i = 0;
+        for (auto &importSource : importSources) {
+            idsString += "i=" + std::to_string(++i) + importSource->id();
         }
 
-        for (size_t u = 0; u < model->unitsCount(); ++u) {
-            auto units = model->units(u);
-            idsString += "U=" + std::to_string(u) + units->id();
-            for (size_t i = 0; i < units->unitCount(); ++i) {
-                idsString += "u=" + std::to_string(i) + units->unitId(i);
+        for (i = 0; i < model->unitsCount(); ++i) {
+            auto units = model->units(i);
+            idsString += "U=" + std::to_string(i) + units->id();
+            for (size_t j = 0; j < units->unitCount(); ++j) {
+                idsString += "u=" + std::to_string(j) + units->unitId(j);
             }
         }
 
-        for (size_t u = 0; u < model->componentCount(); ++u) {
-            auto component = model->component(u);
-            idsString += "c=" + std::to_string(u) + component->id();
-            idsString += "cr=" + std::to_string(u) + component->encapsulationId();
+        for (i = 0; i < model->componentCount(); ++i) {
+            auto component = model->component(i);
+            idsString += "c=" + std::to_string(i) + component->id();
+            idsString += "cr=" + std::to_string(i) + component->encapsulationId();
             doUpdateComponentHash(component, idsString);
         }
 
