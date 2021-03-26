@@ -119,7 +119,6 @@ TEST(ModelFlattening, importedUnits)
     auto importer = libcellml::Importer::create();
 
     modelWithUnitsImports = importer->flattenModel(modelWithUnitsImports);
-    EXPECT_EQ(size_t(0), modelWithUnitsImports->importSourceCount());
 
     auto printer = libcellml::Printer::create();
 
@@ -208,8 +207,6 @@ TEST(ModelFlattening, importedComponent)
 
     auto importer = libcellml::Importer::create();
     modelWithComponentImport = importer->flattenModel(modelWithComponentImport);
-
-    EXPECT_EQ(size_t(0), modelWithComponentImport->importSourceCount());
 
     auto printer = libcellml::Printer::create();
 
@@ -835,7 +832,6 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
     auto importer = libcellml::Importer::create();
 
     modelUsingImports = importer->flattenModel(modelUsingImports);
-    EXPECT_EQ(size_t(0), modelUsingImports->importSourceCount());
 
     auto printer = libcellml::Printer::create();
 
