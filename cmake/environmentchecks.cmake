@@ -156,11 +156,11 @@ if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FL
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
 endif()
 
-if(WIN32 AND NOT EMSCRIPTEN)
-  if(HAVE_COVERAGE)
-    set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Module required to run Python coverage testing is available.")
-  endif()
+if(HAVE_COVERAGE)
+  set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Module required to run Python coverage testing is available.")
+endif()
 
+if(WIN32 AND NOT EMSCRIPTEN)
   find_program(MAKENSIS_EXE NAMES ${PREFERRED_NSIS_NAMES} makensis
     HINTS "C:/Program\ Files/NSIS/" "C:/Program\ Files\ (x86)/NSIS/")
   mark_as_advanced(MAKENSIS_EXE)
