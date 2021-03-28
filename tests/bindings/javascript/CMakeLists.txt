@@ -37,6 +37,6 @@ add_custom_command(
 
 add_custom_target(install_modules DEPENDS "package-lock.json;libcellml;libcellml.common")
 
-add_custom_target(jest-test COMMAND ${NPM_EXE} run test DEPENDS "install_modules")
+add_custom_target(jest_test COMMAND ${NPM_EXE} run test DEPENDS "install_modules")
 set(_TEST_NAME javascript_api_tests)
-add_test(NAME ${_TEST_NAME} COMMAND ${CMAKE_COMMAND} --build . --target jest-test)
+add_test(NAME ${_TEST_NAME} COMMAND ${CMAKE_COMMAND} --build . --target jest_test)
