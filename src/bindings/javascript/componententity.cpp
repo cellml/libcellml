@@ -1,7 +1,7 @@
 
 #include <emscripten/bind.h>
 
-#include "libcellml/model.h"
+#include "libcellml/componententity.h"
 
 using namespace emscripten;
 
