@@ -31,12 +31,7 @@ EMSCRIPTEN_BINDINGS(libcellml_model) {
         .function("hasUnresolvedImports", &libcellml::Model::hasUnresolvedImports)
         .function("clone", &libcellml::Model::clone)
         .function("fixVariableInterfaces", &libcellml::Model::fixVariableInterfaces)
-        .function("addImportSource", &libcellml::Model::addImportSource)
-        .function("importSourceCount", &libcellml::Model::importSourceCount)
-        .function("importSource", &libcellml::Model::importSource)
-        .function("removeImportSourceByIndex", select_overload<bool(size_t)>(&libcellml::Model::removeImportSource))
-        .function("removeImportSourceByIndex", select_overload<bool(const libcellml::ImportSourcePtr &)>(&libcellml::Model::removeImportSource))
-        .function("removeAllImportSources", &libcellml::Model::removeAllImportSources)
-        .function("hasImportSource", &libcellml::Model::hasImportSource)
+        .function("clean", &libcellml::Model::clean)
+        .function("importRequirements", &libcellml::Model::importRequirements)
     ;
 }

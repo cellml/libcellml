@@ -9,6 +9,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/parentedentity.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
