@@ -1,7 +1,8 @@
 
 set(TEST_SRCS
-  version.test.js
+  analyser.test.js
   model.test.js
+  version.test.js
 )
 
 foreach(_TEST ${TEST_SRCS})

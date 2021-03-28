@@ -7,7 +7,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analysermodel)
 {
-    enum_<libcellml::AnalyserModel::Type>("Type")
+    enum_<libcellml::AnalyserModel::Type>("TypeM")
         .value("UNKNOWN", libcellml::AnalyserModel::Type::UNKNOWN)
         .value("ALGEBRAIC", libcellml::AnalyserModel::Type::ALGEBRAIC)
         .value("ODE", libcellml::AnalyserModel::Type::ODE)

@@ -7,7 +7,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
 {
-    enum_<libcellml::AnalyserEquationAst::Type>("Type")
+    enum_<libcellml::AnalyserEquationAst::Type>("TypeEA")
         .value("ASSIGNMENT", libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
         .value("EQ", libcellml::AnalyserEquationAst::Type::EQ)
         .value("NEQ", libcellml::AnalyserEquationAst::Type::NEQ)
