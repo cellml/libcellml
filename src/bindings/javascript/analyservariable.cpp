@@ -7,7 +7,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analyservariable)
 {
-    enum_<libcellml::AnalyserVariable::Type>("Type")
+    enum_<libcellml::AnalyserVariable::Type>("TypeV")
         .value("VARIABLE_OF_INTEGRATION", libcellml::AnalyserVariable::Type::VARIABLE_OF_INTEGRATION)
         .value("STATE", libcellml::AnalyserVariable::Type::STATE)
         .value("CONSTANT", libcellml::AnalyserVariable::Type::CONSTANT)
