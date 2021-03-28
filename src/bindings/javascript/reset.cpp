@@ -22,9 +22,16 @@ EMSCRIPTEN_BINDINGS(libcellml_reset) {
         .function("testValue", &libcellml::Reset::testValue)
         .function("setTestValue", &libcellml::Reset::setTestValue)
         .function("removeTestValue", &libcellml::Reset::removeTestValue)
+        .function("setTestValueId", &libcellml::Reset::setTestValueId)
+        .function("removeTestValueId", &libcellml::Reset::removeTestValueId)
+        .function("testValueId", &libcellml::Reset::testValueId)
         .function("appendResetValue", &libcellml::Reset::appendResetValue)
+        .function("resetValue", &libcellml::Reset::resetValue)
         .function("setResetValue", &libcellml::Reset::setResetValue)
         .function("removeResetValue", &libcellml::Reset::removeResetValue)
+        .function("setResetValueId", &libcellml::Reset::setResetValueId)
+        .function("removeResetValueId", &libcellml::Reset::removeResetValueId)
+        .function("resetValueId", &libcellml::Reset::resetValueId)
         .function("clone", &libcellml::Reset::clone)
     ;
 
