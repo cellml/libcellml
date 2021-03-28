@@ -1,8 +1,18 @@
 
 set(SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/annotator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/enums.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
