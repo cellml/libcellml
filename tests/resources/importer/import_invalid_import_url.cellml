@@ -4,14 +4,9 @@
     <component component_ref="c" name="c"/>
   </import>
   <component name="c_base"/>
-  <component name="c_base_child_1"/>
-  <component name="c_base_child_2"/>
   <encapsulation>
     <component_ref component="c_base">
-      <component_ref component="c_base_child_1"/>
-      <component_ref component="c_base_child_2">
-        <component_ref component="c"/>
-      </component_ref>
+      <component_ref component="c"/>
     </component_ref>
   </encapsulation>
 </model>

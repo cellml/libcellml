@@ -442,4 +442,27 @@ bool Model::doEquals(const EntityPtr &other) const
     return false;
 }
 
+std::vector<std::string> Model::importRequirements() const
+{
+    std::vector<std::string> requirements;
+
+    auto importedComponents = getImportedComponents(shared_from_this());
+    auto importedUnits = getImportedUnits(shared_from_this());
+
+    for (auto &component : importedComponents) {
+        auto url = component->importSource()->url();
+        if (std::find(requirements.begin(), requirements.end(), url) == requirements.end()) {
+            requirements.push_back(url);
+        }
+    }
+    for (auto &units : importedUnits) {
+        auto url = units->importSource()->url();
+        if (std::find(requirements.begin(), requirements.end(), url) == requirements.end()) {
+            requirements.push_back(url);
+        }
+    }
+
+    return requirements;
+}
+
 } // namespace libcellml
