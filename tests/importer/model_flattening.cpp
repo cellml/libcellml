@@ -885,7 +885,7 @@ TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
         " - the units 'circular2' is referencing units 'shared' in the model 'circularImport1' imported from 'circularImport1units.cellml'.";
 
     auto parser = libcellml::Parser::create();
-    auto originalModel = parser->parseModel(fileContents("modelflattening/exampleCircularImportUnits.cellml"));
+    auto originalModel = parser->parseModel(fileContents("modelflattening/importExampleUnits.cellml"));
     auto importer = libcellml::Importer::create();
 
     // Resolve the imports.

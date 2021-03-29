@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
@@ -353,6 +354,15 @@ public:
      *  For components, this is applied recursively from the leaves of the encapsulation hierarchy.
      */
     void clean();
+
+    /**
+     * @brief Return all URLs used by imports in the model.
+     *
+     * Return a @c std::vector of @c std::strings representing all URLs used by imports in this model.
+     *
+     * @return a @c std::vector of @c std::strings.
+     */
+    std::vector<std::string> importRequirements() const;
 
 private:
     Model(); /**< Constructor, @private. */

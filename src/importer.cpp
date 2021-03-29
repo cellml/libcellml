@@ -487,10 +487,11 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
                                                            HistoryList &history,
                                                            const std::string &action) const
 {
-    std::string typeString = (type == Type::COMPONENT) ? "component" : "units";
-    std::string typeStringPrefix = (type == Type::COMPONENT) ? "a " : "";
+    bool isComponent = type == Type::COMPONENT;
+    std::string typeString = isComponent ? "component" : "units";
+    std::string typeStringPrefix = isComponent ? "a " : "";
     std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
-                       + std::string((typeString == "component") ? "a " : "") + typeString + " in the model '"
+                       + typeStringPrefix + typeString + " in the model '"
                        + model->name() + "'. The dependency loop is:\n";
     HistoryEntry h;
     size_t i = 0;
