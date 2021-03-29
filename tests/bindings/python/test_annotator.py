@@ -536,7 +536,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(1, annotator.issueCount())
         self.assertEqual(non_unique_message, annotator.issue(0).description())
 
-    def test_set_any_item(self):
+    def test_set_any_cellml_element(self):
 
         from libcellml import Parser
         from libcellml.enums import CellmlElementType
@@ -597,7 +597,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual('variable1', any_mapping.item().variable2().name())
 
 
-    def test_any_item(self):
+    def test_any_cellml_element(self):
         from libcellml import Annotator, Parser
         from libcellml.enums import CellmlElementType
 

@@ -1,7 +1,7 @@
 
 # Set the test name, 'test_' will be prepended to the
 # name set here
-set(CURRENT_TEST any_item)
+set(CURRENT_TEST any_cellml_element)
 # Set a category name to enable running commands like:
 #    ctest -R <category-label>
 # which will run the tests matching this category-label.
@@ -10,7 +10,7 @@ set(${CURRENT_TEST}_CATEGORY utils)
 list(APPEND LIBCELLML_TESTS ${CURRENT_TEST})
 # Using absolute path relative to this file
 set(${CURRENT_TEST}_SRCS
-  ${CMAKE_CURRENT_LIST_DIR}/any_item.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/any_cellml_element.cpp
 )
 set(${CURRENT_TEST}_HDRS
 )
