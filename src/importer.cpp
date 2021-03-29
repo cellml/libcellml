@@ -100,7 +100,7 @@ std::vector<ImportSourcePtr>::const_iterator Importer::ImporterImpl::findImportS
 HistoryList::const_iterator find(const HistoryList &history, const HistoryEntry &h)
 {
     return std::find_if(history.begin(), history.end(),
-                        [=](const HistoryEntry &historyEntry) -> bool { return std::get<0>(historyEntry) == std::get<0>(h) && std::get<1>(historyEntry) == std::get<1>(h) && std::get<3>(historyEntry) == std::get<3>(h);});
+                        [=](const HistoryEntry &historyEntry) -> bool { return std::get<0>(historyEntry) == std::get<0>(h) && std::get<1>(historyEntry) == std::get<1>(h) && std::get<3>(historyEntry) == std::get<3>(h); });
 }
 
 bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistoryList &history)
@@ -135,7 +135,6 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, cons
 
     // If the dependencies have not been recorded already, then check it.
     if (find(history, h) == history.end()) {
-
         auto model = units->importSource()->model();
         if (model == nullptr) {
             auto issue = Issue::create();
@@ -176,7 +175,6 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ModelPtr &origModel, 
 
     // If the dependencies have not been recorded already, then check it.
     if (find(history, h) == history.end()) {
-
         if (component->isImport()) {
             auto model = component->importSource()->model();
             if (model == nullptr) {
@@ -491,8 +489,8 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
     std::string typeString = isComponent ? "component" : "units";
     std::string typeStringPrefix = isComponent ? "a " : "";
     std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
-                       + typeStringPrefix + typeString + " in the model '"
-                       + model->name() + "'. The dependency loop is:\n";
+                            + typeStringPrefix + typeString + " in the model '"
+                            + model->name() + "'. The dependency loop is:\n";
     HistoryEntry h;
     size_t i = 0;
     std::string msgHistory;

@@ -2898,7 +2898,7 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
         " - the units 'i_am_duplicated' is referencing units 'u2' in the model 'circularImport2' imported from 'circularUnits_2.cellml';\n"
         " - the units 'u2' is referencing units 'u3' in the model 'circularImport3' imported from 'circularUnits_3.cellml';\n"
         " - the units 'u3' is referencing units 'i_am_cyclic' in the model 'circularImport1' imported from 'circularUnits_1.cellml'; and\n"
-        " - the units 'i_am_cyclic' is referencing units 'u2' in the model 'circularImport2' imported from 'circularUnits_2.cellml'."
+        " - the units 'i_am_cyclic' is referencing units 'u2' in the model 'circularImport2' imported from 'circularUnits_2.cellml'.",
     };
 
     auto parser = libcellml::Parser::create();
@@ -2926,7 +2926,7 @@ TEST(Validator, circularImportedComponentsDuplicateNames)
         " - the component 'i_am_duplicated' is referencing a component 'c2' in the model 'circularImport2' imported from 'circularImport_2.cellml';\n"
         " - the component 'c2' is referencing a component 'c3' in the model 'circularImport3' imported from 'circularImport_3.cellml';\n"
         " - the component 'c3' is referencing a component 'i_am_cyclic' in the model 'circularImport1' imported from 'circularImport_1.cellml'; and\n"
-        " - the component 'i_am_cyclic' is referencing a component 'c2' in the model 'circularImport2' imported from 'circularImport_2.cellml'."
+        " - the component 'i_am_cyclic' is referencing a component 'c2' in the model 'circularImport2' imported from 'circularImport_2.cellml'.",
     };
 
     auto parser = libcellml::Parser::create();
