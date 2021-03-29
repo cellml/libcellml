@@ -20,13 +20,13 @@ limitations under the License.
 
 #include "test_utils.h"
 
-TEST(AnyItemPtr, createDefault)
+TEST(AnyCellmlElementPtr, createDefault)
 {
-    auto anyItem = libcellml::AnyCellmlElement::create();
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, anyItem->type());
+    auto AnyCellmlElement = libcellml::AnyCellmlElement::create();
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, AnyCellmlElement->type());
 }
 
-TEST(AnyItemPtr, createWithArguments)
+TEST(AnyCellmlElementPtr, createWithArguments)
 {
     auto model = libcellml::Model::create();
     auto item = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::MODEL, std::any(model));

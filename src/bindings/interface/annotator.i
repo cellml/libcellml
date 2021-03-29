@@ -159,7 +159,7 @@ from libcellml.types import AnyCellmlElement
         auto itemInfo = $self->item(id, index);
         return itemInfo->type();
     }
-    std::string _assignId(const AnyItemPtr &item)
+    std::string _assignId(const AnyCellmlElementPtr &item)
     {
         return $self->assignId(item);
     }

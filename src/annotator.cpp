@@ -36,9 +36,9 @@ limitations under the License.
 
 namespace libcellml {
 
-using ItemList = std::multimap<std::string, AnyItemPtr>;
+using ItemList = std::multimap<std::string, AnyCellmlElementPtr>;
 
-AnyItemPtr convertToShared(const AnyItemPtr &item)
+AnyCellmlElementPtr convertToShared(const AnyCellmlElementPtr &item)
 {
     auto converted = AnyCellmlElement::create();
 
@@ -103,7 +103,7 @@ AnyItemPtr convertToShared(const AnyItemPtr &item)
     return converted;
 }
 
-AnyItemPtr convertToWeak(const AnyItemPtr &item)
+AnyCellmlElementPtr convertToWeak(const AnyCellmlElementPtr &item)
 {
     auto converted = AnyCellmlElement::create(item->type(), std::any(nullptr));
 
@@ -178,13 +178,13 @@ struct Annotator::AnnotatorImpl
 
     std::string makeUniqueId();
 
-    std::string id(const AnyItemPtr &item);
-    std::string setAutoId(const AnyItemPtr &item);
-    bool isOwnedByModel(const AnyItemPtr &item) const;
-    void removeId(const AnyItemPtr &item, const std::string &id);
-    void setId(const AnyItemPtr &item, const std::string &id);
-    bool itemsEqual(const AnyItemPtr &itemWeak, const AnyItemPtr &itemShared);
-    bool validItem(const AnyItemPtr &item);
+    std::string id(const AnyCellmlElementPtr &item);
+    std::string setAutoId(const AnyCellmlElementPtr &item);
+    bool isOwnedByModel(const AnyCellmlElementPtr &item) const;
+    void removeId(const AnyCellmlElementPtr &item, const std::string &id);
+    void setId(const AnyCellmlElementPtr &item, const std::string &id);
+    bool itemsEqual(const AnyCellmlElementPtr &itemWeak, const AnyCellmlElementPtr &itemShared);
+    bool validItem(const AnyCellmlElementPtr &item);
 
     void doSetAllAutomaticIds();
     void doSetModelIds();
@@ -217,7 +217,7 @@ Annotator::Annotator()
     : mPimpl(new AnnotatorImpl())
 {
     mPimpl->mAnnotator = this;
-    mPimpl->mIdList = std::multimap<std::string, AnyItemPtr>();
+    mPimpl->mIdList = std::multimap<std::string, AnyCellmlElementPtr>();
 }
 
 Annotator::~Annotator()
@@ -485,9 +485,9 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
     return true;
 }
 
-AnyItemPtr Annotator::item(const std::string &id)
+AnyCellmlElementPtr Annotator::item(const std::string &id)
 {
-    AnyItemPtr retrieved = AnyCellmlElement::create(CellmlElementType::UNDEFINED, std::any(nullptr));
+    AnyCellmlElementPtr retrieved = AnyCellmlElement::create(CellmlElementType::UNDEFINED, std::any(nullptr));
     auto num = itemCount(id);
     if (num == 1) {
         retrieved = item(id, 0);
@@ -499,7 +499,7 @@ AnyItemPtr Annotator::item(const std::string &id)
     return retrieved;
 }
 
-AnyItemPtr Annotator::item(const std::string &id, size_t index)
+AnyCellmlElementPtr Annotator::item(const std::string &id, size_t index)
 {
     return mPimpl->exists(id, index) ? std::move(items(id)[index]) : AnyCellmlElement::create(CellmlElementType::UNDEFINED, std::any(nullptr));
 }
@@ -509,10 +509,10 @@ bool Annotator::isUnique(const std::string &id)
     return mPimpl->mIdList.count(id) == 1;
 }
 
-std::vector<AnyItemPtr> Annotator::items(const std::string &id)
+std::vector<AnyCellmlElementPtr> Annotator::items(const std::string &id)
 {
     mPimpl->update();
-    std::vector<AnyItemPtr> items;
+    std::vector<AnyCellmlElementPtr> items;
     auto range = mPimpl->mIdList.equal_range(id);
     for (auto it = range.first; it != range.second; ++it) {
         items.push_back(convertToShared(it->second));
@@ -1319,7 +1319,7 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
     return id;
 }
 
-std::string Annotator::AnnotatorImpl::id(const AnyItemPtr &item)
+std::string Annotator::AnnotatorImpl::id(const AnyCellmlElementPtr &item)
 {
     std::string id;
     CellmlElementType type = item->type();
@@ -1356,7 +1356,7 @@ std::string Annotator::AnnotatorImpl::id(const AnyItemPtr &item)
     return id;
 }
 
-void Annotator::AnnotatorImpl::setId(const AnyItemPtr &item, const std::string &id)
+void Annotator::AnnotatorImpl::setId(const AnyCellmlElementPtr &item, const std::string &id)
 {
     CellmlElementType type = item->type();
     if (type == CellmlElementType::UNIT) {
@@ -1391,7 +1391,7 @@ void Annotator::AnnotatorImpl::setId(const AnyItemPtr &item, const std::string &
     }
 }
 
-bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItemPtr &item) const
+bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) const
 {
     bool modelBased = false;
     CellmlElementType type = item->type();
@@ -1422,7 +1422,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItemPtr &item) const
     return modelBased;
 }
 
-bool Annotator::AnnotatorImpl::itemsEqual(const AnyItemPtr &itemWeak, const AnyItemPtr &itemShared)
+bool Annotator::AnnotatorImpl::itemsEqual(const AnyCellmlElementPtr &itemWeak, const AnyCellmlElementPtr &itemShared)
 {
     bool itemsEqual = false;
     auto item = convertToWeak(itemShared);
@@ -1456,7 +1456,7 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyItemPtr &itemWeak, const AnyI
     return itemsEqual;
 }
 
-bool Annotator::AnnotatorImpl::validItem(const AnyItemPtr &item)
+bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
 {
     CellmlElementType type = item->type();
     if (type == CellmlElementType::UNIT) {
@@ -1533,7 +1533,7 @@ bool Annotator::AnnotatorImpl::validItem(const AnyItemPtr &item)
     return false;
 }
 
-void Annotator::AnnotatorImpl::removeId(const AnyItemPtr &item, const std::string &id)
+void Annotator::AnnotatorImpl::removeId(const AnyCellmlElementPtr &item, const std::string &id)
 {
     auto range = mIdList.equal_range(id);
     for (auto it = range.first; it != range.second; ++it) {
@@ -1544,7 +1544,7 @@ void Annotator::AnnotatorImpl::removeId(const AnyItemPtr &item, const std::strin
     }
 }
 
-std::string Annotator::AnnotatorImpl::setAutoId(const AnyItemPtr &item)
+std::string Annotator::AnnotatorImpl::setAutoId(const AnyCellmlElementPtr &item)
 {
     std::string newId;
     if (validItem(item)) {
@@ -1638,7 +1638,7 @@ std::string Annotator::assignVariableId(const VariablePtr &variable)
     return mPimpl->setAutoId(AnyCellmlElement::create(CellmlElementType::VARIABLE, variable));
 }
 
-std::string Annotator::assignId(const AnyItemPtr &item)
+std::string Annotator::assignId(const AnyCellmlElementPtr &item)
 {
     return mPimpl->setAutoId(item);
 }

@@ -119,79 +119,79 @@ bool VariablePair::isValid() const
 }
 
 /**
- * @brief The AnyCellmlElement::AnyItemImpl struct.
+ * @brief The AnyCellmlElement::AnyCellmlElementImpl struct.
  *
  * The private implementation for the AnyCellmlElement class.
  */
-struct AnyCellmlElement::AnyItemImpl
+struct AnyCellmlElement::AnyCellmlElementImpl
 {
     std::any mItem = nullptr; /**< std::any item cast for the item. */
     CellmlElementType mType = CellmlElementType::UNDEFINED; /**< Type for the item. */
 };
 
 AnyCellmlElement::AnyCellmlElement()
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const std::any &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = item;
     mPimpl->mType = type;
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const ComponentPtr &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = std::any(item);
     mPimpl->mType = type;
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const ImportSourcePtr &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = std::any(item);
     mPimpl->mType = type;
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const ModelPtr &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = std::any(item);
     mPimpl->mType = type;
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const ResetPtr &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = std::any(item);
     mPimpl->mType = type;
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const UnitPtr &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = std::any(item);
     mPimpl->mType = type;
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const UnitsPtr &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = std::any(item);
     mPimpl->mType = type;
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const VariablePairPtr &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = std::any(item);
     mPimpl->mType = type;
 }
 
 AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const VariablePtr &item)
-    : mPimpl(new AnyItemImpl())
+    : mPimpl(new AnyCellmlElementImpl())
 {
     mPimpl->mItem = std::any(item);
     mPimpl->mType = type;
@@ -202,51 +202,51 @@ AnyCellmlElement::~AnyCellmlElement()
     delete mPimpl;
 }
 
-AnyItemPtr AnyCellmlElement::create() noexcept
+AnyCellmlElementPtr AnyCellmlElement::create() noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
 }
 
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const std::any &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const std::any &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }
 
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const ComponentPtr &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const ComponentPtr &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }
 
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const ImportSourcePtr &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const ImportSourcePtr &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }
 
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const VariablePtr &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const VariablePtr &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }
 
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const VariablePairPtr &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const VariablePairPtr &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }
 
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const ModelPtr &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const ModelPtr &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }
 
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const UnitsPtr &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const UnitsPtr &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }
 
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const UnitPtr &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const UnitPtr &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }
-AnyItemPtr AnyCellmlElement::create(CellmlElementType type, const ResetPtr &item) noexcept
+AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const ResetPtr &item) noexcept
 {
     return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
 }

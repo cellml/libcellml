@@ -355,7 +355,7 @@ TEST(Annotator, castingOnRetrieval)
     auto annotator = libcellml::Annotator::create();
     annotator->setModel(model);
 
-    libcellml::AnyItemPtr itemInfo;
+    libcellml::AnyCellmlElementPtr itemInfo;
 
     libcellml::VariablePairPtr v1v2;
     libcellml::ComponentPtr c1;
@@ -1683,7 +1683,7 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
     auto c4v1 = model->component("component4")->variable("variable1");
     auto c4v2 = model->component("component4")->variable("variable2");
 
-    std::map<std::string, std::vector<libcellml::AnyItemPtr>> expectedItems = {
+    std::map<std::string, std::vector<libcellml::AnyCellmlElementPtr>> expectedItems = {
         {"duplicateId1", {
                              libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units2"))),
                              libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, std::any(model->component("component1")->importSource())),
@@ -1733,7 +1733,7 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
     EXPECT_EQ(ids, annotator->duplicateIds());
 
     for (const auto &id : ids) {
-        std::vector<libcellml::AnyItemPtr> items = annotator->items(id);
+        std::vector<libcellml::AnyCellmlElementPtr> items = annotator->items(id);
         size_t index = 0;
 
         for (const auto &item : items) {
@@ -1821,7 +1821,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
     auto c4v1 = model->component("component4")->variable("variable1");
     auto c4v2 = model->component("component4")->variable("variable2");
 
-    std::map<std::string, std::vector<libcellml::AnyItemPtr>> expectedItems = {
+    std::map<std::string, std::vector<libcellml::AnyCellmlElementPtr>> expectedItems = {
         {"duplicateId1", {
                              libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNITS, std::any(model->units("units2"))),
                              libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::IMPORT, std::any(model->component("component1")->importSource())),
@@ -1874,7 +1874,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
     for (const auto &id : ids) {
         auto num = annotator->itemCount(id);
         for (size_t index = 0; index < num; ++index) {
-            libcellml::AnyItemPtr item = annotator->item(id, index);
+            libcellml::AnyCellmlElementPtr item = annotator->item(id, index);
 
             EXPECT_EQ(expectedItems[id][index]->type(), item->type());
 
