@@ -95,9 +95,9 @@ public:
      *
      * @param id A @c std::string representing the @p id to retrieve.
      *
-     * @return An @c AnyItemPtr item (as described above).
+     * @return An @c AnyCellmlElementPtr item (as described above).
      */
-    AnyItemPtr item(const std::string &id);
+    AnyCellmlElementPtr item(const std::string &id);
 
     /**
      * @brief Return the item at @p index with the @p id.
@@ -105,7 +105,7 @@ public:
      * From a list of items in the stored model with the given @p id string,
      * this method returns the item in the @p index position.
      *
-     * See item(const std::string &) for a full breakdown of the @ref AnyItemPtr return value.
+     * See item(const std::string &) for a full breakdown of the @ref AnyCellmlElementPtr return value.
      *
      * @overload
      *
@@ -114,9 +114,9 @@ public:
      * @param id A @c std::string representing the @p id to retrieve.
      * @param index The index of the item to return from the list of items with @p id.
      *
-     * @return An @c AnyItemPtr item as described in item(const std::string &).
+     * @return An @c AnyCellmlElementPtr item as described in item(const std::string &).
      */
-    AnyItemPtr item(const std::string &id, size_t index);
+    AnyCellmlElementPtr item(const std::string &id, size_t index);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -592,7 +592,7 @@ public:
     bool isUnique(const std::string &id);
 
     /**
-     * @brief Return a @c std::vector of @c AnyItemPtr items which have the given @p id.
+     * @brief Return a @c std::vector of @c AnyCellmlElementPtr items which have the given @p id.
      *
      * Return all items with the given @p id.
      *
@@ -601,9 +601,9 @@ public:
      *
      * @param id A @c std::string used to identify the items to retrieve.
      *
-     * @return a @c std::vector of @ref AnyItemPtr items.
+     * @return a @c std::vector of @ref AnyCellmlElementPtr items.
      */
-    std::vector<AnyItemPtr> items(const std::string &id);
+    std::vector<AnyCellmlElementPtr> items(const std::string &id);
 
     /**
      * @brief Return a @c std::vector of @c std::strings representing all identifier
@@ -642,11 +642,11 @@ public:
      *   - the given @p item is not a member of the stored model; or
      *   - the given @p item is @c nullptr.
      *
-     * @param item An @c AnyItemPtr to which a new identifier will be assigned.
+     * @param item An @c AnyCellmlElementPtr to which a new identifier will be assigned.
      *
      * @return the new identifier.
      */
-    std::string assignId(const AnyItemPtr &item);
+    std::string assignId(const AnyCellmlElementPtr &item);
 
     /**
      * @brief Assign an automatically generated, unique identifier to the given @p model.

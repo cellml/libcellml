@@ -43,7 +43,7 @@ class Annotator; /**< Forward declaration of Annotator class. */
 using AnnotatorPtr = std::shared_ptr<Annotator>; /**< Type definition for @c std::shared Annotator pointer. */
 
 class AnyCellmlElement; /**< Forward declaration of AnyCellmlElement class. */
-using AnyItemPtr = std::shared_ptr<AnyCellmlElement>; /**< Type definition for @c std::shared AnyCellmlElement pointer. */
+using AnyCellmlElementPtr = std::shared_ptr<AnyCellmlElement>; /**< Type definition for @c std::shared AnyCellmlElement pointer. */
 
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
@@ -244,27 +244,27 @@ public:
     AnyCellmlElement(AnyCellmlElement &&rhs) noexcept = delete; /**< Move constructor. */
     AnyCellmlElement &operator=(AnyCellmlElement rhs) = delete; /**< Assignment operator. */
 
-    static AnyItemPtr create() noexcept;
+    static AnyCellmlElementPtr create() noexcept;
 
     /**
      * @brief Create an AnyCellmlElement object.
      *
-     * Factory method to create a @ref AnyItemPtr.  Create with @c std::any item
+     * Factory method to create a @ref AnyCellmlElementPtr.  Create with @c std::any item
      * and type with::
      *
-     *   auto anyItem = libcellml::AnyCellmlElement::create(item, type);
+     *   auto AnyCellmlElement = libcellml::AnyCellmlElement::create(item, type);
      *
      * @return A smart pointer to a @ref AnyCellmlElement object.
      */
-    static AnyItemPtr create(CellmlElementType type, const std::any &item) noexcept;
-    static AnyItemPtr create(CellmlElementType type, const ComponentPtr &item) noexcept;
-    static AnyItemPtr create(CellmlElementType type, const ImportSourcePtr &item) noexcept;
-    static AnyItemPtr create(CellmlElementType type, const ModelPtr &item) noexcept;
-    static AnyItemPtr create(CellmlElementType type, const ResetPtr &item) noexcept;
-    static AnyItemPtr create(CellmlElementType type, const UnitPtr &item) noexcept;
-    static AnyItemPtr create(CellmlElementType type, const UnitsPtr &item) noexcept;
-    static AnyItemPtr create(CellmlElementType type, const VariablePtr &item) noexcept;
-    static AnyItemPtr create(CellmlElementType type, const VariablePairPtr &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const std::any &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const ComponentPtr &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const ImportSourcePtr &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const ModelPtr &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const ResetPtr &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const UnitPtr &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const UnitsPtr &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const VariablePtr &item) noexcept;
+    static AnyCellmlElementPtr create(CellmlElementType type, const VariablePairPtr &item) noexcept;
 
     /**
      * @brief Get the @c std::any item.
@@ -314,8 +314,8 @@ private:
     explicit AnyCellmlElement(CellmlElementType type, const VariablePairPtr &item);
     explicit AnyCellmlElement(CellmlElementType type, const VariablePtr &item);
 
-    struct AnyItemImpl; /**< Forward declaration for pImpl idiom. */
-    AnyItemImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct AnyCellmlElementImpl; /**< Forward declaration for pImpl idiom. */
+    AnyCellmlElementImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml
