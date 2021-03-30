@@ -338,6 +338,7 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     } catch (std::out_of_range &) {
         ud.mPrefix = prefix;
     }
+
     ud.mExponent = exponent;
     ud.mMultiplier = multiplier;
     if (!id.empty()) {

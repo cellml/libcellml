@@ -23,8 +23,9 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "mathmlconfig.h"
 #include "xmlnode.h"
+
+#include "debug.h"
 
 namespace libcellml {
 
@@ -91,13 +92,28 @@ void XmlDoc::parse(const std::string &input)
 
 void XmlDoc::parseMathML(const std::string &input)
 {
+    const std::string mathmlDtd =
+#include "fullmathmldtd.h"
+    ;
+    Debug() << "============";
+    Debug() << "here 1";
     xmlInitParser();
-    std::string mathmlString = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">" + input;
+    Debug() << "here 2";
     xmlParserCtxtPtr context = xmlNewParserCtxt();
+    Debug() << "here 3";
     context->_private = reinterpret_cast<void *>(this);
+    Debug() << "here 4";
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(mathmlString.c_str()), "/", nullptr,
-                                        XML_PARSE_DTDVALID);
+    Debug() << "here 5";
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
+    Debug() << "here 6";
+    xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(reinterpret_cast<const char *>(mathmlDtd.c_str()), mathmlDtd.size(), XML_CHAR_ENCODING_ASCII);
+    Debug() << "here 7" << buf;
+    xmlDtdPtr dtd = xmlIOParseDTD(NULL, buf, XML_CHAR_ENCODING_UTF8);
+    Debug() << "here 8";
+    xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, dtd);
+    Debug() << "here 9";
+
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
