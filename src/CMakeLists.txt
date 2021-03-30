@@ -35,18 +35,6 @@ configure_file(
 
 list(APPEND CLEAN_FILES ${LIBCELLML_VERSIONCONFIG_H} ${LIBCELLML_EXPORTDEFINITIONS_H})
 
-set(LIBCELLML_MATHML_DTD_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/dtds/mathml2/xhtml-math11-f.dtd")
-file(READ "${LIBCELLML_MATHML_DTD_LOCATION}" FULL_MATHML_DTD)
-
-set(RAW_STRING_CONFIG_IN_H "${CMAKE_CURRENT_SOURCE_DIR}/configure/rawstring.in.h")
-
-foreach(_COUNT 1 2 3 4 5 6 7)
-    set(MATHML_PARTIAL_DTD_${_COUNT}_IN "${CMAKE_CURRENT_SOURCE_DIR}/dtds/mathml2/xhtml-math11-f.dtd.${_COUNT}")
-    set(MATHML_PARTIAL_DTD_${_COUNT}_H "${CMAKE_CURRENT_BINARY_DIR}/partialmathmldtd.${_COUNT}.h")
-    file(READ "${MATHML_PARTIAL_DTD_${_COUNT}_IN}" RAW_STRING_CONTENT)
-    configure_file(${RAW_STRING_CONFIG_IN_H} ${MATHML_PARTIAL_DTD_${_COUNT}_H})
-endforeach()
-
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation.cpp
@@ -180,8 +168,8 @@ target_include_directories(cellml
 if(HAVE_LIBXML2_CONFIG)
   target_link_libraries(cellml PUBLIC xml2)
 else()
-  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR})
-  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
+  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
+  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES} ${ZLIB_LIBRARIES})
   target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 endif()
 
