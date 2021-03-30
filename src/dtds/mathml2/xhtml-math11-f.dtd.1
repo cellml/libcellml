@@ -1,0 +1,1744 @@
+<!ENTITY % driver SYSTEM "xhtml-math-svg.dtd">
+<!--<!ENTITY % plane1D "&#38;#38;#xE">-->
+<!ENTITY % SVG.module    "IGNORE" >
+<!ENTITY % MATHML.pref.prefixed "INCLUDE" >
+<!ENTITY % MATHML.sysid.base "../mathml2/" >
+<!ENTITY % XHTML.version.attrib
+     "version     CDATA           #IMPLIED">
+<!-- ....................................................................... -->
+<!-- XHTML 1.1 plus MathML 2.0 plus SVG 1.1 DTD  ........................... -->
+<!-- URI: http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd
+-->
+
+<!-- XHTML 1.1 plus MathML 2.0 plus SVG 1.1 DTD
+
+     This is a prototype extension of XHTML 1.1 incorporating MathML 2.0
+     and SVG 1.1.
+
+     Copyright 2002 World Wide Web Consortium
+        (Massachusetts Institute of Technology, Institut National de
+         Recherche en Informatique et en Automatique, Keio University).
+         All Rights Reserved.
+
+     Permission to use, copy, modify and distribute this DTD and its
+     accompanying documentation for any purpose and without fee is hereby
+     granted in perpetuity, provided that the above copyright notice and
+     this paragraph appear in all copies.  The copyright holders make no
+     representation about the suitability of the DTD for any purpose.
+
+     It is provided "as is" without expressed or implied warranty.
+
+        Editors:    Murray M. Altheim <altheim@eng.sun.com> (XHTML modules)
+                    David Carlisle <davidc@nag.co.uk> (MathML modules)
+                    Jun Fujisawa <fujisawa.jun@canon.co.jp> (SVG modules)
+                    Masayasu Ishikawa <mimasa@w3.org> (DTD driver)
+        Revision:
+          $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $
+
+-->
+<!-- This is the driver for an XHTML 1.1 plus MathML 2.0 plus SVG 1.1 DTD.
+-->
+
+<!-- Switches to include/ignore each vocabulary.
+-->
+<!ENTITY % XHTML.module  "INCLUDE" >
+<!ENTITY % MATHML.module "INCLUDE" >
+<!ENTITY % SVG.module    "INCLUDE" >
+
+<![%XHTML.module;[
+<!ENTITY % XHTML.version
+         "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" >
+]]>
+
+<!-- Use the following entities to identify the namespaces:
+-->
+<!ENTITY % XHTML.xmlns       "http://www.w3.org/1999/xhtml" >
+<!ENTITY % MATHML.xmlns      "http://www.w3.org/1998/Math/MathML" >
+<!ENTITY % MATHML.pref.xmlns "http://www.w3.org/2002/Math/preference" >
+<!ENTITY % SVG.xmlns         "http://www.w3.org/2000/svg" >
+<!ENTITY % XLINK.xmlns       "http://www.w3.org/1999/xlink" >
+
+<!-- Declare base URIs for the relevant DTD modules.
+-->
+<![%XHTML.module;[
+<!ENTITY % XHTML.sysid.base
+         "http://www.w3.org/TR/xhtml-modularization/DTD/" >
+]]>
+<![%MATHML.module;[
+<!ENTITY % MATHML.sysid.base
+         "http://www.w3.org/TR/MathML2/dtd/" >
+]]>
+<![%SVG.module;[
+<!ENTITY % SVG.sysid.base
+         "http://www.w3.org/Graphics/SVG/1.1/DTD/" >
+]]>
+
+<!-- Declare system identifiers for the relevant DTD modules.
+-->
+<![%XHTML.module;[
+<!ENTITY % XHTML.dtd.sysid
+         "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" >
+]]>
+<![%MATHML.module;[
+<!ENTITY % MATHML.dtd.sysid
+         "%MATHML.sysid.base;mathml2.dtd" >
+<!ENTITY % MATHML.qname.sysid
+         "%MATHML.sysid.base;mathml2-qname-1.mod" >
+]]>
+<![%SVG.module;[
+<!ENTITY % SVG.dtd.sysid
+         "%SVG.sysid.base;svg11.dtd" >
+]]>
+
+<!-- See the XHTML / MathML / SVG Qualified Names modules for information
+     on the use of namespace prefixes in the DTD.  Default values are
+     as follows:
+
+       <!ENTITY % NS.prefixed "IGNORE" >
+       <!ENTITY % XHTML.prefixed "%NS.prefixed;" >
+       <!ENTITY % XHTML.prefix  "" >
+       <!ENTITY % MATHML.prefixed "%NS.prefixed;" >
+       <!ENTITY % MATHML.prefix   "m" >
+       <!ENTITY % MATHML.pref.prefixed "IGNORE" >
+       <!ENTITY % MATHML.pref.prefix "pref" >
+       <!ENTITY % SVG.prefixed "%NS.prefixed;" >
+       <!ENTITY % SVG.prefix "" >
+       <!ENTITY % XLINK.prefix "xlink" >
+
+     In this DTD driver, XHTML and MathML are not prefixed, and SVG is
+     prefixed by default.  It can be changed by redeclaring the above
+     parameter entities.
+-->
+<!ENTITY % XHTML.prefixed       "IGNORE" >
+<!ENTITY % MATHML.prefixed      "IGNORE" >
+<!ENTITY % MATHML.prefix        "m" >
+<!ENTITY % MATHML.pref.prefixed "IGNORE" >
+<!ENTITY % MATHML.pref.prefix   "pref" >
+<!ENTITY % SVG.prefixed         "INCLUDE" >
+<!ENTITY % SVG.prefix           "svg" >
+<!ENTITY % XLINK.prefix         "xlink" >
+
+<!-- a URI reference, see [URI] -->
+<!ENTITY % URI.datatype "CDATA" >
+
+<!-- Declare a parameter entity %XLINK.xmlns.attrib; containing
+     the XML Namespace declarations for XLink.
+-->
+<!ENTITY % XLINK.xmlns.attrib
+    "xmlns:%XLINK.prefix; %URI.datatype; #FIXED '%XLINK.xmlns;'"
+>
+
+<!-- Allow universal MathML stylesheet-related declarations.
+     When it is used, it must always be prefixed.
+-->
+<![%MATHML.module;[
+<![%MATHML.pref.prefixed;[
+<!ENTITY % MATHML.pref.renderer.extra "">
+<!ENTITY % MATHML.pref.renderer
+    "css | mathplayer-dl | mathplayer | techexplorer-plugin | techexplorer">
+<!ENTITY % MATHML.pref.xmlns.attrib
+    "xmlns:%MATHML.pref.prefix; %URI.datatype; #FIXED '%MATHML.pref.xmlns;'
+     %MATHML.pref.prefix;:renderer
+     ( %MATHML.pref.renderer; %MATHML.pref.renderer.extra; ) #IMPLIED"
+>
+]]>
+]]>
+<!ENTITY % MATHML.pref.xmlns.attrib "" >
+
+<!-- The parameter entities %SVG.xmlns.extra.attrib; and
+     %XHTML.xmlns.extra.attrib; may be redeclared to contain
+     any foreign namespace declarations for namespaces embedded
+     in XHTML+MathML+SVG. The default value is an empty string.
+-->
+<!ENTITY % SVG.xmlns.extra.attrib "" >
+<!ENTITY % XHTML.xmlns.extra.attrib "" >
+
+<!-- Declare parameter entities to define XML Namespace declarations
+     for SVG, XHTML and MathML.
+-->
+<![%SVG.module;[
+<![%SVG.prefixed;[
+<!ENTITY % SVG.xmlns.decl.attrib
+    "xmlns:%SVG.prefix; %URI.datatype; #FIXED '%SVG.xmlns;'"
+>
+]]>
+<!ENTITY % SVG.xmlns.decl.attrib
+    "xmlns %URI.datatype; #FIXED '%SVG.xmlns;'"
+>
+]]>
+<!ENTITY % SVG.xmlns.decl.attrib "" >
+
+<![%XHTML.module;[
+<![%XHTML.prefixed;[
+<!ENTITY % XHTML.xmlns.decl.attrib
+    "xmlns:%XHTML.prefix; %URI.datatype; #FIXED '%XHTML.xmlns;'"
+>
+]]>
+<!ENTITY % XHTML.xmlns.decl.attrib
+    "xmlns %URI.datatype; #FIXED '%XHTML.xmlns;'"
+>
+]]>
+<!ENTITY % XHTML.xmlns.decl.attrib "" >
+
+<![%MATHML.module;[
+<![%MATHML.prefixed;[
+<!ENTITY % MATHML.xmlns.decl.attrib
+    "xmlns:%MATHML.prefix; %URI.datatype; #FIXED '%MATHML.xmlns;'"
+>
+]]>
+<!ENTITY % MATHML.xmlns.decl.attrib
+    "xmlns %URI.datatype; #FIXED '%MATHML.xmlns;'"
+>
+]]>
+<!ENTITY % MATHML.xmlns.decl.attrib "" >
+
+<!-- Declare common case for %NS.decl.attrib;.
+-->
+<!ENTITY % NS.common.decl.attrib
+    "%SVG.xmlns.decl.attrib;
+     %XHTML.xmlns.decl.attrib;
+     %MATHML.xmlns.decl.attrib;
+     %XLINK.xmlns.attrib;
+     %MATHML.pref.xmlns.attrib;
+     %SVG.xmlns.extra.attrib;
+     %XHTML.xmlns.extra.attrib;"
+>
+
+<!-- Redeclare the parameter entity %NS.decl.attrib; containing
+     all XML Namespace declarations used in the DTD, its form
+     dependent on whether prefixing is active.
+-->
+<![%SVG.prefixed;[
+<![%XHTML.prefixed;[
+<!-- SVG and XHTML are prefixed, MathML is either prefixed or not prefixed.
+-->
+<!ENTITY % NS.decl.attrib
+    "%NS.common.decl.attrib;"
+>
+]]>
+<![%MATHML.prefixed;[
+<!-- SVG and MathML are prefixed, XHTML is not prefixed.
+-->
+<!ENTITY % NS.decl.attrib
+    "%NS.common.decl.attrib;"
+>
+]]>
+<!-- SVG is prefixed, XHTML and MathML are not prefixed.
+     MathML namespace must always be specified on the math element.
+-->
+<!ENTITY % NS.decl.attrib
+    "%SVG.xmlns.decl.attrib;
+     %XHTML.xmlns.decl.attrib;
+     %XLINK.xmlns.attrib;
+     %MATHML.pref.xmlns.attrib;
+     %SVG.xmlns.extra.attrib;
+     %XHTML.xmlns.extra.attrib;"
+>
+]]>
+<![%XHTML.prefixed;[
+<![%MATHML.prefixed;[
+<!-- SVG is not prefixed, XHTML and MathML are prefixed.
+-->
+<!ENTITY % NS.decl.attrib
+    "%NS.common.decl.attrib;"
+>
+]]>
+<!-- SVG and MathML are not prefixed, which is not allowed.
+-->
+<!ENTITY % NS.decl.attrib "" >
+]]>
+<!-- SVG, MathML and XHTML are all not prefixed, which is not allowed.
+-->
+<!ENTITY % NS.decl.attrib "" >
+
+<!-- Redeclare parameter entities %SVG.xmlns.attrib; and
+     %XHTMLxmlns.attrib; containing all XML namespace declarations
+     used by XHTML+MathML+SVG, including a default xmlns declaration
+     when prefixing is inactive.
+-->
+<![%SVG.module;[
+<!ENTITY % SVG.xmlns.attrib
+    "%NS.decl.attrib;"
+>
+]]>
+
+<![%XHTML.module;[
+<!ENTITY % XHTML.xmlns.attrib
+    "%NS.decl.attrib;"
+>
+]]>
+
+<!-- Redeclare the parameter entity %MATHML.xmlns.attrib; containing
+     XLink namespace declaration allowed on MathML elements.
+     Unfortunately XLink prefix is hard-coded in the MathML 2.0 DTD,
+     so it cannot be changed.
+-->
+<![%MATHML.module;[
+<!ENTITY % MATHML.xmlns.extra.attrib
+    "xmlns:xlink %URI.datatype; #FIXED '%XLINK.xmlns;'
+     %MATHML.pref.xmlns.attrib;"
+>
+]]>
+
+<!-- Framework Redeclaration placeholders  ....................... -->
+
+<![%XHTML.module;[
+<!ENTITY % XHTML.redecl.module "INCLUDE" >
+<![%XHTML.redecl.module;[
+<!-- Pre-Framework Redeclaration placeholder  .................... -->
+<!ENTITY % xhtml-prefw-redecl.mod "" >
+
+<!-- Post-Framework Redeclaration placeholder  ................... -->
+<!ENTITY % xhtml-postfw-redecl.mod "" >
+]]>
+]]>
+
+<![%SVG.module;[
+<!ENTITY % SVG.redecl.module "INCLUDE" >
+<![%SVG.redecl.module;[
+<!-- Pre-Framework Redeclaration placeholder ..................... -->
+<!ENTITY % svg-prefw-redecl.mod "" >
+
+<!-- Post-Framework Redeclaration placeholder .................... -->
+<!ENTITY % svg-postfw-redecl.mod "" >
+]]>
+]]>
+
+<!-- ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+
+<!-- Declare MathML Qualified Names module as an extension of
+     XHTML's Qualified Names module.
+-->
+<![%MATHML.module;[
+<!ENTITY % xhtml-qname-extra.decl
+    'PUBLIC "-//W3C//ENTITIES MathML 2.0 Qualified Names 1.0//EN"
+            "%MATHML.qname.sysid;"'
+>
+<!ENTITY % xhtml-qname-extra.mod
+    %xhtml-qname-extra.decl;
+>
+]]>
+
+<!-- Declare location of math and svg contents in XHTML.
+-->
+
+<![%MATHML.module;[
+<![%MATHML.prefixed;[
+<!ENTITY % MATHML.pfx        "%MATHML.prefix;:" >
+]]>
+<!ENTITY % MATHML.pfx        "" >
+<!ENTITY % math.qname        "%MATHML.pfx;math" >
+<!ENTITY % MATHML.math.class "| %math.qname;" >
+]]>
+<!ENTITY % MATHML.math.class "" >
+
+<![%SVG.module;[
+<![%SVG.prefixed;[
+<!ENTITY % SVG.pfx           "%SVG.prefix;:" >
+]]>
+<!ENTITY % SVG.pfx           "" >
+<!ENTITY % SVG.svg.qname     "%SVG.pfx;svg" >
+<!ENTITY % SVG.svg.class     "| %SVG.svg.qname;" >
+]]>
+<!ENTITY % SVG.svg.class     "" >
+
+<![%XHTML.module;[
+<!ENTITY % Misc.extra
+    "%MATHML.math.class; %SVG.svg.class;" >
+]]>
+
+<!-- Redeclare SVG's foreignObject content (allow anything).
+-->
+<![%SVG.module;[
+<!ENTITY % SVG.foreignObject.content "ANY" >
+]]>
+
+<!-- ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+
+<!-- Instantiate SVG 1.1 DTD  .................................... -->
+<![%SVG.module;[
+<!ENTITY % SVG.dtd.decl
+    'PUBLIC "-//W3C//DTD SVG 1.1//EN"
+            "%SVG.dtd.sysid;"'
+>
+<!ENTITY % SVG.dtd %SVG.dtd.decl; >
+%SVG.dtd;
+]]>
+
+<!-- Instantiate XHTML 1.1 DTD  .................................. -->
+<![%XHTML.module;[
+<!ENTITY % XHTML.dtd.decl
+    'PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+            "%XHTML.dtd.sysid;"'
+>
+<!ENTITY % XHTML.dtd %XHTML.dtd.decl; >
+<!-- ....................................................................... -->
+<!-- XHTML 1.1 DTD  ........................................................ -->
+<!-- file: xhtml11.dtd
+-->
+
+<!-- XHTML 1.1 DTD
+
+     This is XHTML, a reformulation of HTML as a modular XML application.
+
+     The Extensible HyperText Markup Language (XHTML)
+     Copyright 1998-2001 World Wide Web Consortium
+        (Massachusetts Institute of Technology, Institut National de
+         Recherche en Informatique et en Automatique, Keio University).
+         All Rights Reserved.
+
+     Permission to use, copy, modify and distribute the XHTML DTD and its
+     accompanying documentation for any purpose and without fee is hereby
+     granted in perpetuity, provided that the above copyright notice and
+     this paragraph appear in all copies.  The copyright holders make no
+     representation about the suitability of the DTD for any purpose.
+
+     It is provided "as is" without expressed or implied warranty.
+
+        Author:     Murray M. Altheim <altheim@eng.sun.com>
+        Revision:   $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $
+
+-->
+<!-- This is the driver file for version 1.1 of the XHTML DTD.
+
+     Please use this formal public identifier to identify it:
+
+         "-//W3C//DTD XHTML 1.1//EN"
+-->
+<!ENTITY % XHTML.version  "-//W3C//DTD XHTML 1.1//EN" >
+
+<!-- Use this URI to identify the default namespace:
+
+         "http://www.w3.org/1999/xhtml"
+
+     See the Qualified Names module for information
+     on the use of namespace prefixes in the DTD.
+-->
+<!ENTITY % NS.prefixed "IGNORE" >
+<!ENTITY % XHTML.prefix "" >
+
+<!-- Reserved for use with the XLink namespace:
+-->
+<!ENTITY % XLINK.xmlns "" >
+<!ENTITY % XLINK.xmlns.attrib "" >
+
+<!-- For example, if you are using XHTML 1.1 directly, use the FPI
+     in the DOCTYPE declaration, with the xmlns attribute on the
+     document element to identify the default namespace:
+
+       <?xml version="1.0"?>
+       <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "xhtml11.dtd">
+       <html xmlns="http://www.w3.org/1999/xhtml"
+             xml:lang="en">
+       ...
+       </html>
+
+     Revisions:
+     (none)
+-->
+
+<!-- reserved for future use with document profiles -->
+<!ENTITY % XHTML.profile  "" >
+
+<!-- Bidirectional Text features
+     This feature-test entity is used to declare elements
+     and attributes used for bidirectional text support.
+-->
+<!ENTITY % XHTML.bidi  "INCLUDE" >
+
+<?doc type="doctype" role="title" { XHTML 1.1 } ?>
+
+<!-- ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+
+<!-- Pre-Framework Redeclaration placeholder  .................... -->
+<!-- this serves as a location to insert markup declarations
+     into the DTD prior to the framework declarations.
+-->
+<!ENTITY % xhtml-prefw-redecl.module "IGNORE" >
+<![%xhtml-prefw-redecl.module;[
+%xhtml-prefw-redecl.mod;
+<!-- end of xhtml-prefw-redecl.module -->]]>
+
+<!ENTITY % xhtml-events.module "INCLUDE" >
+
+<!-- Inline Style Module  ........................................ -->
+<!ENTITY % xhtml-inlstyle.module "INCLUDE" >
+<![%xhtml-inlstyle.module;[
+<!ENTITY % xhtml-inlstyle.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Inline Style 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlstyle-1.mod" >
+<!-- ...................................................................... -->
+<!-- XHTML Inline Style Module  ........................................... -->
+<!-- file: xhtml-inlstyle-1.mod
+
+     This is XHTML, a reformulation of HTML as a modular XML application.
+     Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//ENTITIES XHTML Inline Style 1.0//EN"
+       SYSTEM "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlstyle-1.mod"
+
+     Revisions:
+     (none)
+     ....................................................................... -->
+
+<!-- Inline Style
+
+     This module declares the 'style' attribute, used to support inline
+     style markup. This module must be instantiated prior to the XHTML
+     Common Attributes module in order to be included in %Core.attrib;.
+-->
+
+<!ENTITY % style.attrib
+     "style        CDATA                    #IMPLIED"
+>
+
+
+<!ENTITY % Core.extra.attrib
+     "%style.attrib;"
+>
+
+<!-- end of xhtml-inlstyle-1.mod -->
+]]>
+
+<!-- declare Document Model module instantiated in framework
+-->
+<!ENTITY % xhtml-model.mod
+     PUBLIC "-//W3C//ENTITIES XHTML 1.1 Document Model 1.0//EN"
+            "xhtml11-model-1.mod" >
+
+<!-- Modular Framework Module (required) ......................... -->
+<!ENTITY % xhtml-framework.module "INCLUDE" >
+<![%xhtml-framework.module;[
+<!ENTITY % xhtml-framework.mod
+     PUBLIC "-//W3C//ENTITIES XHTML Modular Framework 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod" >
+<!-- ...................................................................... -->
+<!-- XHTML Modular Framework Module  ...................................... -->
+<!-- file: xhtml-framework-1.mod
+
+     This is XHTML, a reformulation of HTML as a modular XML application.
+     Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $ SMI
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//ENTITIES XHTML Modular Framework 1.0//EN"
+       SYSTEM "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod"
+
+     Revisions:
+     (none)
+     ....................................................................... -->
+
+<!-- Modular Framework
+
+     This required module instantiates the modules needed
+     to support the XHTML modularization model, including:
+
+        +  notations
+        +  datatypes
+        +  namespace-qualified names
+        +  common attributes
+        +  document model
+        +  character entities
+
+     The Intrinsic Events module is ignored by default but
+     occurs in this module because it must be instantiated
+     prior to Attributes but after Datatypes.
+-->
+
+<!ENTITY % xhtml-arch.module "IGNORE" >
+<![%xhtml-arch.module;[
+<!ENTITY % xhtml-arch.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Base Architecture 1.0//EN"
+            "xhtml-arch-1.mod" >
+%xhtml-arch.mod;]]>
+
+<!ENTITY % xhtml-notations.module "INCLUDE" >
+<![%xhtml-notations.module;[
+<!ENTITY % xhtml-notations.mod
+     PUBLIC "-//W3C//NOTATIONS XHTML Notations 1.0//EN"
+            "xhtml-notations-1.mod" >
+<!-- ...................................................................... -->
+<!-- XHTML Notations Module  .............................................. -->
+<!-- file: xhtml-notations-1.mod
+
+     This is XHTML, a reformulation of HTML as a modular XML application.
+     Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//NOTATIONS XHTML Notations 1.0//EN"
+       SYSTEM "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-notations-1.mod"
+
+     Revisions:
+     (none)
+     ....................................................................... -->
+
+<!-- Notations
+
+     defines the following notations, many of these imported from
+     other specifications and standards. When an existing FPI is
+     known, it is incorporated here.
+-->
+
+<!-- XML Notations ..................................... -->
+<!-- SGML and XML Notations ............................ -->
+
+<!-- W3C XML 1.0 Recommendation -->
+<!NOTATION w3c-xml
+     PUBLIC "ISO 8879//NOTATION Extensible Markup Language (XML) 1.0//EN" >
+
+<!-- XML 1.0 CDATA -->
+<!NOTATION cdata
+     PUBLIC "-//W3C//NOTATION XML 1.0: CDATA//EN" >
+
+<!-- SGML Formal Public Identifiers -->
+<!NOTATION fpi
+     PUBLIC "ISO 8879:1986//NOTATION Formal Public Identifier//EN" >
+
+<!-- XHTML Notations ................................... -->
+
+<!-- Length defined for cellpadding/cellspacing -->
+
+<!-- nn for pixels or nn% for percentage length -->
+<!NOTATION length
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Length//EN" >
+
+<!-- space-separated list of link types -->
+<!NOTATION linkTypes
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: LinkTypes//EN" >
+
+<!-- single or comma-separated list of media descriptors -->
+<!NOTATION mediaDesc
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: MediaDesc//EN" >
+
+<!-- pixel, percentage, or relative -->
+<!NOTATION multiLength
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: MultiLength//EN" >
+
+<!-- one or more digits (NUMBER) -->
+<!NOTATION number
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Number//EN" >
+
+<!-- integer representing length in pixels -->
+<!NOTATION pixels
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Pixels//EN" >
+
+<!-- script expression -->
+<!NOTATION script
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Script//EN" >
+
+<!-- textual content -->
+<!NOTATION text
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Text//EN" >
+
+<!-- Imported Notations ................................ -->
+
+<!-- a single character from [ISO10646] -->
+<!NOTATION character
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Character//EN" >
+
+<!-- a character encoding, as per [RFC2045] -->
+<!NOTATION charset
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Charset//EN" >
+
+<!-- a space separated list of character encodings, as per [RFC2045] -->
+<!NOTATION charsets
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Charsets//EN" >
+
+<!-- media type, as per [RFC2045] -->
+<!NOTATION contentType
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: ContentType//EN" >
+
+<!-- comma-separated list of media types, as per [RFC2045] -->
+<!NOTATION contentTypes
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: ContentTypes//EN" >
+
+<!-- date and time information. ISO date format -->
+<!NOTATION datetime
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: Datetime//EN" >
+
+<!-- a language code, as per [RFC3066] -->
+<!NOTATION languageCode
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: LanguageCode//EN" >
+
+<!-- a Uniform Resource Identifier, see [URI] -->
+<!NOTATION uri
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: URI//EN" >
+
+<!-- a space-separated list of Uniform Resource Identifiers, see [URI] -->
+<!NOTATION uris
+    PUBLIC "-//W3C//NOTATION XHTML Datatype: URIs//EN" >
+
+<!-- end of xhtml-notations-1.mod -->
+]]>
+
+<!ENTITY % xhtml-datatypes.module "INCLUDE" >
+<![%xhtml-datatypes.module;[
+<!ENTITY % xhtml-datatypes.mod
+     PUBLIC "-//W3C//ENTITIES XHTML Datatypes 1.0//EN"
+            "xhtml-datatypes-1.mod" >
+<!-- ...................................................................... -->
+<!-- XHTML Datatypes Module  .............................................. -->
+<!-- file: xhtml-datatypes-1.mod
+
+     This is XHTML, a reformulation of HTML as a modular XML application.
+     Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $ SMI
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//ENTITIES XHTML Datatypes 1.0//EN"
+       SYSTEM "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-datatypes-1.mod"
+
+     Revisions:
+     (none)
+     ....................................................................... -->
+
+<!-- Datatypes
+
+     defines containers for the following datatypes, many of
+     these imported from other specifications and standards.
+-->
+
+<!-- Length defined for cellpadding/cellspacing -->
+
+<!-- nn for pixels or nn% for percentage length -->
+<!ENTITY % Length.datatype "CDATA" >
+
+<!-- space-separated list of link types -->
+<!ENTITY % LinkTypes.datatype "NMTOKENS" >
+
+<!-- single or comma-separated list of media descriptors -->
+<!ENTITY % MediaDesc.datatype "CDATA" >
+
+<!-- pixel, percentage, or relative -->
+<!ENTITY % MultiLength.datatype "CDATA" >
+
+<!-- one or more digits (NUMBER) -->
+<!ENTITY % Number.datatype "CDATA" >
+
+<!-- integer representing length in pixels -->
+<!ENTITY % Pixels.datatype "CDATA" >
+
+<!-- script expression -->
+<!ENTITY % Script.datatype "CDATA" >
+
+<!-- textual content -->
+<!ENTITY % Text.datatype "CDATA" >
+
+<!-- Imported Datatypes ................................ -->
+
+<!-- a single character from [ISO10646] -->
+<!ENTITY % Character.datatype "CDATA" >
+
+<!-- a character encoding, as per [RFC2045] -->
+<!ENTITY % Charset.datatype "CDATA" >
+
+<!-- a space separated list of character encodings, as per [RFC2045] -->
+<!ENTITY % Charsets.datatype "CDATA" >
+
+<!-- Color specification using color name or sRGB (#RRGGBB) values -->
+<!ENTITY % Color.datatype "CDATA" >
+
+<!-- media type, as per [RFC2045] -->
+<!ENTITY % ContentType.datatype "CDATA" >
+
+<!-- comma-separated list of media types, as per [RFC2045] -->
+<!ENTITY % ContentTypes.datatype "CDATA" >
+
+<!-- date and time information. ISO date format -->
+<!ENTITY % Datetime.datatype "CDATA" >
+
+<!-- formal public identifier, as per [ISO8879] -->
+<!ENTITY % FPI.datatype "CDATA" >
+
+<!-- a language code, as per [RFC3066] -->
+<!ENTITY % LanguageCode.datatype "NMTOKEN" >
+
+<!-- a Uniform Resource Identifier, see [URI] -->
+<!ENTITY % URI.datatype "CDATA" >
+
+<!-- a space-separated list of Uniform Resource Identifiers, see [URI] -->
+<!ENTITY % URIs.datatype "CDATA" >
+
+<!-- end of xhtml-datatypes-1.mod -->
+]]>
+
+<!-- placeholder for XLink support module -->
+<!ENTITY % xhtml-xlink.mod "" >
+
+
+<!ENTITY % xhtml-qname.module "INCLUDE" >
+<![%xhtml-qname.module;[
+<!ENTITY % xhtml-qname.mod
+     PUBLIC "-//W3C//ENTITIES XHTML Qualified Names 1.0//EN"
+            "xhtml-qname-1.mod" >
+<!-- ....................................................................... -->
+<!-- XHTML Qname Module  ................................................... -->
+<!-- file: xhtml-qname-1.mod
+
+     This is XHTML, a reformulation of HTML as a modular XML application.
+     Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $ SMI
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//ENTITIES XHTML Qualified Names 1.0//EN"
+       SYSTEM "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-qname-1.mod"
+
+     Revisions:
+#2000-10-22: added qname declarations for ruby elements
+     ....................................................................... -->
+
+<!-- XHTML Qname (Qualified Name) Module
+
+     This module is contained in two parts, labeled Section 'A' and 'B':
+
+       Section A declares parameter entities to support namespace-
+       qualified names, namespace declarations, and name prefixing
+       for XHTML and extensions.
+
+       Section B declares parameter entities used to provide
+       namespace-qualified names for all XHTML element types:
+
+         %applet.qname;   the xmlns-qualified name for <applet>
+         %base.qname;     the xmlns-qualified name for <base>
+         ...
+
+     XHTML extensions would create a module similar to this one.
+     Included in the XHTML distribution is a template module
+     ('template-qname-1.mod') suitable for this purpose.
+-->
+
+<!-- Section A: XHTML XML Namespace Framework :::::::::::::::::::: -->
+
+<!-- 1. Declare a %XHTML.prefixed; conditional section keyword, used
+        to activate namespace prefixing. The default value should
+        inherit '%NS.prefixed;' from the DTD driver, so that unless
+        overridden, the default behaviour follows the overall DTD
+        prefixing scheme.
+-->
+<!ENTITY % NS.prefixed "IGNORE" >
+<!ENTITY % XHTML.prefixed "%NS.prefixed;" >
+
+<!-- 2. Declare a parameter entity (eg., %XHTML.xmlns;) containing
+        the URI reference used to identify the XHTML namespace:
+-->
+<!ENTITY % XHTML.xmlns  "http://www.w3.org/1999/xhtml" >
+
+<!-- 3. Declare parameter entities (eg., %XHTML.prefix;) containing
+        the default namespace prefix string(s) to use when prefixing
+        is enabled. This may be overridden in the DTD driver or the
+        internal subset of an document instance. If no default prefix
+        is desired, this may be declared as an empty string.
+
+     NOTE: As specified in [XMLNAMES], the namespace prefix serves
+     as a proxy for the URI reference, and is not in itself significant.
+-->
+<!ENTITY % XHTML.prefix  "" >
+
+<!-- 4. Declare parameter entities (eg., %XHTML.pfx;) containing the
+        colonized prefix(es) (eg., '%XHTML.prefix;:') used when
+        prefixing is active, an empty string when it is not.
+-->
+<![%XHTML.prefixed;[
+<!ENTITY % XHTML.pfx  "%XHTML.prefix;:" >
+]]>
+<!ENTITY % XHTML.pfx  "" >
+
+<!-- declare qualified name extensions here ............ -->
+<!ENTITY % xhtml-qname-extra.mod "" >
+<!-- ....................................................................... -->
+<!-- MathML Qualified Names Module  ........................................ -->
+<!-- file: mathml2-qname-1.mod
+
+     This is the Mathematical Markup Language (MathML) 2.0, an XML
+     application for describing mathematical notation and capturing
+     both its structure and content.
+
+     Copyright 1998-2000 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//ENTITIES MathML 2.0 Qualified Names 1.0//EN"
+       SYSTEM "mathml2-qname-1.mod"
+
+     Revisions:
+     (none)
+     ....................................................................... -->
+
+<!-- MathML Qualified Names
+
+     This module is contained in two parts, labeled Section 'A' and 'B':
+
+       Section A declares parameter entities to support namespace-
+       qualified names, namespace declarations, and name prefixing
+       for MathML.
+
+       Section B declares parameter entities used to provide
+       namespace-qualified names for all MathML element types.
+
+     This module is derived from the XHTML Qualified Names Template module.
+-->
+
+<!-- Section A: XHTML XML Namespace Framework :::::::::::::::::::: -->
+
+<!ENTITY % NS.prefixed     "IGNORE" >
+<!ENTITY % MATHML.prefixed "%NS.prefixed;" >
+
+<!-- XLink ............... -->
+
+<!ENTITY % XLINK.prefix         "xlink" >
+<!ENTITY % XLINK.xmlns "http://www.w3.org/1999/xlink" >
+<!ENTITY % XLINK.xmlns.attrib
+     "xmlns:%XLINK.prefix;  CDATA           #FIXED '%XLINK.xmlns;'"
+>
+
+<!-- W3C XML Schema ............... -->
+
+<!ENTITY % Schema.prefix         "xsi" >
+<!ENTITY % Schema.xmlns "http://www.w3.org/2001/XMLSchema-instance" >
+<!ENTITY % Schema.xmlns.attrib
+     "xmlns:%Schema.prefix;  CDATA           #IMPLIED"
+>
+
+<!-- MathML .............. -->
+
+<!ENTITY % MATHML.xmlns    "http://www.w3.org/1998/Math/MathML" >
+<!ENTITY % MATHML.prefix   "m" >
+<![%MATHML.prefixed;[
+<!ENTITY % MATHML.xmlns.extra.attrib  "" >
+]]>
+<!ENTITY % MATHML.xmlns.extra.attrib
+     "%XLINK.xmlns.attrib;
+      %Schema.xmlns.attrib;" >
+
+<![%MATHML.prefixed;[
+<!ENTITY % MATHML.pfx  "%MATHML.prefix;:" >
+<!ENTITY % MATHML.xmlns.attrib
+     "xmlns:%MATHML.prefix;  CDATA   #FIXED '%MATHML.xmlns;'
+      %MATHML.xmlns.extra.attrib;"
+>
+]]>
+<!ENTITY % MATHML.pfx  "" >
+<!-- changed from #FIXED for IE/msxsml bug -->
+<!ENTITY % MATHML.xmlns.attrib
+     "xmlns        CDATA           #IMPLIED
+      %MATHML.xmlns.extra.attrib;"
+>
+
+<![%NS.prefixed;[
+<!ENTITY % XHTML.xmlns.extra.attrib
+     "%MATHML.xmlns.attrib;" >
+]]>
+<!ENTITY % XHTML.xmlns.extra.attrib
+     "%XLINK.xmlns.attrib;
+      %Schema.xmlns.attrib;"
+>
+
+<!-- Section B: MathML Qualified Names ::::::::::::::::::::::::::::: -->
+
+<!-- 9. This section declares parameter entities used to provide
+        namespace-qualified names for all MathML element types.
+-->
+
+<!ENTITY % abs.qname            "%MATHML.pfx;abs" >
+<!ENTITY % and.qname            "%MATHML.pfx;and" >
+<!ENTITY % annotation-xml.qname "%MATHML.pfx;annotation-xml" >
+<!ENTITY % annotation.qname     "%MATHML.pfx;annotation" >
+<!ENTITY % apply.qname          "%MATHML.pfx;apply" >
+<!ENTITY % approx.qname         "%MATHML.pfx;approx" >
+<!ENTITY % arccos.qname         "%MATHML.pfx;arccos" >
+<!ENTITY % arccosh.qname        "%MATHML.pfx;arccosh" >
+<!ENTITY % arccosh.qname        "%MATHML.pfx;arccosh" >
+<!ENTITY % arccot.qname         "%MATHML.pfx;arccot" >
+<!ENTITY % arccoth.qname        "%MATHML.pfx;arccoth" >
+<!ENTITY % arccsc.qname         "%MATHML.pfx;arccsc" >
+<!ENTITY % arccsch.qname        "%MATHML.pfx;arccsch" >
+<!ENTITY % arcsec.qname         "%MATHML.pfx;arcsec" >
+<!ENTITY % arcsech.qname        "%MATHML.pfx;arcsech" >
+<!ENTITY % arcsin.qname         "%MATHML.pfx;arcsin" >
+<!ENTITY % arcsinh.qname        "%MATHML.pfx;arcsinh" >
+<!ENTITY % arctan.qname         "%MATHML.pfx;arctan" >
+<!ENTITY % arctanh.qname        "%MATHML.pfx;arctanh" >
+<!ENTITY % arg.qname            "%MATHML.pfx;arg" >
+<!ENTITY % bvar.qname           "%MATHML.pfx;bvar" >
+<!ENTITY % card.qname           "%MATHML.pfx;card" >
+<!ENTITY % cartesianproduct.qname "%MATHML.pfx;cartesianproduct" >
+<!ENTITY % ceiling.qname         "%MATHML.pfx;ceiling" >
+<!ENTITY % ci.qname             "%MATHML.pfx;ci" >
+<!ENTITY % cn.qname             "%MATHML.pfx;cn" >
+<!ENTITY % codomain.qname       "%MATHML.pfx;codomain" >
+<!ENTITY % complexes.qname      "%MATHML.pfx;complexes" >
+<!ENTITY % compose.qname        "%MATHML.pfx;compose" >
+<!ENTITY % condition.qname      "%MATHML.pfx;condition" >
+<!ENTITY % conjugate.qname      "%MATHML.pfx;conjugate" >
+<!ENTITY % cos.qname            "%MATHML.pfx;cos" >
+<!ENTITY % cosh.qname           "%MATHML.pfx;cosh" >
+<!ENTITY % cot.qname            "%MATHML.pfx;cot" >
+<!ENTITY % coth.qname           "%MATHML.pfx;coth" >
+<!ENTITY % csc.qname            "%MATHML.pfx;csc" >
+<!ENTITY % csch.qname           "%MATHML.pfx;csch" >
+<!ENTITY % csymbol.qname        "%MATHML.pfx;csymbol" >
+<!ENTITY % curl.qname           "%MATHML.pfx;curl" >
+<!ENTITY % declare.qname        "%MATHML.pfx;declare" >
+<!ENTITY % degree.qname         "%MATHML.pfx;degree" >
+<!ENTITY % determinant.qname    "%MATHML.pfx;determinant" >
+<!ENTITY % diff.qname           "%MATHML.pfx;diff" >
+<!ENTITY % divergence.qname     "%MATHML.pfx;divergence" >
+<!ENTITY % divide.qname         "%MATHML.pfx;divide" >
+<!ENTITY % domain.qname         "%MATHML.pfx;domain" >
+<!ENTITY % domainofapplication.qname "%MATHML.pfx;domainofapplication" >
+<!ENTITY % emptyset.qname       "%MATHML.pfx;emptyset" >
+<!ENTITY % eq.qname             "%MATHML.pfx;eq" >
+<!ENTITY % equivalent.qname     "%MATHML.pfx;equivalent" >
+<!ENTITY % eulergamma.qname     "%MATHML.pfx;eulergamma" >
+<!ENTITY % exists.qname         "%MATHML.pfx;exists" >
+<!ENTITY % exp.qname            "%MATHML.pfx;exp" >
+<!ENTITY % exponentiale.qname   "%MATHML.pfx;exponentiale" >
+<!ENTITY % factorial.qname      "%MATHML.pfx;factorial" >
+<!ENTITY % factorof.qname       "%MATHML.pfx;factorof" >
+<!ENTITY % false.qname          "%MATHML.pfx;false" >
+<!ENTITY % floor.qname          "%MATHML.pfx;floor" >
+<!ENTITY % fn.qname             "%MATHML.pfx;fn" >
+<!ENTITY % forall.qname         "%MATHML.pfx;forall" >
+<!ENTITY % gcd.qname            "%MATHML.pfx;gcd" >
+<!ENTITY % geq.qname            "%MATHML.pfx;geq" >
+<!ENTITY % grad.qname           "%MATHML.pfx;grad" >
+<!ENTITY % gt.qname             "%MATHML.pfx;gt" >
+<!ENTITY % ident.qname          "%MATHML.pfx;ident" >
+<!ENTITY % image.qname          "%MATHML.pfx;image" >
+<!ENTITY % imaginary.qname      "%MATHML.pfx;imaginary" >
+<!ENTITY % imaginaryi.qname     "%MATHML.pfx;imaginaryi" >
+<!ENTITY % implies.qname        "%MATHML.pfx;implies" >
+<!ENTITY % in.qname             "%MATHML.pfx;in" >
+<!ENTITY % infinity.qname       "%MATHML.pfx;infinity" >
+<!ENTITY % int.qname            "%MATHML.pfx;int" >
+<!ENTITY % integers.qname       "%MATHML.pfx;integers" >
+<!ENTITY % intersect.qname      "%MATHML.pfx;intersect" >
+<!ENTITY % interval.qname       "%MATHML.pfx;interval" >
+<!ENTITY % inverse.qname        "%MATHML.pfx;inverse" >
+<!ENTITY % lambda.qname         "%MATHML.pfx;lambda" >
+<!ENTITY % laplacian.qname      "%MATHML.pfx;laplacian" >
+<!ENTITY % lcm.qname            "%MATHML.pfx;lcm" >
+<!ENTITY % leq.qname            "%MATHML.pfx;leq" >
+<!ENTITY % limit.qname          "%MATHML.pfx;limit" >
+<!ENTITY % list.qname           "%MATHML.pfx;list" >
+<!ENTITY % ln.qname             "%MATHML.pfx;ln" >
+<!ENTITY % log.qname            "%MATHML.pfx;log" >
+<!ENTITY % logbase.qname        "%MATHML.pfx;logbase" >
+<!ENTITY % lowlimit.qname       "%MATHML.pfx;lowlimit" >
+<!ENTITY % lt.qname             "%MATHML.pfx;lt" >
+<!ENTITY % maction.qname        "%MATHML.pfx;maction" >
+<!ENTITY % maligngroup.qname    "%MATHML.pfx;maligngroup" >
+<!ENTITY % malignmark.qname     "%MATHML.pfx;malignmark" >
+<!ENTITY % math.qname           "%MATHML.pfx;math" >
+<!ENTITY % matrix.qname         "%MATHML.pfx;matrix" >
+<!ENTITY % matrixrow.qname      "%MATHML.pfx;matrixrow" >
+<!ENTITY % max.qname            "%MATHML.pfx;max" >
+<!ENTITY % mean.qname           "%MATHML.pfx;mean" >
+<!ENTITY % median.qname         "%MATHML.pfx;median" >
+<!ENTITY % menclose.qname       "%MATHML.pfx;menclose" >
+<!ENTITY % merror.qname         "%MATHML.pfx;merror" >
+<!ENTITY % mfenced.qname        "%MATHML.pfx;mfenced" >
+<!ENTITY % mfrac.qname          "%MATHML.pfx;mfrac" >
+<!ENTITY % mglyph.qname         "%MATHML.pfx;mglyph" >
+<!ENTITY % mi.qname             "%MATHML.pfx;mi" >
+<!ENTITY % min.qname            "%MATHML.pfx;min" >
+<!ENTITY % minus.qname          "%MATHML.pfx;minus" >
+<!ENTITY % mlabeledtr.qname     "%MATHML.pfx;mlabeledtr" >
+<!ENTITY % mmultiscripts.qname  "%MATHML.pfx;mmultiscripts" >
+<!ENTITY % mn.qname             "%MATHML.pfx;mn" >
+<!ENTITY % mo.qname             "%MATHML.pfx;mo" >
+<!ENTITY % mode.qname           "%MATHML.pfx;mode" >
+<!ENTITY % moment.qname         "%MATHML.pfx;moment" >
+<!ENTITY % momentabout.qname    "%MATHML.pfx;momentabout" >
+<!ENTITY % mover.qname          "%MATHML.pfx;mover" >
+<!ENTITY % mpadded.qname        "%MATHML.pfx;mpadded" >
+<!ENTITY % mphantom.qname       "%MATHML.pfx;mphantom" >
+<!ENTITY % mprescripts.qname    "%MATHML.pfx;mprescripts" >
+<!ENTITY % mroot.qname          "%MATHML.pfx;mroot" >
+<!ENTITY % mrow.qname           "%MATHML.pfx;mrow" >
+<!ENTITY % ms.qname             "%MATHML.pfx;ms" >
+<!ENTITY % mspace.qname         "%MATHML.pfx;mspace" >
+<!ENTITY % msqrt.qname          "%MATHML.pfx;msqrt" >
+<!ENTITY % mstyle.qname         "%MATHML.pfx;mstyle" >
+<!ENTITY % msub.qname           "%MATHML.pfx;msub" >
+<!ENTITY % msubsup.qname        "%MATHML.pfx;msubsup" >
+<!ENTITY % msup.qname           "%MATHML.pfx;msup" >
+<!ENTITY % mtable.qname         "%MATHML.pfx;mtable" >
+<!ENTITY % mtd.qname            "%MATHML.pfx;mtd" >
+<!ENTITY % mtext.qname          "%MATHML.pfx;mtext" >
+<!ENTITY % mtr.qname            "%MATHML.pfx;mtr" >
+<!ENTITY % munder.qname         "%MATHML.pfx;munder" >
+<!ENTITY % munderover.qname     "%MATHML.pfx;munderover" >
+<!ENTITY % naturalnumbers.qname "%MATHML.pfx;naturalnumbers" >
+<!ENTITY % neq.qname            "%MATHML.pfx;neq" >
+<!ENTITY % none.qname           "%MATHML.pfx;none" >
+<!ENTITY % not.qname            "%MATHML.pfx;not" >
+<!ENTITY % notanumber.qname     "%MATHML.pfx;notanumber" >
+<!ENTITY % notin.qname          "%MATHML.pfx;notin" >
+<!ENTITY % notprsubset.qname    "%MATHML.pfx;notprsubset" >
+<!ENTITY % notsubset.qname      "%MATHML.pfx;notsubset" >
+<!ENTITY % or.qname             "%MATHML.pfx;or" >
+<!ENTITY % otherwise.qname      "%MATHML.pfx;otherwise" >
+<!ENTITY % outerproduct.qname   "%MATHML.pfx;outerproduct" >
+<!ENTITY % partialdiff.qname    "%MATHML.pfx;partialdiff" >
+<!ENTITY % pi.qname             "%MATHML.pfx;pi" >
+<!ENTITY % piece.qname          "%MATHML.pfx;piece" >
+<!ENTITY % piecewise.qname      "%MATHML.pfx;piecewise" >
+<!ENTITY % plus.qname           "%MATHML.pfx;plus" >
+<!ENTITY % power.qname          "%MATHML.pfx;power" >
+<!ENTITY % primes.qname         "%MATHML.pfx;primes" >
+<!ENTITY % product.qname        "%MATHML.pfx;product" >
+<!ENTITY % prsubset.qname       "%MATHML.pfx;prsubset" >
+<!ENTITY % quotient.qname       "%MATHML.pfx;quotient" >
+<!ENTITY % rationals.qname      "%MATHML.pfx;rationals" >
+<!ENTITY % real.qname           "%MATHML.pfx;real" >
+<!ENTITY % reals.qname          "%MATHML.pfx;reals" >
+<!ENTITY % reln.qname           "%MATHML.pfx;reln" >
+<!ENTITY % rem.qname            "%MATHML.pfx;rem" >
+<!ENTITY % root.qname           "%MATHML.pfx;root" >
+<!ENTITY % scalarproduct.qname  "%MATHML.pfx;scalarproduct" >
+<!ENTITY % sdev.qname           "%MATHML.pfx;sdev" >
+<!ENTITY % sec.qname            "%MATHML.pfx;sec" >
+<!ENTITY % sech.qname           "%MATHML.pfx;sech" >
+<!ENTITY % selector.qname       "%MATHML.pfx;selector" >
+<!ENTITY % semantics.qname      "%MATHML.pfx;semantics" >
+<!ENTITY % sep.qname            "%MATHML.pfx;sep" >
+<!ENTITY % set.qname            "%MATHML.pfx;set" >
+<!ENTITY % setdiff.qname        "%MATHML.pfx;setdiff" >
+<!ENTITY % sin.qname            "%MATHML.pfx;sin" >
+<!ENTITY % sinh.qname           "%MATHML.pfx;sinh" >
+<!ENTITY % subset.qname         "%MATHML.pfx;subset" >
+<!ENTITY % sum.qname            "%MATHML.pfx;sum" >
+<!ENTITY % tan.qname            "%MATHML.pfx;tan" >
+<!ENTITY % tanh.qname           "%MATHML.pfx;tanh" >
+<!ENTITY % tendsto.qname        "%MATHML.pfx;tendsto" >
+<!ENTITY % times.qname          "%MATHML.pfx;times" >
+<!ENTITY % transpose.qname      "%MATHML.pfx;transpose" >
+<!ENTITY % true.qname           "%MATHML.pfx;true" >
+<!ENTITY % union.qname          "%MATHML.pfx;union" >
+<!ENTITY % uplimit.qname        "%MATHML.pfx;uplimit" >
+<!ENTITY % variance.qname       "%MATHML.pfx;variance" >
+<!ENTITY % vector.qname         "%MATHML.pfx;vector" >
+<!ENTITY % vectorproduct.qname  "%MATHML.pfx;vectorproduct" >
+<!ENTITY % xor.qname            "%MATHML.pfx;xor" >
+
+
+<!-- ignores subsequent instantiation of this module when
+     used as external subset rather than module fragment.
+     NOTE: Do not modify this parameter entity, otherwise
+     a recursive parsing situation may result.
+-->
+<!ENTITY % mathml-qname.module "IGNORE" >
+
+<!-- end of template-qname-1.mod -->
+
+
+<!-- 5. The parameter entity %XHTML.xmlns.extra.attrib; may be
+        redeclared to contain any non-XHTML namespace declaration
+        attributes for namespaces embedded in XHTML. The default
+        is an empty string.  XLink should be included here if used
+        in the DTD.
+-->
+<!ENTITY % XHTML.xmlns.extra.attrib "" >
+
+<!-- The remainder of Section A is only followed in XHTML, not extensions. -->
+
+<!-- Declare a parameter entity %NS.decl.attrib; containing
+     all XML Namespace declarations used in the DTD, plus the
+     xmlns declaration for XHTML, its form dependent on whether
+     prefixing is active.
+-->
+<![%XHTML.prefixed;[
+<!ENTITY % NS.decl.attrib
+     "xmlns:%XHTML.prefix;  %URI.datatype;   #FIXED '%XHTML.xmlns;'
+      %XHTML.xmlns.extra.attrib;"
+>
+]]>
+<!ENTITY % NS.decl.attrib
+     "%XHTML.xmlns.extra.attrib;"
+>
+
+<!-- This is a placeholder for future XLink support.
+-->
+<!ENTITY % XLINK.xmlns.attrib "" >
+
+<!-- Declare a parameter entity %NS.decl.attrib; containing all
+     XML namespace declaration attributes used by XHTML, including
+     a default xmlns attribute when prefixing is inactive.
+-->
+<![%XHTML.prefixed;[
+<!ENTITY % XHTML.xmlns.attrib
+     "%NS.decl.attrib;
+      %XLINK.xmlns.attrib;"
+>
+]]>
+<!ENTITY % XHTML.xmlns.attrib
+     "xmlns        %URI.datatype;           #FIXED '%XHTML.xmlns;'
+      %XLINK.xmlns.attrib;"
+>
+
+<!-- placeholder for qualified name redeclarations -->
+<!ENTITY % xhtml-qname.redecl "" >
+
+
+<!-- Section B: XHTML Qualified Names ::::::::::::::::::::::::::::: -->
+
+<!-- 6. This section declares parameter entities used to provide
+        namespace-qualified names for all XHTML element types.
+-->
+
+<!-- module:  xhtml-applet-1.mod -->
+<!ENTITY % applet.qname  "%XHTML.pfx;applet" >
+
+<!-- module:  xhtml-base-1.mod -->
+<!ENTITY % base.qname    "%XHTML.pfx;base" >
+
+<!-- module:  xhtml-bdo-1.mod -->
+<!ENTITY % bdo.qname     "%XHTML.pfx;bdo" >
+
+<!-- module:  xhtml-blkphras-1.mod -->
+<!ENTITY % address.qname "%XHTML.pfx;address" >
+<!ENTITY % blockquote.qname  "%XHTML.pfx;blockquote" >
+<!ENTITY % pre.qname     "%XHTML.pfx;pre" >
+<!ENTITY % h1.qname      "%XHTML.pfx;h1" >
+<!ENTITY % h2.qname      "%XHTML.pfx;h2" >
+<!ENTITY % h3.qname      "%XHTML.pfx;h3" >
+<!ENTITY % h4.qname      "%XHTML.pfx;h4" >
+<!ENTITY % h5.qname      "%XHTML.pfx;h5" >
+<!ENTITY % h6.qname      "%XHTML.pfx;h6" >
+
+<!-- module:  xhtml-blkpres-1.mod -->
+<!ENTITY % hr.qname      "%XHTML.pfx;hr" >
+
+<!-- module:  xhtml-blkstruct-1.mod -->
+<!ENTITY % div.qname     "%XHTML.pfx;div" >
+<!ENTITY % p.qname       "%XHTML.pfx;p" >
+
+<!-- module:  xhtml-edit-1.mod -->
+<!ENTITY % ins.qname     "%XHTML.pfx;ins" >
+<!ENTITY % del.qname     "%XHTML.pfx;del" >
+
+<!-- module:  xhtml-form-1.mod -->
+<!ENTITY % form.qname    "%XHTML.pfx;form" >
+<!ENTITY % label.qname   "%XHTML.pfx;label" >
+<!ENTITY % input.qname   "%XHTML.pfx;input" >
+<!ENTITY % select.qname  "%XHTML.pfx;select" >
+<!ENTITY % optgroup.qname  "%XHTML.pfx;optgroup" >
+<!ENTITY % option.qname  "%XHTML.pfx;option" >
+<!ENTITY % textarea.qname  "%XHTML.pfx;textarea" >
+<!ENTITY % fieldset.qname  "%XHTML.pfx;fieldset" >
+<!ENTITY % legend.qname  "%XHTML.pfx;legend" >
+<!ENTITY % button.qname  "%XHTML.pfx;button" >
+
+<!-- module:  xhtml-hypertext-1.mod -->
+<!ENTITY % a.qname       "%XHTML.pfx;a" >
+
+<!-- module:  xhtml-image-1.mod -->
+<!ENTITY % img.qname     "%XHTML.pfx;img" >
+
+<!-- module:  xhtml-inlphras-1.mod -->
+<!ENTITY % abbr.qname    "%XHTML.pfx;abbr" >
+<!ENTITY % acronym.qname "%XHTML.pfx;acronym" >
+<!ENTITY % cite.qname    "%XHTML.pfx;cite" >
+<!ENTITY % code.qname    "%XHTML.pfx;code" >
+<!ENTITY % dfn.qname     "%XHTML.pfx;dfn" >
+<!ENTITY % em.qname      "%XHTML.pfx;em" >
+<!ENTITY % kbd.qname     "%XHTML.pfx;kbd" >
+<!ENTITY % q.qname       "%XHTML.pfx;q" >
+<!ENTITY % samp.qname    "%XHTML.pfx;samp" >
+<!ENTITY % strong.qname  "%XHTML.pfx;strong" >
+<!ENTITY % var.qname     "%XHTML.pfx;var" >
+
+<!-- module:  xhtml-inlpres-1.mod -->
+<!ENTITY % b.qname       "%XHTML.pfx;b" >
+<!ENTITY % big.qname     "%XHTML.pfx;big" >
+<!ENTITY % i.qname       "%XHTML.pfx;i" >
+<!ENTITY % small.qname   "%XHTML.pfx;small" >
+<!ENTITY % sub.qname     "%XHTML.pfx;sub" >
+<!ENTITY % sup.qname     "%XHTML.pfx;sup" >
+<!ENTITY % tt.qname      "%XHTML.pfx;tt" >
+
+<!-- module:  xhtml-inlstruct-1.mod -->
+<!ENTITY % br.qname      "%XHTML.pfx;br" >
+<!ENTITY % span.qname    "%XHTML.pfx;span" >
+
+<!-- module:  xhtml-ismap-1.mod (also csismap, ssismap) -->
+<!ENTITY % map.qname     "%XHTML.pfx;map" >
+<!ENTITY % area.qname    "%XHTML.pfx;area" >
+
+<!-- module:  xhtml-link-1.mod -->
+<!ENTITY % link.qname    "%XHTML.pfx;link" >
+
+<!-- module:  xhtml-list-1.mod -->
+<!ENTITY % dl.qname      "%XHTML.pfx;dl" >
+<!ENTITY % dt.qname      "%XHTML.pfx;dt" >
+<!ENTITY % dd.qname      "%XHTML.pfx;dd" >
+<!ENTITY % ol.qname      "%XHTML.pfx;ol" >
+<!ENTITY % ul.qname      "%XHTML.pfx;ul" >
+<!ENTITY % li.qname      "%XHTML.pfx;li" >
+
+<!-- module:  xhtml-meta-1.mod -->
+<!ENTITY % meta.qname    "%XHTML.pfx;meta" >
+
+<!-- module:  xhtml-param-1.mod -->
+<!ENTITY % param.qname   "%XHTML.pfx;param" >
+
+<!-- module:  xhtml-object-1.mod -->
+<!ENTITY % object.qname  "%XHTML.pfx;object" >
+
+<!-- module:  xhtml-script-1.mod -->
+<!ENTITY % script.qname  "%XHTML.pfx;script" >
+<!ENTITY % noscript.qname  "%XHTML.pfx;noscript" >
+
+<!-- module:  xhtml-struct-1.mod -->
+<!ENTITY % html.qname    "%XHTML.pfx;html" >
+<!ENTITY % head.qname    "%XHTML.pfx;head" >
+<!ENTITY % title.qname   "%XHTML.pfx;title" >
+<!ENTITY % body.qname    "%XHTML.pfx;body" >
+
+<!-- module:  xhtml-style-1.mod -->
+<!ENTITY % style.qname   "%XHTML.pfx;style" >
+
+<!-- module:  xhtml-table-1.mod -->
+<!ENTITY % table.qname   "%XHTML.pfx;table" >
+<!ENTITY % caption.qname "%XHTML.pfx;caption" >
+<!ENTITY % thead.qname   "%XHTML.pfx;thead" >
+<!ENTITY % tfoot.qname   "%XHTML.pfx;tfoot" >
+<!ENTITY % tbody.qname   "%XHTML.pfx;tbody" >
+<!ENTITY % colgroup.qname  "%XHTML.pfx;colgroup" >
+<!ENTITY % col.qname     "%XHTML.pfx;col" >
+<!ENTITY % tr.qname      "%XHTML.pfx;tr" >
+<!ENTITY % th.qname      "%XHTML.pfx;th" >
+<!ENTITY % td.qname      "%XHTML.pfx;td" >
+
+<!-- module:  xhtml-ruby-1.mod -->
+
+<!ENTITY % ruby.qname    "%XHTML.pfx;ruby" >
+<!ENTITY % rbc.qname     "%XHTML.pfx;rbc" >
+<!ENTITY % rtc.qname     "%XHTML.pfx;rtc" >
+<!ENTITY % rb.qname      "%XHTML.pfx;rb" >
+<!ENTITY % rt.qname      "%XHTML.pfx;rt" >
+<!ENTITY % rp.qname      "%XHTML.pfx;rp" >
+
+<!-- Provisional XHTML 2.0 Qualified Names  ...................... -->
+
+<!-- module:  xhtml-image-2.mod -->
+<!ENTITY % alt.qname     "%XHTML.pfx;alt" >
+
+<!-- end of xhtml-qname-1.mod -->
+]]>
+
+<!ENTITY % xhtml-events.module "IGNORE" >
+<![%xhtml-events.module;[
+<!ENTITY % xhtml-events.mod
+     PUBLIC "-//W3C//ENTITIES XHTML Intrinsic Events 1.0//EN"
+            "xhtml-events-1.mod" >
+<!-- ...................................................................... -->
+<!-- XHTML Intrinsic Events Module  ....................................... -->
+<!-- file: xhtml-events-1.mod
+
+     This is XHTML, a reformulation of HTML as a modular XML application.
+     Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $ SMI
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//ENTITIES XHTML Intrinsic Events 1.0//EN"
+       SYSTEM "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-events-1.mod"
+
+     Revisions:
+     (none)
+     ....................................................................... -->
+
+<!-- Intrinsic Event Attributes
+
+     These are the event attributes defined in HTML 4,
+     Section 18.2.3 "Intrinsic Events". This module must be
+     instantiated prior to the Attributes Module but after
+     the Datatype Module in the Modular Framework module.
+
+    "Note: Authors of HTML documents are advised that changes
+     are likely to occur in the realm of intrinsic events
+     (e.g., how scripts are bound to events). Research in
+     this realm is carried on by members of the W3C Document
+     Object Model Working Group (see the W3C Web site at
+     http://www.w3.org/ for more information)."
+-->
+<!-- NOTE: Because the ATTLIST declarations in this module occur
+     before their respective ELEMENT declarations in other
+     modules, there may be a dependency on this module that
+     should be considered if any of the parameter entities used
+     for element type names (eg., %a.qname;) are redeclared.
+-->
+
+<!ENTITY % Events.attrib
+     "onclick      %Script.datatype;        #IMPLIED
+      ondblclick   %Script.datatype;        #IMPLIED
+      onmousedown  %Script.datatype;        #IMPLIED
+      onmouseup    %Script.datatype;        #IMPLIED
+      onmouseover  %Script.datatype;        #IMPLIED
+      onmousemove  %Script.datatype;        #IMPLIED
+      onmouseout   %Script.datatype;        #IMPLIED
+      onkeypress   %Script.datatype;        #IMPLIED
+      onkeydown    %Script.datatype;        #IMPLIED
+      onkeyup      %Script.datatype;        #IMPLIED"
+>
+
+<!-- additional attributes on anchor element
+-->
+<!ATTLIST %a.qname;
+     onfocus      %Script.datatype;         #IMPLIED
+     onblur       %Script.datatype;         #IMPLIED
+>
+
+<!-- additional attributes on form element
+-->
+<!ATTLIST %form.qname;
+      onsubmit     %Script.datatype;        #IMPLIED
+      onreset      %Script.datatype;        #IMPLIED
+>
+
+<!-- additional attributes on label element
+-->
+<!ATTLIST %label.qname;
+      onfocus      %Script.datatype;        #IMPLIED
+      onblur       %Script.datatype;        #IMPLIED
+>
+
+<!-- additional attributes on input element
+-->
+<!ATTLIST %input.qname;
+      onfocus      %Script.datatype;        #IMPLIED
+      onblur       %Script.datatype;        #IMPLIED
+      onselect     %Script.datatype;        #IMPLIED
+      onchange     %Script.datatype;        #IMPLIED
+>
+
+<!-- additional attributes on select element
+-->
+<!ATTLIST %select.qname;
+      onfocus      %Script.datatype;        #IMPLIED
+      onblur       %Script.datatype;        #IMPLIED
+      onchange     %Script.datatype;        #IMPLIED
+>
+
+<!-- additional attributes on textarea element
+-->
+<!ATTLIST %textarea.qname;
+      onfocus      %Script.datatype;        #IMPLIED
+      onblur       %Script.datatype;        #IMPLIED
+      onselect     %Script.datatype;        #IMPLIED
+      onchange     %Script.datatype;        #IMPLIED
+>
+
+<!-- additional attributes on button element
+-->
+<!ATTLIST %button.qname;
+      onfocus      %Script.datatype;        #IMPLIED
+      onblur       %Script.datatype;        #IMPLIED
+>
+
+<!-- additional attributes on body element
+-->
+<!ATTLIST %body.qname;
+      onload       %Script.datatype;        #IMPLIED
+      onunload     %Script.datatype;        #IMPLIED
+>
+
+<!-- additional attributes on area element
+-->
+<!ATTLIST %area.qname;
+      onfocus      %Script.datatype;        #IMPLIED
+      onblur       %Script.datatype;        #IMPLIED
+>
+
+<!-- end of xhtml-events-1.mod -->
+]]>
+
+<!ENTITY % xhtml-attribs.module "INCLUDE" >
+<![%xhtml-attribs.module;[
+<!ENTITY % xhtml-attribs.mod
+     PUBLIC "-//W3C//ENTITIES XHTML Common Attributes 1.0//EN"
+            "xhtml-attribs-1.mod" >
+<!-- ...................................................................... -->
+<!-- XHTML Common Attributes Module  ...................................... -->
+<!-- file: xhtml-attribs-1.mod
+
+     This is XHTML, a reformulation of HTML as a modular XML application.
+     Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $ SMI
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//ENTITIES XHTML Common Attributes 1.0//EN"
+       SYSTEM "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-attribs-1.mod"
+
+     Revisions:
+     (none)
+     ....................................................................... -->
+
+<!-- Common Attributes
+
+     This module declares many of the common attributes for the XHTML DTD.
+     %NS.decl.attrib; is declared in the XHTML Qname module.
+-->
+
+<!ENTITY % id.attrib
+     "id           ID                       #IMPLIED"
+>
+
+<!ENTITY % class.attrib
+     "class        NMTOKENS                 #IMPLIED"
+>
+
+<!ENTITY % title.attrib
+     "title        %Text.datatype;          #IMPLIED"
+>
+
+<!ENTITY % Core.extra.attrib "" >
+
+<!ENTITY % Core.attrib
+     "%XHTML.xmlns.attrib;
+      %id.attrib;
+      %class.attrib;
+      %title.attrib;
+      %Core.extra.attrib;"
+>
+
+<!ENTITY % lang.attrib
+     "xml:lang     %LanguageCode.datatype;  #IMPLIED"
+>
+
+<![%XHTML.bidi;[
+<!ENTITY % dir.attrib
+     "dir          ( ltr | rtl )            #IMPLIED"
+>
+
+<!ENTITY % I18n.attrib
+     "%dir.attrib;
+      %lang.attrib;"
+>
+
+]]>
+<!ENTITY % I18n.attrib
+     "%lang.attrib;"
+>
+
+<!ENTITY % Common.extra.attrib "" >
+
+<!-- intrinsic event attributes declared previously
+-->
+<!ENTITY % Events.attrib "" >
+
+<!ENTITY % Common.attrib
+     "%Core.attrib;
+      %I18n.attrib;
+      %Events.attrib;
+      %Common.extra.attrib;"
+>
+
+<!-- end of xhtml-attribs-1.mod -->
+]]>
+
+<!-- placeholder for content model redeclarations -->
+<!ENTITY % xhtml-model.redecl "" >
+
+
+<!ENTITY % xhtml-model.module "INCLUDE" >
+<![%xhtml-model.module;[
+<!-- instantiate the Document Model module declared in the DTD driver
+-->
+<!-- ....................................................................... -->
+<!-- XHTML 1.1 Document Model Module  ...................................... -->
+<!-- file: xhtml11-model-1.mod
+
+     This is XHTML 1.1, a reformulation of HTML as a modular XML application.
+     Copyright 1998-2001 W3C (MIT, INRIA, Keio), All Rights Reserved.
+     Revision: $Id: xhtml-math11-f.dtd,v 1.16 2003/11/04 13:14:35 davidc Exp $ SMI
+
+     This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+       PUBLIC "-//W3C//ENTITIES XHTML 1.1 Document Model 1.0//EN"
+       SYSTEM "http://www.w3.org/TR/xhtml11/DTD/xhtml11-model-1.mod"
+
+     Revisions:
+     (none)
+     ....................................................................... -->
+
+<!-- XHTML 1.1 Document Model
+
+     This module describes the groupings of elements that make up
+     common content models for XHTML elements.
+
+     XHTML has three basic content models:
+
+         %Inline.mix;  character-level elements
+         %Block.mix;   block-like elements, eg., paragraphs and lists
+         %Flow.mix;    any block or inline elements
+
+     Any parameter entities declared in this module may be used
+     to create element content models, but the above three are
+     considered 'global' (insofar as that term applies here).
+
+     The reserved word '#PCDATA' (indicating a text string) is now
+     included explicitly with each element declaration that is
+     declared as mixed content, as XML requires that this token
+     occur first in a content model specification.
+-->
+<!-- Extending the Model
+
+     While in some cases this module may need to be rewritten to
+     accommodate changes to the document model, minor extensions
+     may be accomplished by redeclaring any of the three *.extra;
+     parameter entities to contain extension element types as follows:
+
+         %Misc.extra;    whose parent may be any block or
+                         inline element.
+
+         %Inline.extra;  whose parent may be any inline element.
+
+         %Block.extra;   whose parent may be any block element.
+
+     If used, these parameter entities must be an OR-separated
+     list beginning with an OR separator ("|"), eg., "| a | b | c"
+
+     All block and inline *.class parameter entities not part
+     of the *struct.class classes begin with "| " to allow for
+     exclusion from mixes.
+-->
+
+<!-- ..............  Optional Elements in head  .................. -->
+
+<!ENTITY % HeadOpts.mix
+     "( %script.qname; | %style.qname; | %meta.qname;
+      | %link.qname; | %object.qname; )*"
+>
+
+<!-- .................  Miscellaneous Elements  .................. -->
+
+<!-- ins and del are used to denote editing changes
+-->
+<!ENTITY % Edit.class "| %ins.qname; | %del.qname;" >
+
+<!-- script and noscript are used to contain scripts
+     and alternative content
+-->
+<!ENTITY % Script.class "| %script.qname; | %noscript.qname;" >
+
+<!ENTITY % Misc.extra "" >
+
+<!-- These elements are neither block nor inline, and can
+     essentially be used anywhere in the document body.
+-->
+<!ENTITY % Misc.class
+     "%Edit.class;
+      %Script.class;
+      %Misc.extra;"
+>
+
+<!-- ....................  Inline Elements  ...................... -->
+
+<!ENTITY % InlStruct.class "%br.qname; | %span.qname;" >
+
+<!ENTITY % InlPhras.class
+     "| %em.qname; | %strong.qname; | %dfn.qname; | %code.qname;
+      | %samp.qname; | %kbd.qname; | %var.qname; | %cite.qname;
+      | %abbr.qname; | %acronym.qname; | %q.qname;" >
+
+<!ENTITY % InlPres.class
+     "| %tt.qname; | %i.qname; | %b.qname; | %big.qname;
+      | %small.qname; | %sub.qname; | %sup.qname;" >
+
+<!ENTITY % I18n.class "| %bdo.qname;" >
+
+<!ENTITY % Anchor.class "| %a.qname;" >
+
+<!ENTITY % InlSpecial.class
+     "| %img.qname; | %map.qname;
+      | %object.qname;" >
+
+<!ENTITY % InlForm.class
+     "| %input.qname; | %select.qname; | %textarea.qname;
+      | %label.qname; | %button.qname;" >
+
+<!ENTITY % Inline.extra "" >
+
+<!ENTITY % Ruby.class "| %ruby.qname;" >
+
+<!-- %Inline.class; includes all inline elements,
+     used as a component in mixes
+-->
+<!ENTITY % Inline.class
+     "%InlStruct.class;
+      %InlPhras.class;
+      %InlPres.class;
+      %I18n.class;
+      %Anchor.class;
+      %InlSpecial.class;
+      %InlForm.class;
+      %Ruby.class;
+      %Inline.extra;"
+>
+
+<!-- %InlNoRuby.class; includes all inline elements
+     except ruby, used as a component in mixes
+-->
+<!ENTITY % InlNoRuby.class
+     "%InlStruct.class;
+      %InlPhras.class;
+      %InlPres.class;
+      %I18n.class;
+      %Anchor.class;
+      %InlSpecial.class;
+      %InlForm.class;
+      %Inline.extra;"
+>
+
+<!-- %NoRuby.content; includes all inlines except ruby
+-->
+<!ENTITY % NoRuby.content
+     "( #PCDATA
+      | %InlNoRuby.class;
+      %Misc.class; )*"
+>
+
+<!-- %InlNoAnchor.class; includes all non-anchor inlines,
+     used as a component in mixes
+-->
+<!ENTITY % InlNoAnchor.class
+     "%InlStruct.class;
+      %InlPhras.class;
+      %InlPres.class;
+      %I18n.class;
+      %InlSpecial.class;
+      %InlForm.class;
+      %Ruby.class;
+      %Inline.extra;"
+>
+
+<!-- %InlNoAnchor.mix; includes all non-anchor inlines
+-->
+<!ENTITY % InlNoAnchor.mix
+     "%InlNoAnchor.class;
+      %Misc.class;"
+>
+
+<!-- %Inline.mix; includes all inline elements, including %Misc.class;
+-->
+<!ENTITY % Inline.mix
+     "%Inline.class;
+      %Misc.class;"
+>
+
+<!-- .....................  Block Elements  ...................... -->
+
+<!-- In the HTML 4.0 DTD, heading and list el

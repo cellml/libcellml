@@ -27,8 +27,32 @@ limitations under the License.
 
 namespace libcellml {
 
-static const char *mathmlDtd =
-#include "fullmathmldtd.h"
+static const std::string mathmlDtdpart1 =
+#include "partialmathmldtd.1.h"
+;
+
+static const std::string mathmlDtdpart2 =
+#include "partialmathmldtd.2.h"
+;
+
+static const std::string mathmlDtdpart3 =
+#include "partialmathmldtd.3.h"
+;
+
+static const std::string mathmlDtdpart4 =
+#include "partialmathmldtd.4.h"
+;
+
+static const std::string mathmlDtdpart5 =
+#include "partialmathmldtd.5.h"
+;
+
+static const std::string mathmlDtdpart6 =
+#include "partialmathmldtd.6.h"
+;
+
+static const std::string mathmlDtdpart7 =
+#include "partialmathmldtd.7.h"
 ;
 
 /**
@@ -95,12 +119,13 @@ void XmlDoc::parse(const std::string &input)
 
 void XmlDoc::parseMathML(const std::string &input)
 {
+    const std::string mathmlDtd = mathmlDtdpart1 + mathmlDtdpart2 + mathmlDtdpart3 + mathmlDtdpart4 + mathmlDtdpart5 + mathmlDtdpart6 + mathmlDtdpart7;
     xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
-    xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(reinterpret_cast<const char *>(mathmlDtd), strlen(mathmlDtd), XML_CHAR_ENCODING_ASCII);
+    xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(reinterpret_cast<const char *>(mathmlDtd.c_str()), mathmlDtd.size(), XML_CHAR_ENCODING_ASCII);
     xmlDtdPtr dtd = xmlIOParseDTD(nullptr, buf, XML_CHAR_ENCODING_ASCII);
     xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, dtd);
 
