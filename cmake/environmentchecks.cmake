@@ -105,6 +105,7 @@ if(LibXml2_FOUND)
     endif()
   endforeach()
 else()
+  find_package(ZLIB REQUIRED)
   find_package(LibXml2 REQUIRED)
   if(LibXml2_FOUND)
     # Clear out GUI variable created in config search mode.
