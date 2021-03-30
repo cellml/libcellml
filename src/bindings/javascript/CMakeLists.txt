@@ -33,6 +33,8 @@ add_library(javascript-bindings OBJECT ${SOURCE_FILES})
 
 target_link_libraries(javascript-bindings PUBLIC cellml)
 
+# I want to add '-fwasm-exceptions' to the COMPILE_FLAGS but Node doesn't support
+# this yet.  This is a reminder to enable it when Node does support exceptions.
 set_target_properties(javascript-bindings PROPERTIES
   CXX_STANDARD 11
   CXX_STANDARD_REQUIRED ON

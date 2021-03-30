@@ -6,7 +6,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analyser)
 {
-    class_<libcellml::Analyser>("Analyser")
+    class_<libcellml::Analyser, base<libcellml::Logger>>("Analyser")
         .smart_ptr_constructor("Analyser", &libcellml::Analyser::create)
         .function("analyseModel", &libcellml::Analyser::analyseModel)
         .function("addExternalVariable", &libcellml::Analyser::addExternalVariable)
