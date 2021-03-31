@@ -25,8 +25,10 @@ limitations under the License.
 
 #include <zlib.h>
 
-#include "xmlnode.h"
 #include "mathmldtd.h"
+#include "xmlnode.h"
+
+#include "debug.h"
 
 namespace libcellml {
 
@@ -62,7 +64,8 @@ void structuredErrorCallback(void *userData, xmlErrorPtr error)
 struct XmlDoc::XmlDocImpl
 {
     xmlDocPtr mXmlDocPtr = nullptr;
-    unsigned char *mMathmlDTD = nullptr;
+//    unsigned char *mMathmlDTD = nullptr;
+    std::vector<unsigned char> mMathmlDTD;
     std::vector<std::string> mXmlErrors;
     size_t bufferPointer = 0;
 };
@@ -76,9 +79,6 @@ XmlDoc::~XmlDoc()
 {
     if (mPimpl->mXmlDocPtr != nullptr) {
         xmlFreeDoc(mPimpl->mXmlDocPtr);
-    }
-    if (mPimpl->mMathmlDTD != nullptr) {
-        free(mPimpl->mMathmlDTD);
     }
     delete mPimpl;
 }
@@ -99,16 +99,17 @@ void XmlDoc::parse(const std::string &input)
 void XmlDoc::parseMathML(const std::string &input)
 {
     size_t sizeMathmlDTDUncompressed = 391336;
-    if (mPimpl->mMathmlDTD != nullptr) {
-        mPimpl->mMathmlDTD = (unsigned char *)malloc(sizeMathmlDTDUncompressed);
-        uncompress(mPimpl->mMathmlDTD, &sizeMathmlDTDUncompressed, MATHML_DTD, MATHML_DTD_LEN);
+    size_t sizeMathmlDTDUncompressedResize = 391336;
+    if (mPimpl->mMathmlDTD.size() == 0) {
+        mPimpl->mMathmlDTD.assign(sizeMathmlDTDUncompressed, 'A');
+        uncompress(&mPimpl->mMathmlDTD[0], &sizeMathmlDTDUncompressedResize, COMPRESSED_MATHML_DTD, COMPRESSED_MATHML_DTD_LEN);
     }
     xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
-    xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(reinterpret_cast<const char *>(mPimpl->mMathmlDTD), sizeMathmlDTDUncompressed, XML_CHAR_ENCODING_ASCII);
+    xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(reinterpret_cast<const char *>(&mPimpl->mMathmlDTD[0]), sizeMathmlDTDUncompressed, XML_CHAR_ENCODING_ASCII);
     xmlDtdPtr dtd = xmlIOParseDTD(nullptr, buf, XML_CHAR_ENCODING_ASCII);
     xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, dtd);
 
