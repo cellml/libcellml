@@ -16,5 +16,11 @@ limitations under the License.
 
 #pragma once
 
+#include <vector>
+
+namespace libcellml {
+
 ${MATHML_DTD_LEN_STATEMENT}
 ${MATHML_DTD_DATA_STATEMENT}
+
+} // namespace libcellml

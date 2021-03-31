@@ -32,8 +32,8 @@ function(STRING_HEX_KEY_TO_C_BYTE_ARRAY STRING_HEX VARIABLE_NAME _DATA_STATEMENT
     # Append " )"
     string(APPEND FORMATTED_HEX " }")
 
-    set(${_DATA_STATEMENT} "const unsigned char ${VARIABLE_NAME}[] = ${FORMATTED_HEX};" PARENT_SCOPE)
-    set(${_LEN_STATEMENT} "static const int ${VARIABLE_NAME}_LEN = ${HEX_LEN};" PARENT_SCOPE)
+    set(${_DATA_STATEMENT} "const std::vector<unsigned char> ${VARIABLE_NAME} = ${FORMATTED_HEX};" PARENT_SCOPE)
+    set(${_LEN_STATEMENT} "static const size_t ${VARIABLE_NAME}_LEN = ${HEX_LEN};" PARENT_SCOPE)
 endfunction()
 
 if(CMAKE_ARGC EQUAL 4)
