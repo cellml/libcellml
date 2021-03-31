@@ -39,11 +39,10 @@ describe("Analyser tests", () => {
 
     const a = new libcellml.Analyser()
 
-//    a.analyseModel(m)
+    a.analyseModel(m)
 
-    expect(a.issueCount()).toBe(0)
-//           console.log(a.issue(0).description())
-//           console.log(a.issue(1).description())
+    expect(a.issueCount()).toBe(1)
+    expect(a.issue(0).description()).toBe("Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.")
   });
   test("Checking Analyser.addExternalVariable.", () => {
   });

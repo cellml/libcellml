@@ -268,3 +268,7 @@ endif()
 
 # Add packaging
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/packaging)
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.18)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/utils)
+endif()

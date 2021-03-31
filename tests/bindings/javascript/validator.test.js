@@ -28,6 +28,7 @@ describe("Validator tests", () => {
     const m = p.parseModel(model)
 
     x.validateModel(m)
+
     expect(x.issueCount()).toBe(0)
   });
 })
