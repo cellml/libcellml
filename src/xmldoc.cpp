@@ -28,8 +28,6 @@ limitations under the License.
 #include "mathmldtd.h"
 #include "xmlnode.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 /**
@@ -98,11 +96,11 @@ void XmlDoc::parse(const std::string &input)
 
 void XmlDoc::parseMathML(const std::string &input)
 {
-    size_t sizeMathmlDTDUncompressed = 391336;
+    int sizeMathmlDTDUncompressed = 391336;
     size_t sizeMathmlDTDUncompressedResize = 391336;
-    if (mPimpl->mMathmlDTD.size() == 0) {
-        mPimpl->mMathmlDTD.assign(sizeMathmlDTDUncompressed, 'A');
-        uncompress(&mPimpl->mMathmlDTD[0], &sizeMathmlDTDUncompressedResize, COMPRESSED_MATHML_DTD, COMPRESSED_MATHML_DTD_LEN);
+    if (mPimpl->mMathmlDTD.empty()) {
+        mPimpl->mMathmlDTD.assign(sizeMathmlDTDUncompressedResize, 'A');
+        uncompress(&mPimpl->mMathmlDTD[0], &sizeMathmlDTDUncompressedResize, &COMPRESSED_MATHML_DTD[0], COMPRESSED_MATHML_DTD_LEN);
     }
     xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
