@@ -537,7 +537,6 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(non_unique_message, annotator.issue(0).description())
 
     def test_set_any_cellml_element(self):
-
         from libcellml import Parser
         from libcellml.enums import CellmlElementType
         from libcellml.types import AnyCellmlElement, VariablePair, Unit
@@ -553,7 +552,7 @@ class AnnotatorTestCase(unittest.TestCase):
         pair = VariablePair(
             model.component('component2', True).variable('variable1'),
             model.component('component3', True).variable('variable1')
-            )
+        )
 
         any_model = AnyCellmlElement(CellmlElementType.MODEL, model)
         any_encapsulation = AnyCellmlElement(CellmlElementType.ENCAPSULATION, model)
