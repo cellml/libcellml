@@ -152,10 +152,6 @@ add_library(cellml
   ${API_HEADER_FILES}
 )
 
-file(READ "dtds/mathml2/xhtml-math11-f.dtd" RAW_STRING_CONTENT)
-#set(RAW_STRING_CONTENT)
-configure_file(configure/rawstring.in.h mathmldtd2.h)
-
 generate_export_header(cellml EXPORT_FILE_NAME ${LIBCELLML_EXPORTDEFINITIONS_H} BASE_NAME LIBCELLML)
 
 target_include_directories(cellml
