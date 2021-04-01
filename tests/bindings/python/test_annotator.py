@@ -583,43 +583,8 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(CellmlElementType.CONNECTION, any_connection.type())
         self.assertEqual(CellmlElementType.MAP_VARIABLES, any_mapping.type())
 
-        self.assertEqual(model.name(), any_model.item().name())
-        self.assertEqual(model.name(), any_encapsulation.item().name())
-        self.assertEqual(component.name(), any_component.item().name())
-        self.assertEqual(component.name(), any_component_ref.item().name())
-        self.assertEqual(reset.order(), any_reset.item().order())
-        self.assertEqual(reset.resetValue(), any_reset_value.item().resetValue())
-        self.assertEqual(reset.testValue(), any_test_value.item().testValue())
-        self.assertEqual(variable.name(), any_variable.item().name())
-        self.assertEqual(units.name(), any_units.item().name())
-        self.assertEqual(unit.units().name(), any_unit.item().units().name())
-        self.assertEqual('variable1', any_connection.item().variable1().name())
-        self.assertEqual('variable1', any_connection.item().variable2().name())
-        self.assertEqual('variable1', any_mapping.item().variable1().name())
-        self.assertEqual('variable1', any_mapping.item().variable2().name())
-
-        self.assertEqual(component.name(), any_component.component().name())
-        self.assertEqual(component.name(), any_component_ref.componentRef().name())
-        self.assertEqual('variable1', any_connection.connection().variable1().name())
-        self.assertEqual('variable1', any_connection.connection().variable2().name())
-        self.assertEqual(model.name(), any_encapsulation.encapsulation().name())
-        self.assertEqual(import_source.url(), any_import_source.importSource().url())
-        self.assertEqual('variable1', any_mapping.mapVariables().variable1().name())
-        self.assertEqual('variable1', any_mapping.mapVariables().variable2().name())
-        self.assertEqual(model.name(), any_model.model().name())
-        self.assertEqual(reset.order(), any_reset.reset().order())
-        self.assertEqual(reset.resetValue(), any_reset_value.resetValue().resetValue())
-        self.assertEqual(reset.testValue(), any_test_value.testValue().testValue())
-        self.assertEqual(unit.units().name(), any_unit.unit().units().name())
-        self.assertEqual(units.name(), any_units.units().name())
-        self.assertEqual(variable.name(), any_variable.variable().name())
-
-        any_variable.setType(CellmlElementType.UNDEFINED)
-
-        self.assertEqual(None, any_variable.item())
-
     def test_any_cellml_element(self):
-        from libcellml import Annotator, Parser
+        from libcellml import Annotator, AnyCellmlElement, Parser
         from libcellml.enums import CellmlElementType
 
         parser = Parser()
@@ -630,55 +595,75 @@ class AnnotatorTestCase(unittest.TestCase):
 
         item = annotator.item('component_1')
         self.assertEqual(CellmlElementType.COMPONENT, item.type())
+        self.assertEqual('component1', item.component().name())
         self.assertEqual('component1', item.item().name())
 
         item = annotator.item('component_ref_1')
         self.assertEqual(CellmlElementType.COMPONENT_REF, item.type())
+        self.assertEqual('component2', item.componentRef().name())
         self.assertEqual('component2', item.item().name())
 
         item = annotator.item('connection_1')
         self.assertEqual(CellmlElementType.CONNECTION, item.type())
+        self.assertEqual('variable1', item.connection().variable1().name())
+        self.assertEqual('variable1', item.connection().variable2().name())
         self.assertEqual('variable1', item.item().variable1().name())
         self.assertEqual('variable1', item.item().variable2().name())
 
         item = annotator.item('encapsulation_1')
         self.assertEqual(CellmlElementType.ENCAPSULATION, item.type())
+        self.assertEqual('everything', item.encapsulation().name())
         self.assertEqual('everything', item.item().name())
 
         item = annotator.item('import_1')
         self.assertEqual(CellmlElementType.IMPORT, item.type())
+        self.assertEqual('some-other-model.xml', item.importSource().url())
         self.assertEqual('some-other-model.xml', item.item().url())
 
         item = annotator.item('map_variables_1')
         self.assertEqual(CellmlElementType.MAP_VARIABLES, item.type())
+        self.assertEqual('variable1', item.mapVariables().variable1().name())
+        self.assertEqual('variable1', item.mapVariables().variable2().name())
         self.assertEqual('variable1', item.item().variable1().name())
         self.assertEqual('variable1', item.item().variable2().name())
 
         item = annotator.item('model_1')
         self.assertEqual(CellmlElementType.MODEL, item.type())
+        self.assertEqual('everything', item.model().name())
         self.assertEqual('everything', item.item().name())
 
-        item = annotator.item('reset_1')
-        self.assertEqual(CellmlElementType.RESET, item.type())
-        self.assertEqual(1, item.item().order())
+        resetItem = annotator.item('reset_1')
+        self.assertEqual(CellmlElementType.RESET, resetItem.type())
+        self.assertEqual(1, resetItem.reset().order())
+        self.assertEqual(1, resetItem.item().order())
 
         item = annotator.item('reset_value_1')
         self.assertEqual(CellmlElementType.RESET_VALUE, item.type())
+        self.assertEqual(resetItem.resetValue().resetValue(), item.resetValue().resetValue())
+        self.assertEqual(resetItem.resetValue().resetValue(), item.item().resetValue())
 
         item = annotator.item('test_value_1')
         self.assertEqual(CellmlElementType.TEST_VALUE, item.type())
+        self.assertEqual(resetItem.testValue().testValue(), item.testValue().testValue())
+        self.assertEqual(resetItem.testValue().testValue(), item.item().testValue())
 
         item = annotator.item('unit_1')
         self.assertEqual(CellmlElementType.UNIT, item.type())
+        self.assertEqual('units2', item.unit().units().name())
         self.assertEqual('units2', item.item().units().name())
 
         item = annotator.item('units_1')
         self.assertEqual(CellmlElementType.UNITS, item.type())
+        self.assertEqual('units1', item.units().name())
         self.assertEqual('units1', item.item().name())
 
         item = annotator.item('variable_1')
         self.assertEqual(CellmlElementType.VARIABLE, item.type())
+        self.assertEqual('variable1', item.variable().name())
         self.assertEqual('variable1', item.item().name())
+
+        any_cellml_element = AnyCellmlElement()
+        self.assertEqual(None, any_cellml_element.item())
 
 
 if __name__ == '__main__':
