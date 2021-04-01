@@ -33,7 +33,7 @@ int main()
     fclose( readFile );
     readFile = NULL;
 
-    size_t sizeDataCompressed  = (fileLength * 1.1) + 12;
+    size_t sizeDataCompressed  = static_cast<size_t>(fileLength * 1.1 + 12);
 
     BYTE * dataCompressed = (BYTE*)malloc( sizeDataCompressed );
 
