@@ -9,6 +9,11 @@
 #include "compress.h"
 
 typedef unsigned char BYTE;
+#ifdef WIN32
+  typedef unsigned long uLongPlatform;
+#else
+  typedef size_t uLongPlatform;
+#endif
 
 int main()
 {
@@ -33,7 +38,7 @@ int main()
     fclose( readFile );
     readFile = NULL;
 
-    size_t sizeDataCompressed  = static_cast<size_t>(fileLength * 1.1 + 12);
+    uLongPlatform sizeDataCompressed  = static_cast<uLongPlatform>(fileLength * 1.1 + 12);
 
     BYTE * dataCompressed = (BYTE*)malloc( sizeDataCompressed );
 
