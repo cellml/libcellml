@@ -614,6 +614,10 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(units.name(), any_units.units().name())
         self.assertEqual(variable.name(), any_variable.variable().name())
 
+        any_variable.setType(CellmlElementType.UNDEFINED)
+
+        self.assertEqual(None, any_variable.item())
+
     def test_any_cellml_element(self):
         from libcellml import Annotator, Parser
         from libcellml.enums import CellmlElementType
