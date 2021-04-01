@@ -73,12 +73,6 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::AnyCellmlElement::type
 "Get the type of the stored item.";
 
-%feature("docstring") libcellml::AnyCellmlElement::setType
-"Set the type of the item.";
-
-%feature("docstring") libcellml::AnyCellmlElement::setItem
-"Set the item to store.";
-
 %ignore libcellml::AnyCellmlElement::item;
 
 %feature("docstring") libcellml::AnyCellmlElement::component

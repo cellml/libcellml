@@ -23,6 +23,7 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "anycellmlelement_p.h"
 #include "internaltypes.h"
 
 namespace libcellml {
@@ -117,17 +118,6 @@ bool VariablePair::isValid() const
 {
     return (mPimpl->mVariable1.lock() != nullptr) && (mPimpl->mVariable2.lock() != nullptr);
 }
-
-/**
- * @brief The AnyCellmlElement::AnyCellmlElementImpl struct.
- *
- * The private implementation for the AnyCellmlElement class.
- */
-struct AnyCellmlElement::AnyCellmlElementImpl
-{
-    std::any mItem = nullptr; /**< std::any item cast for the item. */
-    CellmlElementType mType = CellmlElementType::UNDEFINED; /**< Type for the item. */
-};
 
 AnyCellmlElement::AnyCellmlElement()
     : mPimpl(new AnyCellmlElementImpl())
@@ -259,16 +249,6 @@ std::any AnyCellmlElement::item() const
 CellmlElementType AnyCellmlElement::type() const
 {
     return mPimpl->mType;
-}
-
-void AnyCellmlElement::setItem(const std::any &item)
-{
-    mPimpl->mItem = item;
-}
-
-void AnyCellmlElement::setType(CellmlElementType type)
-{
-    mPimpl->mType = type;
 }
 
 } // namespace libcellml
