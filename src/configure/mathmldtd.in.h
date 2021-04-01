@@ -21,6 +21,7 @@ limitations under the License.
 namespace libcellml {
 
 ${MATHML_DTD_LEN_STATEMENT}
-${MATHML_DTD_DATA_STATEMENT}
+${COMPRESSED_MATHML_DTD_LEN_STATEMENT}
+${COMPRESSED_MATHML_DTD_DATA_STATEMENT}
 
 } // namespace libcellml
