@@ -25,6 +25,7 @@ limitations under the License.
 
 #include <zlib.h>
 
+#include "libcellmlconfig_p.h"
 #include "mathmldtd.h"
 #include "xmlnode.h"
 
@@ -97,7 +98,7 @@ void XmlDoc::parse(const std::string &input)
 void XmlDoc::parseMathML(const std::string &input)
 {
     int sizeMathmlDTDUncompressed = MATHML_DTD_LEN;
-    size_t sizeMathmlDTDUncompressedResize = MATHML_DTD_LEN;
+    UNCOMPRESS_SIZE_TYPE sizeMathmlDTDUncompressedResize = MATHML_DTD_LEN;
     if (mPimpl->mMathmlDTD.empty()) {
         mPimpl->mMathmlDTD.assign(sizeMathmlDTDUncompressedResize, 'A');
         uncompress(&mPimpl->mMathmlDTD[0], &sizeMathmlDTDUncompressedResize, &COMPRESSED_MATHML_DTD[0], COMPRESSED_MATHML_DTD_LEN);
