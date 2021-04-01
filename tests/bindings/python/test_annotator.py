@@ -537,13 +537,15 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(non_unique_message, annotator.issue(0).description())
 
     def test_set_any_cellml_element(self):
-        from libcellml import Parser
+        from libcellml import Parser, ImportSource
         from libcellml.enums import CellmlElementType
         from libcellml.types import AnyCellmlElement, VariablePair, Unit
 
         parser = Parser()
         model = parser.parseModel(file_contents('annotator/unique_ids.cellml'))
 
+        import_source = ImportSource()
+        import_source.setUrl('https://some.url/')
         component = model.component('component2', True)
         reset = component.reset(0)
         variable = component.variable('variable1')
@@ -555,6 +557,7 @@ class AnnotatorTestCase(unittest.TestCase):
         )
 
         any_model = AnyCellmlElement(CellmlElementType.MODEL, model)
+        any_import_source = AnyCellmlElement(CellmlElementType.IMPORT, import_source)
         any_encapsulation = AnyCellmlElement(CellmlElementType.ENCAPSULATION, model)
         any_component = AnyCellmlElement(CellmlElementType.COMPONENT, component)
         any_component_ref = AnyCellmlElement(CellmlElementType.COMPONENT_REF, component)
@@ -595,6 +598,21 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual('variable1', any_mapping.item().variable1().name())
         self.assertEqual('variable1', any_mapping.item().variable2().name())
 
+        self.assertEqual(component.name(), any_component.component().name())
+        self.assertEqual(component.name(), any_component_ref.componentRef().name())
+        self.assertEqual('variable1', any_connection.connection().variable1().name())
+        self.assertEqual('variable1', any_connection.connection().variable2().name())
+        self.assertEqual(model.name(), any_encapsulation.encapsulation().name())
+        self.assertEqual(import_source.url(), any_import_source.importSource().url())
+        self.assertEqual('variable1', any_mapping.mapVariables().variable1().name())
+        self.assertEqual('variable1', any_mapping.mapVariables().variable2().name())
+        self.assertEqual(model.name(), any_model.model().name())
+        self.assertEqual(reset.order(), any_reset.reset().order())
+        self.assertEqual(reset.resetValue(), any_reset_value.resetValue().resetValue())
+        self.assertEqual(reset.testValue(), any_test_value.testValue().testValue())
+        self.assertEqual(unit.units().name(), any_unit.unit().units().name())
+        self.assertEqual(units.name(), any_units.units().name())
+        self.assertEqual(variable.name(), any_variable.variable().name())
 
     def test_any_cellml_element(self):
         from libcellml import Annotator, Parser
