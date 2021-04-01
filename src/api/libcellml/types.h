@@ -238,6 +238,8 @@ private:
  */
 class LIBCELLML_EXPORT AnyCellmlElement
 {
+    friend class Annotator;
+
 public:
     ~AnyCellmlElement(); /**< Destructor. */
     AnyCellmlElement(const AnyCellmlElement &rhs) = delete; /**< Copy constructor. */
@@ -283,24 +285,6 @@ public:
      * @return The type.
      */
     CellmlElementType type() const;
-
-    /**
-     * @brief Set the item.
-     *
-     * Set the item.
-     *
-     * @param item A @c std::any item to be stored.
-     */
-    void setItem(const std::any &item);
-
-    /**
-     * @brief Set the type of the item.
-     *
-     * Set the @c CellmlElementType of the item.
-     *
-     * @param type a @ref CellmlElementType enum.
-     */
-    void setType(CellmlElementType type);
 
 private:
     AnyCellmlElement();
