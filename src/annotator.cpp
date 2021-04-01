@@ -120,18 +120,15 @@ AnyCellmlElementPtr convertToWeak(const AnyCellmlElementPtr &item)
         converted->setItem(item->item());
     } else if ((type == CellmlElementType::ENCAPSULATION)
                || (type == CellmlElementType::MODEL)) {
-        auto model = std::any_cast<ModelPtr>(item->item());
-        ModelWeakPtr weakModel = model;
+        ModelWeakPtr weakModel = std::any_cast<ModelPtr>(item->item());
         converted->setItem(weakModel);
     } else if (type == CellmlElementType::IMPORT) {
-        auto importSource = std::any_cast<ImportSourcePtr>(item->item());
-        ImportSourceWeakPtr weakImportSource = importSource;
+        ImportSourceWeakPtr weakImportSource = std::any_cast<ImportSourcePtr>(item->item());
         converted->setItem(weakImportSource);
     } else if ((type == CellmlElementType::RESET)
                || (type == CellmlElementType::RESET_VALUE)
                || (type == CellmlElementType::TEST_VALUE)) {
-        auto reset = std::any_cast<ResetPtr>(item->item());
-        ResetWeakPtr weakReset = reset;
+        ResetWeakPtr weakReset = std::any_cast<ResetPtr>(item->item());
         converted->setItem(weakReset);
     } else if (type == CellmlElementType::UNIT) {
         // We don't store a weak pointer for unit because the map is the owner of the
@@ -141,8 +138,7 @@ AnyCellmlElementPtr convertToWeak(const AnyCellmlElementPtr &item)
         UnitsWeakPtr weakUnits = std::any_cast<UnitsPtr>(item->item());
         converted->setItem(weakUnits);
     } else if (type == CellmlElementType::VARIABLE) {
-        auto variable = std::any_cast<VariablePtr>(item->item());
-        VariableWeakPtr weakVariable = variable;
+        VariableWeakPtr weakVariable = std::any_cast<VariablePtr>(item->item());
         converted->setItem(weakVariable);
     }
 
