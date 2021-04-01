@@ -81,6 +81,45 @@ Provides support for shared pointers declared in types.h.
 
 %ignore libcellml::AnyCellmlElement::item;
 
+%feature("docstring") libcellml::AnyCellmlElement::component
+"Return the item as a component.";
+
+%feature("docstring") libcellml::AnyCellmlElement::componentRef
+"Return the item as a component reference.";
+
+%feature("docstring") libcellml::AnyCellmlElement::connection
+"Return the item as a connection.";
+
+%feature("docstring") libcellml::AnyCellmlElement::encapsulation
+"Return the item as an encapsulation.";
+
+%feature("docstring") libcellml::AnyCellmlElement::importSource
+"Return the item as an import source.";
+
+%feature("docstring") libcellml::AnyCellmlElement::mapVariables
+"Return the item as an equivalence.";
+
+%feature("docstring") libcellml::AnyCellmlElement::model
+"Return the item as a model.";
+
+%feature("docstring") libcellml::AnyCellmlElement::reset
+"Return the item as a reset.";
+
+%feature("docstring") libcellml::AnyCellmlElement::resetValue
+"Return the item as a reset value.";
+
+%feature("docstring") libcellml::AnyCellmlElement::testValue
+"Return the item as a test value.";
+
+%feature("docstring") libcellml::AnyCellmlElement::unit
+"Return the item as a unit.";
+
+%feature("docstring") libcellml::AnyCellmlElement::units
+"Return the item as a units.";
+
+%feature("docstring") libcellml::AnyCellmlElement::variable
+"Return the item as a variable.";
+
 %{
 #include "libcellml/types.h"
 #include "libcellml/component.h"
@@ -264,58 +303,58 @@ Provides support for shared pointers declared in types.h.
         return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
     }
 
-    libcellml::ComponentPtr _component() {
+    libcellml::ComponentPtr component() {
         return std::any_cast<libcellml::ComponentPtr>($self->item());
     }
 
-    libcellml::ComponentPtr _componentRef() {
+    libcellml::ComponentPtr componentRef() {
         return std::any_cast<libcellml::ComponentPtr>($self->item());
     }
 
-    libcellml::VariablePairPtr _connection() {
+    libcellml::VariablePairPtr connection() {
         return std::any_cast<libcellml::VariablePairPtr>($self->item());
     }
 
-    libcellml::ModelPtr _encapsulation() {
+    libcellml::ModelPtr encapsulation() {
         return std::any_cast<libcellml::ModelPtr>($self->item());
     }
 
-    libcellml::ImportSourcePtr _importSource() {
+    libcellml::ImportSourcePtr importSource() {
         return std::any_cast<libcellml::ImportSourcePtr>($self->item());
     }
 
-    libcellml::VariablePairPtr _mapVariables() {
+    libcellml::VariablePairPtr mapVariables() {
         return std::any_cast<libcellml::VariablePairPtr>($self->item());
     }
 
-    libcellml::ModelPtr _model() {
+    libcellml::ModelPtr model() {
         return std::any_cast<libcellml::ModelPtr>($self->item());
     }
 
-    libcellml::ResetPtr _reset() {
+    libcellml::ResetPtr reset() {
         if($self->type() != libcellml::CellmlElementType::RESET) {
           return nullptr;
         }
         return std::any_cast<libcellml::ResetPtr>($self->item());
     }
 
-    libcellml::ResetPtr _resetValue() {
+    libcellml::ResetPtr resetValue() {
         return std::any_cast<libcellml::ResetPtr>($self->item());
     }
 
-    libcellml::ResetPtr _testValue() {
+    libcellml::ResetPtr testValue() {
         return std::any_cast<libcellml::ResetPtr>($self->item());
     }
 
-    libcellml::UnitPtr _unit() {
+    libcellml::UnitPtr unit() {
         return std::any_cast<libcellml::UnitPtr>($self->item());
     }
 
-    libcellml::UnitsPtr _units() {
+    libcellml::UnitsPtr units() {
         return std::any_cast<libcellml::UnitsPtr>($self->item());
     }
 
-    libcellml::VariablePtr _variable() {
+    libcellml::VariablePtr variable() {
         return std::any_cast<libcellml::VariablePtr>($self->item());
     }
 
@@ -325,19 +364,19 @@ Provides support for shared pointers declared in types.h.
     def item(self):
       """Get the stored item."""
       type_dict = {
-        CellmlElementType.COMPONENT: _types.AnyCellmlElement__component,
-        CellmlElementType.COMPONENT_REF: _types.AnyCellmlElement__componentRef,
-        CellmlElementType.CONNECTION: _types.AnyCellmlElement__connection,
-        CellmlElementType.ENCAPSULATION: _types.AnyCellmlElement__encapsulation,
-        CellmlElementType.IMPORT: _types.AnyCellmlElement__importSource,
-        CellmlElementType.MAP_VARIABLES: _types.AnyCellmlElement__mapVariables,
-        CellmlElementType.MODEL: _types.AnyCellmlElement__model,
-        CellmlElementType.RESET: _types.AnyCellmlElement__reset,
-        CellmlElementType.RESET_VALUE: _types.AnyCellmlElement__resetValue,
-        CellmlElementType.TEST_VALUE: _types.AnyCellmlElement__testValue,
-        CellmlElementType.UNIT: _types.AnyCellmlElement__unit,
-        CellmlElementType.UNITS: _types.AnyCellmlElement__units,
-        CellmlElementType.VARIABLE: _types.AnyCellmlElement__variable,
+        CellmlElementType.COMPONENT: _types.AnyCellmlElement_component,
+        CellmlElementType.COMPONENT_REF: _types.AnyCellmlElement_componentRef,
+        CellmlElementType.CONNECTION: _types.AnyCellmlElement_connection,
+        CellmlElementType.ENCAPSULATION: _types.AnyCellmlElement_encapsulation,
+        CellmlElementType.IMPORT: _types.AnyCellmlElement_importSource,
+        CellmlElementType.MAP_VARIABLES: _types.AnyCellmlElement_mapVariables,
+        CellmlElementType.MODEL: _types.AnyCellmlElement_model,
+        CellmlElementType.RESET: _types.AnyCellmlElement_reset,
+        CellmlElementType.RESET_VALUE: _types.AnyCellmlElement_resetValue,
+        CellmlElementType.TEST_VALUE: _types.AnyCellmlElement_testValue,
+        CellmlElementType.UNIT: _types.AnyCellmlElement_unit,
+        CellmlElementType.UNITS: _types.AnyCellmlElement_units,
+        CellmlElementType.VARIABLE: _types.AnyCellmlElement_variable,
       }
 
       t = self.type()
