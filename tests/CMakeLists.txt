@@ -102,7 +102,7 @@ foreach(TEST ${LIBCELLML_TESTS})
     if(HAVE_LIBXML2_CONFIG)
       set(_TEST_PROPERTIES "${_TEST_PROPERTIES}\;$<TARGET_FILE_DIR:xml2>")
     endif()
-    set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST} "${_TEST_PROPERTIES}")
+    set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST} PROPERTIES ENVIRONMENT "${_TEST_PROPERTIES}")
   endif()
 
   list(APPEND TEST_LIST ${CURRENT_TEST})
