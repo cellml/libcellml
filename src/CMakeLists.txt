@@ -166,6 +166,13 @@ target_include_directories(cellml
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+if(TARGET zlib)
+  target_link_libraries(cellml PRIVATE zlib)
+else()
+  target_link_libraries(cellml PUBLIC ${ZLIB_LIBRARIES})
+  target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
+endif()
+
 if(HAVE_LIBXML2_CONFIG)
   target_link_libraries(cellml PUBLIC xml2)
 else()
@@ -294,7 +301,7 @@ set(LIBCELLML_TARGETS_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-targets.cmake")
 export(EXPORT libcellml-targets FILE ${LIBCELLML_TARGETS_FILE})
 list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE})
 
-if (HAVE_LIBXML2_CONFIG)
+if(HAVE_LIBXML2_CONFIG)
   file(TO_CMAKE_PATH ${LibXml2_DIR} _NORMALISED_PATH)
   set(LIBXML2_CONFIG_MODE_INFORMATION "include(CMakeFindDependencyMacro)\n\nset(LibXml2_DIR \"${_NORMALISED_PATH}\")\nfind_dependency(LibXml2 CONFIG)\n")
 endif()

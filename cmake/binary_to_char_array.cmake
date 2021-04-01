@@ -32,16 +32,19 @@ function(STRING_HEX_KEY_TO_C_BYTE_ARRAY STRING_HEX VARIABLE_NAME _DATA_STATEMENT
     # Append " )"
     string(APPEND FORMATTED_HEX " }")
 
-    set(${_DATA_STATEMENT} "const std::vector<unsigned char> ${VARIABLE_NAME} = ${FORMATTED_HEX};" PARENT_SCOPE)
+    set(${_DATA_STATEMENT} "const std::vector<const unsigned char> ${VARIABLE_NAME} = ${FORMATTED_HEX};" PARENT_SCOPE)
     set(${_LEN_STATEMENT} "static const size_t ${VARIABLE_NAME}_LEN = ${HEX_LEN};" PARENT_SCOPE)
 endfunction()
 
-if(CMAKE_ARGC EQUAL 4)
+if(CMAKE_ARGC EQUAL 5)
   set(COMPRESSED_FILE "${CMAKE_ARGV3}")
+  set(MATHML_DTD_LEN ${CMAKE_ARGV4})
   # Would like to be able to handle GZip compression but at the moment that is a bridge too far.
   # file(ARCHIVE_CREATE OUTPUT "${COMPRESSED_FILE}" FORMAT paxr COMPRESSION GZip PATHS "${CMAKE_ARGV3}")
   file(READ "${COMPRESSED_FILE}" HEX_CONTENTS HEX)
-  string_hex_key_to_c_byte_array("${HEX_CONTENTS}" "COMPRESSED_MATHML_DTD" MATHML_DTD_DATA_STATEMENT MATHML_DTD_LEN_STATEMENT)
+
+  set(MATHML_DTD_LEN_STATEMENT "static const size_t MATHML_DTD_LEN = ${MATHML_DTD_LEN};")
+  string_hex_key_to_c_byte_array("${HEX_CONTENTS}" "COMPRESSED_MATHML_DTD" COMPRESSED_MATHML_DTD_DATA_STATEMENT COMPRESSED_MATHML_DTD_LEN_STATEMENT)
   # Because we are not able to generate this at build configure time we will put it into the source repository itself.
   configure_file("${CMAKE_CURRENT_LIST_DIR}/../src/configure/mathmldtd.in.h" "${CMAKE_CURRENT_LIST_DIR}/../src/mathmldtd.h")
 else()
