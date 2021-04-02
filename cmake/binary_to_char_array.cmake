@@ -23,14 +23,13 @@ function(STRING_HEX_KEY_TO_C_BYTE_ARRAY STRING_HEX _DATA _LEN)
     string(REGEX MATCHALL "([A-Fa-f0-9][A-Fa-f0-9])" SEPARATED_HEX ${STRING_HEX})
 
     list(LENGTH SEPARATED_HEX HEX_LEN)
+
     # Append the "0x" to each byte.
     list(JOIN SEPARATED_HEX ", 0x" FORMATTED_HEX)
 
-    # Prepend "(0x"
+    # Finalise begin and end of array.
     string(PREPEND FORMATTED_HEX "{0x")
-
-    # Append " )"
-    string(APPEND FORMATTED_HEX " }")
+    string(APPEND FORMATTED_HEX "}")
 
     set(${_DATA} "${FORMATTED_HEX}" PARENT_SCOPE)
     set(${_LEN} "${HEX_LEN}" PARENT_SCOPE)
