@@ -19,5 +19,3 @@ CMakeLists.txt.user
 # VS Code system files
 .vscode/
 
-# temporary ignore
-tests.txt
