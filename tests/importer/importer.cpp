@@ -56,9 +56,9 @@ TEST(Importer, warningCircularImportReferencesComponent)
 {
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - the component 'i_am_cyclic' is referencing a component 'c2' in the model 'circularImport2' imported from 'circularImport_2.cellml';\n"
-        " - the component 'c2' is referencing a component 'c3' in the model 'circularImport3' imported from 'circularImport_3.cellml'; and\n"
-        " - the component 'c3' is referencing a component 'i_am_cyclic' in the model 'circularImport1' imported from 'circularImport_1.cellml'.";
+        " - component 'i_am_cyclic' references component 'c2' in 'circularImport_2.cellml';\n"
+        " - component 'c2' references component 'c3' in 'circularImport_3.cellml'; and\n"
+        " - component 'c3' references component 'i_am_cyclic' in 'circularImport_1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
@@ -75,9 +75,9 @@ TEST(Importer, warningCircularImportReferencesUnits)
 {
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - the units 'i_am_cyclic' is referencing units 'u2' in the model 'circularImport2' imported from 'circularUnits_2.cellml';\n"
-        " - the units 'u2' is referencing units 'u3' in the model 'circularImport3' imported from 'circularUnits_3.cellml'; and\n"
-        " - the units 'u3' is referencing units 'i_am_cyclic' in the model 'circularImport1' imported from 'circularUnits_1.cellml'.";
+        " - units 'i_am_cyclic' references units 'u2' in 'circularUnits_2.cellml';\n"
+        " - units 'u2' references units 'u3' in 'circularUnits_3.cellml'; and\n"
+        " - units 'u3' references units 'i_am_cyclic' in 'circularUnits_1.cellml'.";
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/circularUnits_1.cellml"));

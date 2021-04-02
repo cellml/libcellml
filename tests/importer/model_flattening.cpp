@@ -843,14 +843,14 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 {
     const std::string resolveError =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'importExample2b'. The dependency loop is:\n"
-        " - the component 'sideB' is referencing a component 'shared' in the model 'circularImport1' imported from 'circularImport1.cellml';\n"
-        " - the component 'shared' is referencing a component 'circular2' in the model 'circularImport2' imported from 'circularImport2.cellml'; and\n"
-        " - the component 'circular2' is referencing a component 'shared' in the model 'circularImport1' imported from 'circularImport1.cellml'.";
+        " - component 'sideB' references component 'shared' in 'circularImport1.cellml';\n"
+        " - component 'shared' references component 'circular2' in 'circularImport2.cellml'; and\n"
+        " - component 'circular2' references component 'shared' in 'circularImport1.cellml'.";
     const std::string flattenError =
         "Cyclic dependencies were found when attempting to flatten a component in the model 'importExample2b'. The dependency loop is:\n"
-        " - the component 'sideB' is referencing a component 'shared' in the model 'circularImport1' imported from 'circularImport1.cellml';\n"
-        " - the component 'shared' is referencing a component 'circular2' in the model 'circularImport2' imported from 'circularImport2.cellml'; and\n"
-        " - the component 'circular2' is referencing a component 'shared' in the model 'circularImport1' imported from 'circularImport1.cellml'.";
+        " - component 'sideB' references component 'shared' in 'circularImport1.cellml';\n"
+        " - component 'shared' references component 'circular2' in 'circularImport2.cellml'; and\n"
+        " - component 'circular2' references component 'shared' in 'circularImport1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("modelflattening/importExample2b.cellml"));
@@ -875,14 +875,14 @@ TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
 {
     const std::string resolveError =
         "Cyclic dependencies were found when attempting to resolve units in the model 'importExampleUnits'. The dependency loop is:\n"
-        " - the units 'sideB' is referencing units 'myChildIsCircular' in the model 'circularImport1' imported from 'circularImport1units.cellml';\n"
-        " - the units 'shared' is referencing units 'circular2' in the model 'circularImport2' imported from 'circularImport2units.cellml'; and\n"
-        " - the units 'circular2' is referencing units 'shared' in the model 'circularImport1' imported from 'circularImport1units.cellml'.";
+        " - units 'sideB' references units 'myChildIsCircular' in 'circularImport1units.cellml';\n"
+        " - units 'shared' references units 'circular2' in 'circularImport2units.cellml'; and\n"
+        " - units 'circular2' references units 'shared'in 'circularImport1units.cellml'.";
     const std::string flattenError =
         "Cyclic dependencies were found when attempting to flatten units in the model 'importExampleUnits'. The dependency loop is:\n"
-        " - the units 'sideB' is referencing units 'myChildIsCircular' in the model 'circularImport1' imported from 'circularImport1units.cellml';\n"
-        " - the units 'shared' is referencing units 'circular2' in the model 'circularImport2' imported from 'circularImport2units.cellml'; and\n"
-        " - the units 'circular2' is referencing units 'shared' in the model 'circularImport1' imported from 'circularImport1units.cellml'.";
+        " - units 'sideB' references units 'myChildIsCircular' in 'circularImport1units.cellml';\n"
+        " - units 'shared' references units 'circular2' in 'circularImport2units.cellml'; and\n"
+        " - units 'circular2' references units 'shared' in 'circularImport1units.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("modelflattening/importExampleUnits.cellml"));

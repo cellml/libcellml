@@ -334,7 +334,7 @@ TEST(Validator, importComponents)
     v->validateModel(m);
     EXPECT_EQ(size_t(2), v->issueCount());
 
-    // Valid component import - two components imported from the same place is allowed
+    // Valid component import - two components in the same place is allowed
     libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
     imp4->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent4 = libcellml::Component::create();
@@ -2848,9 +2848,9 @@ TEST(Validator, circularImportReferencesComponent)
 {
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - the component 'i_am_cyclic' is referencing a component 'c2' in the model 'circularImport2' imported from 'circularImport_2.cellml';\n"
-        " - the component 'c2' is referencing a component 'c3' in the model 'circularImport3' imported from 'circularImport_3.cellml'; and\n"
-        " - the component 'c3' is referencing a component 'i_am_cyclic' in the model 'circularImport1' imported from 'circularImport_1.cellml'.";
+        " - component 'i_am_cyclic' references component 'c2' in 'circularImport_2.cellml';\n"
+        " - component 'c2' references component 'c3' in 'circularImport_3.cellml'; and\n"
+        " - component 'c3' references component 'i_am_cyclic' in 'circularImport_1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -2871,9 +2871,9 @@ TEST(Validator, circularImportReferencesUnits)
 {
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - the units 'i_am_cyclic' is referencing units 'u2' in the model 'circularImport2' imported from 'circularUnits_2.cellml';\n"
-        " - the units 'u2' is referencing units 'u3' in the model 'circularImport3' imported from 'circularUnits_3.cellml'; and\n"
-        " - the units 'u3' is referencing units 'i_am_cyclic' in the model 'circularImport1' imported from 'circularUnits_1.cellml'.";
+        " - units 'i_am_cyclic' references units 'u2' in 'circularUnits_2.cellml';\n"
+        " - units 'u2' references units 'u3' in 'circularUnits_3.cellml'; and\n"
+        " - units 'u3' references units 'i_am_cyclic' in 'circularUnits_1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -2895,10 +2895,10 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
     const std::vector<std::string> errorMessages = {
         "Model 'circularImport1' contains multiple units with the name 'i_am_duplicated'. Valid units names must be unique to their model.",
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - the units 'i_am_duplicated' is referencing units 'u2' in the model 'circularImport2' imported from 'circularUnits_2.cellml';\n"
-        " - the units 'u2' is referencing units 'u3' in the model 'circularImport3' imported from 'circularUnits_3.cellml';\n"
-        " - the units 'u3' is referencing units 'i_am_cyclic' in the model 'circularImport1' imported from 'circularUnits_1.cellml'; and\n"
-        " - the units 'i_am_cyclic' is referencing units 'u2' in the model 'circularImport2' imported from 'circularUnits_2.cellml'.",
+        " - units 'i_am_duplicated' references units 'u2' in 'circularUnits_2.cellml';\n"
+        " - units 'u2' references units 'u3' in 'circularUnits_3.cellml';\n"
+        " - units 'u3' references units 'i_am_cyclic' in 'circularUnits_1.cellml'; and\n"
+        " - units 'i_am_cyclic' references units 'u2' in 'circularUnits_2.cellml'.",
     };
 
     auto parser = libcellml::Parser::create();
@@ -2923,10 +2923,10 @@ TEST(Validator, circularImportedComponentsDuplicateNames)
     const std::vector<std::string> errorMessages = {
         "Model 'circularImport1' contains multiple components with the name 'i_am_duplicated'. Valid component names must be unique to their model.",
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - the component 'i_am_duplicated' is referencing a component 'c2' in the model 'circularImport2' imported from 'circularImport_2.cellml';\n"
-        " - the component 'c2' is referencing a component 'c3' in the model 'circularImport3' imported from 'circularImport_3.cellml';\n"
-        " - the component 'c3' is referencing a component 'i_am_cyclic' in the model 'circularImport1' imported from 'circularImport_1.cellml'; and\n"
-        " - the component 'i_am_cyclic' is referencing a component 'c2' in the model 'circularImport2' imported from 'circularImport_2.cellml'.",
+        " - component 'i_am_duplicated' references component 'c2' in 'circularImport_2.cellml';\n"
+        " - component 'c2' references component 'c3' in 'circularImport_3.cellml';\n"
+        " - component 'c3' references component 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
+        " - component 'i_am_cyclic' references component 'c2' in 'circularImport_2.cellml'.",
     };
 
     auto parser = libcellml::Parser::create();
