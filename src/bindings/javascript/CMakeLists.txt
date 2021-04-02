@@ -65,6 +65,10 @@ configure_file(vue-app-with-libcellml.png vue-app-with-libcellml.png COPYONLY)
 set(_PACKAGE_JSON "\{
   \"name\": \"libcellml.js\",
   \"version\": \"${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}\",
+  \"repository\": \{
+    \"type\": \"git\",
+    \"url\": \"https://github.com/cellml/libcellml.git\"
+  },
   \"description\": \"libcellml.js javascript web assembly for libCellML.\",
   \"main\": \"libcellml.js\",
   \"files\": [\"libcellml.common.js\", \"libcellml.common.wasm\", \"libcellml.js\", \"libcellml.wasm\", \"README.md\", \"vue-app-with-libcellml.png\"],
