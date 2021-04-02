@@ -235,7 +235,6 @@ elseif(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests/bindings/javascript)
 endif()
 
-
 # Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
 
