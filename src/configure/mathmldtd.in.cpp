@@ -14,15 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#pragma once
+#include "mathmldtd.h"
 
-#include <vector>
+#include <array>
 
 namespace libcellml {
 
-static const size_t MATHML_DTD_LEN = 391336;
-static const size_t COMPRESSED_MATHML_DTD_LEN = 67752;
+static const std::array<unsigned char, ${COMPRESSED_MATHML_DTD_LEN}> COMPRESSED_MATHML_DTD = ${COMPRESSED_MATHML_DTD_DATA};
 
-const unsigned char *compressedMathMLDTD();
+const unsigned char *compressedMathMLDTD()
+{
+    return &COMPRESSED_MATHML_DTD[0];
+}
 
 } // namespace libcellml

@@ -18,7 +18,7 @@
 #
 # Err, not quite working like that just yet.
 
-function(STRING_HEX_KEY_TO_C_BYTE_ARRAY STRING_HEX VARIABLE_NAME _DATA_STATEMENT _LEN_STATEMENT)
+function(STRING_HEX_KEY_TO_C_BYTE_ARRAY STRING_HEX _DATA _LEN)
     # Separate into individual bytes.
     string(REGEX MATCHALL "([A-Fa-f0-9][A-Fa-f0-9])" SEPARATED_HEX ${STRING_HEX})
 
@@ -32,8 +32,8 @@ function(STRING_HEX_KEY_TO_C_BYTE_ARRAY STRING_HEX VARIABLE_NAME _DATA_STATEMENT
     # Append " )"
     string(APPEND FORMATTED_HEX " }")
 
-    set(${_DATA_STATEMENT} "const std::vector<unsigned char> ${VARIABLE_NAME} = ${FORMATTED_HEX};" PARENT_SCOPE)
-    set(${_LEN_STATEMENT} "static const size_t ${VARIABLE_NAME}_LEN = ${HEX_LEN};" PARENT_SCOPE)
+    set(${_DATA} "${FORMATTED_HEX}" PARENT_SCOPE)
+    set(${_LEN} "${HEX_LEN}" PARENT_SCOPE)
 endfunction()
 
 if(CMAKE_ARGC EQUAL 5)
@@ -43,10 +43,10 @@ if(CMAKE_ARGC EQUAL 5)
   # file(ARCHIVE_CREATE OUTPUT "${COMPRESSED_FILE}" FORMAT paxr COMPRESSION GZip PATHS "${CMAKE_ARGV3}")
   file(READ "${COMPRESSED_FILE}" HEX_CONTENTS HEX)
 
-  set(MATHML_DTD_LEN_STATEMENT "static const size_t MATHML_DTD_LEN = ${MATHML_DTD_LEN};")
-  string_hex_key_to_c_byte_array("${HEX_CONTENTS}" "COMPRESSED_MATHML_DTD" COMPRESSED_MATHML_DTD_DATA_STATEMENT COMPRESSED_MATHML_DTD_LEN_STATEMENT)
+  string_hex_key_to_c_byte_array("${HEX_CONTENTS}" COMPRESSED_MATHML_DTD_DATA COMPRESSED_MATHML_DTD_LEN)
   # Because we are not able to generate this at build configure time we will put it into the source repository itself.
   configure_file("${CMAKE_CURRENT_LIST_DIR}/../src/configure/mathmldtd.in.h" "${CMAKE_CURRENT_LIST_DIR}/../src/mathmldtd.h")
+  configure_file("${CMAKE_CURRENT_LIST_DIR}/../src/configure/mathmldtd.in.cpp" "${CMAKE_CURRENT_LIST_DIR}/../src/mathmldtd.cpp")
 else()
     message(WARNING "Incorrect number of arguments for script, requires four arguments.")
 endif()

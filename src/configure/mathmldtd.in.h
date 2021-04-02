@@ -20,8 +20,9 @@ limitations under the License.
 
 namespace libcellml {
 
-${MATHML_DTD_LEN_STATEMENT}
-${COMPRESSED_MATHML_DTD_LEN_STATEMENT}
-${COMPRESSED_MATHML_DTD_DATA_STATEMENT}
+static const size_t MATHML_DTD_LEN = ${MATHML_DTD_LEN};
+static const size_t COMPRESSED_MATHML_DTD_LEN = ${COMPRESSED_MATHML_DTD_LEN};
+
+const unsigned char *compressedMathMLDTD();
 
 } // namespace libcellml
