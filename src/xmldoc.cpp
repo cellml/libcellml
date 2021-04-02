@@ -122,6 +122,7 @@ void XmlDoc::parseMathML(const std::string &input)
     xmlDtdPtr dtd = xmlIOParseDTD(nullptr, buf, XML_CHAR_ENCODING_ASCII);
     xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, dtd);
 
+    xmlFreeDtd(dtd);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
