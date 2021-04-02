@@ -18,11 +18,11 @@ endif()
 
 file(SIZE "${MATHML_DTD_LOCATION}" MATHML_DTD_SIZE)
 add_custom_command(OUTPUT mathmldtd.h
-    COMMENT "Generating compressed MathML DTD in mathmldtd.h"
+    COMMENT "Generating compressed MathML DTD in mathmldtd.{h, cpp}"
     COMMAND compress
     COMMAND ${CMAKE_COMMAND} -P "${PROJECT_SOURCE_DIR}/cmake/binary_to_char_array.cmake" "${CMAKE_CURRENT_BINARY_DIR}/compressed.dat" ${MATHML_DTD_SIZE}
     DEPENDS compress)
 
-add_custom_target(create_mathml_dtd_header
+add_custom_target(create_mathml_dtd_files
     DEPENDS mathmldtd.h
-    COMMENT "Create mathmldtd header file (in source directory, Eek!).")
+    COMMENT "Create mathmldtd files (in source directory, Eek!).")
