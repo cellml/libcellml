@@ -65,4 +65,8 @@ using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition f
 using HistoryEntry = std::tuple<std::string, std::string, std::string>;
 using HistoryList = std::vector<HistoryEntry>;
 
+using ImportHistoryEntry = std::pair<ModelPtr, std::string>;
+using ImportHistory = std::vector<ImportHistoryEntry>;
+
+
 } // namespace libcellml

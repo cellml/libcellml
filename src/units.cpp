@@ -139,6 +139,10 @@ struct Units::UnitsImpl
      * "candela", "dimensionless", "kelvin", "kilogram", "metre", "mole" , "second".
      */
     bool isBaseUnit(const std::string &name) const;
+
+    bool isResolvedWithHistory(ImportHistory &history) const;
+
+    Units *mQ = nullptr;
 };
 
 std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std::string &reference) const
@@ -150,6 +154,50 @@ std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std
 bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
 {
     return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
+}
+
+bool Units::UnitsImpl::isResolvedWithHistory(ImportHistory &history) const
+{
+    bool resolved = true;
+    if (mQ->isImport()) {
+        auto model = mQ->importSource()->model();
+        if (model == nullptr) {
+            resolved = false;
+        } else {
+            auto importedUnits = model->units(mQ->importReference());
+            if (importedUnits == nullptr) {
+                resolved = false;
+            } else {
+                ImportHistoryEntry h = std::make_pair(model, mQ->name());
+                if (std::find(history.begin(), history.end(), h) != history.end()) {
+                    resolved = false;
+                } else if (importedUnits->isImport()) {
+                    history.push_back(h);
+                    resolved = importedUnits->mPimpl->isResolvedWithHistory(history);
+                } else {
+                    for (size_t u = 0; (u < importedUnits->unitCount()) && resolved; ++u) {
+                        std::string reference;
+                        std::string prefix;
+                        std::string id;
+                        double exponent;
+                        double multiplier;
+                        importedUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
+                        if (isStandardUnitName(reference)) {
+                            continue;
+                        }
+                        auto childUnits = model->units(reference);
+                        if (childUnits == nullptr) {
+                            resolved = false;
+                        } else {
+                            history.push_back(h);
+                            resolved = childUnits->mPimpl->isResolvedWithHistory(history);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return resolved;
 }
 
 /**
@@ -223,11 +271,13 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
 Units::Units()
     : mPimpl(new UnitsImpl())
 {
+    mPimpl->mQ = this;
 }
 
 Units::Units(const std::string &name)
     : mPimpl(new UnitsImpl())
 {
+    mPimpl->mQ = this;
     setName(name);
 }
 
@@ -700,41 +750,8 @@ UnitsPtr Units::clone() const
 
 bool Units::doIsResolved() const
 {
-    bool resolved = true;
-    if (isImport()) {
-        auto model = importSource()->model();
-        if (model == nullptr) {
-            resolved = false;
-        } else {
-            auto importedUnits = model->units(importReference());
-            if (importedUnits == nullptr) {
-                resolved = false;
-            } else {
-                if (importedUnits->isImport()) {
-                    resolved = importedUnits->isResolved();
-                } else {
-                    for (size_t u = 0; (u < importedUnits->unitCount()) && resolved; ++u) {
-                        std::string reference;
-                        std::string prefix;
-                        std::string id;
-                        double exponent;
-                        double multiplier;
-                        importedUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
-                        if (isStandardUnitName(reference)) {
-                            continue;
-                        }
-                        auto childUnits = model->units(reference);
-                        if (childUnits == nullptr) {
-                            resolved = false;
-                        } else {
-                            resolved = childUnits->isResolved();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return resolved;
+    ImportHistory history;
+    return mPimpl->isResolvedWithHistory(history);
 }
 
 } // namespace libcellml
