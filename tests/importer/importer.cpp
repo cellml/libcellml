@@ -1003,7 +1003,7 @@ TEST(Importer, isResolvedReferencedUnitsMissing)
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
-TEST(Importer, isResolvedCircularImport)
+TEST(Importer, isResolvedCircularImportUnits)
 {
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
@@ -1017,7 +1017,24 @@ TEST(Importer, isResolvedCircularImport)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
 
-    //EXPECT_FALSE(u->isResolved());
+    EXPECT_FALSE(u->isResolved());
+}
+
+TEST(Importer, isResolvedCircularImportComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("importer/circularImport_1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto c = model->component(0);
+
+    EXPECT_FALSE(c->isResolved());
+
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+
+    EXPECT_FALSE(c->isResolved());
 }
 
 TEST(Importer, removeAllModels)
