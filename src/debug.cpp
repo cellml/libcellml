@@ -38,7 +38,7 @@ void printHistory(const HistoryList &history)
 
 void printHistoryEntry(const HistoryEntry &historyEntry)
 {
-    Debug() << std::get<0>(historyEntry) << " " << std::get<1>(historyEntry) << " " << std::get<2>(historyEntry) << " " << std::get<3>(historyEntry);
+    Debug() << "'" << std::get<0>(historyEntry) << "' '" << std::get<1>(historyEntry) << "' '" << std::get<2>(historyEntry) << "'";
 }
 
 void printStack(const IndexStack &stack)
