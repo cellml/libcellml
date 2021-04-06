@@ -36,6 +36,9 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
+#include "debug.h"
+#include <iomanip>
+
 namespace libcellml {
 
 /**
@@ -93,6 +96,13 @@ IssuePtr makeIssueIllegalIdentifier(const std::string &name);
  * @return @c true if @name is a valid CellML identifier and @c false otherwise.
  */
 bool isCellmlIdentifier(const std::string &name);
+
+/**
+ * @brief isValidW3IdName
+ * @param name
+ * @return
+ */
+bool isValidW3IdName(const std::string &name);
 
 /**
  * @brief Validate the provided @p name is a valid CellML identifier.
@@ -398,6 +408,8 @@ struct Validator::ValidatorImpl
      * @param idMap The IdMap under construction.
      */
     void buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input);
+
+    void validateImportSource(const ImportSourcePtr &importSource, const std::string &componentName) const;
 };
 
 Validator::Validator()
@@ -463,6 +475,14 @@ void Validator::validateModel(const ModelPtr &model)
             issue->setModel(model);
             issue->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
             issue->setDescription("Model '" + model->name() + "' does not have a valid name attribute. " + issue->description());
+            addIssue(issue);
+        }
+        // Check for a valid identifier.
+        if (!isValidW3IdName(model->id())) {
+            IssuePtr issue = Issue::create();
+            issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+            issue->setModel(model);
+            issue->setDescription("Model '" + model->name() + "' does not have a valid 'id' attribute, '" + model->id() + "'.");
             addIssue(issue);
         }
         // Check for components in this model.
@@ -594,6 +614,31 @@ void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, cons
     }
 }
 
+void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &importSource, const std::string &componentName) const
+{
+    std::string url = importSource->url();
+
+    if (url.empty()) {
+        IssuePtr issue = Issue::create();
+        issue->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
+        issue->setImportSource(importSource);
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+        mValidator->addIssue(issue);
+    } else {
+        xmlURIPtr uri = xmlParseURI(url.c_str());
+        if (uri == nullptr) {
+            IssuePtr issue = Issue::create();
+            issue->setDescription("Import of component '" + componentName + "' has an invalid URI in the xlink:href attribute.");
+            issue->setImportSource(importSource);
+            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+            mValidator->addIssue(issue);
+
+        } else {
+            xmlFreeURI(uri);
+        }
+    }
+}
+
 void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &component) const
 {
     if (!isCellmlIdentifier(component->name())) {
@@ -603,38 +648,27 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
+    // Check for a valid identifier.
+    if (!isValidW3IdName(component->id())) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setComponent(component);
+        issue->setDescription("Imported component '" + component->name() + "' does not have a valid 'id' attribute, '" + component->id() + "'.");
+        mValidator->addIssue(issue);
+    }
 
     // Check for a component_ref; assumes imported if the import source is not null.
     std::string componentRef = component->importReference();
-    std::string importSource = component->importSource()->url();
-    std::string componentName = component->name();
 
     if (!isCellmlIdentifier(componentRef)) {
         auto issue = makeIssueIllegalIdentifier(componentRef);
-        issue->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute. " + issue->description());
+        issue->setDescription("Imported component '" + component->name() + "' does not have a valid component_ref attribute. " + issue->description());
         issue->setComponentRef(component);
         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
         mValidator->addIssue(issue);
     }
-    if (importSource.empty()) {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
-        issue->setImportSource(component->importSource());
-        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
-        mValidator->addIssue(issue);
-    } else {
-        xmlURIPtr uri = xmlParseURI(importSource.c_str());
-        if (uri == nullptr) {
-            IssuePtr issue = Issue::create();
-            issue->setDescription("Import of component '" + componentName + "' has an invalid URI in the xlink:href attribute.");
-            issue->setImportSource(component->importSource());
-            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
-            mValidator->addIssue(issue);
 
-        } else {
-            xmlFreeURI(uri);
-        }
-    }
+    validateImportSource(component->importSource(), component->name());
 }
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
@@ -645,6 +679,14 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         issue->setComponent(component);
         issue->setDescription("Component '" + component->name() + "' does not have a valid name attribute. " + issue->description());
         issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME);
+        mValidator->addIssue(issue);
+    }
+    // Check for a valid identifier.
+    if (!isValidW3IdName(component->id())) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setComponent(component);
+        issue->setDescription("Component '" + component->name() + "' does not have a valid 'id' attribute, '" + component->id() + "'.");
         mValidator->addIssue(issue);
     }
     // Check for variables in this component.
@@ -707,6 +749,14 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
             mValidator->addIssue(issue);
         }
     }
+    // Check for a valid identifier.
+    if (!isValidW3IdName(units->id())) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setUnits(units);
+        issue->setDescription("Units '" + units->name() + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
+        mValidator->addIssue(issue);
+    }
     if (units->unitCount() > 0) {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             validateUnitsUnit(i, units, unitsNames);
@@ -737,6 +787,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'. " + issue->description());
         issue->setUnit(Unit::create(units, index));
         issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
+        mValidator->addIssue(issue);
+    }
+    // Check for a valid identifier.
+    if (!isValidW3IdName(id)) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setUnit(Unit::create(units, index));
+        issue->setDescription("Unit in units '" + units->name() + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
         mValidator->addIssue(issue);
     }
     if (!prefix.empty()) {
@@ -771,6 +829,14 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid name attribute. " + issue->description());
         issue->setVariable(variable);
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
+        mValidator->addIssue(issue);
+    }
+    // Check for a valid identifier.
+    if (!isValidW3IdName(variable->id())) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setVariable(variable);
+        issue->setDescription("Variable '" + variable->name() + "' does not have a valid 'id' attribute, '" + variable->id() + "'.");
         mValidator->addIssue(issue);
     }
     // Check for a valid units attribute.
@@ -846,6 +912,15 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         description += "with order '" + convertToString(reset->order()) + "', ";
     } else {
         noOrder = true;
+    }
+
+    // Check for a valid identifier.
+    if (!isValidW3IdName(reset->id())) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setReset(reset);
+        issue->setDescription("Reset in component '" + component->name() + "' does not have a valid 'id' attribute, '" + reset->id() + "'.");
+        mValidator->addIssue(issue);
     }
 
     if (reset->variable() == nullptr) {
@@ -1339,6 +1414,122 @@ bool isCellmlIdentifier(const std::string &name)
 {
     Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
     return isValid == Issue::ReferenceRule::UNDEFINED;
+}
+
+bool isNameStartChar(uint32_t startChar)
+{
+    // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    if ((startChar == 0x3Au) ||
+            (0x41u <= startChar && startChar <= 0x5Au) ||
+            (startChar == 0x5Fu) ||
+            (0x61u <= startChar && startChar <= 0x7Au) ||
+            (0xC0u <= startChar && startChar <= 0xD6u) ||
+            (0xD8u <= startChar && startChar <= 0xF6u) ||
+            (0xF8u <= startChar && startChar <= 0x2FFu) ||
+            (0x370u <= startChar && startChar <= 0x37Du) ||
+            (0x37Fu <= startChar && startChar <= 0x1FFFu) ||
+            (0x200Cu <= startChar && startChar <= 0x200Du) ||
+            (0x2070u <= startChar && startChar <= 0x218Fu) ||
+            (0x2C00u <= startChar && startChar <= 0x2FEFu) ||
+            (0x3001u <= startChar && startChar <= 0xD7FFu) ||
+            (0xF900u <= startChar && startChar <= 0xFDCFu) ||
+            (0xFDF0u <= startChar && startChar <= 0xFFFDu) ||
+            (0x10000u <= startChar && startChar <= 0xEFFFFu)) {
+        return true;
+    }
+
+    return false;
+}
+
+std::vector<uint32_t> characterBreakdown(const std::string &text)
+{
+    std::vector<uint32_t> breakdown;
+    std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
+    for (size_t i = 0; i < text.length();) {
+        int codepointLength = 1;
+        uint32_t value = 0;
+        if ((text[i] & 0xf8) == 0xf0) {
+            codepointLength = 4;
+            auto subText = text.substr(i, 4);
+            size_t index = 0;
+            for (size_t j = 0; j < 4; ++j) {
+                uint32_t tempValue = static_cast<uint8_t>(subText[index++]) << bitShifts[j];
+                value |= tempValue;
+            }
+            breakdown.push_back(value);
+        } else if ((text[i] & 0xf0) == 0xe0) {
+            codepointLength = 3;
+            auto subText = text.substr(i, 3);
+            size_t index = 0;
+            for (size_t j = 1; j < 4; ++j) {
+                uint32_t tempValue = static_cast<uint8_t>(subText[index++]) << bitShifts[j];
+                value |= tempValue;
+            }
+            breakdown.push_back(value);
+        } else if ((text[i] & 0xe0) == 0xc0) {
+            codepointLength = 2;
+            auto subText = text.substr(i, 2);
+            size_t index = 0;
+            for (size_t j = 2; j < 4; ++j) {
+                uint32_t tempValue = static_cast<uint8_t>(subText[index++]) << bitShifts[j];
+                value |= tempValue;
+            }
+            breakdown.push_back(value);
+        } else {
+            auto subText = text.substr(i, 1);
+            value = subText[0];
+            breakdown.push_back(value);
+        }
+
+//        if ((i + codepointLength) > text.length()) {
+//            codepointLength = 1;
+//        }
+
+        i += codepointLength;
+    }
+
+    return breakdown;
+}
+
+/**
+ * @brief isNameChar
+ *
+ * Name char is defined here: https://www.w3.org/TR/xml11/#NT-Name.
+ *
+ * @param startChar
+ * @return
+ */
+bool isNameChar(uint32_t startChar)
+{
+    if (isNameStartChar(startChar)) {
+        return true;
+    }
+    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+    if ((0x30u <= startChar && startChar <= 0x39u) ||
+            (startChar == 0x2Du) ||
+            (startChar == 0x2Eu) ||
+            (startChar == 0xB7u) ||
+            (0x0300u <= startChar && startChar <= 0x036Fu) ||
+            (0x203Fu <= startChar && startChar <= 0x2040u)) {
+        return true;
+    }
+    return false;
+}
+
+bool isValidW3IdName(const std::string &name)
+{
+    if (!name.empty()) {
+        auto breakdown = characterBreakdown(name);
+        if (!isNameStartChar(breakdown[0])) {
+            return false;
+        }
+        for (size_t i = 1; i < breakdown.size(); ++i) {
+            if (!isNameChar(breakdown[i])) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 IssuePtr makeIssueIllegalIdentifier(const std::string &name)
