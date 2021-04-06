@@ -99,6 +99,26 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
     EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, v);
 }
 
+TEST(Validator, invalidElementIdAttribute)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Model 'valid_name' does not have a valid 'id' attribute, '993-++$@'.",
+    };
+
+    const std::vector<std::string> expectedSpecificationHeadings = {
+        "1.2.5",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create("valid_name");
+    model->setId("993-++$@");
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    v->validateModel(model);
+
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, v);
+}
+
 TEST(Validator, namedModelWithUnnamedComponent)
 {
     const std::vector<std::string> expectedIssues = {
@@ -2993,11 +3013,11 @@ TEST(Validator, importSecondGenComponentWithInvalidName)
 TEST(Validator, highIndexUnitsImport)
 {
     const std::string errorMessage =
-        "Import of units 'i_am_bad' from 'some_units.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+        "Import of units 'i_am_bad' from 'units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
-    auto model = parser->parseModel(fileContents("importer/import_from_some_units.cellml"));
+    auto model = parser->parseModel(fileContents("importer/import_units_that_have_unknown_children.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
@@ -3008,4 +3028,69 @@ TEST(Validator, highIndexUnitsImport)
     EXPECT_EQ(size_t(1), validator->errorCount());
     EXPECT_EQ(errorMessage, validator->error(0)->description());
     EXPECT_EQ(model->units(1), validator->issue(0)->units());
+}
+
+TEST(Validator, importInvalidUnitsNotDirectlyDeterminedFromImport)
+{
+    const std::string errorMessage =
+        "Import of units 'i_am_bad' from 'units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("importer/import_units_that_are_invalid.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    printIssues(parser);
+
+    auto unitsLibrary = parser->parseModel(fileContents("importer/units_library.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    validator->validateModel(unitsLibrary);
+    EXPECT_EQ(size_t(2), validator->issueCount());
+
+    validator->validateModel(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), validator->errorCount());
+//    EXPECT_EQ(errorMessage, validator->error(0)->description());
+//    EXPECT_EQ(model->units(1), validator->issue(0)->units());
+}
+
+TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
+{
+    const std::string errorMessage =
+        "Import of units 'i_am_bad' from 'units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("importer/importing_a_component_that_is_invalid.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto invalidComponentModel = parser->parseModel(fileContents("importer/component_that_is_invalid.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    validator->validateModel(invalidComponentModel);
+    printIssues(validator);
+    EXPECT_EQ(size_t(1), validator->issueCount());
+
+    validator->validateModel(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), validator->errorCount());
+//    EXPECT_EQ(errorMessage, validator->error(0)->description());
+//    EXPECT_EQ(model->units(1), validator->issue(0)->units());
+}
+
+TEST(Validator, invalidIdsOnEveryElement)
+{
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("annotator/invalid_ids_on_every_element.cellml"));
+    printIssues(parser);
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    printIssues(validator);
+    EXPECT_EQ(size_t(12), validator->errorCount());
 }
