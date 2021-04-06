@@ -409,7 +409,14 @@ struct Validator::ValidatorImpl
      */
     void buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input);
 
-    void validateImportSource(const ImportSourcePtr &importSource, const std::string &componentName) const;
+    /**
+     * @brief Validate the import source xlink:href and id.
+     *
+     * @param importSource The import source to validate.
+     * @param importName The name of the entity that the import is called.
+     * @param importType The type of the entity the import is, either 'units', or 'component'.
+     */
+    void validateImportSource(const ImportSourcePtr &importSource, const std::string &importName, const std::string &importType) const;
 };
 
 Validator::Validator()
@@ -504,54 +511,38 @@ void Validator::validateModel(const ModelPtr &model)
                 if (!unitsName.empty()) {
                     if (units->isImport()) {
                         // Check for a units_ref.
+                        size_t currentIssueCount = issueCount();
                         std::string unitsRef = units->importReference();
-                        std::string importSource = units->importSource()->url();
-                        bool foundImportIssue = false;
                         if (!isCellmlIdentifier(unitsRef)) {
                             auto issue = makeIssueIllegalIdentifier(unitsRef);
                             issue->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
                             issue->setUnits(units);
                             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                             addIssue(issue);
-                            foundImportIssue = true;
                         }
-                        // Check for a xlink:href and its format.
-                        if (importSource.empty()) {
-                            IssuePtr issue = Issue::create();
-                            issue->setDescription("Import of units '" + unitsName + "' does not have a valid locator xlink:href attribute.");
-                            issue->setImportSource(units->importSource());
-                            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
-                            addIssue(issue);
-                            foundImportIssue = true;
-                        } else {
-                            xmlURIPtr uri = xmlParseURI(importSource.c_str());
-                            if (uri == nullptr) {
-                                IssuePtr issue = Issue::create();
-                                issue->setDescription("Import of units '" + unitsName + "' has an invalid URI in the xlink:href attribute.");
-                                issue->setImportSource(units->importSource());
-                                issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
-                                addIssue(issue);
-                            } else {
-                                xmlFreeURI(uri);
-                            }
-                        }
+
+                        mPimpl->validateImportSource(units->importSource(), units->name(), "units");
+
+                        bool foundImportIssue = issueCount() > currentIssueCount;
+                        std::string url = units->importSource()->url();
+
                         // Check if we already have another import from the same source with the same units_ref.
                         // (This looks for matching entries at the same position in the source and ref vectors).
                         if (!unitsImportSources.empty() && (!foundImportIssue)) {
-                            auto usedImportSource = std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource);
+                            auto usedImportSource = std::find(unitsImportSources.begin(), unitsImportSources.end(), url);
                             auto usedImportSourceAt = usedImportSource - unitsImportSources.begin();
                             auto usedUnitsRefs = std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef);
                             auto usedUnitsRefsAt = usedUnitsRefs - unitsRefs.begin();
                             if ((usedImportSource != unitsImportSources.end()) && (usedUnitsRefs != unitsRefs.end()) && (usedUnitsRefsAt == usedImportSourceAt)) {
                                 IssuePtr issue = Issue::create();
-                                issue->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
+                                issue->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + url + "' with the same units_ref attribute '" + unitsRef + "'.");
                                 issue->setModel(model);
                                 issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                                 addIssue(issue);
                             }
                         }
                         // Push back the unique sources and refs.
-                        unitsImportSources.push_back(importSource);
+                        unitsImportSources.push_back(url);
                         unitsRefs.push_back(unitsRef);
                     }
                     // Check for duplicate units names in this model.
@@ -614,13 +605,22 @@ void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, cons
     }
 }
 
-void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &importSource, const std::string &componentName) const
+void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &importSource, const std::string &importName, const std::string &importType) const
 {
     std::string url = importSource->url();
 
+    // Check for a valid identifier.
+    if (!isValidW3IdName(importSource->id())) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setImportSource(importSource);
+        issue->setDescription("Import of " + importType + " '" + importName + "' does not have a valid 'id' attribute, '" + importSource->id() + "'.");
+        mValidator->addIssue(issue);
+    }
+
     if (url.empty()) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
+        issue->setDescription("Import of " + importType + " '" + importName + "' does not have a valid locator xlink:href attribute.");
         issue->setImportSource(importSource);
         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
         mValidator->addIssue(issue);
@@ -628,7 +628,7 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
         xmlURIPtr uri = xmlParseURI(url.c_str());
         if (uri == nullptr) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Import of component '" + componentName + "' has an invalid URI in the xlink:href attribute.");
+            issue->setDescription("Import of " + importType + " '" + importName + "' has an invalid URI in the xlink:href attribute.");
             issue->setImportSource(importSource);
             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
             mValidator->addIssue(issue);
@@ -668,7 +668,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
         mValidator->addIssue(issue);
     }
 
-    validateImportSource(component->importSource(), component->name());
+    validateImportSource(component->importSource(), component->name(), "component");
 }
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
@@ -754,7 +754,11 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setUnits(units);
-        issue->setDescription("Units '" + units->name() + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
+        std::string descriptionStart = "Units";
+        if (units->isImport()) {
+            descriptionStart = "Imported units";
+        }
+        issue->setDescription(descriptionStart + " '" + units->name() + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
         mValidator->addIssue(issue);
     }
     if (units->unitCount() > 0) {
@@ -919,7 +923,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setReset(reset);
-        issue->setDescription("Reset in component '" + component->name() + "' does not have a valid 'id' attribute, '" + reset->id() + "'.");
+        issue->setDescription(description + "' does not have a valid 'id' attribute, '" + reset->id() + "'.");
         mValidator->addIssue(issue);
     }
 
@@ -961,6 +965,23 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         noResetValue = true;
     } else {
         validateMath(resetValueString, component);
+    }
+
+    // Check for a valid identifier.
+    if (!isValidW3IdName(reset->testValueId())) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setReset(reset);
+        issue->setDescription(description + "' does not have a valid test_value 'id' attribute, '" + reset->testValueId() + "'.");
+        mValidator->addIssue(issue);
+    }
+    // Check for a valid identifier.
+    if (!isValidW3IdName(reset->resetValueId())) {
+        IssuePtr issue = Issue::create();
+        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->setReset(reset);
+        issue->setDescription(description + "' does not have a valid reset_value 'id' attribute, '" + reset->resetValueId() + "'.");
+        mValidator->addIssue(issue);
     }
 
     if (noOrder) {
@@ -1410,12 +1431,30 @@ Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
     return Issue::ReferenceRule::UNDEFINED;
 }
 
+/**
+ * @brief Test to determine if the @p name is a valid CellML identifier.
+ *
+ * Test to determine if the @p name is a valid CellML identifier.
+ *
+ * @param name The name to test.
+ *
+ * @return True if the name is a valid CellML identifier, false otherwise.
+ */
 bool isCellmlIdentifier(const std::string &name)
 {
     Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
     return isValid == Issue::ReferenceRule::UNDEFINED;
 }
 
+/**
+ * @brief Test to determine if character is a valid xml name start char.
+ *
+ * Start name char is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
+ *
+ * @param startChar The character to test.
+ *
+ * @return True if the character is in the allowed unicode ranges for a start character in a name.
+ */
 bool isNameStartChar(uint32_t startChar)
 {
     // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
@@ -1441,6 +1480,16 @@ bool isNameStartChar(uint32_t startChar)
     return false;
 }
 
+/**
+ * @brief Breakdown a string into codepoints.
+ *
+ * Breakdown the @p text into a vector of codepoints as described by
+ * @c uint32_t.
+ *
+ * @param text The std::string to breakdown.
+ *
+ * @return A vector of @c uint32_t of the unicode character values.
+ */
 std::vector<uint32_t> characterBreakdown(const std::string &text)
 {
     std::vector<uint32_t> breakdown;
@@ -1492,30 +1541,40 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
 }
 
 /**
- * @brief isNameChar
+ * @brief Test to determine if character is a valid xml name char.
  *
- * Name char is defined here: https://www.w3.org/TR/xml11/#NT-Name.
+ * Name char is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
  *
- * @param startChar
- * @return
+ * @param nameChar The character to test.
+ *
+ * @return True if the character is in the allowed unicode ranges for a name.
  */
-bool isNameChar(uint32_t startChar)
+bool isNameChar(uint32_t nameChar)
 {
-    if (isNameStartChar(startChar)) {
+    if (isNameStartChar(nameChar)) {
         return true;
     }
     // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-    if ((0x30u <= startChar && startChar <= 0x39u) ||
-            (startChar == 0x2Du) ||
-            (startChar == 0x2Eu) ||
-            (startChar == 0xB7u) ||
-            (0x0300u <= startChar && startChar <= 0x036Fu) ||
-            (0x203Fu <= startChar && startChar <= 0x2040u)) {
+    if ((0x30u <= nameChar && nameChar <= 0x39u) ||
+            (nameChar == 0x2Du) ||
+            (nameChar == 0x2Eu) ||
+            (nameChar == 0xB7u) ||
+            (0x0300u <= nameChar && nameChar <= 0x036Fu) ||
+            (0x203Fu <= nameChar && nameChar <= 0x2040u)) {
         return true;
     }
     return false;
 }
 
+/**
+ * @brief Test to determine if name is a valid xml name.
+ *
+ * Name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
+ *
+ * @param name The @c std::string to test.
+ *
+ * @return True if the name is a valid xml name.
+ */
 bool isValidW3IdName(const std::string &name)
 {
     if (!name.empty()) {
@@ -1830,6 +1889,16 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     }
     // Encapsulation.
     if (!model->encapsulationId().empty()) {
+
+        // Check for a valid identifier.
+        if (!isValidW3IdName(model->encapsulationId())) {
+            IssuePtr issue = Issue::create();
+            issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+            issue->setModel(model);
+            issue->setDescription("Model '" + model->name() + "' does not have a valid encapsulation 'id' attribute, '" + model->encapsulationId() + "'.");
+            mValidator->addIssue(issue);
+        }
+
         info = " - encapsulation in model '" + model->name() + "'";
         addIdMapItem(model->encapsulationId(), info, idMap);
     }
@@ -1879,18 +1948,40 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                 std::string mappingId = Variable::equivalenceMappingId(item, equiv);
                 // Variable mapping.
                 if ((s1 < s2) && !mappingId.empty()) {
-                    info = " - variable equivalence between variable '" + item->name() + "' in component '" + component->name()
-                           + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
+                    std::string mappingDescription =
+                            "between variable '" + item->name() + "' in component '" + component->name()
+                            + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
+                    // Check for a valid identifier.
+                    if (!isValidW3IdName(mappingId)) {
+                        IssuePtr issue = Issue::create();
+                        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+                        issue->setMapVariables(item, equiv);
+                        issue->setDescription("Variable equivalence " + mappingDescription + ", does not have a valid map_variables 'id' attribute, '" + mappingId + "'.");
+                        mValidator->addIssue(issue);
+                    }
+
+                    info = " - variable equivalence " + mappingDescription;
                     addIdMapItem(mappingId, info, idMap);
                 }
                 // Connections.
                 auto connectionId = Variable::equivalenceConnectionId(item, equiv);
                 std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
                 if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
+                    std::string connectionDescription =
+                            "between components '" + component->name() + "' and '" + equivParent->name()
+                            + "' because of variable equivalence between variables '" + item->name()
+                            + "' and '" + equiv->name() + "'";
+                    // Check for a valid identifier.
+                    if (!isValidW3IdName(connectionId)) {
+                        IssuePtr issue = Issue::create();
+                        issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+                        issue->setConnection(item, equiv);
+                        issue->setDescription("Connection " + connectionDescription + ", does not have a valid connection 'id' attribute, '" + connectionId + "'.");
+                        mValidator->addIssue(issue);
+                    }
+
                     reportedConnections.insert(connection);
-                    info = " - connection between components '" + component->name() + "' and '" + equivParent->name()
-                           + "' because of variable equivalence between variables '" + item->name()
-                           + "' and '" + equiv->name() + "'";
+                    info = " - connection " + connectionDescription;
                     addIdMapItem(connectionId, info, idMap);
                 }
             }
@@ -1928,8 +2019,18 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
         addIdMapItem(component->importSource()->id(), info, idMap);
     }
 
-    // Connections.
+    // Hierarchy.
     if (!component->encapsulationId().empty()) {
+
+        // Check for a valid identifier.
+        if (!isValidW3IdName(component->encapsulationId())) {
+            IssuePtr issue = Issue::create();
+            issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+            issue->setComponent(component);
+            issue->setDescription("Component '" + component->name() + "' does not have a valid encapsulation 'id' attribute, '" + component->encapsulationId() + "'.");
+            mValidator->addIssue(issue);
+        }
+
         info = " - encapsulation component_ref to component '" + component->name() + "'";
         addIdMapItem(component->encapsulationId(), info, idMap);
     }
