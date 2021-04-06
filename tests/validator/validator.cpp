@@ -3084,13 +3084,55 @@ TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
 
 TEST(Validator, invalidIdsOnEveryElement)
 {
+    const std::vector<std::string> errorMessages = {
+        "Model 'everything' does not have a valid 'id' attribute, 'model_1*'.",
+        "Imported component 'component1' does not have a valid 'id' attribute, 'component_1@'.",
+        "Import of component 'component1' does not have a valid 'id' attribute, '𒀦@'.",
+        "Component 'component3' does not have a valid 'id' attribute, 'component_3$'.",
+        "Variable 'variable1' does not have a valid 'id' attribute, 'variable_3$'.",
+        "Variable 'variable2' does not have a valid 'id' attribute, 'variable_4$'.",
+        "MathML ci element has the child text 'variable4' which does not correspond with any variable names present in component 'component3'.",
+        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
+        "Component 'component2' does not have a valid 'id' attribute, 'component_2!'.",
+        "Variable 'variable1' does not have a valid 'id' attribute, 'ध!'.",
+        "Variable 'variable2' does not have a valid 'id' attribute, 'variable_2]'.",
+        "Reset in component 'component2' with order '1', ' does not have a valid 'id' attribute, 'reset_1['.",
+        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
+        "Reset in component 'component2' with order '1', with variable 'variable1', with test_variable 'variable2', ' does not have a valid test_value 'id' attribute, 'test_value_1;'.",
+        "Reset in component 'component2' with order '1', with variable 'variable1', with test_variable 'variable2', ' does not have a valid reset_value 'id' attribute, 'reset_value_1#'.",
+        "Import of units 'units1' does not have a valid 'id' attribute, '今天@'.",
+        "Imported units 'units1' does not have a valid 'id' attribute, '𒃵@'.",
+        "Units 'units2' does not have a valid 'id' attribute, 'ऊ?'.",
+        "Unit in units 'units2' does not have a valid 'id' attribute, 'ऊ?'.",
+        "Units 'units3' does not have a valid 'id' attribute, '3456eight'.",
+        "Units 'blob' does not have a valid 'id' attribute, 'units_4!'.",
+        "Model 'everything' does not have a valid encapsulation 'id' attribute, 'encapsulation_1%'.",
+        "Variable equivalence between variable 'variable1' in component 'component2' and variable 'variable1' in component 'component3', does not have a valid map_variables 'id' attribute, 'map_variables_1%'.",
+        "Connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable1', does not have a valid connection 'id' attribute, 'connection_1%'.",
+        "Variable equivalence between variable 'variable2' in component 'component2' and variable 'variable2' in component 'component3', does not have a valid map_variables 'id' attribute, 'map_variables_2%'.",
+        "Component 'component2' does not have a valid encapsulation 'id' attribute, 'component_ref_1%'.",
+        "Component 'component3' does not have a valid encapsulation 'id' attribute, 'component_ref_2%'.",
+    };
+
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
     auto model = parser->parseModel(fileContents("annotator/invalid_ids_on_every_element.cellml"));
-    printIssues(parser);
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
-    printIssues(validator);
-    EXPECT_EQ(size_t(12), validator->errorCount());
+    EXPECT_EQ(size_t(40), validator->errorCount());
+    EXPECT_EQ_ISSUES(errorMessages, validator);
 }
