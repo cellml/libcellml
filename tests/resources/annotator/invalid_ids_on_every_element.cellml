@@ -51,8 +51,8 @@
     <map_variables variable_1="variable2" variable_2="variable2" id="map_variables_2%"/>
   </connection>
   <encapsulation id="encapsulation_1%">
-    <component_ref component="component2" id="component_ref_1%">
-      <component_ref component="component3" id="component_ref_2%"/>
+    <component_ref component="component2" id="component_ref_θ%">
+      <component_ref component="component3" id="component_ref_⁇%"/>
     </component_ref>
   </encapsulation>
 </model>

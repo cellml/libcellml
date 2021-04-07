@@ -183,8 +183,8 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits)
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
 {
     const std::vector<std::string> expectedIssues = {
-        "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "Variable '2cold' in component 'fargo' does not have a valid name attribute. CellML identifiers must not begin with a European numeric character [0-9].",
+        "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "Variable 'margie' in component 'fargo' does not have any units specified.",
         "Variable 'ransom' in component 'fargo' has a units reference 'dollars' which is neither standard nor defined in the parent model.",
         "Variable 'mullah' in component 'fargo' does not have a valid units attribute. The attribute given is '$$'. CellML identifiers must not contain any characters other than [a-zA-Z0-9_]."};
@@ -248,67 +248,108 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
-TEST(Validator, importUnits)
+libcellml::ModelPtr createImportUnitsModel()
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
+    libcellml::UnitsPtr importedUnits = libcellml::Units::create();
+
+    m->setName("model_name");
+    imp->setUrl("some-other-model.xml");
+    importedUnits->setName("valid_imported_units_in_this_model");
+    importedUnits->setSourceUnits(imp, "units_in_that_model");
+    m->addUnits(importedUnits);
+
+    return m;
+}
+
+
+TEST(Validator, importUnitsValid)
+{
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createImportUnitsModel();
+
+    v->validateModel(m);
+    EXPECT_EQ(size_t(0), v->issueCount());
+}
+
+TEST(Validator, importUnitsMissingRefs)
 {
     const std::vector<std::string> expectedIssues = {
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createImportUnitsModel();
+
+    libcellml::UnitsPtr units = m->units(0);
+
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
+    units->setName("invalid_imported_units_in_this_model");
+    units->setSourceUnits(imp, "");
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, importUnitsDuplicateRefs)
+{
+    const std::vector<std::string> expectedIssues = {
         "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
-        "Import of units 'cant_find_me' has an invalid URI in the xlink:href attribute.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createImportUnitsModel();
+
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
+    imp->setUrl("some-other-model.xml");
+    libcellml::UnitsPtr units = libcellml::Units::create();
+    units->setName("duplicate_imported_units_in_this_model");
+    units->setSourceUnits(imp, "units_in_that_model");
+    m->addUnits(units);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, importUnitsUnnamedUnits)
+{
+    const std::vector<std::string> expectedIssues = {
         "Imported units '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
-    libcellml::ModelPtr m = libcellml::Model::create();
-    m->setName("model_name");
+    libcellml::ModelPtr m = createImportUnitsModel();
 
-    // Valid units import.
-    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
-    imp->setUrl("some-other-model.xml");
-    libcellml::UnitsPtr importedUnits = libcellml::Units::create();
-    importedUnits->setName("valid_imported_units_in_this_model");
-    importedUnits->setSourceUnits(imp, "units_in_that_model");
-    m->addUnits(importedUnits);
-    v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->issueCount());
+    libcellml::UnitsPtr u = m->units(0);
+    u->setName("");
 
-    // Invalid units import - missing refs.
-    libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
-    libcellml::UnitsPtr importedUnits2 = libcellml::Units::create();
-    importedUnits2->setName("invalid_imported_units_in_this_model");
-    importedUnits2->setSourceUnits(imp2, "");
-    m->addUnits(importedUnits2);
-    v->validateModel(m);
-    EXPECT_EQ(size_t(2), v->issueCount());
-
-    // Invalid units import - duplicate refs.
-    libcellml::ImportSourcePtr imp3 = libcellml::ImportSource::create();
-    imp3->setUrl("some-other-model.xml");
-    libcellml::UnitsPtr importedUnits3 = libcellml::Units::create();
-    importedUnits3->setName("duplicate_imported_units_in_this_model");
-    importedUnits3->setSourceUnits(imp3, "units_in_that_model");
-    m->addUnits(importedUnits3);
-    v->validateModel(m);
-    EXPECT_EQ(size_t(3), v->issueCount());
-
-    // Invalid units import - unnamed units.
-    libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
-    imp4->setUrl("some-other-different-model.xml");
-    libcellml::UnitsPtr importedUnits4 = libcellml::Units::create();
-    importedUnits4->setSourceUnits(imp4, "units_in_that_model");
-    m->addUnits(importedUnits4);
-    v->validateModel(m);
-    EXPECT_EQ(size_t(4), v->issueCount());
-
-    // Invalid units import - not a valid URL.
-    libcellml::ImportSourcePtr imp5 = libcellml::ImportSource::create();
-    imp5->setUrl("Look Ma, I've got special characters!");
-    libcellml::UnitsPtr importedUnits5 = libcellml::Units::create("cant_find_me");
-    importedUnits5->setSourceUnits(imp5, "cant_find_me_anyway");
-    m->addUnits(importedUnits5);
     v->validateModel(m);
 
-    // Check for expected error messages
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, importUnitsInvalidUrl)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Import of units 'cant_find_me' has an invalid URI in the xlink:href attribute.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = createImportUnitsModel();
+
+    libcellml::UnitsPtr u = m->units(0);
+    libcellml::ImportSourcePtr imp = u->importSource();
+    imp->setUrl("Look Ma, I've got special characters!");
+
+    u->setName("cant_find_me");
+    u->setSourceUnits(imp, "cant_find_me_anyway");
+
+    v->validateModel(m);
+
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
@@ -3033,10 +3074,12 @@ TEST(Validator, highIndexUnitsImport)
 TEST(Validator, importInvalidUnitsNotDirectlyDeterminedFromImport)
 {
     const std::string errorMessage =
-        "Import of units 'i_am_bad' from 'units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+        "Prefix 'plinco' of a unit referencing 'second' in units 'ps2' is not a valid integer or an SI prefix.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/import_units_that_are_invalid.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
     printIssues(parser);
@@ -3050,19 +3093,51 @@ TEST(Validator, importInvalidUnitsNotDirectlyDeterminedFromImport)
     validator->validateModel(unitsLibrary);
     EXPECT_EQ(size_t(2), validator->issueCount());
 
-    validator->validateModel(model, resourcePath("importer/"));
+    importer->resolveImports(model, resourcePath("importer/"));
+
+    validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
-//    EXPECT_EQ(errorMessage, validator->error(0)->description());
-//    EXPECT_EQ(model->units(1), validator->issue(0)->units());
+    EXPECT_EQ(errorMessage, validator->issue(0)->description());
+}
+
+TEST(Validator, importInvalidUnitsReference)
+{
+    const std::string errorMessage =
+        "Imported units 'i_am_bad' refers to units 'ps3' which does not appear in 'units_library'.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
+    auto model = parser->parseModel(fileContents("importer/import_units_that_are_not_there.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    printIssues(parser);
+
+    auto unitsLibrary = parser->parseModel(fileContents("importer/units_library.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    validator->validateModel(unitsLibrary);
+    EXPECT_EQ(size_t(2), validator->issueCount());
+
+    importer->resolveImports(model, resourcePath("importer/"));
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(errorMessage, validator->issue(0)->description());
 }
 
 TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
 {
     const std::string errorMessage =
-        "Import of units 'i_am_bad' from 'units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+        "Component 'invalid_component' does not have a valid 'id' attribute, '8ioisfje+'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/importing_a_component_that_is_invalid.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -3073,13 +3148,36 @@ TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
     EXPECT_EQ(size_t(0), validator->issueCount());
 
     validator->validateModel(invalidComponentModel);
-    printIssues(validator);
     EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(errorMessage, validator->issue(0)->description());
 
-    validator->validateModel(model, resourcePath("importer/"));
+    importer->resolveImports(model, resourcePath("importer/"));
+
+    validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
-//    EXPECT_EQ(errorMessage, validator->error(0)->description());
-//    EXPECT_EQ(model->units(1), validator->issue(0)->units());
+    EXPECT_EQ(errorMessage, validator->issue(0)->description());
+}
+
+TEST(Validator, importInvalidComponentReference)
+{
+    const std::string errorMessage =
+        "Imported component 'imported_component' refers to component 'missing_component' which does not appear in 'has_component_that_is_invalid'.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
+    auto model = parser->parseModel(fileContents("importer/importing_a_component_that_is_not_there.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    importer->resolveImports(model, resourcePath("importer/"));
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(errorMessage, validator->issue(0)->description());
 }
 
 TEST(Validator, invalidIdsOnEveryElement)
@@ -3123,8 +3221,8 @@ TEST(Validator, invalidIdsOnEveryElement)
         "Variable equivalence between variable 'variable1' in component 'component2' and variable 'variable1' in component 'component3', does not have a valid map_variables 'id' attribute, 'map_variables_1%'.",
         "Connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable1', does not have a valid connection 'id' attribute, 'connection_1%'.",
         "Variable equivalence between variable 'variable2' in component 'component2' and variable 'variable2' in component 'component3', does not have a valid map_variables 'id' attribute, 'map_variables_2%'.",
-        "Component 'component2' does not have a valid encapsulation 'id' attribute, 'component_ref_1%'.",
-        "Component 'component3' does not have a valid encapsulation 'id' attribute, 'component_ref_2%'.",
+        "Component 'component2' does not have a valid encapsulation 'id' attribute, 'component_ref_θ%'.",
+        "Component 'component3' does not have a valid encapsulation 'id' attribute, 'component_ref_⁇%'.",
     };
 
     auto parser = libcellml::Parser::create();

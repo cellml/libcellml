@@ -1917,6 +1917,7 @@ TEST(Generator, sineImports)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
+    printIssues(analyser);
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 

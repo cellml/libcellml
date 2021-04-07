@@ -140,6 +140,8 @@ struct Units::UnitsImpl
      */
     bool isBaseUnit(const std::string &name) const;
 
+    bool isBaseUnitWithHistory(ImportHistory &history) const;
+
     bool isResolvedWithHistory(ImportHistory &history) const;
 
     Units *mQ = nullptr;
@@ -154,6 +156,35 @@ std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std
 bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
 {
     return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
+}
+
+bool Units::UnitsImpl::isBaseUnitWithHistory(ImportHistory &history) const
+{
+    if (mQ->isImport()) {
+        ImportSourcePtr importedSource = mQ->importSource();
+        if (importedSource != nullptr) {
+            ModelPtr model = importedSource->model();
+            if (model != nullptr) {
+                ImportHistoryEntry h = std::make_pair(model, mQ->name());
+                if (std::find(history.begin(), history.end(), h) != history.end()) {
+                    return false;
+                }
+                history.push_back(h);
+                if (model->hasUnits(mQ->importReference())) {
+                    auto unit = model->units(mQ->importReference());
+                    return unit->mPimpl->isBaseUnitWithHistory(history); // Call isBaseUnit recursively until unit is no longer an import
+                }
+            }
+        }
+        return false;
+    }
+
+    auto unitsName = mQ->name();
+    bool standardUnitCheck = true;
+    if (isStandardUnitName(unitsName)) {
+        standardUnitCheck = isBaseUnit(unitsName);
+    }
+    return mQ->unitCount() == 0 && standardUnitCheck;
 }
 
 bool Units::UnitsImpl::isResolvedWithHistory(ImportHistory &history) const
@@ -298,24 +329,8 @@ UnitsPtr Units::create(const std::string &name) noexcept
 
 bool Units::isBaseUnit() const
 {
-    if (isImport()) {
-        ImportSourcePtr importedSource = importSource();
-        if (importedSource != nullptr) {
-            ModelPtr model = importedSource->model();
-            if (model != nullptr && model->hasUnits(importReference())) {
-                auto unit = model->units(importReference());
-                return unit->isBaseUnit(); // Call isBaseUnit recursively until unit is no longer an import
-            }
-        }
-        return false;
-    }
-
-    auto unitsName = name();
-    bool standardUnitCheck = true;
-    if (isStandardUnitName(unitsName)) {
-        standardUnitCheck = mPimpl->isBaseUnit(unitsName);
-    }
-    return unitCount() == 0 && standardUnitCheck;
+    ImportHistory history;
+    return mPimpl->isBaseUnitWithHistory(history);
 }
 
 bool Units::doEquals(const EntityPtr &other) const

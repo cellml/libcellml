@@ -68,5 +68,6 @@ using HistoryList = std::vector<HistoryEntry>;
 using ImportHistoryEntry = std::pair<ModelPtr, std::string>;
 using ImportHistory = std::vector<ImportHistoryEntry>;
 
+using Strings = std::vector<std::string>;
 
 } // namespace libcellml
