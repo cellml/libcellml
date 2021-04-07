@@ -64,7 +64,7 @@ struct Importer::ImporterImpl
     std::vector<ImportSourcePtr> mImports;
     std::vector<ImportSourcePtr>::const_iterator findImportSource(const ImportSourcePtr &importSource) const;
 
-    std::string resolvingUrl(const ImportSourcePtr &importSource);
+    std::string resolvingUrl(const ImportSourcePtr &importSource) const;
 
     bool fetchComponent(const ModelPtr &origModel, const ComponentPtr &importComponent, const std::string &baseFile, HistoryList &history);
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
@@ -72,8 +72,8 @@ struct Importer::ImporterImpl
     bool fetchUnits(const ModelPtr &origModel, const UnitsPtr &importUnits, const std::string &baseFile, HistoryList &history);
 
 
-    bool checkForCycles(const ModelPtr &origModel, const ImportSourcePtr &importSource, Type type, const HistoryList &history, const HistoryEntry &h, const std::string &action);
-    bool checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistoryList &history);
+    bool checkForCycles(const ModelPtr &origModel, const ImportSourcePtr &importSource, Type type, const HistoryList &history, const HistoryEntry &h, const std::string &action) const;
+    bool checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistoryList &history) const;
     bool checkComponentForCycles(const ModelPtr &origModel, const ComponentPtr &component, HistoryList &history);
 
     bool hasImportCycles(const ModelPtr &model);
@@ -101,7 +101,7 @@ std::vector<ImportSourcePtr>::const_iterator Importer::ImporterImpl::findImportS
                         [=](const ImportSourcePtr &importSrc) -> bool { return importSource->equals(importSrc); });
 }
 
-std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSource)
+std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSource) const
 {
     auto model = importSource->model();
     if (model == nullptr) {
@@ -117,7 +117,7 @@ std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSo
     return importSource->url();
 }
 
-bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistoryList &history)
+bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistoryList &history) const
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
@@ -290,7 +290,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
     return true;
 }
 
-bool Importer::ImporterImpl::checkForCycles(const ModelPtr &origModel, const ImportSourcePtr &importSource, Type type, const HistoryList &history, const HistoryEntry &h, const std::string &action)
+bool Importer::ImporterImpl::checkForCycles(const ModelPtr &origModel, const ImportSourcePtr &importSource, Type type, const HistoryList &history, const HistoryEntry &h, const std::string &action) const
 {
     if (std::find(history.begin(), history.end(), h) != history.end()) {
         auto issue = makeIssueCyclicDependency(origModel, type, history, action);
