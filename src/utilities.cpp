@@ -1190,65 +1190,6 @@ std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
     return res;
 }
 
-bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList)
-{
-    bool status = true;
-    for (size_t index = 0; index < component->variableCount(); ++index) {
-        auto v = component->variable(index);
-        auto u = v->units();
-
-        if (u != nullptr) {
-            auto model = owningModel(u);
-            if (model == owningModel(v)) {
-                // Units are already linked, and exist in this model.
-                continue;
-            }
-            if ((model == nullptr) && !isStandardUnit(u)) {
-                model = owningModel(component);
-                if (model->hasUnits(u->name())) {
-                    v->setUnits(model->units(u->name()));
-                } else {
-                    auto issue = Issue::create();
-                    issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
-                    issue->setLevel(Issue::Level::WARNING);
-                    issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
-                    issue->setVariable(v);
-                    issueList.push_back(issue);
-                    status = false;
-                }
-            } else if (model != nullptr) {
-                auto issue = Issue::create();
-                issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
-                issue->setLevel(Issue::Level::WARNING);
-                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
-                issue->setVariable(v);
-                issueList.push_back(issue);
-                status = false;
-            }
-        }
-    }
-    return status;
-}
-
-bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity)
-{
-    std::vector<IssuePtr> issueList;
-    return traverseComponentEntityTreeLinkingUnits(componentEntity, issueList);
-}
-
-bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList)
-{
-    auto component = std::dynamic_pointer_cast<Component>(componentEntity);
-    bool status = (component != nullptr) ?
-                      linkComponentVariableUnits(component, issueList) :
-                      true;
-    for (size_t index = 0; index < componentEntity->componentCount(); ++index) {
-        auto c = componentEntity->component(index);
-        status = traverseComponentEntityTreeLinkingUnits(c, issueList) && status;
-    }
-    return status;
-}
-
 bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
 {
     bool unlinked = false;

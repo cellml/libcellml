@@ -20,16 +20,6 @@ limitations under the License.
 
 #include <libcellml>
 
-template<typename T>
-std::vector<T> expectedTypes(size_t size, T type)
-{
-    std::vector<T> res;
-
-    res.assign(size, type);
-
-    return res;
-}
-
 TEST(AnalyserUnits, builtInUnits)
 {
     auto parser = libcellml::Parser::create();
@@ -72,11 +62,12 @@ TEST(AnalyserUnits, builtInUnits)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(expectedIssues,
-                                                              expectedTypes<libcellml::CellmlElementType>(expectedIssues.size(), libcellml::CellmlElementType::UNDEFINED),
-                                                              expectedTypes<libcellml::Issue::Level>(expectedIssues.size(), libcellml::Issue::Level::WARNING),
-                                                              expectedTypes<libcellml::Issue::ReferenceRule>(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_UNITS),
-                                                              analyser);
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::UNDEFINED),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::WARNING),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_UNITS),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_UNITS"),
+                                                                   analyser);
 }
 
 TEST(AnalyserUnits, basic)

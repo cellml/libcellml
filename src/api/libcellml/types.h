@@ -16,7 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <any>
 #include <map>
 #include <memory>
 #include <utility>
@@ -217,65 +216,25 @@ private:
 /**
  * @brief The AnyCellmlElement class
  *
- * The AnyCellmlElement class contains a @c std::any item, and
- * the @ref CellmlElementType enum that describes which type is stored.
- *
- *  Casts to use for the stored item are mapped according to the following statements:
- *  - CellmlElementType::COMPONENT => std::any_cast<ComponentPtr>.
- *  - CellmlElementType::COMPONENT_REF => std::any_cast<ComponentPtr>.
- *  - CellmlElementType::CONNECTION => std::any_cast<VariablePairPtr>.
- *  - CellmlElementType::ENCAPSULATION => std::any_cast<ModelPtr>.
- *  - CellmlElementType::IMPORT => std::any_cast<ImportSourcePtr>.
- *  - CellmlElementType::MAP_VARIABLES => std::any_cast<VariablePairPtr>.
- *  - CellmlElementType::MODEL => std::any_cast<ModelPtr>.
- *  - CellmlElementType::RESET => std::any_cast<ResetPtr>.
- *  - CellmlElementType::RESET_VALUE => std::any_cast<ResetPtr>.
- *  - CellmlElementType::TEST_VALUE => std::any_cast<ResetPtr>.
- *  - CellmlElementType::UNDEFINED => not castable.
- *  - CellmlElementType::UNIT => std::any_cast<UnitPtr>.
- *  - CellmlElementType::UNITS => std::any_cast<UnitsPtr>.
- *  - CellmlElementType::VARIABLE => std::any_cast<VariablePtr>.
+ * The AnyCellmlElement class contains a @ref Model, @ref Component, etc.,
+ * depending on the @ref CellmlElementType enum that describes which type is
+ * stored.
  */
 class LIBCELLML_EXPORT AnyCellmlElement
 {
+    friend class Analyser;
     friend class Annotator;
+    friend class Importer;
+    friend class Issue;
+    friend class Model;
+    friend class Parser;
+    friend class Validator;
 
 public:
     ~AnyCellmlElement(); /**< Destructor. */
     AnyCellmlElement(const AnyCellmlElement &rhs) = delete; /**< Copy constructor. */
     AnyCellmlElement(AnyCellmlElement &&rhs) noexcept = delete; /**< Move constructor. */
     AnyCellmlElement &operator=(AnyCellmlElement rhs) = delete; /**< Assignment operator. */
-
-    static AnyCellmlElementPtr create() noexcept;
-
-    /**
-     * @brief Create an AnyCellmlElement object.
-     *
-     * Factory method to create a @ref AnyCellmlElementPtr.  Create with @c std::any item
-     * and type with::
-     *
-     *   auto AnyCellmlElement = libcellml::AnyCellmlElement::create(item, type);
-     *
-     * @return A smart pointer to a @ref AnyCellmlElement object.
-     */
-    static AnyCellmlElementPtr create(CellmlElementType type, const std::any &item) noexcept;
-    static AnyCellmlElementPtr create(CellmlElementType type, const ComponentPtr &item) noexcept;
-    static AnyCellmlElementPtr create(CellmlElementType type, const ImportSourcePtr &item) noexcept;
-    static AnyCellmlElementPtr create(CellmlElementType type, const ModelPtr &item) noexcept;
-    static AnyCellmlElementPtr create(CellmlElementType type, const ResetPtr &item) noexcept;
-    static AnyCellmlElementPtr create(CellmlElementType type, const UnitPtr &item) noexcept;
-    static AnyCellmlElementPtr create(CellmlElementType type, const UnitsPtr &item) noexcept;
-    static AnyCellmlElementPtr create(CellmlElementType type, const VariablePtr &item) noexcept;
-    static AnyCellmlElementPtr create(CellmlElementType type, const VariablePairPtr &item) noexcept;
-
-    /**
-     * @brief Get the @c std::any item.
-     *
-     * Get the @c std::any item.
-     *
-     * @return The @c std::any item.
-     */
-    std::any item() const;
 
     /**
      * @brief Get the @ref CellmlElementType.
@@ -286,17 +245,138 @@ public:
      */
     CellmlElementType type() const;
 
+    /**
+     * @brief Get the component.
+     *
+     * Get the component.
+     *
+     * @return The @ref Component, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::COMPONENT.
+     */
+    ComponentPtr component() const;
+
+    /**
+     * @brief Get the component reference.
+     *
+     * Get the component reference.
+     *
+     * @return The @ref Component reference, or @c nullptr if the internal type
+     * is not @ref CellmlElementType::COMPONENT_REF.
+     */
+    ComponentPtr componentRef() const;
+
+    /**
+     * @brief Get the connection.
+     *
+     * Get the connection.
+     *
+     * @return The connection as a @ref VariablePair, or @c nullptr if the
+     * internal type is not @ref CellmlElementType::CONNECTION.
+     */
+    VariablePairPtr connection() const;
+
+    /**
+     * @brief Get the encapsulation.
+     *
+     * Get the encapsulation.
+     *
+     * @return The connection as a @ref Model, or @c nullptr if the internal
+     * type is not @ref CellmlElementType::ENCAPSULATION.
+     */
+    ModelPtr encapsulation() const;
+
+    /**
+     * @brief Get the import source.
+     *
+     * Get the import source.
+     *
+     * @return The @ref ImportSource, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::IMPORT.
+     */
+    ImportSourcePtr importSource() const;
+
+    /**
+     * @brief Get the mapped variables.
+     *
+     * Get the mapped variables.
+     *
+     * @return The mapped variables as a @ref VariablePair, or @c nullptr if the
+     * internal type is not @ref CellmlElementType::MAP_VARIABLES.
+     */
+    VariablePairPtr mapVariables() const;
+
+    /**
+     * @brief Get the model.
+     *
+     * Get the model.
+     *
+     * @return The @ref Model, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::MODEL.
+     */
+    ModelPtr model() const;
+
+    /**
+     * @brief Get the reset.
+     *
+     * Get the reset.
+     *
+     * @return The @ref Reset, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::RESET.
+     */
+    ResetPtr reset() const;
+
+    /**
+     * @brief Get the reset value.
+     *
+     * Get the reset value.
+     *
+     * @return The reset value as a @ref Reset, or @c nullptr if the internal
+     * type is not @ref CellmlElementType::RESET_VALUE.
+     */
+    ResetPtr resetValue() const;
+
+    /**
+     * @brief Get the test value.
+     *
+     * Get the test value.
+     *
+     * @return The test value as a @ref Reset, or @c nullptr if the internal
+     * type is not @ref CellmlElementType::TEST_VALUE.
+     */
+    ResetPtr testValue() const;
+
+    /**
+     * @brief Get the unit.
+     *
+     * Get the unit.
+     *
+     * @return The @ref Unit, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::UNIT.
+     */
+    UnitPtr unit() const;
+
+    /**
+     * @brief Get the units.
+     *
+     * Get the units.
+     *
+     * @return The @ref Units, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::UNITS.
+     */
+    UnitsPtr units() const;
+
+    /**
+     * @brief Get the variable.
+     *
+     * Get the variable.
+     *
+     * @return The @ref Variable, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::VARIABLE.
+     */
+    VariablePtr variable() const;
+
 private:
-    AnyCellmlElement();
-    explicit AnyCellmlElement(CellmlElementType type, const std::any &item); /**< Constructor with two variables as parameters. */
-    explicit AnyCellmlElement(CellmlElementType type, const ComponentPtr &item);
-    explicit AnyCellmlElement(CellmlElementType type, const ImportSourcePtr &item);
-    explicit AnyCellmlElement(CellmlElementType type, const ModelPtr &item);
-    explicit AnyCellmlElement(CellmlElementType type, const ResetPtr &item);
-    explicit AnyCellmlElement(CellmlElementType type, const UnitPtr &item);
-    explicit AnyCellmlElement(CellmlElementType type, const UnitsPtr &item);
-    explicit AnyCellmlElement(CellmlElementType type, const VariablePairPtr &item);
-    explicit AnyCellmlElement(CellmlElementType type, const VariablePtr &item);
+    AnyCellmlElement(); /**< Constructor, @private. */
 
     struct AnyCellmlElementImpl; /**< Forward declaration for pImpl idiom. */
     AnyCellmlElementImpl *mPimpl; /**< Private member to implementation pointer. */

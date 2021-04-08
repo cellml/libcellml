@@ -31,6 +31,8 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "anycellmlelement_p.h"
+#include "issue_p.h"
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
@@ -131,21 +133,21 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, cons
 
         auto model = units->importSource()->model();
         if (model == nullptr) {
-            auto issue = Issue::create();
-            issue->setDescription("Units '" + units->name() + "' requires a model imported from '" + units->importSource()->url() + "' which is not available in the importer.");
-            issue->setLevel(Issue::Level::ERROR);
-            issue->setImportSource(units->importSource());
-            issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            issue->mPimpl->setDescription("Units '" + units->name() + "' requires a model imported from '" + units->importSource()->url() + "' which is not available in the importer.");
+            issue->mPimpl->setLevel(Issue::Level::ERROR);
+            issue->mPimpl->mItem->mPimpl->setImportSource(units->importSource());
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
             mImporter->addIssue(issue);
             return true;
         }
         auto importedUnits = model->units(units->importReference());
         if (importedUnits == nullptr) {
-            auto issue = Issue::create();
-            issue->setDescription("Units '" + units->name() + "' imports units named '" + units->importReference() + "' from the model imported from '" + units->importSource()->url() + "'. The units could not be found.");
-            issue->setLevel(Issue::Level::ERROR);
-            issue->setImportSource(units->importSource());
-            issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
+            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            issue->mPimpl->setDescription("Units '" + units->name() + "' imports units named '" + units->importReference() + "' from the model imported from '" + units->importSource()->url() + "'. The units could not be found.");
+            issue->mPimpl->setLevel(Issue::Level::ERROR);
+            issue->mPimpl->mItem->mPimpl->setImportSource(units->importSource());
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
             mImporter->addIssue(issue);
             return true;
         }
@@ -168,21 +170,21 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ModelPtr &origModel, 
         if (component->isImport()) {
             auto model = component->importSource()->model();
             if (model == nullptr) {
-                auto issue = Issue::create();
-                issue->setDescription("Component '" + component->name() + "' requires a model imported from '" + component->importSource()->url() + "' which is not available in the importer.");
-                issue->setLevel(Issue::Level::ERROR);
-                issue->setImportSource(component->importSource());
-                issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + component->importSource()->url() + "' which is not available in the importer.");
+                issue->mPimpl->setLevel(Issue::Level::ERROR);
+                issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
                 mImporter->addIssue(issue);
                 return true;
             }
             auto importedComponent = model->component(component->importReference(), true);
             if (importedComponent == nullptr) {
-                auto issue = Issue::create();
-                issue->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + component->importSource()->url() + "'. The component could not be found.");
-                issue->setLevel(Issue::Level::ERROR);
-                issue->setImportSource(component->importSource());
-                issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
+                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + component->importSource()->url() + "'. The component could not be found.");
+                issue->mPimpl->setLevel(Issue::Level::ERROR);
+                issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
                 mImporter->addIssue(issue);
                 return true;
             }
@@ -278,10 +280,10 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         // without baseFile, parse it and save.
         std::ifstream file(url);
         if (!file.good()) {
-            auto issue = Issue::create();
-            issue->setDescription("The attempt to resolve imports with the model at '" + url + "' failed: the file could not be opened.");
-            issue->setImportSource(importSource);
-            issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_FILE);
+            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            issue->mPimpl->setDescription("The attempt to resolve imports with the model at '" + url + "' failed: the file could not be opened.");
+            issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_FILE);
             mImporter->addIssue(issue);
             return false;
         }
@@ -313,7 +315,7 @@ bool Importer::ImporterImpl::fetchImportSource(const ModelPtr &origModel, const 
     auto model = mLibrary[url];
     if (hasImportCycle(model, history)) {
         auto issue = makeIssueCyclicDependency(origModel, type, history, "resolve");
-        issue->setImportSource(importSource);
+        issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
         mImporter->addIssue(issue);
         return false;
     }
@@ -370,10 +372,10 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
         for (const auto &unitName : unitsNamesUsed(sourceComponent)) {
             auto units = sourceModel->units(unitName);
             if (units == nullptr) {
-                auto issue = Issue::create();
-                issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importReference() + "' requires units named '" + unitName + "' which cannot be found.");
-                issue->setComponent(importComponent);
-                issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
+                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                issue->mPimpl->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importReference() + "' requires units named '" + unitName + "' which cannot be found.");
+                issue->mPimpl->mItem->mPimpl->setComponent(importComponent);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
                 mImporter->addIssue(issue);
                 return false;
             }
@@ -382,10 +384,10 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
             }
         }
     } else {
-        auto issue = Issue::create();
-        issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importSource()->url() + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
-        issue->setComponent(importComponent);
-        issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importSource()->url() + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
+        issue->mPimpl->mItem->mPimpl->setComponent(importComponent);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
         mImporter->addIssue(issue);
         return false;
     }
@@ -428,10 +430,10 @@ bool Importer::ImporterImpl::fetchUnits(const ModelPtr &origModel, const UnitsPt
             }
             auto sourceUnit = sourceModel->units(reference);
             if (sourceUnit == nullptr) {
-                auto issue = Issue::create();
-                issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
-                issue->setUnits(sourceUnits);
-                issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
+                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                issue->mPimpl->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
+                issue->mPimpl->mItem->mPimpl->setUnits(sourceUnits);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
                 mImporter->addIssue(issue);
                 return false;
             }
@@ -442,10 +444,10 @@ bool Importer::ImporterImpl::fetchUnits(const ModelPtr &origModel, const UnitsPt
             }
         }
     } else {
-        auto issue = Issue::create();
-        issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
-        issue->setUnits(importUnits);
-        issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
+        issue->mPimpl->mItem->mPimpl->setUnits(importUnits);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
         mImporter->addIssue(issue);
         return false;
     }
@@ -477,10 +479,10 @@ IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model
             msg += ".";
         }
     }
-    auto issue = Issue::create();
-    issue->setDescription(msg);
-    issue->setLevel(Issue::Level::ERROR);
-    issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->setDescription(msg);
+    issue->mPimpl->setLevel(Issue::Level::ERROR);
+    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
     history.clear();
     return issue;
 }
@@ -644,9 +646,9 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
 {
     ModelPtr flatModel;
     if (model == nullptr) {
-        auto issue = Issue::create();
-        issue->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
-        issue->setDescription("The model is null.");
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
+        issue->mPimpl->setDescription("The model is null.");
         addIssue(issue);
 
         return flatModel;

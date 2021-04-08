@@ -136,9 +136,7 @@
 
 %create_constructor(Annotator)
 
-%ignore libcellml::Annotator::item;
 %ignore libcellml::Annotator::items;
-%ignore libcellml::Annotator::assignId;
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.
@@ -153,149 +151,9 @@ from libcellml.types import AnyCellmlElement
 %include "libcellml/types.h"
 
 %extend libcellml::Annotator {
-
-    CellmlElementType _itemCellmlElement(const std::string &id, size_t index)
-    {
-        auto itemInfo = $self->item(id, index);
-        return itemInfo->type();
-    }
-    std::string _assignId(const AnyCellmlElementPtr &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::ModelPtr const &item, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item, type);
-    }
-    std::string _assignId(libcellml::ModelPtr const &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::ComponentPtr const &item, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item, type);
-    }
-    std::string _assignId(libcellml::ComponentPtr const &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::ImportSourcePtr const &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::ImportSourcePtr const &item, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::ResetPtr const &item, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item, type);
-    }
-    std::string _assignId(libcellml::ResetPtr const &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::UnitsPtr const &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::UnitPtr const &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::UnitPtr const &item, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::VariablePtr const &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::VariablePtr const &item, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::VariablePairPtr const &item, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item, type);
-    }
-    std::string _assignId(libcellml::VariablePairPtr const &item)
-    {
-        return $self->assignId(item);
-    }
-    std::string _assignId(libcellml::VariablePtr const &item1, libcellml::VariablePtr const &item2, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item1, item2, type);
-    }
-    std::string _assignId(libcellml::VariablePtr const &item1,libcellml::VariablePtr const &item2)
-    {
-        return $self->assignId(item1, item2);
-    }
-    std::string _assignId(libcellml::UnitsPtr const &item, size_t index)
-    {
-        return $self->assignId(item, index);
-    }
-    std::string _assignId(libcellml::UnitsPtr const &item, libcellml::CellmlElementType type)
-    {
-        return $self->assignId(item);
-    }
-
 %pythoncode %{
-    def assignId(self, *args):
-        r"""Set the identifier of the given item to an automatically generated, unique string, and return it."""
-        if len(args) == 1:
-            return _annotator.Annotator__assignId(self, args[0])
-        return _annotator.Annotator__assignId(self, args[0], args[1])
-
-    def item(self, id, index=-1):
-        r"""Retrieve a unique item with the given identifier."""
-
-        from libcellml.types import AnyCellmlElement
-
-        type_dict = {
-            CellmlElementType.COMPONENT: _annotator.Annotator_component,
-            CellmlElementType.COMPONENT_REF: _annotator.Annotator_componentRef,
-            CellmlElementType.CONNECTION: _annotator.Annotator_connection,
-            CellmlElementType.ENCAPSULATION: _annotator.Annotator_encapsulation,
-            CellmlElementType.IMPORT: _annotator.Annotator_importSource,
-            CellmlElementType.MAP_VARIABLES: _annotator.Annotator_mapVariables,
-            CellmlElementType.MODEL: _annotator.Annotator_model,
-            CellmlElementType.RESET: _annotator.Annotator_reset,
-            CellmlElementType.RESET_VALUE: _annotator.Annotator_resetValue,
-            CellmlElementType.TEST_VALUE: _annotator.Annotator_testValue,
-            CellmlElementType.UNIT: _annotator.Annotator_unit,
-            CellmlElementType.UNITS: _annotator.Annotator_units,
-            CellmlElementType.VARIABLE: _annotator.Annotator_variable,
-        }
-
-        if index == -1:
-            num = _annotator.Annotator_itemCount(self, id)
-            if num > 1:
-                from libcellml import Issue
-                issue = Issue()
-                issue.setDescription("The identifier '" + id + "' occurs " + str(num) + " times in the model so a unique item cannot be located.")
-                issue.setLevel(Issue.Level.WARNING)
-                self.addIssue(issue)
-                return AnyCellmlElement()
-
-            if num == 0:
-                from libcellml import Issue
-                issue = Issue()
-                issue.setDescription("Could not find an item with an identifier of '" + id + "' in the model.")
-                issue.setLevel(Issue.Level.WARNING)
-                self.addIssue(issue)
-                return AnyCellmlElement()
-
-        if index == -1:
-            index = 0
-
-        type = _annotator.Annotator__itemCellmlElement(self, id, index)
-        if type in type_dict:
-            return AnyCellmlElement(type, type_dict[type](self, id, index))
-        return AnyCellmlElement(CellmlElementType.UNDEFINED, None)
-
     def items(self, id):
-        r"""Returns everything with the given identifier as as list of (type, item) tuples."""
+        r"""Returns everything with the given identifier as a list of (type, item) tuples."""
         count = _annotator.Annotator_itemCount(self, id)
         itemsList = []
         for c in range(0, count):

@@ -632,248 +632,12 @@ public:
     std::vector<std::string> duplicateIds();
 
     /**
-     * @brief Assign an automatically generated, unique identifier to the given @p item.
-     *
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * The identifier will not be assigned if:
-     *   - no model has been stored in this annotator;
-     *   - the given @p item is not a member of the stored model; or
-     *   - the given @p item is @c nullptr.
-     *
-     * @param item An @c AnyCellmlElementPtr to which a new identifier will be assigned.
-     *
-     * @return the new identifier.
-     */
-    std::string assignId(const AnyCellmlElementPtr &item);
-
-    /**
-     * @brief Assign an automatically generated, unique identifier to the given @p model.
-     *
-     * Assign an automatically generated, unique identifier to the given @p model.
-     * The default is to assign an identifier to a MODEL item.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * Only CellmlElementType::MODEL and CellmlElementType::ENCAPSULATION are relevant any other
-     * CellmlElementType type will not assign an identifier.  @see errorCount() if and/or error(size_t) for any
-     * issues that may have been raised.
-     *
-     * An identifier will not be assigned if:
-     *  - no model has been stored in this annotator;
-     *  - the given @p item is not a member of the stored model;
-     *  - the given @p item is not relevant to the given @p type; or
-     *  - the given @p item is @c nullptr.
-     *
-     * @overload
-     *
-     * @param model A @c ModelPtr model to which the new identifier will be assigned.
-     * @param type An @c CellmlElementType enumeration.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const ModelPtr &model, CellmlElementType type = CellmlElementType::MODEL);
-
-    /**
-     * @brief Assign an automatically generated, unique identifier to the given @p component.
-     *
-     * Assign an automatically generated, unique identifier to the given @p component.
-     * The default is to assign an identifier to a COMPONENT item.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * Only CellmlElementType::COMPONENT and CellmlElementType::COMPONENT_REF are relevant any other
-     * CellmlElementType type will not assign an identifier.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param component A @c ComponentPtr item.
-     * @param type An @c CellmlElementType enumeration.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const ComponentPtr &component, CellmlElementType type = CellmlElementType::COMPONENT);
-
-    /**
-     * @brief Assign an automatically generated, unique identifier to the given @p importSource.
-     *
-     * Assign an automatically generated, unique identifier to the given @p importSource.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param importSource An @c ImportSourcePtr to which the new identifier will be assigned.
-     * @param type An @c CellmlElementType enum.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const ImportSourcePtr &importSource);
-
-    /**
-     * @overload
-     *
-     * @brief Assign an automatically generated, unique identifier of the associated @p type to the given @p reset.
-     *
-     * Assign an automatically generated, unique identifier of the associated @p type to the given @p reset.
-     * The default is to assign an identifier to a RESET item.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * Only CellmlElementType::RESET, CellmlElementType::RESET_VALUE, and CellmlElementType::TEST_VALUE are relevant any other
-     * CellmlElementType type will not assign an identifier.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param reset A @ref ResetPtr.
-     * @param type An @c CellmlElementType enumeration.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const ResetPtr &reset, CellmlElementType type = CellmlElementType::RESET);
-
-    /**
-     * @brief Assign an automatically generated, unique identifier to the given @p units.
-     *
-     * Assign an automatically generated, unique identifier to the given @p units.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param units A @c UnitsPtr item to which the new identifier is assigned.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const UnitsPtr &units);
-
-    /**
-     * @brief Assign an automatically generated, unique identifier to the given @p unitItem.
-     *
-     * Assign an automatically generated, unique identifier to the given @p unitItem.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param unitItem A @c Unit item to which the new identifier is assigned.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const UnitPtr &unitItem);
-
-    /**
-     * @brief Assign an automatically generated, unique identifier to the given @p variable.
-     *
-     * Assign an automatically generated, unique identifier to the given @p variable.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param variable A @c VariablePtr item to which the new identifier is assigned.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const VariablePtr &variable);
-
-    /**
-     * @brief Assign an automatically generated, unique identifier to the associated @p type for the given @p pair.
-     *
-     * Assign an automatically generated, unique identifier to the associated @p type for the given @p pair.
-     * The default is to assign an identifier to a MAP_VARIABLES item.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * Only CellmlElementType::MAP_VARIABLES, and CellmlElementType::CONNECTION are relevant any other
-     * CellmlElementType type will not assign an identifier.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param pair A @c VariablePair item.
-     * @param type A @c CellmlElementType enumeration.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const VariablePairPtr &pair, CellmlElementType type = CellmlElementType::MAP_VARIABLES);
-
-    /**
-     * @overload
-     *
-     * @brief Assign an automatically generated, unique identifier to the item of type @p type
-     *        which exists between @p item1 and @p item2.
-     *
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     * The default is to assign an identifier to a MAP_VARIABLES item.
-     *
-     * Only CellmlElementType::MAP_VARIABLES, and CellmlElementType::CONNECTION are relevant any other
-     * CellmlElementType type will not assign an identifier.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param variable1 A @c VariablePtr item defining to the first item in a connection or equivalence.
-     * @param variable2 A @c VariablePtr item defining to the second item in a connection or equivalence.
-     * @param type A @c CellmlElementType enumeration.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const VariablePtr &variable1, const VariablePtr &variable2, CellmlElementType type = CellmlElementType::MAP_VARIABLES);
-
-    /**
-     * @brief Assign an automatically generated, unique identifier to the unit item at index @p index
-     *        within units @p units.
-     *
-     * Assign an automatically generated, unique identifier to the unit item at index @p index
-     * within units @p units.
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     *
-     * @overload
-     *
-     * @param units A @c UnitsPtr containing the child unit item.
-     * @param index The index at which the child unit exists within the parent @p units item.
-     *
-     * @return the new identifier string.
-     */
-    std::string assignId(const UnitsPtr &units, size_t index);
-
-    /**
      * @brief Assign an automatically generated, unique identifier to the given @p component.
      *
      * Assign an automatically generated, unique identifier to the given @p component.
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param component The @c ComponentPtr which will be assigned the new identifier.
@@ -891,7 +655,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param component The @c ComponentPtr whose encapsulation identifier will be assigned the new identifier.
@@ -909,7 +672,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the connection
@@ -928,7 +690,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param model A @c ModelPtr whose encapsulation will be assigned the new identifier.
@@ -944,7 +705,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param importSource An @c ImportSourcePtr which will be assigned the new identifier.
@@ -962,7 +722,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the equivalence
@@ -979,7 +738,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param model The @c ModelPtr which will be assigned the new identifier.
@@ -995,7 +753,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr which will be assigned the new identifier.
@@ -1011,7 +768,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr whose reset value will be assigned the new identifier.
@@ -1027,7 +783,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr whose test value will be assigned the new identifier.
@@ -1043,7 +798,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param unitItem The @c Unit which will be assigned the new identifier.
@@ -1059,7 +813,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param units The @c UnitsPtr which will be assigned the new identifier.
@@ -1075,7 +828,6 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param variable The @c VariablePtr which will be assigned the new identifier.

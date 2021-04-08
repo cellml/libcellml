@@ -68,12 +68,7 @@ size_t Unit::index() const
 
 bool Unit::isValid() const
 {
-    auto units = mPimpl->mUnits.lock();
-    if (units != nullptr) {
-        return mPimpl->mIndex < units->unitCount();
-    }
-
-    return false;
+    return mPimpl->mIndex < mPimpl->mUnits.lock()->unitCount();
 }
 
 /**
@@ -119,72 +114,105 @@ bool VariablePair::isValid() const
     return (mPimpl->mVariable1.lock() != nullptr) && (mPimpl->mVariable2.lock() != nullptr);
 }
 
+void AnyCellmlElement::AnyCellmlElementImpl::setComponent(const ComponentPtr &component)
+{
+    mType = CellmlElementType::COMPONENT;
+    mItem = component;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setComponentRef(const ComponentPtr &component)
+{
+    mType = CellmlElementType::COMPONENT_REF;
+    mItem = component;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setConnection(const VariablePairPtr &variablePair)
+{
+    mType = CellmlElementType::CONNECTION;
+    mItem = variablePair;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setConnection(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    mType = CellmlElementType::CONNECTION;
+    mItem = VariablePair::create(variable1, variable2);
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setEncapsulation(const ModelPtr &model)
+{
+    mType = CellmlElementType::ENCAPSULATION;
+    mItem = model;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setImportSource(const ImportSourcePtr &importSource)
+{
+    mType = CellmlElementType::IMPORT;
+    mItem = importSource;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setMapVariables(const VariablePairPtr &variablePair)
+{
+    mType = CellmlElementType::MAP_VARIABLES;
+    mItem = variablePair;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    mType = CellmlElementType::MAP_VARIABLES;
+    mItem = VariablePair::create(variable1, variable2);
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setMath(const ComponentPtr &component)
+{
+    mType = CellmlElementType::MATH;
+    mItem = component;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setModel(const ModelPtr &model)
+{
+    mType = CellmlElementType::MODEL;
+    mItem = model;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setReset(const ResetPtr &reset)
+{
+    mType = CellmlElementType::RESET;
+    mItem = reset;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setResetValue(const ResetPtr &reset)
+{
+    mType = CellmlElementType::RESET_VALUE;
+    mItem = reset;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setTestValue(const ResetPtr &reset)
+{
+    mType = CellmlElementType::TEST_VALUE;
+    mItem = reset;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setUnit(const UnitPtr &unit)
+{
+    mType = CellmlElementType::UNIT;
+    mItem = unit;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setUnits(const UnitsPtr &units)
+{
+    mType = CellmlElementType::UNITS;
+    mItem = units;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setVariable(const VariablePtr &variable)
+{
+    mType = CellmlElementType::VARIABLE;
+    mItem = variable;
+}
+
 AnyCellmlElement::AnyCellmlElement()
     : mPimpl(new AnyCellmlElementImpl())
 {
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const std::any &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = item;
-    mPimpl->mType = type;
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const ComponentPtr &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = std::any(item);
-    mPimpl->mType = type;
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const ImportSourcePtr &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = std::any(item);
-    mPimpl->mType = type;
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const ModelPtr &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = std::any(item);
-    mPimpl->mType = type;
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const ResetPtr &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = std::any(item);
-    mPimpl->mType = type;
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const UnitPtr &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = std::any(item);
-    mPimpl->mType = type;
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const UnitsPtr &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = std::any(item);
-    mPimpl->mType = type;
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const VariablePairPtr &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = std::any(item);
-    mPimpl->mType = type;
-}
-
-AnyCellmlElement::AnyCellmlElement(CellmlElementType type, const VariablePtr &item)
-    : mPimpl(new AnyCellmlElementImpl())
-{
-    mPimpl->mItem = std::any(item);
-    mPimpl->mType = type;
 }
 
 AnyCellmlElement::~AnyCellmlElement()
@@ -192,63 +220,126 @@ AnyCellmlElement::~AnyCellmlElement()
     delete mPimpl;
 }
 
-AnyCellmlElementPtr AnyCellmlElement::create() noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-}
-
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const std::any &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const ComponentPtr &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const ImportSourcePtr &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const VariablePtr &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const VariablePairPtr &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const ModelPtr &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const UnitsPtr &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const UnitPtr &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-AnyCellmlElementPtr AnyCellmlElement::create(CellmlElementType type, const ResetPtr &item) noexcept
-{
-    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {type, item}};
-}
-
-std::any AnyCellmlElement::item() const
-{
-    return mPimpl->mItem;
-}
-
 CellmlElementType AnyCellmlElement::type() const
 {
     return mPimpl->mType;
+}
+
+ComponentPtr AnyCellmlElement::component() const
+{
+    if (mPimpl->mType == CellmlElementType::COMPONENT) {
+        return std::any_cast<ComponentPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+ComponentPtr AnyCellmlElement::componentRef() const
+{
+    if (mPimpl->mType == CellmlElementType::COMPONENT_REF) {
+        return std::any_cast<ComponentPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+VariablePairPtr AnyCellmlElement::connection() const
+{
+    if (mPimpl->mType == CellmlElementType::CONNECTION) {
+        return std::any_cast<VariablePairPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+ModelPtr AnyCellmlElement::encapsulation() const
+{
+    if (mPimpl->mType == CellmlElementType::ENCAPSULATION) {
+        return std::any_cast<ModelPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+ImportSourcePtr AnyCellmlElement::importSource() const
+{
+    if (mPimpl->mType == CellmlElementType::IMPORT) {
+        return std::any_cast<ImportSourcePtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+VariablePairPtr AnyCellmlElement::mapVariables() const
+{
+    if (mPimpl->mType == CellmlElementType::MAP_VARIABLES) {
+        return std::any_cast<VariablePairPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+ModelPtr AnyCellmlElement::model() const
+{
+    if (mPimpl->mType == CellmlElementType::MODEL) {
+        return std::any_cast<ModelPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+ResetPtr AnyCellmlElement::reset() const
+{
+    if (mPimpl->mType == CellmlElementType::RESET) {
+        return std::any_cast<ResetPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+ResetPtr AnyCellmlElement::resetValue() const
+{
+    if (mPimpl->mType == CellmlElementType::RESET_VALUE) {
+        return std::any_cast<ResetPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+ResetPtr AnyCellmlElement::testValue() const
+{
+    if (mPimpl->mType == CellmlElementType::TEST_VALUE) {
+        return std::any_cast<ResetPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+UnitPtr AnyCellmlElement::unit() const
+{
+    if (mPimpl->mType == CellmlElementType::UNIT) {
+        return std::any_cast<UnitPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+UnitsPtr AnyCellmlElement::units() const
+{
+    if (mPimpl->mType == CellmlElementType::UNITS) {
+        return std::any_cast<UnitsPtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
+}
+
+VariablePtr AnyCellmlElement::variable() const
+{
+    if (mPimpl->mType == CellmlElementType::VARIABLE) {
+        return std::any_cast<VariablePtr>(mPimpl->mItem);
+    }
+
+    return nullptr;
 }
 
 } // namespace libcellml
