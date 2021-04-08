@@ -97,18 +97,3 @@ TEST(Annotator, automaticIdsUndefined)
 
     EXPECT_EQ("", model->id());
 }
-
-TEST(Annotator, automaticIdUndefined)
-{
-    auto annotator = libcellml::Annotator::create();
-    auto model = libcellml::Model::create();
-
-    annotator->setModel(model);
-
-    auto pair = libcellml::AnyCellmlElement::create(libcellml::CellmlElementType::UNDEFINED, std::any(nullptr));
-
-    annotator->assignId(pair);
-    EXPECT_TRUE(annotator->hasModel());
-
-    EXPECT_EQ("", model->id());
-}

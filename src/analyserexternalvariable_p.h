@@ -18,8 +18,6 @@ limitations under the License.
 
 #include "libcellml/analyserexternalvariable.h"
 
-#include <vector>
-
 namespace libcellml {
 
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */

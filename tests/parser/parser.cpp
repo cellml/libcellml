@@ -95,15 +95,6 @@ TEST(Parser, parseNamedModel)
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, makeIssue)
-{
-    const std::string e;
-
-    libcellml::IssuePtr err = libcellml::Issue::create();
-
-    EXPECT_EQ(e, err->description());
-}
-
 TEST(Parser, emptyModelString)
 {
     const std::string e;
@@ -245,11 +236,11 @@ TEST(Parser, parseModelWithInvalidAttributeAndGetIssue)
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 
     // Get ModelIssue and check.
-    EXPECT_EQ(model, parser->issue(0)->model());
+    EXPECT_EQ(model, parser->issue(0)->item()->model());
     // Get const modelIssue and check.
     const libcellml::IssuePtr issue = parser->issue(0);
     libcellml::Issue *rawIssue = issue.get();
-    const libcellml::ModelPtr modelFromIssue = rawIssue->model();
+    const libcellml::ModelPtr modelFromIssue = rawIssue->item()->model();
     EXPECT_EQ(model, modelFromIssue);
 }
 
@@ -372,11 +363,11 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetIssu
     libcellml::UnitsPtr unitsExpected = model->units("unit_name");
 
     // Get units from issue and check.
-    EXPECT_EQ(unitsExpected, parser->issue(0)->units());
+    EXPECT_EQ(unitsExpected, parser->issue(0)->item()->units());
 
     // Get const units from issue and check.
     const libcellml::IssuePtr issue = parser->issue(0);
-    const libcellml::UnitsPtr unitsFromIssue = issue->units();
+    const libcellml::UnitsPtr unitsFromIssue = issue->item()->units();
     EXPECT_EQ(unitsExpected, unitsFromIssue);
 }
 
@@ -399,11 +390,11 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetIssue)
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 
     // Get component from issue and check.
-    EXPECT_EQ(component, parser->issue(0)->component());
+    EXPECT_EQ(component, parser->issue(0)->item()->component());
     // Get const component from issue and check.
     const libcellml::IssuePtr issue = parser->issue(0);
     libcellml::Issue *rawIssue = issue.get();
-    const libcellml::ComponentPtr componentFromIssue = rawIssue->component();
+    const libcellml::ComponentPtr componentFromIssue = rawIssue->item()->component();
     EXPECT_EQ(component, componentFromIssue);
 
     // Get non-existent issue
@@ -940,11 +931,11 @@ TEST(Parser, invalidVariableAttributesAndGetVariableIssue)
 
     libcellml::VariablePtr variableExpected = model->component("componentA")->variable("quixote");
     // Get variable from issue and check.
-    EXPECT_EQ(variableExpected, p->issue(0)->variable());
+    EXPECT_EQ(variableExpected, p->issue(0)->item()->variable());
     // Get const variable from issue and check.
     libcellml::IssuePtr issue = p->issue(0);
     libcellml::Issue *rawIssue = issue.get();
-    const libcellml::VariablePtr variableFromIssue = rawIssue->variable();
+    const libcellml::VariablePtr variableFromIssue = rawIssue->item()->variable();
     EXPECT_EQ(variableExpected, variableFromIssue);
 }
 
@@ -975,8 +966,10 @@ TEST(Parser, variableAttributeAndChildIssues)
     p->parseModel(in1);
     EXPECT_EQ(size_t(1), p->errorCount());
     EXPECT_EQ(size_t(1), p->warningCount());
+    EXPECT_EQ(size_t(0), p->messageCount());
     EXPECT_EQ(expectError1, p->error(0)->description());
     EXPECT_EQ(expectWarning1, p->warning(0)->description());
+    EXPECT_EQ(nullptr, p->message(0));
 
     p->removeAllIssues();
     p->parseModel(in2);
@@ -1390,18 +1383,18 @@ TEST(Parser, invalidImportsAndGetIssue)
 
     libcellml::ImportSourcePtr import = m->units("units_in_this_model")->importSource();
     // Get import from issue and check.
-    EXPECT_EQ(import, p->issue(0)->importSource());
+    EXPECT_EQ(import, p->issue(0)->item()->importSource());
     // Get const import from issue and check.
     const libcellml::IssuePtr issue = p->issue(0);
     libcellml::Issue *rawIssue = issue.get();
-    const libcellml::ImportSourcePtr importFromIssue = rawIssue->importSource();
+    const libcellml::ImportSourcePtr importFromIssue = rawIssue->item()->importSource();
     EXPECT_EQ(import, importFromIssue);
 }
 
 TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
 {
     // Check for all item types of issues.
-    std::vector<bool> foundCellmlElementType(7, false);
+    std::vector<bool> foundCellmlElementType(6, false);
 
     // Trigger CellML entity issues.
     const std::string in =
@@ -1438,7 +1431,7 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 
     for (size_t i = 0; i < parser->issueCount(); ++i) {
-        switch (parser->issue(i)->cellmlElementType()) {
+        switch (parser->issue(i)->item()->type()) {
         case libcellml::CellmlElementType::COMPONENT:
             foundCellmlElementType.at(0) = true;
             break;
@@ -1468,16 +1461,6 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
         case libcellml::CellmlElementType::UNIT:
             break;
         }
-    }
-
-    // Trigger undefined issue.
-    libcellml::ParserPtr parser2 = libcellml::Parser::create();
-    // Add an undefined issue.
-    libcellml::IssuePtr undefinedIssue = libcellml::Issue::create();
-    parser2->addIssue(undefinedIssue);
-    EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->cellmlElementType() == libcellml::CellmlElementType::UNDEFINED) {
-        foundCellmlElementType.at(6) = true;
     }
 
     // Check that we've found all the possible issue types.
@@ -1900,7 +1883,7 @@ TEST(Parser, parseResetsWithIssues)
 
     EXPECT_EQ_ISSUES(expectedIssues, p);
 
-    EXPECT_EQ(resetExpected, p->issue(0)->reset());
+    EXPECT_EQ(resetExpected, p->issue(0)->item()->reset());
 }
 
 TEST(Parser, unitsWithCellMLRealVariations)

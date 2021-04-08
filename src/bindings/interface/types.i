@@ -73,8 +73,6 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::AnyCellmlElement::type
 "Get the type of the stored item.";
 
-%ignore libcellml::AnyCellmlElement::item;
-
 %feature("docstring") libcellml::AnyCellmlElement::component
 "Return the item as a component.";
 
@@ -257,132 +255,7 @@ Provides support for shared pointers declared in types.h.
     }
 }
 
-%extend libcellml::AnyCellmlElement {
-
-    AnyCellmlElement(CellmlElementType type, ComponentPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-    AnyCellmlElement(CellmlElementType type, ModelPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-    AnyCellmlElement(CellmlElementType type, VariablePtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-    AnyCellmlElement(CellmlElementType type, VariablePairPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-    AnyCellmlElement(CellmlElementType type, UnitsPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-    AnyCellmlElement(CellmlElementType type, UnitPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-    AnyCellmlElement(CellmlElementType type, ImportSourcePtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-    AnyCellmlElement(CellmlElementType type, ResetPtr &item) {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create(type, item));
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-
-    AnyCellmlElement() {
-        auto ptr = new std::shared_ptr<libcellml::AnyCellmlElement>(libcellml::AnyCellmlElement::create());
-        return reinterpret_cast<libcellml::AnyCellmlElement *>(ptr);
-    }
-
-    libcellml::ComponentPtr component() {
-        return std::any_cast<libcellml::ComponentPtr>($self->item());
-    }
-
-    libcellml::ComponentPtr componentRef() {
-        return std::any_cast<libcellml::ComponentPtr>($self->item());
-    }
-
-    libcellml::VariablePairPtr connection() {
-        return std::any_cast<libcellml::VariablePairPtr>($self->item());
-    }
-
-    libcellml::ModelPtr encapsulation() {
-        return std::any_cast<libcellml::ModelPtr>($self->item());
-    }
-
-    libcellml::ImportSourcePtr importSource() {
-        return std::any_cast<libcellml::ImportSourcePtr>($self->item());
-    }
-
-    libcellml::VariablePairPtr mapVariables() {
-        return std::any_cast<libcellml::VariablePairPtr>($self->item());
-    }
-
-    libcellml::ModelPtr model() {
-        return std::any_cast<libcellml::ModelPtr>($self->item());
-    }
-
-    libcellml::ResetPtr reset() {
-        if($self->type() != libcellml::CellmlElementType::RESET) {
-          return nullptr;
-        }
-        return std::any_cast<libcellml::ResetPtr>($self->item());
-    }
-
-    libcellml::ResetPtr resetValue() {
-        return std::any_cast<libcellml::ResetPtr>($self->item());
-    }
-
-    libcellml::ResetPtr testValue() {
-        return std::any_cast<libcellml::ResetPtr>($self->item());
-    }
-
-    libcellml::UnitPtr unit() {
-        return std::any_cast<libcellml::UnitPtr>($self->item());
-    }
-
-    libcellml::UnitsPtr units() {
-        return std::any_cast<libcellml::UnitsPtr>($self->item());
-    }
-
-    libcellml::VariablePtr variable() {
-        return std::any_cast<libcellml::VariablePtr>($self->item());
-    }
-
-
-%pythoncode %{
-
-    def item(self):
-      """Get the stored item."""
-      type_dict = {
-        CellmlElementType.COMPONENT: _types.AnyCellmlElement_component,
-        CellmlElementType.COMPONENT_REF: _types.AnyCellmlElement_componentRef,
-        CellmlElementType.CONNECTION: _types.AnyCellmlElement_connection,
-        CellmlElementType.ENCAPSULATION: _types.AnyCellmlElement_encapsulation,
-        CellmlElementType.IMPORT: _types.AnyCellmlElement_importSource,
-        CellmlElementType.MAP_VARIABLES: _types.AnyCellmlElement_mapVariables,
-        CellmlElementType.MODEL: _types.AnyCellmlElement_model,
-        CellmlElementType.RESET: _types.AnyCellmlElement_reset,
-        CellmlElementType.RESET_VALUE: _types.AnyCellmlElement_resetValue,
-        CellmlElementType.TEST_VALUE: _types.AnyCellmlElement_testValue,
-        CellmlElementType.UNIT: _types.AnyCellmlElement_unit,
-        CellmlElementType.UNITS: _types.AnyCellmlElement_units,
-        CellmlElementType.VARIABLE: _types.AnyCellmlElement_variable,
-      }
-
-      t = self.type()
-      if t in type_dict:
-        return type_dict[t](self)
-      return None
-
-  %}
-}
-
 %ignore libcellml::Unit::create;
 %ignore libcellml::VariablePair::create;
-%ignore libcellml::AnyCellmlElement::create;
 
 %include "libcellml/types.h"

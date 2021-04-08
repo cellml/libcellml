@@ -102,6 +102,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -Wno-global-constructors
       -Wno-missing-prototypes
       -Wno-padded
+      -Wno-undefined-func-template
     )
 
     if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)

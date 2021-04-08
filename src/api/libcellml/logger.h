@@ -46,22 +46,6 @@ public:
     void removeAllIssues();
 
     /**
-     * @brief Add an issue to the logger.
-     *
-     * Adds the argument @p issue to this logger.
-     *
-     * @param issue The @c IssuePtr to add.
-     */
-    void addIssue(const IssuePtr &issue);
-
-    /**
-     *  Add a vector of issues to the logger.
-     *
-     * @param issues A @c std::vector of @c IssuePtr items to add.
-     */
-    void addIssues(const std::vector<IssuePtr> &issues);
-
-    /**
      * @brief Get the number of issues.
      *
      * Return the number of issues of any level currently stored in the logger.
@@ -128,28 +112,6 @@ public:
     IssuePtr warning(size_t index) const;
 
     /**
-     * @brief Get the number of issues with level of HINT.
-     *
-     * Return the number of hints currently stored in the logger.
-     *
-     * @return The number of hints.
-     */
-    size_t hintCount() const;
-
-    /**
-     * @brief Get issue of level HINT at the specified @p index.
-     *
-     * Returns a hint at the @p index.  If the @p index
-     * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#hints).
-     *
-     * @param index The index of the hint to return.
-     *
-     * @return A reference to the hint at the given index on success, @c nullptr otherwise.
-     */
-    IssuePtr hint(size_t index) const;
-
-    /**
      * @brief Get the number of issues with level of MESSAGE.
      *
      * Return the number of messages currently stored in the logger.
@@ -174,6 +136,22 @@ public:
 
 protected:
     Logger(); /**< Constructor, @private. */
+
+    /**
+     * @brief Add an issue to the logger.
+     *
+     * Adds the argument @p issue to this logger.
+     *
+     * @param issue The @c IssuePtr to add.
+     */
+    void addIssue(const IssuePtr &issue);
+
+    /**
+     *  Add a vector of issues to the logger.
+     *
+     * @param issues A @c std::vector of @c IssuePtr items to add.
+     */
+    void addIssues(const std::vector<IssuePtr> &issues);
 
 private:
     struct LoggerImpl; /**< Forward declaration for pImpl idiom, @private. */

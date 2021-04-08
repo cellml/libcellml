@@ -34,12 +34,6 @@
 %feature("docstring") libcellml::Logger::warningCount
 "Returns the number of issues of level WARNING currently stored in the logger.";
 
-%feature("docstring") libcellml::Logger::hint
-"Returns the issue of level HINT at the specified ``index``.";
-
-%feature("docstring") libcellml::Logger::hintCount
-"Returns the number of issues of level HINT currently stored in the logger.";
-
 %feature("docstring") libcellml::Logger::message
 "Returns the issue of level MESSAGE at the specified ``index``.";
 

@@ -35,7 +35,6 @@ struct Logger::LoggerImpl
 {
     std::vector<size_t> mErrors;
     std::vector<size_t> mWarnings;
-    std::vector<size_t> mHints;
     std::vector<size_t> mMessages;
     std::vector<IssuePtr> mIssues;
 };
@@ -78,20 +77,6 @@ IssuePtr Logger::warning(size_t index) const
     return issue;
 }
 
-size_t Logger::hintCount() const
-{
-    return mPimpl->mHints.size();
-}
-
-IssuePtr Logger::hint(size_t index) const
-{
-    IssuePtr issue = nullptr;
-    if (index < mPimpl->mHints.size()) {
-        issue = mPimpl->mIssues.at(mPimpl->mHints.at(index));
-    }
-    return issue;
-}
-
 size_t Logger::messageCount() const
 {
     return mPimpl->mMessages.size();
@@ -111,7 +96,6 @@ void Logger::removeAllIssues()
     mPimpl->mIssues.clear();
     mPimpl->mErrors.clear();
     mPimpl->mWarnings.clear();
-    mPimpl->mHints.clear();
     mPimpl->mMessages.clear();
 }
 
@@ -127,9 +111,6 @@ void Logger::addIssue(const IssuePtr &issue)
         break;
     case libcellml::Issue::Level::WARNING:
         mPimpl->mWarnings.push_back(index);
-        break;
-    case libcellml::Issue::Level::HINT:
-        mPimpl->mHints.push_back(index);
         break;
     case libcellml::Issue::Level::MESSAGE:
         mPimpl->mMessages.push_back(index);

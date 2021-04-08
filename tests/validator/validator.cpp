@@ -51,10 +51,13 @@ TEST(Validator, unnamedModel)
     const std::vector<std::string> expectedSpecificationHeadings = {
         "2.1.1",
     };
+    const std::vector<std::string> expectedUrls = {
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
+    };
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
     validator->validateModel(model);
-    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, validator);
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS_URLS(expectedIssues, expectedSpecificationHeadings, expectedUrls, validator);
 }
 
 TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
@@ -72,6 +75,13 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
         "2.7.1",
         "2.7.1",
         "2.7.1",
+    };
+    const std::vector<std::string> expectedUrls = {
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -96,7 +106,7 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
 
     v->validateModel(model);
 
-    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, v);
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS_URLS(expectedIssues, expectedSpecificationHeadings, expectedUrls, v);
 }
 
 TEST(Validator, namedModelWithUnnamedComponent)
@@ -2151,7 +2161,7 @@ TEST(Validator, unitSimpleCycle)
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
     auto issue = v->issue(0);
-    EXPECT_EQ("grandfather", issue->units()->name());
+    EXPECT_EQ("grandfather", issue->item()->units()->name());
 }
 
 TEST(Validator, unitComplexCycle)
