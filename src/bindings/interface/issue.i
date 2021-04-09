@@ -30,6 +30,9 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::setReferenceRule
 "Sets the :class:`ReferenceRule` for this issue.";
 
+%feature("docstring") libcellml::Issue::item
+"Get the item for this issue.";
+
 %feature("docstring") libcellml::Issue::url
 "Get the URL for more information about this issue.";
 
@@ -129,6 +132,10 @@ Level::ERROR will be returned.";
 
 %{
 #include "libcellml/issue.h"
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %include "libcellml/issue.h"

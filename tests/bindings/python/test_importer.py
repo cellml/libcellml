@@ -26,8 +26,6 @@ class ImporterTestCase(unittest.TestCase):
         self.assertIsNone(x.issue(0))
         self.assertIsNone(x.issue(-1))
         self.assertEqual(x.issueCount(), 0)
-        x.addIssue(libcellml.Issue())
-        self.assertEqual(x.issueCount(), 1)
 
     def test_resolve_imports(self):
         from libcellml import Importer
@@ -229,7 +227,6 @@ class ImporterTestCase(unittest.TestCase):
         im.removeAllImportSources()
 
         self.assertEqual(0, im.importSourceCount())
-
 
 
 if __name__ == '__main__':
