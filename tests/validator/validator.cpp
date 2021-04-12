@@ -3018,15 +3018,9 @@ TEST(Validator, circularImportReferencesUnits)
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->errorCount());
-    Debug() << importer->error(0);
-    Debug() << importer->error(0)->description();
     EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
-    Debug() << model;
-    Debug() << importer->error(0)->units();
-    Debug() << model->units(0);
     EXPECT_EQ(model->units(0), importer->error(0)->units());
 
-    Debug() << "validate model again";
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
     EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
