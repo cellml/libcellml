@@ -489,20 +489,6 @@ bool isStandardPrefixName(const std::string &name);
 size_t indexOf(const VariablePtr &variable, const ComponentConstPtr &component);
 
 /**
- * @brief Get the index of the @p units in the @p model.
- *
- * Get the index of the @p units in the @p model. If the units is not found in the
- * model then the number of units in the model is returned.
- *
- * @param units The @ref Units to return the index of.
- * @param model The @ref Model to search for the @ref Units in.
- *
- * @return The index of the @p units found in the model. Returns the number of units
- * in the model if the units was not found.
- */
-size_t indexOf(const UnitsPtr &units, const ModelPtr &model);
-
-/**
  * @brief Test to determine if @p variable1 and @p variable2 are equivalent.
  *
  * Test to see if @p variable1 is the same as or equivalent to @p variable2.
