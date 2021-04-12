@@ -311,7 +311,7 @@ TEST(Validator, importUnitsDuplicateRefs)
     m->addUnits(units);
 
     v->validateModel(m);
-
+printIssues(v);
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
@@ -476,7 +476,7 @@ TEST(Validator, importsDummyVariablesNotCheckedForUnitsInterfaces)
 
     libcellml::Variable::addEquivalence(variable, dummyVariable);
     validator->validateModel(model);
-
+    printIssues(validator);
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
@@ -2221,7 +2221,7 @@ TEST(Validator, unitComplexCycle)
     //
     //                            <- brotherFromAnotherMother (u4)
     //                 <- father (u2)  <-+
-    //     grandfather (u1)              | <- childOfIncest (u5)
+    //     grandfather (u1)              | <- childOfIncest_ButThatsOKApparently (u5)
     //                 <- mother (u3)  <-+
     //                            <- sisterFromAnotherFather (u6)
     //
@@ -2283,6 +2283,63 @@ TEST(Validator, unitComplexCycle)
 
     const std::vector<std::string> expectedIssues = {
         "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'",
+    };
+
+    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1.
+    u1->addUnit("brotherFromAnotherMother");
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, unitComplexCycleChangeOrderOfUnits)
+{
+    // Same test as unitComplexCycle except the order of the units
+    // added to the model is different.  This changes the order
+    // that the loop is detected  in.
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = libcellml::Model::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
+    libcellml::UnitsPtr u6 = libcellml::Units::create();
+
+    m->setName("model");
+
+    m->addUnits(u4);
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
+    m->addUnits(u5);
+    m->addUnits(u6);
+
+    u1->setName("grandfather"); // Base unit.
+
+    u2->setName("father"); // First generation.
+    u2->addUnit("grandfather");
+
+    u3->setName("mother"); // First generation.
+    u3->addUnit("grandfather");
+
+    u4->setName("brotherFromAnotherMother"); // Second generation.
+    u4->addUnit("father");
+
+    // Second generation depending on both first gen children, still valid, no loops because of directionality.
+    u5->setName("childOfIncest_ButThatsOKApparently");
+    u5->addUnit("mother");
+    u5->addUnit("father");
+
+    u6->setName("sisterFromAnotherFather"); // Second generation.
+    u6->addUnit("mother");
+
+    v->validateModel(m);
+    EXPECT_EQ(size_t(0), v->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Cyclic units exist: 'brotherFromAnotherMother' -> 'father' -> 'grandfather' -> 'brotherFromAnotherMother'",
     };
 
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1.
@@ -2907,104 +2964,155 @@ TEST(Validator, duplicateIdAll)
 
 TEST(Validator, circularImportReferencesComponent)
 {
-    const std::string errorMessage =
+    const std::string errorMessageImporter =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_cyclic' references component 'c2' in '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
         " - component 'c2' references component 'c3' in '" + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
         " - component 'c3' references component 'i_am_cyclic' in '" + resourcePath("importer/") + "circularImport_1.cellml'.";
+    const std::string errorMessageValidator =
+        "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
+        " - component 'i_am_cyclic' references component 'c2' in 'circularImport_2.cellml';\n"
+        " - component 'c2' references component 'c3' in 'circularImport_3.cellml'; and\n"
+        " - component 'c3' references component 'i_am_cyclic' in 'circularImport_1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/circularImport_1.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
-    validator->validateModel(model, resourcePath("importer/"));
-    EXPECT_EQ(size_t(1), validator->issueCount());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
+    EXPECT_EQ(model->component(0), importer->issue(0)->component());
+
+    validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(errorMessage, validator->error(0)->description());
-    EXPECT_EQ(model->component(0), validator->issue(0)->component());
+    EXPECT_EQ(errorMessageValidator, validator->error(0)->description());
 }
 
 TEST(Validator, circularImportReferencesUnits)
 {
-    const std::string errorMessage =
+    const std::string errorMessageImporter =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
         " - units 'i_am_cyclic' references units 'u2' in '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
         " - units 'u2' references units 'u3' in '" + resourcePath("importer/") + "circularUnits_3.cellml'; and\n"
         " - units 'u3' references units 'i_am_cyclic' in '" + resourcePath("importer/") + "circularUnits_1.cellml'.";
+    const std::string errorMessageValidator =
+        "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
+        " - units 'i_am_cyclic' references units 'u2' in 'circularUnits_2.cellml';\n"
+        " - units 'u2' references units 'u3' in 'circularUnits_3.cellml'; and\n"
+        " - units 'u3' references units 'i_am_cyclic' in 'circularUnits_1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/circularUnits_1.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
-    validator->validateModel(model, resourcePath("importer/"));
-    EXPECT_EQ(size_t(1), validator->issueCount());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    Debug() << importer->error(0);
+    Debug() << importer->error(0)->description();
+    EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
+    Debug() << model;
+    Debug() << importer->error(0)->units();
+    Debug() << model->units(0);
+    EXPECT_EQ(model->units(0), importer->error(0)->units());
+
+    Debug() << "validate model again";
+    validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(errorMessage, validator->error(0)->description());
-    EXPECT_EQ(model->units(0), validator->issue(0)->units());
+    EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
+    printIssues(validator);
 }
 
 TEST(Validator, circularImportedUnitsDuplicateNames)
 {
-    const std::vector<std::string> errorMessages = {
-        "Model 'circularImport1' contains multiple units with the name 'i_am_duplicated'. Valid units names must be unique to their model.",
+    const std::string errorMessageImporter =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
         " - units 'i_am_duplicated' references units 'u2' in '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
         " - units 'u2' references units 'u3' in '" + resourcePath("importer/") + "circularUnits_3.cellml';\n"
         " - units 'u3' references units 'i_am_cyclic' in '" + resourcePath("importer/") + "circularUnits_1.cellml'; and\n"
-        " - units 'i_am_cyclic' references units 'u2' in '" + resourcePath("importer/") + "circularUnits_2.cellml'.",
+        " - units 'i_am_cyclic' references units 'u2' in '" + resourcePath("importer/") + "circularUnits_2.cellml'.";
+    const std::vector<std::string> errorMessagesValidator = {
+        "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
+        " - units 'i_am_duplicated' references units 'u2' in 'circularUnits_2.cellml';\n"
+        " - units 'u2' references units 'u3' in 'circularUnits_3.cellml';\n"
+        " - units 'u3' references units 'i_am_cyclic' in 'circularUnits_1.cellml'; and\n"
+        " - units 'i_am_cyclic' references units 'u2' in 'circularUnits_2.cellml'.",
+        "Model 'circularImport1' contains multiple units with the name 'i_am_duplicated'. Valid units names must be unique to their model.",
     };
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/circularUnits_1_duplicated_name.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
-    EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
+    EXPECT_EQ(errorMessagesValidator[1], validator->issue(0)->description());
     EXPECT_EQ(model, validator->error(0)->model());
 
-    validator->validateModel(model, resourcePath("importer/"));
-    EXPECT_EQ(size_t(2), validator->issueCount());
-    EXPECT_EQ_ISSUES(errorMessages, validator);
-    EXPECT_EQ(model, validator->issue(0)->model());
-    EXPECT_EQ(model->units(0), validator->issue(1)->units());
+
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(errorMessageImporter, importer->issue(0)->description());
+//    EXPECT_EQ_ISSUES(errorMessages, importer);
+    EXPECT_EQ(model->units(0), importer->issue(0)->units());
+
+    validator->validateModel(model);
+    EXPECT_EQ_ISSUES(errorMessagesValidator, validator);
+    printIssues(validator);
 }
 
 TEST(Validator, circularImportedComponentsDuplicateNames)
 {
-    const std::vector<std::string> errorMessages = {
-        "Model 'circularImport1' contains multiple components with the name 'i_am_duplicated'. Valid component names must be unique to their model.",
+    const std::vector<std::string> errorMessagesValidator = {
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_duplicated' references component 'c2' in '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
-        " - component 'c2' references component 'c3' in '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
-        " - component 'c3' references component 'i_am_cyclic' in '" + resourcePath("importer/") + "circularImport_1.cellml'; and\n"
-        " - component 'i_am_cyclic' references component 'c2' in '" + resourcePath("importer/") + "circularImport_2.cellml'.",
+        " - component 'i_am_duplicated' references component 'c2' in 'circularImport_2.cellml';\n"
+        " - component 'c2' references component 'c3' in 'circularImport_3.cellml';\n"
+        " - component 'c3' references component 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
+        " - component 'i_am_cyclic' references component 'c2' in 'circularImport_2.cellml'.",
+        "Model 'circularImport1' contains multiple components with the name 'i_am_duplicated'. Valid component names must be unique to their model.",
     };
+    const std::string errorMessageImporter =
+            "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
+            " - component 'i_am_duplicated' references component 'c2' in '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
+            " - component 'c2' references component 'c3' in '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
+            " - component 'c3' references component 'i_am_cyclic' in '" + resourcePath("importer/") + "circularImport_1.cellml'; and\n"
+            " - component 'i_am_cyclic' references component 'c2' in '" + resourcePath("importer/") + "circularImport_2.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/circularImport_1_duplicated_name.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
-    EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
+    EXPECT_EQ(errorMessagesValidator[1], validator->issue(0)->description());
     EXPECT_EQ(model, validator->error(0)->model());
 
-    validator->validateModel(model, resourcePath("importer/"));
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(errorMessageImporter, importer->issue(0)->description());
+    EXPECT_EQ(model->units(0), importer->issue(0)->units());
+
+    validator->validateModel(model);
     EXPECT_EQ(size_t(2), validator->issueCount());
-    EXPECT_EQ_ISSUES(errorMessages, validator);
-    EXPECT_EQ(model, validator->issue(0)->model());
-    EXPECT_EQ(model->units(0), validator->issue(1)->units());
+    EXPECT_EQ_ISSUES(errorMessagesValidator, validator);
 }
 
 TEST(Validator, importComponentWithInvalidName)
@@ -3013,9 +3121,13 @@ TEST(Validator, importComponentWithInvalidName)
         "Import of component 'c' has an invalid URI in the xlink:href attribute.",
         "The attempt to resolve imports with the model at '"
             + resourcePath("importer/")
-            + "i am broken and invalid.cellml' failed: the file could not be opened."};
+            + "i am broken and invalid.cellml' failed: the file could not be opened.",
+    };
+
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/invalid_import_url.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -3024,57 +3136,78 @@ TEST(Validator, importComponentWithInvalidName)
     EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
     EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
 
-    validator->validateModel(model, resourcePath("importer/"));
-    EXPECT_EQ(size_t(2), validator->issueCount());
-    EXPECT_EQ_ISSUES(errorMessages, validator);
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(errorMessages[1], importer->issue(0)->description());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
     EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
 }
 
 TEST(Validator, importSecondGenComponentWithInvalidName)
 {
-    const std::string errorMessage =
+    const std::vector<std::string> errorMessages = {
+        "Import of component 'c' has an invalid URI in the xlink:href attribute.",
         "The attempt to resolve imports with the model at '"
         + resourcePath("importer/")
-        + "i am broken and invalid.cellml' failed: the file could not be opened.";
-
+        + "i am broken and invalid.cellml' failed: the file could not be opened.",
+};
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/import_invalid_import_url.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(errorMessages[1], importer->issue(0)->description());
+    EXPECT_EQ(model->component("c", true), importer->issue(0)->component());
+
     validator->validateModel(model, resourcePath("importer/"));
-    EXPECT_EQ(size_t(1), validator->issueCount());
-    EXPECT_EQ(errorMessage, validator->issue(0)->description());
-    EXPECT_EQ(model->component("c", true), validator->issue(0)->component());
+    printIssues(validator);
+    EXPECT_EQ_ISSUES(errorMessages, validator);
 }
 
 TEST(Validator, highIndexUnitsImport)
 {
-    const std::string errorMessage =
-        "Import of units 'i_am_bad' from 'units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+    const std::string errorMessageImporter =
+        "Import of units 'i_am_bad' from '" + resourcePath("importer/") + "units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+    const std::string errorMessageValidator =
+        "Imported units 'i_am_bad' is not valid because:\n"
+        " - Units 'ps' imported from 'units_library.cellml' has error; Units reference 'seconds' in units 'ps' is not a valid reference to a local units or a standard unit type.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("importer/import_units_that_have_unknown_children.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
-    validator->validateModel(model, resourcePath("importer/"));
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
+    EXPECT_EQ(model->units(1), importer->issue(0)->units());
+
+    validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(errorMessage, validator->error(0)->description());
-    EXPECT_EQ(model->units(1), validator->issue(0)->units());
+    EXPECT_EQ(errorMessageValidator, validator->error(0)->description());
+    printIssues(validator);
 }
 
 TEST(Validator, importInvalidUnitsNotDirectlyDeterminedFromImport)
 {
     const std::string errorMessage =
-        "Prefix 'plinco' of a unit referencing 'second' in units 'ps2' is not a valid integer or an SI prefix.";
+        "Imported units 'i_am_bad' is not valid because:\n"
+        " - Units 'ps2' imported from 'units_library.cellml' has error; Prefix 'plinco' of a unit referencing 'second' in units 'ps2' is not a valid integer or an SI prefix.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3118,6 +3251,7 @@ TEST(Validator, importInvalidUnitsReference)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
+    printIssues(validator);
 
     validator->validateModel(unitsLibrary);
     EXPECT_EQ(size_t(2), validator->issueCount());
@@ -3127,6 +3261,7 @@ TEST(Validator, importInvalidUnitsReference)
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
     EXPECT_EQ(errorMessage, validator->issue(0)->description());
+    printIssues(validator);
 }
 
 TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
