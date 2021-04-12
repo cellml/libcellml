@@ -759,6 +759,15 @@ std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
  */
 IndexStack indexStackOf(const ComponentPtr &component);
 
+HistoryEntry createHistoryEntry(const UnitsPtr &units);
+
+HistoryEntry createHistoryEntry(const ComponentPtr &component);
+
+IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
+                                   const std::string &type,
+                                   const HistoryList &history,
+                                   const std::string &action);
+
 // Would be nice to add documentation to these.
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
