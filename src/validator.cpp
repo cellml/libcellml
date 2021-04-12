@@ -432,37 +432,6 @@ ValidatorPtr Validator::create() noexcept
     return std::shared_ptr<Validator> {new Validator {}};
 }
 
-void Validator::validateModel(const ModelPtr &model, const std::string &baseLocation)
-{
-    validateModel(model);
-
-    auto importer = Importer::create();
-    auto clone = model->clone();
-    importer->resolveImports(clone, baseLocation);
-
-//    validateModel(clone);
-
-    // Transfer the objects stored in any importer issues to the original model instead of the clone.
-    for (size_t i = 0; i < importer->issueCount(); ++i) {
-        auto issue = importer->issue(i);
-        auto type = issue->cellmlElementType();
-
-        if (type == CellmlElementType::COMPONENT) {
-            auto indexStack = indexStackOf(issue->component());
-            auto component = model->component(indexStack.at(0));
-            indexStack.erase(indexStack.begin());
-            for (const auto &index : indexStack) {
-                component = component->component(index);
-            }
-            issue->setComponent(component);
-        } else if (type == CellmlElementType::UNITS) {
-            auto index = indexOf(issue->units(), clone);
-            issue->setUnits(model->units(index));
-        }
-        addIssue(issue);
-    }
-}
-
 void Validator::validateModel(const ModelPtr &model)
 {
     // Clear any pre-existing issues in ths validator instance.
