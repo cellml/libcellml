@@ -556,6 +556,8 @@ Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
  */
 void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
 
+std::vector<std::string> split(const std::string &content, const std::string &delimiter = ";");
+
 /**
  * @brief Trim whitespace from the front of a string (in place).
  *

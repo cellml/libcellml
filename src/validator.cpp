@@ -621,21 +621,6 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
     }
 }
 
-std::vector<std::string> split(const std::string &content, const std::string &delimiter = ";")
-{
-    std::vector<std::string> strings;
-    std::size_t current, previous = 0;
-    current = content.find(delimiter);
-    while (current != std::string::npos) {
-        strings.push_back(content.substr(previous, current - previous));
-        previous = current + delimiter.size();
-        current = content.find(delimiter, previous);
-    }
-    strings.push_back(content.substr(previous, current - previous));
-
-    return strings;
-}
-
 std::set<std::string> namesInCycle(std::vector<std::string> allNames)
 {
     std::string cycleStartName = allNames.back();

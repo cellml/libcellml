@@ -57,6 +57,21 @@ bool hasNonWhitespaceCharacters(const std::string &input)
     return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
+std::vector<std::string> split(const std::string &content, const std::string &delimiter)
+{
+    std::vector<std::string> strings;
+    std::size_t current, previous = 0;
+    current = content.find(delimiter);
+    while (current != std::string::npos) {
+        strings.push_back(content.substr(previous, current - previous));
+        previous = current + delimiter.size();
+        current = content.find(delimiter, previous);
+    }
+    strings.push_back(content.substr(previous, current - previous));
+
+    return strings;
+}
+
 std::string convertToString(double value, bool fullPrecision)
 {
     std::ostringstream strs;
