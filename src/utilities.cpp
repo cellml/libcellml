@@ -556,21 +556,6 @@ size_t indexOf(const VariablePtr &variable, const ComponentConstPtr &component)
     return index;
 }
 
-size_t indexOf(const UnitsPtr &units, const ModelPtr &model)
-{
-    size_t index = 0;
-    bool found = false;
-    while (index < model->unitsCount() && !found) {
-        if (model->units(index)->equals(units)) {
-            found = true;
-        } else {
-            ++index;
-        }
-    }
-
-    return index;
-}
-
 bool areEquivalentVariables(const VariablePtr &variable1,
                             const VariablePtr &variable2)
 {
