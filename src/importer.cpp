@@ -369,7 +369,7 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
             auto units = sourceModel->units(unitName);
             if (units == nullptr) {
                 auto issue = Issue::create();
-                issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importReference() + "' requires units named '" + unitName + "' which cannot be found.");
+                issue->setDescription("Import of component '" + importComponent->name() + "' from '" + resolvingUrl + "' requires units named '" + unitName + "' which cannot be found.");
                 issue->setComponent(importComponent);
                 issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
                 mImporter->addIssue(issue);
@@ -381,7 +381,7 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
         }
     } else {
         auto issue = Issue::create();
-        issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importSource()->url() + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
+        issue->setDescription("Import of component '" + importComponent->name() + "' from '" + resolvingUrl + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
         issue->setComponent(importComponent);
         issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
         mImporter->addIssue(issue);

@@ -540,6 +540,7 @@ TEST(Importer, rangeOfValidSituations)
     // ... and can be flattened as expected too.
     auto flattenedFunkyModel = importer->flattenModel(funkyModel);
     EXPECT_EQ(size_t(0), importer->issueCount());
+
     flattenedFunkyModel->setName("flattenedFunkyModel");
     validator->validateModel(flattenedFunkyModel);
     EXPECT_EQ(size_t(0), validator->issueCount());
@@ -722,8 +723,8 @@ TEST(Importer, importSourceGetSetModel)
 TEST(Importer, resolveWithMissingItems)
 {
     std::vector<std::string> e = {
-        "Import of units 'i_dont_exist' from 'units_source.cellml' requires units named 'i_dont_exist' which cannot be found.",
-        "Import of component 'i_dont_exist' from 'components_source.cellml' requires component named 'i_dont_exist' which cannot be found.",
+        "Import of units 'i_dont_exist' from '" + resourcePath("importer/") + "units_source.cellml' requires units named 'i_dont_exist' which cannot be found.",
+        "Import of component 'i_dont_exist' from '" + resourcePath("importer/") + "components_source.cellml' requires component named 'i_dont_exist' which cannot be found.",
     };
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_nonexistent_items.cellml"));
@@ -737,7 +738,7 @@ TEST(Importer, resolveWithMissingItems)
 
 TEST(Importer, resolveWithMissingChildComponents)
 {
-    std::string e = "Import of component 'child' from 'components_source.cellml' requires component named 'i_dont_exist' which cannot be found.";
+    std::string e = "Import of component 'child' from '" + resourcePath("importer/") + "components_source.cellml' requires component named 'i_dont_exist' which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_children.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -761,7 +762,7 @@ TEST(Importer, resolveWithPresentChildUnits)
 
 TEST(Importer, resolveWithMissingChildUnits)
 {
-    std::string e = "Import of units 'units1' from 'units_children.cellml' requires units named 'units_with_imaginary_children', which relies on child units named 'I_dont_exist', which cannot be found.";
+    std::string e = "Import of units 'units1' from '" + resourcePath("importer/") + "units_children.cellml' requires units named 'units_with_imaginary_children', which relies on child units named 'I_dont_exist', which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_units_with_missing_children.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -774,7 +775,7 @@ TEST(Importer, resolveWithMissingChildUnits)
 
 TEST(Importer, resolveWithMissingChildDependentUnits)
 {
-    std::string e = "Import of component 'component' from 'concrete' requires units named 'other_units_that_dont_exist' which cannot be found.";
+    std::string e = "Import of component 'component' from '" + resourcePath("importer/") + "components_missing_units.cellml' requires units named 'other_units_that_dont_exist' which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_units.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
