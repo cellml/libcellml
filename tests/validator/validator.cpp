@@ -311,7 +311,6 @@ TEST(Validator, importUnitsDuplicateRefs)
     m->addUnits(units);
 
     v->validateModel(m);
-printIssues(v);
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
@@ -476,7 +475,6 @@ TEST(Validator, importsDummyVariablesNotCheckedForUnitsInterfaces)
 
     libcellml::Variable::addEquivalence(variable, dummyVariable);
     validator->validateModel(model);
-    printIssues(validator);
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
@@ -3032,7 +3030,6 @@ TEST(Validator, circularImportReferencesUnits)
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
     EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
-    printIssues(validator);
 }
 
 TEST(Validator, circularImportedUnitsDuplicateNames)
@@ -3073,7 +3070,6 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
 
     validator->validateModel(model);
     EXPECT_EQ_ISSUES(errorMessagesValidator, validator);
-    printIssues(validator);
 }
 
 TEST(Validator, circularImportedComponentsDuplicateNames)
@@ -3148,12 +3144,13 @@ TEST(Validator, importComponentWithInvalidName)
 
 TEST(Validator, importSecondGenComponentWithInvalidName)
 {
-    const std::vector<std::string> errorMessages = {
-        "Import of component 'c' has an invalid URI in the xlink:href attribute.",
+    const std::string errorMessageValidator =
+        "Import of component 'c' has an invalid URI in the xlink:href attribute.";
+    const std::string errorMessageImporter =
         "The attempt to resolve imports with the model at '"
         + resourcePath("importer/")
-        + "i am broken and invalid.cellml' failed: the file could not be opened.",
-};
+        + "i am broken and invalid.cellml' failed: the file could not be opened.";
+
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
     auto importer = libcellml::Importer::create();
@@ -3166,12 +3163,12 @@ TEST(Validator, importSecondGenComponentWithInvalidName)
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
-    EXPECT_EQ(errorMessages[1], importer->issue(0)->description());
+    EXPECT_EQ(errorMessageImporter, importer->issue(0)->description());
     EXPECT_EQ(model->component("c", true), importer->issue(0)->component());
 
-    validator->validateModel(model, resourcePath("importer/"));
-    printIssues(validator);
-    EXPECT_EQ_ISSUES(errorMessages, validator);
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(errorMessageValidator, validator->issue(0)->description());
 }
 
 TEST(Validator, highIndexUnitsImport)
@@ -3200,7 +3197,6 @@ TEST(Validator, highIndexUnitsImport)
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(errorMessageValidator, validator->error(0)->description());
-    printIssues(validator);
 }
 
 TEST(Validator, importInvalidUnitsNotDirectlyDeterminedFromImport)
@@ -3215,7 +3211,6 @@ TEST(Validator, importInvalidUnitsNotDirectlyDeterminedFromImport)
 
     auto model = parser->parseModel(fileContents("importer/import_units_that_are_invalid.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    printIssues(parser);
 
     auto unitsLibrary = parser->parseModel(fileContents("importer/units_library.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -3244,14 +3239,12 @@ TEST(Validator, importInvalidUnitsReference)
 
     auto model = parser->parseModel(fileContents("importer/import_units_that_are_not_there.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    printIssues(parser);
 
     auto unitsLibrary = parser->parseModel(fileContents("importer/units_library.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
-    printIssues(validator);
 
     validator->validateModel(unitsLibrary);
     EXPECT_EQ(size_t(2), validator->issueCount());
@@ -3261,7 +3254,6 @@ TEST(Validator, importInvalidUnitsReference)
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
     EXPECT_EQ(errorMessage, validator->issue(0)->description());
-    printIssues(validator);
 }
 
 TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
