@@ -2963,9 +2963,12 @@ TEST(Validator, circularImportReferencesComponent)
 {
     const std::string errorMessageImporter =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_cyclic' references component 'c2' in '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
-        " - component 'c2' references component 'c3' in '" + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
-        " - component 'c3' references component 'i_am_cyclic' in '" + resourcePath("importer/") + "circularImport_1.cellml'.";
+        " - component 'i_am_cyclic' references component 'c2' in '"
+        + resourcePath("importer/") + "circularImport_2.cellml';\n"
+                                      " - component 'c2' references component 'c3' in '"
+        + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
+                                      " - component 'c3' references component 'i_am_cyclic' in '"
+        + resourcePath("importer/") + "circularImport_1.cellml'.";
     const std::string errorMessageValidator =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_cyclic' references component 'c2' in 'circularImport_2.cellml';\n"
