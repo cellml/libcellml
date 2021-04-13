@@ -9,10 +9,10 @@ using namespace emscripten;
 EMSCRIPTEN_BINDINGS(libcellml_variable) {
 
     enum_<libcellml::Variable::InterfaceType>("Variable_InterfaceType")
-            .value("NONE", libcellml::Variable::InterfaceType::NONE)
-            .value("PRIVATE", libcellml::Variable::InterfaceType::PRIVATE)
-            .value("PUBLIC", libcellml::Variable::InterfaceType::PUBLIC)
-            .value("PUBLIC_AND_PRIVATE", libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE)
+        .value("NONE", libcellml::Variable::InterfaceType::NONE)
+        .value("PRIVATE", libcellml::Variable::InterfaceType::PRIVATE)
+        .value("PUBLIC", libcellml::Variable::InterfaceType::PUBLIC)
+        .value("PUBLIC_AND_PRIVATE", libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE)
     ;
 
     class_<libcellml::Variable, base<libcellml::NamedEntity>>("Variable")
@@ -44,11 +44,6 @@ EMSCRIPTEN_BINDINGS(libcellml_variable) {
         .class_function("removeEquivalence", &libcellml::Variable::removeEquivalence)
         .class_function("setEquivalenceConnectionId", &libcellml::Variable::setEquivalenceConnectionId)
         .class_function("setEquivalenceMappingId", &libcellml::Variable::setEquivalenceMappingId)
-;
+    ;
 
-//    Maybe smoething like this gets my enum inside the variable class in javascript somehow?
-//    EM_ASM(
-//        libCellML['Variable']['InterfaceType'] = libCellML['Variable.InterfaceType'];
-//        delete libCellML['Variable.InterfaceType'];
-//    );
 }

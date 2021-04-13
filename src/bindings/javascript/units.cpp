@@ -54,9 +54,6 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .function("addUnitByStandardUnitIntPrefix", select_overload<void(libcellml::Units::StandardUnit, int, double, double, const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByStandardUnitExponent", select_overload<void(libcellml::Units::StandardUnit, double, const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByStandardUnit", select_overload<void(libcellml::Units::StandardUnit)>(&libcellml::Units::addUnit))
-        //.function("unitAttributesByIndex", select_overload<void(size_t, std::string &, std::string &, double &, double &, std::string &) const>(&libcellml::Units::unitAttributes))
-        //.function("unitAttributesByReference", select_overload<void(const std::string &, std::string &, double &, double &, std::string &) const>(&libcellml::Units::unitAttributes))
-        //.function("unitAttributesByStandardUnit", select_overload<void(libcellml::Units::StandardUnit, std::string &, double &, double &, std::string &) const>(&libcellml::Units::unitAttributes))
         .function("unitAttributeReference", &libcellml::Units::unitAttributeReference)
         .function("unitAttributePrefix", &libcellml::Units::unitAttributePrefix)
         .function("unitAttributeExponent", &libcellml::Units::unitAttributeExponent)
@@ -78,4 +75,5 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .function("setImportReference", &libcellml::ImportedEntity::setImportReference)
         .function("isResolved", &libcellml::ImportedEntity::isResolved)
     ;
+
 }
