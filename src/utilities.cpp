@@ -60,7 +60,8 @@ bool hasNonWhitespaceCharacters(const std::string &input)
 std::vector<std::string> split(const std::string &content, const std::string &delimiter)
 {
     std::vector<std::string> strings;
-    std::size_t current, previous = 0;
+    size_t current;
+    size_t previous = 0;
     current = content.find(delimiter);
     while (current != std::string::npos) {
         strings.push_back(content.substr(previous, current - previous));
