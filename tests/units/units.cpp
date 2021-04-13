@@ -2674,5 +2674,4 @@ TEST(Units, circularImport)
     units3->setImportReference("units2");
 
     EXPECT_FALSE(units1->isBaseUnit());
-
 }
