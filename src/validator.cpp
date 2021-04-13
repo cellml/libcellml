@@ -389,12 +389,55 @@ struct Validator::ValidatorImpl
      */
     void validateImportSource(const ImportSourcePtr &importSource, const std::string &importName, const std::string &importType) const;
 
+    /**
+     * @brief Check if the @p names are already part of a cyclic issues.
+     *
+     * Check to see if the @p names have already been reported in a cyclic issue.
+     *
+     * @param names The names that make up the cycle.
+     *
+     * @return @c true if the @p names have already been reported in a cyclic issue, @c false otherwise.
+     */
     bool checkCycleForDuplications(std::vector<std::string> names) const;
 
+    /**
+     * @brief Check to see if the @p description is already present in the issues.
+     *
+     * Check to see if the @p description has already been reported in
+     * existing issues.
+     *
+     * @param description The description to check for prior existence.
+     *
+     * @return @c true if the description is already present, @c false otherwise.
+     */
     bool checkIssuesForDuplications(const std::string &description) const;
 
+    /**
+     * @brief Define the description origin marker text.
+     *
+     * Define the description origin marker text.  If the depth is greater than
+     * 1 then a marker text is returned to indicate that this issue didn't originate
+     * in the original model.
+     *
+     * @param depth An unsigned int that specifies the depth.
+     *
+     * @return The description origin marker for the given @p depth.
+     */
     std::string descriptionOriginMarker(size_t depth) const;
-    std::string originText(size_t depth, const std::string &type, const std::string &name, const std::string &importSourceUrl) const;
+
+    /**
+     * @brief The header text to describe the origin of an issue.
+     *
+     * The header text to describe the origin of an issue.
+     *
+     * @param depth An unsigned int that specifies the depth.
+     * @param type The type that this header text is for, one of; "Units", "Component"
+     * @param name The name of the entity.
+     * @param importSourceUrl The import source url for the entity.
+     *
+     * @return @c std::string that can be used as a header for an issue.
+     */
+    std::string originHeaderText(size_t depth, const std::string &type, const std::string &name, const std::string &importSourceUrl) const;
 };
 
 bool checkForCycles(const HistoryList &history, const HistoryEntry &h)
@@ -675,7 +718,7 @@ bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &des
     return false;
 }
 
-std::string Validator::ValidatorImpl::originText(size_t depth, const std::string &type, const std::string &name, const std::string &importSourceUrl) const
+std::string Validator::ValidatorImpl::originHeaderText(size_t depth, const std::string &type, const std::string &name, const std::string &importSourceUrl) const
 {
     std::string originMarker = "";
     if (depth > 1) {
@@ -719,7 +762,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
         importSourceUrl = std::get<2>(history.at(history.size() - 2));
     }
     std::string descriptionMarker = descriptionOriginMarker(modelsVisited.size());
-    std::string originMarker = originText(modelsVisited.size(), "Units", unitsName, importSourceUrl);
+    std::string originMarker = originHeaderText(modelsVisited.size(), "Units", unitsName, importSourceUrl);
     std::string descriptionPrefix = descriptionMarker + originMarker;
 
     history.push_back(h);
@@ -876,7 +919,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     if (history.size() > 1) {
         importSourceUrl = std::get<2>(history.at(history.size() - 2));
     }
-    std::string originMarker = originText(modelsVisited.size(), "Units", units->name(), importSourceUrl);
+    std::string originMarker = originHeaderText(modelsVisited.size(), "Units", units->name(), importSourceUrl);
     std::string descriptionPrefix = descriptionMarker + originMarker;
 
     // Validate the unit at the given index.
