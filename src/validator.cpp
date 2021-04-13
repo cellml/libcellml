@@ -232,7 +232,7 @@ struct Validator::ValidatorImpl
      * @param index The index of the @c unit to validate from @p units.
      * @param units The units to validate.
      */
-    void validateUnitsUnit(size_t index, const UnitsPtr &units, HistoryList &history, std::vector<ModelPtr> modelsVisited) const;
+    void validateUnitsUnit(size_t index, const UnitsPtr &units, HistoryList &history, const std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the @p variable using the CellML 2.0 Specification.
@@ -911,7 +911,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
     history.pop_back();
 }
 
-void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, HistoryList &history, std::vector<ModelPtr> modelsVisited) const
+void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, HistoryList &history, const std::vector<ModelPtr> &modelsVisited) const
 {
     std::string descriptionMarker = descriptionOriginMarker(modelsVisited.size());
     std::string importSourceUrl;
@@ -1641,6 +1641,19 @@ bool isNameStartChar(uint32_t startChar)
             (0x10000U <= startChar && startChar <= 0xEFFFFU));
 }
 
+uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
+{
+    const std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
+    uint32_t value = 0;
+    size_t index = 0;
+    for (size_t j = initialValue; j < 4; ++j) {
+        uint32_t tempValue = static_cast<uint8_t>(text[index++]) << bitShifts[j];
+        value |= tempValue;
+    }
+
+    return value;
+}
+
 /**
  * @brief Breakdown a string into codepoints.
  *
@@ -1656,44 +1669,23 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
     std::vector<uint32_t> breakdown;
     std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
     for (size_t i = 0; i < text.length();) {
-        int codepointLength = 1;
+        size_t codepointLength = 1;
         uint32_t value = 0;
-        if ((text[i] & 0xf8) == 0xf0) {
+        auto unsignedText = static_cast<uint8_t>(text[i]);
+        if ((unsignedText & 0xf8U) == 0xf0U) {
             codepointLength = 4;
-            auto subText = text.substr(i, 4);
-            size_t index = 0;
-            for (size_t j = 0; j < 4; ++j) {
-                uint32_t tempValue = static_cast<uint8_t>(subText[index++]) << bitShifts[j];
-                value |= tempValue;
-            }
-            breakdown.push_back(value);
-        } else if ((text[i] & 0xf0) == 0xe0) {
+            breakdown.push_back(convertTextToUint32(text.substr(i, codepointLength)));
+        } else if ((unsignedText & 0xf0U) == 0xe0U) {
             codepointLength = 3;
-            auto subText = text.substr(i, 3);
-            size_t index = 0;
-            for (size_t j = 1; j < 4; ++j) {
-                uint32_t tempValue = static_cast<uint8_t>(subText[index++]) << bitShifts[j];
-                value |= tempValue;
-            }
-            breakdown.push_back(value);
-        } else if ((text[i] & 0xe0) == 0xc0) {
+            breakdown.push_back(convertTextToUint32(text.substr(i, codepointLength), 1));
+        } else if ((unsignedText & 0xe0U) == 0xc0U) {
             codepointLength = 2;
-            auto subText = text.substr(i, 2);
-            size_t index = 0;
-            for (size_t j = 2; j < 4; ++j) {
-                uint32_t tempValue = static_cast<uint8_t>(subText[index++]) << bitShifts[j];
-                value |= tempValue;
-            }
-            breakdown.push_back(value);
+            breakdown.push_back(convertTextToUint32(text.substr(i, codepointLength), 2));
         } else {
-            auto subText = text.substr(i, 1);
-            value = subText[0];
+            auto subText = text.substr(i, codepointLength);
+            value = static_cast<uint8_t>(subText[0]);
             breakdown.push_back(value);
         }
-
-//        if ((i + codepointLength) > text.length()) {
-//            codepointLength = 1;
-//        }
 
         i += codepointLength;
     }
