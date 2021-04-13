@@ -42,24 +42,24 @@ We will create two directories to hold the build files::
   mkdir build-zlib-release
   mkdir build-libxml2-release
 
-Then we will configure, build, and install zlib as this is required by libxml2.
-We will install zlib under our emscripten working directory and **not** into the system directories::
+Then we will configure, build, and install `zlib` as this is required by `LibXml2`.
+We will install `zlib` under our emscripten working directory and **not** into the system directories::
 
   emcmake cmake -S zlib -B build-zlib-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr/local
 
 Here, we have configured the project using the emscripten wrapper script `emcmake`.
 This script sets up environment variables for us to make building with the emscripten compilers easy.
-We also configure the zlib library to be built in `Release` mode and set the install prefix relative to the **current** directory.
+We also configure the `zlib` library to be built in `Release` mode and set the install prefix relative to the **current** directory.
 However, this is not an issue for us as the **source** and **build** directories are sibling directories.
 
-To build and install the zlib library, we simply issue these commands::
+To build and install the `zlib` library, we simply issue these commands::
 
   cd build-zlib-release
   make
   make install
 
-Next, we follow a similar procedure for building `libxml2`.
-Start by making the current directory the parent of the zlib build directory::
+Next, we follow a similar procedure for building `LibXml2`.
+Start by making the current directory the parent of the `zlib` build directory::
 
   cd ..
 
@@ -69,16 +69,16 @@ Then, as before, configure the library::
 
 There are seven additions to the configure command this time:
 
-1. We set ZLIB_DIR to enable the configuration to find our zlib library we just installed, -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/.
-2. We turn off building a shared libxml2 library, -DBUILD_SHARED_LIBS=OFF.
-3. We turn off building libxml2 with iconv, -DLIBXML2_WITH_ICONV=OFF.
-4. We turn off building libxml2 with lzma compression, -DLIBXML2_WITH_LZMA=OFF.
-5. We turn off building libxml2 with Python, -DLIBXML2_WITH_PYTHON.
-6. We turn off building libxml2 with tests, -DLIBXML2_WITH_TESTS=OFF. and
-7. We turn off building libxml2 with programs, -DLIBXML2_WITH_PROGRAMS=OFF.
+1. We set ZLIB_DIR to enable the configuration to find our `zlib` library we just installed, -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/.
+2. We turn off building a shared `LibXml2` library, -DBUILD_SHARED_LIBS=OFF.
+3. We turn off building `LibXml2` with iconv, -DLIBXML2_WITH_ICONV=OFF.
+4. We turn off building `LibXml2` with lzma compression, -DLIBXML2_WITH_LZMA=OFF.
+5. We turn off building `LibXml2` with Python, -DLIBXML2_WITH_PYTHON.
+6. We turn off building `LibXml2` with tests, -DLIBXML2_WITH_TESTS=OFF; and
+7. We turn off building `LibXml2` with programs, -DLIBXML2_WITH_PROGRAMS=OFF.
 
 As a general note, it is better to specify the variable `ZLIB_DIR` as an absolute path and not a relative path as we have done here.
-Feel free to use the absolute path when you are configuring libXml2.
+Feel free to use the absolute path when you are configuring `LibXml2`.
 
 Then, as before, we simply issue the build and install commands::
 
