@@ -1,9 +1,9 @@
 
-=========================================
-Building libCellML for use in the Browser
-=========================================
+===========================================
+Building `libCellML` for use in the Browser
+===========================================
 
-To build libCellML for the browser, we use the emscripten toolchain to create web assembly binaries.
+To build `libCellML` for the browser, we use the emscripten toolchain to create web assembly binaries.
 Here, we will go through the process of building web assembly binaries on macOS.
 For other operating systems, modifications to these instructions will have to be made.
 Any modifications required are expected to be self evident – with this in mind these instructions should be universally applicable.
@@ -11,7 +11,7 @@ Any modifications required are expected to be self evident – with this in mind
 Preparation
 ===========
 
-To build libCellML for the browser, we will need the following tools ready for use.
+To build `libCellML` for the browser, we will need the following tools ready for use.
 
 - Emscripten
 - Compiler toolchain
@@ -21,8 +21,8 @@ To build libCellML for the browser, we will need the following tools ready for u
 Building
 ========
 
-libCellML requires two dependencies to be built before libCellML itself can be built.
-We will clone and build those first and then move on to building libCellML.
+libCellML requires two dependencies to be built before `libCellML` itself can be built.
+We will clone and build those first and then move on to building `libCellML`.
 
 Dependencies
 ------------
@@ -86,13 +86,13 @@ Then, as before, we simply issue the build and install commands::
   make
   make install
 
-That is all that is required for preparing the dependencies ready for libCellML.
+That is all that is required for preparing the dependencies ready for `libCellML`.
 
 libCellML
 ---------
 
-Following a similar approach to building the dependencies, we can now configure and build libCellML.
-We don't install libCellML when building for web assembly, so there is no install command in the instructions.
+Following a similar approach to building the dependencies, we can now configure and build `libCellML`.
+We don't install `libCellML` when building for web assembly, so there is no install command in the instructions.
 
 To get started, we will make our current directory the `emscripten` directory we made at the start.
 Assuming we are in the directory where we left off from preparing the dependencies, we simply change to the parent directory::
@@ -125,13 +125,13 @@ That should be everything done.
 Outcome
 =======
 
-You should see two files `libcellml.js` and `libcellml.wasm` in the `src/bindings/javascript/` relative from the libCellML build directory where we left off above.
+You should see two files `libcellml.js` and `libcellml.wasm` in the `src/bindings/javascript/` relative from the `libCellML` build directory where we left off above.
 
 Test
 ====
 
-We can test the libCellML WebAssembly to make sure everything works.
-From the libCellML build directory `build-libcellml-release`, we can run the test command::
+We can test the `libCellML` WebAssembly to make sure everything works.
+From the `libCellML` build directory `build-libcellml-release`, we can run the test command::
 
   ctest -V
 
