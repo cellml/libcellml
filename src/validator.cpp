@@ -684,12 +684,12 @@ bool Validator::ValidatorImpl::checkCycleForDuplications(std::vector<std::string
 {
     std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
     bool found = false;
-    for(size_t i = 0; i < mValidator->issueCount() && !found; ++i) {
+    for (size_t i = 0; i < mValidator->issueCount() && !found; ++i) {
         auto issue = mValidator->issue(i);
         if (issue->description().substr(0, 20) == "Cyclic units exist: ") {
             auto loop = issue->description().substr(20);
             auto parts = split(loop, " -> ");
-            auto existingNamesInCycle =  namesInCycle(parts);
+            auto existingNamesInCycle = namesInCycle(parts);
             found = testNamesInCycle == existingNamesInCycle;
         }
     }
@@ -722,7 +722,7 @@ std::string Validator::ValidatorImpl::originHeaderText(size_t depth, const std::
 {
     std::string originMarker;
     if (depth > 1) {
-        originMarker = " - " + type + " '" + name + "' imported from '" + importSourceUrl+ "' has error; ";
+        originMarker = " - " + type + " '" + name + "' imported from '" + importSourceUrl + "' has error; ";
     }
 
     return originMarker;
@@ -801,7 +801,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
         }
 
         auto importSource = units->importSource();
-        validateImportSource(importSource, unitsName , "units");
+        validateImportSource(importSource, unitsName, "units");
 
         bool foundImportIssue = mValidator->issueCount() > currentIssueCount;
 
@@ -845,7 +845,6 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
                 mValidator->addIssue(issue);
             }
         }
-
     }
     // Check for duplicate units names in this model.
     if (unitsWithNameCount > 1) {
@@ -1623,22 +1622,7 @@ bool isCellmlIdentifier(const std::string &name)
 bool isNameStartChar(uint32_t startChar)
 {
     // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-    return ((startChar == 0x3AU) ||
-            (0x41U <= startChar && startChar <= 0x5AU) ||
-            (startChar == 0x5FU) ||
-            (0x61U <= startChar && startChar <= 0x7AU) ||
-            (0xC0U <= startChar && startChar <= 0xD6U) ||
-            (0xD8U <= startChar && startChar <= 0xF6U) ||
-            (0xF8U <= startChar && startChar <= 0x2FFU) ||
-            (0x370U <= startChar && startChar <= 0x37DU) ||
-            (0x37FU <= startChar && startChar <= 0x1FFFU) ||
-            (0x200CU <= startChar && startChar <= 0x200DU) ||
-            (0x2070U <= startChar && startChar <= 0x218FU) ||
-            (0x2C00U <= startChar && startChar <= 0x2FEFU) ||
-            (0x3001U <= startChar && startChar <= 0xD7FFU) ||
-            (0xF900U <= startChar && startChar <= 0xFDCFU) ||
-            (0xFDF0U <= startChar && startChar <= 0xFFFDU) ||
-            (0x10000U <= startChar && startChar <= 0xEFFFFU));
+    return ((startChar == 0x3AU) || (0x41U <= startChar && startChar <= 0x5AU) || (startChar == 0x5FU) || (0x61U <= startChar && startChar <= 0x7AU) || (0xC0U <= startChar && startChar <= 0xD6U) || (0xD8U <= startChar && startChar <= 0xF6U) || (0xF8U <= startChar && startChar <= 0x2FFU) || (0x370U <= startChar && startChar <= 0x37DU) || (0x37FU <= startChar && startChar <= 0x1FFFU) || (0x200CU <= startChar && startChar <= 0x200DU) || (0x2070U <= startChar && startChar <= 0x218FU) || (0x2C00U <= startChar && startChar <= 0x2FEFU) || (0x3001U <= startChar && startChar <= 0xD7FFU) || (0xF900U <= startChar && startChar <= 0xFDCFU) || (0xFDF0U <= startChar && startChar <= 0xFFFDU) || (0x10000U <= startChar && startChar <= 0xEFFFFU));
 }
 
 /**
@@ -1716,15 +1700,7 @@ bool isNameChar(uint32_t nameChar)
         return true;
     }
     // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-    if ((0x30U <= nameChar && nameChar <= 0x39U) ||
-            (nameChar == 0x2DU) ||
-            (nameChar == 0x2EU) ||
-            (nameChar == 0xB7U) ||
-            (0x0300U <= nameChar && nameChar <= 0x036FU) ||
-            (0x203FU <= nameChar && nameChar <= 0x2040U)) {
-        return true;
-    }
-    return false;
+    return ((0x30U <= nameChar && nameChar <= 0x39U) || (nameChar == 0x2DU) || (nameChar == 0x2EU) || (nameChar == 0xB7U) || (0x0300U <= nameChar && nameChar <= 0x036FU) || (0x203FU <= nameChar && nameChar <= 0x2040U));
 }
 
 /**
@@ -1970,7 +1946,6 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     }
     // Encapsulation.
     if (!model->encapsulationId().empty()) {
-
         // Check for a valid identifier.
         if (!isValidW3IdName(model->encapsulationId())) {
             IssuePtr issue = Issue::create();
@@ -2030,8 +2005,8 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                 // Variable mapping.
                 if ((s1 < s2) && !mappingId.empty()) {
                     std::string mappingDescription =
-                            "between variable '" + item->name() + "' in component '" + component->name()
-                            + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
+                        "between variable '" + item->name() + "' in component '" + component->name()
+                        + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
                     // Check for a valid identifier.
                     if (!isValidW3IdName(mappingId)) {
                         IssuePtr issue = Issue::create();
@@ -2049,9 +2024,9 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                 std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
                 if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
                     std::string connectionDescription =
-                            "between components '" + component->name() + "' and '" + equivParent->name()
-                            + "' because of variable equivalence between variables '" + item->name()
-                            + "' and '" + equiv->name() + "'";
+                        "between components '" + component->name() + "' and '" + equivParent->name()
+                        + "' because of variable equivalence between variables '" + item->name()
+                        + "' and '" + equiv->name() + "'";
                     // Check for a valid identifier.
                     if (!isValidW3IdName(connectionId)) {
                         IssuePtr issue = Issue::create();
@@ -2102,7 +2077,6 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
 
     // Hierarchy.
     if (!component->encapsulationId().empty()) {
-
         // Check for a valid identifier.
         if (!isValidW3IdName(component->encapsulationId())) {
             IssuePtr issue = Issue::create();

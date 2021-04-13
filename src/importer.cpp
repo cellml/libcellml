@@ -67,7 +67,6 @@ struct Importer::ImporterImpl
     bool fetchImportSource(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchUnits(const ModelPtr &origModel, const UnitsPtr &importUnits, const std::string &baseFile, HistoryList &history);
 
-
     bool checkForCycles(const ModelPtr &origModel, const ImportSourcePtr &importSource, const std::string &type, const HistoryList &history, const HistoryEntry &h, const std::string &action) const;
     bool checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistoryList &history) const;
     bool checkComponentForCycles(const ModelPtr &origModel, const ComponentPtr &component, HistoryList &history);
@@ -104,7 +103,7 @@ std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSo
         return importSource->url();
     }
 
-    for ( const auto &entry : mLibrary ) {
+    for (const auto &entry : mLibrary) {
         if (entry.second == model) {
             return entry.first;
         }
