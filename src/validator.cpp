@@ -1641,13 +1641,21 @@ bool isNameStartChar(uint32_t startChar)
             (0x10000U <= startChar && startChar <= 0xEFFFFU));
 }
 
+/**
+ * @brief Convert a variable width codepoint to uint32 form.
+ *
+ * @param text The @c std::string to convert.
+ * @param initialValue The starting point for the conversion.
+ *
+ * @return uint32 form of the @p text.
+ */
 uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
 {
     const std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
     uint32_t value = 0;
     size_t index = 0;
     for (size_t j = initialValue; j < 4; ++j) {
-        uint32_t tempValue = static_cast<uint8_t>(text[index++]) << bitShifts[j];
+        uint32_t tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
         value |= tempValue;
     }
 
