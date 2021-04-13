@@ -41,7 +41,7 @@ namespace libcellml {
  */
 struct Component::ComponentImpl
 {
-    Component *mQ;
+    Component *mQ = nullptr;
     std::string mMath;
     std::vector<ResetPtr> mResets;
     std::vector<VariablePtr> mVariables;
