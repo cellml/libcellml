@@ -18,6 +18,7 @@ EMSCRIPTEN_BINDINGS(libcellml_analysermodel)
     ;
 
     class_<libcellml::AnalyserModel>("AnalyserModel")
+        .smart_ptr<std::shared_ptr<libcellml::AnalyserModel>>("AnalyserModel")
         .function("isValid", &libcellml::AnalyserModel::isValid)
         .function("type", &libcellml::AnalyserModel::type)
         .function("hasExternalVariables", &libcellml::AnalyserModel::hasExternalVariables)
