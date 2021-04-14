@@ -42,7 +42,7 @@ We will create two directories to hold the build files::
   mkdir build-zlib-release
   mkdir build-libxml2-release
 
-Then we will configure, build, and install `zlib` as this is required by `LibXml2`.
+Then, we will configure, build, and install `zlib` as this is required by `LibXml2`.
 We will install `zlib` under our emscripten working directory and **not** into the system directories::
 
   emcmake cmake -S zlib -B build-zlib-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr/local
