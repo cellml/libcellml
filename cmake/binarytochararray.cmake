@@ -19,20 +19,20 @@
 # Err, not quite working like that just yet.
 
 function(STRING_HEX_KEY_TO_C_BYTE_ARRAY STRING_HEX _DATA _LEN)
-    # Separate into individual bytes.
-    string(REGEX MATCHALL "([A-Fa-f0-9][A-Fa-f0-9])" SEPARATED_HEX ${STRING_HEX})
+  # Separate into individual bytes.
+  string(REGEX MATCHALL "([A-Fa-f0-9][A-Fa-f0-9])" SEPARATED_HEX ${STRING_HEX})
 
-    list(LENGTH SEPARATED_HEX HEX_LEN)
+  list(LENGTH SEPARATED_HEX HEX_LEN)
 
-    # Append the "0x" to each byte.
-    list(JOIN SEPARATED_HEX ", 0x" FORMATTED_HEX)
+  # Append the "0x" to each byte.
+  list(JOIN SEPARATED_HEX ", 0x" FORMATTED_HEX)
 
-    # Finalise begin and end of array.
-    string(PREPEND FORMATTED_HEX "{0x")
-    string(APPEND FORMATTED_HEX "}")
+  # Finalise begin and end of array.
+  string(PREPEND FORMATTED_HEX "{0x")
+  string(APPEND FORMATTED_HEX "}")
 
-    set(${_DATA} "${FORMATTED_HEX}" PARENT_SCOPE)
-    set(${_LEN} "${HEX_LEN}" PARENT_SCOPE)
+  set(${_DATA} "${FORMATTED_HEX}" PARENT_SCOPE)
+  set(${_LEN} "${HEX_LEN}" PARENT_SCOPE)
 endfunction()
 
 if(CMAKE_ARGC EQUAL 5)
@@ -47,5 +47,5 @@ if(CMAKE_ARGC EQUAL 5)
   configure_file("${CMAKE_CURRENT_LIST_DIR}/../src/configure/mathmldtd.in.h" "${CMAKE_CURRENT_LIST_DIR}/../src/mathmldtd.h")
   configure_file("${CMAKE_CURRENT_LIST_DIR}/../src/configure/mathmldtd.in.cpp" "${CMAKE_CURRENT_LIST_DIR}/../src/mathmldtd.cpp")
 else()
-    message(WARNING "Incorrect number of arguments for script, requires four arguments.")
+  message(WARNING "Incorrect number of arguments for script, requires four arguments.")
 endif()
