@@ -1,6 +1,6 @@
-# include <emscripten/bind.h>
+#include <emscripten/bind.h>
 
-# include "libcellml/analyser.h"
+#include "libcellml/analyser.h"
 
 using namespace emscripten;
 
