@@ -14,11 +14,9 @@
 
 # This script requires CMake version 3.18 to run hence why it is not directly part of the build configuration.
 # usage:
-#  cmake -P binarytochararray.cmake <full-path-to-xhtml-math11-f.dtd>
+#  cmake -P binarytochararray.cmake <full-path-to-compressed-xhtml-math11-f.dtd> 391336
 #
-# Err, not quite working like that just yet.
-#
-# Currently we have to compress the DTD and then we generate the header and implementation file
+# Currently, we have to compress the DTD and then we generate the header and implementation file
 # in the source tree.  We also pass the compressed data and original size of the DTD to this script.
 # It would be prefereble for this not to happen.  Generating the DTD in the build tree is the preferred option
 # but this can't happen until the minimum CMake version can be set to 3.18.
