@@ -332,6 +332,17 @@ class UnitsTestCase(unittest.TestCase):
         u.setUnitId(0, "dangerous")
         self.assertEqual("dangerous", u.unitId(0))
 
+    def test_unit_attributes_single(self):
+        from libcellml import Units
+
+        u = Units("Best")
+        u.addUnit('coolio', 'hello', 1.2, 3.4)
+
+        self.assertEqual('coolio', u.unitAttributeReference(0))
+        self.assertEqual('hello', u.unitAttributePrefix(0))
+        self.assertEqual(1.2, u.unitAttributeExponent(0))
+        self.assertEqual(3.4, u.unitAttributeMultiplier(0))
+
 
 if __name__ == '__main__':
     unittest.main()

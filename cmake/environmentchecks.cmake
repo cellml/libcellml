@@ -16,71 +16,74 @@ include(CheckCXXCompilerFlag)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
-find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
-
-if(WIN32)
-  find_program(CLCACHE_EXE clcache)
-else()
-  find_program(CCACHE_EXE ccache)
-endif()
-find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
-find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
-find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
-find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
 find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
-find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
-find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
-find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
-if(Python_Interpreter_FOUND)
-  if(NOT DEFINED TEST_COVERAGE_RESULT)
-    set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
-    message(STATUS "Performing Test HAVE_COVERAGE")
-    get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
-    execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/python_package_check.py exclude-until-coverage-plugin
-      RESULT_VARIABLE TEST_COVERAGE_RESULT OUTPUT_QUIET ERROR_QUIET)
-    if(TEST_COVERAGE_RESULT EQUAL 0)
-      set(HAVE_COVERAGE TRUE)
-      message(STATUS "Performing Test HAVE_COVERAGE - Success")
-    else()
-      set(HAVE_COVERAGE FALSE)
-      message(STATUS "Performing Test HAVE_COVERAGE - Failed")
+# Need to change a lot of what we would normally do as it doesn't apply to Emscripten.
+if (EMSCRIPTEN)
+    find_program(NODE_EXE NAMES ${PREFERRED_NODE_NAMES} node)
+    find_program(NPM_EXE NAMES ${PREFERRED_NPM_NAMES} npm)
+else ()
+  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
+
+  if(WIN32)
+    find_program(CLCACHE_EXE clcache)
+  else()
+    find_program(CCACHE_EXE ccache)
+  endif()
+  find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
+  find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
+  find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
+  find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
+  find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
+  find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
+  find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
+
+
+  if(Python_Interpreter_FOUND)
+    if(NOT DEFINED TEST_COVERAGE_RESULT)
+      set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
+      message(STATUS "Performing Test HAVE_COVERAGE")
+      get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
+      execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/python_package_check.py exclude-until-coverage-plugin
+        RESULT_VARIABLE TEST_COVERAGE_RESULT OUTPUT_QUIET ERROR_QUIET)
+      if(TEST_COVERAGE_RESULT EQUAL 0)
+        set(HAVE_COVERAGE TRUE)
+        message(STATUS "Performing Test HAVE_COVERAGE - Success")
+      else()
+        set(HAVE_COVERAGE FALSE)
+        message(STATUS "Performing Test HAVE_COVERAGE - Failed")
+      endif()
     endif()
   endif()
+
+  find_package(Doxygen)
+  find_package(Sphinx)
+  find_package(SWIG 3)
+
+  set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+
+  set(CMAKE_REQUIRED_FLAGS -fprofile-instr-generate)
+  check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping" LLVM_COVERAGE_COMPILER_FLAGS_OK)
+
+  set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage")
+  check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_FLAGS_OK)
+
+  set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
+
+  mark_as_advanced(
+    CLANG_TIDY_EXE
+    CLANG_FORMAT_EXE
+    FIND_EXE
+    GCC_COVERAGE_COMPILER_FLAGS_OK
+    GCOV_EXE
+    GIT_EXE
+    LLVM_COV_EXE
+    LLVM_COVERAGE_COMPILER_FLAGS_OK
+    LLVM_PROFDATA_EXE
+    SWIG_EXECUTABLE
+    VALGRIND_EXE
+  )
 endif()
-
-find_package(Doxygen)
-find_package(Sphinx)
-find_package(SWIG 4)
-
-set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
-
-set(CMAKE_REQUIRED_FLAGS -fprofile-instr-generate)
-check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping" LLVM_COVERAGE_COMPILER_FLAGS_OK)
-
-set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage")
-check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_FLAGS_OK)
-
-set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
-
-if(WIN32)
-  mark_as_advanced(CLCACHE_EXE)
-else()
-  mark_as_advanced(CCACHE_EXE)
-endif()
-mark_as_advanced(
-  CLANG_TIDY_EXE
-  CLANG_FORMAT_EXE
-  FIND_EXE
-  GCC_COVERAGE_COMPILER_FLAGS_OK
-  GCOV_EXE
-  GIT_EXE
-  LLVM_COV_EXE
-  LLVM_COVERAGE_COMPILER_FLAGS_OK
-  LLVM_PROFDATA_EXE
-  SWIG_EXECUTABLE
-  VALGRIND_EXE
-)
 
 # Find libxml2
 set(HAVE_LIBXML2_CONFIG FALSE)
@@ -94,6 +97,11 @@ set(HAVE_LIBXML2_CONFIG FALSE)
 # need to track how we found LibXml2.
 find_package(LibXml2 CONFIG QUIET)
 if(LibXml2_FOUND)
+  if(TARGET zlib)
+    set(HAVE_ZLIB_TARGET TRUE)
+  else()
+    find_package(ZLIB REQUIRED)
+  endif()
   set(HAVE_LIBXML2_CONFIG TRUE)
   # Clear out GUI variables created in module search mode.
   foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
@@ -103,6 +111,11 @@ if(LibXml2_FOUND)
   endforeach()
 else()
   find_package(LibXml2 REQUIRED)
+  if(TARGET zlib)
+    set(HAVE_ZLIB_TARGET TRUE)
+  else()
+    find_package(ZLIB REQUIRED)
+  endif()
   if(LibXml2_FOUND)
     # Clear out GUI variable created in config search mode.
     unset(LibXml2_DIR CACHE)
@@ -157,7 +170,7 @@ if(HAVE_COVERAGE)
   set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Module required to run Python coverage testing is available.")
 endif()
 
-if(WIN32)
+if(WIN32 AND NOT EMSCRIPTEN)
   find_program(MAKENSIS_EXE NAMES ${PREFERRED_NSIS_NAMES} makensis
     HINTS "C:/Program\ Files/NSIS/" "C:/Program\ Files\ (x86)/NSIS/")
   mark_as_advanced(MAKENSIS_EXE)
@@ -166,4 +179,8 @@ if(WIN32)
   else()
     set(NSIS_FOUND FALSE)
   endif()
+endif()
+
+if(EMSCRIPTEN AND NODE_EXE AND NPM_EXE)
+    set(JAVASCRIPT_BINDINGS_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the javascript bindings tests are available.")
 endif()

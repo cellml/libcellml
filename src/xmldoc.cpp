@@ -23,7 +23,10 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "mathmlconfig.h"
+#include <zlib.h>
+
+#include "libcellmlconfig_p.h"
+#include "mathmldtd.h"
 #include "xmlnode.h"
 
 namespace libcellml {
@@ -61,6 +64,7 @@ struct XmlDoc::XmlDocImpl
 {
     xmlDocPtr mXmlDocPtr = nullptr;
     std::vector<std::string> mXmlErrors;
+    size_t bufferPointer = 0;
 };
 
 XmlDoc::XmlDoc()
@@ -89,15 +93,36 @@ void XmlDoc::parse(const std::string &input)
     xmlCleanupGlobals();
 }
 
+std::string decompressMathMLDTD()
+{
+    std::vector<unsigned char> mathmlDTD;
+    UNCOMPRESS_SIZE_TYPE sizeMathmlDTDUncompressedResize = MATHML_DTD_LEN;
+    mathmlDTD.resize(sizeMathmlDTDUncompressedResize);
+
+    const unsigned char *a = compressedMathMLDTD();
+
+    uncompress(&mathmlDTD[0], &sizeMathmlDTDUncompressedResize, a, COMPRESSED_MATHML_DTD_LEN);
+
+    return std::string(mathmlDTD.begin(), mathmlDTD.end());
+}
+
 void XmlDoc::parseMathML(const std::string &input)
 {
+    // Decompress the MathML DTD.
+    int sizeMathmlDTDUncompressed = MATHML_DTD_LEN;
+
+    std::string mathMLDTD = decompressMathMLDTD();
+
     xmlInitParser();
-    std::string mathmlString = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">" + input;
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(mathmlString.c_str()), "/", nullptr,
-                                        XML_PARSE_DTDVALID);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
+    xmlParserInputBufferPtr buf = xmlParserInputBufferCreateMem(reinterpret_cast<const char *>(mathMLDTD.c_str()), sizeMathmlDTDUncompressed, XML_CHAR_ENCODING_ASCII);
+    xmlDtdPtr dtd = xmlIOParseDTD(nullptr, buf, XML_CHAR_ENCODING_ASCII);
+    xmlValidateDtd(&(context->vctxt), mPimpl->mXmlDocPtr, dtd);
+
+    xmlFreeDtd(dtd);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
