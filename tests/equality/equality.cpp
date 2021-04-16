@@ -324,6 +324,18 @@ TEST(Equality, unitsEqualPrecision4)
     EXPECT_TRUE(u2->equals(u1));
 }
 
+TEST(Equality, unitsEqualPrecision4Switched)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", 238487722399.29383);
+    u2->addUnit("second", 238487722399.29384);
+
+    EXPECT_TRUE(u1->equals(u2));
+    EXPECT_TRUE(u2->equals(u1));
+}
+
 TEST(Equality, unitsNotEqualExponent)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
