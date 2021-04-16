@@ -769,6 +769,50 @@ TEST(Units, unitAttributes)
     EXPECT_DOUBLE_EQ(1.8, multiplier);
 }
 
+TEST(Units, unitAttributeReference)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    EXPECT_EQ("", u->unitAttributeReference(0));
+    u->addUnit("NewUnit", 4, 1.05, 17.0);
+
+    EXPECT_EQ("NewUnit", u->unitAttributeReference(0));
+    EXPECT_EQ("", u->unitAttributeReference(4));
+}
+
+TEST(Units, unitAttributePrefix)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    EXPECT_EQ("", u->unitAttributePrefix(0));
+    u->addUnit("NewUnit", 4, 1.05, 17.0);
+
+    EXPECT_EQ("4", u->unitAttributePrefix(0));
+    EXPECT_EQ("", u->unitAttributePrefix(3));
+}
+
+TEST(Units, unitAttributeExponent)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    EXPECT_EQ(1.0, u->unitAttributeExponent(0));
+    u->addUnit("NewUnit", 4, 1.05, 17.0);
+
+    EXPECT_EQ(1.05, u->unitAttributeExponent(0));
+    EXPECT_EQ(1.0, u->unitAttributeExponent(2));
+}
+
+TEST(Units, unitAttributeMultiplier)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    EXPECT_EQ(1.0, u->unitAttributeMultiplier(0));
+    u->addUnit("NewUnit", 4, 1.05, 17.0);
+
+    EXPECT_EQ(17.0, u->unitAttributeMultiplier(0));
+    EXPECT_EQ(1.0, u->unitAttributeMultiplier(5));
+}
+
 TEST(Units, multipleUnitUsingStandardRef)
 {
     auto u = libcellml::Units::create();

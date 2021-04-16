@@ -53,24 +53,24 @@ public:
     static AnalyserExternalVariablePtr create(const VariablePtr &variable) noexcept;
 
     /**
-     * @brief Get the @c Variable associated with this
+     * @brief Get the @ref Variable associated with this
      * @c AnalyserExternalVariable.
      *
-     * Return a reference to the @c Variable associated with this
+     * Return a reference to the @ref Variable associated with this
      * @c AnalyserExternalVariable.
      *
-     * @return The @c Variable associated with this @c AnalyserExternalVariable.
+     * @return The @ref Variable associated with this @ref AnalyserExternalVariable.
      */
     VariablePtr variable() const;
 
     /**
-     * @brief Add a dependency to this @AnalyserExternalVariable.
+     * @brief Add a dependency to this @c AnalyserExternalVariable.
      *
-     * Add the given @c Variable as a dependency of this
-     * @AnalyserExternalVariable, but only if the given @c Variable or its
+     * Add the given @ref Variable as a dependency of this
+     * @ref AnalyserExternalVariable, but only if the given @ref Variable or its
      * primary equivalent has not already been added.
      *
-     * @param variable The @c Variable to add as a dependency.
+     * @param variable The @ref Variable to add as a dependency.
      *
      * @return @c true if the variable was added, @c false otherwise.
      */
@@ -123,22 +123,22 @@ public:
     bool removeDependency(const VariablePtr &variable);
 
     /**
-     * @brief Remove all dependencies from this @AnalyserExternalVariable.
+     * @brief Remove all dependencies from this @ref AnalyserExternalVariable.
      *
      * Clear all dependencies that have been added to this
-     * @AnalyserExternalVariable.
+     * @ref AnalyserExternalVariable.
      */
     void removeAllDependencies();
 
     /**
      * @brief Test to see if the dependency with the given @p variableName in
      * the @c Component with the given @p componentName in the given @p model is
-     * contained within this @AnalyserExternalVariable's list of dependencies.
+     * contained within this @ref AnalyserExternalVariable's list of dependencies.
      *
      * Test to see if the dependency with the the given @p variableName in the
      * @c Component with the given @p componentName in the given @p model is
-     * contained within this @AnalyserExternalVariable's list of dependencies.
-     * Return @c true if the dependency is in this @AnalyserExternalVariable's
+     * contained within this @ref AnalyserExternalVariable's list of dependencies.
+     * Return @c true if the dependency is in this @ref AnalyserExternalVariable's
      * list of dependencies and @c false otherwise.
      *
      * @param model The pointer to the @c Model which contains the dependency to
@@ -147,7 +147,7 @@ public:
      * dependency to test.
      * @param variableName The name of the dependency to test.
      *
-     * @return @c true if the dependency is in this @AnalyserExternalVariable's
+     * @return @c true if the dependency is in this @ref AnalyserExternalVariable's
      * list of dependencies and @c false otherwise.
      */
     bool containsDependency(const ModelPtr &model,
@@ -158,16 +158,16 @@ public:
      * @overload
      *
      * @brief Test to see if the dependency with the given pointer is contained
-     * within this @AnalyserExternalVariable's list of dependencies.
+     * within this @ref AnalyserExternalVariable's list of dependencies.
      *
      * Test to see if the dependency with the given pointer is contained within
-     * this @AnalyserExternalVariable's list of dependencies. Return @c true if
-     * the dependency is in this @AnalyserExternalVariable's list of
+     * this @ref AnalyserExternalVariable's list of dependencies. Return @c true if
+     * the dependency is in this @ref AnalyserExternalVariable's list of
      * dependencies and @c false otherwise.
      *
      * @param variable The pointer to the dependency to remove.
      *
-     * @return @c true if the dependency is in this @AnalyserExternalVariable's
+     * @return @c true if the dependency is in this @ref AnalyserExternalVariable's
      * list of dependencies and @c false otherwise.
      */
     bool containsDependency(const VariablePtr &variable) const;
@@ -192,7 +192,7 @@ public:
      *
      * Return the dependency with the given @p variableName in the @c Component
      * with the given @p componentName in the given @p model. If no such
-     * dependency is contained within the @AnalyserExternalVariable, a
+     * dependency is contained within the @ref AnalyserExternalVariable, a
      * @c nullptr is returned.
      *
      * @param model The pointer to the @c Model which contains the dependency to
@@ -210,19 +210,19 @@ public:
                            const std::string &variableName) const;
 
     /**
-     * @brief Get the list of @c Variable dependencies.
+     * @brief Get the list of @ref Variable dependencies.
      *
-     * Return the list of @c Variable items on which this
+     * Return the list of @ref Variable items on which this
      * @c AnalyserExternalVariable depends.
      *
-     * @return The list of @c Variable dependencies.
+     * @return The list of @ref Variable dependencies.
      */
     std::vector<VariablePtr> dependencies() const;
 
     /**
-     * @brief Get the number of dependencies of this @AnalyserExternalVariable.
+     * @brief Get the number of dependencies of this @ref AnalyserExternalVariable.
      *
-     * Return the number of dependencies this @AnalyserExternalVariable
+     * Return the number of dependencies this @ref AnalyserExternalVariable
      * contains.
      *
      * @return The number of dependencies.

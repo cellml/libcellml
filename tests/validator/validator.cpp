@@ -687,8 +687,8 @@ TEST(Validator, invalidMathMLVariables)
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "MathML ci element has the child text 'answer' which does not correspond with any variable names present in component 'componentName'.",
         "MathML ci element has the child text 'new_bvar' which does not correspond with any variable names present in component 'componentName'.",
-        "W3C MathML DTD error: No declaration for element nonsense.",
         "W3C MathML DTD error: Element nonsense is not declared in ci list of possible children.",
+        "W3C MathML DTD error: No declaration for element nonsense.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -734,8 +734,8 @@ TEST(Validator, invalidSimpleMathmlCellMLUnits)
         "Model '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Component '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "MathML ci element has the child text 'B' which does not correspond with any variable names present in component ''.",
-        "W3C MathML DTD error: No declaration for attribute units of element ci.",
         "W3C MathML DTD error: Element apply content does not follow the DTD, expecting (csymbol | ci | cn | apply | reln | lambda | condition | declare | sep | semantics | annotation | annotation-xml | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | interval | list | matrix | matrixrow | set | vector | piecewise | lowlimit | uplimit | bvar | degree | logbase | momentabout | domainofapplication | inverse | ident | domain | codomain | image | abs | conjugate | exp | factorial | arg | real | imaginary | floor | ceiling | not | ln | sin | cos | tan | sec | csc | cot | sinh | cosh | tanh | sech | csch | coth | arcsin | arccos | arctan | arccosh | arccot | arccoth | arccsc | arccsch | arcsec | arcsech | arcsinh | arctanh | determinant | transpose | card | quotient | divide | power | rem | implies | vectorproduct | scalarproduct | outerproduct | setdiff | fn | compose | plus | times | max | min | gcd | lcm | and | or | xor | union | intersect | cartesianproduct | mean | sdev | variance | median | mode | selector | root | minus | log | int | diff | partialdiff | divergence | grad | curl | laplacian | sum | product | limit | moment | exists | forall | neq | factorof | in | notin | notsubset | notprsubset | tendsto | eq | leq | lt | geq | gt | equivalent | approx | subset | prsubset | mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction)*, got (CDATA bvar ).",
+        "W3C MathML DTD error: No declaration for attribute units of element ci.",
     };
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -1566,8 +1566,8 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
         "Math cn element with the value '3.44' does not have a valid cellml:units attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '-9.612' does not have a valid cellml:units attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "W3C MathML DTD error: Namespace prefix cellml for units on cn is not defined.",
-        "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
         "W3C MathML DTD error: Namespace prefix cellml for units on cn is not defined.",
+        "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
         "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
     };
 
