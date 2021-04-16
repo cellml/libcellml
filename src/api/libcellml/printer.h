@@ -49,13 +49,15 @@ public:
     static PrinterPtr create() noexcept;
 
     /**
-     * @brief Serialise the @c Model to @c std::string.
+     * @brief Serialise the @ref Model to @c std::string.
      *
      * Serialise the given @p model to a std::string.
+     * Has an optional argument to automatically add identifiers to all elements in the resulting document.
      *
-     * @param model The @c Model to serialise.
+     * @param model The @ref Model to serialise.
+     * @param autoIds Optional argument that when @c true will add identifiers to all elements in the resulting document.
      *
-     * @return The @c std::string representation of the @c Model.
+     * @return The @c std::string representation of the @ref Model.
      */
     std::string printModel(const ModelPtr &model, bool autoIds = false) const;
 

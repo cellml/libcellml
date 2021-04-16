@@ -507,7 +507,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
 void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node) const
 {
     std::string reference;
-    std::string prefix;
+    std::string prefix = "0";
     double exponent = 1.0;
     double multiplier = 1.0;
     std::string id;
