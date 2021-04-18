@@ -2567,7 +2567,7 @@ public:
      *
      * Set the @c std::string for the name of the constant variable type.
      *
-     * @param statesArrayString The @c std::string to use for the name of the
+     * @param constantVariableTypeString The @c std::string to use for the name of the
      * constant variable type.
      */
     void setConstantVariableTypeString(const std::string &constantVariableTypeString);
@@ -2591,7 +2591,7 @@ public:
      * Set the @c std::string for the name of the computed constant variable
      * type.
      *
-     * @param statesArrayString The @c std::string to use for the name of the
+     * @param computedConstantVariableTypeString The @c std::string to use for the name of the
      * computed constant variable type.
      */
     void setComputedConstantVariableTypeString(const std::string &computedConstantVariableTypeString);
@@ -2612,7 +2612,7 @@ public:
      *
      * Set the @c std::string for the name of the algebraic variable type.
      *
-     * @param statesArrayString The @c std::string to use for the name of the
+     * @param algebraicVariableTypeString The @c std::string to use for the name of the
      * algebraic variable type.
      */
     void setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString);
@@ -2631,7 +2631,7 @@ public:
      *
      * Set this @c std::string for the name of the external variable type.
      *
-     * @param statesArrayString The @c std::string to use for the name of the
+     * @param externalVariableTypeString The @c std::string to use for the name of the
      * external variable type.
      */
     void setExternalVariableTypeString(const std::string &externalVariableTypeString);

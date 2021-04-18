@@ -473,7 +473,10 @@ public:
      * Set the connection for this issue defined by the given variables.
      * The item type will be set to @ref CellmlElementType::CONNECTION.
      *
-     * @param pair The @ref VariablePair whose connection is relevant to this issue.
+     * @overload
+     *
+     * @param variable1 The first @ref Variable whose connection is relevant to this issue.
+     * @param variable2 The second @ref Variable whose connection is relevant to this issue.
      */
     void setConnection(const VariablePtr &variable1, const VariablePtr &variable2);
 
@@ -503,7 +506,10 @@ public:
      * Set the variable mapping for this issue defined by the given variables.
      * The item type will be set to @ref CellmlElementType::MAP_VARIABLES.
      *
-     * @param pair The @ref VariablePair whose connection is relevant to this issue.
+     * @overload
+     *
+     * @param variable1 The first @ref Variable whose connection is relevant to this issue.
+     * @param variable2 The second @ref Variable whose connection is relevant to this issue.
      */
     void setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2);
 

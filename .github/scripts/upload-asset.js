@@ -2,7 +2,7 @@ const fs = require('fs');
 const mime = require('mime');
 
 module.exports = ({github, context}) => {
-  
+
   let upload_url = context.payload.release.upload_url
   upload_url = upload_url.split('{').shift()
   
