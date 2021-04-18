@@ -7,16 +7,18 @@
 # This file is based on kdevplatform/veritas/tests/runMemcheck.py
 # by the KDevelop project, www.kdevelop.org
 #
-
+from multiprocessing import Pool, cpu_count
 from os import system, remove, environ, defpath, path, pathsep, X_OK, access, sep
 from sys import exit, stdout
 from subprocess import Popen, PIPE
 from xml.dom.minidom import parse, parseString
 
+
 def garbage(line):
     ''' filter for valgridn output'''
     return not line.startswith('<unknown program name>') and \
            not line.startswith('profiling:')
+
 
 def memcheck(test):
     ''' run valgrind-memcheck on test in testdir. return xml output as string '''
@@ -30,6 +32,7 @@ def memcheck(test):
     out = list(filter(garbage, out))
     return ''.join(out)
 
+
 def xml_child_data(dom,tag):
     ''' extract child data for tag. return None if not found'''
     elem = dom.getElementsByTagName(tag)
@@ -37,6 +40,7 @@ def xml_child_data(dom,tag):
     if len(elem) != 0:
         val = elem[0].firstChild.data
     return val
+
 
 class Frame:
     ''' single entry in a memory error backtrace '''
@@ -64,6 +68,7 @@ class Frame:
             #out += "\t" + self.obj + "\n"
         out += "\n"
         return out
+
 
 class BackTrace:
     ''' valgrind memcheck stack trace '''
@@ -101,6 +106,7 @@ class BackTrace:
             out += str(frame)
         return out
 
+
 def parse_errors(out):
     ''' extract the interesting memcheck errors from the xml-string input 'out'.
     return these as a list '''
@@ -112,6 +118,7 @@ def parse_errors(out):
         if bt.is_definitely_lost() and bt.is_qtest():
             errors_.append(bt)
     return errors_
+
 
 #from: http://mail.python.org/pipermail/python-list/2002-August/157829.html
 def which (filename):
@@ -128,6 +135,7 @@ def which (filename):
             return f
     return None
 
+
 def find_valgrind():
     valgrind = which('valgrind')
     if valgrind != None:
@@ -135,6 +143,7 @@ def find_valgrind():
     else:
         print("valgrind NOT FOUND")
         exit(3)
+
 
 def run_single_test(exe_name):
     success = False
@@ -163,14 +172,18 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         exit_code = 0
         test_dir = sys.argv[1]
+        single_tests = sys.argv[2:]
         successes = []
         failures = []
-        for single_test in sys.argv[2:]:
-            result = run_single_test(path.join(test_dir, single_test))
+
+        with Pool(cpu_count()) as p:
+            results = p.map(run_single_test, [path.join(test_dir, single_test) for single_test in single_tests])
+
+        for index, result in enumerate(results):
             if result:
-                successes.append(single_test)
+                successes.append(single_tests[index])
             else:
-                failures.append(single_test)
+                failures.append(single_tests[index])
                 exit_code = 2
 
         sys.stdout.write(">> Summary\n")

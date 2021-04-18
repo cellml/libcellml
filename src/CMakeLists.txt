@@ -25,8 +25,6 @@ endforeach()
 set(LIBCELLML_LIBRARY_VERSION 0x${PROJECT_VERSION_MAJOR_PAD}${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR_PAD}${PROJECT_VERSION_MINOR}${PROJECT_VERSION_PATCH_PAD}${PROJECT_VERSION_PATCH})
 set(LIBCELLML_LIBRARY_VERSION_STRING "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
-set(LIBCELLML_MATHML_DTD_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/dtds/mathml2/mathml2.dtd")
-
 set(LIBCELLML_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/api/libcellml/exportdefinitions.h")
 set(LIBCELLML_VERSIONCONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/versionconfig.h")
 set(LIBCELLML_VERSIONCONFIG_H_IN "${CMAKE_CURRENT_SOURCE_DIR}/configure/versionconfig.h.in")
@@ -35,14 +33,16 @@ configure_file(
   ${LIBCELLML_VERSIONCONFIG_H}
 )
 
-list(APPEND CLEAN_FILES ${LIBCELLML_VERSIONCONFIG_H} ${LIBCELLML_EXPORTDEFINITIONS_H})
+set(LIBCELLML_PRIVATECONFIG_IN_H "${CMAKE_CURRENT_SOURCE_DIR}/configure/libcellmlconfig_p.in.h")
+set(LIBCELLML_PRIVATECONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/libcellmlconfig_p.h")
+if(MSVC)
+  set(UNCOMPRESS_SIZE_TYPE "unsigned long")
+else()
+  set(UNCOMPRESS_SIZE_TYPE "size_t")
+endif()
+configure_file(${LIBCELLML_PRIVATECONFIG_IN_H} ${LIBCELLML_PRIVATECONFIG_H})
 
-set(MATHML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/mathmlconfig.h")
-set(MATHML_CONFIG_H_IN "${CMAKE_CURRENT_SOURCE_DIR}/configure/mathmlconfig.h.in")
-configure_file(
-  ${MATHML_CONFIG_H_IN}
-  ${MATHML_CONFIG_H}
-)
+list(APPEND CLEAN_FILES ${LIBCELLML_VERSIONCONFIG_H} ${LIBCELLML_EXPORTDEFINITIONS_H})
 
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
@@ -64,6 +64,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parentedentity.cpp
@@ -133,6 +134,7 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generator_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
@@ -143,8 +145,8 @@ set(GIT_HEADER_FILES
 
 set(HEADER_FILES
   ${GIT_HEADER_FILES}
+  ${LIBCELLML_PRIVATECONFIG_H}
   ${LIBCELLML_VERSIONCONFIG_H}
-  ${MATHML_CONFIG_H}
 )
 
 # Only does anything if configuration target is Visual Studio.
@@ -175,11 +177,18 @@ target_include_directories(cellml
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+if(TARGET zlib)
+  target_link_libraries(cellml PRIVATE zlib)
+else()
+  target_link_libraries(cellml PUBLIC ${ZLIB_LIBRARIES})
+  target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
+endif()
+
 if(HAVE_LIBXML2_CONFIG)
   target_link_libraries(cellml PUBLIC xml2)
 else()
-  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR})
-  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
+  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
+  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES} ${ZLIB_LIBRARIES})
   target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 endif()
 
@@ -303,7 +312,7 @@ set(LIBCELLML_TARGETS_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-targets.cmake")
 export(EXPORT libcellml-targets FILE ${LIBCELLML_TARGETS_FILE})
 list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE})
 
-if (HAVE_LIBXML2_CONFIG)
+if(HAVE_LIBXML2_CONFIG)
   file(TO_CMAKE_PATH ${LibXml2_DIR} _NORMALISED_PATH)
   set(LIBXML2_CONFIG_MODE_INFORMATION "include(CMakeFindDependencyMacro)\n\nset(LibXml2_DIR \"${_NORMALISED_PATH}\")\nfind_dependency(LibXml2 CONFIG)\n")
 endif()
@@ -341,6 +350,5 @@ set(MODULE_HEADER_FILES ${MODULE_HEADER_FILES} PARENT_SCOPE)
 set(HEADER_FILES ${GIT_HEADER_FILES} PARENT_SCOPE)
 set(CONFIG_FILES
   ${LIBCELLML_VERSIONCONFIG_H_IN}
-  ${MATHML_CONFIG_H_IN}
   PARENT_SCOPE
 )

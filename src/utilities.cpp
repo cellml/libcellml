@@ -202,9 +202,9 @@ bool areEqual(double a, double b)
     return convertToString(a + 0.0) == convertToString(b + 0.0);
 }
 
-ptrdiff_t ulpsDistance(double a, double b)
+uint64_t ulpsDistance(double a, double b)
 {
-    static const auto max = std::numeric_limits<ptrdiff_t>::max();
+    static const auto max = std::numeric_limits<uint64_t>::max();
 
     // Max distance for NaN.
     if (std::isnan(a) || std::isnan(b)) {
@@ -218,17 +218,18 @@ ptrdiff_t ulpsDistance(double a, double b)
 
     static const int SIZE_OF_DOUBLE = sizeof(double);
 
-    ptrdiff_t ia;
-    ptrdiff_t ib;
+    uint64_t ia;
+    uint64_t ib;
     memcpy(&ia, &a, SIZE_OF_DOUBLE);
     memcpy(&ib, &b, SIZE_OF_DOUBLE);
 
     // Return the absolute value of the distance in ULPs.
-    ptrdiff_t distance = ia - ib;
-    if (distance < 0) {
-        return -distance;
+    uint64_t distance = max;
+    if (ia < ib) {
+        distance = ib + ~ia + 1;
+    } else {
+        distance = ia + ~ib + 1;
     }
-
     return distance;
 }
 
