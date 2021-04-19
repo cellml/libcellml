@@ -647,8 +647,8 @@ jobs:
 
       - name: Publish libcellml.js
         shell: bash
-        run |
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        run: |
           cd build-libcellml-release/src/bindings/javascript
           npm publish --access public
-          env:
-            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
