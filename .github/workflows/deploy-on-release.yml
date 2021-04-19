@@ -234,16 +234,16 @@ jobs:
         - {
             name: "Windows Server 2019 MSVC Py38", deploy_libs: true, deploy_python: true,
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=C:\\\\Program Files (x86)\\\\LibXml2\\\\LibXml2\\\\CMake\\\\"',
-            zlib_dir: '-D "ZLIB_DIR=C:\\\\Program Files (x86)\\\\ZLIB\\\\ZLIB\\\\CMake\\\\"',
+            libxml2_dir: '-D "LibXml2_DIR=C:/Program Files (x86)/LibXml2/LibXml2/CMake/"',
+            zlib_dir: '-D "ZLIB_DIR=C:/Program Files (x86)/ZLIB/ZLIB/CMake/"',
             build_type: "Release", cc: "cl", cxx: "cl", python_version: 3.8,
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
             name: "Windows Server 2019 MSVC Py39", deploy_libs: false, deploy_python: true,
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=C:\\\\Program Files (x86)\\\\LibXml2\\\\LibXml2\\\\CMake\\\\"',
-            zlib_dir: '-D "ZLIB_DIR=C:\\\\Program Files (x86)\\\\ZLIB\\\\ZLIB\\\\CMake\\\\"',
+            libxml2_dir: '-D "LibXml2_DIR=C:/Program Files (x86)/LibXml2/LibXml2/CMake/"',
+            zlib_dir: '-D "ZLIB_DIR=C:/Program Files (x86)/ZLIB/ZLIB/CMake/"',
             build_type: "Release", cc: "gcc", cxx: "g++", python_version: 3.9
           }
         - {
