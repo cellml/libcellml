@@ -640,4 +640,4 @@ jobs:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
         run: |
           cd build-libcellml-release/src/bindings/javascript
-          npm publish --access public
+          npm publish --access public --token $NPM_TOKEN
