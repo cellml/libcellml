@@ -242,7 +242,7 @@ jobs:
         - {
             name: "Windows Server 2019 MSVC Py39", deploy_libs: false, deploy_python: true,
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=.../usr/local/lib/cmake/libxml2-2.9.10/"',
+            libxml2_dir: '-D "LibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/"',
             zlib_dir: '-D "ZLIB_DIR=../usr/local/ZLIB/ZLIB/CMake/"',
             build_type: "Release", cc: "gcc", cxx: "g++", python_version: 3.9
           }
@@ -637,7 +637,7 @@ jobs:
       - name: Publish libcellml.js
         shell: bash
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
         run: |
           cd build-libcellml-release/src/bindings/javascript
           npm publish --access public
