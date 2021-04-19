@@ -46,7 +46,7 @@ using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of 
 
 using IdMap = std::map<std::string, std::pair<int, std::vector<std::string>>>; /**< Type definition for map of IDs in Validator. **/
 using ImportLibrary = std::map<std::string, ModelPtr>; /** Type definition for library map of imported models. */
-using IdList = std::unordered_set<std::string>; /**< Type definition for list of ids. */
+using IdList = std::unordered_set<std::string>; /**< Type definition for list of identifiers. */
 
 using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
 using ImportSourceWeakPtr = std::weak_ptr<ImportSource>; /**< Type definition for weak import source pointer. */
@@ -54,6 +54,10 @@ using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model p
 using ResetWeakPtr = std::weak_ptr<Reset>; /**< Type definition for weak reset pointer. */
 using UnitsWeakPtr = std::weak_ptr<Units>; /**< Type definition for weak units pointer. */
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
+
+using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Type definition for shared component entity const pointer. */
+using ModelConstPtr = std::shared_ptr<const Model>; /**< Type definition for shared model const pointer. */
+using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type definition for shared parented entity const pointer. */
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 

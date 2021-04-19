@@ -33,6 +33,7 @@ include(clone/tests.cmake)
 include(component/tests.cmake)
 include(connection/tests.cmake)
 include(coverage/tests.cmake)
+include(equality/tests.cmake)
 include(generator/tests.cmake)
 include(import_source/tests.cmake)
 include(importer/tests.cmake)
@@ -94,14 +95,14 @@ foreach(TEST ${LIBCELLML_TESTS})
 
   add_test(NAME ${CURRENT_CATEGORY}unit_${CURRENT_TEST} COMMAND ${CURRENT_TEST})
   if(MSVC)
-    if(HAVE_LIBXML2_CONFIG)
-      set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST}
-        PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>\;$<TARGET_FILE_DIR:xml2>")
-    else()
-      # The libxml2 dll must be on the path otherwise the tests will not be able to run.
-      set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST}
-        PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>")
+    set(_TEST_PROPERTIES "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>")
+    if(HAVE_TARGET_ZLIB)
+      set(_TEST_PROPERTIES "${_TEST_PROPERTIES}\;$<TARGET_FILE_DIR:zlib>")
     endif()
+    if(HAVE_LIBXML2_CONFIG)
+      set(_TEST_PROPERTIES "${_TEST_PROPERTIES}\;$<TARGET_FILE_DIR:xml2>")
+    endif()
+    set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST} PROPERTIES ENVIRONMENT "${_TEST_PROPERTIES}")
   endif()
 
   list(APPEND TEST_LIST ${CURRENT_TEST})
@@ -173,7 +174,7 @@ if(LIBCELLML_LLVM_COVERAGE)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running LLVM coverage tests")
 
-  add_custom_target(llvm_coverage_missing_lines
+  add_custom_target(llvm_coverage_report
     COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=html -Xdemangler c++filt -Xdemangler -n -o coverage_report
     DEPENDS prepare_llvm_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

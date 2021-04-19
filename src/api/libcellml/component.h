@@ -132,7 +132,6 @@ public:
      * previous component's variable list is updated.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p variable reference already exists in this component; or
      *  - The @p variable is the @c nullptr.
      *
      * @sa removeVariable
@@ -306,8 +305,7 @@ public:
      * previous component's reset list is updated.
      *
      * The function will return @c false with no action taken if:
-     *  - the @p reset already exists in this component; or
-     *  - the supplied @param reset pointer is @c nullptr.
+     *  - the supplied @p reset pointer is @c nullptr.
      *
      * @sa removeReset
      *
@@ -429,21 +427,16 @@ public:
 
 private:
     Component(); /**< Constructor @private*/
-    explicit Component(const std::string &name); /**< Constructor named @private */
+    explicit Component(const std::string &name); /**< Constructor named, @private. */
 
-    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private */
+    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private. */
 
-    /**
-     * @brief Set the import source of this component.
-     *
-     * Virtual method implementing ImportedEntity::setImportSource, @private.
-     *
-     * @param importSource The @c ImportSourcePtr to add to this @c Component.
-     */
-    void doSetImportSource(const ImportSourcePtr &importSource) override;
+    bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
 
-    struct ComponentImpl; /**< Forward declaration for pImpl idiom. @private */
-    ComponentImpl *mPimpl; /**< Private member to implementation pointer. @private */
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
+    struct ComponentImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ComponentImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

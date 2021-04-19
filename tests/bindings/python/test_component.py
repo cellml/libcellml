@@ -104,7 +104,7 @@ class ComponentTestCase(unittest.TestCase):
 
         # bool hasVariable(const VariablePtr &variable)
         c = Component()
-        v = Variable()
+        v = Variable("second")
         self.assertFalse(c.hasVariable(v))
         c.addVariable(v)
         self.assertTrue(c.hasVariable(v))
@@ -162,8 +162,8 @@ class ComponentTestCase(unittest.TestCase):
 
         # bool removeVariable(const VariablePtr &variable)
         c = Component()
-        v1 = Variable()
-        v2 = Variable()
+        v1 = Variable("second")
+        v2 = Variable("meter")
         self.assertFalse(c.removeVariable(v1))
         c.addVariable(v1)
         self.assertFalse(c.removeVariable(v2))
@@ -285,13 +285,6 @@ class ComponentTestCase(unittest.TestCase):
 
         c = Component("banana")
         self.assertFalse(c.requiresImports())
-
-    def test_resolved(self):
-        from libcellml import Component
-        b = Component("banana")
-        self.assertFalse(b.isResolved())
-        b.setResolved(True)
-        self.assertTrue(b.isResolved())
 
 if __name__ == '__main__':
     unittest.main()

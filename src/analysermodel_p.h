@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#pragma once
+
 #include "libcellml/analysermodel.h"
 
 namespace libcellml {
@@ -60,6 +62,8 @@ struct AnalyserModel::AnalyserModelImpl
     bool mNeedAsechFunction = false;
     bool mNeedAcschFunction = false;
     bool mNeedAcothFunction = false;
+
+    std::map<uintptr_t, bool> mCachedEquivalentVariables;
 };
 
 } // namespace libcellml

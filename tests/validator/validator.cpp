@@ -25,6 +25,15 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
+TEST(Validator, invalidInput)
+{
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    validator->validateModel(nullptr);
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ("The model is null.", validator->issue(0)->description());
+}
+
 TEST(Validator, namedModel)
 {
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -168,6 +177,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::VariablePtr v4 = libcellml::Variable::create();
     libcellml::VariablePtr v5 = libcellml::Variable::create();
+
     model->addComponent(c1);
     c1->addVariable(v1);
     c1->addVariable(v2);
@@ -186,6 +196,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     v4->setUnits("dollars");
     v5->setName("mullah");
     v5->setUnits("$$");
+
     validator->validateModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
@@ -519,7 +530,7 @@ TEST(Validator, validMathInMultipleMathMLBlocksInvalidMathTagDuplicateIDs)
         "</math>\n";
     const std::vector<std::string> expectedIssues = {
         "Math root node is of invalid type 'banana' on component 'componentName'. A valid math root node should be of type 'math'.",
-        "Duplicated id attribute 'myId' has been found in:\n"
+        "Duplicated identifier attribute 'myId' has been found in:\n"
         " - MathML cn element in math in component 'componentName'; and\n"
         " - MathML ci element 'B' in math in component 'componentName'.\n",
     };
@@ -676,8 +687,8 @@ TEST(Validator, invalidMathMLVariables)
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "MathML ci element has the child text 'answer' which does not correspond with any variable names present in component 'componentName'.",
         "MathML ci element has the child text 'new_bvar' which does not correspond with any variable names present in component 'componentName'.",
-        "W3C MathML DTD error: No declaration for element nonsense.",
         "W3C MathML DTD error: Element nonsense is not declared in ci list of possible children.",
+        "W3C MathML DTD error: No declaration for element nonsense.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -723,8 +734,8 @@ TEST(Validator, invalidSimpleMathmlCellMLUnits)
         "Model '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Component '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "MathML ci element has the child text 'B' which does not correspond with any variable names present in component ''.",
-        "W3C MathML DTD error: No declaration for attribute units of element ci.",
         "W3C MathML DTD error: Element apply content does not follow the DTD, expecting (csymbol | ci | cn | apply | reln | lambda | condition | declare | sep | semantics | annotation | annotation-xml | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | interval | list | matrix | matrixrow | set | vector | piecewise | lowlimit | uplimit | bvar | degree | logbase | momentabout | domainofapplication | inverse | ident | domain | codomain | image | abs | conjugate | exp | factorial | arg | real | imaginary | floor | ceiling | not | ln | sin | cos | tan | sec | csc | cot | sinh | cosh | tanh | sech | csch | coth | arcsin | arccos | arctan | arccosh | arccot | arccoth | arccsc | arccsch | arcsec | arcsech | arcsinh | arctanh | determinant | transpose | card | quotient | divide | power | rem | implies | vectorproduct | scalarproduct | outerproduct | setdiff | fn | compose | plus | times | max | min | gcd | lcm | and | or | xor | union | intersect | cartesianproduct | mean | sdev | variance | median | mode | selector | root | minus | log | int | diff | partialdiff | divergence | grad | curl | laplacian | sum | product | limit | moment | exists | forall | neq | factorof | in | notin | notsubset | notprsubset | tendsto | eq | leq | lt | geq | gt | equivalent | approx | subset | prsubset | mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction)*, got (CDATA bvar ).",
+        "W3C MathML DTD error: No declaration for attribute units of element ci.",
     };
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -1555,8 +1566,8 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
         "Math cn element with the value '3.44' does not have a valid cellml:units attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '-9.612' does not have a valid cellml:units attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "W3C MathML DTD error: Namespace prefix cellml for units on cn is not defined.",
-        "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
         "W3C MathML DTD error: Namespace prefix cellml for units on cn is not defined.",
+        "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
         "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
     };
 
@@ -1981,25 +1992,73 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
-TEST(Validator, unitIllDefinedEquivalentUnits)
+TEST(Validator, unitMissingEquivalentUnits)
 {
     const std::vector<std::string> expectedIssues = {
         "Variable 'v1' in component 'c1' does not have any units specified.",
-        "Variable 'v2' in component 'c2' does not have any units specified.",
-        "Variable 'v1' in component 'c1' has units of '' and an equivalent variable 'v2' in component 'c2' with non-matching units of ''. The mismatch is: ",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
     auto c1 = m->component(0);
     auto c2 = m->component(1);
+
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+
+    v2->setUnits("second");
+    v2->setInterfaceType("public");
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    validator->validateModel(m);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+TEST(Validator, unitTwoMissingEquivalentUnits)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' does not have any units specified.",
+        "Variable 'v2' in component 'c2' does not have any units specified.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+
     auto v1 = c1->variable(0);
     auto v2 = c2->variable(0);
 
     libcellml::Variable::addEquivalence(v1, v2);
+    validator->validateModel(m);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, mismatchedBaseUnitsEquivalentVariables)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'metre' and an equivalent variable 'v3' in component 'c3' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+    v1->setUnits("metre");
+    v2->setUnits("metre");
+
+    m->addComponent(libcellml::Component::create("c3"));
+    auto v3 = libcellml::Variable::create("v3");
+    m->component("c3")->addVariable(v3);
+    v3->setUnits("second");
+    v3->setInterfaceType("public");
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v3, v1);
 
     validator->validateModel(m);
-
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
@@ -2621,7 +2680,6 @@ TEST(Validator, importedUnitsFoundByValidator)
     auto component = libcellml::Component::create("component");
     auto importSource = libcellml::ImportSource::create();
     importSource->setUrl("somewhere.cellml");
-    model->addImportSource(importSource);
     model->addComponent(component);
 
     auto mV = libcellml::Units::create("mV");
@@ -2643,7 +2701,7 @@ TEST(Validator, importedUnitsFoundByValidator)
 
 TEST(Validator, duplicateIdSimple)
 {
-    std::vector<std::string> e = {"Duplicated id attribute 'id' has been found in:\n"
+    std::vector<std::string> e = {"Duplicated identifier attribute 'id' has been found in:\n"
                                   " - model 'model';\n"
                                   " - component 'c1' in model 'model';\n"
                                   " - variable 'v1' in component 'c1';\n"
@@ -2671,7 +2729,7 @@ TEST(Validator, duplicateIdAll)
     expectedIssues.emplace_back("W3C MathML DTD error: ID id4 already defined.");
     expectedIssues.emplace_back("W3C MathML DTD error: ID id1 already defined.");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id1' has been found in:\n"
+        "Duplicated identifier attribute 'id1' has been found in:\n"
         " - model 'everything';\n"
         " - units 'units2' in model 'everything';\n"
         " - encapsulation in model 'everything';\n"
@@ -2681,7 +2739,7 @@ TEST(Validator, duplicateIdAll)
         " - MathML cn element in reset_value in reset 0 in component 'component2'; and\n"
         " - MathML ci element 'variable4' in math in component 'component3'.\n");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id2' has been found in:\n"
+        "Duplicated identifier attribute 'id2' has been found in:\n"
         " - unit in units 'units2' in model 'everything';\n"
         " - import source for component 'component1';\n"
         " - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable4' in component 'component3';\n"
@@ -2692,7 +2750,7 @@ TEST(Validator, duplicateIdAll)
         " - component 'component3' in component 'component2'; and\n"
         " - MathML eq element in math in component 'component3'.\n");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id3' has been found in:\n"
+        "Duplicated identifier attribute 'id3' has been found in:\n"
         " - units 'units3' in model 'everything';\n"
         " - imported component 'component1' in model 'everything';\n"
         " - test_value in reset at index 0 in component 'component2';\n"
@@ -2702,7 +2760,7 @@ TEST(Validator, duplicateIdAll)
         " - MathML apply element in math in component 'component3'; and\n"
         " - encapsulation component_ref to component 'component3'.\n");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id4' has been found in:\n"
+        "Duplicated identifier attribute 'id4' has been found in:\n"
         " - import source for units 'units1';\n"
         " - component 'component2' in model 'everything';\n"
         " - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2';\n"
@@ -2711,7 +2769,7 @@ TEST(Validator, duplicateIdAll)
         " - MathML apply element in reset_value in reset 0 in component 'component2'; and\n"
         " - MathML math element in math in component 'component3'.\n");
     expectedIssues.emplace_back(
-        "Duplicated id attribute 'id5' has been found in:\n"
+        "Duplicated identifier attribute 'id5' has been found in:\n"
         " - imported units 'units1' in model 'everything';\n"
         " - variable 'variable1' in component 'component2';\n"
         " - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable2' in component 'component3';\n"

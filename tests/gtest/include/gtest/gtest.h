@@ -4590,7 +4590,7 @@ class GTEST_API_ FilePath {
 
   void Normalize();
 
-  // Returns a pointer to the last occurence of a valid path separator in
+  // Returns a pointer to the last occurrence of a valid path separator in
   // the FilePath. On Windows, for example, both '/' and '\' are valid path
   // separators. Returns NULL if no path separator was found.
   const char* FindLastPathSeparator() const;
@@ -11877,7 +11877,7 @@ class ParameterizedTestCaseInfoBase {
 
   // Base part of test case name for display purposes.
   virtual const std::string& GetTestCaseName() const = 0;
-  // Test case id to verify identity.
+  // Test case identifier to verify identity.
   virtual TypeId GetTestCaseTypeId() const = 0;
   // UnitTest class invokes this method to register tests in this
   // test case right before running them in RUN_ALL_TESTS macro.
@@ -11916,7 +11916,7 @@ class ParameterizedTestCaseInfo : public ParameterizedTestCaseInfoBase {
 
   // Test case base name for display purposes.
   virtual const std::string& GetTestCaseName() const { return test_case_name_; }
-  // Test case id to verify identity.
+  // Test case identifier to verify identity.
   virtual TypeId GetTestCaseTypeId() const { return GetTypeId<TestCase>(); }
   // TEST_P macro uses AddTestPattern() to record information
   // about a single test in a LocalTestInfo structure.

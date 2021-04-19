@@ -76,7 +76,7 @@ bool AnalyserExternalVariable::addDependency(const VariablePtr &variable)
     if ((pimplVariable != nullptr)
         && (owningModel(variable) == owningModel(pimplVariable))
         && (mPimpl->findDependency(variable) == mPimpl->mDependencies.end())
-        && !isSameOrEquivalentVariable(variable, pimplVariable)) {
+        && !areEquivalentVariables(variable, pimplVariable)) {
         mPimpl->mDependencies.push_back(variable);
 
         return true;
@@ -88,7 +88,7 @@ bool AnalyserExternalVariable::addDependency(const VariablePtr &variable)
 bool AnalyserExternalVariable::removeDependency(size_t index)
 {
     if (index < mPimpl->mDependencies.size()) {
-        mPimpl->mDependencies.erase(mPimpl->mDependencies.begin() + int64_t(index));
+        mPimpl->mDependencies.erase(mPimpl->mDependencies.begin() + ptrdiff_t(index));
 
         return true;
     }

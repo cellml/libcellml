@@ -72,12 +72,12 @@ class ModelTestCase(unittest.TestCase):
 
         # bool removeUnits(const UnitsPtr &units)
         m = Model()
-        u1 = Units()
-        u2 = Units()
+        u1 = Units("metre")
+        u2 = Units("second")
         self.assertFalse(m.removeUnits(u1))
         m.addUnits(u1)
         self.assertFalse(m.removeUnits(u2))
-        self.assertFalse(m.removeUnits(u1))
+        self.assertTrue(m.removeUnits(u1))
         del [m, u1, u2]
 
     def test_remove_all_units(self):
@@ -206,9 +206,9 @@ class ModelTestCase(unittest.TestCase):
         a = Units()
         m.addUnits(a)
         b = Units()
-        self.assertFalse(m.replaceUnits(b, a))
-        self.assertFalse(m.replaceUnits(a, b))
-        self.assertFalse(m.replaceUnits(b, a))
+        self.assertTrue(m.replaceUnits(b, a))
+        self.assertTrue(m.replaceUnits(a, b))
+        self.assertTrue(m.replaceUnits(b, a))
         del [m, a, b]
 
     def test_units_count(self):
@@ -282,6 +282,9 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual('main_model', m.id())
         self.assertEqual('model_encapsulation', m.encapsulationId())
 
+        m.removeEncapsulationId()
+        self.assertEqual('', m.encapsulationId())
+
     def test_clone(self):
         from libcellml import Component, Model, Units, Variable
 
@@ -347,37 +350,40 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual("public", v1.interfaceType())
         self.assertEqual("public", v2.interfaceType())
 
-    def test_imports(self):
-        from libcellml import Model, ImportSource, Units
+    def test_clean(self):
 
-        m = Model()
-        u = Units()
+        from libcellml import Component, Model, Units, Variable, Printer
 
-        u.setImportSource(ImportSource())
+        model = Model()
+        c1 = Component('c1')
+        c2 = Component()
+        c2.setId('c2')
+        c3 = Component()
+        c4 = Component()
+        u1 = Units('used')
+        u2 = Units()
+        u2.setId('u2')
+        u3 = Units()
+        v = Variable('x')
 
-        m.addUnits(u)
-        self.assertTrue(m.hasImports())
+        model.addComponent(c1)
+        model.addComponent(c2)
+        model.addComponent(c3)
+        model.addComponent(c4)
+        model.addUnits(u1)
+        model.addUnits(u2)
+        model.addUnits(u3)
 
-        self.assertEqual(1, m.importSourceCount())
+        c3.addVariable(v)
 
-        i = ImportSource()
-        i.setUrl('actual_url')
+        self.assertEqual(4, model.componentCount())
+        self.assertEqual(3, model.unitsCount())
 
-        m.addImportSource(i)
+        # Call the Model.clean() function to remove the empty items (c4 and u3).
+        model.clean()
 
-        self.assertEqual(2, m.importSourceCount())
-
-        i1 = m.importSource(0)
-
-        self.assertTrue(m.hasImportSource(i))
-
-        m.removeImportSource(0)
-
-        self.assertEqual(1, m.importSourceCount())
-
-        m.removeAllImportSources()
-
-        self.assertEqual(0, m.importSourceCount())
+        self.assertEqual(3, model.componentCount())
+        self.assertEqual(2, model.unitsCount())
 
 
 if __name__ == '__main__':

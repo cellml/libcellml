@@ -128,8 +128,8 @@ TEST(GeneratorProfile, defaultPiecewiseStatementValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
-    EXPECT_EQ("(<CONDITION>)?<IF_STATEMENT>", generatorProfile->conditionalOperatorIfString());
-    EXPECT_EQ(":<ELSE_STATEMENT>", generatorProfile->conditionalOperatorElseString());
+    EXPECT_EQ("([CONDITION])?[IF_STATEMENT]", generatorProfile->conditionalOperatorIfString());
+    EXPECT_EQ(":[ELSE_STATEMENT]", generatorProfile->conditionalOperatorElseString());
     EXPECT_EQ("", generatorProfile->piecewiseIfString());
     EXPECT_EQ("", generatorProfile->piecewiseElseString());
 
@@ -254,8 +254,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
-    EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
-    EXPECT_EQ("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", generatorProfile->originCommentString());
+    EXPECT_EQ("/* [CODE] */\n", generatorProfile->commentString());
+    EXPECT_EQ("The content of this file was generated using [PROFILE_INFORMATION] libCellML [LIBCELLML_VERSION].", generatorProfile->originCommentString());
 
     EXPECT_EQ("model.h", generatorProfile->interfaceFileNameString());
 
@@ -263,28 +263,28 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "\n"
               "#include <stddef.h>\n",
               generatorProfile->interfaceHeaderString());
-    EXPECT_EQ("#include \"<INTERFACE_FILE_NAME>\"\n"
+    EXPECT_EQ("#include \"[INTERFACE_FILE_NAME]\"\n"
               "\n"
               "#include <math.h>\n"
               "#include <stdlib.h>\n",
               generatorProfile->implementationHeaderString());
 
     EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
-    EXPECT_EQ("const char VERSION[] = \"0.1.0\";\n", generatorProfile->implementationVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.2.0\";\n", generatorProfile->implementationVersionString());
 
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
-    EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->implementationLibcellmlVersionString());
+    EXPECT_EQ("const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n", generatorProfile->implementationLibcellmlVersionString());
 
     EXPECT_EQ("extern const size_t STATE_COUNT;\n", generatorProfile->interfaceStateCountString());
-    EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->implementationStateCountString());
+    EXPECT_EQ("const size_t STATE_COUNT = [STATE_COUNT];\n", generatorProfile->implementationStateCountString());
 
     EXPECT_EQ("extern const size_t VARIABLE_COUNT;\n", generatorProfile->interfaceVariableCountString());
-    EXPECT_EQ("const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n", generatorProfile->implementationVariableCountString());
+    EXPECT_EQ("const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n", generatorProfile->implementationVariableCountString());
 
     EXPECT_EQ("typedef enum {\n"
               "    CONSTANT,\n"
               "    COMPUTED_CONSTANT,\n"
-              "    ALGEBRAIC<OPTIONAL_TYPE>\n"
+              "    ALGEBRAIC[OPTIONAL_TYPE]\n"
               "} VariableType;\n",
               generatorProfile->variableTypeObjectString());
     EXPECT_EQ(",\n    EXTERNAL", generatorProfile->variableTypeObjectExternalTypeString());
@@ -295,36 +295,36 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("EXTERNAL", generatorProfile->externalVariableTypeString());
 
     EXPECT_EQ("typedef struct {\n"
-              "    char name[<NAME_SIZE>];\n"
-              "    char units[<UNITS_SIZE>];\n"
-              "    char component[<COMPONENT_SIZE>];\n"
+              "    char name[[NAME_SIZE]];\n"
+              "    char units[[UNITS_SIZE]];\n"
+              "    char component[[COMPONENT_SIZE]];\n"
               "} VariableInfo;\n",
               generatorProfile->variableInfoObjectString());
     EXPECT_EQ("typedef struct {\n"
-              "    char name[<NAME_SIZE>];\n"
-              "    char units[<UNITS_SIZE>];\n"
-              "    char component[<COMPONENT_SIZE>];\n"
+              "    char name[[NAME_SIZE]];\n"
+              "    char units[[UNITS_SIZE]];\n"
+              "    char component[[COMPONENT_SIZE]];\n"
               "    VariableType type;\n"
               "} VariableInfoWithType;\n",
               generatorProfile->variableInfoWithTypeObjectString());
 
     EXPECT_EQ("extern const VariableInfo VOI_INFO;\n", generatorProfile->interfaceVoiInfoString());
-    EXPECT_EQ("const VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->implementationVoiInfoString());
+    EXPECT_EQ("const VariableInfo VOI_INFO = [CODE];\n", generatorProfile->implementationVoiInfoString());
 
     EXPECT_EQ("extern const VariableInfo STATE_INFO[];\n", generatorProfile->interfaceStateInfoString());
     EXPECT_EQ("const VariableInfo STATE_INFO[] = {\n"
-              "<CODE>"
+              "[CODE]"
               "};\n",
               generatorProfile->implementationStateInfoString());
 
     EXPECT_EQ("extern const VariableInfoWithType VARIABLE_INFO[];\n", generatorProfile->interfaceVariableInfoString());
     EXPECT_EQ("const VariableInfoWithType VARIABLE_INFO[] = {\n"
-              "<CODE>"
+              "[CODE]"
               "};\n",
               generatorProfile->implementationVariableInfoString());
 
-    EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}", generatorProfile->variableInfoEntryString());
-    EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}", generatorProfile->variableInfoWithTypeEntryString());
+    EXPECT_EQ("{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\"}", generatorProfile->variableInfoEntryString());
+    EXPECT_EQ("{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\", [TYPE]}", generatorProfile->variableInfoWithTypeEntryString());
 
     EXPECT_EQ("voi", generatorProfile->voiString());
 
@@ -334,7 +334,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString());
     EXPECT_EQ(", ExternalVariable externalVariable", generatorProfile->externalVariableMethodParameterString());
-    EXPECT_EQ("externalVariable(voi, states, rates, variables, <INDEX>)", generatorProfile->externalVariableMethodCallString());
+    EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableMethodCallString());
 
     EXPECT_EQ("double * createStatesArray();\n",
               generatorProfile->interfaceCreateStatesArrayMethodString());
@@ -364,7 +364,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->interfaceInitialiseStatesAndConstantsMethodString());
     EXPECT_EQ("void initialiseStatesAndConstants(double *states, double *variables)\n"
               "{\n"
-              "<CODE>"
+              "[CODE]"
               "}\n",
               generatorProfile->implementationInitialiseStatesAndConstantsMethodString());
 
@@ -372,23 +372,23 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->interfaceComputeComputedConstantsMethodString());
     EXPECT_EQ("void computeComputedConstants(double *variables)\n"
               "{\n"
-              "<CODE>"
+              "[CODE]"
               "}\n",
               generatorProfile->implementationComputeComputedConstantsMethodString());
 
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n",
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n",
               generatorProfile->interfaceComputeRatesMethodString());
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n"
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n"
               "{\n"
-              "<CODE>"
+              "[CODE]"
               "}\n",
               generatorProfile->implementationComputeRatesMethodString());
 
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n",
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n",
               generatorProfile->interfaceComputeVariablesMethodString());
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n"
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n"
               "{\n"
-              "<CODE>"
+              "[CODE]"
               "}\n",
               generatorProfile->implementationComputeVariablesMethodString());
 

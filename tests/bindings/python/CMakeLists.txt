@@ -22,6 +22,7 @@ set(TEST_SRCS
   test_entity.py
   test_generator.py
   test_generator_profile.py
+  test_import_requirement.py
   test_import_source.py
   test_importer.py
   test_issue.py
@@ -78,7 +79,7 @@ if(LIBCELLML_PYTHON_COVERAGE)
     DEPENDS python_bindings
     COMMENT "Running Python coverage tests")
 
-  add_custom_target(python_coverage_html_report
+  add_custom_target(python_coverage_report
     COMMAND ${CMAKE_COMMAND} -E env ${_RUN_PYTHON_ENVIRONMENT} ${Python_EXECUTABLE} runner.py ${_CONFIG_ARGUMENT} html
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS python_bindings

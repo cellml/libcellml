@@ -624,7 +624,7 @@ TEST(Printer, printModelWithAutomaticIdsSomeExistingNoMaths)
 
 TEST(Printer, noChangeToAutoIds)
 {
-    // This test is for coverage.  All entities have ids already, no change to the printed model.
+    // This test is for coverage.  All entities have identifiers already, no change to the printed model.
     const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"b4da55\">\n"
                            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"b4da56\">\n"
@@ -695,11 +695,11 @@ TEST(Printer, printMultipleChildrenOfImports)
     std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                      "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
                      "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
-                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
-                     "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
                      "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
                      "    <units units_ref=\"another_units_in_that_model\" name=\"units2\" id=\"units_2\"/>\n"
                      "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
+                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                     "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
                      "  </import>\n"
                      "</model>\n";
 
@@ -725,11 +725,11 @@ TEST(Printer, printMultipleChildrenOfImportsMixedOrder)
     std::string out = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                       "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
                       "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
-                      "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
-                      "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
                       "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
                       "    <units units_ref=\"another_units_in_that_model\" name=\"units2\" id=\"units_2\"/>\n"
                       "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
+                      "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                      "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
                       "  </import>\n"
                       "</model>\n";
 
@@ -741,7 +741,7 @@ TEST(Printer, printMultipleChildrenOfImportsMixedOrder)
 
 TEST(Printer, noChangeToManualIds)
 {
-    // This test is for coverage.  All entities have ids already, no change to the printed model.
+    // This test is for coverage.  All entities have identifiers already, no change to the printed model.
     const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"id_4da55\">\n"
                            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"id_4da56\">\n"

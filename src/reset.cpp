@@ -21,6 +21,8 @@ limitations under the License.
 
 #include "libcellml/variable.h"
 
+#include "utilities.h"
+
 namespace libcellml {
 
 /**
@@ -35,9 +37,9 @@ struct Reset::ResetImpl
     VariablePtr mVariable; /**< The associated variable for the reset.*/
     VariablePtr mTestVariable; /**< The associated test_variable for the reset.*/
     std::string mTestValue; /**< The MathML string for the test_value.*/
-    std::string mTestValueId; /**< The id of the test_value block */
+    std::string mTestValueId; /**< The identifier of the test_value block */
     std::string mResetValue; /**< The MathML string for the reset_value.*/
-    std::string mResetValueId; /**< The id of the reset_value block */
+    std::string mResetValueId; /**< The identifier of the reset_value block */
 };
 
 Reset::Reset()
@@ -195,6 +197,37 @@ ResetPtr Reset::clone() const
     }
 
     return r;
+}
+
+bool Reset::doEquals(const EntityPtr &other) const
+{
+    if (Entity::doEquals(other)) {
+        auto reset = std::dynamic_pointer_cast<Reset>(other);
+        if ((reset != nullptr) && mPimpl->mOrder == reset->order()
+            && areEqual(mPimpl->mResetValue, reset->resetValue())
+            && mPimpl->mResetValueId == reset->resetValueId()
+            && areEqual(mPimpl->mTestValue, reset->testValue())
+            && mPimpl->mTestValueId == reset->testValueId()) {
+            if (mPimpl->mTestVariable != nullptr
+                && !mPimpl->mTestVariable->equals(reset->testVariable())) {
+                return false;
+            }
+            if ((mPimpl->mTestVariable == nullptr)
+                && reset->testVariable() != nullptr) {
+                return false;
+            }
+            if ((mPimpl->mVariable != nullptr)
+                && !mPimpl->mVariable->equals(reset->variable())) {
+                return false;
+            }
+            if ((mPimpl->mVariable == nullptr)
+                && reset->variable() != nullptr) {
+                return false;
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 } // namespace libcellml

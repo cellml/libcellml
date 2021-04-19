@@ -30,6 +30,8 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Generator
 {
+    friend class Analyser;
+
 public:
     ~Generator(); /**< Destructor. */
     Generator(const Generator &rhs) = delete; /**< Copy constructor. */
@@ -106,10 +108,10 @@ public:
     std::string implementationCode() const;
 
 private:
-    Generator(); /**< Constructor. */
+    Generator(); /**< Constructor, @private. */
 
     struct GeneratorImpl;
-    GeneratorImpl *mPimpl;
+    GeneratorImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

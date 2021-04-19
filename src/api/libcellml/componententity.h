@@ -31,7 +31,7 @@ class Component;
 class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
 public:
-    ~ComponentEntity() override; /**< ComponentEntity Destructor. */
+    ~ComponentEntity() override; /**< Destructor. */
     ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor. */
     ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor. */
     ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator. */
@@ -208,11 +208,11 @@ public:
      * the range [0, \#components).
      *
      * @param index Index of the Component to replace.
-     * @param component The component to be used as a replacement.
+     * @param newComponent The component to be used as a replacement.
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(size_t index, const ComponentPtr &component);
+    bool replaceComponent(size_t index, const ComponentPtr &newComponent);
 
     /**
      * @overload
@@ -262,9 +262,9 @@ public:
     size_t componentCount() const;
 
     /**
-     * @brief Set the encapsulation Id for this entity.
+     * @brief Set the encapsulation identifier for this entity.
      *
-     * The encapsulation Id is placed on the XML element for this entity.
+     * The encapsulation identifier is placed on the XML element for this entity.
      * For the @c Model class this is the 'encapsulation' element that
      * is the root element for the models structure.  For the @c Component
      * class this is the 'component_ref' element that references the
@@ -277,9 +277,9 @@ public:
     void setEncapsulationId(const std::string &id);
 
     /**
-     * @brief Get the encapsulation Id for this entity.
+     * @brief Get the encapsulation identifier for this entity.
      *
-     * The encapsulation Id is placed on the XML element for this entity.
+     * The encapsulation identifier is placed on the XML element for this entity.
      * For the @c Model class this is the 'encapsulation' element that
      * is the root element for the models structure.  For the @c Component
      * class this is the 'component_ref' element that references the
@@ -287,9 +287,16 @@ public:
      *
      * @sa setEncapsulationId
      *
-     * @return The @c std::string of the encapsulation Id.
+     * @return The @c std::string of the encapsulation identifier.
      */
     std::string encapsulationId() const;
+
+    /**
+     * @brief Remove the encapsulation identifier for this entity.
+     *
+     * Clear the encapsulation identifier for this entity.
+     */
+    void removeEncapsulationId();
 
 protected:
     /**
@@ -304,11 +311,13 @@ protected:
      */
     virtual bool doAddComponent(const ComponentPtr &component);
 
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
     ComponentEntity(); /**< ComponentEntity Constructor. */
 
 private:
-    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

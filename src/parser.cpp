@@ -307,8 +307,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     std::vector<XmlNodePtr> encapsulationNodes;
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
-            const std::string name;
-            ComponentPtr component = Component::create(name);
+            auto component = Component::create();
             loadComponent(component, childNode);
             model->addComponent(component);
         } else if (childNode->isCellmlElement("units")) {
@@ -318,7 +317,6 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         } else if (childNode->isCellmlElement("import")) {
             ImportSourcePtr importSource = ImportSource::create();
             loadImport(importSource, model, childNode);
-            model->addImportSource(importSource);
         } else if (childNode->isCellmlElement("encapsulation")) {
             // An encapsulation should not have attributes other than an 'id' attribute.
             if (childNode->firstAttribute()) {
@@ -395,95 +393,6 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     mParser->addIssues(issueList);
 }
 
-std::string cleanMath(const std::string &math)
-{
-    // Clean up the given math string so that all its lines have the same
-    // indentation reference. Indeed, say that we parse the following code:
-    //
-    // <model xmlns="http://www.cellml.org/cellml/2.0#"
-    //        xmlns:cellml="http://www.cellml.org/cellml/2.0#"
-    //        xmlns:xlink="http://www.w3.org/1999/xlink" name="sin" id="sin">
-    //   <component name="sin" id="sin">
-    //     <variable name="x" units="dimensionless"
-    //               interface="public_and_private"/>
-    //     <variable id="sin" units="dimensionless" name="sin"
-    //               interface="public_and_private"/>
-    //     <math xmlns="http://www.w3.org/1998/Math/MathML">
-    //       <apply id="actual_sin">
-    //         <eq/>
-    //         <ci>sin</ci>
-    //         <apply>
-    //           <sin/>
-    //           <ci>x</ci>
-    //         </apply>
-    //       </apply>
-    //     </math>
-    //   </component>
-    // </model>
-    //
-    // Then, Parser::ParserImpl::loadComponent() will eventually call
-    // Component::appendMath() with a math string value of:
-    //
-    // <math xmlns="http://www.w3.org/1998/Math/MathML">
-    //       <apply id="actual_sin">
-    //         <eq/>
-    //         <ci>sin</ci>
-    //         <apply>
-    //           <sin/>
-    //           <ci>x</ci>
-    //         </apply>
-    //       </apply>
-    //     </math>
-    //
-    // So, we need to clean it to get:
-    //
-    // <math xmlns="http://www.w3.org/1998/Math/MathML">
-    //   <apply id="actual_sin">
-    //     <eq/>
-    //     <ci>sin</ci>
-    //     <apply>
-    //       <sin/>
-    //       <ci>x</ci>
-    //     </apply>
-    //   </apply>
-    // </math>
-
-    std::istringstream lines(math);
-    std::string line;
-    bool skipLine = true;
-    size_t indentSize = std::numeric_limits<size_t>::max();
-
-    while (std::getline(lines, line)) {
-        if (skipLine) {
-            skipLine = false;
-        } else {
-            size_t crtIndentSize = 0;
-            for (const char &c : line) {
-                if (c == ' ') {
-                    ++crtIndentSize;
-                }
-            }
-            indentSize = std::min(crtIndentSize, indentSize);
-        }
-    }
-
-    std::string cleanMath;
-
-    lines = std::istringstream(math);
-    skipLine = true;
-
-    while (std::getline(lines, line)) {
-        if (skipLine) {
-            cleanMath += line + '\n';
-            skipLine = false;
-        } else {
-            cleanMath += line.substr(indentSize) + '\n';
-        }
-    }
-
-    return cleanMath;
-}
-
 void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node) const
 {
     XmlAttributePtr attribute = node->firstAttribute();
@@ -523,7 +432,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             }
 
             // Append a self contained math XML document to the component.
-            std::string math = cleanMath(childNode->convertToString(true) + "\n");
+            std::string math = childNode->convertToString() + "\n";
             component->appendMath(math);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
@@ -595,7 +504,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
 void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node) const
 {
     std::string reference;
-    std::string prefix;
+    std::string prefix = "0";
     double exponent = 1.0;
     double multiplier = 1.0;
     std::string id;
@@ -732,7 +641,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
 
 void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node) const
 {
-    // Define types for variable and component pairs, and their ids.
+    // Define types for variable and component pairs, and their identifiers.
     using NameInfo = std::vector<std::string>;
     using NameInfoMap = std::vector<NameInfo>;
     using NamePair = std::pair<std::string, std::string>;
@@ -796,8 +705,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         if (connectionId.empty()) {
             des += " does not contain any 'map_variables' elements and will be disregarded.";
         } else {
-            des += " has an id of '" + connectionId + "' but does not contain any 'map_variables' elements.";
-            des += " The connection will be disregarded and the associated id will be lost.";
+            des += " has an identifier of '" + connectionId + "' but does not contain any 'map_variables' elements.";
+            des += " The connection will be disregarded and the associated identifier will be lost.";
         }
         issue->setDescription(des);
         issue->setModel(model);
@@ -1164,7 +1073,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
         if (id.empty()) {
             issue->setDescription("Import from '" + node->attribute("href") + "' is empty and will be disregarded.");
         } else {
-            issue->setDescription("Import from '" + node->attribute("href") + "' has an id of '" + id + "' but is empty. The import will be disregarded and the associated id will be lost.");
+            issue->setDescription("Import from '" + node->attribute("href") + "' has an identifier of '" + id + "' but is empty. The import will be disregarded and the associated identifier will be lost.");
         }
         issue->setImportSource(importSource);
         issue->setLevel(libcellml::Issue::Level::WARNING);
@@ -1271,7 +1180,7 @@ void Parser::ParserImpl::loadResetChild(const std::string &childType, const Rese
     XmlNodePtr mathNode = node->firstChild();
     while (mathNode) {
         if (mathNode->isMathmlElement("math")) {
-            std::string math = mathNode->convertToString(true) + "\n";
+            std::string math = mathNode->convertToString() + "\n";
             if (childType == "test_value") {
                 reset->appendTestValue(math);
             } else {
