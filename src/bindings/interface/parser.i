@@ -2,11 +2,11 @@
 
 #define LIBCELLML_EXPORT
 
-%include "std_string.i"
+%include <std_string.i>
 
-%import "types.i"
+%import "createconstructor.i"
 %import "logger.i"
-%import "enumerations.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Parser
 "Can parse Models encoded as XML strings.";
@@ -18,8 +18,11 @@
 #include "libcellml/parser.h"
 %}
 
-%ignore libcellml::Parser::Parser(Parser &&);
-%ignore libcellml::Parser::operator =;
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
+%create_constructor(Parser)
 
 %include "libcellml/types.h"
 %include "libcellml/parser.h"

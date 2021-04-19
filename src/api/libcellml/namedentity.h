@@ -16,11 +16,11 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/entity.h"
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"
-
-#include <string>
 
 namespace libcellml {
 
@@ -32,11 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT NamedEntity: public Entity
 {
 public:
-    NamedEntity(); /**< Constructor */
-    ~NamedEntity() override; /**< Destructor */
-    NamedEntity(const NamedEntity &rhs); /**< Copy constructor */
-    NamedEntity(NamedEntity &&rhs); /**< Move constructor */
-    NamedEntity &operator=(NamedEntity n); /**< Assignment operator */
+    ~NamedEntity() override; /**< Destructor. */
+    NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor. */
+    NamedEntity(NamedEntity &&rhs) noexcept = delete; /**< Move constructor. */
+    NamedEntity &operator=(NamedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Set the name for the Entity.
@@ -55,11 +54,12 @@ public:
      *
      * @return @c std::string representation of the Entity name.
      */
-    std::string getName() const;
+    std::string name() const;
+
+protected:
+    NamedEntity(); /**< Constructor. */
 
 private:
-    void swap(NamedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct NamedEntityImpl; /**< Forward declaration for pImpl idiom. */
     NamedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 };

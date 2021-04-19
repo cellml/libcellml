@@ -6,75 +6,110 @@ import unittest
 
 class ImportSourceTestCase(unittest.TestCase):
 
-    def test_import_source(self):
+    def test_create(self):
         from libcellml import ImportSource
 
-        # Test create/copy/destroy
         x = ImportSource()
-        y = ImportSource()
-        z = ImportSource(y)
-        del(x, y, z)
+        del x
 
     def test_inheritance(self):
         import libcellml
         from libcellml import ImportSource
 
         x = ImportSource()
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
-    def test_set_url(self):
+    def test_url(self):
         from libcellml import ImportSource
 
-        # void setUrl(const std::string &reference)
-        x = ImportSource()
-        x.setUrl('')
-        x.setUrl('hello')
-        x.setUrl('')
-
-    def test_get_url(self):
-        from libcellml import ImportSource
-
-        # std::string getUrl()
         source = 'cheers'
         x = ImportSource()
-        self.assertEqual(x.getUrl(), '')
+        self.assertEqual(x.url(), '')
         x.setUrl(source)
-        self.assertEqual(x.getUrl(), source)
+        self.assertEqual(x.url(), source)
         x.setUrl('')
-        self.assertEqual(x.getUrl(), '')
+        self.assertEqual(x.url(), '')
 
-    def test_set_model(self):
+    def test_model(self):
         from libcellml import ImportSource, Model
 
-        # void setModel(libcellml::ModelPtr model);
-        x = ImportSource()
-        x.setModel(None)
-        x.setModel(Model())
-        x.setModel(None)
-
-    def test_get_model(self):
-        from libcellml import ImportSource, Model
-
-        # libcellml::ModelPtr getModel() const;
         model = Model()
         model.setName('bert')
         x = ImportSource()
-        self.assertIsNone(x.getModel())
+        self.assertIsNone(x.model())
         x.setModel(model)
-        self.assertEqual(x.getModel().getName(), model.getName())
+        self.assertEqual(x.model().name(), model.name())
         x.setModel(None)
-        self.assertIsNone(x.getModel())
+        self.assertIsNone(x.model())
 
     def test_has_model(self):
         from libcellml import ImportSource, Model
 
-        # bool hasModel() const;
         x = ImportSource()
+        model = Model()
         self.assertFalse(x.hasModel())
-        x.setModel(Model())
+        x.setModel(model)
         self.assertTrue(x.hasModel())
         x.setModel(None)
         self.assertFalse(x.hasModel())
+
+    def test_clone(self):
+        from libcellml import ImportSource
+
+        sourceUrl = 'cheers'
+        x = ImportSource()
+
+        x.setUrl(sourceUrl)
+        self.assertEqual(x.url(), sourceUrl)
+
+        xCloned = x.clone()
+        self.assertEqual(xCloned.url(), sourceUrl)
+
+    def test_component(self):
+        from libcellml import ImportSource, Component
+
+        x = ImportSource()
+        c1 = Component("c1")
+        c2 = Component("c2")
+
+        self.assertEqual(0, x.componentCount())
+
+        x.addComponent(c1)
+        x.addComponent(c2)
+
+        self.assertEqual(2, x.componentCount())
+        self.assertEqual("c2", x.component(1).name())
+
+        x.removeComponent(1)
+
+        self.assertEqual(1, x.componentCount())
+
+        x.removeAllComponents()
+
+        self.assertEqual(0, x.componentCount())
+
+    def test_units(self):
+        from libcellml import ImportSource, Units
+
+        x = ImportSource()
+        u1 = Units("u1")
+        u2 = Units("u2")
+
+        self.assertEqual(0, x.unitsCount())
+
+        x.addUnits(u1)
+        x.addUnits(u2)
+
+        self.assertEqual(2, x.unitsCount())
+        self.assertEqual("u2", x.units(1).name())
+
+        x.removeUnits(1)
+
+        self.assertEqual(1, x.unitsCount())
+
+        x.removeAllUnits()
+
+        self.assertEqual(0, x.unitsCount())
 
 
 if __name__ == '__main__':

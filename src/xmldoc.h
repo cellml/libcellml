@@ -16,15 +16,15 @@ limitations under the License.
 
 #pragma once
 
-#include "xmlnode.h"
-
 #include <memory>
 #include <string>
+
+#include "xmlnode.h"
 
 namespace libcellml {
 
 class XmlDoc; /**< Forward declaration of the internal XmlDoc class. */
-typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML doc pointer. */
+using XmlDocPtr = std::shared_ptr<XmlDoc>; /**< Type definition for shared XML doc pointer. */
 
 /**
  * @brief The XmlDoc class.
@@ -35,8 +35,8 @@ typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML d
 class XmlDoc
 {
 public:
-    XmlDoc(); /**< Constructor */
-    ~XmlDoc(); /**< Destructor */
+    XmlDoc(); /**< Constructor. */
+    ~XmlDoc(); /**< Destructor. */
 
     /**
      * @brief Parse an XML document from a string.
@@ -57,31 +57,40 @@ public:
     void parseMathML(const std::string &input);
 
     /**
-     * @brief Get the root XML element of the document.
+     * @brief Convert this @c XmlDoc content into a pretty-print @c std::string.
      *
-     * Get the root XML element for this XML document as a
-     * returned @c XMLNodePtr.
+     * Converts the content in this @c XmlDoc into a pretty-print
+     * @c std::string.
      *
-     * @return The root XML element for this document.
+     * @return The pretty-print @c std::string representation of the content for
+     * this @c XmlDoc.
      */
-    XmlNodePtr getRootNode() const;
+    std::string prettyPrint() const;
 
     /**
-     * @brief Add an @p error raised while parsing this XML document.
+     * @brief Get the root XML element of this @c XmlDoc.
      *
-     * Adds the @p error raise while parsing this XML document to the
-     * list of @c mXmlErrors. These errors will pertain to the ability
-     * of libxml to parse a given document.
+     * Get the root XML element for this @c XmlDoc as a returned @c XMLNodePtr.
+     *
+     * @return The root XML element for this @c XmlDoc.
+     */
+    XmlNodePtr rootNode() const;
+
+    /**
+     * @brief Add an @p error raised while parsing this @c XmlDoc.
+     *
+     * Adds the @p error raise while parsing this @c XmlDoc to the list of
+     * @c mXmlErrors. These errors will pertain to the ability of libxml to
+     * parse a given document.
      *
      * @param error The XML error string to add.
      */
     void addXmlError(const std::string &error);
 
     /**
-     * @brief Count the number of XML errors in this document.
+     * @brief Count the number of XML errors in this @c XmlDoc.
      *
-     * Returns the number of XML errors raised while parsing
-     * this document.
+     * Returns the number of XML errors raised while parsing this @c XmlDoc.
      *
      * @return The number of XML errors.
      */
@@ -90,17 +99,18 @@ public:
     /**
      * @brief Get a XML error at index.
      *
-     * Returns the @c std::string message pertaining to the error
-     * at the @p index raised by libxml during parsing.
+     * Returns the @c std::string message pertaining to the error at the
+     * @p index raised by libxml during parsing.
      *
      * @param index The index of the error to get.
+     *
      * @return The @c std::string form of the XML error.
      */
-    std::string getXmlError(size_t index) const;
+    std::string xmlError(size_t index) const;
 
 private:
     struct XmlDocImpl; /**< Forward declaration for pImpl idiom. */
-    XmlDocImpl *mPimpl; /**< Private member to implementation pointer */
+    XmlDocImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

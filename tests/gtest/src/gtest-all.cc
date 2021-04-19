@@ -26,8 +26,7 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: mheule@google.com (Markus Heule)
+
 //
 // Google C++ Testing and Mocking Framework (Google Test)
 //
@@ -67,8 +66,7 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 //
 // The Google C++ Testing and Mocking Framework (Google Test)
 
@@ -100,15 +98,19 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 //
 // Utilities for testing Google Test itself and code that uses Google Test
 // (e.g. frameworks built on top of Google Test).
 
+// GOOGLETEST_CM0004 DO NOT DELETE
+
 #ifndef GTEST_INCLUDE_GTEST_GTEST_SPI_H_
 #define GTEST_INCLUDE_GTEST_GTEST_SPI_H_
 
+
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
 
 namespace testing {
 
@@ -183,6 +185,8 @@ class GTEST_API_ SingleFailureChecker {
 }  // namespace internal
 
 }  // namespace testing
+
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
 
 // A set of macros for testing Google Test assertions or code that's expected
 // to generate Google Test fatal failures.  It verifies that the given
@@ -323,7 +327,7 @@ class GTEST_API_ SingleFailureChecker {
 
 #if GTEST_OS_LINUX
 
-// TODO(kenton@google.com): Use autoconf to detect availability of
+// FIXME: Use autoconf to detect availability of
 // gettimeofday().
 # define GTEST_HAS_GETTIMEOFDAY_ 1
 
@@ -362,9 +366,9 @@ class GTEST_API_ SingleFailureChecker {
 
 # if GTEST_OS_WINDOWS_MINGW
 // MinGW has gettimeofday() but not _ftime64().
-// TODO(kenton@google.com): Use autoconf to detect availability of
+// FIXME: Use autoconf to detect availability of
 //   gettimeofday().
-// TODO(kenton@google.com): There are other ways to get the time on
+// FIXME: There are other ways to get the time on
 //   Windows, like GetTickCount() or GetSystemTimeAsFileTime().  MinGW
 //   supports these.  consider using them instead.
 #  define GTEST_HAS_GETTIMEOFDAY_ 1
@@ -379,7 +383,7 @@ class GTEST_API_ SingleFailureChecker {
 #else
 
 // Assume other platforms have gettimeofday().
-// TODO(kenton@google.com): Use autoconf to detect availability of
+// FIXME: Use autoconf to detect availability of
 //   gettimeofday().
 # define GTEST_HAS_GETTIMEOFDAY_ 1
 
@@ -430,10 +434,7 @@ class GTEST_API_ SingleFailureChecker {
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Utility functions and classes used by the Google C++ testing framework.
-//
-// Author: wan@google.com (Zhanyong Wan)
-//
+// Utility functions and classes used by the Google C++ testing framework.//
 // This file contains purely Google Test's internal implementation.  Please
 // DO NOT #INCLUDE IT IN A USER PROGRAM.
 
@@ -461,6 +462,9 @@ class GTEST_API_ SingleFailureChecker {
 # include <windows.h>  // NOLINT
 #endif  // GTEST_OS_WINDOWS
 
+
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
 
 namespace testing {
 
@@ -1394,7 +1398,7 @@ bool ParseNaturalNumber(const ::std::string& str, Integer* number) {
 
   const bool parse_success = *end == '\0' && errno == 0;
 
-  // TODO(vladl@google.com): Convert this to compile time assertion when it is
+  // FIXME: Convert this to compile time assertion when it is
   // available.
   GTEST_CHECK_(sizeof(Integer) <= sizeof(parsed));
 
@@ -1582,11 +1586,19 @@ class StreamingListener : public EmptyTestEventListener {
 }  // namespace internal
 }  // namespace testing
 
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
+
 #endif  // GTEST_SRC_GTEST_INTERNAL_INL_H_
 
 #if GTEST_OS_WINDOWS
 # define vsnprintf _vsnprintf
 #endif  // GTEST_OS_WINDOWS
+
+#if GTEST_OS_MAC
+#ifndef GTEST_OS_IOS
+#include <crt_externs.h>
+#endif
+#endif
 
 #if GTEST_HAS_ABSL
 #include "absl/debugging/failure_signal_handler.h"
@@ -1637,6 +1649,21 @@ const char kStackTraceMarker[] = "\nStack trace:\n";
 // g_help_flag is true iff the --help flag or an equivalent form is
 // specified on the command line.
 bool g_help_flag = false;
+
+// Utilty function to Open File for Writing
+static FILE* OpenFileForWriting(const std::string& output_file) {
+  FILE* fileout = NULL;
+  FilePath output_file_path(output_file);
+  FilePath output_dir(output_file_path.RemoveFileName());
+
+  if (output_dir.CreateDirectoriesRecursively()) {
+    fileout = posix::FOpen(output_file.c_str(), "w");
+  }
+  if (fileout == NULL) {
+    GTEST_LOG_(FATAL) << "Unable to open file \"" << output_file << "\"";
+  }
+  return fileout;
+}
 
 }  // namespace internal
 
@@ -1856,7 +1883,7 @@ void AssertHelper::operator=(const Message& message) const {
 GTEST_API_ GTEST_DEFINE_STATIC_MUTEX_(g_linked_ptr_mutex);
 
 // A copy of all command line arguments.  Set by InitGoogleTest().
-::std::vector<std::string> g_argvs;
+static ::std::vector<std::string> g_argvs;
 
 ::std::vector<std::string> GetArgvs() {
 #if defined(GTEST_CUSTOM_GET_ARGVS_)
@@ -1888,8 +1915,6 @@ FilePath GetCurrentExecutableName() {
 // Returns the output format, or "" for normal printed output.
 std::string UnitTestOptions::GetOutputFormat() {
   const char* const gtest_output_flag = GTEST_FLAG(output).c_str();
-  if (gtest_output_flag == NULL) return std::string("");
-
   const char* const colon = strchr(gtest_output_flag, ':');
   return (colon == NULL) ?
       std::string(gtest_output_flag) :
@@ -1900,8 +1925,6 @@ std::string UnitTestOptions::GetOutputFormat() {
 // was explicitly specified.
 std::string UnitTestOptions::GetAbsolutePathToOutputFile() {
   const char* const gtest_output_flag = GTEST_FLAG(output).c_str();
-  if (gtest_output_flag == NULL)
-    return "";
 
   std::string format = GetOutputFormat();
   if (format.empty())
@@ -1917,7 +1940,7 @@ std::string UnitTestOptions::GetAbsolutePathToOutputFile() {
 
   internal::FilePath output_name(colon + 1);
   if (!output_name.IsAbsolutePath())
-    // TODO(wan@google.com): on Windows \some\path is not an absolute
+    // FIXME: on Windows \some\path is not an absolute
     // path (as its meaning depends on the current drive), yet the
     // following logic for turning it into an absolute path is wrong.
     // Fix it.
@@ -2291,7 +2314,7 @@ TimeInMillis GetTimeInMillis() {
   SYSTEMTIME now_systime;
   FILETIME now_filetime;
   ULARGE_INTEGER now_int64;
-  // TODO(kenton@google.com): Shouldn't this just use
+  // FIXME: Shouldn't this just use
   //   GetSystemTimeAsFileTime()?
   GetSystemTime(&now_systime);
   if (SystemTimeToFileTime(&now_systime, &now_filetime)) {
@@ -2307,11 +2330,11 @@ TimeInMillis GetTimeInMillis() {
 
   // MSVC 8 deprecates _ftime64(), so we want to suppress warning 4996
   // (deprecated function) there.
-  // TODO(kenton@google.com): Use GetTickCount()?  Or use
+  // FIXME: Use GetTickCount()?  Or use
   //   SystemTimeToFileTime()
-  GTEST_DISABLE_MSC_WARNINGS_PUSH_(4996)
+  GTEST_DISABLE_MSC_DEPRECATED_PUSH_()
   _ftime64(&now);
-  GTEST_DISABLE_MSC_WARNINGS_POP_()
+  GTEST_DISABLE_MSC_DEPRECATED_POP_()
 
   return static_cast<TimeInMillis>(now.time) * 1000 + now.millitm;
 #elif GTEST_HAS_GETTIMEOFDAY_
@@ -2846,7 +2869,7 @@ AssertionResult DoubleNearPredFormat(const char* expr1,
   const double diff = fabs(val1 - val2);
   if (diff <= abs_error) return AssertionSuccess();
 
-  // TODO(wan): do not print the value of an expression if it's
+  // FIXME: do not print the value of an expression if it's
   // already a literal.
   return AssertionFailure()
       << "The difference between " << expr1 << " and " << expr2
@@ -3574,13 +3597,8 @@ static const char* const kReservedTestSuiteAttributes[] = {
 
 // The list of reserved attributes used in the <testcase> element of XML output.
 static const char* const kReservedTestCaseAttributes[] = {
-  "classname",
-  "name",
-  "status",
-  "time",
-  "type_param",
-  "value_param"
-};
+    "classname",  "name",        "status", "time",
+    "type_param", "value_param", "file",   "line"};
 
 template <int kSize>
 std::vector<std::string> ArrayAsVector(const char* const (&array)[kSize]) {
@@ -4123,18 +4141,18 @@ void TestInfo::Run() {
       factory_, &internal::TestFactoryBase::CreateTest,
       "the test fixture's constructor");
 
-  // Runs the test only if the test object was created and its
-  // constructor didn't generate a fatal failure.
-  if ((test != NULL) && !Test::HasFatalFailure()) {
+  // Runs the test if the constructor didn't generate a fatal failure.
+  // Note that the object will not be null
+  if (!Test::HasFatalFailure()) {
     // This doesn't throw as all user code that can throw are wrapped into
     // exception handling code.
     test->Run();
   }
 
-  // Deletes the test object.
-  impl->os_stack_trace_getter()->UponLeavingGTest();
-  internal::HandleExceptionsInMethodIfSupported(
-      test, &Test::DeleteSelf_, "the test fixture's destructor");
+    // Deletes the test object.
+    impl->os_stack_trace_getter()->UponLeavingGTest();
+    internal::HandleExceptionsInMethodIfSupported(
+        test, &Test::DeleteSelf_, "the test fixture's destructor");
 
   result_.set_elapsed_time(internal::GetTimeInMillis() - start);
 
@@ -4587,6 +4605,7 @@ void PrettyUnitTestResultPrinter::OnTestIterationStart(
                   "Note: Randomizing tests' orders with a seed of %d .\n",
                   unit_test.random_seed());
   }
+
   ColoredPrintf(COLOR_GREEN,  "[==========] ");
   printf("Running %s from %s.\n",
          FormatTestCount(unit_test.test_to_run_count()).c_str(),
@@ -4783,7 +4802,7 @@ void TestEventRepeater::Append(TestEventListener *listener) {
   listeners_.push_back(listener);
 }
 
-// TODO(vladl@google.com): Factor the search functionality into Vector::Find.
+// FIXME: Factor the search functionality into Vector::Find.
 TestEventListener* TestEventRepeater::Release(TestEventListener *listener) {
   for (size_t i = 0; i < listeners_.size(); ++i) {
     if (listeners_[i] == listener) {
@@ -4857,6 +4876,11 @@ class XmlUnitTestResultPrinter : public EmptyTestEventListener {
   explicit XmlUnitTestResultPrinter(const char* output_file);
 
   virtual void OnTestIterationEnd(const UnitTest& unit_test, int iteration);
+  void ListTestsMatchingFilter(const std::vector<TestCase*>& test_cases);
+
+  // Prints an XML summary of all unit tests.
+  static void PrintXmlTestsList(std::ostream* stream,
+                                const std::vector<TestCase*>& test_cases);
 
  private:
   // Is c a whitespace character that is normalized to a space character
@@ -4932,7 +4956,7 @@ class XmlUnitTestResultPrinter : public EmptyTestEventListener {
 // Creates a new XmlUnitTestResultPrinter.
 XmlUnitTestResultPrinter::XmlUnitTestResultPrinter(const char* output_file)
     : output_file_(output_file) {
-  if (output_file_.c_str() == NULL || output_file_.empty()) {
+  if (output_file_.empty()) {
     GTEST_LOG_(FATAL) << "XML output file may not be null";
   }
 }
@@ -4940,29 +4964,18 @@ XmlUnitTestResultPrinter::XmlUnitTestResultPrinter(const char* output_file)
 // Called after the unit test ends.
 void XmlUnitTestResultPrinter::OnTestIterationEnd(const UnitTest& unit_test,
                                                   int /*iteration*/) {
-  FILE* xmlout = NULL;
-  FilePath output_file(output_file_);
-  FilePath output_dir(output_file.RemoveFileName());
-
-  if (output_dir.CreateDirectoriesRecursively()) {
-    xmlout = posix::FOpen(output_file_.c_str(), "w");
-  }
-  if (xmlout == NULL) {
-    // TODO(wan): report the reason of the failure.
-    //
-    // We don't do it for now as:
-    //
-    //   1. There is no urgent need for it.
-    //   2. It's a bit involved to make the errno variable thread-safe on
-    //      all three operating systems (Linux, Windows, and Mac OS).
-    //   3. To interpret the meaning of errno in a thread-safe way,
-    //      we need the strerror_r() function, which is not available on
-    //      Windows.
-
-    GTEST_LOG_(FATAL) << "Unable to open file \"" << output_file_ << "\"";
-  }
+  FILE* xmlout = OpenFileForWriting(output_file_);
   std::stringstream stream;
   PrintXmlUnitTest(&stream, unit_test);
+  fprintf(xmlout, "%s", StringStreamToString(&stream).c_str());
+  fclose(xmlout);
+}
+
+void XmlUnitTestResultPrinter::ListTestsMatchingFilter(
+    const std::vector<TestCase*>& test_cases) {
+  FILE* xmlout = OpenFileForWriting(output_file_);
+  std::stringstream stream;
+  PrintXmlTestsList(&stream, test_cases);
   fprintf(xmlout, "%s", StringStreamToString(&stream).c_str());
   fclose(xmlout);
 }
@@ -4977,7 +4990,7 @@ void XmlUnitTestResultPrinter::OnTestIterationEnd(const UnitTest& unit_test,
 // module will consist of ordinary English text.
 // If this module is ever modified to produce version 1.1 XML output,
 // most invalid characters can be retained using character references.
-// TODO(wan): It might be nice to have a minimally invasive, human-readable
+// FIXME: It might be nice to have a minimally invasive, human-readable
 // escaping scheme for invalid characters, rather than dropping them.
 std::string XmlUnitTestResultPrinter::EscapeXml(
     const std::string& str, bool is_attribute) {
@@ -5038,6 +5051,7 @@ std::string XmlUnitTestResultPrinter::RemoveInvalidXmlCharacters(
 
 // The following routines generate an XML representation of a UnitTest
 // object.
+// GOOGLETEST_CM0009 DO NOT DELETE
 //
 // This is how Google Test concepts map to the DTD:
 //
@@ -5127,7 +5141,7 @@ void XmlUnitTestResultPrinter::OutputXmlAttribute(
 }
 
 // Prints an XML representation of a TestInfo object.
-// TODO(wan): There is also value in printing properties with the plain printer.
+// FIXME: There is also value in printing properties with the plain printer.
 void XmlUnitTestResultPrinter::OutputXmlTestInfo(::std::ostream* stream,
                                                  const char* test_case_name,
                                                  const TestInfo& test_info) {
@@ -5147,6 +5161,13 @@ void XmlUnitTestResultPrinter::OutputXmlTestInfo(::std::ostream* stream,
   }
   if (test_info.type_param() != NULL) {
     OutputXmlAttribute(stream, kTestcase, "type_param", test_info.type_param());
+  }
+  if (GTEST_FLAG(list_tests)) {
+    OutputXmlAttribute(stream, kTestcase, "file", test_info.file());
+    OutputXmlAttribute(stream, kTestcase, "line",
+                       StreamableToString(test_info.line()));
+    *stream << " />\n";
+    return;
   }
 
   OutputXmlAttribute(stream, kTestcase, "status",
@@ -5194,17 +5215,18 @@ void XmlUnitTestResultPrinter::PrintXmlTestCase(std::ostream* stream,
   OutputXmlAttribute(stream, kTestsuite, "name", test_case.name());
   OutputXmlAttribute(stream, kTestsuite, "tests",
                      StreamableToString(test_case.reportable_test_count()));
-  OutputXmlAttribute(stream, kTestsuite, "failures",
-                     StreamableToString(test_case.failed_test_count()));
-  OutputXmlAttribute(
-      stream, kTestsuite, "disabled",
-      StreamableToString(test_case.reportable_disabled_test_count()));
-  OutputXmlAttribute(stream, kTestsuite, "errors", "0");
-  OutputXmlAttribute(stream, kTestsuite, "time",
-                     FormatTimeInMillisAsSeconds(test_case.elapsed_time()));
-  *stream << TestPropertiesAsXmlAttributes(test_case.ad_hoc_test_result())
-          << ">\n";
-
+  if (!GTEST_FLAG(list_tests)) {
+    OutputXmlAttribute(stream, kTestsuite, "failures",
+                       StreamableToString(test_case.failed_test_count()));
+    OutputXmlAttribute(
+        stream, kTestsuite, "disabled",
+        StreamableToString(test_case.reportable_disabled_test_count()));
+    OutputXmlAttribute(stream, kTestsuite, "errors", "0");
+    OutputXmlAttribute(stream, kTestsuite, "time",
+                       FormatTimeInMillisAsSeconds(test_case.elapsed_time()));
+    *stream << TestPropertiesAsXmlAttributes(test_case.ad_hoc_test_result());
+  }
+  *stream << ">\n";
   for (int i = 0; i < test_case.total_test_count(); ++i) {
     if (test_case.GetTestInfo(i)->is_reportable())
       OutputXmlTestInfo(stream, test_case.name(), *test_case.GetTestInfo(i));
@@ -5250,6 +5272,28 @@ void XmlUnitTestResultPrinter::PrintXmlUnitTest(std::ostream* stream,
   *stream << "</" << kTestsuites << ">\n";
 }
 
+void XmlUnitTestResultPrinter::PrintXmlTestsList(
+    std::ostream* stream, const std::vector<TestCase*>& test_cases) {
+  const std::string kTestsuites = "testsuites";
+
+  *stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+  *stream << "<" << kTestsuites;
+
+  int total_tests = 0;
+  for (size_t i = 0; i < test_cases.size(); ++i) {
+    total_tests += test_cases[i]->total_test_count();
+  }
+  OutputXmlAttribute(stream, kTestsuites, "tests",
+                     StreamableToString(total_tests));
+  OutputXmlAttribute(stream, kTestsuites, "name", "AllTests");
+  *stream << ">\n";
+
+  for (size_t i = 0; i < test_cases.size(); ++i) {
+    PrintXmlTestCase(stream, *test_cases[i]);
+  }
+  *stream << "</" << kTestsuites << ">\n";
+}
+
 // Produces a string representing the test properties in a result as space
 // delimited XML attributes based on the property key="value" pairs.
 std::string XmlUnitTestResultPrinter::TestPropertiesAsXmlAttributes(
@@ -5285,13 +5329,16 @@ void XmlUnitTestResultPrinter::OutputXmlTestProperties(
 
 // End XmlUnitTestResultPrinter
 
-
 // This class generates an JSON output file.
 class JsonUnitTestResultPrinter : public EmptyTestEventListener {
  public:
   explicit JsonUnitTestResultPrinter(const char* output_file);
 
   virtual void OnTestIterationEnd(const UnitTest& unit_test, int iteration);
+
+  // Prints an JSON summary of all unit tests.
+  static void PrintJsonTestList(::std::ostream* stream,
+                                const std::vector<TestCase*>& test_cases);
 
  private:
   // Returns an JSON-escaped copy of the input string str.
@@ -5346,27 +5393,7 @@ JsonUnitTestResultPrinter::JsonUnitTestResultPrinter(const char* output_file)
 
 void JsonUnitTestResultPrinter::OnTestIterationEnd(const UnitTest& unit_test,
                                                   int /*iteration*/) {
-  FILE* jsonout = NULL;
-  FilePath output_file(output_file_);
-  FilePath output_dir(output_file.RemoveFileName());
-
-  if (output_dir.CreateDirectoriesRecursively()) {
-    jsonout = posix::FOpen(output_file_.c_str(), "w");
-  }
-  if (jsonout == NULL) {
-    // TODO(phosek): report the reason of the failure.
-    //
-    // We don't do it for now as:
-    //
-    //   1. There is no urgent need for it.
-    //   2. It's a bit involved to make the errno variable thread-safe on
-    //      all three operating systems (Linux, Windows, and Mac OS).
-    //   3. To interpret the meaning of errno in a thread-safe way,
-    //      we need the strerror_r() function, which is not available on
-    //      Windows.
-    GTEST_LOG_(FATAL) << "Unable to open file \""
-                      << output_file_ << "\"";
-  }
+  FILE* jsonout = OpenFileForWriting(output_file_);
   std::stringstream stream;
   PrintJsonUnitTest(&stream, unit_test);
   fprintf(jsonout, "%s", StringStreamToString(&stream).c_str());
@@ -5501,6 +5528,12 @@ void JsonUnitTestResultPrinter::OutputJsonTestInfo(::std::ostream* stream,
     OutputJsonKey(stream, kTestcase, "type_param", test_info.type_param(),
                   kIndent);
   }
+  if (GTEST_FLAG(list_tests)) {
+    OutputJsonKey(stream, kTestcase, "file", test_info.file(), kIndent);
+    OutputJsonKey(stream, kTestcase, "line", test_info.line(), kIndent, false);
+    *stream << "\n" << Indent(8) << "}";
+    return;
+  }
 
   OutputJsonKey(stream, kTestcase, "status",
                 test_info.should_run() ? "RUN" : "NOTRUN", kIndent);
@@ -5543,16 +5576,18 @@ void JsonUnitTestResultPrinter::PrintJsonTestCase(std::ostream* stream,
   OutputJsonKey(stream, kTestsuite, "name", test_case.name(), kIndent);
   OutputJsonKey(stream, kTestsuite, "tests", test_case.reportable_test_count(),
                 kIndent);
-  OutputJsonKey(stream, kTestsuite, "failures", test_case.failed_test_count(),
-                kIndent);
-  OutputJsonKey(stream, kTestsuite, "disabled",
-                test_case.reportable_disabled_test_count(), kIndent);
-  OutputJsonKey(stream, kTestsuite, "errors", 0, kIndent);
-  OutputJsonKey(stream, kTestsuite, "time",
-                FormatTimeInMillisAsDuration(test_case.elapsed_time()), kIndent,
-                false);
-  *stream << TestPropertiesAsJson(test_case.ad_hoc_test_result(), kIndent)
-          << ",\n";
+  if (!GTEST_FLAG(list_tests)) {
+    OutputJsonKey(stream, kTestsuite, "failures", test_case.failed_test_count(),
+                  kIndent);
+    OutputJsonKey(stream, kTestsuite, "disabled",
+                  test_case.reportable_disabled_test_count(), kIndent);
+    OutputJsonKey(stream, kTestsuite, "errors", 0, kIndent);
+    OutputJsonKey(stream, kTestsuite, "time",
+                  FormatTimeInMillisAsDuration(test_case.elapsed_time()),
+                  kIndent, false);
+    *stream << TestPropertiesAsJson(test_case.ad_hoc_test_result(), kIndent)
+            << ",\n";
+  }
 
   *stream << kIndent << "\"" << kTestsuite << "\": [\n";
 
@@ -5616,6 +5651,31 @@ void JsonUnitTestResultPrinter::PrintJsonUnitTest(std::ostream* stream,
   *stream << "\n" << kIndent << "]\n" << "}\n";
 }
 
+void JsonUnitTestResultPrinter::PrintJsonTestList(
+    std::ostream* stream, const std::vector<TestCase*>& test_cases) {
+  const std::string kTestsuites = "testsuites";
+  const std::string kIndent = Indent(2);
+  *stream << "{\n";
+  int total_tests = 0;
+  for (size_t i = 0; i < test_cases.size(); ++i) {
+    total_tests += test_cases[i]->total_test_count();
+  }
+  OutputJsonKey(stream, kTestsuites, "tests", total_tests, kIndent);
+
+  OutputJsonKey(stream, kTestsuites, "name", "AllTests", kIndent);
+  *stream << kIndent << "\"" << kTestsuites << "\": [\n";
+
+  for (size_t i = 0; i < test_cases.size(); ++i) {
+    if (i != 0) {
+      *stream << ",\n";
+    }
+    PrintJsonTestCase(stream, *test_cases[i]);
+  }
+
+  *stream << "\n"
+          << kIndent << "]\n"
+          << "}\n";
+}
 // Produces a string representing the test properties in a result as
 // a JSON dictionary.
 std::string JsonUnitTestResultPrinter::TestPropertiesAsJson(
@@ -6140,7 +6200,7 @@ int UnitTest::Run() {
   // used for the duration of the program.
   impl()->set_catch_exceptions(GTEST_FLAG(catch_exceptions));
 
-#if GTEST_HAS_SEH
+#if GTEST_OS_WINDOWS
   // Either the user wants Google Test to catch exceptions thrown by the
   // tests or this is executing in the context of death test child
   // process. In either case the user does not want to see pop-up dialogs
@@ -6169,7 +6229,7 @@ int UnitTest::Run() {
     // VC++ doesn't define _set_abort_behavior() prior to the version 8.0.
     // Users of prior VC versions shall suffer the agony and pain of
     // clicking through the countless debug dialogs.
-    // TODO(vladl@google.com): find a way to suppress the abort dialog() in the
+    // FIXME: find a way to suppress the abort dialog() in the
     // debug mode when compiled with VC 7.1 or lower.
     if (!GTEST_FLAG(break_on_failure))
       _set_abort_behavior(
@@ -6177,7 +6237,7 @@ int UnitTest::Run() {
           _WRITE_ABORT_MSG | _CALL_REPORTFAULT);  // pop-up window, core dump.
 # endif
   }
-#endif  // GTEST_HAS_SEH
+#endif  // GTEST_OS_WINDOWS
 
   return internal::HandleExceptionsInMethodIfSupported(
       impl(),
@@ -6836,6 +6896,23 @@ void UnitTestImpl::ListTestsMatchingFilter() {
     }
   }
   fflush(stdout);
+  const std::string& output_format = UnitTestOptions::GetOutputFormat();
+  if (output_format == "xml" || output_format == "json") {
+    FILE* fileout = OpenFileForWriting(
+        UnitTestOptions::GetAbsolutePathToOutputFile().c_str());
+    std::stringstream stream;
+    if (output_format == "xml") {
+      XmlUnitTestResultPrinter(
+          UnitTestOptions::GetAbsolutePathToOutputFile().c_str())
+          .PrintXmlTestsList(&stream, test_cases_);
+    } else if (output_format == "json") {
+      JsonUnitTestResultPrinter(
+          UnitTestOptions::GetAbsolutePathToOutputFile().c_str())
+          .PrintJsonTestList(&stream, test_cases_);
+    }
+    fprintf(fileout, "%s", StringStreamToString(&stream).c_str());
+    fclose(fileout);
+  }
 }
 
 // Sets the OS stack trace getter.
@@ -7063,7 +7140,7 @@ static bool HasGoogleTestFlagPrefix(const char* str) {
 //   @Y    changes the color to yellow.
 //   @D    changes to the default terminal text color.
 //
-// TODO(wan@google.com): Write tests for this once we add stdout
+// FIXME: Write tests for this once we add stdout
 // capturing to Google Test.
 static void PrintColorEncoded(const char* str) {
   GTestColor color = COLOR_DEFAULT;  // The current color.
@@ -7273,6 +7350,17 @@ void ParseGoogleTestFlagsOnlyImpl(int* argc, CharType** argv) {
 // other parts of Google Test.
 void ParseGoogleTestFlagsOnly(int* argc, char** argv) {
   ParseGoogleTestFlagsOnlyImpl(argc, argv);
+
+  // Fix the value of *_NSGetArgc() on macOS, but iff
+  // *_NSGetArgv() == argv
+  // Only applicable to char** version of argv
+#if GTEST_OS_MAC
+#ifndef GTEST_OS_IOS
+  if (*_NSGetArgv() == argv) {
+    *_NSGetArgc() = *argc;
+  }
+#endif
+#endif
 }
 void ParseGoogleTestFlagsOnly(int* argc, wchar_t** argv) {
   ParseGoogleTestFlagsOnlyImpl(argc, argv);
@@ -7401,8 +7489,7 @@ ScopedTrace::~ScopedTrace()
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan), vladl@google.com (Vlad Losev)
+
 //
 // This file implements death tests.
 
@@ -7439,6 +7526,7 @@ ScopedTrace::~ScopedTrace()
 #  include <lib/fdio/spawn.h>
 #  include <zircon/processargs.h>
 #  include <zircon/syscalls.h>
+#  include <zircon/syscalls/port.h>
 # endif  // GTEST_OS_FUCHSIA
 
 #endif  // GTEST_HAS_DEATH_TEST
@@ -7601,10 +7689,16 @@ static std::string DeathTestThreadWarning(size_t thread_count) {
   Message msg;
   msg << "Death tests use fork(), which is unsafe particularly"
       << " in a threaded context. For this test, " << GTEST_NAME_ << " ";
-  if (thread_count == 0)
+  if (thread_count == 0) {
     msg << "couldn't detect the number of threads.";
-  else
+  } else {
     msg << "detected " << thread_count << " threads.";
+  }
+  msg << " See "
+         "https://github.com/google/googletest/blob/master/googletest/docs/"
+         "advanced.md#death-tests-and-threads"
+      << " for more explanation and suggested solutions, especially if"
+      << " this is the last message you see before your test times out.";
   return msg.GetString();
 }
 # endif  // !GTEST_OS_WINDOWS && !GTEST_OS_FUCHSIA
@@ -7629,7 +7723,7 @@ static const int kFuchsiaReadPipeFd = 3;
 // statement, which is not allowed; THREW means that the test statement
 // returned control by throwing an exception.  IN_PROGRESS means the test
 // has not yet concluded.
-// TODO(vladl@google.com): Unify names and possibly values for
+// FIXME: Unify names and possibly values for
 // AbortReason, DeathTestOutcome, and flag characters above.
 enum DeathTestOutcome { IN_PROGRESS, DIED, LIVED, RETURNED, THREW };
 
@@ -7944,7 +8038,6 @@ bool DeathTestImpl::Passed(bool status_ok) {
       if (status_ok) {
 # if GTEST_USES_PCRE
         // PCRE regexes support embedded NULs.
-        // GTEST_USES_PCRE is defined only in google3 mode
         const bool matched = RE::PartialMatch(error_message, *regex());
 # else
         const bool matched = RE::PartialMatch(error_message.c_str(), *regex());
@@ -8174,6 +8267,12 @@ class FuchsiaDeathTest : public DeathTestImpl {
                    const char* file,
                    int line)
       : DeathTestImpl(a_statement, a_regex), file_(file), line_(line) {}
+  virtual ~FuchsiaDeathTest() {
+    zx_status_t status = zx_handle_close(child_process_);
+    GTEST_DEATH_TEST_CHECK_(status == ZX_OK);
+    status = zx_handle_close(port_);
+    GTEST_DEATH_TEST_CHECK_(status == ZX_OK);
+  }
 
   // All of these virtual functions are inherited from DeathTest.
   virtual int Wait();
@@ -8185,7 +8284,8 @@ class FuchsiaDeathTest : public DeathTestImpl {
   // The line number on which the death test is located.
   const int line_;
 
-  zx_handle_t child_process_;
+  zx_handle_t child_process_ = ZX_HANDLE_INVALID;
+  zx_handle_t port_ = ZX_HANDLE_INVALID;
 };
 
 // Utility class for accumulating command-line arguments.
@@ -8232,15 +8332,37 @@ int FuchsiaDeathTest::Wait() {
   if (!spawned())
     return 0;
 
-  // Wait for child process to terminate.
+  // Register to wait for the child process to terminate.
   zx_status_t status_zx;
-  zx_signals_t signals;
-  status_zx = zx_object_wait_one(
-      child_process_,
-      ZX_PROCESS_TERMINATED,
-      ZX_TIME_INFINITE,
-      &signals);
+  status_zx = zx_object_wait_async(child_process_,
+                                   port_,
+                                   0 /* key */,
+                                   ZX_PROCESS_TERMINATED,
+                                   ZX_WAIT_ASYNC_ONCE);
   GTEST_DEATH_TEST_CHECK_(status_zx == ZX_OK);
+
+  // Wait for it to terminate, or an exception to be received.
+  zx_port_packet_t packet;
+  status_zx = zx_port_wait(port_, ZX_TIME_INFINITE, &packet);
+  GTEST_DEATH_TEST_CHECK_(status_zx == ZX_OK);
+
+  if (ZX_PKT_IS_EXCEPTION(packet.type)) {
+    // Process encountered an exception. Kill it directly rather than letting
+    // other handlers process the event.
+    status_zx = zx_task_kill(child_process_);
+    GTEST_DEATH_TEST_CHECK_(status_zx == ZX_OK);
+
+    // Now wait for |child_process_| to terminate.
+    zx_signals_t signals = 0;
+    status_zx = zx_object_wait_one(
+        child_process_, ZX_PROCESS_TERMINATED, ZX_TIME_INFINITE, &signals);
+    GTEST_DEATH_TEST_CHECK_(status_zx == ZX_OK);
+    GTEST_DEATH_TEST_CHECK_(signals & ZX_PROCESS_TERMINATED);
+  } else {
+    // Process terminated.
+    GTEST_DEATH_TEST_CHECK_(ZX_PKT_IS_SIGNAL_ONE(packet.type));
+    GTEST_DEATH_TEST_CHECK_(packet.signal.observed & ZX_PROCESS_TERMINATED);
+  }
 
   ReadAndInterpretStatusByte();
 
@@ -8305,18 +8427,23 @@ DeathTest::TestRole FuchsiaDeathTest::AssumeRole() {
   set_read_fd(status);
 
   // Set the pipe handle for the child.
-  fdio_spawn_action_t add_handle_action = {
-    .action = FDIO_SPAWN_ACTION_ADD_HANDLE,
-    .h = {
-      .id = PA_HND(type, kFuchsiaReadPipeFd),
-      .handle = child_pipe_handle
-    }
-  };
+  fdio_spawn_action_t add_handle_action = {};
+  add_handle_action.action = FDIO_SPAWN_ACTION_ADD_HANDLE;
+  add_handle_action.h.id = PA_HND(type, kFuchsiaReadPipeFd);
+  add_handle_action.h.handle = child_pipe_handle;
 
   // Spawn the child process.
   status = fdio_spawn_etc(ZX_HANDLE_INVALID, FDIO_SPAWN_CLONE_ALL,
                           args.Argv()[0], args.Argv(), nullptr, 1,
                           &add_handle_action, &child_process_, nullptr);
+  GTEST_DEATH_TEST_CHECK_(status == ZX_OK);
+
+  // Create an exception port and attach it to the |child_process_|, to allow
+  // us to suppress the system default exception handler from firing.
+  status = zx_port_create(0, &port_);
+  GTEST_DEATH_TEST_CHECK_(status == ZX_OK);
+  status = zx_task_bind_exception_port(
+      child_process_, port_, 0 /* key */, 0 /*options */);
   GTEST_DEATH_TEST_CHECK_(status == ZX_OK);
 
   set_spawned(true);
@@ -8788,7 +8915,7 @@ static int GetStatusFileDescriptor(unsigned int parent_process_id,
                    StreamableToString(parent_process_id));
   }
 
-  // TODO(vladl@google.com): Replace the following check with a
+  // FIXME: Replace the following check with a
   // compile-time assertion when available.
   GTEST_CHECK_(sizeof(HANDLE) <= sizeof(size_t));
 
@@ -9151,7 +9278,7 @@ bool FilePath::DirectoryExists() const {
 // root directory per disk drive.)
 bool FilePath::IsRootDirectory() const {
 #if GTEST_OS_WINDOWS
-  // TODO(wan@google.com): on Windows a network share like
+  // FIXME: on Windows a network share like
   // \\server\share can be a root directory, although it cannot be the
   // current directory.  Handle this properly.
   return pathname_.length() == 3 && IsAbsolutePath();
@@ -9251,7 +9378,7 @@ FilePath FilePath::RemoveTrailingPathSeparator() const {
 // Removes any redundant separators that might be in the pathname.
 // For example, "bar///foo" becomes "bar/foo". Does not eliminate other
 // redundancies that might be in a pathname involving "." or "..".
-// TODO(wan@google.com): handle Windows network shares (e.g. \\server\share).
+// FIXME: handle Windows network shares (e.g. \\server\share).
 void FilePath::Normalize() {
   if (pathname_.c_str() == NULL) {
     pathname_ = "";
@@ -9312,8 +9439,7 @@ void FilePath::Normalize() {
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 
 
 #include <limits.h>
@@ -9542,9 +9668,9 @@ Mutex::Mutex()
 Mutex::~Mutex() {
   // Static mutexes are leaked intentionally. It is not thread-safe to try
   // to clean them up.
-  // TODO(yukawa): Switch to Slim Reader/Writer (SRW) Locks, which requires
+  // FIXME: Switch to Slim Reader/Writer (SRW) Locks, which requires
   // nothing to clean it up but is available only on Vista and later.
-  // http://msdn.microsoft.com/en-us/library/windows/desktop/aa904937.aspx
+  // https://docs.microsoft.com/en-us/windows/desktop/Sync/slim-reader-writer--srw--locks
   if (type_ == kDynamic) {
     ::DeleteCriticalSection(critical_section_);
     delete critical_section_;
@@ -9575,6 +9701,43 @@ void Mutex::AssertHeld() {
       << "The current thread is not holding the mutex @" << this;
 }
 
+namespace {
+
+// Use the RAII idiom to flag mem allocs that are intentionally never
+// deallocated. The motivation is to silence the false positive mem leaks
+// that are reported by the debug version of MS's CRT which can only detect
+// if an alloc is missing a matching deallocation.
+// Example:
+//    MemoryIsNotDeallocated memory_is_not_deallocated;
+//    critical_section_ = new CRITICAL_SECTION;
+//
+class MemoryIsNotDeallocated
+{
+ public:
+  MemoryIsNotDeallocated() : old_crtdbg_flag_(0) {
+#ifdef _MSC_VER
+    old_crtdbg_flag_ = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    // Set heap allocation block type to _IGNORE_BLOCK so that MS debug CRT
+    // doesn't report mem leak if there's no matching deallocation.
+    _CrtSetDbgFlag(old_crtdbg_flag_ & ~_CRTDBG_ALLOC_MEM_DF);
+#endif  //  _MSC_VER
+  }
+
+  ~MemoryIsNotDeallocated() {
+#ifdef _MSC_VER
+    // Restore the original _CRTDBG_ALLOC_MEM_DF flag
+    _CrtSetDbgFlag(old_crtdbg_flag_);
+#endif  //  _MSC_VER
+  }
+
+ private:
+  int old_crtdbg_flag_;
+
+  GTEST_DISALLOW_COPY_AND_ASSIGN_(MemoryIsNotDeallocated);
+};
+
+}  // namespace
+
 // Initializes owner_thread_id_ and critical_section_ in static mutexes.
 void Mutex::ThreadSafeLazyInit() {
   // Dynamic mutexes are initialized in the constructor.
@@ -9585,7 +9748,11 @@ void Mutex::ThreadSafeLazyInit() {
         // If critical_section_init_phase_ was 0 before the exchange, we
         // are the first to test it and need to perform the initialization.
         owner_thread_id_ = 0;
-        critical_section_ = new CRITICAL_SECTION;
+        {
+          // Use RAII to flag that following mem alloc is never deallocated.
+          MemoryIsNotDeallocated memory_is_not_deallocated;
+          critical_section_ = new CRITICAL_SECTION;
+        }
         ::InitializeCriticalSection(critical_section_);
         // Updates the critical_section_init_phase_ to 2 to signal
         // initialization complete.
@@ -9624,7 +9791,7 @@ class ThreadWithParamSupport : public ThreadWithParamBase {
                              Notification* thread_can_start) {
     ThreadMainParam* param = new ThreadMainParam(runnable, thread_can_start);
     DWORD thread_id;
-    // TODO(yukawa): Consider to use _beginthreadex instead.
+    // FIXME: Consider to use _beginthreadex instead.
     HANDLE thread_handle = ::CreateThread(
         NULL,    // Default security.
         0,       // Default stack size.
@@ -9827,7 +9994,8 @@ class ThreadLocalRegistryImpl {
   // Returns map of thread local instances.
   static ThreadIdToThreadLocals* GetThreadLocalsMapLocked() {
     mutex_.AssertHeld();
-    static ThreadIdToThreadLocals* map = new ThreadIdToThreadLocals;
+    MemoryIsNotDeallocated memory_is_not_deallocated;
+    static ThreadIdToThreadLocals* map = new ThreadIdToThreadLocals();
     return map;
   }
 
@@ -9976,7 +10144,7 @@ static std::string FormatRegexSyntaxError(const char* regex, int index) {
 // otherwise returns true.
 bool ValidateRegex(const char* regex) {
   if (regex == NULL) {
-    // TODO(wan@google.com): fix the source file location in the
+    // FIXME: fix the source file location in the
     // assertion failures to match where the regex is used in user
     // code.
     ADD_FAILURE() << "NULL is not a valid simple regular expression.";
@@ -10222,7 +10390,7 @@ GTestLog::~GTestLog() {
 
 // Disable Microsoft deprecation warnings for POSIX functions called from
 // this class (creat, dup, dup2, and close)
-GTEST_DISABLE_MSC_WARNINGS_PUSH_(4996)
+GTEST_DISABLE_MSC_DEPRECATED_PUSH_()
 
 #if GTEST_HAS_STREAM_REDIRECTION
 
@@ -10306,7 +10474,7 @@ class CapturedStream {
   GTEST_DISALLOW_COPY_AND_ASSIGN_(CapturedStream);
 };
 
-GTEST_DISABLE_MSC_WARNINGS_POP_()
+GTEST_DISABLE_MSC_DEPRECATED_POP_()
 
 static CapturedStream* g_captured_stderr = NULL;
 static CapturedStream* g_captured_stdout = NULL;
@@ -10583,8 +10751,7 @@ const char* StringFromGTestEnv(const char* flag, const char* default_value) {
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 
 // Google Test - The Google C++ Testing and Mocking Framework
 //
@@ -10644,7 +10811,7 @@ void PrintBytesInObjectToImpl(const unsigned char* obj_bytes, size_t count,
   // If the object size is bigger than kThreshold, we'll have to omit
   // some details by printing only the first and the last kChunkSize
   // bytes.
-  // TODO(wan): let the user control the threshold using a flag.
+  // FIXME: let the user control the threshold using a flag.
   if (count < kThreshold) {
     PrintByteSegmentInObjectTo(obj_bytes, 0, count, os);
   } else {
@@ -11038,8 +11205,7 @@ void PrintWideStringTo(const ::std::wstring& s, ostream* os) {
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: mheule@google.com (Markus Heule)
+
 //
 // The Google C++ Testing and Mocking Framework (Google Test)
 
@@ -11138,8 +11304,7 @@ void HasNewFatalFailureHelper::ReportTestPartResult(
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 
 
 

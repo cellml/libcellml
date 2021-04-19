@@ -14,477 +14,654 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
 
 TEST(Reset, create)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_NE(nullptr, r);
+
+    libcellml::ResetPtr rOrder = libcellml::Reset::create(10);
+
+    EXPECT_EQ(10, rOrder->order());
 }
 
 TEST(Reset, order)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_FALSE(r->isOrderSet());
     r->setOrder(1);
 
-    EXPECT_EQ(1, r->getOrder());
+    EXPECT_EQ(1, r->order());
     EXPECT_TRUE(r->isOrderSet());
 
     r->unsetOrder();
     EXPECT_FALSE(r->isOrderSet());
 }
 
-TEST(Reset, addAndCountChildren)
-{
-    libcellml::Reset r;
-    libcellml::WhenPtr child1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr child2 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr child3 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr child4 = std::make_shared<libcellml::When>();
-
-    EXPECT_EQ(0u, r.whenCount());
-
-    r.addWhen(child1);
-    r.addWhen(child2);
-    r.addWhen(child3);
-    r.addWhen(child4);
-    EXPECT_EQ(4u, r.whenCount());
-
-    r.addWhen(child3);
-    EXPECT_EQ(5u, r.whenCount());
-}
-
-TEST(Reset, contains)
-{
-    libcellml::Reset r;
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-
-    EXPECT_FALSE(r.containsWhen(w1));
-
-    r.addWhen(w1);
-    r.addWhen(w2);
-    EXPECT_TRUE(r.containsWhen(w1));
-    EXPECT_TRUE(r.containsWhen(w2));
-}
-
-TEST(Reset, removeWhenMethods)
-{
-    libcellml::Reset r;
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
-    r.addWhen(w1);
-    r.addWhen(w2);
-
-    EXPECT_TRUE(r.removeWhen(0));
-    EXPECT_EQ(1u, r.whenCount());
-
-    EXPECT_FALSE(r.removeWhen(1));
-
-    r.addWhen(w1);
-    r.addWhen(w1);
-    r.addWhen(w1);
-    r.removeWhen(w1);
-    r.removeWhen(w1);
-    EXPECT_EQ(2u, r.whenCount());
-
-    // Expect no change
-    EXPECT_FALSE(r.removeWhen(w3));
-    EXPECT_EQ(2u, r.whenCount());
-
-    r.removeAllWhens();
-    EXPECT_EQ(0u, r.whenCount());
-}
-
-TEST(Reset, getWhenMethods)
-{
-    libcellml::Reset r;
-    libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
-
-    r.addWhen(c1);
-    r.addWhen(c2);
-
-    libcellml::WhenPtr cA = r.getWhen(0);
-
-    // Using const version of overloaded method
-    const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).getWhen(0);
-    EXPECT_EQ(0, cS->getOrder());
-
-    // Can do this as we just have a const pointer
-    EXPECT_EQ(nullptr, r.getWhen(4));
-}
-
-TEST(Reset, takeWhenMethods)
-{
-    libcellml::Reset r;
-    libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
-
-    r.addWhen(c1);
-    r.addWhen(c2);
-
-    libcellml::WhenPtr c02 = r.takeWhen(1);
-    EXPECT_EQ(1u, r.whenCount());
-    EXPECT_EQ(0, c02->getOrder());
-
-    EXPECT_EQ(nullptr, r.takeWhen(4));
-}
-
-TEST(Reset, replaceWhenMethods)
-{
-    libcellml::Reset r;
-    libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr c3 = std::make_shared<libcellml::When>();
-
-    r.addWhen(c1);
-    r.addWhen(c2);
-
-    EXPECT_FALSE(r.replaceWhen(5, c3));
-
-    EXPECT_TRUE(r.replaceWhen(1, c3));
-}
-
-TEST(Reset, constructors)
-{
-    libcellml::Reset r, r1, r2;
-
-    r.addWhen(std::make_shared<libcellml::When>());
-
-    // Testing assignment for Reset
-    r1 = r;
-    EXPECT_EQ(1u, r1.whenCount());
-
-    // Testing move assignment for Reset
-    r2 = std::move(r1);
-    EXPECT_EQ(1u, r2.whenCount());
-
-    // Testing move constructor for Reset
-    libcellml::Reset r3 = std::move(r2);
-    EXPECT_EQ(1u, r3.whenCount());
-}
-
 TEST(Reset, printResetWithVariable)
 {
-    const std::string e = "<reset variable=\"A\"/>";
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
 
     v->setName("A");
 
     r->setVariable(v);
 
-    libcellml::Printer p;
+    c->addReset(r);
 
-    const std::string a = p.printReset(r);
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    const std::string a = p->printModel(m);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, printResetWithoutTestValue)
+{
+    std::string a;
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "    <variable name=\"variable2\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+
+    m->setName("model");
+    c->setName("component");
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    r1->setVariable(v1);
+    r1->setTestVariable(v2);
+    r1->setOrder(1);
+    r1->setResetValue(EMPTY_MATH);
+
+    c->addReset(r1);
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+    a = p->printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Reset, printResetWithOrder)
 {
-    const std::string e = "<reset order=\"1\"/>";
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     r->setOrder(1);
+    c->addReset(r);
 
-    libcellml::Printer p;
+    libcellml::PrinterPtr p = libcellml::Printer::create();
 
-    const std::string a = p.printReset(r);
+    const std::string a = p->printModel(m);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, printResetWithNegativeOrder)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset order=\"-1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    r->setOrder(-1);
+    c->addReset(r);
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    const std::string a = p->printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Reset, printResetWithOrderAndVariable)
 {
-    const std::string e = "<reset variable=\"B\" order=\"1\"/>";
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
 
     v->setName("B");
 
     r->setVariable(v);
     r->setOrder(1);
+    c->addReset(r);
 
-    libcellml::Printer p;
+    libcellml::PrinterPtr p = libcellml::Printer::create();
 
-    const std::string a = p.printReset(r);
+    const std::string a = p->printModel(m);
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, printResetWithWhen)
+TEST(Reset, addReset)
 {
-    const std::string e =
-        "<reset>"
-        "<when/>"
-        "</reset>";
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
-    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+    EXPECT_EQ(size_t(0), c->resetCount());
 
-    r->addWhen(w);
-
-    libcellml::Printer p;
-
-    const std::string a = p.printReset(r);
-    EXPECT_EQ(e, a);
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
 }
 
-TEST(Reset, printResetWithMultipleWhens)
+TEST(Reset, addResetThatHasAParentComponent)
 {
-    const std::string e =
-        "<reset>"
-        "<when/>"
-        "<when/>"
-        "<when/>"
-        "</reset>";
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
+    EXPECT_EQ(size_t(0), c1->resetCount());
+    EXPECT_EQ(size_t(0), c2->resetCount());
 
-    r->addWhen(w1);
-    r->addWhen(w2);
-    r->addWhen(w3);
+    // Add r to c1.
+    EXPECT_TRUE(c1->addReset(r));
+    EXPECT_EQ(size_t(1), c1->resetCount());
+    EXPECT_EQ(size_t(0), c2->resetCount());
 
-    libcellml::Printer p;
-
-    const std::string a = p.printReset(r);
-    EXPECT_EQ(e, a);
+    // Add r to c2, which effectively moves it from c1 to c2.
+    EXPECT_TRUE(c2->addReset(r));
+    EXPECT_EQ(size_t(0), c1->resetCount());
+    EXPECT_EQ(size_t(1), c2->resetCount());
 }
 
-TEST(Reset, printResetWithWhenWithValueSet)
+TEST(Reset, addResetInvalidArguments)
 {
-    const std::string e =
-        "<reset>"
-        "<when>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "a value set"
-        "</math>"
-        "</when>"
-        "</reset>";
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+    EXPECT_EQ(size_t(0), c->resetCount());
 
-    w->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">a value set</math>");
-    r->addWhen(w);
+    // Add r to c.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
 
-    libcellml::Printer p;
+    // Try to add r to c again, which cannot be done.
+    EXPECT_FALSE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
 
-    const std::string a = p.printReset(r);
-    EXPECT_EQ(e, a);
+    // Try to add a nullptr to c, which cannot be done.
+    EXPECT_FALSE(c->addReset(nullptr));
+    EXPECT_EQ(size_t(1), c->resetCount());
 }
 
-TEST(Reset, printResetWithMultipleWhensWithValues)
+TEST(Reset, removeReset)
 {
-    const std::string e =
-        "<reset variable=\"A\">"
-        "<when order=\"2\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "some mathml"
-        "</math>"
-        "</when>"
-        "<when order=\"-1\" id=\"wid\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "some condition in mathml"
-        "</math>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "some value in mathml"
-        "</math>"
-        "</when>"
-        "</reset>";
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
 
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    // Add r1 and r2 to c.
+    EXPECT_TRUE(c->addReset(r1));
+    EXPECT_TRUE(c->addReset(r2));
+    EXPECT_EQ(size_t(2), c->resetCount());
 
-    v->setName("A");
-    w1->setOrder(2);
-    w1->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some mathml</math>");
+    // Remove r1 from c.
+    EXPECT_TRUE(c->removeReset(r1));
+    EXPECT_EQ(nullptr, r1->parent());
+    EXPECT_EQ(size_t(1), c->resetCount());
 
-    w2->setOrder(-1);
-    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some condition in mathml</math>");
-    w2->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some value in mathml</math>");
-    w2->setId("wid");
+    // Remove r2 by index.
+    EXPECT_TRUE(c->removeReset(0));
+    EXPECT_EQ(size_t(0), c->resetCount());
 
-    r->setVariable(v);
-    r->addWhen(w1);
-    r->addWhen(w2);
+    // Add r1, r2 and r3 to c, and use removeAllResets to remove them.
+    EXPECT_TRUE(c->addReset(r1));
+    EXPECT_TRUE(c->addReset(r2));
+    EXPECT_TRUE(c->addReset(r3));
+    EXPECT_EQ(size_t(3), c->resetCount());
 
-    libcellml::Printer p;
-
-    const std::string a = p.printReset(r);
-    EXPECT_EQ(e, a);
+    c->removeAllResets();
+    EXPECT_EQ(size_t(0), c->resetCount());
 }
 
-TEST(Reset, printResetWithMultipleWhensWithOrders)
+TEST(Reset, removeResetInvalidArguments)
 {
-    const std::string e =
-        "<reset>"
-        "<when order=\"7\"/>"
-        "<when order=\"-1\"/>"
-        "<when order=\"0\"/>"
-        "</reset>";
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
 
-    r->addWhen(w1);
-    r->addWhen(w2);
-    r->addWhen(w3);
+    // Add r1 to c.
+    EXPECT_TRUE(c->addReset(r1));
 
-    w1->setOrder(7);
-    w2->setOrder(-1);
-    w3->setOrder(0);
-
-    libcellml::Printer p;
-
-    const std::string a = p.printReset(r);
-    EXPECT_EQ(e, a);
+    // Try and remove the ones which don't exist so we trigger the 'false' return statement.
+    EXPECT_FALSE(c->removeReset(1));
+    EXPECT_EQ(size_t(1), c->resetCount());
+    EXPECT_FALSE(c->removeReset(r2));
+    EXPECT_EQ(size_t(1), c->resetCount());
 }
 
-TEST(Reset, addRemoveResetFromComponentMethods)
+TEST(Reset, takeReset)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    // Add r to c.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
+
+    // Retrieve r by index.
+    auto taken_r = c->takeReset(0);
+    EXPECT_EQ(r, taken_r);
+    EXPECT_EQ(nullptr, r->parent());
+    EXPECT_EQ(nullptr, taken_r->parent());
+    EXPECT_EQ(size_t(0), c->resetCount());
+}
+
+TEST(Reset, takeNonExistentReset)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    // Add r to c.
+    EXPECT_TRUE(c->addReset(r));
+    EXPECT_EQ(size_t(1), c->resetCount());
+
+    // Retrieve a non-existent reset from c.
+    auto taken_r = c->takeReset(1);
+    EXPECT_EQ(nullptr, taken_r);
+    EXPECT_EQ(size_t(1), c->resetCount());
+}
+
+TEST(Reset, resetFromComponentMethod)
 {
     const std::string in = "valid_name";
-    const std::string e1 =
-        "<component name=\"valid_name\">"
-        "<variable name=\"V_na\"/>"
-        "<reset variable=\"V_na\">"
-        "<when order=\"3\"/>"
-        "<when order=\"0\"/>"
-        "</reset>"
-        "<reset variable=\"V_na\">"
-        "<when order=\"1\"/>"
-        "</reset>"
-        "</component>";
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    c->setName(in);
 
-    const std::string e2 =
-        "<component name=\"valid_name\">"
-        "<variable name=\"V_na\"/>"
-        "<reset variable=\"V_na\">"
-        "<when order=\"3\"/>"
-        "<when order=\"0\"/>"
-        "</reset>"
-        "</component>";
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    c->addReset(r1);
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    c->addReset(r2);
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
+    c->addReset(r3);
+    libcellml::ResetPtr r4 = libcellml::Reset::create();
+    c->addReset(r4);
 
-    const std::string e3 =
-        "<component name=\"valid_name\">"
-        "<variable name=\"V_na\"/>"
-        "</component>";
+    EXPECT_EQ(size_t(4), c->resetCount());
 
-    const std::string e4 =
-        "<component name=\"valid_name\">"
-        "<variable name=\"V_na\"/>"
-        "<reset variable=\"V_na\">"
-        "<when order=\"1\"/>"
-        "</reset>"
-        "</component>";
-
-    libcellml::Component c;
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
-
-    c.setName(in);
-    v->setName("V_na");
-
-    r1->setVariable(v);
-    r2->setVariable(v);
-
-    r1->addWhen(w1);
-    r1->addWhen(w3);
-    r2->addWhen(w2);
-
-    w1->setOrder(3);
-    w2->setOrder(1);
-    w3->setOrder(0);
-
-    c.addReset(r1);
-    c.addReset(r2);
-    c.addVariable(v);
-
-    libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
-    EXPECT_EQ(e1, a);
-
-    EXPECT_TRUE(c.removeReset(r2));
-    a = printer.printComponent(c);
-    EXPECT_EQ(e2, a);
-    EXPECT_FALSE(c.removeReset(r3));
-
-    c.addReset(r2);
-    c.addReset(r2);
-    c.removeAllResets();
-    a = printer.printComponent(c);
-    EXPECT_EQ(e3, a);
-
-    c.addReset(r1);
-    c.addReset(r2);
-    c.addReset(r3);
-
-    EXPECT_TRUE(c.removeReset(0)); // r1
-    EXPECT_TRUE(c.removeReset(1)); // new index of r3
-    a = printer.printComponent(c);
-    EXPECT_EQ(e4, a);
-    EXPECT_FALSE(c.removeReset(1));
-}
-
-TEST(Reset, getResetFromComponentMethod)
-{
-    const std::string in = "valid_name";
-    libcellml::Component c;
-    c.setName(in);
-
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    c.addReset(r1);
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    c.addReset(r2);
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    c.addReset(r3);
-    libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
-    c.addReset(r4);
-
-    EXPECT_EQ(4u, c.resetCount());
-
-    // Get by index
-    libcellml::ResetPtr rMethod1 = c.getReset(1);
+    // Get by index.
+    libcellml::ResetPtr rMethod1 = c->reset(1);
     EXPECT_EQ(r2.get(), rMethod1.get());
 
-    // Get const by index
-    const libcellml::ResetPtr vMethod2 = static_cast<const libcellml::Component>(c).getReset(3);
+    // Get const by index.
+    const libcellml::ResetPtr vMethod2 = c->reset(3);
     EXPECT_EQ(r4.get(), vMethod2.get());
 
-    // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getReset(-3));
-    EXPECT_EQ(nullptr, c.getReset(7));
+    // Get invalid index.
+    EXPECT_EQ(nullptr, c->reset(7));
 }
 
 TEST(Reset, hasResetFromComponentMethod)
 {
     const std::string in = "valid_name";
-    libcellml::Component c;
-    c.setName(in);
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    c->setName(in);
 
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    c.addReset(r1);
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    c.addReset(r2);
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    c->addReset(r1);
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    c->addReset(r2);
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
 
-    EXPECT_TRUE(c.hasReset(r2));
-    EXPECT_FALSE(c.hasReset(r3));
+    EXPECT_TRUE(c->hasReset(r2));
+    EXPECT_FALSE(c->hasReset(r3));
+}
+
+TEST(Reset, printResetWithVariableAndTestVariable)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    const std::string a = p->printModel(m);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, testValueSetClear)
+{
+    const std::string test1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </test_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    const std::string out1 = p->printModel(m);
+    EXPECT_EQ(test1, out1);
+
+    // Test setting of test_value block.
+    r->setTestValue(EMPTY_MATH);
+    const std::string out2 = p->printModel(m);
+    EXPECT_EQ(test2, out2);
+
+    // Test clearing of test_value block.
+    r->removeTestValue();
+    const std::string out3 = p->printModel(m);
+    EXPECT_EQ(test1, out3);
+}
+
+TEST(Reset, testValueAppend)
+{
+    static const std::string firstMaths = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n";
+    static const std::string secondMaths = "</math>\n";
+
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </test_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    // Test appending of test_value block.
+    r->appendTestValue(firstMaths);
+    r->appendTestValue(secondMaths);
+
+    const std::string out = p->printModel(m);
+    EXPECT_EQ(test, out);
+}
+
+TEST(Reset, resetValueSetClear)
+{
+    const std::string test1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    const std::string out1 = p->printModel(m);
+    EXPECT_EQ(test1, out1);
+
+    // Test setting of reset_value block.
+    r->setResetValue(EMPTY_MATH);
+    const std::string out2 = p->printModel(m);
+    EXPECT_EQ(test2, out2);
+
+    // Test clearing of reset_value block.
+    r->removeResetValue();
+    const std::string out3 = p->printModel(m);
+    EXPECT_EQ(test1, out3);
+}
+
+TEST(Reset, resetValueAppend)
+{
+    static const std::string firstMaths = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n";
+    static const std::string secondMaths = "</math>\n";
+
+    const std::string test =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    // Test appending of reset_value block.
+    r->appendResetValue(firstMaths);
+    r->appendResetValue(secondMaths);
+
+    const std::string out = p->printModel(m);
+    EXPECT_EQ(test, out);
+}
+
+TEST(Reset, resetRemoveTestValue)
+{
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    EXPECT_EQ("", r->testValue());
+
+    r->setTestValue("some test condition math");
+
+    EXPECT_EQ("some test condition math", r->testValue());
+
+    r->removeTestValue();
+
+    EXPECT_EQ("", r->testValue());
+}
+
+TEST(Reset, resetRemoveResetValue)
+{
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    EXPECT_EQ("", r->resetValue());
+
+    r->setResetValue("some reset sort of math");
+
+    EXPECT_EQ("some reset sort of math", r->resetValue());
+
+    r->removeResetValue();
+
+    EXPECT_EQ("", r->resetValue());
+}
+
+TEST(Reset, resetSetTestValueId)
+{
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    EXPECT_EQ("", r->testValueId());
+
+    r->setTestValueId("id1");
+
+    EXPECT_EQ("id1", r->testValueId());
+}
+
+TEST(Reset, resetSetResetValueId)
+{
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    EXPECT_EQ("", r->resetValueId());
+
+    r->setResetValueId("id1");
+
+    EXPECT_EQ("id1", r->resetValueId());
+}
+
+TEST(Reset, resetRemoveTestValueId)
+{
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    EXPECT_EQ("", r->testValueId());
+
+    r->setTestValueId("id1");
+
+    EXPECT_EQ("id1", r->testValueId());
+
+    r->removeTestValueId();
+
+    EXPECT_EQ("", r->testValueId());
+}
+
+TEST(Reset, resetRemoveResetValueId)
+{
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    EXPECT_EQ("", r->resetValueId());
+
+    r->setResetValueId("id1");
+
+    EXPECT_EQ("id1", r->resetValueId());
+
+    r->removeResetValueId();
+
+    EXPECT_EQ("", r->resetValueId());
 }

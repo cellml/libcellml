@@ -2,19 +2,19 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
 %import "namedentity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::ImportedEntity
 "Abstract base class for entities that can be imported.";
 
-%feature("docstring") libcellml::ImportedEntity::getImportSource
+%feature("docstring") libcellml::ImportedEntity::importSource
 "Returns an ImportSource if this entity is imported, else `None`.";
 
 %feature("docstring") libcellml::ImportedEntity::setImportSource
 "Set the ImportSource for this entity (use `None` to unset).";
 
-%feature("docstring") libcellml::ImportedEntity::getImportReference
+%feature("docstring") libcellml::ImportedEntity::importReference
 "Returns the reference to the entity in the imported model, or an empty string
 if not set.";
 
@@ -29,8 +29,11 @@ string to unset).";
 #include "libcellml/importedentity.h"
 %}
 
-%ignore libcellml::ImportedEntity::ImportedEntity(ImportedEntity &&);
-%ignore libcellml::ImportedEntity::operator =;
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
+%ignore libcellml::ImportedEntity::ImportedEntity();
 
 %include "libcellml/types.h"
 %include "libcellml/importedentity.h"

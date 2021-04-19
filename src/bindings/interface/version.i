@@ -2,7 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
-%include "std_string.i"
+%include <std_string.i>
 
 %feature("docstring") libcellml::version
 "Returns the version of the library as a number.";
@@ -16,6 +16,10 @@ minor version, and z the patch level.";
 
 %{
 #include "libcellml/version.h"
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %include "libcellml/version.h"

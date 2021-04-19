@@ -15,10 +15,11 @@ limitations under the License.
 */
 
 #include "libcellml/reset.h"
-#include "libcellml/when.h"
 
 #include <algorithm>
 #include <vector>
+
+#include "libcellml/variable.h"
 
 namespace libcellml {
 
@@ -29,21 +30,35 @@ namespace libcellml {
  */
 struct Reset::ResetImpl
 {
-    int mOrder = 0; /**< An integer for determining relative order.*/
+    int mOrder = 0; /**< The relative order of the reset.*/
+    bool mOrderSet = false; /**< Whether the relative order of the reset has been set.*/
     VariablePtr mVariable; /**< The associated variable for the reset.*/
-    std::vector<WhenPtr>::iterator findWhen(const WhenPtr &when);
-    std::vector<WhenPtr> mWhens;
+    VariablePtr mTestVariable; /**< The associated test_variable for the reset.*/
+    std::string mTestValue; /**< The MathML string for the test_value.*/
+    std::string mTestValueId; /**< The id of the test_value block */
+    std::string mResetValue; /**< The MathML string for the reset_value.*/
+    std::string mResetValueId; /**< The id of the reset_value block */
 };
-
-std::vector<WhenPtr>::iterator Reset::ResetImpl::findWhen(const WhenPtr &when)
-{
-    return std::find_if(mWhens.begin(), mWhens.end(),
-                        [=](const WhenPtr &w) -> bool { return w == when; });
-}
 
 Reset::Reset()
     : mPimpl(new ResetImpl())
 {
+}
+
+Reset::Reset(int order)
+    : mPimpl(new ResetImpl())
+{
+    setOrder(order);
+}
+
+ResetPtr Reset::create() noexcept
+{
+    return std::shared_ptr<Reset> {new Reset {}};
+}
+
+ResetPtr Reset::create(int order) noexcept
+{
+    return std::shared_ptr<Reset> {new Reset {order}};
 }
 
 Reset::~Reset()
@@ -51,124 +66,135 @@ Reset::~Reset()
     delete mPimpl;
 }
 
-Reset::Reset(const Reset &rhs)
-    : OrderedEntity(rhs)
-    , mPimpl(new ResetImpl())
+void Reset::setOrder(int order)
 {
-    mPimpl->mOrder = rhs.mPimpl->mOrder;
-    mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mWhens = rhs.mPimpl->mWhens;
+    mPimpl->mOrder = order;
+    mPimpl->mOrderSet = true;
 }
 
-Reset::Reset(Reset &&rhs)
-    : OrderedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
+int Reset::order() const
 {
-    rhs.mPimpl = nullptr;
+    return mPimpl->mOrder;
 }
 
-Reset &Reset::operator=(Reset e)
+void Reset::unsetOrder()
 {
-    OrderedEntity::operator=(e);
-    e.swap(*this);
-    return *this;
+    mPimpl->mOrderSet = false;
 }
 
-void Reset::swap(Reset &rhs)
+bool Reset::isOrderSet()
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    return mPimpl->mOrderSet;
 }
 
-void Reset::setVariable(VariablePtr variable)
+void Reset::setVariable(const VariablePtr &variable)
 {
     mPimpl->mVariable = variable;
 }
 
-VariablePtr Reset::getVariable() const
+VariablePtr Reset::variable() const
 {
     return mPimpl->mVariable;
 }
 
-void Reset::addWhen(const WhenPtr &when)
+void Reset::setTestVariable(const VariablePtr &variable)
 {
-    mPimpl->mWhens.push_back(when);
+    mPimpl->mTestVariable = variable;
 }
 
-bool Reset::removeWhen(size_t index)
+VariablePtr Reset::testVariable() const
 {
-    bool status = false;
+    return mPimpl->mTestVariable;
+}
 
-    if (index < mPimpl->mWhens.size()) {
-        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + index);
-        status = true;
+void Reset::appendTestValue(const std::string &math)
+{
+    mPimpl->mTestValue.append(math);
+}
+
+std::string Reset::testValue() const
+{
+    return mPimpl->mTestValue;
+}
+
+void Reset::setTestValueId(const std::string &id)
+{
+    mPimpl->mTestValueId = id;
+}
+
+void Reset::removeTestValueId()
+{
+    mPimpl->mTestValueId = "";
+}
+
+std::string Reset::testValueId() const
+{
+    return mPimpl->mTestValueId;
+}
+
+void Reset::setTestValue(const std::string &math)
+{
+    mPimpl->mTestValue = math;
+}
+
+void Reset::removeTestValue()
+{
+    mPimpl->mTestValue = "";
+}
+
+void Reset::appendResetValue(const std::string &math)
+{
+    mPimpl->mResetValue.append(math);
+}
+
+std::string Reset::resetValue() const
+{
+    return mPimpl->mResetValue;
+}
+
+void Reset::setResetValue(const std::string &math)
+{
+    mPimpl->mResetValue = math;
+}
+
+void Reset::removeResetValue()
+{
+    mPimpl->mResetValue = "";
+}
+
+void Reset::setResetValueId(const std::string &id)
+{
+    mPimpl->mResetValueId = id;
+}
+
+void Reset::removeResetValueId()
+{
+    mPimpl->mResetValueId = "";
+}
+
+std::string Reset::resetValueId() const
+{
+    return mPimpl->mResetValueId;
+}
+
+ResetPtr Reset::clone() const
+{
+    auto r = create();
+
+    r->setId(id());
+    r->setOrder(order());
+    r->setResetValue(resetValue());
+    r->setResetValueId(resetValueId());
+    r->setTestValue(testValue());
+    r->setTestValueId(testValueId());
+    if (mPimpl->mVariable != nullptr) {
+        r->setVariable(mPimpl->mVariable->clone());
+    }
+    if (mPimpl->mTestVariable != nullptr) {
+        r->setTestVariable(mPimpl->mTestVariable->clone());
     }
 
-    return status;
-}
-
-bool Reset::removeWhen(const WhenPtr &when)
-{
-    bool status = false;
-    auto result = mPimpl->findWhen(when);
-    if (result != mPimpl->mWhens.end()) {
-        mPimpl->mWhens.erase(result);
-        status = true;
-    }
-
-    return status;
-}
-
-void Reset::removeAllWhens()
-{
-    mPimpl->mWhens.clear();
-}
-
-bool Reset::containsWhen(const WhenPtr &when) const
-{
-    bool status = false;
-    auto result = mPimpl->findWhen(when);
-    if (result != mPimpl->mWhens.end()) {
-        status = true;
-    }
-
-    return status;
-}
-
-WhenPtr Reset::getWhen(size_t index) const
-{
-    WhenPtr when = nullptr;
-    if (index < mPimpl->mWhens.size()) {
-        when = mPimpl->mWhens.at(index);
-    }
-
-    return when;
-}
-
-WhenPtr Reset::takeWhen(size_t index)
-{
-    WhenPtr when = nullptr;
-    if (index < mPimpl->mWhens.size()) {
-        when = mPimpl->mWhens.at(index);
-        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + index);
-    }
-
-    return when;
-}
-
-bool Reset::replaceWhen(size_t index, const WhenPtr &when)
-{
-    bool status = false;
-    if (removeWhen(index)) {
-        mPimpl->mWhens.insert(mPimpl->mWhens.begin() + index, when);
-        status = true;
-    }
-
-    return status;
-}
-
-size_t Reset::whenCount() const
-{
-    return mPimpl->mWhens.size();
+    return r;
 }
 
 } // namespace libcellml

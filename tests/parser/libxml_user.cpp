@@ -16,9 +16,9 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
-#include <algorithm>
-#include <iostream>
 #include <libcellml>
+
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -28,18 +28,18 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
     // parse the string using libcellml
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 
     // and now parse directly using libxml2
     xmlParserCtxtPtr context = xmlNewParserCtxt();
-    xmlDocPtr doc = xmlCtxtReadDoc(context, BAD_CAST e.c_str(), "/", nullptr, 0);
+    xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     EXPECT_NE(nullptr, doc);
     xmlFreeDoc(doc);
@@ -52,13 +52,13 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component></model>";
 
     // parse the string using libcellml
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_NE(0u, parser.errorCount());
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    EXPECT_NE(size_t(0), parser->issueCount());
 
     // and now parse directly using libxml2
     xmlParserCtxtPtr context = xmlNewParserCtxt();
-    xmlDocPtr doc = xmlCtxtReadDoc(context, BAD_CAST e.c_str(), "/", nullptr, 0);
+    xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     EXPECT_EQ(nullptr, doc);
 }

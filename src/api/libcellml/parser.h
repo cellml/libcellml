@@ -16,14 +16,13 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/logger.h"
 #include "libcellml/model.h"
 #include "libcellml/types.h"
 #include "libcellml/units.h"
 
-#include <string>
-
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
@@ -34,11 +33,22 @@ namespace libcellml {
 class LIBCELLML_EXPORT Parser: public Logger
 {
 public:
-    Parser(); /**< Constructor */
-    ~Parser() override; /**< Destructor */
-    Parser(const Parser &rhs); /**< Copy constructor */
-    Parser(Parser &&rhs); /**< Move constructor */
-    Parser &operator=(Parser p); /**< Assignment operator */
+    ~Parser() override; /**< Destructor. */
+    Parser(const Parser &rhs) = delete; /**< Copy constructor. */
+    Parser(Parser &&rhs) noexcept = delete; /**< Move constructor. */
+    Parser &operator=(Parser rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create a @c Parser object.
+     *
+     * Factory method to create a @c Parser.  Create a
+     * parser with::
+     *
+     *   ParserPtr parser = libcellml::Parser::create();
+     *
+     * @return A smart pointer to a @c Parser object.
+     */
+    static ParserPtr create() noexcept;
 
     /**
      * @brief Create and populate a new model from a @c std::string.
@@ -53,7 +63,7 @@ public:
     ModelPtr parseModel(const std::string &input);
 
 private:
-    void swap(Parser &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Parser(); /**< Constructor. */
 
     struct ParserImpl; /**< Forward declaration for pImpl idiom. */
     ParserImpl *mPimpl; /**< Private member to implementation pointer. */

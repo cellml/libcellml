@@ -12,17 +12,55 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-cmake_minimum_required(VERSION 3.5.2)
+cmake_minimum_required(VERSION 3.10.2)
 
 set(PROJECT_NAME libCellML)
-project(${PROJECT_NAME} VERSION 0.1.0 LANGUAGES CXX)
+project(${PROJECT_NAME} VERSION 0.2.0 LANGUAGES CXX)
+
+# Set policies that affect the build.
+if(POLICY CMP0078)
+  cmake_policy(SET CMP0078 NEW)
+endif()
+if(POLICY CMP0086)
+  cmake_policy(SET CMP0086 NEW)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 include(common)
 include(environmentchecks)
 
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
+
+# COMPILER_CACHE  ==> LIBCELLML_COMPILER_CACHE
+set(_PARAM_ANNOTATION "Enable compiler cache.")
+if((WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE))
+  set(LIBCELLML_COMPILER_CACHE ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif()
+if(DEFINED COMPILER_CACHE AND ((WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE)))
+  set(LIBCELLML_COMPILER_CACHE "${COMPILER_CACHE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(COMPILER_CACHE)
+  if(WIN32)
+    set(COMPILER_CACHE_TOOL clcache)
+  else()
+    set(COMPILER_CACHE_TOOL ccache)
+  endif()
+  message(WARNING "compiler cache is requested but ${COMPILER_CACHE_TOOL} not found!")
+endif()
+unset(COMPILER_CACHE CACHE)
+
+# CLANG_TIDY ==> LIBCELLML_CLANG_TIDY
+set(_PARAM_ANNOTATION "Enable Clang-Tidy.")
+if(CLANG_TIDY_AVAILABLE)
+  set(LIBCELLML_CLANG_TIDY ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif()
+if(DEFINED CLANG_TIDY AND CLANG_TIDY_AVAILABLE)
+  set(LIBCELLML_CLANG_TIDY "${CLANG_TIDY}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(CLANG_TIDY)
+  message(WARNING "Clang-Tidy is requested but not found!")
+endif()
+unset(CLANG_TIDY CACHE)
 
 # COVERAGE ==> LIBCELLML_COVERAGE
 set(_PARAM_ANNOTATION "Enable coverage testing.")
@@ -35,6 +73,18 @@ elseif(COVERAGE)
   message(WARNING "Coverage testing requested but gcov or its requirements not found!")
 endif()
 unset(COVERAGE CACHE)
+
+# LLVM_COVERAGE ==> LIBCELLML_LLVM_COVERAGE
+set(_PARAM_ANNOTATION "Enable LLVM coverage testing.")
+if(LLVM_COVERAGE_TESTING_AVAILABLE)
+  set(LIBCELLML_LLVM_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif()
+if(DEFINED LLVM_COVERAGE AND LLVM_COVERAGE_TESTING_AVAILABLE)
+  set(LIBCELLML_LLVM_COVERAGE "${LLVM_COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(LLVM_COVERAGE)
+  message(WARNING "LLVM coverage testing requested but llvm-profdata or llvm-cov not found!")
+endif()
+unset(LLVM_COVERAGE CACHE)
 
 # MEMCHECK ==> LIBCELLML_MEMCHECK
 set(_PARAM_ANNOTATION "Enable memcheck testing.")
@@ -50,13 +100,27 @@ unset(MEMCHECK CACHE)
 
 # BINDINGS_PYTHON ==> LIBCELLML_BINDINGS_PYTHON
 set(_PARAM_ANNOTATION "Build Python wrappers.")
-if(BINDINGS_AVAILABLE)
+if(BINDINGS_AVAILABLE AND Python_Development_FOUND)
   set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL ${_PARAM_ANNOTATION})
 endif()
-if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE)
+if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE AND Python_Development_FOUND)
   set(LIBCELLML_BINDINGS_PYTHON "${BINDINGS_PYTHON}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(BINDINGS_PYTHON)
+  message(WARNING "Python bindings requested but development files for Python or SWIG were not found!")
 endif()
 unset(BINDINGS_PYTHON CACHE)
+
+# PYTHON_COVERAGE ==> LIBCELLML_PYTHON_COVERAGE
+set(_PARAM_ANNOTATION "Enable Python coverage testing.")
+if(PYTHON_COVERAGE_TESTING_AVAILABLE)
+  set(LIBCELLML_PYTHON_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif()
+if(DEFINED PYTHON_COVERAGE AND PYTHON_COVERAGE_TESTING_AVAILABLE)
+  set(LIBCELLML_PYTHON_COVERAGE "${PYTHON_COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(PYTHON_COVERAGE)
+  message(WARNING "Python coverage testing requested but the Python and/or the Python Coverage module were not found!")
+endif()
+unset(PYTHON_COVERAGE CACHE)
 
 # UNIT_TESTS ==> LIBCELLML_UNIT_TESTS
 set(_PARAM_ANNOTATION "Enable libCellML tests.")
@@ -68,11 +132,10 @@ unset(UNIT_TESTS CACHE)
 
 if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
   if(NOT LIBCELLML_UNIT_TESTS)
-    message(STATUS "Configuration confusion:
+    message(SEND_ERROR "Configuration confusion:
       Memchecking or coverage testing has been requested but unit tests have not.
-      This is not possible so forcing the unit tests to 'on' to make it possible.
+      This is not possible, please change the configuration to clear this condition.
       ")
-    set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
   endif()
 endif()
 
@@ -85,27 +148,28 @@ endif()
 unset(TWAE CACHE)
 
 # BUILD_TYPE ==> LIBCELLML_BUILD_TYPE
-set(_PARAM_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
-set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION})
-if(DEFINED BUILD_TYPE)
-  set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+if(NOT IS_MULTI_CONFIG)
+  set(_PARAM_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+  set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION})
+  if(DEFINED BUILD_TYPE)
+    set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+  endif()
 endif()
 unset(BUILD_TYPE CACHE)
-if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
+if(LIBCELLML_MEMCHECK)
   if(LIBCELLML_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Configuration confusion:
-      Release build requested but memchecking or coverage has also been requested.
-      This is not possible so forcing the build type to 'Debug' to make it possible.
+    message(SEND_ERROR "Configuration confusion:
+      Release build requested but memchecking has also been requested.
+      This is not possible, please change the configuration to clear this condition.
       ")
-    set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
   endif()
 endif()
 
 # INSTALL_PREFIX ==> LIBCELLML_INSTALL_PREFIX
 set(_PARAM_ANNOTATION "Install path prefix, prepended onto install directories.")
-set(LIBCELLML_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE STRING ${_PARAM_ANNOTATION})
+set(LIBCELLML_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE PATH ${_PARAM_ANNOTATION})
 if(DEFINED INSTALL_PREFIX)
-  set(LIBCELLML_INSTALL_PREFIX ${INSTALL_PREFIX} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+  set(LIBCELLML_INSTALL_PREFIX ${INSTALL_PREFIX} CACHE PATH ${_PARAM_ANNOTATION} FORCE)
 endif()
 unset(INSTALL_PREFIX CACHE)
 
@@ -117,8 +181,26 @@ if(DEFINED BUILD_SHARED)
 endif()
 unset(BUILD_SHARED CACHE)
 
+# If available and wanted, use compiler cache.
+if(LIBCELLML_COMPILER_CACHE)
+  if(WIN32)
+    if(CLCACHE_EXE)
+      set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
+      execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
+                      RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
+      if(RESULT EQUAL 0)
+        set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
+      endif()
+    endif()
+  else()
+    if(CCACHE_EXE)
+      set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXE})
+    endif()
+  endif()
+endif()
+
 # Uninstall target
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.in.cmake"
                "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
                IMMEDIATE @ONLY)
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
@@ -131,26 +213,6 @@ hide_distracting_variables()
 # It creates "CMakePredefinedTargets" folder by default and adds CMake
 # defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-# Find libxml2
-set(HAVE_LIBXML2_CONFIG FALSE)
-if(MSVC)
-  # If we want to use config packages on Windows with Visual Studio,
-  # we need to have two find_package calls and explicitly state that
-  # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
-  # is the preferred method so we will try this first quietly.
-  #
-  # This does change how we get information about include paths and such so we
-  # need to track how we found LibXml2.
-  find_package(LibXml2 CONFIG QUIET)
-  if(LibXml2_FOUND)
-    set(HAVE_LIBXML2_CONFIG TRUE)
-  else()
-    find_package(LibXml2 REQUIRED)
-  endif()
-else()
-  find_package(LibXml2 REQUIRED)
-endif()
 
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -177,7 +239,7 @@ if(CLANG_FORMAT_EXE)
   )
 
   set(CHECK_CODE_FORMATTING_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/cmake_command_check_code_formatting.cmake)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_command_check_code_formatting.cmake.in
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_command_check_code_formatting.in.cmake
     ${CHECK_CODE_FORMATTING_SCRIPT} @ONLY)
   if(CLANG_FORMAT_TESTING_AVAILABLE)
     add_custom_target(test_clang_format
@@ -187,6 +249,9 @@ if(CLANG_FORMAT_EXE)
 
   add_custom_target(format_code
     COMMAND ${CLANG_FORMAT_EXE} -i ${FILES_TO_FORMAT}
-    COMMENT "Source code has been reformatted by clang-format."
+    COMMENT "Source code has been reformatted by ClangFormat."
   )
 endif()
+
+# Add packaging
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/packaging)

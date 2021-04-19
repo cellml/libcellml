@@ -2,13 +2,13 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
 %import "entity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::NamedEntity
 "Abstract base class for all nameable libCellML classes.";
 
-%feature("docstring") libcellml::NamedEntity::getName
+%feature("docstring") libcellml::NamedEntity::name
 "Returns this entity's name (empty string if not set).";
 
 %feature("docstring") libcellml::NamedEntity::setName
@@ -18,7 +18,10 @@
 #include "libcellml/namedentity.h"
 %}
 
-%ignore libcellml::NamedEntity::NamedEntity(NamedEntity &&);
-%ignore libcellml::NamedEntity::operator =;
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
+%ignore libcellml::NamedEntity::NamedEntity();
 
 %include "libcellml/namedentity.h"

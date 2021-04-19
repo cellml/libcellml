@@ -16,13 +16,11 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/enumerations.h"
-#include "libcellml/logger.h"
-#include "libcellml/types.h"
-
 #include <string>
 
-//! Everything in libCellML is in this namespace.
+#include "libcellml/exportdefinitions.h"
+#include "libcellml/types.h"
+
 namespace libcellml {
 
 /**
@@ -30,14 +28,25 @@ namespace libcellml {
  *
  * The Printer class is for representing a CellML Printer.
  */
-class LIBCELLML_EXPORT Printer: public Logger
+class LIBCELLML_EXPORT Printer
 {
 public:
-    Printer(); /**< Constructor */
-    ~Printer() override; /**< Destructor */
-    Printer(const Printer &rhs); /**< Copy constructor */
-    Printer(Printer &&rhs); /**< Move constructor */
-    Printer &operator=(Printer p); /**< Assignment operator */
+    ~Printer(); /**< Destructor. */
+    Printer(const Printer &rhs) = delete; /**< Copy constructor. */
+    Printer(Printer &&rhs) noexcept = delete; /**< Move constructor. */
+    Printer &operator=(Printer rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create a @c Printer object.
+     *
+     * Factory method to create a @c Printer.  Create a
+     * printer with::
+     *
+     *   PrinterPtr printer = libcellml::Printer::create();
+     *
+     * @return A smart pointer to a @c Printer object.
+     */
+    static PrinterPtr create() noexcept;
 
     /**
      * @brief Serialise the @c Model to @c std::string.
@@ -48,152 +57,10 @@ public:
      *
      * @return The @c std::string representation of the @c Model.
      */
-    std::string printModel(ModelPtr model) const;
-
-    /**
-     * @brief Serialise the @c Model to @c std::string.
-     *
-     * Serialise the given @p model to a std::string.
-     *
-     * @overload
-     *
-     * @param model The @c Model to serialise.
-     *
-     * @return The @c std::string representation of the @c Model.
-     */
-    std::string printModel(Model model) const;
-
-    /**
-     * @brief Serialise the @c Model to @c std::string.
-     *
-     * Serialise the given @p model to a std::string.
-     *
-     * @overload
-     *
-     * @param model The @c Model to serialise.
-     *
-     * @return The @c std::string representation of the @c Model.
-     */
-    std::string printModel(Model *model) const;
-
-    /**
-     * @brief Serialise the @c Units to @c std::string.
-     *
-     * Serialise the given @p units to a std::string.
-     *
-     * @param units The @c Units to serialise.
-     *
-     * @return The @c std::string representation of the @c Units.
-     */
-    std::string printUnits(UnitsPtr units) const;
-
-    /**
-     * @brief Serialise the @c Units to @c std::string.
-     *
-     * Serialise the given @p units to a std::string.
-     *
-     * @overload
-     *
-     * @param units The @c Units to serialise.
-     *
-     * @return The @c std::string representation of the @c Units.
-     */
-    std::string printUnits(Units units) const;
-
-    /**
-     * @brief Serialise the variable to @c std::string.
-     *
-     * Serialise the given @p variable to a std::string.
-     *
-     * @param variable The @c Variable to serialise.
-     *
-     * @return The @c std::string representation of the @c Variable.
-     */
-    std::string printVariable(VariablePtr variable) const;
-
-    /**
-     * @brief Serialise the @c Variable to @c std::string.
-     *
-     * Serialise the given @p variable to a std::string.
-     *
-     * @overload
-     *
-     * @param variable The @c Variable to serialise.
-     *
-     * @return The @c std::string representation of the @c Variable.
-     */
-    std::string printVariable(Variable variable) const;
-
-    /**
-     * @brief Serialise the @c Component to @c std::string.
-     *
-     * Serialise the given @p component to a std::string.
-     *
-     * @param component The @c Component to serialise.
-     *
-     * @return The @c std::string representation of the @c Component.
-     */
-    std::string printComponent(ComponentPtr component) const;
-
-    /**
-     * @brief Serialise the @c Component to @c std::string.
-     *
-     * Serialise the given @p component to a std::string.
-     *
-     * @overload
-     *
-     * @param component The @c Component to serialise.
-     *
-     * @return The @c std::string representation of the @c Component.
-     */
-    std::string printComponent(Component component) const;
-
-    /**
-     * @brief Serialise the @c Reset to @c std::string.
-     *
-     * Serialise the given @p reset to a std::string.
-     *
-     * @param reset The @c Reset to serialise.
-     * @return  The @c std::string representation of the @c Reset.
-     */
-    std::string printReset(ResetPtr reset) const;
-
-    /**
-     * @brief Serialise the @c Reset to @c std::string.
-     *
-     * Serialise the given @p reset to a std::string.
-     *
-     * @overload
-     *
-     * @param reset The @c Reset to serialise.
-     * @return The @c std::string representation of the @c Reset.
-     */
-    std::string printReset(Reset reset) const;
+    std::string printModel(const ModelPtr &model, bool autoIds = false) const;
 
 private:
-    /**
-     * @brief Serialise the component encapsulation to @c std::string.
-     *
-     * Serialise the given @p component encapsulation to a std::string.
-     *
-     * @param component The component encapsulation to serialise.
-     *
-     * @return The @c std::string representation of the component encapsulation.
-     */
-    std::string printEncapsulation(ComponentPtr component) const;
-
-    /**
-     * @brief Serialise a @c When to @c std::string.
-     *
-     * Serialise the given @p when to a std::string.
-     *
-     * @param when The @c When to serialise.
-     *
-     * @return The @c std::string representation of the @c When.
-     */
-    std::string printWhen(WhenPtr when) const;
-
-    void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Printer(); /**< Constructor. */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
     PrinterImpl *mPimpl; /**< Private member to implementation pointer. */

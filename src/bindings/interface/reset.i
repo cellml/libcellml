@@ -2,77 +2,97 @@
 
 #define LIBCELLML_EXPORT
 
+%import "createconstructor.i"
+%import "entity.i"
 %import "types.i"
-%import "orderedentity.i"
 
 %feature("docstring") libcellml::Reset
 "The Reset class is for describing a CellML reset.";
 
+%feature("docstring") libcellml::Reset::order
+"Returns the order for this reset as an integer value.";
+
+%feature("docstring") libcellml::Reset::setOrder
+"Set the order for this reset.  The order value must be an integer.";
+
+%feature("docstring") libcellml::Reset::unsetOrder
+"Sets the state of the order to unset.";
+
+%feature("docstring") libcellml::Reset::isOrderSet
+"Returns True if the order is set, False otherwise.";
+
 %feature("docstring") libcellml::Reset::setVariable
-"Sets the :class: Variable for this reset.";
+"Sets the :class: variable for this reset.";
 
-%feature("docstring") libcellml::Reset::getVariable
-"Returns the :class: Variable of this reset.";
+%feature("docstring") libcellml::Reset::variable
+"Returns the :class: variable of this reset.";
 
-%feature("docstring") libcellml::Reset::addWhen
-"Add a copy of the given :class: When as a child When of this :class: Reset.";
+%feature("docstring") libcellml::Reset::setTestVariable
+"Sets the :class: test_variable for this reset.";
 
-%feature("docstring") libcellml::Reset::removeWhen
-"Remove the when with the given :param: index. :param: index must be in the range [0, #whens).";
+%feature("docstring") libcellml::Reset::testVariable
+"Returns the :class: test_variable of this reset.";
 
-%feature("docstring") libcellml::Reset::removeAllWhens
-"Clears all whens that have been added to this reset.";
+%feature("docstring") libcellml::Reset::testValue
+"Returns the :class: test_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::containsWhen
-"Tests to see if the argument when pointer :param: when is contained
-within this When entity. Returns True if the when is in the reset
-entity and False otherwise.";
+%feature("docstring") libcellml::Reset::resetValue
+"Returns the :class: reset_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::getWhen
-"Returns a reference to a when at the given :param: index.  :param: index must be in the range [0, #whens).";
+%feature("docstring") libcellml::Reset::setTestValue
+"Sets the :class: test_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::takeWhen
-"Removes the when at the given :param: index position and returns it. :param: index must be in the range [0, #Whens).";
+%feature("docstring") libcellml::Reset::removeTestValue
+"Clears the :class: test_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::replaceWhen
-"Replaces the when at the :param: index with when :param: when. :param: index must be in the range [0, #whens).";
+%feature("docstring") libcellml::Reset::setResetValue
+"Sets the :class: reset_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::whenCount
-"Returns the number of whens the reset contains.";
+%feature("docstring") libcellml::Reset::removeResetValue
+"Clears the :class: reset_value MathML string of this reset.";
+
+%feature("docstring") libcellml::Reset::appendTestValue
+"Appends to the :class: test_value MathML string of this reset.";
+
+%feature("docstring") libcellml::Reset::appendResetValue
+"Appends to the :class: reset_value MathML string of this reset.";
+
+%feature("docstring") libcellml::Reset::setTestValueId
+"Sets the :class: test_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::removeTestValueId
+"Clears the :class: test_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::setResetValueId
+"Sets the :class: reset_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::removeResetValueId
+"Clears the :class: reset_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::testValueId
+"Returns the :class: test_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::resetValueId
+"Returns the :class: reset_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::clone
+"Create a copy of this reset.";
 
 #if defined(SWIGPYTHON)
     // Allow any type of input to be converted to bool
     %typemap(typecheck,precedence=SWIG_TYPECHECK_BOOL) bool { $1 = 1; }
     %typemap(in) bool { $1 = PyObject_IsTrue($input) == 1; }
-
-    // Treat negative size_t as invalid index (instead of unknown method)
-    %extend libcellml::Reset {
-        WhenPtr getWhen(long index) const {
-            if(index < 0) return nullptr;
-            return $self->getWhen(size_t(index));
-        }
-        bool removeWhen(long index) {
-            if(index < 0) return false;
-            return $self->removeWhen(size_t(index));
-        }
-        WhenPtr takeWhen(long index) {
-            if(index < 0) return nullptr;
-            return $self->takeWhen(size_t(index));
-        }
-        bool replaceWhen(long index, const WhenPtr &c) {
-            if(index < 0) return false;
-            return $self->replaceWhen(size_t(index), c);
-        }
-    }
 #endif
 
 %{
 #include "libcellml/reset.h"
 %}
 
-%ignore libcellml::Reset::Reset(Reset &&);
-%ignore libcellml::Reset::operator =;
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
+%create_constructor(Reset)
 
 %include "libcellml/types.h"
 %include "libcellml/reset.h"
-

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
+
 include(GenerateExportHeader)
 
 set(CLEAN_FILES)
@@ -44,52 +45,71 @@ configure_file(
 )
 
 set(SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/annotator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/enums.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/orderedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/types.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/validator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/variable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/when.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlutils.cpp
 )
 
 set(GIT_API_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyser.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequation.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequationast.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserexternalvariable.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analysermodel.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyservariable.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/annotator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/componententity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/error.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enums.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorprofile.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/issue.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/orderedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/printer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/reset.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/specificationrules.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/validator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/variable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/when.h
 )
 
 set(API_HEADER_FILES
@@ -102,11 +122,14 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlutils.h
 )
 
 set(HEADER_FILES
@@ -151,9 +174,10 @@ else()
   target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 endif()
 
+# Use target compile features to propogate features to consuming projects.
+target_compile_features(cellml PUBLIC cxx_std_17)
+
 set_target_properties(cellml PROPERTIES
-  CXX_STANDARD 11
-  CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
   DEBUG_POSTFIX d
@@ -161,6 +185,35 @@ set_target_properties(cellml PROPERTIES
   INTERFACE_libCellML_MAJOR_VERSION ${libCellML_VERSION_MAJOR}
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
 )
+
+set(DEBUG_SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
+)
+
+set(DEBUG_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
+)
+
+add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
+
+target_compile_features(cellml_debug_utilities PUBLIC cxx_std_17)
+
+target_include_directories(cellml_debug_utilities
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
+)
+
+target_link_libraries(cellml PRIVATE debug cellml_debug_utilities)
+
+group_source_to_dir_structure(
+  ${DEBUG_SOURCE_FILES}
+  ${DEBUG_HEADER_FILES}
+)
+
+if(LIBCELLML_CLANG_TIDY)
+  configure_clang_and_clang_tidy_settings(cellml)
+endif()
 
 if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
   set_target_properties(cellml PROPERTIES
@@ -175,9 +228,19 @@ endif()
 
 add_subdirectory(bindings)
 
+function(append_target_property _TARGET _PROPERTY _VALUE)
+  get_target_property(_CURRENT_PROPERTY_VALUE ${_TARGET} ${_PROPERTY})
+  if(_CURRENT_PROPERTY_VALUE)
+    set(_APPENDED_PROPERTY "${_CURRENT_PROPERTY_VALUE} ${_VALUE}")
+  else()
+    set(_APPENDED_PROPERTY "${_VALUE}")
+  endif()
+  set_target_properties(${_TARGET} PROPERTIES ${_PROPERTY} "${_APPENDED_PROPERTY}")
+endfunction()
+
 if(LIBCELLML_COVERAGE)
-  set_target_properties(cellml PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
-    LINK_FLAGS "-fprofile-arcs -ftest-coverage")
+  append_target_property(cellml COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
+  append_target_property(cellml LINK_FLAGS "-fprofile-arcs -ftest-coverage")
 
   # Share some paths with interested parties (tests)
   set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
@@ -193,7 +256,13 @@ if(LIBCELLML_COVERAGE)
   set_directory_properties(${GCOV_ANALYSIS_PATH} PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${GCOV_CLEAN_FILES}")
 endif()
 
+if(LIBCELLML_LLVM_COVERAGE)
+  append_target_property(cellml COMPILE_FLAGS "-fprofile-instr-generate -fcoverage-mapping")
+  append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate")
+endif()
+
 install(TARGETS cellml EXPORT libcellml-targets
+  COMPONENT runtime
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
@@ -202,11 +271,13 @@ install(TARGETS cellml EXPORT libcellml-targets
 install(FILES
   ${API_HEADER_FILES}
   DESTINATION include/libcellml
+  COMPONENT development
 )
 
 install(FILES
   ${MODULE_HEADER_FILES}
   DESTINATION include/libcellml/module
+  COMPONENT development
 )
 
 include(CMakePackageConfigHelpers)
@@ -223,17 +294,26 @@ set(LIBCELLML_TARGETS_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-targets.cmake")
 export(EXPORT libcellml-targets FILE ${LIBCELLML_TARGETS_FILE})
 list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE})
 
+if (HAVE_LIBXML2_CONFIG)
+  file(TO_CMAKE_PATH ${LibXml2_DIR} _NORMALISED_PATH)
+  set(LIBXML2_CONFIG_MODE_INFORMATION "include(CMakeFindDependencyMacro)\n\nset(LibXml2_DIR \"${_NORMALISED_PATH}\")\nfind_dependency(LibXml2 CONFIG)\n")
+endif()
 set(LIBCELLML_CONFIG_CMAKE_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-config.cmake")
 configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml-config.cmake"
   ${LIBCELLML_CONFIG_CMAKE_FILE}
-  COPYONLY
+  @ONLY
 )
 list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_CMAKE_FILE})
 
-set(ConfigPackageLocation lib/cmake)
+if(WIN32)
+  set(ConfigPackageLocation ${PROJECT_NAME}/CMake)
+else()
+  set(ConfigPackageLocation lib/cmake/${PROJECT_NAME})
+endif()
 install(EXPORT libcellml-targets
   FILE libcellml-targets.cmake
   DESTINATION ${ConfigPackageLocation}
+  COMPONENT development
 )
 
 install(
@@ -241,7 +321,7 @@ install(
     ${LIBCELLML_CONFIG_CMAKE_FILE}
     ${LIBCELLML_CONFIG_VERSION_FILE}
   DESTINATION ${ConfigPackageLocation}
-  COMPONENT Devel
+  COMPONENT development
 )
 
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}")

@@ -2,8 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
+%import "createconstructor.i"
 %import "logger.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Validator
 "Validates CellML objects.";
@@ -16,8 +17,11 @@ Specification. Any errors will be logged in the `Validator`.";
 #include "libcellml/validator.h"
 %}
 
-%ignore libcellml::Validator::Validator(Validator &&);
-%ignore libcellml::Validator::operator =;
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
+%create_constructor(Validator)
 
 %include "libcellml/types.h"
 %include "libcellml/validator.h"

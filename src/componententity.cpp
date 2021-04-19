@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/component.h"
 #include "libcellml/componententity.h"
-#include "libcellml/units.h"
 
 #include <algorithm>
 #include <memory>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 
@@ -33,16 +34,17 @@ namespace libcellml {
  */
 struct ComponentEntity::ComponentEntityImpl
 {
-    std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
-    std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
     std::vector<ComponentPtr> mComponents;
     std::string mEncapsulationId;
+
+    std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
+    std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
 };
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr &c) -> bool { return c->getName() == name; });
+                        [=](const ComponentPtr &c) -> bool { return c->name() == name; });
 }
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component)
@@ -62,41 +64,18 @@ ComponentEntity::~ComponentEntity()
     delete mPimpl;
 }
 
-ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
-    : NamedEntity(rhs)
-    , mPimpl(new ComponentEntityImpl())
+bool ComponentEntity::addComponent(const ComponentPtr &component)
 {
-    mPimpl->mComponents = rhs.mPimpl->mComponents;
-    mPimpl->mEncapsulationId = rhs.mPimpl->mEncapsulationId;
+    if (component == nullptr) {
+        return false;
+    }
+    return doAddComponent(component);
 }
 
-ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
-    : NamedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
+bool ComponentEntity::doAddComponent(const ComponentPtr &component)
 {
-    rhs.mPimpl = nullptr;
-}
-
-ComponentEntity &ComponentEntity::operator=(ComponentEntity c)
-{
-    NamedEntity::operator=(c);
-    c.swap(*this);
-    return *this;
-}
-
-void ComponentEntity::swap(ComponentEntity &rhs)
-{
-    std::swap(this->mPimpl, rhs.mPimpl);
-}
-
-void ComponentEntity::addComponent(const ComponentPtr &c)
-{
-    doAddComponent(c);
-}
-
-void ComponentEntity::doAddComponent(const ComponentPtr &c)
-{
-    mPimpl->mComponents.push_back(c);
+    mPimpl->mComponents.push_back(component);
+    return true;
 }
 
 bool ComponentEntity::removeComponent(const std::string &name, bool searchEncapsulated)
@@ -104,11 +83,12 @@ bool ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
     bool status = false;
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
+        (*result)->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
-            status = getComponent(i)->removeComponent(name, searchEncapsulated);
+            status = component(i)->removeComponent(name, searchEncapsulated);
         }
     }
 
@@ -119,7 +99,9 @@ bool ComponentEntity::removeComponent(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + index);
+        auto component = mPimpl->mComponents[index];
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        component->removeParent();
         status = true;
     }
 
@@ -131,11 +113,12 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     bool status = false;
     auto result = mPimpl->findComponent(component);
     if (result != mPimpl->mComponents.end()) {
+        (*result)->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
-            status = getComponent(i)->removeComponent(component, searchEncapsulated);
+            status = ComponentEntity::component(i)->removeComponent(component, searchEncapsulated);
         }
     }
 
@@ -144,6 +127,9 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
 
 void ComponentEntity::removeAllComponents()
 {
+    for (const auto &component : mPimpl->mComponents) {
+        component->removeParent();
+    }
     mPimpl->mComponents.clear();
 }
 
@@ -160,7 +146,7 @@ bool ComponentEntity::containsComponent(const std::string &name, bool searchEnca
         status = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
-            status = getComponent(i)->containsComponent(name, searchEncapsulated);
+            status = component(i)->containsComponent(name, searchEncapsulated);
         }
     }
 
@@ -175,14 +161,14 @@ bool ComponentEntity::containsComponent(const ComponentPtr &component, bool sear
         status = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
-            status = getComponent(i)->containsComponent(component, searchEncapsulated);
+            status = ComponentEntity::component(i)->containsComponent(component, searchEncapsulated);
         }
     }
 
     return status;
 }
 
-ComponentPtr ComponentEntity::getComponent(size_t index) const
+ComponentPtr ComponentEntity::component(size_t index) const
 {
     ComponentPtr component = nullptr;
     if (index < mPimpl->mComponents.size()) {
@@ -192,7 +178,7 @@ ComponentPtr ComponentEntity::getComponent(size_t index) const
     return component;
 }
 
-ComponentPtr ComponentEntity::getComponent(const std::string &name, bool searchEncapsulated) const
+ComponentPtr ComponentEntity::component(const std::string &name, bool searchEncapsulated) const
 {
     ComponentPtr foundComponent = nullptr;
     auto result = mPimpl->findComponent(name);
@@ -200,7 +186,7 @@ ComponentPtr ComponentEntity::getComponent(const std::string &name, bool searchE
         foundComponent = *result;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
-            foundComponent = getComponent(i)->getComponent(name, searchEncapsulated);
+            foundComponent = component(i)->component(name, searchEncapsulated);
         }
     }
 
@@ -212,8 +198,8 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     ComponentPtr component = nullptr;
     if (index < mPimpl->mComponents.size()) {
         component = mPimpl->mComponents.at(index);
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + index);
-        component->clearParent();
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        component->removeParent();
     }
 
     return component;
@@ -226,20 +212,27 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
         mPimpl->mComponents.erase(result);
+        foundComponent->removeParent();
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
-            foundComponent = getComponent(i)->takeComponent(name, searchEncapsulated);
+            foundComponent = component(i)->takeComponent(name, searchEncapsulated);
         }
     }
 
     return foundComponent;
 }
 
-bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &c)
+bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &component)
 {
     bool status = false;
+    ComponentEntityPtr oldComponent = ComponentEntity::component(index);
+    EntityPtr parent = nullptr;
+    if (oldComponent != nullptr && oldComponent->hasParent()) {
+        parent = oldComponent->parent();
+    }
     if (removeComponent(index)) {
-        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + index, c);
+        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), component);
+        component->setParent(parent);
         status = true;
     }
 
@@ -248,10 +241,10 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &c)
 
 bool ComponentEntity::replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated)
 {
-    bool status = replaceComponent(mPimpl->findComponent(name) - mPimpl->mComponents.begin(), component);
+    bool status = replaceComponent(size_t(mPimpl->findComponent(name) - mPimpl->mComponents.begin()), component);
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
-            status = getComponent(i)->replaceComponent(name, component, searchEncapsulated);
+            status = ComponentEntity::component(i)->replaceComponent(name, component, searchEncapsulated);
         }
     }
 
@@ -260,10 +253,10 @@ bool ComponentEntity::replaceComponent(const std::string &name, const ComponentP
 
 bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated)
 {
-    bool status = replaceComponent(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin(), newComponent);
+    bool status = replaceComponent(size_t(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin()), newComponent);
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
-            status = getComponent(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
+            status = component(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
         }
     }
 
@@ -275,7 +268,7 @@ void ComponentEntity::setEncapsulationId(const std::string &id)
     mPimpl->mEncapsulationId = id;
 }
 
-std::string ComponentEntity::getEncapsulationId() const
+std::string ComponentEntity::encapsulationId() const
 {
     return mPimpl->mEncapsulationId;
 }

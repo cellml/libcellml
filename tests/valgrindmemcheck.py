@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # run valgrind's memory error checker on all tests.
 # filter uninteresting errors and known false positives
 #

@@ -16,11 +16,11 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/namedentity.h"
 #include "libcellml/types.h"
-
-#include <string>
 
 namespace libcellml {
 
@@ -32,11 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT ImportedEntity
 {
 public:
-    ImportedEntity(); /**< Constructor */
-    virtual ~ImportedEntity(); /**< Destructor */
-    ImportedEntity(const ImportedEntity &rhs); /**< Copy constructor */
-    ImportedEntity(ImportedEntity &&rhs); /**< Move constructor */
-    ImportedEntity &operator=(ImportedEntity n); /**< Assignment operator */
+    virtual ~ImportedEntity(); /**< Destructor. */
+    ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor. */
+    ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor. */
+    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Test if this entity is an imported entity.
@@ -58,7 +57,7 @@ public:
      * @return The shared pointer for the import source, if no import source is
      * set returns @c nullptr.
      */
-    ImportSourcePtr getImportSource() const;
+    ImportSourcePtr importSource() const;
 
     /**
      * @brief Set the import source.
@@ -66,7 +65,7 @@ public:
      * Set the import source for the imported entity.  Set to @c nullptr to
      * unset the import source.
      *
-     * @sa getImportSource
+     * @sa importSource
      *
      * @param importSource The import source to set.
      */
@@ -82,7 +81,7 @@ public:
      * @return The reference to the entity in the imported model, the empty
      * string if it is not set.
      */
-    std::string getImportReference() const;
+    std::string importReference() const;
 
     /**
      * @brief Set the import reference.
@@ -90,15 +89,46 @@ public:
      * Set the import reference to an entity in the imported model.  The import
      * reference should be a Component or a Unit in the import model.
      *
-     * @sa getImportReference
+     * @sa importReference
      *
      * @param reference The name of the reference to refer to in the import model.
      */
     void setImportReference(const std::string &reference);
 
-private:
-    void swap(ImportedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
+    /**
+     * @brief Test whether this imported entity has been resolved.
+     *
+     * Returns @c true if the import and any dependencies are resolved, otherwise @c false.
+     *
+     * @return @c true if the import is resolved, @c false otherwise.
+     */
+    bool isResolved() const;
 
+    /**
+     * @brief Set the resolution status of this imported entity.
+     *
+     * Set the resolution status of this imported entity.  When @c true, this 
+     * indicates that the item and all its dependent children have been resolved.
+     * Otherwise, @c false.
+     * 
+     * @param status A boolean indicating import resolution status.
+     */
+    void setResolved(bool status);
+
+protected:
+    ImportedEntity(); /**< Constructor. */
+
+    /**
+     * @brief Virtual set import source method to be implemented by derived classes.
+     *
+     * Virtual setImportSource method to allow the units and component classes to
+     * implement their own versions.
+     *
+     * @param importSource The import source to set.
+     */
+    virtual void doSetImportSource(const ImportSourcePtr &importSource);
+
+private:
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
     ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 };

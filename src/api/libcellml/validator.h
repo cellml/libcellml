@@ -16,15 +16,12 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/logger.h"
-#include "libcellml/model.h"
-#include "libcellml/types.h"
-#include "libcellml/units.h"
-
 #include <string>
 #include <vector>
 
-//! Everything in libCellML is in this namespace.
+#include "libcellml/logger.h"
+#include "libcellml/types.h"
+
 namespace libcellml {
 
 /**
@@ -35,11 +32,22 @@ namespace libcellml {
 class LIBCELLML_EXPORT Validator: public Logger
 {
 public:
-    Validator(); /**< Constructor */
-    ~Validator() override; /**< Destructor */
-    Validator(const Validator &rhs); /**< Copy constructor */
-    Validator(Validator &&rhs); /**< Move constructor */
-    Validator &operator=(Validator v); /**< Assignment operator */
+    ~Validator() override; /**< Destructor. */
+    Validator(const Validator &rhs) = delete; /**< Copy constructor. */
+    Validator(Validator &&rhs) noexcept = delete; /**< Move constructor. */
+    Validator &operator=(Validator rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create a @c Validator object.
+     *
+     * Factory method to create a @c Validator.  Create a
+     * validator with::
+     *
+     *   ValidatorPtr validator = libcellml::Validator::create();
+     *
+     * @return A smart pointer to a @c Validator object.
+     */
+    static ValidatorPtr create() noexcept;
 
     /**
      * @brief Validate the @p model using the CellML 2.0 Specification.
@@ -52,7 +60,7 @@ public:
     void validateModel(const ModelPtr &model);
 
 private:
-    void swap(Validator &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Validator(); /**< Constructor. */
 
     struct ValidatorImpl; /**< Forward declaration for pImpl idiom. */
     ValidatorImpl *mPimpl; /**< Private member to implementation pointer. */

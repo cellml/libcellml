@@ -27,13 +27,12 @@ struct ImportedEntity::ImportedEntityImpl
 {
     ImportSourcePtr mImportSource;
     std::string mImportReference;
+    bool mIsResolved = false;
 };
 
 ImportedEntity::ImportedEntity()
     : mPimpl(new ImportedEntityImpl())
 {
-    mPimpl->mImportSource = nullptr;
-    mPimpl->mImportReference = "";
 }
 
 ImportedEntity::~ImportedEntity()
@@ -41,46 +40,27 @@ ImportedEntity::~ImportedEntity()
     delete mPimpl;
 }
 
-ImportedEntity::ImportedEntity(const ImportedEntity &rhs)
-    : mPimpl(new ImportedEntityImpl())
-{
-    mPimpl->mImportSource = rhs.mPimpl->mImportSource;
-    mPimpl->mImportReference = rhs.mPimpl->mImportReference;
-}
-
-ImportedEntity::ImportedEntity(ImportedEntity &&rhs)
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-ImportedEntity &ImportedEntity::operator=(ImportedEntity e)
-{
-    e.swap(*this);
-    return *this;
-}
-
-void ImportedEntity::swap(ImportedEntity &rhs)
-{
-    std::swap(this->mPimpl, rhs.mPimpl);
-}
-
 bool ImportedEntity::isImport() const
 {
     return mPimpl->mImportSource != nullptr;
 }
 
-ImportSourcePtr ImportedEntity::getImportSource() const
+ImportSourcePtr ImportedEntity::importSource() const
 {
     return mPimpl->mImportSource;
 }
 
 void ImportedEntity::setImportSource(const ImportSourcePtr &importSource)
 {
+    doSetImportSource(importSource);
+}
+
+void ImportedEntity::doSetImportSource(const ImportSourcePtr &importSource)
+{
     mPimpl->mImportSource = importSource;
 }
 
-std::string ImportedEntity::getImportReference() const
+std::string ImportedEntity::importReference() const
 {
     return mPimpl->mImportReference;
 }
@@ -88,6 +68,16 @@ std::string ImportedEntity::getImportReference() const
 void ImportedEntity::setImportReference(const std::string &reference)
 {
     mPimpl->mImportReference = reference;
+}
+
+bool ImportedEntity::isResolved() const
+{
+    return mPimpl->mIsResolved;
+}
+
+void ImportedEntity::setResolved(bool status)
+{
+    mPimpl->mIsResolved = status;
 }
 
 } // namespace libcellml

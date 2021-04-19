@@ -16,15 +16,14 @@ limitations under the License.
 
 #pragma once
 
+#include <libxml/tree.h>
 #include <memory>
 #include <string>
-
-#include <libxml/parser.h>
 
 namespace libcellml {
 
 class XmlAttribute; /**< Forward declaration of the internal XmlAttribute class. */
-typedef std::shared_ptr<XmlAttribute> XmlAttributePtr; /**< Type definition for shared XML attribute pointer. */
+using XmlAttributePtr = std::shared_ptr<XmlAttribute>; /**< Type definition for shared XML attribute pointer. */
 
 /**
  * @brief The XmlAttribute class.
@@ -35,8 +34,8 @@ typedef std::shared_ptr<XmlAttribute> XmlAttributePtr; /**< Type definition for 
 class XmlAttribute
 {
 public:
-    XmlAttribute(); /**< Constructor */
-    ~XmlAttribute(); /**< Destructor */
+    XmlAttribute(); /**< Constructor. */
+    ~XmlAttribute(); /**< Destructor. */
 
     /**
      * @brief Set the internal xmlAttribute for this XmlAttribute wrapper.
@@ -49,14 +48,35 @@ public:
     void setXmlAttribute(const xmlAttrPtr &attribute);
 
     /**
-     * @brief Get the namespace of this XmlAttribute.
+     * @brief Get the namespace URI of this XmlAttribute.
      *
-     * Get the namespace of this XmlAttribute.
+     * Get the namespace URI of this XmlAttribute.
      *
-     * @return A @c std::string representation of the XML namespace.
+     * @return A @c std::string representation of the XML namespace URI.
      */
+    std::string namespaceUri() const;
 
-    std::string getNamespace() const;
+    /**
+     * @brief Get the namespace prefix of this XmlAttribute.
+     *
+     * Get the namespace prefix of this XmlAttribute.
+     *
+     * @return A @c std::string representation of the XML namespace prefix.
+     */
+    std::string namespacePrefix() const;
+
+    /**
+     * @brief Test if this XmlAttribute is in the given namespace.
+     *
+     * Test if this XmlAttribute is in the given namespace. Return @c true
+     * if this XmlAttribute is in the given namespace and @c false otherwise.
+     *
+     * @param ns The @c char namespace in which the attribute is in.
+     *
+     * @return @c true if this XmlAttribute is in the namespace
+     * specified by @p ns and @c false otherwise.
+     */
+    bool inNamespaceUri(const char *ns) const;
 
     /**
      * @brief Check if this XmlAttribute is of the named attribute type in the
@@ -64,17 +84,33 @@ public:
      *
      * Checks whether this XmlAttribute has the argument attribute type name in
      * the given namespace.
-     * Returns @ true if so, and @c false otherwise.
+     * Returns @c true if so, and @c false otherwise.
      *
+     * @param name The @c char attribute type name to check for.
      * @param ns The @c char namespace in which the attribute
      * type name is to be defined.
-     * @param name The @c char attribute type name to check for.
      *
      * @return @c true if this XmlAttribute is of the attribute type
      * specified by the @p name in the namespace @p ns
      * and @c false otherwise.
      */
-    bool isType(const char *name, const char *ns = "");
+    bool isType(const char *name, const char *ns = "") const;
+
+    /**
+     * @brief Check if this XmlAttribute is of the named attribute type in the
+     * CellML 2.0 namespace.
+     *
+     * Checks whether this XmlAttribute has the argument attribute type name in
+     * the CellML 2.0 namespace.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @param name The @c char attribute type name to check for.
+     *
+     * @return @c true if this XmlAttribute is of the attribute type
+     * specified by the @p name in the CellML 2.0 namespace
+     * and @c false otherwise.
+     */
+    bool isCellmlType(const char *name) const;
 
     /**
      * @brief Get the name of this XmlAttribute.
@@ -83,7 +119,7 @@ public:
      *
      * @return The @c std::string corresponding with the name of this XmlAttribute.
      */
-    std::string getName() const;
+    std::string name() const;
 
     /**
      * @brief Get the value of this XmlAttribute.
@@ -92,7 +128,7 @@ public:
      *
      * @return The @c std::string corresponding with the value of this XmlAttribute.
      */
-    std::string getValue() const;
+    std::string value() const;
 
     /**
      * @brief Get the XmlAttribute immediately following this XmlAttribute.
@@ -103,7 +139,7 @@ public:
      *
      * @return The XmlAttributePtr to the next attribute following this XmlAttribute.
      */
-    XmlAttributePtr getNext();
+    XmlAttributePtr next() const;
 
     /**
      * @brief Remove this XmlAttribute from its parent XmlNode.
@@ -114,7 +150,7 @@ public:
 
 private:
     struct XmlAttributeImpl; /**< Forward declaration for pImpl idiom. */
-    XmlAttributeImpl *mPimpl; /**< Private member to implementation pointer */
+    XmlAttributeImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

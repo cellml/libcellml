@@ -11,31 +11,55 @@ class ComponentTestCase(unittest.TestCase):
 
         # Test create/copy/destroy
         x = Component()
-        del(x)
-        y = Component()
-        z = Component(y)
-        del(y, z)
+        del x
+
+        y = Component("c3")
+        self.assertEqual("c3", y.name())
+        del y
 
     def test_inheritance(self):
         import libcellml
         from libcellml import Component
 
         x = Component()
-        self.assertIsInstance(x, libcellml.ComponentEntity)
-        self.assertIsInstance(x, libcellml.ImportedEntity)
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.componententity.ComponentEntity)
+        self.assertIsInstance(x, libcellml.importedentity.ImportedEntity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
     def test_inherited_methods(self):
         from libcellml import Component
 
         x = Component()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
-        y = Component(x)
-        self.assertEqual(y.getId(), idx)
+        self.assertEqual(x.id(), idx)
+
+    def test_replace_component(self):
+        from libcellml import Component
+
+        c = Component()
+        c1 = Component("component_1")
+
+        c.addComponent(c1)
+
+        c2 = Component("component_2")
+
+        self.assertTrue(c.replaceComponent(0, c2))
+        self.assertEqual(1, c.componentCount())
+        self.assertEqual("component_2", c.component(0).name())
+
+    def test_take_component(self):
+        from libcellml import Component
+
+        c = Component()
+        c1 = Component("component_1")
+
+        c.addComponent(c1)
+
+        cTaken = c.takeComponent(0)
+        self.assertEqual("component_1", cTaken.name())
 
     def test_set_source(self):
         from libcellml import Component, ImportSource
@@ -44,8 +68,8 @@ class ComponentTestCase(unittest.TestCase):
         i = ImportSource()
         i.setUrl('bonjour')
         x.setSourceComponent(i, 'camembert')
-        self.assertEqual(x.getImportSource().getUrl(), 'bonjour')
-        self.assertEqual(x.getImportReference(), 'camembert')
+        self.assertEqual(x.importSource().url(), 'bonjour')
+        self.assertEqual(x.importReference(), 'camembert')
 
     def test_math(self):
         from libcellml import Component
@@ -55,16 +79,18 @@ class ComponentTestCase(unittest.TestCase):
         x.appendMath('More maths')
         x.appendMath(' please!')
 
-        # std::string getMath()
-        self.assertEqual(x.getMath(), 'More maths please!')
+        # std::string math()
+        self.assertEqual(x.math(), 'More maths please!')
         x = Component()
-        self.assertEqual(x.getMath(), '')
+        self.assertEqual(x.math(), '')
 
         # void setMath(const std::string &math)
         x.setMath('bonjour')
-        self.assertEqual(x.getMath(), 'bonjour')
+        self.assertEqual(x.math(), 'bonjour')
         x.setMath('hola')
-        self.assertEqual(x.getMath(), 'hola')
+        self.assertEqual(x.math(), 'hola')
+        x.removeMath()
+        self.assertEqual(x.math(), '')
 
     def test_add_variable(self):
         from libcellml import Component, Variable
@@ -83,7 +109,7 @@ class ComponentTestCase(unittest.TestCase):
         c.addVariable(v)
         self.assertTrue(c.hasVariable(v))
         self.assertFalse(c.hasVariable(Variable()))
-        del(c, v)
+        del [c, v]
 
         # bool hasVariable(const std::string &name)
         c = Component()
@@ -95,9 +121,14 @@ class ComponentTestCase(unittest.TestCase):
         name = 'yellow'
         v2 = Variable()
         v2.setName(name)
+        v1.setName('orange')
         c.addVariable(v2)
         self.assertTrue(c.hasVariable(name))
-        del(c, v1, v2, name)
+
+        vTaken = c.takeVariable(0)
+        self.assertEqual('orange', vTaken.name())
+        self.assertTrue(c.variableCount() == 1)
+        del [c, v1, v2, vTaken, name]
 
     def test_remove_variable(self):
         from libcellml import Component, Variable
@@ -112,7 +143,7 @@ class ComponentTestCase(unittest.TestCase):
         self.assertFalse(c.removeVariable(1))
         self.assertTrue(c.removeVariable(0))
         self.assertFalse(c.removeVariable(0))
-        del(c)
+        del c
 
         # bool removeVariable(const std::string &name)
         c = Component()
@@ -127,7 +158,7 @@ class ComponentTestCase(unittest.TestCase):
         c.addVariable(v1)
         self.assertTrue(c.removeVariable(name))
         self.assertFalse(c.removeVariable(name))
-        del(c, v1, name)
+        del [c, v1, name]
 
         # bool removeVariable(const VariablePtr &variable)
         c = Component()
@@ -154,34 +185,34 @@ class ComponentTestCase(unittest.TestCase):
         self.assertFalse(c.hasVariable(v1))
         self.assertFalse(c.hasVariable(v2))
 
-    def test_get_variable(self):
+    def test_variable(self):
         from libcellml import Component, Variable
 
-        # VariablePtr getVariable(size_t index)
+        # VariablePtr variable(size_t index)
         c = Component()
         v = Variable()
         name = 'green'
         v.setName(name)
-        self.assertIsNone(c.getVariable(0))
-        self.assertIsNone(c.getVariable(1))
-        self.assertIsNone(c.getVariable(-1))
+        self.assertIsNone(c.variable(0))
+        self.assertIsNone(c.variable(1))
+        self.assertIsNone(c.variable(-1))
         c.addVariable(v)
-        self.assertIsNone(c.getVariable(1))
-        self.assertIsNone(c.getVariable(-1))
-        self.assertIsNotNone(c.getVariable(0))
-        self.assertEqual(c.getVariable(0).getName(), name)
-        del(c, v, name)
+        self.assertIsNone(c.variable(1))
+        self.assertIsNone(c.variable(-1))
+        self.assertIsNotNone(c.variable(0))
+        self.assertEqual(c.variable(0).name(), name)
+        del [c, v, name]
 
-        # VariablePtr getVariable(const std::string &name)
+        # VariablePtr variable(const std::string &name)
         c = Component()
         v = Variable()
         name = 'green'
         v.setName(name)
-        self.assertIsNone(c.getVariable(name))
+        self.assertIsNone(c.variable(name))
         c.addVariable(v)
-        self.assertIsNone(c.getVariable('red'))
-        self.assertIsNotNone(c.getVariable(name))
-        self.assertEqual(c.getVariable(name).getName(), name)
+        self.assertIsNone(c.variable('red'))
+        self.assertIsNotNone(c.variable(name))
+        self.assertEqual(c.variable(name).name(), name)
 
     def test_variable_count(self):
         from libcellml import Component, Variable
@@ -198,6 +229,69 @@ class ComponentTestCase(unittest.TestCase):
         c.removeVariable('')
         self.assertEqual(c.variableCount(), 0)
 
+    def test_reset(self):
+        from libcellml import Component, Reset
+
+        c = Component()
+        r = Reset()
+        r.setTestValue('<math></math>')
+        c.addReset(r)
+        self.assertEqual(1, c.resetCount())
+        self.assertTrue(c.hasReset(r))
+
+        rReturned = c.reset(0)
+        self.assertEqual(r.testValue(), rReturned.testValue())
+
+    def test_reset_manipulations(self):
+        from libcellml import Component, Reset
+
+        c = Component()
+        r1 = Reset()
+        r1.setResetValue('<math></math>')
+
+        r2 = Reset()
+
+        c.addReset(r1)
+        c.addReset(r2)
+
+        self.assertEqual(2, c.resetCount())
+        c.removeAllResets()
+        self.assertEqual(0, c.resetCount())
+
+        c.addReset(r1)
+        c.addReset(r2)
+
+        self.assertTrue(c.removeReset(r2))
+
+        self.assertEqual(1, c.resetCount())
+        rTaken = c.takeReset(0)
+        self.assertEqual(0, c.resetCount())
+        self.assertEqual(r1.resetValue(), rTaken.resetValue())
+
+    def test_clone(self):
+        from libcellml import Component
+
+        c = Component("component_name")
+        cCloned = c.clone()
+        self.assertEqual(c.name(), cCloned.name())
+
+    def test_misc(self):
+        from libcellml.componententity import ComponentEntity
+
+        self.assertRaises(AttributeError, ComponentEntity)
+
+    def test_requires_imports(self):
+        from libcellml import Component
+
+        c = Component("banana")
+        self.assertFalse(c.requiresImports())
+
+    def test_resolved(self):
+        from libcellml import Component
+        b = Component("banana")
+        self.assertFalse(b.isResolved())
+        b.setResolved(True)
+        self.assertTrue(b.isResolved())
 
 if __name__ == '__main__':
     unittest.main()

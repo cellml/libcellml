@@ -16,11 +16,12 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/error.h"
-#include "libcellml/exportdefinitions.h"
-#include "libcellml/types.h"
-
 #include <string>
+#include <vector>
+
+#include "libcellml/exportdefinitions.h"
+#include "libcellml/issue.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -32,30 +33,58 @@ namespace libcellml {
 class LIBCELLML_EXPORT Logger
 {
 public:
-    Logger(); /**< Constructor */
-    virtual ~Logger(); /**< Destructor */
-    Logger(const Logger &rhs); /**< Copy constructor */
-    Logger(Logger &&rhs); /**< Move constructor */
-    Logger &operator=(Logger rhs); /**< Assignment operator */
+    virtual ~Logger(); /**< Destructor. */
+    Logger(const Logger &rhs) = delete; /**< Copy constructor. */
+    Logger(Logger &&rhs) noexcept = delete; /**< Move constructor. */
+    Logger &operator=(Logger rhs) = delete; /**< Assignment operator. */
 
     /**
-     * @brief Clear the errors from the logger.
+     * @brief Clear the issues from the logger.
      *
-     * Clear the errors from the logger.
+     * Clear the issues from the logger.
      */
-    void clearErrors();
+    void removeAllIssues();
 
     /**
-     * @brief Add an error to the logger.
+     * @brief Add an issue to the logger.
      *
-     * Adds the argument @p error to this logger.
+     * Adds the argument @p issue to this logger.
      *
-     * @param error The @c ErrorPtr to add.
+     * @param issue The @c IssuePtr to add.
      */
-    void addError(const ErrorPtr error);
+    void addIssue(const IssuePtr &issue);
 
     /**
-     * @brief Get the number of errors.
+     *  Add a vector of issues to the logger.
+     * 
+     * @param issues A @c std::vector of @c IssuePtr items to add.
+     */
+    void addIssues(const std::vector<IssuePtr> &issues);
+
+    /**
+     * @brief Get the number of issues.
+     *
+     * Return the number of issues of any level currently stored in the logger.
+     *
+     * @return The number of issues.
+     */
+    size_t issueCount() const;
+
+    /**
+     * @brief Get issue of any level at the specified @p index.
+     *
+     * Returns an issue at the @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the valid range for the @p index
+     * is [0, \#issues).
+     *
+     * @param index The index of the issue to return.
+     *
+     * @return A reference to the issue at the given index on success, @c nullptr otherwise.
+     */
+    IssuePtr issue(size_t index) const;
+
+    /**
+     * @brief Get the number of issues with level of ERROR.
      *
      * Return the number of errors currently stored in the logger.
      *
@@ -64,7 +93,7 @@ public:
     size_t errorCount() const;
 
     /**
-     * @brief Get error at the specified @p index.
+     * @brief Get issue of level ERROR at the specified @p index.
      *
      * Returns an error at the @p index.  If the @p index
      * is not valid a @c nullptr is returned, the valid range for the @p index
@@ -74,13 +103,81 @@ public:
      *
      * @return A reference to the error at the given index on success, @c nullptr otherwise.
      */
-    ErrorPtr getError(size_t index) const;
+    IssuePtr error(size_t index) const;
+
+    /**
+     * @brief Get the number of issues with level of WARNING.
+     *
+     * Return the number of warnings currently stored in the logger.
+     *
+     * @return The number of warnings.
+     */
+    size_t warningCount() const;
+
+    /**
+     * @brief Get issue of level WARNING at the specified @p index.
+     *
+     * Returns a warning at the @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the valid range for the @p index
+     * is [0, \#warnings).
+     *
+     * @param index The index of the warning to return.
+     *
+     * @return A reference to the warning at the given index on success, @c nullptr otherwise.
+     */
+    IssuePtr warning(size_t index) const;
+
+    /**
+     * @brief Get the number of issues with level of HINT.
+     *
+     * Return the number of hints currently stored in the logger.
+     *
+     * @return The number of hints.
+     */
+    size_t hintCount() const;
+
+    /**
+     * @brief Get issue of level HINT at the specified @p index.
+     *
+     * Returns a hint at the @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the valid range for the @p index
+     * is [0, \#hints).
+     *
+     * @param index The index of the hint to return.
+     *
+     * @return A reference to the hint at the given index on success, @c nullptr otherwise.
+     */
+    IssuePtr hint(size_t index) const;
+
+    /**
+     * @brief Get the number of issues with level of MESSAGE.
+     *
+     * Return the number of messages currently stored in the logger.
+     *
+     * @return The number of messages.
+     */
+    size_t messageCount() const;
+
+    /**
+     * @brief Get issue of level MESSAGE at the specified @p index.
+     *
+     * Returns a message at the @p index.  If the @p index is not valid a
+     * @c nullptr is returned, the valid range for the @p index is
+     * [0, \#messages).
+     *
+     * @param index The index of the message to return.
+     *
+     * @return A reference to the message at the given index on success,
+     * @c nullptr otherwise.
+     */
+    IssuePtr message(size_t index) const;
+
+protected:
+    Logger(); /**< Constructor. */
 
 private:
-    void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct LoggerImpl; /**< Forward declaration for pImpl idiom. */
-    LoggerImpl *mPimpl; /**< Private member to implementation pointer */
+    LoggerImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

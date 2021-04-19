@@ -19,6 +19,10 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/namedentity.h"
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::ImportSource>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -30,13 +34,28 @@ namespace libcellml {
  * that imported source.
  */
 class LIBCELLML_EXPORT ImportSource: public Entity
+#ifndef SWIG
+    ,
+                                     public std::enable_shared_from_this<ImportSource>
+#endif
 {
 public:
-    ImportSource(); /**< Constructor */
-    ~ImportSource() override; /**< Destructor */
-    ImportSource(const ImportSource &rhs); /**< Copy constructor */
-    ImportSource(ImportSource &&rhs); /**< Move constructor */
-    ImportSource &operator=(ImportSource rhs); /**< Assignment operator */
+    ~ImportSource() override; /**< Destructor. */
+    ImportSource(const ImportSource &rhs) = delete; /**< Copy constructor. */
+    ImportSource(ImportSource &&rhs) noexcept = delete; /**< Move constructor. */
+    ImportSource &operator=(ImportSource rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create a @c ImportSource object.
+     *
+     * Factory method to create an @c ImportSource.  Create an
+     * import source with::
+     *
+     *   ImportSourcePtr importSource = libcellml::ImportSource::create();
+     *
+     * @return A smart pointer to an @c ImportSource object.
+     */
+    static ImportSourcePtr create() noexcept;
 
     /**
      * @brief Get the source @c Model's URL.
@@ -46,7 +65,7 @@ public:
      *
      * @return The URL of the source @c Model if set otherwise the emtpy string.
      */
-    std::string getUrl() const;
+    std::string url() const;
 
     /**
      * @brief Set the source @c Model's URL.
@@ -65,7 +84,7 @@ public:
      *
      * @return The @c Model used to resolve this @c ImportSource.
      */
-    libcellml::ModelPtr getModel() const;
+    ModelPtr model() const;
 
     /**
      * @brief Provide the @c Model used to resolve this import.
@@ -75,7 +94,7 @@ public:
      *
      * @param model The @c Model to use in resolving this @c ImportSource.
      */
-    void setModel(libcellml::ModelPtr model);
+    void setModel(const ModelPtr &model);
 
     /**
      * @brief Test if this @c ImportSource is resolved.
@@ -88,8 +107,173 @@ public:
      */
     bool hasModel() const;
 
+    /**
+     * @brief Create a clone of this import source.
+     *
+     * Creates a full separate copy of this import source without copying
+     * the parent.
+     *
+     * @return a new @c ImportSourcePtr to the cloned import source.
+     */
+    ImportSourcePtr clone() const;
+
+    /**
+     * @brief Add a component to this import source item.
+     *
+     * The added @p component will be treated as an import, and
+     * will be sourced from the combination of URL of this import source
+     * item, and the component's own import reference.
+     *
+     * @param component The @c ComponentPtr to add.
+     *
+     * @return @c true if the component was added successfully, @c false
+     * if it already exists in this import.
+     */
+    bool addComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Remove the component at the given @p index.
+     *
+     * Remove the component from this import source at the given @p index.
+     * @p index must be in the range [0, \#components).
+     *
+     * @param index The index of the component to remove.
+     * @param setEmpty Whether or not to set the removed Component's
+     *        importSource to nullptr.  True by default.
+     *
+     * @return True if the component was removed, false otherwise.
+     */
+    bool removeComponent(size_t index, bool setEmpty = true);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the component with the given pointer.
+     *
+     * Remove the component with the pointer @p component.
+     *
+     * @param component The pointer to the component to remove.
+     * @param setEmpty Whether or not to set the removed Component's
+     *        importSource to nullptr.  True by default.
+     *
+     * @return True if the component was removed, false otherwise.
+     */
+    bool removeComponent(ComponentPtr &component, bool setEmpty = true);
+
+    /**
+     * @brief Remove all components from the import source.
+     *
+     * Note that components which are removed from the import will have their
+     * import source cleared.  They thus become locally
+     * concrete instances in the model, and will return @c false to the
+     * function isImport().
+     *
+     * @return True if the components are removed, false otherwise.
+     */
+    bool removeAllComponents();
+
+    /**
+     * @brief Get the number of components accessed by this import source.
+     *
+     * @return The number of components.
+     */
+    size_t componentCount() const;
+
+    /**
+     * @brief Get the component item at the given @p index.
+     *
+     * Returns a reference to the component at the given @p index imported
+     * by this import source.  If the @p index is not valid a @c nullptr is
+     * returned, the range of valid values for the index is [0, \#components).
+     *
+     * @param index The index of the component to return.
+     *
+     * @return A reference to the component at the given @p index on success, @c nullptr otherwise.
+     */
+    ComponentPtr component(size_t index) const;
+
+    /**
+     * @brief Add a units item to this import source item.
+     *
+     * The added @p units will be treated as an import, and
+     * will be sourced from the combination of URL of this import source
+     * item, and the units' own import reference.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p units pointer already exists in this import; or
+     *  - The @p units is @c nullptr.
+     *
+     * @param units The @c UnitsPtr to add.
+     *
+     * @return True if the units item was added successfully, false otherwise.
+     */
+    bool addUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Remove the units at the given @p index.
+     *
+     * Remove the units from this import source at the given @p index.
+     * @p index must be in the range [0, \#units).
+     *
+     * @param index The index of the units to remove.
+     * @param setEmpty Whether or not to set the removed Units'
+     *        importSource to nullptr.  True by default.
+     *
+     * @return True if the units were removed, false otherwise.
+     */
+    bool removeUnits(size_t index, bool setEmpty = true);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the units with the given pointer.
+     *
+     * Remove the units with the pointer @p units.
+     *
+     * @param units The pointer to the units to remove.
+     * @param setEmpty Whether or not to set the removed Units'
+     *        importSource to nullptr.  True by default.
+     *
+     * @return True if the units were removed, false otherwise.
+     */
+    bool removeUnits(UnitsPtr &units, bool setEmpty = true);
+
+    /**
+     * @brief Remove all units from the import source.
+     *
+     * Note that units which are removed from the import have their import
+     * source cleared.  They therefore become locally
+     * concrete instances in the model, and will return @c false to the
+     * function isImport().
+     *
+     * @return True if the units are removed, false otherwise.
+     */
+    bool removeAllUnits();
+
+    /**
+     * @brief Get the number of units accessed by this import source.
+     *
+     * Returns the number of units imported by this import source.
+     *
+     * @return The number of units.
+     */
+    size_t unitsCount() const;
+
+    /**
+     * @brief Get the units item at the given @p index.
+     *
+     * Returns a reference to a units at the given @p index imported by this import source.
+     * If the @p index is not valid a @c nullptr is returned, the range of valid values for the
+     * index is [0, \#units).
+     *
+     * @param index The index of the units to return.
+     *
+     * @return A reference to the units at the given @p index on success, @c nullptr otherwise.
+     */
+    UnitsPtr units(size_t index) const;
+
 private:
-    void swap(ImportSource &rhs); /**< Swap method required for C++ 11 move semantics. */
+    ImportSource(); /**< Constructor. */
 
     struct ImportSourceImpl; /**< Forward declaration for pImpl idiom. */
     ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */

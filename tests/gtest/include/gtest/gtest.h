@@ -26,8 +26,7 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 //
 // The Google C++ Testing and Mocking Framework (Google Test)
 //
@@ -47,6 +46,8 @@
 // Acknowledgment: Google Test borrowed the idea of automatic test
 // registration from Barthelemy Dagenais' (barthelemy@prologique.com)
 // easyUnit framework.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_GTEST_H_
 #define GTEST_INCLUDE_GTEST_GTEST_H_
@@ -84,11 +85,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-//
 // The Google C++ Testing and Mocking Framework (Google Test)
 //
 // This header file declares functions and macros used internally by
 // Google Test.  They are subject to change without notice.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_INTERNAL_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_INTERNAL_H_
@@ -122,8 +124,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Authors: wan@google.com (Zhanyong Wan)
-//
 // Low-level types and utilities for porting Google Test to various
 // platforms.  All macros ending with _ and symbols defined in an
 // internal namespace are subject to change without notice.  Code
@@ -134,6 +134,8 @@
 // This file is fundamental to Google Test.  All other Google Test source
 // files are expected to #include this.  Therefore, it cannot #include
 // any other Google Test header.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PORT_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PORT_H_
@@ -273,6 +275,7 @@
 //   GTEST_HAS_TYPED_TEST   - typed tests
 //   GTEST_HAS_TYPED_TEST_P - type-parameterized tests
 //   GTEST_IS_THREADSAFE    - Google Test is thread-safe.
+//   GOOGLETEST_CM0007 DO NOT DELETE
 //   GTEST_USES_POSIX_RE    - enhanced POSIX regex is used. Do not confuse with
 //                            GTEST_HAS_POSIX_RE (see above) which users can
 //                            define themselves.
@@ -324,6 +327,7 @@
 // Regular expressions:
 //   RE             - a simple regular expression class using the POSIX
 //                    Extended Regular Expression syntax on UNIX-like platforms
+//                    GOOGLETEST_CM0008 DO NOT DELETE
 //                    or a reduced regular exception syntax on other
 //                    platforms, including Windows.
 // Logging:
@@ -509,40 +513,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Injection point for custom user configurations.
-// The following macros can be defined:
-//
-//   Flag related macros:
-//     GTEST_FLAG(flag_name)
-//     GTEST_USE_OWN_FLAGFILE_FLAG_  - Define to 0 when the system provides its
-//                                     own flagfile flag parsing.
-//     GTEST_DECLARE_bool_(name)
-//     GTEST_DECLARE_int32_(name)
-//     GTEST_DECLARE_string_(name)
-//     GTEST_DEFINE_bool_(name, default_val, doc)
-//     GTEST_DEFINE_int32_(name, default_val, doc)
-//     GTEST_DEFINE_string_(name, default_val, doc)
-//
-//   Logging:
-//     GTEST_LOG_(severity)
-//     GTEST_CHECK_(condition)
-//     Functions LogToStderr() and FlushInfoLog() have to be provided too.
-//
-//   Threading:
-//     GTEST_HAS_NOTIFICATION_ - Enabled if Notification is already provided.
-//     GTEST_HAS_MUTEX_AND_THREAD_LOCAL_ - Enabled if Mutex and ThreadLocal are
-//                                         already provided.
-//     Must also provide GTEST_DECLARE_STATIC_MUTEX_(mutex) and
-//     GTEST_DEFINE_STATIC_MUTEX_(mutex)
-//
-//     GTEST_EXCLUSIVE_LOCK_REQUIRED_(locks)
-//     GTEST_LOCK_EXCLUDED_(locks)
-//
-//   Underlying library support features:
-//     GTEST_HAS_CXXABI_H_
-//
-//   Exporting API symbols:
-//     GTEST_API_ - Specifier for exported symbols.
+// Injection point for custom user configurations. See README for details
 //
 // ** Custom implementation starts here **
 
@@ -586,6 +557,22 @@
 // Older versions of MSVC don't have __pragma.
 # define GTEST_DISABLE_MSC_WARNINGS_PUSH_(warnings)
 # define GTEST_DISABLE_MSC_WARNINGS_POP_()
+#endif
+
+// Clang on Windows does not understand MSVC's pragma warning.
+// We need clang-specific way to disable function deprecation warning.
+#ifdef __clang__
+# define GTEST_DISABLE_MSC_DEPRECATED_PUSH_()                         \
+    _Pragma("clang diagnostic push")                                  \
+    _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"") \
+    _Pragma("clang diagnostic ignored \"-Wdeprecated-implementations\"")
+#define GTEST_DISABLE_MSC_DEPRECATED_POP_() \
+    _Pragma("clang diagnostic pop")
+#else
+# define GTEST_DISABLE_MSC_DEPRECATED_PUSH_() \
+    GTEST_DISABLE_MSC_WARNINGS_PUSH_(4996)
+# define GTEST_DISABLE_MSC_DEPRECATED_POP_() \
+    GTEST_DISABLE_MSC_WARNINGS_POP_()
 #endif
 
 #ifndef GTEST_LANG_CXX11
@@ -642,7 +629,8 @@
 #if GTEST_LANG_CXX11
 # define GTEST_HAS_STD_TUPLE_ 1
 # if defined(__clang__)
-// Inspired by http://clang.llvm.org/docs/LanguageExtensions.html#__has_include
+// Inspired by
+// https://clang.llvm.org/docs/LanguageExtensions.html#include-file-checking-macros
 #  if defined(__has_include) && !__has_include(<tuple>)
 #   undef GTEST_HAS_STD_TUPLE_
 #  endif
@@ -654,7 +642,7 @@
 # elif defined(__GLIBCXX__)
 // Inspired by boost/config/stdlib/libstdcpp3.hpp,
 // http://gcc.gnu.org/gcc-4.2/changes.html and
-// http://gcc.gnu.org/onlinedocs/libstdc++/manual/bk01pt01ch01.html#manual.intro.status.standard.200x
+// https://web.archive.org/web/20140227044429/gcc.gnu.org/onlinedocs/libstdc++/manual/bk01pt01ch01.html#manual.intro.status.standard.200x
 #  if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 2)
 #   undef GTEST_HAS_STD_TUPLE_
 #  endif
@@ -785,17 +773,13 @@ typedef struct _RTL_CRITICAL_SECTION GTEST_CRITICAL_SECTION;
 #endif  // !defined(GTEST_HAS_STD_STRING)
 
 #ifndef GTEST_HAS_GLOBAL_STRING
-// The user didn't tell us whether ::string is available, so we need
-// to figure it out.
-
 # define GTEST_HAS_GLOBAL_STRING 0
-
 #endif  // GTEST_HAS_GLOBAL_STRING
 
 #ifndef GTEST_HAS_STD_WSTRING
 // The user didn't tell us whether ::std::wstring is available, so we need
 // to figure it out.
-// TODO(wan@google.com): uses autoconf to detect whether ::std::wstring
+// FIXME: uses autoconf to detect whether ::std::wstring
 //   is available.
 
 // Cygwin 1.7 and below doesn't support ::std::wstring.
@@ -1014,10 +998,11 @@ typedef struct _RTL_CRITICAL_SECTION GTEST_CRITICAL_SECTION;
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 
 // Implements a subset of TR1 tuple needed by Google Test and Google Mock.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_TUPLE_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_TUPLE_H_
@@ -1026,7 +1011,7 @@ typedef struct _RTL_CRITICAL_SECTION GTEST_CRITICAL_SECTION;
 
 // The compiler used in Symbian has a bug that prevents us from declaring the
 // tuple template as a friend (it complains that tuple is redefined).  This
-// hack bypasses the bug by declaring the members that should otherwise be
+// bypasses the bug by declaring the members that should otherwise be
 // private as public.
 // Sun Studio versions < 12 also have the above bug.
 #if defined(__SYMBIAN32__) || (defined(__SUNPRO_CC) && __SUNPRO_CC < 0x590)
@@ -2026,7 +2011,7 @@ inline bool operator!=(const GTEST_10_TUPLE_(T)& t,
 // Until version 4.3.2, gcc has a bug that causes <tr1/functional>,
 // which is #included by <tr1/tuple>, to not compile when RTTI is
 // disabled.  _TR1_FUNCTIONAL is the header guard for
-// <tr1/functional>.  Hence the following #define is a hack to prevent
+// <tr1/functional>.  Hence the following #define is used to prevent
 // <tr1/functional> from being included.
 #   define _TR1_FUNCTIONAL 1
 #   include <tr1/tuple>
@@ -2531,7 +2516,7 @@ class GTEST_API_ RE {
   // PartialMatch(str, re) returns true iff regular expression re
   // matches a substring of str (including str itself).
   //
-  // TODO(wan@google.com): make FullMatch() and PartialMatch() work
+  // FIXME: make FullMatch() and PartialMatch() work
   // when str contains NUL characters.
   static bool FullMatch(const ::std::string& str, const RE& re) {
     return FullMatch(str.c_str(), re);
@@ -2558,7 +2543,7 @@ class GTEST_API_ RE {
   void Init(const char* regex);
 
   // We use a const char* instead of an std::string, as Google Test used to be
-  // used where std::string is not available.  TODO(wan@google.com): change to
+  // used where std::string is not available.  FIXME: change to
   // std::string.
   const char* pattern_;
   bool is_valid_;
@@ -3085,7 +3070,7 @@ class GTEST_API_ Mutex {
   // Initializes owner_thread_id_ and critical_section_ in static mutexes.
   void ThreadSafeLazyInit();
 
-  // Per http://blogs.msdn.com/b/oldnewthing/archive/2004/02/23/78395.aspx,
+  // Per https://blogs.msdn.microsoft.com/oldnewthing/20040223-00/?p=40503,
   // we assume that 0 is an invalid value for thread IDs.
   unsigned int owner_thread_id_;
 
@@ -3374,8 +3359,8 @@ class MutexBase {
 // particular, the owner_ field (a pthread_t) is not explicitly initialized.
 // This allows initialization to work whether pthread_t is a scalar or struct.
 // The flag -Wmissing-field-initializers must not be specified for this to work.
-#  define GTEST_DEFINE_STATIC_MUTEX_(mutex) \
-     ::testing::internal::MutexBase mutex = { PTHREAD_MUTEX_INITIALIZER, false }
+#define GTEST_DEFINE_STATIC_MUTEX_(mutex) \
+  ::testing::internal::MutexBase mutex = {PTHREAD_MUTEX_INITIALIZER, false, 0}
 
 // The Mutex class can only be used for mutexes created at runtime. It
 // shares its API with MutexBase otherwise.
@@ -3765,7 +3750,7 @@ inline bool IsDir(const StatStruct& st) { return S_ISDIR(st.st_mode); }
 
 // Functions deprecated by MSVC 8.0.
 
-GTEST_DISABLE_MSC_WARNINGS_PUSH_(4996 /* deprecated function */)
+GTEST_DISABLE_MSC_DEPRECATED_PUSH_()
 
 inline const char* StrNCpy(char* dest, const char* src, size_t n) {
   return strncpy(dest, src, n);
@@ -3813,7 +3798,7 @@ inline const char* GetEnv(const char* name) {
 #endif
 }
 
-GTEST_DISABLE_MSC_WARNINGS_POP_()
+GTEST_DISABLE_MSC_DEPRECATED_POP_()
 
 #if GTEST_OS_WINDOWS_MOBILE
 // Windows CE has no C library. The abort() function is used in
@@ -3951,7 +3936,7 @@ typedef TypeWithSize<8>::Int TimeInMillis;  // Represents time in milliseconds.
 // Parses 'str' for a 32-bit signed integer.  If successful, writes the result
 // to *value and returns true; otherwise leaves *value unchanged and returns
 // false.
-// TODO(chandlerc): Find a better way to refactor flag and environment parsing
+// FIXME: Find a better way to refactor flag and environment parsing
 // out of both gtest-port.cc and gtest.cc to avoid exporting this utility
 // function.
 bool ParseInt32(const Message& src_text, const char* str, Int32* value);
@@ -4017,8 +4002,7 @@ const char* StringFromGTestEnv(const char* flag, const char* default_val);
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 //
 // The Google C++ Testing and Mocking Framework (Google Test)
 //
@@ -4034,11 +4018,16 @@ const char* StringFromGTestEnv(const char* flag, const char* default_val);
 // to CHANGE WITHOUT NOTICE.  Therefore DO NOT DEPEND ON IT in a user
 // program!
 
+// GOOGLETEST_CM0001 DO NOT DELETE
+
 #ifndef GTEST_INCLUDE_GTEST_GTEST_MESSAGE_H_
 #define GTEST_INCLUDE_GTEST_GTEST_MESSAGE_H_
 
 #include <limits>
 
+
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
 
 // Ensures that there is at least one operator<< in the global namespace.
 // See Message& operator<<(...) below for why.
@@ -4236,6 +4225,8 @@ std::string StreamableToString(const T& streamable) {
 }  // namespace internal
 }  // namespace testing
 
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
+
 #endif  // GTEST_INCLUDE_GTEST_GTEST_MESSAGE_H_
 // Copyright 2008, Google Inc.
 // All rights reserved.
@@ -4266,7 +4257,6 @@ std::string StreamableToString(const T& streamable) {
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-//
 // Google Test filepath utilities
 //
 // This header file declares classes and functions used internally by
@@ -4274,6 +4264,8 @@ std::string StreamableToString(const T& streamable) {
 //
 // This file is #included in gtest/internal/gtest-internal.h.
 // Do not include this header file separately!
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_FILEPATH_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_FILEPATH_H_
@@ -4307,16 +4299,16 @@ std::string StreamableToString(const T& streamable) {
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-//
 // The Google C++ Testing and Mocking Framework (Google Test)
 //
 // This header file declares the String class and functions used internally by
 // Google Test.  They are subject to change without notice. They should not used
 // by code external to Google Test.
 //
-// This header file is #included by
-// gtest/internal/gtest-internal.h.
+// This header file is #included by gtest-internal.h.
 // It should not be #included by other files.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_STRING_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_STRING_H_
@@ -4444,6 +4436,9 @@ GTEST_API_ std::string StringStreamToString(::std::stringstream* stream);
 }  // namespace testing
 
 #endif  // GTEST_INCLUDE_GTEST_INTERNAL_GTEST_STRING_H_
+
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
 
 namespace testing {
 namespace internal {
@@ -4606,6 +4601,8 @@ class GTEST_API_ FilePath {
 }  // namespace internal
 }  // namespace testing
 
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
+
 #endif  // GTEST_INCLUDE_GTEST_INTERNAL_GTEST_FILEPATH_H_
 // This file was GENERATED by command:
 //     pump.py gtest-type-util.h.pump
@@ -4639,8 +4636,7 @@ class GTEST_API_ FilePath {
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 
 // Type utilities needed for implementing typed and type-parameterized
 // tests.  This file is generated by a SCRIPT.  DO NOT EDIT BY HAND!
@@ -4649,6 +4645,8 @@ class GTEST_API_ FilePath {
 // type-parameterized tests in one type-parameterized test case.
 // Please contact googletestframework@googlegroups.com if you need
 // more.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_TYPE_UTIL_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_TYPE_UTIL_H_
@@ -8030,6 +8028,9 @@ GTEST_API_ std::string AppendUserMessage(
 
 #if GTEST_HAS_EXCEPTIONS
 
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4275 \
+/* an exported class was derived from a class that was not exported */)
+
 // This exception is thrown by (and only by) a failed Google Test
 // assertion when GTEST_FLAG(throw_on_failure) is true (if exceptions
 // are enabled).  We derive it from std::runtime_error, which is for
@@ -8040,6 +8041,8 @@ class GTEST_API_ GoogleTestFailureException : public ::std::runtime_error {
  public:
   explicit GoogleTestFailureException(const TestPartResult& failure);
 };
+
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4275
 
 #endif  // GTEST_HAS_EXCEPTIONS
 
@@ -8417,6 +8420,9 @@ GTEST_API_ bool SkipPrefix(const char* prefix, const char** pstr);
 
 #if GTEST_HAS_TYPED_TEST || GTEST_HAS_TYPED_TEST_P
 
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
+
 // State of the definition of a type-parameterized test case.
 class GTEST_API_ TypedTestCasePState {
  public:
@@ -8462,6 +8468,8 @@ class GTEST_API_ TypedTestCasePState {
   RegisteredTestsMap registered_tests_;
 };
 
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
+
 // Skips to the first non-space char after the first comma in 'str';
 // returns NULL if no comma is found in 'str'.
 inline const char* SkipComma(const char* str) {
@@ -8485,6 +8493,37 @@ inline std::string GetPrefixUntilComma(const char* str) {
 void SplitString(const ::std::string& str, char delimiter,
                  ::std::vector< ::std::string>* dest);
 
+// The default argument to the template below for the case when the user does
+// not provide a name generator.
+struct DefaultNameGenerator {
+  template <typename T>
+  static std::string GetName(int i) {
+    return StreamableToString(i);
+  }
+};
+
+template <typename Provided = DefaultNameGenerator>
+struct NameGeneratorSelector {
+  typedef Provided type;
+};
+
+template <typename NameGenerator>
+void GenerateNamesRecursively(Types0, std::vector<std::string>*, int) {}
+
+template <typename NameGenerator, typename Types>
+void GenerateNamesRecursively(Types, std::vector<std::string>* result, int i) {
+  result->push_back(NameGenerator::template GetName<typename Types::Head>(i));
+  GenerateNamesRecursively<NameGenerator>(typename Types::Tail(), result,
+                                          i + 1);
+}
+
+template <typename NameGenerator, typename Types>
+std::vector<std::string> GenerateNames() {
+  std::vector<std::string> result;
+  GenerateNamesRecursively<NameGenerator>(Types(), &result, 0);
+  return result;
+}
+
 // TypeParameterizedTest<Fixture, TestSel, Types>::Register()
 // registers a list of type-parameterized tests with Google Test.  The
 // return value is insignificant - we just need to return something
@@ -8499,10 +8538,10 @@ class TypeParameterizedTest {
   // specified in INSTANTIATE_TYPED_TEST_CASE_P(Prefix, TestCase,
   // Types).  Valid values for 'index' are [0, N - 1] where N is the
   // length of Types.
-  static bool Register(const char* prefix,
-                       const CodeLocation& code_location,
-                       const char* case_name, const char* test_names,
-                       int index) {
+  static bool Register(const char* prefix, const CodeLocation& code_location,
+                       const char* case_name, const char* test_names, int index,
+                       const std::vector<std::string>& type_names =
+                           GenerateNames<DefaultNameGenerator, Types>()) {
     typedef typename Types::Head Type;
     typedef Fixture<Type> FixtureClass;
     typedef typename GTEST_BIND_(TestSel, Type) TestClass;
@@ -8510,20 +8549,23 @@ class TypeParameterizedTest {
     // First, registers the first type-parameterized test in the type
     // list.
     MakeAndRegisterTestInfo(
-        (std::string(prefix) + (prefix[0] == '\0' ? "" : "/") + case_name + "/"
-         + StreamableToString(index)).c_str(),
+        (std::string(prefix) + (prefix[0] == '\0' ? "" : "/") + case_name +
+         "/" + type_names[index])
+            .c_str(),
         StripTrailingSpaces(GetPrefixUntilComma(test_names)).c_str(),
         GetTypeName<Type>().c_str(),
         NULL,  // No value parameter.
-        code_location,
-        GetTypeId<FixtureClass>(),
-        TestClass::SetUpTestCase,
-        TestClass::TearDownTestCase,
-        new TestFactoryImpl<TestClass>);
+        code_location, GetTypeId<FixtureClass>(), TestClass::SetUpTestCase,
+        TestClass::TearDownTestCase, new TestFactoryImpl<TestClass>);
 
     // Next, recurses (at compile time) with the tail of the type list.
-    return TypeParameterizedTest<Fixture, TestSel, typename Types::Tail>
-        ::Register(prefix, code_location, case_name, test_names, index + 1);
+    return TypeParameterizedTest<Fixture, TestSel,
+                                 typename Types::Tail>::Register(prefix,
+                                                                 code_location,
+                                                                 case_name,
+                                                                 test_names,
+                                                                 index + 1,
+                                                                 type_names);
   }
 };
 
@@ -8533,7 +8575,9 @@ class TypeParameterizedTest<Fixture, TestSel, Types0> {
  public:
   static bool Register(const char* /*prefix*/, const CodeLocation&,
                        const char* /*case_name*/, const char* /*test_names*/,
-                       int /*index*/) {
+                       int /*index*/,
+                       const std::vector<std::string>& =
+                           std::vector<std::string>() /*type_names*/) {
     return true;
   }
 };
@@ -8546,8 +8590,10 @@ template <GTEST_TEMPLATE_ Fixture, typename Tests, typename Types>
 class TypeParameterizedTestCase {
  public:
   static bool Register(const char* prefix, CodeLocation code_location,
-                       const TypedTestCasePState* state,
-                       const char* case_name, const char* test_names) {
+                       const TypedTestCasePState* state, const char* case_name,
+                       const char* test_names,
+                       const std::vector<std::string>& type_names =
+                           GenerateNames<DefaultNameGenerator, Types>()) {
     std::string test_name = StripTrailingSpaces(
         GetPrefixUntilComma(test_names));
     if (!state->TestExists(test_name)) {
@@ -8564,12 +8610,14 @@ class TypeParameterizedTestCase {
 
     // First, register the first test in 'Test' for each type in 'Types'.
     TypeParameterizedTest<Fixture, Head, Types>::Register(
-        prefix, test_location, case_name, test_names, 0);
+        prefix, test_location, case_name, test_names, 0, type_names);
 
     // Next, recurses (at compile time) with the tail of the test list.
-    return TypeParameterizedTestCase<Fixture, typename Tests::Tail, Types>
-        ::Register(prefix, code_location, state,
-                   case_name, SkipComma(test_names));
+    return TypeParameterizedTestCase<Fixture, typename Tests::Tail,
+                                     Types>::Register(prefix, code_location,
+                                                      state, case_name,
+                                                      SkipComma(test_names),
+                                                      type_names);
   }
 };
 
@@ -8579,7 +8627,9 @@ class TypeParameterizedTestCase<Fixture, Templates0, Types> {
  public:
   static bool Register(const char* /*prefix*/, const CodeLocation&,
                        const TypedTestCasePState* /*state*/,
-                       const char* /*case_name*/, const char* /*test_names*/) {
+                       const char* /*case_name*/, const char* /*test_names*/,
+                       const std::vector<std::string>& =
+                           std::vector<std::string>() /*type_names*/) {
     return true;
   }
 };
@@ -9193,14 +9243,14 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 //
 // The Google C++ Testing and Mocking Framework (Google Test)
 //
 // This header file defines the public API for death tests.  It is
 // #included by gtest.h so a user doesn't need to include this
 // directly.
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_GTEST_DEATH_TEST_H_
 #define GTEST_INCLUDE_GTEST_GTEST_DEATH_TEST_H_
@@ -9234,11 +9284,11 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-//
 // The Google C++ Testing and Mocking Framework (Google Test)
 //
 // This header file defines internal utilities needed for implementing
 // death tests.  They are subject to change without notice.
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_DEATH_TEST_INTERNAL_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_DEATH_TEST_INTERNAL_H_
@@ -9257,6 +9307,9 @@ const char kDeathTestUseFork[] = "death_test_use_fork";
 const char kInternalRunDeathTestFlag[] = "internal_run_death_test";
 
 #if GTEST_HAS_DEATH_TEST
+
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
 
 // DeathTest is a class that hides much of the complexity of the
 // GTEST_DEATH_TEST_ macro.  It is abstract; its static Create method
@@ -9340,6 +9393,8 @@ class GTEST_API_ DeathTest {
 
   GTEST_DISALLOW_COPY_AND_ASSIGN_(DeathTest);
 };
+
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
 
 // Factory interface for death tests.  May be mocked out for testing.
 class DeathTestFactory {
@@ -9539,6 +9594,7 @@ GTEST_API_ bool InDeathTestChild();
 //
 // On the regular expressions used in death tests:
 //
+//   GOOGLETEST_CM0005 DO NOT DELETE
 //   On POSIX-compliant systems (*nix), we use the <regex.h> library,
 //   which uses the POSIX extended regex syntax.
 //
@@ -9600,7 +9656,7 @@ GTEST_API_ bool InDeathTestChild();
 //   is rarely a problem as people usually don't put the test binary
 //   directory in PATH.
 //
-// TODO(wan@google.com): make thread-safe death tests search the PATH.
+// FIXME: make thread-safe death tests search the PATH.
 
 // Asserts that a given statement causes the program to exit, with an
 // integer exit status that satisfies predicate, and emitting error output
@@ -9641,6 +9697,7 @@ class GTEST_API_ ExitedWithCode {
 # if !GTEST_OS_WINDOWS && !GTEST_OS_FUCHSIA
 // Tests that an exit code describes an exit due to termination by a
 // given signal.
+// GOOGLETEST_CM0006 DO NOT DELETE
 class GTEST_API_ KilledBySignal {
  public:
   explicit KilledBySignal(int signum);
@@ -9813,14 +9870,12 @@ class GTEST_API_ KilledBySignal {
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Authors: vladl@google.com (Vlad Losev)
-//
 // Macros and functions for implementing parameterized tests
 // in Google C++ Testing and Mocking Framework (Google Test)
 //
 // This file is generated by a SCRIPT.  DO NOT EDIT BY HAND!
 //
-
+// GOOGLETEST_CM0001 DO NOT DELETE
 #ifndef GTEST_INCLUDE_GTEST_GTEST_PARAM_TEST_H_
 #define GTEST_INCLUDE_GTEST_GTEST_PARAM_TEST_H_
 
@@ -9995,10 +10050,11 @@ TEST_P(DerivedTest, DoesBlah) {
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: vladl@google.com (Vlad Losev)
+
 
 // Type and function utilities for implementing parameterized tests.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_H_
@@ -10039,8 +10095,6 @@ TEST_P(DerivedTest, DoesBlah) {
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Authors: Dan Egnor (egnor@google.com)
-//
 // A "smart" pointer type with reference tracking.  Every pointer to a
 // particular object is kept on a circular linked list.  When the last pointer
 // to an object is destroyed or reassigned, the object is deleted.
@@ -10074,8 +10128,10 @@ TEST_P(DerivedTest, DoesBlah) {
 //       raw pointer (e.g. via get()) concurrently, and
 //     - it's safe to write to two linked_ptrs that point to the same
 //       shared object concurrently.
-// TODO(wan@google.com): rename this to safe_linked_ptr to avoid
+// FIXME: rename this to safe_linked_ptr to avoid
 // confusion with normal linked_ptr.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_LINKED_PTR_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_LINKED_PTR_H_
@@ -10280,8 +10336,7 @@ linked_ptr<T> make_linked_ptr(T* ptr) {
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 
 // Google Test - The Google C++ Testing and Mocking Framework
 //
@@ -10349,6 +10404,8 @@ linked_ptr<T> make_linked_ptr(T* ptr) {
 // actual need for it.  Note that this fix cannot rely on value_type
 // being defined as many user-defined container types don't have
 // value_type.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_GTEST_PRINTERS_H_
 #define GTEST_INCLUDE_GTEST_GTEST_PRINTERS_H_
@@ -11077,7 +11134,7 @@ void UniversalPrintArray(const T* begin, size_t len, ::std::ostream* os) {
     // If the array has more than kThreshold elements, we'll have to
     // omit some details by printing only the first and the last
     // kChunkSize elements.
-    // TODO(wan@google.com): let the user control the threshold using a flag.
+    // FIXME: let the user control the threshold using a flag.
     if (len <= kThreshold) {
       PrintRawArrayTo(begin, len, os);
     } else {
@@ -11229,12 +11286,13 @@ struct TuplePolicy {
   static const size_t tuple_size = ::std::tr1::tuple_size<Tuple>::value;
 
   template <size_t I>
-  struct tuple_element : ::std::tr1::tuple_element<I, Tuple> {};
+  struct tuple_element : ::std::tr1::tuple_element<static_cast<int>(I), Tuple> {
+  };
 
   template <size_t I>
-  static typename AddReference<
-      const typename ::std::tr1::tuple_element<I, Tuple>::type>::type get(
-      const Tuple& tuple) {
+  static typename AddReference<const typename ::std::tr1::tuple_element<
+      static_cast<int>(I), Tuple>::type>::type
+  get(const Tuple& tuple) {
     return ::std::tr1::get<I>(tuple);
   }
 };
@@ -11385,8 +11443,8 @@ template <typename T>
 // installation of gTest.
 // It will be included from gtest-printers.h and the overrides in this file
 // will be visible to everyone.
-// See documentation at gtest/gtest-printers.h for details on how to define a
-// custom printer.
+//
+// Injection point for custom user configurations. See README for details
 //
 // ** Custom implementation starts here **
 
@@ -12104,8 +12162,7 @@ class ParameterizedTestCaseRegistry {
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: vladl@google.com (Vlad Losev)
+
 
 // Type and function utilities for implementing parameterized tests.
 // This file is generated by a SCRIPT.  DO NOT EDIT BY HAND!
@@ -12116,6 +12173,8 @@ class ParameterizedTestCaseRegistry {
 // Please note that the number of arguments to Combine is limited
 // by the maximum arity of the implementation of tuple which is
 // currently set at 10.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_GENERATED_H_
 #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_GENERATED_H_
@@ -12151,6 +12210,8 @@ class ValueArray1 {
     return ValuesIn(array);
   }
 
+  ValueArray1(const ValueArray1& other) : v1_(other.v1_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray1& other);
@@ -12168,6 +12229,8 @@ class ValueArray2 {
     const T array[] = {static_cast<T>(v1_), static_cast<T>(v2_)};
     return ValuesIn(array);
   }
+
+  ValueArray2(const ValueArray2& other) : v1_(other.v1_), v2_(other.v2_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12188,6 +12251,9 @@ class ValueArray3 {
         static_cast<T>(v3_)};
     return ValuesIn(array);
   }
+
+  ValueArray3(const ValueArray3& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12211,6 +12277,9 @@ class ValueArray4 {
     return ValuesIn(array);
   }
 
+  ValueArray4(const ValueArray4& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray4& other);
@@ -12233,6 +12302,9 @@ class ValueArray5 {
         static_cast<T>(v3_), static_cast<T>(v4_), static_cast<T>(v5_)};
     return ValuesIn(array);
   }
+
+  ValueArray5(const ValueArray5& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12260,6 +12332,9 @@ class ValueArray6 {
     return ValuesIn(array);
   }
 
+  ValueArray6(const ValueArray6& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray6& other);
@@ -12286,6 +12361,10 @@ class ValueArray7 {
         static_cast<T>(v6_), static_cast<T>(v7_)};
     return ValuesIn(array);
   }
+
+  ValueArray7(const ValueArray7& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12315,6 +12394,10 @@ class ValueArray8 {
         static_cast<T>(v6_), static_cast<T>(v7_), static_cast<T>(v8_)};
     return ValuesIn(array);
   }
+
+  ValueArray8(const ValueArray8& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12347,6 +12430,10 @@ class ValueArray9 {
     return ValuesIn(array);
   }
 
+  ValueArray9(const ValueArray9& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray9& other);
@@ -12378,6 +12465,10 @@ class ValueArray10 {
         static_cast<T>(v9_), static_cast<T>(v10_)};
     return ValuesIn(array);
   }
+
+  ValueArray10(const ValueArray10& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12412,6 +12503,11 @@ class ValueArray11 {
         static_cast<T>(v9_), static_cast<T>(v10_), static_cast<T>(v11_)};
     return ValuesIn(array);
   }
+
+  ValueArray11(const ValueArray11& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12448,6 +12544,11 @@ class ValueArray12 {
         static_cast<T>(v12_)};
     return ValuesIn(array);
   }
+
+  ValueArray12(const ValueArray12& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12487,6 +12588,11 @@ class ValueArray13 {
     return ValuesIn(array);
   }
 
+  ValueArray13(const ValueArray13& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray13& other);
@@ -12525,6 +12631,11 @@ class ValueArray14 {
         static_cast<T>(v12_), static_cast<T>(v13_), static_cast<T>(v14_)};
     return ValuesIn(array);
   }
+
+  ValueArray14(const ValueArray14& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12566,6 +12677,12 @@ class ValueArray15 {
         static_cast<T>(v15_)};
     return ValuesIn(array);
   }
+
+  ValueArray15(const ValueArray15& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12611,6 +12728,12 @@ class ValueArray16 {
     return ValuesIn(array);
   }
 
+  ValueArray16(const ValueArray16& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray16& other);
@@ -12655,6 +12778,12 @@ class ValueArray17 {
         static_cast<T>(v15_), static_cast<T>(v16_), static_cast<T>(v17_)};
     return ValuesIn(array);
   }
+
+  ValueArray17(const ValueArray17& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12703,6 +12832,12 @@ class ValueArray18 {
     return ValuesIn(array);
   }
 
+  ValueArray18(const ValueArray18& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray18& other);
@@ -12750,6 +12885,13 @@ class ValueArray19 {
         static_cast<T>(v18_), static_cast<T>(v19_)};
     return ValuesIn(array);
   }
+
+  ValueArray19(const ValueArray19& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12800,6 +12942,13 @@ class ValueArray20 {
         static_cast<T>(v18_), static_cast<T>(v19_), static_cast<T>(v20_)};
     return ValuesIn(array);
   }
+
+  ValueArray20(const ValueArray20& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12854,6 +13003,13 @@ class ValueArray21 {
     return ValuesIn(array);
   }
 
+  ValueArray21(const ValueArray21& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray21& other);
@@ -12907,6 +13063,13 @@ class ValueArray22 {
         static_cast<T>(v21_), static_cast<T>(v22_)};
     return ValuesIn(array);
   }
+
+  ValueArray22(const ValueArray22& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -12963,6 +13126,14 @@ class ValueArray23 {
         static_cast<T>(v21_), static_cast<T>(v22_), static_cast<T>(v23_)};
     return ValuesIn(array);
   }
+
+  ValueArray23(const ValueArray23& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13022,6 +13193,14 @@ class ValueArray24 {
     return ValuesIn(array);
   }
 
+  ValueArray24(const ValueArray24& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray24& other);
@@ -13080,6 +13259,14 @@ class ValueArray25 {
         static_cast<T>(v24_), static_cast<T>(v25_)};
     return ValuesIn(array);
   }
+
+  ValueArray25(const ValueArray25& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13141,6 +13328,14 @@ class ValueArray26 {
         static_cast<T>(v24_), static_cast<T>(v25_), static_cast<T>(v26_)};
     return ValuesIn(array);
   }
+
+  ValueArray26(const ValueArray26& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13205,6 +13400,15 @@ class ValueArray27 {
         static_cast<T>(v27_)};
     return ValuesIn(array);
   }
+
+  ValueArray27(const ValueArray27& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13271,6 +13475,15 @@ class ValueArray28 {
     return ValuesIn(array);
   }
 
+  ValueArray28(const ValueArray28& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray28& other);
@@ -13336,6 +13549,15 @@ class ValueArray29 {
         static_cast<T>(v27_), static_cast<T>(v28_), static_cast<T>(v29_)};
     return ValuesIn(array);
   }
+
+  ValueArray29(const ValueArray29& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13405,6 +13627,15 @@ class ValueArray30 {
         static_cast<T>(v30_)};
     return ValuesIn(array);
   }
+
+  ValueArray30(const ValueArray30& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13477,6 +13708,16 @@ class ValueArray31 {
     return ValuesIn(array);
   }
 
+  ValueArray31(const ValueArray31& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray31& other);
@@ -13548,6 +13789,16 @@ class ValueArray32 {
         static_cast<T>(v30_), static_cast<T>(v31_), static_cast<T>(v32_)};
     return ValuesIn(array);
   }
+
+  ValueArray32(const ValueArray32& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13623,6 +13874,16 @@ class ValueArray33 {
         static_cast<T>(v33_)};
     return ValuesIn(array);
   }
+
+  ValueArray33(const ValueArray33& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13700,6 +13961,16 @@ class ValueArray34 {
     return ValuesIn(array);
   }
 
+  ValueArray34(const ValueArray34& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray34& other);
@@ -13776,6 +14047,17 @@ class ValueArray35 {
         static_cast<T>(v33_), static_cast<T>(v34_), static_cast<T>(v35_)};
     return ValuesIn(array);
   }
+
+  ValueArray35(const ValueArray35& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13856,6 +14138,17 @@ class ValueArray36 {
         static_cast<T>(v36_)};
     return ValuesIn(array);
   }
+
+  ValueArray36(const ValueArray36& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -13939,6 +14232,17 @@ class ValueArray37 {
     return ValuesIn(array);
   }
 
+  ValueArray37(const ValueArray37& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray37& other);
@@ -14021,6 +14325,17 @@ class ValueArray38 {
         static_cast<T>(v36_), static_cast<T>(v37_), static_cast<T>(v38_)};
     return ValuesIn(array);
   }
+
+  ValueArray38(const ValueArray38& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14106,6 +14421,18 @@ class ValueArray39 {
         static_cast<T>(v39_)};
     return ValuesIn(array);
   }
+
+  ValueArray39(const ValueArray39& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14193,6 +14520,18 @@ class ValueArray40 {
         static_cast<T>(v39_), static_cast<T>(v40_)};
     return ValuesIn(array);
   }
+
+  ValueArray40(const ValueArray40& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14282,6 +14621,18 @@ class ValueArray41 {
         static_cast<T>(v39_), static_cast<T>(v40_), static_cast<T>(v41_)};
     return ValuesIn(array);
   }
+
+  ValueArray41(const ValueArray41& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14374,6 +14725,18 @@ class ValueArray42 {
     return ValuesIn(array);
   }
 
+  ValueArray42(const ValueArray42& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray42& other);
@@ -14465,6 +14828,19 @@ class ValueArray43 {
         static_cast<T>(v42_), static_cast<T>(v43_)};
     return ValuesIn(array);
   }
+
+  ValueArray43(const ValueArray43& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_),
+      v43_(other.v43_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14559,6 +14935,19 @@ class ValueArray44 {
         static_cast<T>(v42_), static_cast<T>(v43_), static_cast<T>(v44_)};
     return ValuesIn(array);
   }
+
+  ValueArray44(const ValueArray44& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_),
+      v43_(other.v43_), v44_(other.v44_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14655,6 +15044,19 @@ class ValueArray45 {
         static_cast<T>(v45_)};
     return ValuesIn(array);
   }
+
+  ValueArray45(const ValueArray45& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_),
+      v43_(other.v43_), v44_(other.v44_), v45_(other.v45_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14753,6 +15155,19 @@ class ValueArray46 {
         static_cast<T>(v45_), static_cast<T>(v46_)};
     return ValuesIn(array);
   }
+
+  ValueArray46(const ValueArray46& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_),
+      v43_(other.v43_), v44_(other.v44_), v45_(other.v45_), v46_(other.v46_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14853,6 +15268,20 @@ class ValueArray47 {
         static_cast<T>(v45_), static_cast<T>(v46_), static_cast<T>(v47_)};
     return ValuesIn(array);
   }
+
+  ValueArray47(const ValueArray47& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_),
+      v43_(other.v43_), v44_(other.v44_), v45_(other.v45_), v46_(other.v46_),
+      v47_(other.v47_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -14955,6 +15384,20 @@ class ValueArray48 {
         static_cast<T>(v48_)};
     return ValuesIn(array);
   }
+
+  ValueArray48(const ValueArray48& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_),
+      v43_(other.v43_), v44_(other.v44_), v45_(other.v45_), v46_(other.v46_),
+      v47_(other.v47_), v48_(other.v48_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -15059,6 +15502,20 @@ class ValueArray49 {
     return ValuesIn(array);
   }
 
+  ValueArray49(const ValueArray49& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_),
+      v43_(other.v43_), v44_(other.v44_), v45_(other.v45_), v46_(other.v46_),
+      v47_(other.v47_), v48_(other.v48_), v49_(other.v49_) {}
+
  private:
   // No implementation - assignment is unsupported.
   void operator=(const ValueArray49& other);
@@ -15162,6 +15619,20 @@ class ValueArray50 {
         static_cast<T>(v48_), static_cast<T>(v49_), static_cast<T>(v50_)};
     return ValuesIn(array);
   }
+
+  ValueArray50(const ValueArray50& other) : v1_(other.v1_), v2_(other.v2_),
+      v3_(other.v3_), v4_(other.v4_), v5_(other.v5_), v6_(other.v6_),
+      v7_(other.v7_), v8_(other.v8_), v9_(other.v9_), v10_(other.v10_),
+      v11_(other.v11_), v12_(other.v12_), v13_(other.v13_), v14_(other.v14_),
+      v15_(other.v15_), v16_(other.v16_), v17_(other.v17_), v18_(other.v18_),
+      v19_(other.v19_), v20_(other.v20_), v21_(other.v21_), v22_(other.v22_),
+      v23_(other.v23_), v24_(other.v24_), v25_(other.v25_), v26_(other.v26_),
+      v27_(other.v27_), v28_(other.v28_), v29_(other.v29_), v30_(other.v30_),
+      v31_(other.v31_), v32_(other.v32_), v33_(other.v33_), v34_(other.v34_),
+      v35_(other.v35_), v36_(other.v36_), v37_(other.v37_), v38_(other.v38_),
+      v39_(other.v39_), v40_(other.v40_), v41_(other.v41_), v42_(other.v42_),
+      v43_(other.v43_), v44_(other.v44_), v45_(other.v45_), v46_(other.v46_),
+      v47_(other.v47_), v48_(other.v48_), v49_(other.v49_), v50_(other.v50_) {}
 
  private:
   // No implementation - assignment is unsupported.
@@ -18432,26 +18903,24 @@ internal::CartesianProductHolder10<Generator1, Generator2, Generator3,
 // alphanumeric characters or underscore. Because PrintToString adds quotes
 // to std::string and C strings, it won't work for these types.
 
-#define INSTANTIATE_TEST_CASE_P(prefix, test_case_name, generator, ...)        \
-  static ::testing::internal::ParamGenerator<test_case_name::ParamType>        \
-      gtest_##prefix##test_case_name##_EvalGenerator_() {                      \
-    return generator;                                                          \
-  }                                                                            \
-  static ::std::string gtest_##prefix##test_case_name##_EvalGenerateName_(     \
-      const ::testing::TestParamInfo<test_case_name::ParamType>& info) {       \
-    return ::testing::internal::GetParamNameGen<test_case_name::ParamType>(    \
-        __VA_ARGS__)(info);                                                    \
-  }                                                                            \
+# define INSTANTIATE_TEST_CASE_P(prefix, test_case_name, generator, ...) \
+  static ::testing::internal::ParamGenerator<test_case_name::ParamType> \
+      gtest_##prefix##test_case_name##_EvalGenerator_() { return generator; } \
+  static ::std::string gtest_##prefix##test_case_name##_EvalGenerateName_( \
+      const ::testing::TestParamInfo<test_case_name::ParamType>& info) { \
+    return ::testing::internal::GetParamNameGen<test_case_name::ParamType> \
+        (__VA_ARGS__)(info); \
+  } \
   static int gtest_##prefix##test_case_name##_dummy_ GTEST_ATTRIBUTE_UNUSED_ = \
-      ::testing::UnitTest::GetInstance()                                       \
-          ->parameterized_test_registry()                                      \
-          .GetTestCasePatternHolder<test_case_name>(                           \
-              #test_case_name,                                                 \
-              ::testing::internal::CodeLocation(__FILE__, __LINE__))           \
-          ->AddTestCaseInstantiation(                                          \
-              #prefix, &gtest_##prefix##test_case_name##_EvalGenerator_,       \
-              &gtest_##prefix##test_case_name##_EvalGenerateName_, __FILE__,   \
-              __LINE__)
+      ::testing::UnitTest::GetInstance()->parameterized_test_registry(). \
+          GetTestCasePatternHolder<test_case_name>(\
+              #test_case_name, \
+              ::testing::internal::CodeLocation(\
+                  __FILE__, __LINE__))->AddTestCaseInstantiation(\
+                      #prefix, \
+                      &gtest_##prefix##test_case_name##_EvalGenerator_, \
+                      &gtest_##prefix##test_case_name##_EvalGenerateName_, \
+                      __FILE__, __LINE__)
 
 }  // namespace testing
 
@@ -18484,10 +18953,10 @@ internal::CartesianProductHolder10<Generator1, Generator2, Generator3,
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
 //
 // Google C++ Testing and Mocking Framework definitions useful in production code.
+// GOOGLETEST_CM0003 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_GTEST_PROD_H_
 #define GTEST_INCLUDE_GTEST_GTEST_PROD_H_
@@ -18546,14 +19015,16 @@ friend class test_case_name##_##test_name##_Test
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Author: mheule@google.com (Markus Heule)
-//
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_GTEST_TEST_PART_H_
 #define GTEST_INCLUDE_GTEST_GTEST_TEST_PART_H_
 
 #include <iosfwd>
 #include <vector>
+
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
 
 namespace testing {
 
@@ -18660,7 +19131,7 @@ class GTEST_API_ TestPartResultArray {
 };
 
 // This interface knows how to report a test part result.
-class TestPartResultReporterInterface {
+class GTEST_API_ TestPartResultReporterInterface {
  public:
   virtual ~TestPartResultReporterInterface() {}
 
@@ -18693,6 +19164,8 @@ class GTEST_API_ HasNewFatalFailureHelper
 
 }  // namespace testing
 
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
+
 #endif  // GTEST_INCLUDE_GTEST_GTEST_TEST_PART_H_
 // Copyright 2008 Google Inc.
 // All Rights Reserved.
@@ -18722,8 +19195,9 @@ class GTEST_API_ HasNewFatalFailureHelper
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: wan@google.com (Zhanyong Wan)
+
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_GTEST_TYPED_TEST_H_
 #define GTEST_INCLUDE_GTEST_GTEST_TYPED_TEST_H_
@@ -18777,6 +19251,24 @@ TYPED_TEST(FooTest, DoesBlah) {
 }
 
 TYPED_TEST(FooTest, HasPropertyA) { ... }
+
+// TYPED_TEST_CASE takes an optional third argument which allows to specify a
+// class that generates custom test name suffixes based on the type. This should
+// be a class which has a static template function GetName(int index) returning
+// a string for each type. The provided integer index equals the index of the
+// type in the provided type list. In many cases the index can be ignored.
+//
+// For example:
+//   class MyTypeNames {
+//    public:
+//     template <typename T>
+//     static std::string GetName(int) {
+//       if (std::is_same<T, char>()) return "char";
+//       if (std::is_same<T, int>()) return "int";
+//       if (std::is_same<T, unsigned int>()) return "unsignedInt";
+//     }
+//   };
+//   TYPED_TEST_CASE(FooTest, MyTypes, MyTypeNames);
 
 #endif  // 0
 
@@ -18839,6 +19331,11 @@ INSTANTIATE_TYPED_TEST_CASE_P(My, FooTest, MyTypes);
 // If the type list contains only one type, you can write that type
 // directly without Types<...>:
 //   INSTANTIATE_TYPED_TEST_CASE_P(My, FooTest, int);
+//
+// Similar to the optional argument of TYPED_TEST_CASE above,
+// INSTANTIATE_TEST_CASE_P takes an optional fourth argument which allows to
+// generate custom names.
+//   INSTANTIATE_TYPED_TEST_CASE_P(My, FooTest, MyTypes, MyTypeNames);
 
 #endif  // 0
 
@@ -18853,32 +19350,46 @@ INSTANTIATE_TYPED_TEST_CASE_P(My, FooTest, MyTypes);
 // given test case.
 # define GTEST_TYPE_PARAMS_(TestCaseName) gtest_type_params_##TestCaseName##_
 
+// Expands to the name of the typedef for the NameGenerator, responsible for
+// creating the suffixes of the name.
+#define GTEST_NAME_GENERATOR_(TestCaseName) \
+  gtest_type_params_##TestCaseName##_NameGenerator
+
 // The 'Types' template argument below must have spaces around it
 // since some compilers may choke on '>>' when passing a template
 // instance (e.g. Types<int>)
-# define TYPED_TEST_CASE(CaseName, Types) \
-  typedef ::testing::internal::TypeList< Types >::type \
-      GTEST_TYPE_PARAMS_(CaseName)
+# define TYPED_TEST_CASE(CaseName, Types, ...)                             \
+  typedef ::testing::internal::TypeList< Types >::type GTEST_TYPE_PARAMS_( \
+      CaseName);                                                           \
+  typedef ::testing::internal::NameGeneratorSelector<__VA_ARGS__>::type    \
+      GTEST_NAME_GENERATOR_(CaseName)
 
-# define TYPED_TEST(CaseName, TestName) \
-  template <typename gtest_TypeParam_> \
-  class GTEST_TEST_CLASS_NAME_(CaseName, TestName) \
-      : public CaseName<gtest_TypeParam_> { \
-   private: \
-    typedef CaseName<gtest_TypeParam_> TestFixture; \
-    typedef gtest_TypeParam_ TypeParam; \
-    virtual void TestBody(); \
-  }; \
-  bool gtest_##CaseName##_##TestName##_registered_ GTEST_ATTRIBUTE_UNUSED_ = \
-      ::testing::internal::TypeParameterizedTest< \
-          CaseName, \
-          ::testing::internal::TemplateSel< \
-              GTEST_TEST_CLASS_NAME_(CaseName, TestName)>, \
-          GTEST_TYPE_PARAMS_(CaseName)>::Register(\
-              "", ::testing::internal::CodeLocation(__FILE__, __LINE__), \
-              #CaseName, #TestName, 0); \
-  template <typename gtest_TypeParam_> \
-  void GTEST_TEST_CLASS_NAME_(CaseName, TestName)<gtest_TypeParam_>::TestBody()
+# define TYPED_TEST(CaseName, TestName)                                       \
+  template <typename gtest_TypeParam_>                                        \
+  class GTEST_TEST_CLASS_NAME_(CaseName, TestName)                            \
+      : public CaseName<gtest_TypeParam_> {                                   \
+   private:                                                                   \
+    typedef CaseName<gtest_TypeParam_> TestFixture;                           \
+    typedef gtest_TypeParam_ TypeParam;                                       \
+    virtual void TestBody();                                                  \
+  };                                                                          \
+  static bool gtest_##CaseName##_##TestName##_registered_                     \
+        GTEST_ATTRIBUTE_UNUSED_ =                                             \
+      ::testing::internal::TypeParameterizedTest<                             \
+          CaseName,                                                           \
+          ::testing::internal::TemplateSel<GTEST_TEST_CLASS_NAME_(CaseName,   \
+                                                                  TestName)>, \
+          GTEST_TYPE_PARAMS_(                                                 \
+              CaseName)>::Register("",                                        \
+                                   ::testing::internal::CodeLocation(         \
+                                       __FILE__, __LINE__),                   \
+                                   #CaseName, #TestName, 0,                   \
+                                   ::testing::internal::GenerateNames<        \
+                                       GTEST_NAME_GENERATOR_(CaseName),       \
+                                       GTEST_TYPE_PARAMS_(CaseName)>());      \
+  template <typename gtest_TypeParam_>                                        \
+  void GTEST_TEST_CLASS_NAME_(CaseName,                                       \
+                              TestName)<gtest_TypeParam_>::TestBody()
 
 #endif  // GTEST_HAS_TYPED_TEST
 
@@ -18943,19 +19454,26 @@ INSTANTIATE_TYPED_TEST_CASE_P(My, FooTest, MyTypes);
 // The 'Types' template argument below must have spaces around it
 // since some compilers may choke on '>>' when passing a template
 // instance (e.g. Types<int>)
-# define INSTANTIATE_TYPED_TEST_CASE_P(Prefix, CaseName, Types) \
-  bool gtest_##Prefix##_##CaseName GTEST_ATTRIBUTE_UNUSED_ = \
-      ::testing::internal::TypeParameterizedTestCase<CaseName, \
-          GTEST_CASE_NAMESPACE_(CaseName)::gtest_AllTests_, \
-          ::testing::internal::TypeList< Types >::type>::Register(\
-              #Prefix, \
-              ::testing::internal::CodeLocation(__FILE__, __LINE__), \
-              &GTEST_TYPED_TEST_CASE_P_STATE_(CaseName), \
-              #CaseName, GTEST_REGISTERED_TEST_NAMES_(CaseName))
+# define INSTANTIATE_TYPED_TEST_CASE_P(Prefix, CaseName, Types, ...)      \
+  static bool gtest_##Prefix##_##CaseName GTEST_ATTRIBUTE_UNUSED_ =       \
+      ::testing::internal::TypeParameterizedTestCase<                     \
+          CaseName, GTEST_CASE_NAMESPACE_(CaseName)::gtest_AllTests_,     \
+          ::testing::internal::TypeList< Types >::type>::                 \
+          Register(#Prefix,                                               \
+                   ::testing::internal::CodeLocation(__FILE__, __LINE__), \
+                   &GTEST_TYPED_TEST_CASE_P_STATE_(CaseName), #CaseName,  \
+                   GTEST_REGISTERED_TEST_NAMES_(CaseName),                \
+                   ::testing::internal::GenerateNames<                    \
+                       ::testing::internal::NameGeneratorSelector<        \
+                           __VA_ARGS__>::type,                            \
+                       ::testing::internal::TypeList< Types >::type>())
 
 #endif  // GTEST_HAS_TYPED_TEST_P
 
 #endif  // GTEST_INCLUDE_GTEST_GTEST_TYPED_TEST_H_
+
+GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
+/* class A needs to have dll-interface to be used by clients of class B */)
 
 // Depending on the platform, different string classes are available.
 // On Linux, in addition to ::std::string, Google also makes use of
@@ -19004,6 +19522,10 @@ GTEST_DECLARE_string_(color);
 // the tests to run. If the filter is not given all tests are executed.
 GTEST_DECLARE_string_(filter);
 
+// This flag controls whether Google Test installs a signal handler that dumps
+// debugging information when fatal signals are raised.
+GTEST_DECLARE_bool_(install_failure_signal_handler);
+
 // This flag causes the Google Test to list tests. None of the tests listed
 // are actually run if the flag is provided.
 GTEST_DECLARE_bool_(list_tests);
@@ -19046,6 +19568,10 @@ GTEST_DECLARE_bool_(throw_on_failure);
 // platforms test results are streamed to the specified port on
 // the specified host machine.
 GTEST_DECLARE_string_(stream_result_to);
+
+#if GTEST_USE_OWN_FLAGFILE_FLAG_
+GTEST_DECLARE_string_(flagfile);
+#endif  // GTEST_USE_OWN_FLAGFILE_FLAG_
 
 // The upper limit for valid stack trace depths.
 const int kMaxStackTraceDepth = 100;
@@ -19206,7 +19732,7 @@ class GTEST_API_ AssertionResult {
   const char* message() const {
     return message_.get() != NULL ?  message_->c_str() : "";
   }
-  // TODO(vladl@google.com): Remove this after making sure no clients use it.
+  // FIXME: Remove this after making sure no clients use it.
   // Deprecated; please use message() instead.
   const char* failure_message() const { return message(); }
 
@@ -19292,6 +19818,8 @@ GTEST_API_ AssertionResult AssertionFailure(const Message& msg);
 // 'gen_gtest_pred_impl.py 5'.  DO NOT EDIT BY HAND!
 //
 // Implements a family of generic predicate assertion macros.
+
+// GOOGLETEST_CM0001 DO NOT DELETE
 
 #ifndef GTEST_INCLUDE_GTEST_GTEST_PRED_IMPL_H_
 #define GTEST_INCLUDE_GTEST_GTEST_PRED_IMPL_H_
@@ -19867,7 +20395,7 @@ class GTEST_API_ TestResult {
 
   // Adds a failure if the key is a reserved attribute of Google Test
   // testcase tags.  Returns true if the property is valid.
-  // TODO(russr): Validate attribute names are legal and human readable.
+  // FIXME: Validate attribute names are legal and human readable.
   static bool ValidateTestProperty(const std::string& xml_element,
                                    const TestProperty& test_property);
 
@@ -21575,5 +22103,7 @@ int RUN_ALL_TESTS() GTEST_MUST_USE_RESULT_;
 inline int RUN_ALL_TESTS() {
   return ::testing::UnitTest::GetInstance()->Run();
 }
+
+GTEST_DISABLE_MSC_WARNINGS_POP_()  //  4251
 
 #endif  // GTEST_INCLUDE_GTEST_GTEST_H_

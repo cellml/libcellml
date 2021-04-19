@@ -2,12 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
-%import "enumerations.i"
+%import "createconstructor.i"
 %import "importedentity.i"
-
-%ignore libcellml::Units::Units(Units &&);
-%ignore libcellml::Units::operator =;
+%import "types.i"
 
 // Add typemaps to fix string ref inputs (fixes memory leak issues)
 %include "typemaps.i"
@@ -23,12 +20,18 @@
 
 // Remove methods which cause conflicts for languages with bad enum support
 // (e.g. Python)
-%ignore libcellml::Units::getUnitAttributes(StandardUnit standardRef,
+%ignore libcellml::Units::unitAttributes(StandardUnit standardRef,
  std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 %ignore libcellml::Units::removeUnit(StandardUnit standardRef);
 // This one causes confusion: addUnit(1, 1.0) --> (StandardUnit, double exp)
 // but: addUnit(1, 1) --> (StandardUnit, Prefix, default=1, default=1)
 %ignore libcellml::Units::addUnit(StandardUnit standardRef, double exponent);
+
+// Removing the overload of enumeration and integers for the Prefix argument
+%ignore libcellml::Units::addUnit(StandardUnit standardRef, Prefix prefix, double exponent, double multiplier, const std::string &id);
+%ignore libcellml::Units::addUnit(StandardUnit standardRef, Prefix prefix, double exponent=1.0, double multiplier=1.0, const std::string &id="");
+%ignore libcellml::Units::addUnit(const std::string &reference, Prefix prefix, double exponent, double multiplier, const std::string &id);
+%ignore libcellml::Units::addUnit(const std::string &reference, Prefix prefix, double exponent=1.0, double multiplier=1.0, const std::string &id="");
 
 %feature("docstring") libcellml::Units
 "Represents a CellML Units definition.";
@@ -43,13 +46,7 @@ Possible signatures:
  - addUnit(reference)
 
 where `reference` can be a string or a StandardUnits. And `prefix` can be a
-string or Prefix.
-
-In addition, there's a signature
-
- - addUnit(reference, prefix, exponent, multiplier=1)
-
-where `prefix` is also allowed to be a float.";
+string or an integer.";
 
 %feature("docstring") libcellml::Units::removeUnit
 "Removes the unit specified by index, reference, or StandardUnit.
@@ -64,9 +61,13 @@ Only the first matching unit is removed.
 %feature("docstring") libcellml::Units::isBaseUnit
 "Tests if this is a base unit.";
 
-%feature("docstring") libcellml::Units::getUnitAttributes
+%feature("docstring") libcellml::Units::unitAttributes
 "Returns the attributes of the unit specified by index, reference, or
 StandardUnit.";
+
+%feature("docstring") libcellml::Units::requiresImports
+"Returns `True` when this Units object depends on an imported child
+Units object, or `False` otherwise.";
 
 %feature("docstring") libcellml::Units::unitCount
 "Returns the number of units contained by this units object.";
@@ -75,11 +76,29 @@ StandardUnit.";
 "Makes this Units an imported units by defining an `ImportSource` from which to
 extract the units with the given `name`.";
 
+%feature("docstring") libcellml::Units::scalingFactor
+"Returns the scaling factor between two Units objects.";
+
+%feature("docstring") libcellml::Units::compatible
+"Tests if two Units have the same dimensional basis.";
+
+%feature("docstring") libcellml::Units::equivalent
+"Tests if two Units are equivalent in base units as well as scaling factor.";
+
+%feature("docstring") libcellml::Units::clone
+"Create a copy of this units.";
+
+%feature("docstring") libcellml::Units::unitId
+"Returns the id string of the Unit item at the given index.";
+
+%feature("docstring") libcellml::Units::setUnitId
+"Sets the id string of the Unit item at the given index.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
         bool removeUnit(long index) {
-            if(index < 0) return false;
+            if (index < 0) return false;
             return $self->removeUnit((size_t)index);
         }
     }
@@ -87,6 +106,10 @@ extract the units with the given `name`.";
 
 %{
 #include "libcellml/units.h"
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 // The name 'reference' has been typemapped above, which causes an issue for
@@ -99,5 +122,7 @@ extract the units with the given `name`.";
 }
 %ignore libcellml::Units::removeUnit(const std::string &reference);
 
-%include "libcellml/types.h"
+%create_constructor(Units)
+%create_name_constructor(Units)
+
 %include "libcellml/units.h"

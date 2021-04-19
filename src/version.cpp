@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "versionconfig.h"
-
 #include "libcellml/version.h"
 
 #include <string>
+
+#include "versionconfig.h"
 
 namespace libcellml {
 
@@ -27,7 +27,7 @@ unsigned int version()
     return LIBCELLML_LIBRARY_VERSION;
 }
 
-const std::string versionString()
+std::string versionString()
 {
     return LIBCELLML_LIBRARY_VERSION_STRING;
 }

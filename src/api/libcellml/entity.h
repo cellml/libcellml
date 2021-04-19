@@ -16,11 +16,10 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/enumerations.h"
+#include <string>
+
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"
-
-#include <string>
 
 namespace libcellml {
 
@@ -32,18 +31,17 @@ namespace libcellml {
 class LIBCELLML_EXPORT Entity
 {
 public:
-    Entity(); /**< Constructor */
-    virtual ~Entity(); /**< Destructor */
-    Entity(const Entity &rhs); /**< Copy constructor */
-    Entity(Entity &&rhs); /**< Move constructor */
-    Entity &operator=(Entity e); /**< Assignment operator */
+    virtual ~Entity(); /**< Destructor. */
+    Entity(const Entity &rhs) = delete; /**< Copy constructor. */
+    Entity(Entity &&rhs) noexcept = delete; /**< Move constructor. */
+    Entity &operator=(Entity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Set the @p id document identifier for this entity.
      *
      * Set the @p id document identifier for this entity using a @c std::string.
      *
-     * @sa getId
+     * @sa id
      *
      * @param id The @c std::string document identifier to set.
      */
@@ -59,61 +57,62 @@ public:
      *
      * @return The @c std::string document identifier for this entity.
      */
-    std::string getId() const;
+    std::string id() const;
 
     /**
      * @brief Returns the parent of the CellML Entity.
      *
-     * @return A pointer to the entities parent if it has one,
-     * otherwise the null pointer.
+     * @return A pointer to the entity's parent if it has one,
+     * otherwise it returns the null pointer.
      */
-    void *getParent() const;
+    EntityPtr parent() const;
 
     /**
-     * @brief Sets the model as the parent of this entity.
+     * @brief Sets the entity as the parent of this entity.
      *
-     * Set the parent of the entity to the model given.
+     * Set the parent of the entity to the entity given.
      *
-     * @param parent A raw pointer to a cellml::Model.
+     * @param parent An @c Entity.
      */
-    void setParent(Model *parent);
-
-    /**
-     * @brief Sets the component as the parent of this entity.
-     *
-     * Set the parent of the entity to the component given.
-     *
-     * @overload
-     *
-     * @param parent A raw pointer to a cellml::Component.
-     */
-    void setParent(Component *parent);
+    void setParent(const EntityPtr &parent);
 
     /**
      * @brief Clear the pointer to the parent entity.
      *
      * Clears the pointer to the parent entity.
      */
-    void clearParent();
+    void removeParent();
 
     /**
-     * @brief Test to see if the given component is a parent.
+     * @brief Test to see if the given entity has a parent.
      *
-     * Tests the given raw component pointer to determine if the entity or
-     * any of its parent entities already has this component as a parent.
-     * This allows for a test against creating cycles. If the given component
+     * Tests the given entity to determine if the entity has a parent.
+     * If the entity has a parent then @c true is returned otherwise
+     * @c false is returned.m
+     *
+     * @return @c true if this entity has a parent, @c false otherwise.
+     */
+    bool hasParent() const;
+
+    /**
+     * @brief Test to see if the given entity is an ancestor of this entity.
+     *
+     * Tests the given entity to determine if the entity or
+     * any of its parent entities already has this entity as a parent.
+     * This allows for a test against creating cycles. If the given entity
      * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
      *
-     * @param c The raw pointer to the component to test against.
+     * @param component The entity to test against.
      *
-     * @return @c true if the entity has the given component as a parent, @c false otherwise.
+     * @return @c true if this entity has the given entity as a parent, @c false otherwise.
      */
-    bool hasParent(Component *c) const;
+    bool hasAncestor(const EntityPtr &entity) const;
+
+protected:
+    Entity(); /**< Constructor. */
 
 private:
-    void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct EntityImpl;
     EntityImpl *mPimpl;
 };

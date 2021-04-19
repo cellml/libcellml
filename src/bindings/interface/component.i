@@ -2,8 +2,11 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
+%include <std_shared_ptr.i>
+
 %import "componententity.i"
+%import "createconstructor.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Component
 "Represents a CellML component.";
@@ -16,7 +19,7 @@ component in the `importSource`.";
 %feature("docstring") libcellml::Component::appendMath
 "Appends `math` to the existing math string for this component.";
 
-%feature("docstring") libcellml::Component::getMath
+%feature("docstring") libcellml::Component::math
 "Returns a math string if one has been created for this component (empty string
 if not).";
 
@@ -24,10 +27,13 @@ if not).";
 "Sets the math string for this component.
 If `math` is an empty string, math will be removed from the component.";
 
+%feature("docstring") libcellml::Component::removeMath
+"Clears the math from this component.";
+
 %feature("docstring") libcellml::Component::addVariable
 "Adds variable `variable` to this component.";
 
-%feature("docstring") libcellml::Component::getVariable
+%feature("docstring") libcellml::Component::variable
 "Returns a Variable from this component, specified by name or index.
 
 Only the first matching variable is returned.";
@@ -65,6 +71,11 @@ other variables), this component will not be serialised in the connection.";
 %feature("docstring") libcellml::Component::addReset
 "Add a reset `reset` to this component.";
 
+%feature("docstring") libcellml::Component::takeReset
+"Removes a reset and returns it from this component, specified by index.
+
+Returns the `Reset` on success.";
+
 %feature("docstring") libcellml::Component::removeReset
 "Remove the reset at the given index from this component.
 If the index is not valid @c false is returned, the valid
@@ -73,7 +84,7 @@ range for the index is [0, #resets).";
 %feature("docstring") libcellml::Component::removeAllResets
 "Clears all resets that have been added to this component.";
 
-%feature("docstring") libcellml::Component::getReset
+%feature("docstring") libcellml::Component::reset
 "Returns a reference to a reset at the index @p index for this
 component. If the index is not valid a @c nullptr is returned, the valid
 range for the index is [0, #resets).";
@@ -86,15 +97,23 @@ range for the index is [0, #resets).";
 resets. Returns True if the :param: reset is in this component's
 resets and False otherwise.";
 
+%feature("docstring") libcellml::Component::clone
+"Create a copy of this component.";
+
+%feature("docstring") libcellml::Component::requiresImports
+"Determines whether this component relies on any imports.  If this component 
+or any of its encapsulated components are imported, returns @c true, 
+otherwise @c false.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Component {
-        VariablePtr getVariable(long index) const {
-            if(index < 0) return nullptr;
-            return $self->getVariable(size_t(index));
+        VariablePtr variable(long index) const {
+            if (index < 0) return nullptr;
+            return $self->variable(size_t(index));
         }
         bool removeVariable(long index) {
-            if(index < 0) return false;
+            if (index < 0) return false;
             return $self->removeVariable(size_t(index));
         }
     }
@@ -104,8 +123,11 @@ resets and False otherwise.";
 #include "libcellml/component.h"
 %}
 
-%ignore libcellml::Component::Component(Component &&);
-%ignore libcellml::Component::operator =;
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
 
-%include "libcellml/types.h"
+%create_constructor(Component)
+%create_name_constructor(Component)
+
 %include "libcellml/component.h"
