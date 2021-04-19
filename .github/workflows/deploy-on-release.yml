@@ -282,7 +282,7 @@ jobs:
       with:
         repository: OpenCMISS-Dependencies/libxml2
         path: libxml2
-        ref: v2.9.10
+        ref: v2.9.6
 
     - name: Set up Python ${{ matrix.config.python_version }}
       uses: actions/setup-python@v2
@@ -332,14 +332,8 @@ jobs:
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
-
-          message(STATUS "Finished with zlib")
-          message(STATUS "Starting with LibXml2")
-          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }} -D LIBXML2_WITH_ICONV=OFF -D LIBXML2_WITH_LZMA=OFF -D LIBXML2_WITH_DEBUG=OFF -D LIBXML2_WITH_PYTHON=OFF -D LIBXML2_WITH_TESTS=OFF -D LIBXML2_WITH_PROGRAMS=OFF
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2" OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
-          message(STATUS "Configured LibXml2")
-          message(STATUS "${_OUTPUT}")
-          message(STATUS "${_ERROR}")
+          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }} -D BUILD_TESTS=OFF
+            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
           execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-libxml2" --config Release
