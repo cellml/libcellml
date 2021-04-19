@@ -83,7 +83,7 @@ jobs:
         work_dir=/home/work
         src_dir=/home/src
 
-        cmake -S $src_dir/libxml2 -B $work_dir/build-libxml2 -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=OFF -D BUILD_TESTS=OFF
+        cmake -S $src_dir/libxml2 -B $work_dir/build-libxml2 -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=OFF -D LIBXML2_WITH_ICONV=OFF -D LIBXML2_WITH_LZMA=OFF -D LIBXML2_WITH_PYTHON=OFF -D LIBXML2_WITH_TESTS=OFF -D LIBXML2_WITH_PROGRAMS=OFF
         cd $work_dir/build-libxml2
         make -j3
         make install
@@ -596,7 +596,7 @@ jobs:
         run: |
           mkdir build-libxml2-release
           cd build-libxml2-release
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local -DZLIB_DIR=../usr/local/share/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF ../libxml2/
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local -DZLIB_DIR=../usr/local/share/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF  -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
           make -j3 install
 
       - name: Build libcllml.js
