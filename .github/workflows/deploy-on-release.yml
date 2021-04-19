@@ -332,7 +332,7 @@ jobs:
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
-          message(STATUS "${CMAKE_COMMAND} -S \"${ACTION_DIR}/libxml2\" -B \"${ACTION_DIR}/build-libxml2\" ${{ matrix.config.zlib_dir }}")
+
           execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}
             WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2" RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
             message(STATUS "After configure:")
@@ -612,7 +612,7 @@ jobs:
           emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
           make -j3 install
 
-      - name: Build libcllml.js
+      - name: Build libcellml.js
         shell: bash
         run: |
           mkdir build-libcellml-release
