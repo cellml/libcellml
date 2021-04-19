@@ -282,7 +282,7 @@ jobs:
       with:
         repository: OpenCMISS-Dependencies/libxml2
         path: libxml2
-        ref: v2.9.6
+        ref: v2.9.10
 
     - name: Set up Python ${{ matrix.config.python_version }}
       uses: actions/setup-python@v2
@@ -333,24 +333,12 @@ jobs:
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
 
-          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}
+          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }} -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
             RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
-            message(STATUS "After configure:")
-            message(STATUS "${_RESULT}")
-            message(STATUS "${_OUTPUT}")
-            message(STATUS "${_ERROR}")
           execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2" RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
-            message(STATUS "After build:")
-            message(STATUS "${_RESULT}")
-            message(STATUS "${_OUTPUT}")
-            message(STATUS "${_ERROR}")
+            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-libxml2" --config Release
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2" RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
-            message(STATUS "After install:")
-            message(STATUS "${_RESULT}")
-            message(STATUS "${_OUTPUT}")
-            message(STATUS "${_ERROR}")
+            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
         else()
           execute_process(COMMAND ./configure WORKING_DIRECTORY "${ACTION_DIR}/swig-4.0.2")
           execute_process(COMMAND make WORKING_DIRECTORY "${ACTION_DIR}/swig-4.0.2")
