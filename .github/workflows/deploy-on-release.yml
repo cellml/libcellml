@@ -336,8 +336,10 @@ jobs:
           message(STATUS "Finished with zlib")
           message(STATUS "Starting with LibXml2")
           execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
+            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2" OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
           message(STATUS "Configured LibXml2")
+          message(STATUS "${_OUTPUT}")
+          message(STATUS "${_ERROR}")
           execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-libxml2" --config Release
