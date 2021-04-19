@@ -332,12 +332,25 @@ jobs:
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
+          message(STATUS "${CMAKE_COMMAND} -S \"${ACTION_DIR}/libxml2\" -B \"${ACTION_DIR}/build-libxml2\" ${{ matrix.config.zlib_dir }}")
           execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
+            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2" RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
+            message(STATUS "After configure:")
+            message(STATUS "${_RESULT}")
+            message(STATUS "${_OUTPUT}")
+            message(STATUS "${_ERROR}")
           execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
+            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2" RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
+            message(STATUS "After build:")
+            message(STATUS "${_RESULT}")
+            message(STATUS "${_OUTPUT}")
+            message(STATUS "${_ERROR}")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-libxml2" --config Release
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
+            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2" RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
+            message(STATUS "After install:")
+            message(STATUS "${_RESULT}")
+            message(STATUS "${_OUTPUT}")
+            message(STATUS "${_ERROR}")
         else()
           execute_process(COMMAND ./configure WORKING_DIRECTORY "${ACTION_DIR}/swig-4.0.2")
           execute_process(COMMAND make WORKING_DIRECTORY "${ACTION_DIR}/swig-4.0.2")
@@ -496,7 +509,7 @@ jobs:
       env:
         DATA: ${{ steps.package.outputs.files }}
       with:
-        github-token: ${{secrets.ABI_GIT_USER_WRITE_TOKEN}}
+        github-token: ${{secrets.MAINTAINER_WRITE_TOKEN}}
         script: |
           const script = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/upload-asset.js`)
           script({github, context})
@@ -627,8 +640,15 @@ jobs:
         env:
           DATA: ${{ steps.package-javascript.outputs.files }}
         with:
-          github-token: ${{secrets.ABI_GIT_USER_WRITE_TOKEN}}
+          github-token: ${{secrets.MAINTAINER_WRITE_TOKEN}}
           script: |
             const script = require(`${process.env.GITHUB_WORKSPACE}/libcellml/.github/scripts/upload-asset.js`)
             script({github, context})
 
+      - name: Publish libcellml.js
+        shell: bash
+        run |
+          cd build-libcellml-release/src/bindings/javascript
+          npm publish --access public
+          env:
+            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
