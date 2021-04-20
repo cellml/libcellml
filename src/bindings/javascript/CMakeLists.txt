@@ -61,6 +61,7 @@ set_target_properties(libcellml.common PROPERTIES
 
 configure_file(README.md README.md COPYONLY)
 configure_file(vue-app-with-libcellml.png vue-app-with-libcellml.png COPYONLY)
+configure_file(.npmrc .npmrc COPYONLY)
 
 set(_PACKAGE_JSON "\{
   \"name\": \"libcellml.js\",
