@@ -563,7 +563,7 @@ jobs:
         with:
           repository: cellml/libcellml
           path: libcellml
-          ref: main
+          ref: release
 
       - name: Checkout zlib
         uses: actions/checkout@v2
@@ -640,4 +640,4 @@ jobs:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
         run: |
           cd build-libcellml-release/src/bindings/javascript
-          npm publish --access public --token $NPM_TOKEN
+          npm publish --access public
