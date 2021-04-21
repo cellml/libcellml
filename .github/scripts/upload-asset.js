@@ -5,6 +5,8 @@ module.exports = ({github, context}) => {
 
   let upload_url = context.payload.release.upload_url
   upload_url = upload_url.split('{').shift()
+
+    console.log(context)
   
   const files = process.env.DATA.split(';')
   for (let index in files) {
