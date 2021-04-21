@@ -563,7 +563,7 @@ jobs:
         with:
           repository: cellml/libcellml
           path: libcellml
-          ref: main
+          ref: release
 
       - name: Checkout zlib
         uses: actions/checkout@v2
