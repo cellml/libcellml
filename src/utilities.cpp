@@ -108,7 +108,7 @@ bool isNonNegativeCellMLInteger(const std::string &candidate)
 
 bool isCellMLInteger(const std::string &candidate)
 {
-    if (!candidate.empty() && *candidate.begin() == '-') {
+    if (!candidate.empty() && ((*candidate.begin() == '-') || (*candidate.begin() == '+'))) {
         return isNonNegativeCellMLInteger(candidate.substr(1));
     }
     return isNonNegativeCellMLInteger(candidate);
@@ -116,9 +116,6 @@ bool isCellMLInteger(const std::string &candidate)
 
 bool isCellMLExponent(const std::string &candidate)
 {
-    if (!candidate.empty() && *candidate.begin() == '+') {
-        return isCellMLInteger(candidate.substr(1));
-    }
     return isCellMLInteger(candidate);
 }
 
