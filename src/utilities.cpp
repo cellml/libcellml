@@ -78,6 +78,18 @@ bool convertToInt(const std::string &in, int &out)
     return true;
 }
 
+int convertPrefixToInt(const std::string &in)
+{
+    int prefixInt = 0;
+    if (isStandardPrefixName(in)) {
+        prefixInt = standardPrefixList.at(in);
+    } else {
+        convertToInt(in, prefixInt);
+    }
+
+    return prefixInt;
+}
+
 std::string convertToString(size_t value)
 {
     std::ostringstream strs;

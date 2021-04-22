@@ -181,12 +181,17 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
         double expMult;
         double standardMult = 0.0;
         double prefixMult = 0.0;
+        int prefixInt;
         for (size_t i = 0; i < units->unitCount(); ++i) {
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
 
             if (isStandardPrefixName(pre)) {
                 prefixMult = standardPrefixList.at(pre);
+            } else if (pre.empty()) {
+                prefixMult = 0;
+            } else if (convertToInt(pre, prefixInt)) {
+                prefixMult = prefixInt;
             } else {
                 return false;
             }
@@ -328,14 +333,26 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     UnitDefinition ud;
     ud.mReference = reference;
     // Allow all nonzero user-specified prefixes
-    try {
-        int prefixInteger = std::stoi(prefix);
-        if (prefixInteger != 0.0) {
+
+    bool predefinedPrefix = false;
+    for (const auto &entry : prefixToString ) {
+        if (entry.second == prefix) {
+            ud.mPrefix = prefix;
+            predefinedPrefix = true;
+            break;
+        }
+    }
+
+    if (!predefinedPrefix && isCellMLInteger(prefix)) {
+        try {
+            int prefixInteger = std::stoi(prefix);
+            if (prefixInteger != 0.0) {
+                ud.mPrefix = prefix;
+            }
+        } catch (std::out_of_range &) {
             ud.mPrefix = prefix;
         }
-    } catch (std::invalid_argument &) {
-        ud.mPrefix = prefix;
-    } catch (std::out_of_range &) {
+    } else {
         ud.mPrefix = prefix;
     }
 
