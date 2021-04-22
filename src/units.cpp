@@ -335,7 +335,7 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     // Allow all nonzero user-specified prefixes
 
     bool predefinedPrefix = false;
-    for (const auto &entry : prefixToString ) {
+    for (const auto &entry : prefixToString) {
         if (entry.second == prefix) {
             ud.mPrefix = prefix;
             predefinedPrefix = true;
