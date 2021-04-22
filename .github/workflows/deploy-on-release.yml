@@ -12,7 +12,7 @@ env:
 jobs:
   many-linux-wheels:
     name: ${{ matrix.config.name }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     container: quay.io/pypa/manylinux2014_x86_64
     strategy:
       fail-fast: false
@@ -41,7 +41,7 @@ jobs:
         mkdir $src_dir
 
         # fetch libraries
-        git clone https://github.com/hsorby/l1bcellml -b master --depth 1 $src_dir/libcellml
+        git clone https://github.com/cellml/libcellml -b release --depth 1 $src_dir/libcellml
         git clone https://github.com/OpenCMISS-Dependencies/zlib -b v1.2.3 --depth 1 $src_dir/zlib
         git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.6 --depth 1 $src_dir/libxml2
 
@@ -232,27 +232,27 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Server 2019 MSVC Py38", deploy_libs: true, deploy_python: true,
+            name: "Windows Server 2019 MSVC Py38", deploy_libs: false, deploy_python: true,
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=C:\\\\Program Files (x86)\\\\LibXml2\\\\LibXml2\\\\CMake\\\\"',
-            zlib_dir: '-D "ZLIB_DIR=C:\\\\Program Files (x86)\\\\ZLIB\\\\lib\\\\cmake\\\\"',
+            libxml2_dir: '-D "LibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/"',
+            zlib_dir: '-D "ZLIB_DIR=../usr/local/lib/cmake/ZLIB/"',
             build_type: "Release", cc: "cl", cxx: "cl", python_version: 3.8,
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
             name: "Windows Server 2019 MSVC Py39", deploy_libs: false, deploy_python: true,
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=C:\\\\Program Files (x86)\\\\LibXml2\\\\LibXml2\\\\CMake\\\\"',
-            zlib_dir: '-D "ZLIB_DIR=C:\\\\Program Files (x86)\\\\ZLIB\\\\lib\\\\cmake\\\\"',
+            libxml2_dir: '-D "LibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/"',
+            zlib_dir: '-D "ZLIB_DIR=../usr/local/ZLIB/ZLIB/CMake/"',
             build_type: "Release", cc: "gcc", cxx: "g++", python_version: 3.9
           }
         - {
-            name: "Ubuntu 20.04 GCC Py38", deploy_libs: true, deploy_python: false,
+            name: "Ubuntu 20.04 GCC Py38", deploy_libs: false, deploy_python: false,
             os: ubuntu-20.04, container: ubuntu-latest, swig_executable: "-D SWIG_EXECUTABLE=/usr/local/bin/swig",
             build_type: "Release", cc: "gcc", cxx: "g++", python_version: 3.8
           }
         - {
-            name: "macOS 10.15 Clang Py38", deploy_libs: true, deploy_python: true,
+            name: "macOS 10.15 Clang Py38", deploy_libs: false, deploy_python: true,
             os: macos-10.15,
             python_rpath: "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.8/",
             build_type: "Release", cc: "clang", cxx: "clang++", python_version: 3.8
@@ -267,6 +267,8 @@ jobs:
     steps:
     - name: Checkout libCellML
       uses: actions/checkout@v2
+      with:
+        ref: release
 
     - name: Checkout zlib
       uses: actions/checkout@v2
@@ -280,7 +282,7 @@ jobs:
       with:
         repository: OpenCMISS-Dependencies/libxml2
         path: libxml2
-        ref: v2.9.6
+        ref: v2.9.10
 
     - name: Set up Python ${{ matrix.config.python_version }}
       uses: actions/setup-python@v2
@@ -325,13 +327,14 @@ jobs:
           endforeach()
           file(TO_NATIVE_PATH "${WIN_PATH}" WIN_PATH)
           set(ENV{PATH} "${WIN_PATH}")
-          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/zlib" -B "${ACTION_DIR}/build-zlib")
+          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/zlib" -B "${ACTION_DIR}/build-zlib" -DCMAKE_INSTALL_PREFIX=../usr/local)
           execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-zlib" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
-          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
+
+          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}  -DCMAKE_INSTALL_PREFIX=../usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
+            RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
           execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-libxml2" --config Release
@@ -404,7 +407,7 @@ jobs:
         math(EXPR JOBS "${N} + 1")
 
         if ("${{ runner.os }}" STREQUAL "Windows")
-          set(BUILD_COMMMAND msbuild l1bCellML.sln /t:Build /p:Configuration=$ENV{BUILD_TYPE} /m:${N})
+          set(BUILD_COMMMAND msbuild libCellML.sln /t:Build /p:Configuration=$ENV{BUILD_TYPE} /m:${N})
         else()
           set(BUILD_COMMMAND make -j ${JOBS})
         endif()
@@ -494,7 +497,7 @@ jobs:
       env:
         DATA: ${{ steps.package.outputs.files }}
       with:
-        github-token: ${{secrets.ABI_GIT_USER_WRITE_TOKEN}}
+        github-token: ${{secrets.MAINTAINER_WRITE_TOKEN}}
         script: |
           const script = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/upload-asset.js`)
           script({github, context})
@@ -558,23 +561,23 @@ jobs:
       - name: Checkout libCellML
         uses: actions/checkout@v2
         with:
-          repository: hsorby/libcellml
+          repository: cellml/libcellml
           path: libcellml
-          ref: emscripten
+          ref: release
 
       - name: Checkout zlib
         uses: actions/checkout@v2
         with:
           repository: OpenCMISS-Dependencies/zlib
           path: zlib
-          ref: develop
+          ref: v1.2.3
 
       - name: Checkout LibXml2
         uses: actions/checkout@v2
         with:
           repository: OpenCMISS-Dependencies/libxml2
           path: libxml2
-          ref: v2.9.6
+          ref: v2.9.10
 
       - name: Instal emscripten
         shell: bash
@@ -594,15 +597,15 @@ jobs:
         run: |
           mkdir build-libxml2-release
           cd build-libxml2-release
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local -DZLIB_DIR=../usr/local/share/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF ../libxml2/
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
           make -j3 install
 
-      - name: Build libcllml.js
+      - name: Build libcellml.js
         shell: bash
         run: |
           mkdir build-libcellml-release
           cd build-libcellml-release
-          emcmake cmake -DLibXml2_DIR=../usr/local/share/cmake/LibXml2/ -DBUILD_TYPE=Release ../libcellml/
+          emcmake cmake -DLibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/ -DBUILD_TYPE=Release ../libcellml/
           make -j3
 
       - name: Pack libcellml.js
@@ -621,13 +624,20 @@ jobs:
           npm install mime
 
       - name: Upload libcellml.js
+        if: "!true"
         uses: actions/github-script@v3
         env:
           DATA: ${{ steps.package-javascript.outputs.files }}
         with:
-          github-token: ${{secrets.ABI_GIT_USER_WRITE_TOKEN}}
+          github-token: ${{secrets.MAINTAINER_WRITE_TOKEN}}
           script: |
-            console.log('===== This will need to change when the javascript bindings are properly added the cellml/libcellml repo. =====')
             const script = require(`${process.env.GITHUB_WORKSPACE}/libcellml/.github/scripts/upload-asset.js`)
             script({github, context})
 
+      - name: Publish libcellml.js
+        shell: bash
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+        run: |
+          cd build-libcellml-release/src/bindings/javascript
+          npm publish --access public
