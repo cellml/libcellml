@@ -83,6 +83,8 @@ int convertPrefixToInt(const std::string &in)
     int prefixInt = 0;
     if (isStandardPrefixName(in)) {
         prefixInt = standardPrefixList.at(in);
+    } else if (in.empty()) {
+        prefixInt = 0;
     } else {
         convertToInt(in, prefixInt);
     }
