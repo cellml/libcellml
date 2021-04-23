@@ -259,13 +259,13 @@ void testReferenceRule(const libcellml::IssuePtr &e)
         EXPECT_EQ("2.12.3", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MATH_CN_UNITS:
-        EXPECT_EQ("2.13.4", e->referenceHeading());
+        EXPECT_EQ("2.12.4", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MATH_CN_BASE10:
-        EXPECT_EQ("2.13.5", e->referenceHeading());
+        EXPECT_EQ("2.12.5", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MATH_CN_FORMAT:
-        EXPECT_EQ("2.13.5", e->referenceHeading());
+        EXPECT_EQ("2.12.5", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::ENCAPSULATION_ATTRIBUTE:
         EXPECT_EQ("2.13", e->referenceHeading());
