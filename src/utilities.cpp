@@ -78,15 +78,20 @@ bool convertToInt(const std::string &in, int &out)
     return true;
 }
 
-int convertPrefixToInt(const std::string &in)
+int convertPrefixToInt(const std::string &in, bool *ok)
 {
     int prefixInt = 0;
+
+    if (ok != nullptr) {
+        *ok = true;
+    }
+
     if (isStandardPrefixName(in)) {
         prefixInt = standardPrefixList.at(in);
-    } else if (in.empty()) {
-        prefixInt = 0;
-    } else {
+    } else if (isCellMLInteger(in)) {
         convertToInt(in, prefixInt);
+    } else if ((ok != nullptr) && !in.empty()) {
+        *ok = false;
     }
 
     return prefixInt;

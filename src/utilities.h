@@ -210,11 +210,14 @@ bool convertToInt(const std::string &in, int &out);
  * Converts the given @p prefix into its equivalent integer value.
  * Assumes that the given @p prefix can be transformed into an int.
  * This function does not handle bad inputs.
+ * If given, sets the parameter ok to @c true if the conversion succedded
+ * and @c false if it didn't.
  *
  * @param in The @c std::string value to convert to an @c int.
+ * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
  * @return The integer value of the @p prefix.
  */
-int convertPrefixToInt(const std::string &in);
+int convertPrefixToInt(const std::string &in, bool *ok = nullptr);
 
 /**
  * @brief Convert a @c int to @c std::string format.
