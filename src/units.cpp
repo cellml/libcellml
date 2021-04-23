@@ -185,11 +185,10 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
 
-            // Make sure convertPrefixToInt is safe to use whilst trying to avoid
-            // causing an exception.
-            if (pre.empty() || isStandardPrefixName(pre) || isCellMLInteger(pre)) {
-                prefixMult = convertPrefixToInt(pre);
-            } else {
+            bool ok;
+
+            prefixMult = convertPrefixToInt(pre, &ok);
+            if (!ok) {
                 return false;
             }
 
