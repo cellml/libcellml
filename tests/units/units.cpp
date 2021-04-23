@@ -2688,11 +2688,11 @@ TEST(Units, unknownUnitsScalingFactorIncompatible)
     EXPECT_EQ(0.0, scaling);
 }
 
-TEST(Units, circularImport)
+TEST(Units, circularImportDeeperLevelBaseUnits)
 {
     auto model1 = libcellml::Model::create("model1");
     auto model2 = libcellml::Model::create("model2");
-    auto model3 = libcellml::Model::create("model2");
+    auto model3 = libcellml::Model::create("model3");
 
     auto units1 = libcellml::Units::create("units1");
     auto units2 = libcellml::Units::create("units2");
