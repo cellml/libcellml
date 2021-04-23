@@ -331,19 +331,10 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     ud.mReference = reference;
 
     // Allow all nonzero user-specified prefixes.
-    bool predefinedPrefix = false;
-    for (const auto &entry : prefixToString) {
-        if (entry.second == prefix) {
-            ud.mPrefix = prefix;
-            predefinedPrefix = true;
-            break;
-        }
-    }
-
-    if (!predefinedPrefix && isCellMLInteger(prefix)) {
+    if (isCellMLInteger(prefix)) {
         try {
             int prefixInteger = std::stoi(prefix);
-            if (prefixInteger != 0.0) {
+            if (prefixInteger != 0) {
                 ud.mPrefix = prefix;
             }
         } catch (std::out_of_range &) {
@@ -355,9 +346,8 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
 
     ud.mExponent = exponent;
     ud.mMultiplier = multiplier;
-    if (!id.empty()) {
-        ud.mId = id;
-    }
+    ud.mId = id;
+
     mPimpl->mUnits.push_back(ud);
 }
 
