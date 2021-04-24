@@ -207,10 +207,8 @@ bool convertToInt(const std::string &in, int &out);
 /**
  * @brief Convert a units prefix to an int.
  *
- * Converts the given @p prefix into its equivalent integer value.
- * Assumes that the given @p prefix can be transformed into an int.
- * This function does not handle bad inputs.
- * If given, sets the parameter ok to @c true if the conversion succedded
+ * Converts the given units prefix (@p in) into its equivalent integer value.
+ * If given, sets the parameter @p ok to @c true if the conversion succeeded
  * and @c false if it didn't.
  *
  * @param in The @c std::string value to convert to an @c int.
