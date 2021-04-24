@@ -78,6 +78,25 @@ bool convertToInt(const std::string &in, int &out)
     return true;
 }
 
+int convertPrefixToInt(const std::string &in, bool *ok)
+{
+    int prefixInt = 0;
+
+    if (ok != nullptr) {
+        *ok = true;
+    }
+
+    if (isStandardPrefixName(in)) {
+        prefixInt = standardPrefixList.at(in);
+    } else if (isCellMLInteger(in)) {
+        convertToInt(in, prefixInt);
+    } else if ((ok != nullptr) && !in.empty()) {
+        *ok = false;
+    }
+
+    return prefixInt;
+}
+
 std::string convertToString(size_t value)
 {
     std::ostringstream strs;
@@ -108,7 +127,7 @@ bool isNonNegativeCellMLInteger(const std::string &candidate)
 
 bool isCellMLInteger(const std::string &candidate)
 {
-    if (!candidate.empty() && *candidate.begin() == '-') {
+    if (!candidate.empty() && ((*candidate.begin() == '-') || (*candidate.begin() == '+'))) {
         return isNonNegativeCellMLInteger(candidate.substr(1));
     }
     return isNonNegativeCellMLInteger(candidate);
@@ -116,9 +135,6 @@ bool isCellMLInteger(const std::string &candidate)
 
 bool isCellMLExponent(const std::string &candidate)
 {
-    if (!candidate.empty() && *candidate.begin() == '+') {
-        return isCellMLInteger(candidate.substr(1));
-    }
     return isCellMLInteger(candidate);
 }
 
