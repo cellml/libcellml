@@ -137,7 +137,6 @@ static const std::map<std::string, int> standardPrefixList = {
     {"kilo", 3},
     {"hecto", 2},
     {"deca", 1},
-    {"", 0},
     {"deci", -1},
     {"centi", -2},
     {"milli", -3},
@@ -147,56 +146,7 @@ static const std::map<std::string, int> standardPrefixList = {
     {"femto", -15},
     {"atto", -18},
     {"zepto", -21},
-    {"yocto", -24},
-    {"24", 24},
-    {"23", 23},
-    {"22", 22},
-    {"21", 21},
-    {"20", 20},
-    {"19", 19},
-    {"18", 18},
-    {"17", 17},
-    {"16", 16},
-    {"15", 15},
-    {"14", 14},
-    {"13", 13},
-    {"12", 12},
-    {"11", 11},
-    {"10", 10},
-    {"9", 9},
-    {"8", 8},
-    {"7", 7},
-    {"6", 6},
-    {"5", 5},
-    {"4", 4},
-    {"3", 3},
-    {"2", 2},
-    {"1", 1},
-    {"0", 0},
-    {"-1", -1},
-    {"-2", -2},
-    {"-3", -3},
-    {"-4", -4},
-    {"-5", -5},
-    {"-6", -6},
-    {"-7", -7},
-    {"-8", -8},
-    {"-9", -9},
-    {"-10", -10},
-    {"-11", -11},
-    {"-12", -12},
-    {"-13", -13},
-    {"-14", -14},
-    {"-15", -15},
-    {"-16", -16},
-    {"-17", -17},
-    {"-18", -18},
-    {"-19", -19},
-    {"-20", -20},
-    {"-21", -21},
-    {"-22", -22},
-    {"-23", -23},
-    {"-24", -24}};
+    {"yocto", -24}};
 
 /**
  * List of MathML elements supported by CellML.
@@ -253,6 +203,19 @@ bool convertToDouble(const std::string &in, double &out);
  * @return @c true if @in represents an @c int, @c false otherwise.
  */
 bool convertToInt(const std::string &in, int &out);
+
+/**
+ * @brief Convert a units prefix to an int.
+ *
+ * Converts the given units prefix (@p in) into its equivalent integer value.
+ * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * and @c false if it didn't.
+ *
+ * @param in The @c std::string value to convert to an @c int.
+ * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
+ * @return The integer value of the @p prefix.
+ */
+int convertPrefixToInt(const std::string &in, bool *ok = nullptr);
 
 /**
  * @brief Convert a @c int to @c std::string format.
