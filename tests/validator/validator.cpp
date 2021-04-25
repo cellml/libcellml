@@ -2959,6 +2959,62 @@ TEST(Validator, duplicateIdAll)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
+
+TEST(Validator, invalidIdsOnEveryElement)
+{
+    const std::vector<std::string> errorMessages = {
+        "Model 'everything' does not have a valid 'id' attribute, 'model_1*'.",
+        "Imported component 'component1' does not have a valid 'id' attribute, 'component_1@'.",
+        "Import of component 'component1' does not have a valid 'id' attribute, '𒀦@'.",
+        "Component 'component3' does not have a valid 'id' attribute, 'component_3$'.",
+        "Variable 'variable1' does not have a valid 'id' attribute, 'variable_3$'.",
+        "Variable 'variable2' does not have a valid 'id' attribute, 'variable_4$'.",
+        "MathML ci element has the child text 'variable4' which does not correspond with any variable names present in component 'component3'.",
+        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
+        "Component 'component2' does not have a valid 'id' attribute, 'component_2!'.",
+        "Variable 'variable1' does not have a valid 'id' attribute, 'ध!'.",
+        "Variable 'variable2' does not have a valid 'id' attribute, 'variable_2]'.",
+        "Reset in component 'component2' with order '1', ' does not have a valid 'id' attribute, 'reset_1['.",
+        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
+        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
+        "Reset in component 'component2' with order '1', with variable 'variable1', with test_variable 'variable2', ' does not have a valid test_value 'id' attribute, 'test_value_1;'.",
+        "Reset in component 'component2' with order '1', with variable 'variable1', with test_variable 'variable2', ' does not have a valid reset_value 'id' attribute, 'reset_value_1#'.",
+        "Import of units 'units1' does not have a valid 'id' attribute, '今天@'.",
+        "Imported units 'units1' does not have a valid 'id' attribute, '𒃵@'.",
+        "Units 'units2' does not have a valid 'id' attribute, 'ऊ?'.",
+        "Unit in units 'units2' does not have a valid 'id' attribute, 'ऊ?'.",
+        "Units 'units3' does not have a valid 'id' attribute, '3456eight'.",
+        "Units 'blob' does not have a valid 'id' attribute, 'units_4!'.",
+        "Model 'everything' does not have a valid encapsulation 'id' attribute, 'encapsulation_1%'.",
+        "Variable equivalence between variable 'variable1' in component 'component2' and variable 'variable1' in component 'component3', does not have a valid map_variables 'id' attribute, 'map_variables_1%'.",
+        "Connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable1', does not have a valid connection 'id' attribute, 'connection_1%'.",
+        "Variable equivalence between variable 'variable2' in component 'component2' and variable 'variable2' in component 'component3', does not have a valid map_variables 'id' attribute, 'map_variables_2%'.",
+        "Component 'component2' does not have a valid encapsulation 'id' attribute, 'component_ref_θ%'.",
+        "Component 'component3' does not have a valid encapsulation 'id' attribute, 'component_ref_⁇%'.",
+    };
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto model = parser->parseModel(fileContents("annotator/invalid_ids_on_every_element.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(40), validator->errorCount());
+    EXPECT_EQ_ISSUES(errorMessages, validator);
+}
+
 TEST(Validator, circularImportReferencesComponent)
 {
     const std::string errorMessageImporter =
@@ -3150,7 +3206,9 @@ TEST(Validator, importComponentWithInvalidName)
 TEST(Validator, importSecondGenComponentWithInvalidName)
 {
     const std::string errorMessageValidator =
-        "Import of component 'c' has an invalid URI in the xlink:href attribute.";
+        "Imported component 'c' is not valid because:\n"
+        "  -> Component 'c' imported as 'c' from 'invalid_import_url.cellml' has an error:\n"
+        "  -> Import of component 'c' has an invalid URI in the xlink:href attribute.";
     const std::string errorMessageImporter =
         "The attempt to resolve imports with the model at '"
         + resourcePath("importer/")
@@ -3183,7 +3241,8 @@ TEST(Validator, highIndexUnitsImport)
         + resourcePath("importer/") + "units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
     const std::string errorMessageValidator =
         "Imported units 'i_am_bad' is not valid because:\n"
-        " - Units 'ps' imported from 'units_library.cellml' has error; Units reference 'seconds' in units 'ps' is not a valid reference to a local units or a standard unit type.";
+        "  -> Units 'ps' imported as 'i_am_bad' from 'units_library.cellml' has an error:\n"
+        "  -> Units reference 'seconds' in units 'ps' is not a valid reference to a local units or a standard unit type.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3209,7 +3268,8 @@ TEST(Validator, importInvalidUnitsNotDirectlyDeterminedFromImport)
 {
     const std::string errorMessage =
         "Imported units 'i_am_bad' is not valid because:\n"
-        " - Units 'ps2' imported from 'units_library.cellml' has error; Prefix 'plinco' of a unit referencing 'second' in units 'ps2' is not a valid integer or an SI prefix.";
+        "  -> Units 'ps2' imported as 'i_am_bad' from 'units_library.cellml' has an error:\n"
+        "  -> Prefix 'plinco' of a unit referencing 'second' in units 'ps2' is not a valid integer or an SI prefix.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3264,8 +3324,11 @@ TEST(Validator, importInvalidUnitsReference)
 
 TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
 {
-    const std::string errorMessage =
-        "Component 'invalid_component' does not have a valid 'id' attribute, '8ioisfje+'.";
+    const std::string errorMessage1 = "Component 'invalid_component' does not have a valid 'id' attribute, '8ioisfje+'.";
+    const std::string errorMessage2 =
+        "Imported component 'imported_component' is not valid because:\n"
+        "  -> Component 'invalid_component' imported as 'imported_component' from 'component_that_is_invalid.cellml' has an error:\n"
+        "  -> Component 'invalid_component' does not have a valid 'id' attribute, '8ioisfje+'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3282,13 +3345,13 @@ TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
 
     validator->validateModel(invalidComponentModel);
     EXPECT_EQ(size_t(1), validator->issueCount());
-    EXPECT_EQ(errorMessage, validator->issue(0)->description());
+    EXPECT_EQ(errorMessage1, validator->issue(0)->description());
 
     importer->resolveImports(model, resourcePath("importer/"));
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(errorMessage, validator->issue(0)->description());
+    EXPECT_EQ(errorMessage2, validator->issue(0)->description());
 }
 
 TEST(Validator, importInvalidComponentReference)
@@ -3313,57 +3376,49 @@ TEST(Validator, importInvalidComponentReference)
     EXPECT_EQ(errorMessage, validator->issue(0)->description());
 }
 
-TEST(Validator, invalidIdsOnEveryElement)
+
+TEST(Validator, unitsErrorInImportedComponent)
 {
-    const std::vector<std::string> errorMessages = {
-        "Model 'everything' does not have a valid 'id' attribute, 'model_1*'.",
-        "Imported component 'component1' does not have a valid 'id' attribute, 'component_1@'.",
-        "Import of component 'component1' does not have a valid 'id' attribute, '𒀦@'.",
-        "Component 'component3' does not have a valid 'id' attribute, 'component_3$'.",
-        "Variable 'variable1' does not have a valid 'id' attribute, 'variable_3$'.",
-        "Variable 'variable2' does not have a valid 'id' attribute, 'variable_4$'.",
-        "MathML ci element has the child text 'variable4' which does not correspond with any variable names present in component 'component3'.",
-        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
-        "Component 'component2' does not have a valid 'id' attribute, 'component_2!'.",
-        "Variable 'variable1' does not have a valid 'id' attribute, 'ध!'.",
-        "Variable 'variable2' does not have a valid 'id' attribute, 'variable_2]'.",
-        "Reset in component 'component2' with order '1', ' does not have a valid 'id' attribute, 'reset_1['.",
-        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of math is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of apply is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of eq is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of ci is not valid.",
-        "W3C MathML DTD error: Syntax of value for attribute id of cn is not valid.",
-        "Reset in component 'component2' with order '1', with variable 'variable1', with test_variable 'variable2', ' does not have a valid test_value 'id' attribute, 'test_value_1;'.",
-        "Reset in component 'component2' with order '1', with variable 'variable1', with test_variable 'variable2', ' does not have a valid reset_value 'id' attribute, 'reset_value_1#'.",
-        "Import of units 'units1' does not have a valid 'id' attribute, '今天@'.",
-        "Imported units 'units1' does not have a valid 'id' attribute, '𒃵@'.",
-        "Units 'units2' does not have a valid 'id' attribute, 'ऊ?'.",
-        "Unit in units 'units2' does not have a valid 'id' attribute, 'ऊ?'.",
-        "Units 'units3' does not have a valid 'id' attribute, '3456eight'.",
-        "Units 'blob' does not have a valid 'id' attribute, 'units_4!'.",
-        "Model 'everything' does not have a valid encapsulation 'id' attribute, 'encapsulation_1%'.",
-        "Variable equivalence between variable 'variable1' in component 'component2' and variable 'variable1' in component 'component3', does not have a valid map_variables 'id' attribute, 'map_variables_1%'.",
-        "Connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable1', does not have a valid connection 'id' attribute, 'connection_1%'.",
-        "Variable equivalence between variable 'variable2' in component 'component2' and variable 'variable2' in component 'component3', does not have a valid map_variables 'id' attribute, 'map_variables_2%'.",
-        "Component 'component2' does not have a valid encapsulation 'id' attribute, 'component_ref_θ%'.",
-        "Component 'component3' does not have a valid encapsulation 'id' attribute, 'component_ref_⁇%'.",
-    };
+    const std::string errorMessage =
+        "Imported component 'component1' is not valid because:\n"
+        "  -> Component 'component2' imported as 'component1' from 'model2.cellml' has an error:\n"
+        "  -> Component 'component3' imported as 'component2' from 'model3.cellml' has an error:\n"
+        "  -> Variable 'time' in component 'component3' has a units reference 'seconds' which is neither standard nor defined in the parent model.";
 
-    auto parser = libcellml::Parser::create();
+    auto model1 = libcellml::Model::create("model1");
+    auto model2 = libcellml::Model::create("model2");
+    auto model3 = libcellml::Model::create("model3");
+
+    auto variable1 = libcellml::Variable::create("time");
+
+    auto units1 = libcellml::Units::create("seconds");
+
+    auto component1 = libcellml::Component::create("component1");
+    auto component2 = libcellml::Component::create("component2");
+    auto component3 = libcellml::Component::create("component3");
+
+    auto imp1 = libcellml::ImportSource::create();
+    auto imp2 = libcellml::ImportSource::create();
+
+    imp1->setModel(model2);
+    imp1->setUrl("model2.cellml");
+    imp2->setModel(model3);
+    imp2->setUrl("model3.cellml");
+
+    model1->addComponent(component1);
+    model2->addComponent(component2);
+    model3->addComponent(component3);
+
+    component3->addVariable(variable1);
+
+    variable1->setUnits(units1);
+
+    component1->setSourceComponent(imp1, "component2");
+    component2->setSourceComponent(imp2, "component3");
+
     auto validator = libcellml::Validator::create();
-    auto model = parser->parseModel(fileContents("annotator/invalid_ids_on_every_element.cellml"));
-    EXPECT_EQ(size_t(0), parser->issueCount());
 
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(40), validator->errorCount());
-    EXPECT_EQ_ISSUES(errorMessages, validator);
+    validator->validateModel(model1);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(errorMessage, validator->error(0)->description());
 }

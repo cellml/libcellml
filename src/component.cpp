@@ -53,7 +53,7 @@ struct Component::ComponentImpl
     bool equalVariables(const ComponentPtr &other) const;
     bool equalResets(const ComponentPtr &other) const;
 
-    bool isResovledWithHistory(ImportHistory &history) const;
+    bool isResolvedWithHistory(ImportHistory &history) const;
 };
 
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
@@ -121,7 +121,7 @@ ComponentPtr Component::create(const std::string &name) noexcept
     return std::shared_ptr<Component> {new Component {name}};
 }
 
-bool Component::ComponentImpl::isResovledWithHistory(ImportHistory &history) const
+bool Component::ComponentImpl::isResolvedWithHistory(ImportHistory &history) const
 {
     bool resolved = true;
     if (mQ->isImport()) {
@@ -138,13 +138,13 @@ bool Component::ComponentImpl::isResovledWithHistory(ImportHistory &history) con
                     resolved = false;
                 } else {
                     history.push_back(h);
-                    resolved = importedComponent->mPimpl->isResovledWithHistory(history);
+                    resolved = importedComponent->mPimpl->isResolvedWithHistory(history);
                 }
             }
         }
     }
     for (size_t i = 0; (i < mQ->componentCount()) && resolved; ++i) {
-        resolved = mQ->component(i)->mPimpl->isResovledWithHistory(history);
+        resolved = mQ->component(i)->mPimpl->isResolvedWithHistory(history);
     }
 
     return resolved;
@@ -457,7 +457,7 @@ bool Component::requiresImports()
 bool Component::doIsResolved() const
 {
     ImportHistory history;
-    return mPimpl->isResovledWithHistory(history);
+    return mPimpl->isResolvedWithHistory(history);
 }
 
 bool Component::doEquals(const EntityPtr &other) const
