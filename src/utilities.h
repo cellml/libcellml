@@ -185,7 +185,7 @@ static const std::map<Variable::InterfaceType, std::string> interfaceTypeToStrin
  *
  * @return @c true if @in represents a @c double, @c false otherwise.
  */
-bool convertToDouble(const std::string &in, double &out);
+double convertToDouble(const std::string &in, bool *ok = nullptr);
 
 /**
  * @brief Convert the @p in @c std::string to the @p out @c int.
