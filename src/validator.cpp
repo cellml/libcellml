@@ -570,7 +570,7 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
 
 bool completeImportInformation(const HistoryEntry &h)
 {
-    return std::get<0>(h).size() && std::get<1>(h).size() && std::get<2>(h).size();
+    return !std::get<0>(h).empty() && !std::get<1>(h).empty() && !std::get<2>(h).empty();
 }
 
 HistoryEntry extractImportInformation(const HistoryList &history)
@@ -613,8 +613,8 @@ void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount,
                     }
                     size_t startMarker = description.find(dataBoundaryMarker, pos);
                     size_t endMarker = description.find(dataBoundaryMarker, startMarker + 1);
-                    std::string importUrl = description.substr(startMarker + 1, endMarker - startMarker - 1);
-                    auto ss = split(importUrl);
+                    std::string importInfo = description.substr(startMarker + 1, endMarker - startMarker - 1);
+                    auto ss = split(importInfo);
                     os << "  -> " << type << " '" << ss[1] << "' imported as '" << ss[0] << "' from '" << ss[2] << "' has an error:" << std::endl;
                     originalDescriptionStart = endMarker + 1;
                     pos = description.find(notOriginMarker, pos + 1);
