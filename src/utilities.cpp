@@ -46,7 +46,7 @@ bool convertToDouble(const std::string &in, double &out)
 {
     try {
         out = std::stod(in);
-    } catch (...) {
+    } catch (std::out_of_range &) {
         return false;
     }
     return true;
@@ -68,14 +68,31 @@ std::string convertToString(double value, bool fullPrecision)
     return strs.str();
 }
 
-bool convertToInt(const std::string &in, int &out)
+int convertToInt(const std::string &in, bool *ok)
 {
+    int out = 0;
+    if (ok != nullptr) {
+        *ok = true;
+    }
+
+    if (!isCellMLInteger(in)) {
+        if (ok != nullptr) {
+            *ok = false;
+        }
+
+        return out;
+    }
+
     try {
         out = std::stoi(in);
-    } catch (...) {
-        return false;
+    } catch (std::out_of_range &) {
+        if (ok != nullptr) {
+            *ok = false;
+        }
+
+        return out;
     }
-    return true;
+    return out;
 }
 
 int convertPrefixToInt(const std::string &in, bool *ok)
@@ -88,10 +105,8 @@ int convertPrefixToInt(const std::string &in, bool *ok)
 
     if (isStandardPrefixName(in)) {
         prefixInt = standardPrefixList.at(in);
-    } else if (isCellMLInteger(in)) {
-        convertToInt(in, prefixInt);
-    } else if ((ok != nullptr) && !in.empty()) {
-        *ok = false;
+    } else if (!in.empty()) {
+        prefixInt = convertToInt(in, ok);
     }
 
     return prefixInt;
