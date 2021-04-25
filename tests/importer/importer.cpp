@@ -290,18 +290,19 @@ TEST(Importer, importUnitsNotDuplicated)
 
 TEST(Importer, duplicatesImportedOnceOnly)
 {
-    std::string in = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
-                     "<model name=\"forked_import\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-                     "  <import xlink:href=\"prong.cellml\">\n"
-                     "    <component name=\"left\" component_ref=\"component1\" />\n"
-                     "  </import>\n"
-                     "  <import xlink:href=\"prong.cellml\">\n"
-                     "    <component name=\"right\" component_ref=\"component1\" />\n"
-                     "  </import>\n"
-                     "  <import xlink:href=\"prong.cellml\">\n"
-                     "    <component name=\"centre\" component_ref=\"component1\" />\n"
-                     "  </import>\n"
-                     "</model>";
+    std::string in =
+        "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
+        "<model name=\"forked_import\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xlink:href=\"prong.cellml\">\n"
+        "    <component name=\"left\" component_ref=\"component1\" />\n"
+        "  </import>\n"
+        "  <import xlink:href=\"prong.cellml\">\n"
+        "    <component name=\"right\" component_ref=\"component1\" />\n"
+        "  </import>\n"
+        "  <import xlink:href=\"prong.cellml\">\n"
+        "    <component name=\"centre\" component_ref=\"component1\" />\n"
+        "  </import>\n"
+        "</model>";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
     auto importer = libcellml::Importer::create();

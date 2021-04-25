@@ -21,6 +21,7 @@ limitations under the License.
 #include <libxml/uri.h>
 #include <map>
 #include <set>
+#include <sstream>
 #include <stdexcept>
 
 #include "libcellml/component.h"
@@ -413,31 +414,20 @@ struct Validator::ValidatorImpl
     bool checkIssuesForDuplications(const std::string &description) const;
 
     /**
-     * @brief Define the description origin marker text.
+     * @brief Deal with errors raised from imports.
      *
-     * Define the description origin marker text.  If the depth is greater than
-     * 1 then a marker text is returned to indicate that this issue didn't originate
-     * in the original model.
+     * When an error is raised by an imported entity track back to the originating model and
+     * assign the source @ref Units or @ref Component that the error belongs to.
      *
-     * @param depth An unsigned int that specifies the depth.
-     *
-     * @return The description origin marker for the given @p depth.
+     * @param initialErrorCount The initial number of errors in the validator.
+     * @param isOriginatingModel @c true if currently validating the origin model, @c false otherwise.
+     * @param type The type of import, either @c Units or @c Component.
+     * @param name The name of the importing entity.
+     * @param history History list of visited imported entities.
+     * @param component The originating component if type is @c Component.
+     * @param units The originating units if type is @c Units.
      */
-    std::string descriptionOriginMarker(size_t depth) const;
-
-    /**
-     * @brief The header text to describe the origin of an issue.
-     *
-     * The header text to describe the origin of an issue.
-     *
-     * @param depth An unsigned int that specifies the depth.
-     * @param type The type that this header text is for, one of; "Units", "Component"
-     * @param name The name of the entity.
-     * @param importSourceUrl The import source url for the entity.
-     *
-     * @return @c std::string that can be used as a header for an issue.
-     */
-    std::string originHeaderText(size_t depth, const std::string &type, const std::string &name, const std::string &importSourceUrl) const;
+    void handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const HistoryList &history, const ComponentPtr &component, const UnitsPtr &units) const;
 };
 
 bool checkForCycles(const HistoryList &history, const HistoryEntry &h)
@@ -578,18 +568,99 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
     }
 }
 
+bool completeImportInformation(const HistoryEntry &h)
+{
+    return std::get<0>(h).size() && std::get<1>(h).size() && std::get<2>(h).size();
+}
+
+HistoryEntry extractImportInformation(const HistoryList &history)
+{
+    HistoryEntry h = history.back();
+    auto i = history.size() - 1;
+    while (!completeImportInformation(h)) {
+        auto temp = history.at(--i);
+        h = std::make_tuple(std::get<0>(temp), std::get<0>(h), std::get<2>(temp));
+    }
+
+    return h;
+}
+
+void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const HistoryList &history, const ComponentPtr &component, const UnitsPtr &units) const
+{
+    const std::string skipThis = "Cyclic dependencies";
+    const std::string notOriginMarker = "NOT ORIGIN: ";
+    const std::string dataBoundaryMarker = "&";
+    const std::string dataSeparator = ";";
+    for (size_t i = initialErrorCount; i < mValidator->issueCount(); ++i) {
+        auto issue = mValidator->issue(i);
+        auto description = issue->description();
+        if (description.substr(0, skipThis.length()) != skipThis) {
+            std::ostringstream os;
+            if (isOriginatingModel) {
+                // If error is not from this model then set this component or units.
+                size_t depth = 0;
+                size_t pos = description.find(notOriginMarker);
+                size_t originalDescriptionStart = 0;
+                while (pos != std::string::npos) {
+                    if (depth == 0) {
+                        os << "Imported ";
+                        if (type == "Component") {
+                            os << "component ";
+                        } else {
+                            os << "units ";
+                        }
+                        os << "'" << name << "' is not valid because:" << std::endl;
+                    }
+                    size_t startMarker = description.find(dataBoundaryMarker, pos);
+                    size_t endMarker = description.find(dataBoundaryMarker, startMarker + 1);
+                    std::string importUrl = description.substr(startMarker + 1, endMarker - startMarker - 1);
+                    auto ss = split(importUrl);
+                    os << "  -> " << type << " '" << ss[1] << "' imported as '" << ss[0] << "' from '" << ss[2] << "' has an error:" << std::endl;
+                    originalDescriptionStart = endMarker + 1;
+                    pos = description.find(notOriginMarker, pos + 1);
+                    depth += 1;
+                    if (pos == std::string::npos) {
+                        os << "  -> ";
+                    }
+                }
+
+                if (depth > 0) {
+                    if (type == "Component") {
+                        issue->setComponent(component);
+                    } else {
+                        issue->setUnits(units);
+                    }
+                }
+
+                os << description.substr(originalDescriptionStart);
+                issue->setDescription(os.str());
+            } else {
+                // Get name, reference, and import source from history.
+                auto h = extractImportInformation(history);
+                os << notOriginMarker << dataBoundaryMarker << std::get<0>(h) << dataSeparator << std::get<1>(h) << dataSeparator << std::get<2>(h) << dataBoundaryMarker << description;
+                issue->setDescription(os.str());
+            }
+        }
+    }
+}
+
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, HistoryList &history, std::vector<ModelPtr> &visitedModels) const
 {
+    size_t initialIssueCount = mValidator->issueCount();
+    bool isOriginatingModel = visitedModels.size() == 1;
+
+    std::string componentName = component->name();
+
     // Check for a valid name attribute.
     bool isImported = component->isImport();
     std::string descriptionPrefix = "Component ";
     if (isImported) {
         descriptionPrefix = "Imported component ";
     }
-    if (!isCellmlIdentifier(component->name())) {
-        auto issue = makeIssueIllegalIdentifier(component->name());
+    if (!isCellmlIdentifier(componentName)) {
+        auto issue = makeIssueIllegalIdentifier(componentName);
         issue->setComponent(component);
-        issue->setDescription(descriptionPrefix + "'" + component->name() + "' does not have a valid name attribute. " + issue->description());
+        issue->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid name attribute. " + issue->description());
         issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
@@ -598,7 +669,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setComponent(component);
-        issue->setDescription(descriptionPrefix + "'" + component->name() + "' does not have a valid 'id' attribute, '" + component->id() + "'.");
+        issue->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid 'id' attribute, '" + component->id() + "'.");
         mValidator->addIssue(issue);
     }
 
@@ -608,13 +679,13 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
 
         if (!isCellmlIdentifier(componentRef)) {
             auto issue = makeIssueIllegalIdentifier(componentRef);
-            issue->setDescription(descriptionPrefix + "'" + component->name() + "' does not have a valid component_ref attribute. " + issue->description());
+            issue->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid component_ref attribute. " + issue->description());
             issue->setComponentRef(component);
             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
             mValidator->addIssue(issue);
         }
 
-        validateImportSource(component->importSource(), component->name(), "component");
+        validateImportSource(component->importSource(), componentName, "component");
 
         auto importModel = component->importSource()->model();
         if (importModel != nullptr) {
@@ -635,7 +706,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                 }
             } else {
                 auto issue = Issue::create();
-                issue->setDescription(descriptionPrefix + "'" + component->name() + "' refers to component '" + componentRef + "' which does not appear in '" + importModel->name() + "'.");
+                issue->setDescription(descriptionPrefix + "'" + componentName + "' refers to component '" + componentRef + "' which does not appear in '" + importModel->name() + "'.");
                 issue->setComponent(component);
                 issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
                 mValidator->addIssue(issue);
@@ -662,6 +733,8 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
             validateMath(component->math(), component);
         }
     }
+
+    handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Component", componentName, history, component, nullptr);
 }
 
 std::set<std::string> namesInCycle(std::vector<std::string> allNames)
@@ -697,16 +770,6 @@ bool Validator::ValidatorImpl::checkCycleForDuplications(std::vector<std::string
     return found;
 }
 
-std::string Validator::ValidatorImpl::descriptionOriginMarker(size_t depth) const
-{
-    std::string originMarker;
-    if (depth > 1) {
-        originMarker = "NOT ORIGIN: ";
-    }
-
-    return originMarker;
-}
-
 bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &description) const
 {
     size_t count = mValidator->issueCount();
@@ -716,16 +779,6 @@ bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &des
         }
     }
     return false;
-}
-
-std::string Validator::ValidatorImpl::originHeaderText(size_t depth, const std::string &type, const std::string &name, const std::string &importSourceUrl) const
-{
-    std::string originMarker;
-    if (depth > 1) {
-        originMarker = " - " + type + " '" + name + "' imported from '" + importSourceUrl + "' has error; ";
-    }
-
-    return originMarker;
 }
 
 void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList &history, std::vector<ModelPtr> modelsVisited) const
@@ -756,14 +809,11 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
 
     std::string unitsName = units->name();
     size_t initialIssueCount = mValidator->issueCount();
-    bool isOriginModel = modelsVisited.size() == 1;
+    bool isOriginatingModel = modelsVisited.size() == 1;
     std::string importSourceUrl;
     if (history.size() > 1) {
         importSourceUrl = std::get<2>(history.at(history.size() - 2));
     }
-    std::string descriptionMarker = descriptionOriginMarker(modelsVisited.size());
-    std::string originMarker = originHeaderText(modelsVisited.size(), "Units", unitsName, importSourceUrl);
-    std::string descriptionPrefix = descriptionMarker + originMarker;
 
     history.push_back(h);
     auto model = owningModel(units);
@@ -794,7 +844,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
         size_t currentIssueCount = mValidator->issueCount();
         if (!isCellmlIdentifier(unitsRef)) {
             auto issue = makeIssueIllegalIdentifier(unitsRef);
-            issue->setDescription(descriptionPrefix + "Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
+            issue->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
             issue->setUnits(units);
             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
             mValidator->addIssue(issue);
@@ -808,7 +858,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
         // Check if we already have another import from the same source with the same units_ref.
         // (This looks for matching entries at the same position in the source and ref vectors).
         if ((unitsWithImportSource > 1) && !foundImportIssue) {
-            auto description = descriptionPrefix + "Model '" + model->name() + "' contains multiple imported units from '" + unitsImportUrl + "' with the same units_ref attribute '" + unitsRef + "'.";
+            auto description = "Model '" + model->name() + "' contains multiple imported units from '" + unitsImportUrl + "' with the same units_ref attribute '" + unitsRef + "'.";
             if (!checkIssuesForDuplications(description)) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription(description);
@@ -839,7 +889,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
                 }
             } else {
                 auto issue = Issue::create();
-                issue->setDescription(descriptionPrefix + "Imported units '" + units->name() + "' refers to units '" + unitsRef + "' which does not appear in '" + importSourceModel->name() + "'.");
+                issue->setDescription("Imported units '" + units->name() + "' refers to units '" + unitsRef + "' which does not appear in '" + importSourceModel->name() + "'.");
                 issue->setUnits(units);
                 issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                 mValidator->addIssue(issue);
@@ -848,7 +898,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
     }
     // Check for duplicate units names in this model.
     if (unitsWithNameCount > 1) {
-        std::string description = descriptionPrefix + "Model '" + model->name() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.";
+        std::string description = "Model '" + model->name() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.";
         if (!checkIssuesForDuplications(description)) {
             IssuePtr issue = Issue::create();
             issue->setDescription(description);
@@ -862,10 +912,10 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
         auto issue = makeIssueIllegalIdentifier(unitsName);
         issue->setUnits(units);
         if (units->isImport()) {
-            issue->setDescription(descriptionPrefix + "Imported units '" + unitsName + "' does not have a valid name attribute. " + issue->description());
+            issue->setDescription("Imported units '" + unitsName + "' does not have a valid name attribute. " + issue->description());
             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_NAME);
         } else {
-            issue->setDescription(descriptionPrefix + "Units '" + unitsName + "' does not have a valid name attribute. " + issue->description());
+            issue->setDescription("Units '" + unitsName + "' does not have a valid name attribute. " + issue->description());
             issue->setReferenceRule(Issue::ReferenceRule::UNITS_NAME);
         }
         mValidator->addIssue(issue);
@@ -873,7 +923,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
         // Check for a matching standard units.
         if (isStandardUnitName(unitsName)) {
             IssuePtr issue = Issue::create();
-            issue->setDescription(descriptionPrefix + "Units is named '" + unitsName + "' which is a protected standard unit name.");
+            issue->setDescription("Units is named '" + unitsName + "' which is a protected standard unit name.");
             issue->setUnits(units);
             issue->setReferenceRule(Issue::ReferenceRule::UNITS_STANDARD);
             mValidator->addIssue(issue);
@@ -888,7 +938,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
         if (units->isImport()) {
             descriptionStart = "Imported units";
         }
-        issue->setDescription(descriptionPrefix + descriptionStart + " '" + unitsName + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
+        issue->setDescription(descriptionStart + " '" + unitsName + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
         mValidator->addIssue(issue);
     }
     if (units->unitCount() > 0) {
@@ -897,29 +947,12 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, HistoryList 
         }
     }
 
-    for (size_t i = initialIssueCount; i < mValidator->issueCount() && isOriginModel; ++i) {
-        auto notOriginText = descriptionOriginMarker(size_t(2));
-        auto issue = mValidator->issue(i);
-        auto description = issue->description();
-        if (description.substr(0, notOriginText.size()) == notOriginText) {
-            description.replace(0, notOriginText.size(), "Imported units '" + units->name() + "' is not valid because:\n");
-            issue->setDescription(description);
-            issue->setUnits(units);
-        }
-    }
+    handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Units", unitsName, history, nullptr, units);
     history.pop_back();
 }
 
 void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, HistoryList &history, const std::vector<ModelPtr> &modelsVisited) const
 {
-    std::string descriptionMarker = descriptionOriginMarker(modelsVisited.size());
-    std::string importSourceUrl;
-    if (history.size() > 1) {
-        importSourceUrl = std::get<2>(history.at(history.size() - 2));
-    }
-    std::string originMarker = originHeaderText(modelsVisited.size(), "Units", units->name(), importSourceUrl);
-    std::string descriptionPrefix = descriptionMarker + originMarker;
-
     // Validate the unit at the given index.
     std::string reference;
     std::string prefix;
@@ -934,14 +967,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
             validateUnits(model->units(reference), history, modelsVisited);
         } else if (!model->hasUnits(reference) && (!isStandardUnitName(reference))) {
             IssuePtr issue = Issue::create();
-            issue->setDescription(descriptionPrefix + "Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
+            issue->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
             issue->setUnit(Unit::create(units, index));
             issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
             mValidator->addIssue(issue);
         }
     } else {
         auto issue = makeIssueIllegalIdentifier(reference);
-        issue->setDescription(descriptionPrefix + "Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'. " + issue->description());
+        issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'. " + issue->description());
         issue->setUnit(Unit::create(units, index));
         issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
         mValidator->addIssue(issue);
@@ -951,14 +984,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setUnit(Unit::create(units, index));
-        issue->setDescription(descriptionPrefix + "Unit in units '" + units->name() + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
+        issue->setDescription("Unit in units '" + units->name() + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
         mValidator->addIssue(issue);
     }
     if (!prefix.empty()) {
         if (!isStandardPrefixName(prefix)) {
             if (!isCellMLInteger(prefix)) {
                 IssuePtr issue = Issue::create();
-                issue->setDescription(descriptionPrefix + "Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
+                issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
                 issue->setUnit(Unit::create(units, index));
                 issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                 mValidator->addIssue(issue);
@@ -968,7 +1001,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                     (void)test;
                 } catch (std::out_of_range &) {
                     IssuePtr issue = Issue::create();
-                    issue->setDescription(descriptionPrefix + "Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
+                    issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
                     issue->setUnit(Unit::create(units, index));
                     issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                     mValidator->addIssue(issue);
