@@ -42,14 +42,29 @@ limitations under the License.
 
 namespace libcellml {
 
-bool convertToDouble(const std::string &in, double &out)
+double convertToDouble(const std::string &in, bool *ok)
 {
+    double out = 0.0;
+    if (ok != nullptr) {
+        *ok = true;
+    }
+
+    if (!isCellMLReal(in)) {
+        if (ok != nullptr) {
+            *ok = false;
+        }
+
+        return out;
+    }
+
     try {
         out = std::stod(in);
     } catch (std::out_of_range &) {
-        return false;
+        if (ok != nullptr) {
+            *ok = false;
+        }
     }
-    return true;
+    return out;
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
@@ -89,8 +104,6 @@ int convertToInt(const std::string &in, bool *ok)
         if (ok != nullptr) {
             *ok = false;
         }
-
-        return out;
     }
     return out;
 }
@@ -108,7 +121,6 @@ int convertPrefixToInt(const std::string &in, bool *ok)
     } else if (!in.empty()) {
         prefixInt = convertToInt(in, ok);
     }
-
     return prefixInt;
 }
 
