@@ -171,36 +171,38 @@ static const std::map<Variable::InterfaceType, std::string> interfaceTypeToStrin
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
 /**
- * @brief Convert the @p in @c std::string to the @p out @c double.
+ * @brief Convert the @p in @c std::string to a @c double.
  *
- * Convert the @p in @c std::string to a @c double. If @p in can be converted
- * using @c std::stod, return @c true and update @p out, otherwise return
- * @c false. To avoid returning @c false, @p in must be known to be convertible
- * to a @c double before calling this function.
+ * Convert the @p in @c std::string to a @c double.
+ * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * and @c false if it didn't.
+ *
+ * If the @p in is not a CellML real the conversion will not succeed.
  *
  * @sa isCellMLReal
  *
  * @param in The @c std::string value to convert to a @c double.
- * @param out The @c double value resulting in the conversion.
+ * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
  *
- * @return @c true if @in represents a @c double, @c false otherwise.
+ * @return The double value of @p in.
  */
 double convertToDouble(const std::string &in, bool *ok = nullptr);
 
 /**
- * @brief Convert the @p in @c std::string to the @p out @c int.
+ * @brief Convert the @p in @c std::string to an @c int.
  *
- * Convert the @p in @c std::string to an @c int. If @p in can be converted
- * using @c std::stoi, return @c true and update @p out, otherwise return
- * @c false. To avoid returning @c false, @p in must be known to be convertible
- * to an @c int before calling this function.
+ * Convert the @p in @c std::string to an @c int.
+ * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * and @c false if it didn't.
+ *
+ * If @p in is not a CellML integer the conversion will not succeed.
  *
  * @sa isCellMLInteger
  *
  * @param in The @c std::string value to convert to an @c int.
- * @param out The @c int value resulting in the conversion.
+ * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
  *
- * @return @c true if @in represents an @c int, @c false otherwise.
+ * @return The integer value of @p in.
  */
 int convertToInt(const std::string &in, bool *ok = nullptr);
 
@@ -213,6 +215,7 @@ int convertToInt(const std::string &in, bool *ok = nullptr);
  *
  * @param in The @c std::string value to convert to an @c int.
  * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
+ *
  * @return The integer value of the @p prefix.
  */
 int convertPrefixToInt(const std::string &in, bool *ok = nullptr);
