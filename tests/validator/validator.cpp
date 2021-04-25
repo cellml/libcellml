@@ -2957,7 +2957,6 @@ TEST(Validator, duplicateIdAll)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
-
 TEST(Validator, invalidIdsOnEveryElement)
 {
     const std::vector<std::string> errorMessages = {
@@ -3373,7 +3372,6 @@ TEST(Validator, importInvalidComponentReference)
     EXPECT_EQ(size_t(1), validator->errorCount());
     EXPECT_EQ(errorMessage, validator->issue(0)->description());
 }
-
 
 TEST(Validator, unitsErrorInImportedComponent)
 {
