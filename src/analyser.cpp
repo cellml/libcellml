@@ -1311,7 +1311,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                     } else {
                         updateUnitsMap(model, reference, unitsMap, userUnitsMap,
                                        exponent * unitsExponent,
-                                       unitsMultiplier + (std::log10(multiplier) + standardPrefixList.at(prefix)) * unitsExponent);
+                                       unitsMultiplier + (std::log10(multiplier) + convertPrefixToInt(prefix)) * unitsExponent);
                     }
                 }
             }
@@ -1541,11 +1541,11 @@ void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
                 units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
 
                 if (isStandardUnitName(reference)) {
-                    newUnitsMultiplier += unitsMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + standardPrefixList.at(prefix)) * exponent * unitsExponent;
+                    newUnitsMultiplier += unitsMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + convertPrefixToInt(prefix)) * exponent * unitsExponent;
                 } else {
                     updateUnitsMultiplier(model, reference, newUnitsMultiplier,
                                           exponent * unitsExponent,
-                                          unitsMultiplier + (std::log10(multiplier) + standardPrefixList.at(prefix)) * unitsExponent);
+                                          unitsMultiplier + (std::log10(multiplier) + convertPrefixToInt(prefix)) * unitsExponent);
                 }
             }
         }

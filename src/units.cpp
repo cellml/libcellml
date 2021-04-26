@@ -185,9 +185,10 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
 
-            if (isStandardPrefixName(pre)) {
-                prefixMult = standardPrefixList.at(pre);
-            } else {
+            bool ok;
+
+            prefixMult = convertPrefixToInt(pre, &ok);
+            if (!ok) {
                 return false;
             }
 
@@ -327,23 +328,25 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
 {
     UnitDefinition ud;
     ud.mReference = reference;
-    // Allow all nonzero user-specified prefixes
-    try {
-        int prefixInteger = std::stoi(prefix);
-        if (prefixInteger != 0.0) {
+
+    // Allow all nonzero user-specified prefixes.
+    if (isCellMLInteger(prefix)) {
+        try {
+            int prefixInteger = std::stoi(prefix);
+            if (prefixInteger != 0) {
+                ud.mPrefix = prefix;
+            }
+        } catch (std::out_of_range &) {
             ud.mPrefix = prefix;
         }
-    } catch (std::invalid_argument &) {
-        ud.mPrefix = prefix;
-    } catch (std::out_of_range &) {
+    } else {
         ud.mPrefix = prefix;
     }
 
     ud.mExponent = exponent;
     ud.mMultiplier = multiplier;
-    if (!id.empty()) {
-        ud.mId = id;
-    }
+    ud.mId = id;
+
     mPimpl->mUnits.push_back(ud);
 }
 

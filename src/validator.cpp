@@ -1427,12 +1427,12 @@ void updateBaseUnitCount(const ModelPtr &model,
                 u->unitAttributes(i, ref, pre, exp, expMult, id);
                 mult = std::log10(expMult);
                 if (!isStandardUnitName(ref)) {
-                    updateBaseUnitCount(model, unitMap, multiplier, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                    updateBaseUnitCount(model, unitMap, multiplier, ref, exp * uExp, logMult + mult * uExp + convertPrefixToInt(pre) * uExp, direction);
                 } else {
                     for (const auto &iter : standardUnitsList.at(ref)) {
                         unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
                     }
-                    multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
+                    multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + convertPrefixToInt(pre)) * exp);
                 }
             }
         } else if (unitMap.find(uName) == unitMap.end()) {
