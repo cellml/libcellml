@@ -1070,7 +1070,7 @@ TEST(Annotator, assignUnitId)
 
     EXPECT_EQ("", units->unitId(1));
 
-    annotator->assignId(libcellml::Unit::create(units, 0));
+    annotator->assignId(units, 0);
     EXPECT_EQ("b4da55", units->unitId(0));
 }
 
@@ -1908,19 +1908,18 @@ TEST(Annotator, pythonBindingFunctionsCoverage)
     auto itemConnection = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1"),
         model->component("component3")->variable("variable1"));
-    auto const &itemMapVariables = itemConnection;
 
     // Expect failure as no model is built.
     EXPECT_EQ("", annotator->assignId(itemUnit));
     EXPECT_EQ("", annotator->assignId(itemConnection, libcellml::CellmlElementType::CONNECTION));
-    EXPECT_EQ("", annotator->assignId(itemMapVariables));
+    EXPECT_EQ("", annotator->assignId(model->component("component2")->variable("variable1"), model->component("component3")->variable("variable1")));
 
     annotator->setModel(model);
 
     // Expect success.
     EXPECT_EQ("b4da55", annotator->assignId(itemUnit));
     EXPECT_EQ("b4da56", annotator->assignId(itemConnection, libcellml::CellmlElementType::CONNECTION));
-    EXPECT_EQ("b4da57", annotator->assignId(itemMapVariables));
+    EXPECT_EQ("b4da57", annotator->assignId(model->component("component2")->variable("variable1"), model->component("component3")->variable("variable1")));
 }
 
 TEST(Annotator, hashChangesAndUpdates)
