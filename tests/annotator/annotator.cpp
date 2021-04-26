@@ -150,21 +150,21 @@ TEST(Annotator, getVariablePairFromId)
     // Connections and map variables are returned as VariablePairs.  Note that connection identifiers could be
     // represented by any one of the pairs of variables in that connection.
     EXPECT_EQ(libcellml::CellmlElementType::MAP_VARIABLES, annotator->item("map_id")->type());
-    auto vpm = annotator->item("map_id")->mapVariables();
+    auto vpm = annotator->item("map_id")->variablePair();
     EXPECT_EQ(v1, vpm->variable1());
     EXPECT_EQ(v2, vpm->variable2());
     EXPECT_EQ(libcellml::CellmlElementType::CONNECTION, annotator->item("connection_id")->type());
-    auto vpc = annotator->item("connection_id")->connection();
+    auto vpc = annotator->item("connection_id")->variablePair();
     EXPECT_TRUE((v1 == vpc->variable1()) || (v3 == vpc->variable1()));
     EXPECT_TRUE((v2 == vpc->variable2()) || (v4 == vpc->variable2()));
 
     // Component refs are returned as CellmlElementType enum and ComponentPtr:
     EXPECT_EQ(libcellml::CellmlElementType::COMPONENT_REF, annotator->item("component_ref1_id")->type());
-    EXPECT_EQ(c1, annotator->item("component_ref1_id")->componentRef());
+    EXPECT_EQ(c1, annotator->item("component_ref1_id")->component());
 
     // Encapsulation is returned as CellmlElementType enum and ModelPtr :
     EXPECT_EQ(libcellml::CellmlElementType::ENCAPSULATION, annotator->item("encapsulation_id")->type());
-    EXPECT_EQ(model, annotator->item("encapsulation_id")->encapsulation());
+    EXPECT_EQ(model, annotator->item("encapsulation_id")->model());
 
     // Reset children are returned as CellmlElementType enum and reset pointer:
     EXPECT_EQ(libcellml::CellmlElementType::RESET_VALUE, annotator->item("reset_value_id")->type());
@@ -241,9 +241,9 @@ TEST(Annotator, getItemByIdSpecificType)
     EXPECT_EQ(model, annotator->encapsulation("encapsulation_1"));
     EXPECT_EQ(model->component("component1"), annotator->component("component_1"));
     EXPECT_EQ(model->component("component2"), annotator->component("component_2"));
-    EXPECT_EQ(model->component("component2"), annotator->componentRef("component_ref_1"));
+    EXPECT_EQ(model->component("component2"), annotator->componentEncapsulation("component_ref_1"));
     EXPECT_EQ(model->component("component2")->component("component3"), annotator->component("component_3"));
-    EXPECT_EQ(model->component("component2")->component("component3"), annotator->componentRef("component_ref_2"));
+    EXPECT_EQ(model->component("component2")->component("component3"), annotator->componentEncapsulation("component_ref_2"));
     EXPECT_EQ(model->component("component1")->importSource(), annotator->importSource("import_1"));
     EXPECT_EQ(model->units("units1"), annotator->units("units_1"));
     EXPECT_EQ(model->units("units1")->importSource(), annotator->importSource("import_2"));
@@ -273,7 +273,7 @@ TEST(Annotator, getItemByIdSpecificType)
     EXPECT_EQ(nullptr, annotator->reset("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->resetValue("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->testValue("i_dont_exist"));
-    EXPECT_EQ(nullptr, annotator->componentRef("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->componentEncapsulation("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->connection("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->mapVariables("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->importSource("i_dont_exist"));
@@ -294,7 +294,7 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
     EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
     EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->componentRef("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->componentEncapsulation("duplicateId"));
     EXPECT_EQ(nullptr, annotator->connection("duplicateId"));
     EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId"));
     EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
@@ -321,7 +321,7 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
     EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
     EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->componentRef("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->componentEncapsulation("duplicateId"));
     EXPECT_EQ(nullptr, annotator->connection("duplicateId"));
     EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId"));
     EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
@@ -368,17 +368,17 @@ TEST(Annotator, castingOnRetrieval)
             EXPECT_EQ(model->component("component1"), itemInfo->component());
             break;
         case libcellml::CellmlElementType::COMPONENT_REF:
-            EXPECT_EQ(model->component("component2"), itemInfo->componentRef());
+            EXPECT_EQ(model->component("component2"), itemInfo->component());
             break;
         case libcellml::CellmlElementType::CONNECTION:
-            v1v2 = itemInfo->connection();
+            v1v2 = itemInfo->variablePair();
             c1 = owningComponent(v1v2->variable1());
             c2 = owningComponent(v1v2->variable2());
             EXPECT_TRUE((model->component("component2") == c1) || (model->component("component2") == c2));
             EXPECT_TRUE((model->component("component2")->component("component3") == c1) || (model->component("component2")->component("component3") == c2));
             break;
         case libcellml::CellmlElementType::MAP_VARIABLES:
-            v1v2 = itemInfo->mapVariables();
+            v1v2 = itemInfo->variablePair();
             EXPECT_TRUE((v1v2->variable1() == model->component("component2")->variable("variable1")) || (v1v2->variable1() == model->component("component2")->component("component3")->variable("variable1")));
             EXPECT_TRUE((v1v2->variable2() == model->component("component2")->variable("variable1")) || (v1v2->variable2() == model->component("component2")->component("component3")->variable("variable1")));
             break;
@@ -386,7 +386,7 @@ TEST(Annotator, castingOnRetrieval)
             EXPECT_EQ(model->component("component1")->importSource(), itemInfo->importSource());
             break;
         case libcellml::CellmlElementType::ENCAPSULATION:
-            EXPECT_EQ(model, itemInfo->encapsulation());
+            EXPECT_EQ(model, itemInfo->model());
             break;
         case libcellml::CellmlElementType::MODEL:
             EXPECT_EQ(model, itemInfo->model());
@@ -1695,16 +1695,16 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                 EXPECT_EQ(std::any_cast<libcellml::ComponentPtr>(expectedItems[id][index].second), item->component());
                 break;
             case libcellml::CellmlElementType::COMPONENT_REF:
-                EXPECT_EQ(std::any_cast<libcellml::ComponentPtr>(expectedItems[id][index].second), item->componentRef());
+                EXPECT_EQ(std::any_cast<libcellml::ComponentPtr>(expectedItems[id][index].second), item->component());
                 break;
             case libcellml::CellmlElementType::CONNECTION:
                 // A bit of a nonsense test because 'variable1' and 'variable2' are the only variables in this particular model.
-                testPair = item->connection();
+                testPair = item->variablePair();
                 EXPECT_TRUE("variable1" == testPair->variable1()->name() || "variable2" == testPair->variable1()->name());
                 EXPECT_TRUE("variable1" == testPair->variable2()->name() || "variable2" == testPair->variable2()->name());
                 break;
             case libcellml::CellmlElementType::MAP_VARIABLES:
-                testPair = item->mapVariables();
+                testPair = item->variablePair();
                 if (id == "duplicateId1") {
                     EXPECT_EQ("variable1", testPair->variable1()->name());
                     EXPECT_EQ("variable1", testPair->variable2()->name());
@@ -1722,7 +1722,7 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                 }
                 break;
             case libcellml::CellmlElementType::ENCAPSULATION:
-                EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->encapsulation());
+                EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->model());
                 break;
             case libcellml::CellmlElementType::IMPORT:
                 EXPECT_EQ(std::any_cast<libcellml::ImportSourcePtr>(expectedItems[id][index].second), item->importSource());
@@ -1841,18 +1841,18 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
                 EXPECT_EQ(std::any_cast<libcellml::ComponentPtr>(expectedItems[id][index].second), item->component());
                 break;
             case libcellml::CellmlElementType::COMPONENT_REF:
-                EXPECT_EQ(std::any_cast<libcellml::ComponentPtr>(expectedItems[id][index].second), item->componentRef());
+                EXPECT_EQ(std::any_cast<libcellml::ComponentPtr>(expectedItems[id][index].second), item->component());
                 break;
             case libcellml::CellmlElementType::CONNECTION:
                 pair = std::any_cast<libcellml::VariablePairPtr>(expectedItems[id][index].second);
-                testPair = item->connection();
+                testPair = item->variablePair();
                 break;
             case libcellml::CellmlElementType::MAP_VARIABLES:
                 pair = std::any_cast<libcellml::VariablePairPtr>(expectedItems[id][index].second);
-                testPair = item->mapVariables();
+                testPair = item->variablePair();
                 break;
             case libcellml::CellmlElementType::ENCAPSULATION:
-                EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->encapsulation());
+                EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->model());
                 break;
             case libcellml::CellmlElementType::IMPORT:
                 EXPECT_EQ(std::any_cast<libcellml::ImportSourcePtr>(expectedItems[id][index].second), item->importSource());
@@ -1899,7 +1899,7 @@ TEST(Annotator, badAnyCastWithIndices)
 
     // Trigger errors on all items because of miscasting:
     EXPECT_EQ(nullptr, annotator->component("duplicateId", 0));
-    EXPECT_EQ(nullptr, annotator->componentRef("duplicateId", 0));
+    EXPECT_EQ(nullptr, annotator->componentEncapsulation("duplicateId", 0));
     EXPECT_EQ(nullptr, annotator->connection("duplicateId", 0));
     EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId", 1));
     EXPECT_EQ(nullptr, annotator->importSource("duplicateId", 0));
@@ -1913,7 +1913,7 @@ TEST(Annotator, badAnyCastWithIndices)
     EXPECT_EQ(nullptr, annotator->variable("duplicateId", 0));
 
     EXPECT_EQ(nullptr, annotator->component("duplicateId", 99));
-    EXPECT_EQ(nullptr, annotator->componentRef("duplicateId", 99));
+    EXPECT_EQ(nullptr, annotator->componentEncapsulation("duplicateId", 99));
     EXPECT_EQ(nullptr, annotator->connection("duplicateId", 99));
     EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId", 99));
     EXPECT_EQ(nullptr, annotator->importSource("duplicateId", 99));

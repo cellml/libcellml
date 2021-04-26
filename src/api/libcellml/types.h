@@ -256,36 +256,6 @@ public:
     ComponentPtr component() const;
 
     /**
-     * @brief Get the component reference.
-     *
-     * Get the component reference.
-     *
-     * @return The @ref Component reference, or @c nullptr if the internal type
-     * is not @ref CellmlElementType::COMPONENT_REF.
-     */
-    ComponentPtr componentRef() const;
-
-    /**
-     * @brief Get the connection.
-     *
-     * Get the connection.
-     *
-     * @return The connection as a @ref VariablePair, or @c nullptr if the
-     * internal type is not @ref CellmlElementType::CONNECTION.
-     */
-    VariablePairPtr connection() const;
-
-    /**
-     * @brief Get the encapsulation.
-     *
-     * Get the encapsulation.
-     *
-     * @return The connection as a @ref Model, or @c nullptr if the internal
-     * type is not @ref CellmlElementType::ENCAPSULATION.
-     */
-    ModelPtr encapsulation() const;
-
-    /**
      * @brief Get the import source.
      *
      * Get the import source.
@@ -294,16 +264,6 @@ public:
      * @ref CellmlElementType::IMPORT.
      */
     ImportSourcePtr importSource() const;
-
-    /**
-     * @brief Get the mapped variables.
-     *
-     * Get the mapped variables.
-     *
-     * @return The mapped variables as a @ref VariablePair, or @c nullptr if the
-     * internal type is not @ref CellmlElementType::MAP_VARIABLES.
-     */
-    VariablePairPtr mapVariables() const;
 
     /**
      * @brief Get the model.
@@ -374,6 +334,17 @@ public:
      * @ref CellmlElementType::VARIABLE.
      */
     VariablePtr variable() const;
+
+
+    /**
+     * @brief Get the connection.
+     *
+     * Get the connection.
+     *
+     * @return The connection as a @ref VariablePair, or @c nullptr if the
+     * internal type is not @ref CellmlElementType::CONNECTION.
+     */
+    VariablePairPtr variablePair() const;
 
 private:
     AnyCellmlElement(); /**< Constructor, @private. */
