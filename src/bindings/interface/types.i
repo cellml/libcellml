@@ -76,20 +76,8 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::AnyCellmlElement::component
 "Return the item as a component.";
 
-%feature("docstring") libcellml::AnyCellmlElement::componentRef
-"Return the item as a component reference.";
-
-%feature("docstring") libcellml::AnyCellmlElement::connection
-"Return the item as a connection.";
-
-%feature("docstring") libcellml::AnyCellmlElement::encapsulation
-"Return the item as an encapsulation.";
-
 %feature("docstring") libcellml::AnyCellmlElement::importSource
 "Return the item as an import source.";
-
-%feature("docstring") libcellml::AnyCellmlElement::mapVariables
-"Return the item as an equivalence.";
 
 %feature("docstring") libcellml::AnyCellmlElement::model
 "Return the item as a model.";
@@ -111,6 +99,9 @@ Provides support for shared pointers declared in types.h.
 
 %feature("docstring") libcellml::AnyCellmlElement::variable
 "Return the item as a variable.";
+
+%feature("docstring") libcellml::AnyCellmlElement::variablePair
+"Return the item as a variablePair.";
 
 %{
 #include "libcellml/types.h"

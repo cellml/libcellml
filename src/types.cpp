@@ -114,9 +114,9 @@ bool VariablePair::isValid() const
     return (mPimpl->mVariable1.lock() != nullptr) && (mPimpl->mVariable2.lock() != nullptr);
 }
 
-void AnyCellmlElement::AnyCellmlElementImpl::setComponent(const ComponentPtr &component)
+void AnyCellmlElement::AnyCellmlElementImpl::setComponent(const ComponentPtr &component, CellmlElementType type)
 {
-    mType = CellmlElementType::COMPONENT;
+    mType = type;
     mItem = component;
 }
 
@@ -168,15 +168,15 @@ void AnyCellmlElement::AnyCellmlElementImpl::setMath(const ComponentPtr &compone
     mItem = component;
 }
 
-void AnyCellmlElement::AnyCellmlElementImpl::setModel(const ModelPtr &model)
+void AnyCellmlElement::AnyCellmlElementImpl::setModel(const ModelPtr &model, CellmlElementType type)
 {
-    mType = CellmlElementType::MODEL;
+    mType = type;
     mItem = model;
 }
 
-void AnyCellmlElement::AnyCellmlElementImpl::setReset(const ResetPtr &reset)
+void AnyCellmlElement::AnyCellmlElementImpl::setReset(const ResetPtr &reset, CellmlElementType type)
 {
-    mType = CellmlElementType::RESET;
+    mType = type;
     mItem = reset;
 }
 
@@ -210,6 +210,18 @@ void AnyCellmlElement::AnyCellmlElementImpl::setVariable(const VariablePtr &vari
     mItem = variable;
 }
 
+void AnyCellmlElement::AnyCellmlElementImpl::setVariablePair(const VariablePairPtr &pair, CellmlElementType type)
+{
+    mType = type;
+    mItem = pair;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setVariablePair(const VariablePtr &variable1, const VariablePtr &variable2, CellmlElementType type)
+{
+    mType = type;
+    mItem = VariablePair::create(variable1, variable2);
+}
+
 AnyCellmlElement::AnyCellmlElement()
     : mPimpl(new AnyCellmlElementImpl())
 {
@@ -227,35 +239,19 @@ CellmlElementType AnyCellmlElement::type() const
 
 ComponentPtr AnyCellmlElement::component() const
 {
-    if (mPimpl->mType == CellmlElementType::COMPONENT) {
+    if ((mPimpl->mType == CellmlElementType::COMPONENT) ||
+        (mPimpl->mType == CellmlElementType::COMPONENT_REF)) {
         return std::any_cast<ComponentPtr>(mPimpl->mItem);
     }
 
     return nullptr;
 }
 
-ComponentPtr AnyCellmlElement::componentRef() const
+VariablePairPtr AnyCellmlElement::variablePair() const
 {
-    if (mPimpl->mType == CellmlElementType::COMPONENT_REF) {
-        return std::any_cast<ComponentPtr>(mPimpl->mItem);
-    }
-
-    return nullptr;
-}
-
-VariablePairPtr AnyCellmlElement::connection() const
-{
-    if (mPimpl->mType == CellmlElementType::CONNECTION) {
+    if ((mPimpl->mType == CellmlElementType::CONNECTION) ||
+        (mPimpl->mType == CellmlElementType::MAP_VARIABLES)) {
         return std::any_cast<VariablePairPtr>(mPimpl->mItem);
-    }
-
-    return nullptr;
-}
-
-ModelPtr AnyCellmlElement::encapsulation() const
-{
-    if (mPimpl->mType == CellmlElementType::ENCAPSULATION) {
-        return std::any_cast<ModelPtr>(mPimpl->mItem);
     }
 
     return nullptr;
@@ -270,18 +266,10 @@ ImportSourcePtr AnyCellmlElement::importSource() const
     return nullptr;
 }
 
-VariablePairPtr AnyCellmlElement::mapVariables() const
-{
-    if (mPimpl->mType == CellmlElementType::MAP_VARIABLES) {
-        return std::any_cast<VariablePairPtr>(mPimpl->mItem);
-    }
-
-    return nullptr;
-}
-
 ModelPtr AnyCellmlElement::model() const
 {
-    if (mPimpl->mType == CellmlElementType::MODEL) {
+    if ((mPimpl->mType == CellmlElementType::MODEL) ||
+        (mPimpl->mType == CellmlElementType::ENCAPSULATION)) {
         return std::any_cast<ModelPtr>(mPimpl->mItem);
     }
 

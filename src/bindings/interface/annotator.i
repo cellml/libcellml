@@ -22,9 +22,6 @@
 %feature("docstring") libcellml::Annotator::component
 "Return the component with the given identifier.";
 
-%feature("docstring") libcellml::Annotator::encapsulation
-"Return the model with the given encapsulation identifier.";
-
 %feature("docstring") libcellml::Annotator::model
 "Return the model assigned to this Annotator or the model with the given identifier.";
 
@@ -46,17 +43,11 @@
 %feature("docstring") libcellml::Annotator::resetValue
 "Return the ResetPtr whose reset_value has the given identifier.";
 
-%feature("docstring") libcellml::Annotator::componentRef
-"Return the ComponentPtr with the given component_ref identifier.";
-
 %feature("docstring") libcellml::Annotator::unit
 "Returns a Unit, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
 
-%feature("docstring") libcellml::Annotator::connection
+%feature("docstring") libcellml::Annotator::variablePair
 "Return a VariablePair that defines a connection with given identifier.";
-
-%feature("docstring") libcellml::Annotator::mapVariables
-"Return a VariablePair that defines a map_variables with given identifier.";
 
 %feature("docstring") libcellml::Annotator::assignAllIds
 "Traverse the stored model and set any blank identifier fields to an automatically generated identifier.";
