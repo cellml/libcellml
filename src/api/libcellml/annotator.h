@@ -425,23 +425,6 @@ public:
     std::vector<std::string> duplicateIds();
 
     /**
-     * @brief Assign an automatically generated, unique identifier to the given @p item.
-     *
-     * This method will return the new identifier that has been assigned, or an empty string
-     * if the operation failed.
-     *
-     * The identifier will not be assigned if:
-     *   - no model has been stored in this annotator;
-     *   - the given @p item is not a member of the stored model; or
-     *   - the given @p item is @c nullptr.
-     *
-     * @param item An @c AnyItem to which a new identifier will be assigned.
-     *
-     * @return the new identifier.
-     */
-    std::string assignId(const AnyCellmlElementPtr &item);
-
-    /**
      * @brief Assign an automatically generated, unique identifier to the given @p model.
      *
      * Assign an automatically generated, unique identifier to the given @p model.
