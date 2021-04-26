@@ -863,16 +863,16 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     if (!variable1Missing) {
                         auto issue = std::shared_ptr<Issue> {new Issue {}};
                         issue->mPimpl->setDescription("Variable '" + iterInfo[0] + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->name() + "' of model '" + model->name() + "'.");
-                        issue->mPimpl->mItem->mPimpl->setConnection(VariablePair::create(variable1, variable2));
-                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
+                        issue->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable1, variable2), CellmlElementType::CONNECTION);
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT1);
                         mParser->addIssue(issue);
                     }
                 }
             } else {
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Connection in model '" + model->name() + "' specifies '" + iterInfo[0] + "' as variable_1 but the corresponding component_1 is invalid.");
-                issue->mPimpl->mItem->mPimpl->setConnection(VariablePair::create(variable1, variable2));
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
+                issue->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable1, variable2), CellmlElementType::CONNECTION);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT1);
                 mParser->addIssue(issue);
             }
             if (component2) {
@@ -887,16 +887,16 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     if (!variable2Missing) {
                         auto issue = std::shared_ptr<Issue> {new Issue {}};
                         issue->mPimpl->setDescription("Variable '" + iterInfo[1] + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->name() + "' of model '" + model->name() + "'.");
-                        issue->mPimpl->mItem->mPimpl->setConnection(VariablePair::create(variable1, variable2));
-                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
+                        issue->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable1, variable2), CellmlElementType::CONNECTION);
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT2);
                         mParser->addIssue(issue);
                     }
                 }
             } else {
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Connection in model '" + model->name() + "' specifies '" + iterInfo[1] + "' as variable_2 but the corresponding component_2 is invalid.");
-                issue->mPimpl->mItem->mPimpl->setConnection(VariablePair::create(variable1, variable2));
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
+                issue->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable1, variable2), CellmlElementType::CONNECTION);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT2);
                 mParser->addIssue(issue);
             }
             // Set the variable equivalence relationship for this variable pair.

@@ -126,18 +126,6 @@ void AnyCellmlElement::AnyCellmlElementImpl::setComponentRef(const ComponentPtr 
     mItem = component;
 }
 
-void AnyCellmlElement::AnyCellmlElementImpl::setConnection(const VariablePairPtr &variablePair)
-{
-    mType = CellmlElementType::CONNECTION;
-    mItem = variablePair;
-}
-
-void AnyCellmlElement::AnyCellmlElementImpl::setConnection(const VariablePtr &variable1, const VariablePtr &variable2)
-{
-    mType = CellmlElementType::CONNECTION;
-    mItem = VariablePair::create(variable1, variable2);
-}
-
 void AnyCellmlElement::AnyCellmlElementImpl::setEncapsulation(const ModelPtr &model)
 {
     mType = CellmlElementType::ENCAPSULATION;
@@ -148,18 +136,6 @@ void AnyCellmlElement::AnyCellmlElementImpl::setImportSource(const ImportSourceP
 {
     mType = CellmlElementType::IMPORT;
     mItem = importSource;
-}
-
-void AnyCellmlElement::AnyCellmlElementImpl::setMapVariables(const VariablePairPtr &variablePair)
-{
-    mType = CellmlElementType::MAP_VARIABLES;
-    mItem = variablePair;
-}
-
-void AnyCellmlElement::AnyCellmlElementImpl::setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2)
-{
-    mType = CellmlElementType::MAP_VARIABLES;
-    mItem = VariablePair::create(variable1, variable2);
 }
 
 void AnyCellmlElement::AnyCellmlElementImpl::setMath(const ComponentPtr &component)

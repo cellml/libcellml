@@ -100,18 +100,6 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::setMath
 "Sets the :class:`Component` containing the MathML relevant to this issue (``None`` to unset).";
 
-%feature("docstring") libcellml::Issue::connection
-"Get the :class:`VariablePair` representing the connection relevant to this issue (or ``None``).";
-
-%feature("docstring") libcellml::Issue::setConnection
-"Sets the :class:`VariablePair` representing the connection relevant to this issue (``None`` to unset).";
-
-%feature("docstring") libcellml::Issue::mapVariables
-"Get the :class:`VariablePair` representing the equivalence relevant to this issue (or ``None``).";
-
-%feature("docstring") libcellml::Issue::setMapVariables
-"Sets the :class:`VariablePair` representing the equivalence relevant to this issue (``None`` to unset).";
-
 %feature("docstring") libcellml::Issue::resetValue
 "Get the :class:`Reset` containing the reset value relevant to this issue (or ``None``).";
 

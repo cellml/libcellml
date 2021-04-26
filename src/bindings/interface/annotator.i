@@ -46,8 +46,11 @@
 %feature("docstring") libcellml::Annotator::unit
 "Returns a Unit, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
 
-%feature("docstring") libcellml::Annotator::variablePair
+%feature("docstring") libcellml::Annotator::connection
 "Return a VariablePair that defines a connection with given identifier.";
+
+%feature("docstring") libcellml::Annotator::mapVariables
+"Return a VariablePair that defines a map_variables with given identifier.";
 
 %feature("docstring") libcellml::Annotator::assignAllIds
 "Traverse the stored model and set any blank identifier fields to an automatically generated identifier.";
@@ -69,6 +72,12 @@
 
 %feature("docstring") libcellml::Annotator::assignComponentId
 "Assign an automatically generated, unique identifier to the given component.";
+
+%feature("docstring") libcellml::Annotator::encapsulation
+"Return the model with the given encapsulation identifier.";
+
+%feature("docstring") libcellml::Annotator::componentEncapsulation
+"Return the ComponentPtr with the given component_ref identifier.";
 
 %feature("docstring") libcellml::Annotator::assignComponentRefId
 "Assign an automatically generated, unique identifier to the given component's encapsulation.";
@@ -112,14 +121,8 @@
 %feature("docstring") libcellml::Annotator::hasModel
 "Report whether the annotator has a model assigned or not.";
 
-// PRIVATE: Functions only written to support bindings. They are not
-// intended to be called from anywhere other than this file.
-
-%feature("docstring") libcellml::Annotator::_itemCellmlElement
-"Private: Utility function to retrieve item type integer based on identifier.";
-
-%feature("docstring") libcellml::Annotator::_assignId
-"Private: Utility function to assign an automatic identifier.";
+%feature("docstring") libcellml::Annotator::assignId
+"Function to assign an automatic identifier.";
 
 %{
 #include "libcellml/annotator.h"
