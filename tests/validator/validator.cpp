@@ -1043,7 +1043,6 @@ TEST(Validator, integerStrings)
         "</model>\n";
 
     const std::vector<std::string> expectedParsingErrors = {
-        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
@@ -1051,7 +1050,6 @@ TEST(Validator, integerStrings)
     };
 
     const std::vector<std::string> expectedValidationErrors = {
-        "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
