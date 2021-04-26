@@ -1412,7 +1412,6 @@ std::string Annotator::assignId(const ResetPtr &reset, CellmlElementType type)
     auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
     entry->mPimpl->setReset(reset, type);
     return mPimpl->setAutoId(entry);
-//    return mPimpl->setAutoId(std::make_pair(type, reset));
 }
 
 std::string Annotator::assignId(const UnitsPtr &units)
@@ -1461,97 +1460,6 @@ std::string Annotator::assignId(const VariablePtr &variable1, const VariablePtr 
 {
     auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
     entry->mPimpl->setVariablePair(variable1, variable2, type);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignComponentId(const ComponentPtr &component)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setComponent(component);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignComponentRefId(const ComponentPtr &component)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setComponent(component, CellmlElementType::COMPONENT_REF);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignConnectionId(const VariablePairPtr &variablePair)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setVariablePair(variablePair, CellmlElementType::CONNECTION);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignMapVariablesId(const VariablePairPtr &variablePair)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setVariablePair(variablePair, CellmlElementType::MAP_VARIABLES);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignModelId(const ModelPtr &model)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setModel(model);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignEncapsulationId(const ModelPtr &model)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignImportSourceId(const ImportSourcePtr &importSource)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setImportSource(importSource);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignResetId(const ResetPtr &reset)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setReset(reset);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignResetValueId(const ResetPtr &reset)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setResetValue(reset);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignTestValueId(const ResetPtr &reset)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setTestValue(reset);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignUnitId(const UnitPtr &unitItem)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setUnit(unitItem);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignUnitsId(const UnitsPtr &units)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setUnits(units);
-    return mPimpl->setAutoId(entry);
-}
-
-std::string Annotator::assignVariableId(const VariablePtr &variable)
-{
-    auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-    entry->mPimpl->setVariable(variable);
     return mPimpl->setAutoId(entry);
 }
 

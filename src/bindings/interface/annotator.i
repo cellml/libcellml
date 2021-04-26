@@ -70,50 +70,11 @@
 %feature("docstring") libcellml::Annotator::duplicateIds
 "Return a list of identifier strings which are duplicated within the stored model.";
 
-%feature("docstring") libcellml::Annotator::assignComponentId
-"Assign an automatically generated, unique identifier to the given component.";
-
 %feature("docstring") libcellml::Annotator::encapsulation
 "Return the model with the given encapsulation identifier.";
 
 %feature("docstring") libcellml::Annotator::componentEncapsulation
 "Return the ComponentPtr with the given component_ref identifier.";
-
-%feature("docstring") libcellml::Annotator::assignComponentRefId
-"Assign an automatically generated, unique identifier to the given component's encapsulation.";
-
-%feature("docstring") libcellml::Annotator::assignConnectionId
-"Assign an automatically generated, unique identifier to the connection defined by the VariablePair.";
-
-%feature("docstring") libcellml::Annotator::assignEncapsulationId
-"Assign an automatically generated, unique identifier to the encapsulation of the given model.";
-
-%feature("docstring") libcellml::Annotator::assignImportSourceId
-"Assign an automatically generated, unique identifier to the given import source.";
-
-%feature("docstring") libcellml::Annotator::assignMapVariablesId
-"Assign an automatically generated, unique identifier to the equivalence defined by the VariablePair.";
-
-%feature("docstring") libcellml::Annotator::assignModelId
-"Assign an automatically generated, unique identifier to the given model.";
-
-%feature("docstring") libcellml::Annotator::assignResetId
-"Assign an automatically generated, unique identifier to the given reset.";
-
-%feature("docstring") libcellml::Annotator::assignResetValueId
-"Assign an automatically generated, unique identifier to the reset value of the given reset.";
-
-%feature("docstring") libcellml::Annotator::assignTestValueId
-"Assign an automatically generated, unique identifier to the test value of the given reset.";
-
-%feature("docstring") libcellml::Annotator::assignUnitId
-"Assign an automatically generated, unique identifier to the unit given by the units and index supplied.";
-
-%feature("docstring") libcellml::Annotator::assignUnitsId
-"Assign an automatically generated, unique identifier to the given units.";
-
-%feature("docstring") libcellml::Annotator::assignVariableId
-"Assign an automatically generated, unique identifier to the given variable.";
 
 %feature("docstring") libcellml::Annotator::itemCount
 "Return the number of items in the stored model with the given identifier.";
