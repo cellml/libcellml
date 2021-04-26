@@ -311,8 +311,9 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     // Expect that the errors have been cleared.
     EXPECT_EQ(size_t(0), annotator->errorCount());
 
-    EXPECT_EQ(nullptr, annotator->model("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId"));
+    // Can return a model with this id but a warning will also be created.
+    EXPECT_NE(nullptr, annotator->model("duplicateId"));
+    EXPECT_NE(nullptr, annotator->encapsulation("duplicateId"));
 
     EXPECT_EQ(nullptr, annotator->component("duplicateId"));
     EXPECT_EQ(nullptr, annotator->variable("duplicateId"));

@@ -146,13 +146,6 @@ protected:
      */
     void addIssue(const IssuePtr &issue);
 
-    /**
-     *  Add a vector of issues to the logger.
-     *
-     * @param issues A @c std::vector of @c IssuePtr items to add.
-     */
-    void addIssues(const std::vector<IssuePtr> &issues);
-
 private:
     struct LoggerImpl; /**< Forward declaration for pImpl idiom, @private. */
     LoggerImpl *mPimpl; /**< Private member to implementation pointer, @private. */

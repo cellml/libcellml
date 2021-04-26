@@ -55,11 +55,11 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(model.component("component2").name(),
                          annotator.component("component_2").name())
         self.assertEqual(model.component("component2").name(),
-                         annotator.componentRef("component_ref_1").name())
+                         annotator.componentEncapsulation("component_ref_1").name())
         self.assertEqual(model.component("component2").component("component3").name(),
                          annotator.component("component_3").name())
         self.assertEqual(model.component("component2").component("component3").name(),
-                         annotator.componentRef("component_ref_2").name())
+                         annotator.componentEncapsulation("component_ref_2").name())
         self.assertEqual(model.component("component1").importSource().url(),
                          annotator.importSource("import_1").url())
         self.assertEqual(model.units("units1").name(),
@@ -112,7 +112,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertIsNone(annotator.reset("i_dont_exist"))
         self.assertIsNone(annotator.resetValue("i_dont_exist"))
         self.assertIsNone(annotator.testValue("i_dont_exist"))
-        self.assertIsNone(annotator.componentRef("i_dont_exist"))
+        self.assertIsNone(annotator.componentEncapsulation("i_dont_exist"))
         self.assertIsNone(annotator.connection("i_dont_exist"))
         self.assertIsNone(annotator.importSource("i_dont_exist"))
 
@@ -538,17 +538,17 @@ class AnnotatorTestCase(unittest.TestCase):
 
         item = annotator.item('component_ref_1')
         self.assertEqual(CellmlElementType.COMPONENT_REF, item.type())
-        self.assertEqual('component2', item.componentRef().name())
+        self.assertEqual('component2', item.component().name())
 
         item = annotator.item('connection_1')
         self.assertEqual(CellmlElementType.CONNECTION, item.type())
-        self.assertEqual('variable1', item.connection().variable1().name())
-        self.assertEqual('variable1', item.connection().variable2().name())
-        self.assertTrue(item.connection().isValid())
+        self.assertEqual('variable1', item.variablePair().variable1().name())
+        self.assertEqual('variable1', item.variablePair().variable2().name())
+        self.assertTrue(item.variablePair().isValid())
 
         item = annotator.item('encapsulation_1')
         self.assertEqual(CellmlElementType.ENCAPSULATION, item.type())
-        self.assertEqual('everything', item.encapsulation().name())
+        self.assertEqual('everything', item.model().name())
 
         item = annotator.item('import_1')
         self.assertEqual(CellmlElementType.IMPORT, item.type())
@@ -556,9 +556,9 @@ class AnnotatorTestCase(unittest.TestCase):
 
         item = annotator.item('map_variables_1')
         self.assertEqual(CellmlElementType.MAP_VARIABLES, item.type())
-        self.assertEqual('variable1', item.mapVariables().variable1().name())
-        self.assertEqual('variable1', item.mapVariables().variable2().name())
-        self.assertTrue(item.mapVariables().isValid())
+        self.assertEqual('variable1', item.variablePair().variable1().name())
+        self.assertEqual('variable1', item.variablePair().variable2().name())
+        self.assertTrue(item.variablePair().isValid())
 
         item = annotator.item('model_1')
         self.assertEqual(CellmlElementType.MODEL, item.type())

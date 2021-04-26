@@ -1177,7 +1177,7 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
 
                     IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
                     err->mPimpl->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
-                    err->mPimpl->mItem->mPimpl->setMapVariables(VariablePair::create(variable, equivalentVariable));
+                    err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
                     err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE);
                     mValidator->addIssue(err);
                 }
@@ -1234,7 +1234,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
                 alreadyReported.push_back(pair);
                 IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
                 err->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + variable->units()->name() + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentVariable->units()->name() + "'. The mismatch is: " + hints);
-                err->mPimpl->mItem->mPimpl->setMapVariables(VariablePair::create(variable, equivalentVariable));
+                err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
                 err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
             }
@@ -1251,7 +1251,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
             if (component == nullptr) {
                 IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
                 err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->mPimpl->mItem->mPimpl->setMapVariables(VariablePair::create(variable, equivalentVariable));
+                err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
                 err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mValidator->addIssue(err);
             }
