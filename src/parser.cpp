@@ -391,9 +391,16 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
 
     // Link units to their names.
-    std::vector<IssuePtr> issueList;
-    model->mPimpl->traverseTreeLinkingUnits(model, issueList);
-    mParser->addIssues(issueList);
+    DescriptionList issueList;
+    traverseComponentEntityTreeLinkingUnits(model, issueList);
+    for( const auto &entry : issueList) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->setDescription(entry.second);
+        issue->mPimpl->setLevel(Issue::Level::WARNING);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
+        issue->mPimpl->mItem->mPimpl->setVariable(entry.first);
+        mParser->addIssue(issue);
+    }
 }
 
 void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node) const

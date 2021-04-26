@@ -35,12 +35,6 @@ struct Model::ModelImpl
     std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
 
     bool equalUnits(const ModelPtr &other) const;
-
-    bool linkComponentVariableUnits(const ComponentPtr &component,
-                                    std::vector<IssuePtr> &issueList);
-    bool traverseTreeLinkingUnits(const ComponentEntityPtr &componentEntity);
-    bool traverseTreeLinkingUnits(const ComponentEntityPtr &componentEntity,
-                                  std::vector<IssuePtr> &issueList);
 };
 
 } // namespace libcellml
