@@ -81,10 +81,10 @@ AnyItem convertToShared(const AnyItem &item)
         }
     } else if (type == CellmlElementType::UNIT) {
         // Unit references are not held as weak pointers.
-        auto unitItem = std::any_cast<UnitPtr>(item.second);
-        if (unitItem != nullptr && unitItem->isValid()) {
+        auto unitsItem = std::any_cast<UnitsItemPtr>(item.second);
+        if (unitsItem != nullptr && unitsItem->isValid()) {
             converted.first = item.first;
-            converted.second = unitItem;
+            converted.second = unitsItem;
         }
     } else if (type == CellmlElementType::UNITS) {
         auto units = std::any_cast<UnitsWeakPtr>(item.second).lock();
@@ -383,7 +383,7 @@ ItemList listIdsAndItems(const ModelPtr &model)
             double multiplier;
             units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
             if (!id.empty()) {
-                auto entry = convertToWeak(std::make_pair(CellmlElementType::UNIT, Unit::create(units, i)));
+                auto entry = convertToWeak(std::make_pair(CellmlElementType::UNIT, UnitsItem::create(units, i)));
                 idList.insert(std::make_pair(id, entry));
             }
         }
@@ -706,12 +706,12 @@ VariablePairPtr Annotator::mapVariables(const std::string &id)
     return nullptr;
 }
 
-UnitPtr Annotator::unit(const std::string &id)
+UnitsItemPtr Annotator::unitsItem(const std::string &id)
 {
     if (hasModel()) {
         auto num = itemCount(id);
         if (num == 1) {
-            return unit(id, 0);
+            return unitsItem(id, 0);
         }
         if (num == 0) {
             mPimpl->addIssueNotFound(id);
@@ -898,13 +898,13 @@ VariablePairPtr Annotator::mapVariables(const std::string &id, size_t index)
     return connection(id, index);
 }
 
-UnitPtr Annotator::unit(const std::string &id, size_t index)
+UnitsItemPtr Annotator::unitsItem(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            return std::any_cast<UnitPtr>(i.second);
+            return std::any_cast<UnitsItemPtr>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
@@ -1108,7 +1108,7 @@ void Annotator::AnnotatorImpl::doSetUnitIds()
             if (us->unitId(i).empty()) {
                 auto id = makeUniqueId();
                 us->setUnitId(i, id);
-                auto entry = convertToWeak(std::make_pair(CellmlElementType::UNIT, Unit::create(us, i)));
+                auto entry = convertToWeak(std::make_pair(CellmlElementType::UNIT, UnitsItem::create(us, i)));
                 mIdList.insert(std::make_pair(id, entry));
             }
         }
@@ -1324,8 +1324,8 @@ std::string Annotator::AnnotatorImpl::id(const AnyItem &item)
     std::string id;
     CellmlElementType type = item.first;
     if (type == CellmlElementType::UNIT) {
-        auto unitItem = std::any_cast<UnitPtr>(item.second);
-        id = unitItem->units()->unitId(unitItem->index());
+        auto unitsItem = std::any_cast<UnitsItemPtr>(item.second);
+        id = unitsItem->units()->unitId(unitsItem->index());
     } else if (type == CellmlElementType::MODEL) {
         id = std::any_cast<ModelPtr>(item.second)->id();
     } else if (type == CellmlElementType::RESET) {
@@ -1360,7 +1360,7 @@ void Annotator::AnnotatorImpl::setId(const AnyItem &item, const std::string &id)
 {
     CellmlElementType type = item.first;
     if (type == CellmlElementType::UNIT) {
-        auto unitItem = std::any_cast<UnitPtr>(item.second);
+        auto unitItem = std::any_cast<UnitsItemPtr>(item.second);
         unitItem->units()->setUnitId(unitItem->index(), id);
     } else if (type == CellmlElementType::MODEL) {
         std::any_cast<ModelPtr>(item.second)->setId(id);
@@ -1397,7 +1397,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItem &item) const
     CellmlElementType type = item.first;
     auto model = mModel.lock();
     if (type == CellmlElementType::UNIT) {
-        modelBased = owningModel(std::any_cast<UnitPtr>(item.second)->units()) == model;
+        modelBased = owningModel(std::any_cast<UnitsItemPtr>(item.second)->units()) == model;
     } else if ((type == CellmlElementType::MODEL)
                || (type == CellmlElementType::ENCAPSULATION)) {
         modelBased = std::any_cast<ModelPtr>(item.second) == model;
@@ -1429,7 +1429,7 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyItem &itemWeak, const AnyItem
     CellmlElementType type = itemWeak.first;
     if (type == CellmlElementType::UNIT) {
         // Unit is not actually stored as a weak pointer so we can compare shared pointers directly.
-        itemsEqual = (std::any_cast<UnitPtr>(itemWeak.second) == std::any_cast<UnitPtr>(itemShared.second));
+        itemsEqual = (std::any_cast<UnitsItemPtr>(itemWeak.second) == std::any_cast<UnitsItemPtr>(itemShared.second));
     } else if ((type == CellmlElementType::MODEL)
                || (type == CellmlElementType::ENCAPSULATION)) {
         itemsEqual = equals(std::any_cast<ModelWeakPtr>(itemWeak.second), std::any_cast<ModelWeakPtr>(item.second));
@@ -1461,7 +1461,7 @@ bool Annotator::AnnotatorImpl::validItem(const AnyItem &item)
     CellmlElementType type = item.first;
     if (type == CellmlElementType::UNIT) {
         try {
-            if (std::any_cast<UnitPtr>(item.second)->units() != nullptr) {
+            if (std::any_cast<UnitsItemPtr>(item.second)->units() != nullptr) {
                 return true;
             }
         } catch (std::bad_any_cast &) {
@@ -1623,9 +1623,9 @@ std::string Annotator::assignTestValueId(const ResetPtr &reset)
     return mPimpl->setAutoId(std::make_pair(CellmlElementType::TEST_VALUE, reset));
 }
 
-std::string Annotator::assignUnitId(const UnitPtr &unitItem)
+std::string Annotator::assignUnitId(const UnitsItemPtr &unitsItem)
 {
-    return mPimpl->setAutoId(std::make_pair(CellmlElementType::UNIT, unitItem));
+    return mPimpl->setAutoId(std::make_pair(CellmlElementType::UNIT, unitsItem));
 }
 
 std::string Annotator::assignUnitsId(const UnitsPtr &units)
@@ -1670,12 +1670,12 @@ std::string Annotator::assignId(const ImportSourcePtr &importSource)
 
 std::string Annotator::assignId(const UnitsPtr &units, size_t index)
 {
-    return mPimpl->setAutoId(std::make_pair(CellmlElementType::UNIT, Unit::create(units, index)));
+    return mPimpl->setAutoId(std::make_pair(CellmlElementType::UNIT, UnitsItem::create(units, index)));
 }
 
-std::string Annotator::assignId(const UnitPtr &unitItem)
+std::string Annotator::assignId(const UnitsItemPtr &unitsItem)
 {
-    return mPimpl->setAutoId(std::make_pair(CellmlElementType::UNIT, unitItem));
+    return mPimpl->setAutoId(std::make_pair(CellmlElementType::UNIT, unitsItem));
 }
 
 std::string Annotator::assignId(const VariablePtr &variable)

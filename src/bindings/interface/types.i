@@ -34,7 +34,7 @@ Provides support for shared pointers declared in types.h.
 %shared_ptr(libcellml::Parser)
 %shared_ptr(libcellml::Printer)
 %shared_ptr(libcellml::Reset)
-%shared_ptr(libcellml::Unit)
+%shared_ptr(libcellml::UnitsItem)
 %shared_ptr(libcellml::Units)
 %shared_ptr(libcellml::Validator)
 %shared_ptr(libcellml::Variable)
@@ -52,17 +52,17 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::VariablePair::isValid
 "Test if the pair is valid.";
 
-%feature("docstring") libcellml::Unit
-"A class for describing a unit.";
+%feature("docstring") libcellml::UnitsItem
+"A class for describing a units item.";
 
-%feature("docstring") libcellml::Unit::units
-"Return the units for the unit reference.";
+%feature("docstring") libcellml::UnitsItem::units
+"Return the units for the units item reference.";
 
-%feature("docstring") libcellml::Unit::index
-"Return the index for the unit reference.";
+%feature("docstring") libcellml::UnitsItem::index
+"Return the index for the units item reference.";
 
-%feature("docstring") libcellml::Unit::isValid
-"Test if the unit reference is valid.";
+%feature("docstring") libcellml::UnitsItem::isValid
+"Test if the units item reference is valid.";
 
 %{
 #include "libcellml/types.h"
@@ -160,13 +160,13 @@ Provides support for shared pointers declared in types.h.
   }
 }
 
-%typemap(out) libcellml::Unit *Unit() {
+%typemap(out) libcellml::UnitsItem *UnitsItem() {
   /*
   Here we take the returned value from the Constructor for this object and cast it
   to the pointer that it actually is.  Once that is done we can set the required resultobj.
   */
-  std::shared_ptr<  libcellml::Unit > *smartresult = reinterpret_cast<std::shared_ptr<  libcellml::Unit > *>(result);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__Unit_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
+  std::shared_ptr<  libcellml::UnitsItem > *smartresult = reinterpret_cast<std::shared_ptr<  libcellml::UnitsItem > *>(result);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__UnitsItem_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
 }
 
 %typemap(out) libcellml::VariablePair *VariablePair() {
@@ -178,10 +178,10 @@ Provides support for shared pointers declared in types.h.
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__VariablePair_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
 }
 
-%extend libcellml::Unit {
-    Unit(const UnitsPtr &units, size_t index) {
-        auto ptr = new std::shared_ptr<libcellml::Unit>(libcellml::Unit::create(units, index));
-        return reinterpret_cast<libcellml::Unit *>(ptr);
+%extend libcellml::UnitsItem {
+    UnitsItem(const UnitsPtr &units, size_t index) {
+        auto ptr = new std::shared_ptr<libcellml::UnitsItem>(libcellml::UnitsItem::create(units, index));
+        return reinterpret_cast<libcellml::UnitsItem *>(ptr);
     }
 }
 
@@ -192,7 +192,7 @@ Provides support for shared pointers declared in types.h.
     }
 }
 
-%ignore libcellml::Unit::create;
+%ignore libcellml::UnitsItem::create;
 %ignore libcellml::VariablePair::create;
 
 %include "libcellml/types.h"
