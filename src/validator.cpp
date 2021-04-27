@@ -983,7 +983,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     if (!isValidW3IdName(id)) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
-        issue->setUnit(Unit::create(units, index));
+        issue->setUnitsItem(UnitsItem::create(units, index));
         issue->setDescription("Unit in units '" + units->name() + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
         mValidator->addIssue(issue);
     }
