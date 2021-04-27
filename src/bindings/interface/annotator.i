@@ -49,8 +49,8 @@
 %feature("docstring") libcellml::Annotator::componentRef
 "Return the ComponentPtr with the given component_ref identifier.";
 
-%feature("docstring") libcellml::Annotator::unit
-"Returns a Unit, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
+%feature("docstring") libcellml::Annotator::unitsItem
+"Returns a UnitsItem, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::connection
 "Return a VariablePair that defines a connection with given identifier.";
@@ -197,11 +197,11 @@ from libcellml.enums import CellmlElementType
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::UnitPtr const &item)
+    std::string _assignId(libcellml::UnitsItemPtr const &item)
     {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::UnitPtr const &item, libcellml::CellmlElementType type)
+    std::string _assignId(libcellml::UnitsItemPtr const &item, libcellml::CellmlElementType type)
     {
         return $self->assignId(item);
     }
@@ -292,7 +292,7 @@ from libcellml.enums import CellmlElementType
         elif type == CellmlElementType.TEST_VALUE:
             return (type, _annotator.Annotator_testValue(self, id, index))
         elif type == CellmlElementType.UNIT:
-            return (type, _annotator.Annotator_unit(self, id, index))
+            return (type, _annotator.Annotator_unitsItem(self, id, index))
         elif type == CellmlElementType.UNITS:
             return (type, _annotator.Annotator_units(self, id, index))
         elif type == CellmlElementType.VARIABLE:

@@ -106,10 +106,10 @@ Issue::Issue(const ResetPtr &reset)
     mPimpl->mCellmlElementType = CellmlElementType::RESET;
 }
 
-Issue::Issue(const UnitPtr &unit)
+Issue::Issue(const UnitsItemPtr &unitsItem)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mItem = std::make_any<UnitPtr>(unit);
+    mPimpl->mItem = std::make_any<UnitsItemPtr>(unitsItem);
     mPimpl->mCellmlElementType = CellmlElementType::UNIT;
 }
 
@@ -188,10 +188,10 @@ IssuePtr Issue::create(const VariablePtr &variable) noexcept
     return nullptr;
 }
 
-IssuePtr Issue::create(const UnitPtr &unit) noexcept
+IssuePtr Issue::create(const UnitsItemPtr &unitsItem) noexcept
 {
-    if (unit->isValid()) {
-        auto issue = std::shared_ptr<Issue> {new Issue {unit}};
+    if (unitsItem->isValid()) {
+        auto issue = std::shared_ptr<Issue> {new Issue {unitsItem}};
         issue->mPimpl->mCellmlElementType = CellmlElementType::UNIT;
         return issue;
     }
@@ -276,7 +276,7 @@ void Issue::setItem(CellmlElementType cellmlElementType, const std::any &item)
             mPimpl->clearItem();
             break;
         case CellmlElementType::UNIT:
-            mPimpl->mItem = std::any_cast<UnitPtr>(item);
+            mPimpl->mItem = std::any_cast<UnitsItemPtr>(item);
             break;
         case CellmlElementType::UNITS:
             mPimpl->mItem = std::any_cast<UnitsPtr>(item);
@@ -407,7 +407,7 @@ UnitsPtr Issue::units() const
                nullptr;
 }
 
-void Issue::setUnit(const UnitPtr &unit)
+void Issue::setUnitsItem(const UnitsItemPtr &unit)
 {
     if (unit->isValid()) {
         setItem(CellmlElementType::UNIT, unit);
@@ -416,10 +416,10 @@ void Issue::setUnit(const UnitPtr &unit)
     }
 }
 
-UnitPtr Issue::unit() const
+UnitsItemPtr Issue::unitsItem() const
 {
     return (mPimpl->mCellmlElementType == CellmlElementType::UNIT) ?
-               std::any_cast<UnitPtr>(mPimpl->mItem) :
+               std::any_cast<UnitsItemPtr>(mPimpl->mItem) :
                nullptr;
 }
 
