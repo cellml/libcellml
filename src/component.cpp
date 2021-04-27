@@ -41,7 +41,7 @@ namespace libcellml {
  */
 struct Component::ComponentImpl
 {
-    Component *mQ = nullptr;
+    Component *mComponent = nullptr;
     std::string mMath;
     std::vector<ResetPtr> mResets;
     std::vector<VariablePtr> mVariables;
@@ -91,13 +91,13 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
 Component::Component()
     : mPimpl(new ComponentImpl())
 {
-    mPimpl->mQ = this;
+    mPimpl->mComponent = this;
 }
 
 Component::Component(const std::string &name)
     : mPimpl(new ComponentImpl())
 {
-    mPimpl->mQ = this;
+    mPimpl->mComponent = this;
     setName(name);
 }
 
@@ -124,16 +124,16 @@ ComponentPtr Component::create(const std::string &name) noexcept
 bool Component::ComponentImpl::isResolvedWithHistory(ImportHistory &history) const
 {
     bool resolved = true;
-    if (mQ->isImport()) {
-        auto model = mQ->importSource()->model();
+    if (mComponent->isImport()) {
+        auto model = mComponent->importSource()->model();
         if (model == nullptr) {
             resolved = false;
         } else {
-            auto importedComponent = model->component(mQ->importReference());
+            auto importedComponent = model->component(mComponent->importReference());
             if (importedComponent == nullptr) {
                 resolved = false;
             } else {
-                ImportHistoryEntry h = std::make_pair(model, mQ->name());
+                ImportHistoryEntry h = std::make_pair(model, mComponent->name());
                 if (std::find(history.begin(), history.end(), h) != history.end()) {
                     resolved = false;
                 } else {
@@ -143,8 +143,8 @@ bool Component::ComponentImpl::isResolvedWithHistory(ImportHistory &history) con
             }
         }
     }
-    for (size_t i = 0; (i < mQ->componentCount()) && resolved; ++i) {
-        resolved = mQ->component(i)->mPimpl->isResolvedWithHistory(history);
+    for (size_t i = 0; (i < mComponent->componentCount()) && resolved; ++i) {
+        resolved = mComponent->component(i)->mPimpl->isResolvedWithHistory(history);
     }
 
     return resolved;
