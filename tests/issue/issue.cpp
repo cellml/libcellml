@@ -645,7 +645,7 @@ TEST(Issue, createUnitWarning)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->addUnit("second");
-    libcellml::IssuePtr e = libcellml::Issue::create(libcellml::Unit::create(u, 0));
+    libcellml::IssuePtr e = libcellml::Issue::create(libcellml::UnitsItem::create(u, 0));
     e->setLevel(libcellml::Issue::Level::WARNING);
     EXPECT_EQ(libcellml::CellmlElementType::UNIT, e->cellmlElementType());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
@@ -826,12 +826,12 @@ TEST(Issue, setGetItems)
     EXPECT_EQ(libcellml::CellmlElementType::TEST_VALUE, issue->cellmlElementType());
     EXPECT_EQ(reset, std::any_cast<libcellml::ResetPtr>(issue->item()));
 
-    issue->setUnit(libcellml::Unit::create(units, 0));
-    EXPECT_EQ(units, issue->unit()->units());
-    EXPECT_EQ(size_t(0), issue->unit()->index());
+    issue->setUnitsItem(libcellml::UnitsItem::create(units, 0));
+    EXPECT_EQ(units, issue->unitsItem()->units());
+    EXPECT_EQ(size_t(0), issue->unitsItem()->index());
     EXPECT_EQ(libcellml::CellmlElementType::UNIT, issue->cellmlElementType());
-    EXPECT_EQ(units, std::any_cast<libcellml::UnitPtr>(issue->item())->units());
-    EXPECT_EQ(size_t(0), std::any_cast<libcellml::UnitPtr>(issue->item())->index());
+    EXPECT_EQ(units, std::any_cast<libcellml::UnitsItemPtr>(issue->item())->units());
+    EXPECT_EQ(size_t(0), std::any_cast<libcellml::UnitsItemPtr>(issue->item())->index());
 
     issue->setUnits(units);
     EXPECT_EQ(units, issue->units());
@@ -859,7 +859,7 @@ TEST(Issue, createCorrectType)
     auto reset = libcellml::Reset::create();
     auto units = libcellml::Units::create();
     units->addUnit("second");
-    auto unit = libcellml::Unit::create(units, 0);
+    auto unit = libcellml::UnitsItem::create(units, 0);
     auto pair = libcellml::VariablePair::create(variable1, variable2);
 
     EXPECT_NE(nullptr, libcellml::Issue::create(component));
@@ -888,7 +888,6 @@ TEST(Issue, createMismatchedTypeReturnsNull)
     auto reset = libcellml::Reset::create();
     auto units = libcellml::Units::create();
     units->addUnit("second");
-    auto unit = libcellml::Unit::create(units, 0);
 
     EXPECT_EQ(nullptr, libcellml::Issue::create(component, libcellml::CellmlElementType::MODEL));
     EXPECT_EQ(nullptr, libcellml::Issue::create(model, libcellml::CellmlElementType::MATH));
@@ -906,7 +905,7 @@ TEST(Issue, createIssueWithNullptr)
     libcellml::VariablePairPtr pair3 = libcellml::VariablePair::create(libcellml::Variable::create("v2"), nullptr);
     libcellml::VariablePtr variable;
     libcellml::UnitsPtr units;
-    libcellml::UnitPtr unit = libcellml::Unit::create(nullptr, 0);
+    libcellml::UnitsItemPtr unitsItem = libcellml::UnitsItem::create(nullptr, 0);
     libcellml::ImportSourcePtr import;
 
     EXPECT_EQ(nullptr, libcellml::Issue::create(component));
@@ -916,7 +915,7 @@ TEST(Issue, createIssueWithNullptr)
     EXPECT_EQ(nullptr, libcellml::Issue::create(pair2));
     EXPECT_EQ(nullptr, libcellml::Issue::create(pair3));
     EXPECT_EQ(nullptr, libcellml::Issue::create(units));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(unit));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(unitsItem));
     EXPECT_EQ(nullptr, libcellml::Issue::create(variable));
     EXPECT_EQ(nullptr, libcellml::Issue::create(import));
 }
@@ -931,7 +930,7 @@ TEST(Issue, setItemWithNullptr)
     libcellml::VariablePairPtr pair3 = libcellml::VariablePair::create(libcellml::Variable::create("v2"), nullptr);
     libcellml::VariablePtr variable;
     libcellml::UnitsPtr units;
-    libcellml::UnitPtr unit = libcellml::Unit::create(nullptr, 0);
+    libcellml::UnitsItemPtr unitsItem = libcellml::UnitsItem::create(nullptr, 0);
     libcellml::ImportSourcePtr import;
 
     auto issue = libcellml::Issue::create();
@@ -957,7 +956,7 @@ TEST(Issue, setItemWithNullptr)
     issue->setItem(libcellml::CellmlElementType::RESET, reset);
     EXPECT_EQ(libcellml::CellmlElementType::RESET, issue->cellmlElementType());
 
-    issue->setItem(libcellml::CellmlElementType::UNIT, unit);
+    issue->setItem(libcellml::CellmlElementType::UNIT, unitsItem);
     EXPECT_EQ(libcellml::CellmlElementType::UNIT, issue->cellmlElementType());
 
     issue->setItem(libcellml::CellmlElementType::UNITS, units);
@@ -984,7 +983,7 @@ TEST(Issue, getMismatchedTypeReturnsNullComponent)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1009,7 +1008,7 @@ TEST(Issue, getMismatchedTypeReturnsNullComponentRef)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1035,7 +1034,7 @@ TEST(Issue, getMismatchedTypeReturnsNullConnection)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1061,7 +1060,7 @@ TEST(Issue, getMismatchedTypeReturnsNullEncapsulation)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1086,7 +1085,7 @@ TEST(Issue, getMismatchedTypeReturnsNullImportSource)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1113,7 +1112,7 @@ TEST(Issue, getMismatchedTypeReturnsNullMapVariables)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1138,7 +1137,7 @@ TEST(Issue, getMismatchedTypeReturnsNullMath)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1163,7 +1162,7 @@ TEST(Issue, getMismatchedTypeReturnsNullModel)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1188,7 +1187,7 @@ TEST(Issue, getMismatchedTypeReturnsNullReset)
     EXPECT_NE(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1213,7 +1212,7 @@ TEST(Issue, getMismatchedTypeReturnsNullResetValue)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_NE(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1238,7 +1237,7 @@ TEST(Issue, getMismatchedTypeReturnsNullTestValue)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_NE(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1250,9 +1249,9 @@ TEST(Issue, getMismatchedTypeReturnsUnit)
 {
     auto units = libcellml::Units::create();
     units->addUnit("second");
-    auto unit = libcellml::Unit::create(units, 0);
+    auto unit = libcellml::UnitsItem::create(units, 0);
     auto issue = libcellml::Issue::create();
-    issue->setUnit(unit);
+    issue->setUnitsItem(unit);
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
@@ -1265,12 +1264,12 @@ TEST(Issue, getMismatchedTypeReturnsUnit)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_NE(nullptr, issue->unit()->units());
+    EXPECT_NE(nullptr, issue->unitsItem()->units());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
-    issue->setUnit(libcellml::Unit::create(nullptr, size_t(0)));
-    EXPECT_EQ(nullptr, issue->unit());
+    issue->setUnitsItem(libcellml::UnitsItem::create(nullptr, size_t(0)));
+    EXPECT_EQ(nullptr, issue->unitsItem());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullUnits)
@@ -1290,7 +1289,7 @@ TEST(Issue, getMismatchedTypeReturnsNullUnits)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_NE(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1314,7 +1313,7 @@ TEST(Issue, getMismatchedTypeReturnsNullVariable)
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit());
+    EXPECT_EQ(nullptr, issue->unitsItem());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_NE(nullptr, issue->variable());
 
