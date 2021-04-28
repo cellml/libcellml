@@ -2210,7 +2210,7 @@ TEST(Validator, unitSimpleCycle)
     EXPECT_EQ("grandfather", issue->units()->name());
 }
 
-TEST(Validator, unitComplexCycle)
+libcellml::ModelPtr unitComplexCycle(bool order)
 {
     // Simple testing for the directional dependency of units. The first network is:
     //
@@ -2236,10 +2236,17 @@ TEST(Validator, unitComplexCycle)
 
     m->setName("model");
 
-    m->addUnits(u1);
-    m->addUnits(u2);
-    m->addUnits(u3);
-    m->addUnits(u4);
+    if (order) {
+        m->addUnits(u4);
+        m->addUnits(u1);
+        m->addUnits(u2);
+        m->addUnits(u3);
+    } else {
+        m->addUnits(u1);
+        m->addUnits(u2);
+        m->addUnits(u3);
+        m->addUnits(u4);
+    }
     m->addUnits(u5);
     m->addUnits(u6);
 
@@ -2276,12 +2283,21 @@ TEST(Validator, unitComplexCycle)
     //                  <- mother (u3)  <-+
     //                             <- sisterFromAnotherFather (u6)
 
+    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1.
+    u1->addUnit("brotherFromAnotherMother");
+
+    return m;
+}
+
+TEST(Validator, unitComplexCycle)
+{
     const std::vector<std::string> expectedIssues = {
         "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'",
     };
 
-    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1.
-    u1->addUnit("brotherFromAnotherMother");
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = unitComplexCycle(false);
+
     v->validateModel(m);
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
@@ -2292,53 +2308,13 @@ TEST(Validator, unitComplexCycleChangeOrderOfUnits)
     // Same test as unitComplexCycle except the order of the units
     // added to the model is different.  This changes the order
     // that the loop is detected in.
-    libcellml::ValidatorPtr v = libcellml::Validator::create();
-    libcellml::ModelPtr m = libcellml::Model::create();
-
-    libcellml::UnitsPtr u1 = libcellml::Units::create();
-    libcellml::UnitsPtr u2 = libcellml::Units::create();
-    libcellml::UnitsPtr u3 = libcellml::Units::create();
-    libcellml::UnitsPtr u4 = libcellml::Units::create();
-    libcellml::UnitsPtr u5 = libcellml::Units::create();
-    libcellml::UnitsPtr u6 = libcellml::Units::create();
-
-    m->setName("model");
-
-    m->addUnits(u4);
-    m->addUnits(u1);
-    m->addUnits(u2);
-    m->addUnits(u3);
-    m->addUnits(u5);
-    m->addUnits(u6);
-
-    u1->setName("grandfather"); // Base unit.
-
-    u2->setName("father"); // First generation.
-    u2->addUnit("grandfather");
-
-    u3->setName("mother"); // First generation.
-    u3->addUnit("grandfather");
-
-    u4->setName("brotherFromAnotherMother"); // Second generation.
-    u4->addUnit("father");
-
-    // Second generation depending on both first gen children, still valid, no loops because of directionality.
-    u5->setName("childOfIncest_ButThatsOKApparently");
-    u5->addUnit("mother");
-    u5->addUnit("father");
-
-    u6->setName("sisterFromAnotherFather"); // Second generation.
-    u6->addUnit("mother");
-
-    v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->issueCount());
-
     const std::vector<std::string> expectedIssues = {
         "Cyclic units exist: 'brotherFromAnotherMother' -> 'father' -> 'grandfather' -> 'brotherFromAnotherMother'",
     };
 
-    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1.
-    u1->addUnit("brotherFromAnotherMother");
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = unitComplexCycle(true);
+
     v->validateModel(m);
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
