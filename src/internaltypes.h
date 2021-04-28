@@ -63,7 +63,7 @@ using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
 using HistoryEntry = std::tuple<std::string, std::string, std::string>;
-using HistoryList = std::vector<HistoryEntry>;
+using History = std::vector<HistoryEntry>;
 
 using ImportHistoryEntry = std::pair<ModelPtr, std::string>;
 using ImportHistory = std::vector<ImportHistoryEntry>;

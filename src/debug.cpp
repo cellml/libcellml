@@ -28,7 +28,7 @@ limitations under the License.
 
 namespace libcellml {
 
-void printHistory(const HistoryList &history)
+void printHistory(const History &history)
 {
     for (auto tt : history) {
         printHistoryEntry(tt);
