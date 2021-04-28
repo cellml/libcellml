@@ -41,8 +41,8 @@ struct AnyCellmlElement::AnyCellmlElementImpl
     void setReset(const ResetPtr &reset, CellmlElementType type = CellmlElementType::RESET);
     void setResetValue(const ResetPtr &reset);
     void setTestValue(const ResetPtr &reset);
-    void setUnit(const UnitPtr &unit);
     void setUnits(const UnitsPtr &units);
+    void setUnitsItem(const UnitsItemPtr &unitsItem);
     void setVariable(const VariablePtr &variable);
     void setVariablePair(const VariablePairPtr &pair, CellmlElementType type);
     void setVariablePair(const VariablePtr &variable1, const VariablePtr &variable2, CellmlElementType type);
