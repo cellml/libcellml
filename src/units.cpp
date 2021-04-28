@@ -184,7 +184,7 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(ImportHistory &history) const
     if (isStandardUnitName(unitsName)) {
         standardUnitCheck = isBaseUnit(unitsName);
     }
-    return mUnits->unitCount() == 0 && standardUnitCheck;
+    return (mUnits->unitCount() == 0) && standardUnitCheck;
 }
 
 bool Units::UnitsImpl::isResolvedWithHistory(ImportHistory &history) const
