@@ -239,7 +239,7 @@ struct Validator::ValidatorImpl
      * @param history The history of units visited.
      * @param modelsVisited The list of visited models.
      */
-    void validateUnitsUnit(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const;
+    void validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the @p variable using the CellML 2.0 Specification.
@@ -949,7 +949,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
     }
     if (units->unitCount() > 0) {
         for (size_t i = 0; i < units->unitCount(); ++i) {
-            validateUnitsUnit(i, units, history, modelsVisited);
+            validateUnitsUnitsItem(i, units, history, modelsVisited);
         }
     }
 
@@ -957,7 +957,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
     history.pop_back();
 }
 
-void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const
+void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const
 {
     // Validate the unit at the given index.
     std::string reference;
