@@ -76,11 +76,11 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::setUnits
 "Sets the :class`Units` relevant to this issue (``None`` to unset).";
 
-%feature("docstring") libcellml::Issue::unit
-"Get the :class:`Unit` relevant to this issue (or ``None``).";
+%feature("docstring") libcellml::Issue::unitsItem
+"Get the :class:`UnitsItem` relevant to this issue (or ``None``).";
 
-%feature("docstring") libcellml::Issue::setUnit
-"Sets the :class`Unit` relevant to this issue (``None`` to unset).";
+%feature("docstring") libcellml::Issue::setUnitsItem
+"Sets the :class`UnitsItem` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::variable
 "Get the :class:`Variable` relevant to this issue (or ``None``).";

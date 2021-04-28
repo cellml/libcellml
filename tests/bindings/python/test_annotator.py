@@ -69,8 +69,8 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(model.units("units2").name(),
                          annotator.units("units_2").name())
         self.assertEqual(model.units("units2").name(),
-                         annotator.unit("unit_1").units().name())
-        self.assertEqual(0, annotator.unit("unit_1").index())
+                         annotator.unitsItem("unit_1").units().name())
+        self.assertEqual(0, annotator.unitsItem("unit_1").index())
 
         self.assertEqual(model.component("component2").variable("variable1").name(),
                          annotator.variable("variable_1").name())
@@ -108,7 +108,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertIsNone(annotator.component("i_dont_exist"))
         self.assertIsNone(annotator.variable("i_dont_exist"))
         self.assertIsNone(annotator.units("i_dont_exist"))
-        self.assertIsNone(annotator.unit("i_dont_exist"))
+        self.assertIsNone(annotator.unitsItem("i_dont_exist"))
         self.assertIsNone(annotator.reset("i_dont_exist"))
         self.assertIsNone(annotator.resetValue("i_dont_exist"))
         self.assertIsNone(annotator.testValue("i_dont_exist"))
@@ -170,7 +170,7 @@ class AnnotatorTestCase(unittest.TestCase):
 
     def test_assign_by_type(self):
         from libcellml import Annotator, Parser, Variable
-        from libcellml import Unit, VariablePair
+        from libcellml import UnitsItem, VariablePair
 
         annotator = Annotator()
         parser = Parser()
@@ -241,7 +241,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da60", i.id())
 
         self.assertEqual("", u.unitId(0))
-        annotator.assignUnitId(Unit(u, 0))
+        annotator.assignUnitsItemId(UnitsItem(u, 0))
         self.assertEqual("b4da61", u.unitId(0))
 
     def test_auto_ids(self):
@@ -292,7 +292,7 @@ class AnnotatorTestCase(unittest.TestCase):
 
     def test_assign_id(self):
         from libcellml import Annotator, Component, Model, Units
-        from libcellml import Unit, CellmlElementType
+        from libcellml import UnitsItem, CellmlElementType
 
         annotator = Annotator()
         model = Model()
@@ -321,7 +321,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("", component2.id())
         self.assertEqual("", units.unitId(0))
 
-        annotator.assignUnitId(Unit(units, 0))
+        annotator.assignUnitsItemId(UnitsItem(units, 0))
 
         self.assertEqual("b4da55", component1.id())
         self.assertEqual("", component2.id())
@@ -362,7 +362,7 @@ class AnnotatorTestCase(unittest.TestCase):
 
     def test_auto_id_individual(self):
         from libcellml import Annotator, CellmlElementType, Parser, Variable
-        from libcellml import Unit, VariablePair
+        from libcellml import UnitsItem, VariablePair
 
         annotator = Annotator()
         parser = Parser()
@@ -406,7 +406,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da5d", annotator.assignTestValueId(model.component("component2").reset(0)))
         self.assertEqual("b4da5d", model.component("component2").reset(0).testValueId())
 
-        self.assertEqual("b4da5e", annotator.assignUnitId(Unit(model.units(1), 0)))
+        self.assertEqual("b4da5e", annotator.assignUnitsItemId(UnitsItem(model.units(1), 0)))
         self.assertEqual("b4da5e", model.units(1).unitId(0))
 
         self.assertEqual("b4da5f", annotator.assignUnitsId(model.units(1)))
@@ -471,7 +471,7 @@ class AnnotatorTestCase(unittest.TestCase):
                 (CellmlElementType.ENCAPSULATION, model),
             ),
             "duplicateId4": (
-                (CellmlElementType.UNIT, ((model.units("units2"), 0))),
+                (CellmlElementType.UNITS_ITEM, ((model.units("units2"), 0))),
                 (CellmlElementType.COMPONENT, model.component("component1")),
                 (CellmlElementType.COMPONENT, model.component("component4")),
                 (CellmlElementType.MAP_VARIABLES, (c2v1, c3v1)),
@@ -577,9 +577,9 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(resetItem.reset().testValue(), item.testValue().testValue())
 
         item = annotator.item('unit_1')
-        self.assertEqual(CellmlElementType.UNIT, item.type())
-        self.assertEqual('units2', item.unit().units().name())
-        self.assertTrue(item.unit().isValid())
+        self.assertEqual(CellmlElementType.UNITS_ITEM, item.type())
+        self.assertEqual('units2', item.unitsItem().units().name())
+        self.assertTrue(item.unitsItem().isValid())
 
         item = annotator.item('units_1')
         self.assertEqual(CellmlElementType.UNITS, item.type())

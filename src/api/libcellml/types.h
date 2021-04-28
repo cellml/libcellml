@@ -78,8 +78,8 @@ class ParentedEntity; /**< Forward declaration of parented entity class. */
 using ParentedEntityPtr = std::shared_ptr<ParentedEntity>; /**< Type definition for shared parented entity pointer. */
 class Reset; /**< Forward declaration of Reset class. */
 using ResetPtr = std::shared_ptr<Reset>; /**< Type definition for shared reset pointer. */
-class Unit; /**< Forward declaration of Unit class. */
-using UnitPtr = std::shared_ptr<Unit>; /**< Type definition for shared unit pointer. */
+class UnitsItem; /**< Forward declaration of UnitsItem class. */
+using UnitsItemPtr = std::shared_ptr<UnitsItem>; /**< Type definition for shared units item pointer. */
 class Units; /**< Forward declaration of Units class. */
 using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
@@ -88,31 +88,31 @@ class VariablePair; /**< Forward declaration of VariablePair class. */
 using VariablePairPtr = std::shared_ptr<VariablePair>; /**< Type definition for shared variable pair pointer. */
 
 /**
- * @brief The Unit class
+ * @brief The UnitsItem class
  *
- * The Unit class contains a @ref Units to the parent Units item, and
- * the index to the @ref Unit item within the @ref Units.
+ * The UnitsItem class contains a @ref Units to the parent Units item, and
+ * the index to the @ref UnitsItem item within the @ref Units.
  */
-class LIBCELLML_EXPORT Unit
+class LIBCELLML_EXPORT UnitsItem
 {
 public:
-    ~Unit(); /**< Destructor. */
-    Unit() = delete; /**< Constructor, @private. */
-    Unit(const Unit &rhs) = delete; /**< Copy constructor. */
-    Unit(Unit &&rhs) noexcept = delete; /**< Move constructor. */
-    Unit &operator=(Unit rhs) = delete; /**< Assignment operator. */
+    ~UnitsItem(); /**< Destructor. */
+    UnitsItem() = delete; /**< Constructor, @private. */
+    UnitsItem(const UnitsItem &rhs) = delete; /**< Copy constructor. */
+    UnitsItem(UnitsItem &&rhs) noexcept = delete; /**< Move constructor. */
+    UnitsItem &operator=(UnitsItem rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a unit reference object.
      *
-     * Factory method to create a @ref UnitPtr.  Create a unit with @ref Units
+     * Factory method to create a @ref UnitsItemPtr.  Create a unit with @ref Units
      * and index with::
      *
-     *   auto unit = libcellml::UnitPtr::create(units, index);
+     *   auto unit = libcellml::UnitsItemPtr::create(units, index);
      *
-     * @return A smart pointer to a @ref UnitPtr object.
+     * @return A smart pointer to a @ref UnitsItemPtr object.
      */
-    static UnitPtr create(const UnitsPtr &units, size_t index) noexcept;
+    static UnitsItemPtr create(const UnitsPtr &units, size_t index) noexcept;
 
     /**
      * @brief Get the unit.
@@ -143,10 +143,10 @@ public:
     bool isValid() const;
 
 private:
-    explicit Unit(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
+    explicit UnitsItem(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
 
-    struct UnitImpl; /**< Forward declaration for pImpl idiom, @private. */
-    UnitImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    struct UnitsItemImpl; /**< Forward declaration for pImpl idiom, @private. */
+    UnitsItemImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 /**
@@ -346,16 +346,6 @@ public:
     ResetPtr testValue() const;
 
     /**
-     * @brief Get the unit.
-     *
-     * Get the unit.
-     *
-     * @return The @ref Unit, or @c nullptr if the internal type is not
-     * @ref CellmlElementType::UNIT.
-     */
-    UnitPtr unit() const;
-
-    /**
      * @brief Get the units.
      *
      * Get the units.
@@ -364,6 +354,16 @@ public:
      * @ref CellmlElementType::UNITS.
      */
     UnitsPtr units() const;
+
+    /**
+     * @brief Get the units item.
+     *
+     * Get the units item.
+     *
+     * @return The @ref UnitsItem, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::UNITS_ITEM.
+     */
+    UnitsItemPtr unitsItem() const;
 
     /**
      * @brief Get the variable.
