@@ -3176,7 +3176,7 @@ TEST(Validator, importComponentWithInvalidName)
     EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
 }
 
-TEST(Validator, importSecondGenComponentWithInvalidURI)
+TEST(Validator, importSecondGenComponentWithInvalidUri)
 {
     const std::string errorMessageValidator =
         "Imported component 'c' is not valid because:\n"
