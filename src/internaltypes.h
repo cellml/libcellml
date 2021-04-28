@@ -62,12 +62,12 @@ using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type 
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
-using HistoryEntry = std::tuple<std::string, std::string, std::string>;
-using History = std::vector<HistoryEntry>;
+using HistoryEntry = std::tuple<std::string, std::string, std::string>; /**< Type definition for a history entry.*/
+using History = std::vector<HistoryEntry>; /**< Type definition for history.*/
 
-using ImportHistoryEntry = std::pair<ModelPtr, std::string>;
-using ImportHistory = std::vector<ImportHistoryEntry>;
+using ImportHistoryEntry = std::pair<ModelPtr, std::string>; /**< Type definition for an import history entry.*/
+using ImportHistory = std::vector<ImportHistoryEntry>; /**< Type definition for import history.*/
 
-using Strings = std::vector<std::string>;
+using Strings = std::vector<std::string>; /**< Type definition for strings.*/
 
 } // namespace libcellml

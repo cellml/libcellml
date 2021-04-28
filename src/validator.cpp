@@ -156,8 +156,10 @@ struct Validator::ValidatorImpl
      * the CellML 2.0 Specification. Any issues will be logged in the @c Validator.
      *
      * @param component The component to validate.
+     * @param history The history of visited components.
+     * @param modelsVisited The list of visited models.
      */
-    void validateComponent(const ComponentPtr &component, History &history, std::vector<ModelPtr> &visitedModels) const;
+    void validateComponent(const ComponentPtr &component, History &history, std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the component tree of the given @p component.
@@ -168,8 +170,10 @@ struct Validator::ValidatorImpl
      * @param component The @c Component to validate.
      * @param componentNames The list of already used component names used
      * to track repeated component names.
+     * @param history The history of visited components.
+     * @param modelsVisited The list of visited models.
      */
-    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &visitedModels);
+    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -179,7 +183,7 @@ struct Validator::ValidatorImpl
      *
      * @param units The units to validate.
      * @param history The history of units visited.
-     * @param issueList An array of loops, returned so that the reported issues are not too repetitive.
+     * @param modelsVisited The list of visited models.
      */
     void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> modelsVisited) const;
 
@@ -232,6 +236,8 @@ struct Validator::ValidatorImpl
      *
      * @param index The index of the @c unit to validate from @p units.
      * @param units The units to validate.
+     * @param history The history of units visited.
+     * @param modelsVisited The list of visited models.
      */
     void validateUnitsUnit(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const;
 
@@ -524,14 +530,14 @@ void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const s
     }
 }
 
-void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &visitedModels)
+void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
 {
     validateUniqueName(model, component->name(), componentNames);
     for (size_t i = 0; i < component->componentCount(); ++i) {
         auto childComponent = component->component(i);
-        validateComponentTree(model, childComponent, componentNames, history, visitedModels);
+        validateComponentTree(model, childComponent, componentNames, history, modelsVisited);
     }
-    validateComponent(component, history, visitedModels);
+    validateComponent(component, history, modelsVisited);
 }
 
 void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &importSource, const std::string &importName, const std::string &importType) const
@@ -644,10 +650,10 @@ void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount,
     }
 }
 
-void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, History &history, std::vector<ModelPtr> &visitedModels) const
+void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, History &history, std::vector<ModelPtr> &modelsVisited) const
 {
     size_t initialIssueCount = mValidator->issueCount();
-    bool isOriginatingModel = visitedModels.size() == 1;
+    bool isOriginatingModel = modelsVisited.size() == 1;
 
     std::string componentName = component->name();
 
@@ -693,15 +699,15 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
             if (importedComponent != nullptr) {
                 auto h = createHistoryEntry(component);
                 if (checkForCycles(history, h)) {
-                    auto issue = makeIssueCyclicDependency(visitedModels.front(), "component", history, "resolve");
+                    auto issue = makeIssueCyclicDependency(modelsVisited.front(), "component", history, "resolve");
                     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
                     issue->setImportSource(component->importSource());
                     mValidator->addIssue(issue);
                 } else {
                     history.push_back(h);
-                    visitedModels.push_back(importModel);
-                    validateComponent(importedComponent, history, visitedModels);
-                    visitedModels.pop_back();
+                    modelsVisited.push_back(importModel);
+                    validateComponent(importedComponent, history, modelsVisited);
+                    modelsVisited.pop_back();
                     history.pop_back();
                 }
             } else {
@@ -1719,7 +1725,7 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
 }
 
 /**
- * @brief Test to determine if character is a valid xml name char.
+ * @brief Test to determine if character is a valid XML name char.
  *
  * Name char is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
  *
@@ -1737,7 +1743,7 @@ bool isNameChar(uint32_t nameChar)
 }
 
 /**
- * @brief Test to determine if name is a valid xml name.
+ * @brief Test to determine if name is a valid XML name.
  *
  * Name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
  *
