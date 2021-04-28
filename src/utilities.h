@@ -596,6 +596,20 @@ static inline std::string trimCopy(std::string s)
 }
 
 /**
+ * @brief Replace text in string.
+ *
+ * Replace the @c std::string @p from in @p string with @c std::string @p to.
+ * If the string @p from is not found in @p string then the @p string is returned unchanged.
+ *
+ * @param string The string to make the substution in.
+ * @param from The string to replace.
+ * @param to The replacement string.
+ *
+ * @return The modified string.
+ */
+std::string replace(std::string string, const std::string &from, const std::string &to);
+
+/**
  * @brief Collect all existing identifier attributes within the given model.
  *
  * @param model The @c ModelPtr to interrogate.
@@ -725,16 +739,45 @@ std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
  */
 IndexStack indexStackOf(const ComponentPtr &component);
 
+/**
+ * @brief Create a history entry for a @ref Units.
+ *
+ * Create a history entry for a @ref Units.
+ *
+ * @param units The @ref Units to create a history entry for.
+ *
+ * @return The history entry.
+ */
 HistoryEntry createHistoryEntry(const UnitsPtr &units);
 
+/**
+ * @brief Create a history entry for a @ref Component.
+ *
+ * Create a history entry for a @ref Component.
+ *
+ * @param units The @ref Component to create a history entry for.
+ *
+ * @return The history entry.
+ */
 HistoryEntry createHistoryEntry(const ComponentPtr &component);
 
+/**
+ * @brief Make a cyclic dependency issue.
+ *
+ * Make a cyclic dependency issue.
+ *
+ * @param model The @ref Model the issue is associated with.
+ * @param type The type, one of {"units", "component"};
+ * @param history The history of the cyclic dependency.
+ * @param action The action that made cyclic dependency, e.g. "resolve", "flatten".
+ *
+ * @return The issue.
+ */
 IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
                                    const std::string &type,
                                    const History &history,
                                    const std::string &action);
 
-// Would be nice to add documentation to these.
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
 void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
@@ -744,6 +787,5 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
-std::string replace(std::string string, const std::string &from, const std::string &to);
 
 } // namespace libcellml
