@@ -43,8 +43,8 @@
 %feature("docstring") libcellml::Annotator::resetValue
 "Return the ResetPtr whose reset_value has the given identifier.";
 
-%feature("docstring") libcellml::Annotator::unit
-"Returns a Unit, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
+%feature("docstring") libcellml::Annotator::unitsItem
+"Returns a UnitsItem, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::connection
 "Return a VariablePair that defines a connection with given identifier.";

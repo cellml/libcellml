@@ -138,14 +138,14 @@ TEST(Annotator, getVariablePairFromId)
 
     // Unit items are returned as a CellmlElementType enum and a UnitPtr which holds a parent and an index:
     EXPECT_EQ(libcellml::CellmlElementType::UNIT, annotator->item("unit1_id")->type());
-    EXPECT_EQ(units, annotator->item("unit1_id")->unit()->units());
-    EXPECT_EQ(size_t(0), annotator->item("unit1_id")->unit()->index());
+    EXPECT_EQ(units, annotator->item("unit1_id")->unitsItem()->units());
+    EXPECT_EQ(size_t(0), annotator->item("unit1_id")->unitsItem()->index());
     EXPECT_EQ(libcellml::CellmlElementType::UNIT, annotator->item("unit2_id")->type());
-    EXPECT_EQ(units, annotator->item("unit2_id")->unit()->units());
-    EXPECT_EQ(size_t(1), annotator->item("unit2_id")->unit()->index());
+    EXPECT_EQ(units, annotator->item("unit2_id")->unitsItem()->units());
+    EXPECT_EQ(size_t(1), annotator->item("unit2_id")->unitsItem()->index());
     EXPECT_EQ(libcellml::CellmlElementType::UNIT, annotator->item("unit3_id")->type());
-    EXPECT_EQ(units, annotator->item("unit3_id")->unit()->units());
-    EXPECT_EQ(size_t(2), annotator->item("unit3_id")->unit()->index());
+    EXPECT_EQ(units, annotator->item("unit3_id")->unitsItem()->units());
+    EXPECT_EQ(size_t(2), annotator->item("unit3_id")->unitsItem()->index());
 
     // Connections and map variables are returned as VariablePairs.  Note that connection identifiers could be
     // represented by any one of the pairs of variables in that connection.
@@ -248,8 +248,8 @@ TEST(Annotator, getItemByIdSpecificType)
     EXPECT_EQ(model->units("units1"), annotator->units("units_1"));
     EXPECT_EQ(model->units("units1")->importSource(), annotator->importSource("import_2"));
     EXPECT_EQ(model->units("units2"), annotator->units("units_2"));
-    EXPECT_EQ(model->units("units2"), annotator->unit("unit_1")->units());
-    EXPECT_EQ(size_t(0), annotator->unit("unit_1")->index());
+    EXPECT_EQ(model->units("units2"), annotator->unitsItem("unit_1")->units());
+    EXPECT_EQ(size_t(0), annotator->unitsItem("unit_1")->index());
     EXPECT_EQ(model->component("component2")->variable("variable1"), annotator->variable("variable_1"));
     EXPECT_EQ(model->component("component2")->variable("variable2"), annotator->variable("variable_2"));
     EXPECT_EQ(model->component("component2")->reset(0), annotator->reset("reset_1"));
@@ -269,7 +269,7 @@ TEST(Annotator, getItemByIdSpecificType)
     EXPECT_EQ(nullptr, annotator->component("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->variable("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->units("i_dont_exist"));
-    EXPECT_EQ(nullptr, annotator->unit("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->unitsItem("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->reset("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->resetValue("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->testValue("i_dont_exist"));
@@ -290,7 +290,7 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     EXPECT_EQ(nullptr, annotator->component("duplicateId"));
     EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
     EXPECT_EQ(nullptr, annotator->units("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->unit("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->unitsItem("duplicateId"));
     EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
     EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
     EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
@@ -318,7 +318,7 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     EXPECT_EQ(nullptr, annotator->component("duplicateId"));
     EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
     EXPECT_EQ(nullptr, annotator->units("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->unit("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->unitsItem("duplicateId"));
     EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
     EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
     EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
@@ -402,8 +402,8 @@ TEST(Annotator, castingOnRetrieval)
             EXPECT_EQ(model->component("component2")->reset(0), itemInfo->testValue());
             break;
         case libcellml::CellmlElementType::UNIT:
-            EXPECT_EQ(model->units("units2"), itemInfo->unit()->units());
-            EXPECT_EQ(size_t(0), itemInfo->unit()->index());
+            EXPECT_EQ(model->units("units2"), itemInfo->unitsItem()->units());
+            EXPECT_EQ(size_t(0), itemInfo->unitsItem()->index());
             break;
         case libcellml::CellmlElementType::UNITS:
             EXPECT_EQ(model->units("units1"), itemInfo->units());
@@ -964,7 +964,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
     auto itemReset = model->component("component2")->reset(0);
     auto itemResetValue = model->component("component2")->reset(0);
     auto itemTestValue = model->component("component2")->reset(0);
-    auto itemUnit = libcellml::Unit::create(model->units(1), 0);
+    auto itemUnitsItem = libcellml::UnitsItem::create(model->units(1), 0);
     auto itemUnits = model->units(1);
     auto itemVariable = model->component("component2")->variable(0);
 
@@ -981,7 +981,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
     EXPECT_EQ("b4da5b", annotator->assignId(itemReset));
     EXPECT_EQ("b4da5c", annotator->assignId(itemResetValue, libcellml::CellmlElementType::RESET_VALUE));
     EXPECT_EQ("b4da5d", annotator->assignId(itemTestValue, libcellml::CellmlElementType::TEST_VALUE));
-    EXPECT_EQ("b4da5e", annotator->assignId(itemUnit));
+    EXPECT_EQ("b4da5e", annotator->assignId(itemUnitsItem));
     EXPECT_EQ("b4da5f", annotator->assignId(itemUnits));
     EXPECT_EQ("b4da60", annotator->assignId(itemVariable));
     EXPECT_EQ("b4da61", annotator->assignId(itemEncapsulation, libcellml::CellmlElementType::ENCAPSULATION));
@@ -1008,11 +1008,11 @@ TEST(Annotator, automaticIdAllItemsNoId)
 }
 
 
-TEST(Annotator, assignUnitIdBadInput)
+TEST(Annotator, assignUnitsItemIdBadInput)
 {
     auto annotator = libcellml::Annotator::create();
-    EXPECT_EQ("", annotator->assignId(libcellml::Unit::create(nullptr, 0)));
-    EXPECT_EQ("", annotator->assignId(libcellml::Unit::create(nullptr, std::numeric_limits<size_t>::max())));
+    EXPECT_EQ("", annotator->assignId(libcellml::UnitsItem::create(nullptr, 0)));
+    EXPECT_EQ("", annotator->assignId(libcellml::UnitsItem::create(nullptr, std::numeric_limits<size_t>::max())));
 }
 
 TEST(Annotator, assignVariablePairIdBadInput)
@@ -1058,7 +1058,7 @@ TEST(Annotator, assignVariableVariableId)
     EXPECT_EQ("b4da56", libcellml::Variable::equivalenceMappingId(variablePair->variable1(), variablePair->variable2()));
 }
 
-TEST(Annotator, assignUnitId)
+TEST(Annotator, assignUnitsItemId)
 {
     auto annotator = libcellml::Annotator::create();
     auto parser = libcellml::Parser::create();
@@ -1187,7 +1187,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     auto itemReset = model->component("component2")->reset(0);
     auto itemResetValue = model->component("component2")->reset(0);
     auto itemTestValue = model->component("component2")->reset(0);
-    auto const &itemUnit = libcellml::Unit::create(model->units(1), 0);
+    auto const &itemUnitsItem = libcellml::UnitsItem::create(model->units(1), 0);
     auto itemUnits = model->units(1);
     auto itemVariable = model->component("component2")->variable(0);
 
@@ -1200,7 +1200,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ(model, owningModel(itemReset));
     EXPECT_EQ(model, owningModel(itemResetValue));
     EXPECT_EQ(model, owningModel(itemTestValue));
-    EXPECT_EQ(model, owningModel(itemUnit->units()));
+    EXPECT_EQ(model, owningModel(itemUnitsItem->units()));
     EXPECT_EQ(model, owningModel(itemUnits));
     EXPECT_EQ(model, owningModel(itemVariable));
 
@@ -1214,7 +1214,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ("b4da5b", annotator->assignId(itemReset));
     EXPECT_EQ("b4da5c", annotator->assignId(itemResetValue, libcellml::CellmlElementType::RESET_VALUE));
     EXPECT_EQ("b4da5d", annotator->assignId(itemTestValue, libcellml::CellmlElementType::TEST_VALUE));
-    EXPECT_EQ("b4da5e", annotator->assignId(itemUnit));
+    EXPECT_EQ("b4da5e", annotator->assignId(itemUnitsItem));
     EXPECT_EQ("b4da5f", annotator->assignId(itemUnits));
     EXPECT_EQ("b4da60", annotator->assignId(itemVariable));
     EXPECT_EQ("b4da61", annotator->assignId(itemEncapsulation, libcellml::CellmlElementType::ENCAPSULATION));
@@ -1270,7 +1270,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     auto itemReset = model->component("component2")->reset(0);
     auto itemResetValue = model->component("component2")->reset(0);
     auto itemTestValue = model->component("component2")->reset(0);
-    auto itemUnit = libcellml::Unit::create(model->units(1), 0);
+    auto itemUnitsItem = libcellml::UnitsItem::create(model->units(1), 0);
     auto itemUnits = model->units(1);
     auto itemVariable = model->component("component2")->variable(0);
 
@@ -1283,7 +1283,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     EXPECT_EQ(model, owningModel(itemReset));
     EXPECT_EQ(model, owningModel(itemResetValue));
     EXPECT_EQ(model, owningModel(itemTestValue));
-    EXPECT_EQ(model, owningModel(itemUnit->units()));
+    EXPECT_EQ(model, owningModel(itemUnitsItem->units()));
     EXPECT_EQ(model, owningModel(itemUnits));
     EXPECT_EQ(model, owningModel(itemVariable));
 
@@ -1298,7 +1298,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     EXPECT_EQ("b4da5c", annotator->assignId(itemReset));
     EXPECT_EQ("b4da5d", annotator->assignId(itemResetValue));
     EXPECT_EQ("b4da5e", annotator->assignId(itemTestValue));
-    EXPECT_EQ("b4da5f", annotator->assignId(itemUnit));
+    EXPECT_EQ("b4da5f", annotator->assignId(itemUnitsItem));
     EXPECT_EQ("b4da60", annotator->assignId(itemUnits));
     EXPECT_EQ("b4da61", annotator->assignId(itemVariable));
 }
@@ -1323,7 +1323,7 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     auto itemReset = model->component("component2")->reset(0);
     auto itemResetValue = model->component("component2")->reset(0);
     auto itemTestValue = model->component("component2")->reset(0);
-    auto itemUnit = libcellml::Unit::create(model->units(1), 0);
+    auto itemUnitsItem = libcellml::UnitsItem::create(model->units(1), 0);
     auto itemUnits = model->units(1);
     auto itemVariable = model->component("component2")->variable(0);
 
@@ -1341,7 +1341,7 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     EXPECT_EQ("", annotator->assignId(itemReset));
     EXPECT_EQ("", annotator->assignId(itemResetValue));
     EXPECT_EQ("", annotator->assignId(itemTestValue));
-    EXPECT_EQ("", annotator->assignId(itemUnit));
+    EXPECT_EQ("", annotator->assignId(itemUnitsItem));
     EXPECT_EQ("", annotator->assignId(itemUnits));
     EXPECT_EQ("", annotator->assignId(itemVariable));
 
@@ -1381,7 +1381,7 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     auto mapping = libcellml::VariablePair::create(
         model->component("component2")->variable("variable2"),
         model->component("component2")->variable("variable2")->equivalentVariable(0));
-    auto unit = libcellml::Unit::create(model->units(1), 0);
+    auto unitsItem = libcellml::UnitsItem::create(model->units(1), 0);
 
     annotator->setModel(model);
 
@@ -1416,7 +1416,7 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     EXPECT_EQ("b4da5e", annotator->assignId(model->component("component2")->reset(0), libcellml::CellmlElementType::TEST_VALUE));
     EXPECT_EQ("b4da5e", model->component("component2")->reset(0)->testValueId());
 
-    EXPECT_EQ("b4da5f", annotator->assignId(unit));
+    EXPECT_EQ("b4da5f", annotator->assignId(unitsItem));
     EXPECT_EQ("b4da5f", model->units(1)->unitId(0));
 
     EXPECT_EQ("b4da60", annotator->assignId(model->units(1)));
@@ -1634,7 +1634,7 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                              std::make_pair(libcellml::CellmlElementType::ENCAPSULATION, model),
                          }},
         {"duplicateId4", {
-                             std::make_pair(libcellml::CellmlElementType::UNIT, libcellml::Unit::create(model->units("units2"), 0)),
+                             std::make_pair(libcellml::CellmlElementType::UNIT, libcellml::UnitsItem::create(model->units("units2"), 0)),
                              std::make_pair(libcellml::CellmlElementType::COMPONENT, model->component("component1")),
                              std::make_pair(libcellml::CellmlElementType::COMPONENT, model->component("component4")),
                              std::make_pair(libcellml::CellmlElementType::MAP_VARIABLES, libcellml::VariablePair::create(c2v1, c3v1)),
@@ -1708,8 +1708,8 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                 EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->testValue());
                 break;
             case libcellml::CellmlElementType::UNIT: {
-                auto ue = std::any_cast<libcellml::UnitPtr>(expectedItems[id][index].second);
-                auto ua = item->unit();
+                auto ue = std::any_cast<libcellml::UnitsItemPtr>(expectedItems[id][index].second);
+                auto ua = item->unitsItem();
                 EXPECT_EQ(ue->units(), ua->units());
                 EXPECT_EQ(ue->index(), ua->index());
                 break;
@@ -1778,7 +1778,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
                              std::make_pair(libcellml::CellmlElementType::ENCAPSULATION, model),
                          }},
         {"duplicateId4", {
-                             std::make_pair(libcellml::CellmlElementType::UNIT, libcellml::Unit::create(model->units("units2"), 0)),
+                             std::make_pair(libcellml::CellmlElementType::UNIT, libcellml::UnitsItem::create(model->units("units2"), 0)),
                              std::make_pair(libcellml::CellmlElementType::COMPONENT, model->component("component1")),
                              std::make_pair(libcellml::CellmlElementType::COMPONENT, model->component("component4")),
                              std::make_pair(libcellml::CellmlElementType::MAP_VARIABLES, libcellml::VariablePair::create(c2v1, c3v1)),
@@ -1838,8 +1838,8 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
                 EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->testValue());
                 break;
             case libcellml::CellmlElementType::UNIT: {
-                auto ue = std::any_cast<libcellml::UnitPtr>(expectedItems[id][index].second);
-                auto ua = item->unit();
+                auto ue = std::any_cast<libcellml::UnitsItemPtr>(expectedItems[id][index].second);
+                auto ua = item->unitsItem();
                 EXPECT_EQ(ue->units(), ua->units());
                 EXPECT_EQ(ue->index(), ua->index());
                 break;
@@ -1876,7 +1876,7 @@ TEST(Annotator, badAnyCastWithIndices)
     EXPECT_EQ(nullptr, annotator->reset("duplicateId", 0));
     EXPECT_EQ(nullptr, annotator->resetValue("duplicateId", 0));
     EXPECT_EQ(nullptr, annotator->testValue("duplicateId", 0));
-    EXPECT_EQ(nullptr, annotator->unit("duplicateId", 0));
+    EXPECT_EQ(nullptr, annotator->unitsItem("duplicateId", 0));
     EXPECT_EQ(nullptr, annotator->units("duplicateId", 0));
     EXPECT_EQ(nullptr, annotator->variable("duplicateId", 0));
 
@@ -1890,7 +1890,7 @@ TEST(Annotator, badAnyCastWithIndices)
     EXPECT_EQ(nullptr, annotator->reset("duplicateId", 99));
     EXPECT_EQ(nullptr, annotator->resetValue("duplicateId", 99));
     EXPECT_EQ(nullptr, annotator->testValue("duplicateId", 99));
-    EXPECT_EQ(nullptr, annotator->unit("duplicateId", 99));
+    EXPECT_EQ(nullptr, annotator->unitsItem("duplicateId", 99));
     EXPECT_EQ(nullptr, annotator->units("duplicateId", 99));
     EXPECT_EQ(nullptr, annotator->variable("duplicateId", 99));
 }
@@ -1904,20 +1904,20 @@ TEST(Annotator, pythonBindingFunctionsCoverage)
     auto annotator = libcellml::Annotator::create();
     auto model = parser->parseModel(modelStringNoIds);
 
-    auto itemUnit = libcellml::Unit::create(model->units("units2"), 0);
+    auto itemUnitsItem = libcellml::UnitsItem::create(model->units("units2"), 0);
     auto itemConnection = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1"),
         model->component("component3")->variable("variable1"));
 
     // Expect failure as no model is built.
-    EXPECT_EQ("", annotator->assignId(itemUnit));
+    EXPECT_EQ("", annotator->assignId(itemUnitsItem));
     EXPECT_EQ("", annotator->assignId(itemConnection, libcellml::CellmlElementType::CONNECTION));
     EXPECT_EQ("", annotator->assignId(model->component("component2")->variable("variable1"), model->component("component3")->variable("variable1")));
 
     annotator->setModel(model);
 
     // Expect success.
-    EXPECT_EQ("b4da55", annotator->assignId(itemUnit));
+    EXPECT_EQ("b4da55", annotator->assignId(itemUnitsItem));
     EXPECT_EQ("b4da56", annotator->assignId(itemConnection, libcellml::CellmlElementType::CONNECTION));
     EXPECT_EQ("b4da57", annotator->assignId(model->component("component2")->variable("variable1"), model->component("component3")->variable("variable1")));
 }
@@ -2024,10 +2024,10 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     EXPECT_EQ("b4da5e", annotator->assignId(model->component("component2")->reset(0), libcellml::CellmlElementType::TEST_VALUE));
     EXPECT_EQ("b4da5e", model->component("component2")->reset(0)->testValueId());
 
-    auto unit = libcellml::Unit::create(model->units(1), 0);
+    auto unitsItem = libcellml::UnitsItem::create(model->units(1), 0);
     model->units(1)->setUnitId(0, "changed");
     EXPECT_EQ("changed", model->units(1)->unitId(0));
-    EXPECT_EQ("b4da5f", annotator->assignId(unit));
+    EXPECT_EQ("b4da5f", annotator->assignId(unitsItem));
     EXPECT_EQ("b4da5f", model->units(1)->unitId(0));
 
     model->units(1)->setId("changed");

@@ -265,18 +265,18 @@ public:
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Unit in the @p index position, if it exists.
+     *        this method returns a @ref UnitsItem in the @p index position, if it exists.
      *
-     * From a list of all items with the given @p id return the @ref Unit at that location.
+     * From a list of all items with the given @p id return the @ref UnitsItem at that location.
      *
      * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Unit on success otherwise @c nullptr.
+     * @return A @ref UnitsItem on success otherwise @c nullptr.
      */
-    UnitPtr unit(const std::string &id, size_t index = 0);
+    UnitsItemPtr unitsItem(const std::string &id, size_t index = 0);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -536,9 +536,9 @@ public:
     std::string assignId(const UnitsPtr &units);
 
     /**
-     * @brief Assign an automatically generated, unique identifier to the given @p unitItem.
+     * @brief Assign an automatically generated, unique identifier to the given @p unitsItem.
      *
-     * Assign an automatically generated, unique identifier to the given @p unitItem.
+     * Assign an automatically generated, unique identifier to the given @p unitsItem.
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
@@ -547,11 +547,11 @@ public:
      *
      * @overload
      *
-     * @param unitItem A @c Unit item to which the new identifier is assigned.
+     * @param unitsItem A @ref UnitsItem to which the new identifier is assigned.
      *
      * @return the new identifier string.
      */
-    std::string assignId(const UnitPtr &unitItem);
+    std::string assignId(const UnitsItemPtr &unitsItem);
 
     /**
      * @brief Assign an automatically generated, unique identifier to the given @p variable.

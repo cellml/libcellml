@@ -551,8 +551,12 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             prefix = attribute->value();
         } else if (attribute->isType("exponent")) {
             if (isCellMLReal(attribute->value())) {
-                if (!convertToDouble(attribute->value(), exponent)) {
-                    // TODO This value won't be saved for validation later, so it does need to be reported now.
+                bool validConversion;
+                double tmpExponent = convertToDouble(attribute->value(), &validConversion);
+                if (validConversion) {
+                    exponent = tmpExponent;
+                } else {
+                    // This value won't be saved for validation later, so it does need to be reported now.
                     auto issue = std::shared_ptr<Issue> {new Issue {}};
                     issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");
                     issue->mPimpl->mItem->mPimpl->setUnits(units);
@@ -560,7 +564,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                     mParser->addIssue(issue);
                 }
             } else {
-                // TODO This value won't be saved for validation later, so it does need to be reported now.
+                // This value won't be saved for validation later, so it does need to be reported now.
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 issue->mPimpl->mItem->mPimpl->setUnits(units);
@@ -569,8 +573,12 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             }
         } else if (attribute->isType("multiplier")) {
             if (isCellMLReal(attribute->value())) {
-                if (!convertToDouble(attribute->value(), multiplier)) {
-                    // TODO This value won't be saved for validation later, so it does need to be reported now.
+                bool validConversion;
+                double tmpMultiplier = convertToDouble(attribute->value(), &validConversion);
+                if (validConversion) {
+                    multiplier = tmpMultiplier;
+                } else {
+                    // This value won't be saved for validation later, so it does need to be reported now.
                     auto issue = std::shared_ptr<Issue> {new Issue {}};
                     issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");
                     issue->mPimpl->mItem->mPimpl->setUnits(units);
@@ -578,7 +586,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                     mParser->addIssue(issue);
                 }
             } else {
-                // TODO This value won't be saved for validation later, so it does need to be reported now.
+                // This value won't be saved for validation later, so it does need to be reported now.
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 issue->mPimpl->mItem->mPimpl->setUnits(units);
@@ -1281,7 +1289,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             orderDefined = true;
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
-                orderValid = convertToInt(attribute->value(), order);
+                order = convertToInt(attribute->value(), &orderValid);
                 if (!orderValid) {
                     std::string variableName;
                     if (reset->variable() != nullptr) {
