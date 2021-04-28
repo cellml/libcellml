@@ -33,8 +33,8 @@ static const std::map<CellmlElementType, std::string> cellmlElementTypeToString 
     {CellmlElementType::RESET_VALUE, "reset_value"},
     {CellmlElementType::TEST_VALUE, "test_value"},
     {CellmlElementType::UNDEFINED, "undefined"},
-    {CellmlElementType::UNIT, "unit"},
     {CellmlElementType::UNITS, "units"},
+    {CellmlElementType::UNITS_ITEM, "unit"},
     {CellmlElementType::VARIABLE, "variable"}};
 
 std::string cellmlElementTypeAsString(CellmlElementType value)

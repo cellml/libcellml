@@ -430,23 +430,23 @@ public:
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Unit in the @p index position, if it exists.
+     *        this method returns a @ref UnitsItem in the @p index position, if it exists.
      *
-     * From a list of all items with the given @p id return the @ref Unit at that location.
+     * From a list of all items with the given @p id return the @ref UnitsItem at that location.
      *
      * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Unit on success otherwise @c nullptr.
+     * @return A @ref UnitsItem on success otherwise @c nullptr.
      */
-    UnitPtr unit(const std::string &id, size_t index);
+    UnitsItemPtr unitsItem(const std::string &id, size_t index);
 
     /**
-     * @brief Retrieve a @c Unit with the given @p id.
+     * @brief Retrieve a @ref UnitsItem with the given @p id.
      *
-     * Returns a @ref Unit with the given @p id.
+     * Returns a @ref UnitsItem with the given @p id.
      *
      * @see component(const std::string &) for times when a @c nullptr is returned.
      *
@@ -454,9 +454,9 @@ public:
      *
      * @param id A @c std::string representing the identifier of the item to retrieve.
      *
-     * @return A @c Unit on success otherwise @c nullptr.
+     * @return A @ref UnitsItem on success otherwise @c nullptr.
      */
-    UnitPtr unit(const std::string &id);
+    UnitsItemPtr unitsItem(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -792,19 +792,19 @@ public:
     std::string assignTestValueId(const ResetPtr &reset);
 
     /**
-     * @brief Assign an automatically generated, unique identifier to the given @p unitItem.
+     * @brief Assign an automatically generated, unique identifier to the given @p unitsItem.
      *
-     * Assign an automatically generated, unique identifier to the given @p unitItem.
+     * Assign an automatically generated, unique identifier to the given @p unitsItem.
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
-     * @param unitItem The @c Unit which will be assigned the new identifier.
+     * @param unitsItem The @ref UnitsItem which will be assigned the new identifier.
      *
      * @return the new identifier string.
      */
-    std::string assignUnitId(const UnitPtr &unitItem);
+    std::string assignUnitsItemId(const UnitsItemPtr &unitsItem);
 
     /**
      * @brief Assign an automatically generated, unique identifier to the given @p units.

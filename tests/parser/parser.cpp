@@ -1458,7 +1458,7 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
         case libcellml::CellmlElementType::RESET_VALUE:
         case libcellml::CellmlElementType::TEST_VALUE:
         case libcellml::CellmlElementType::UNDEFINED:
-        case libcellml::CellmlElementType::UNIT:
+        case libcellml::CellmlElementType::UNITS_ITEM:
             break;
         }
     }

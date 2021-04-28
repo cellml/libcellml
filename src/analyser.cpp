@@ -1225,9 +1225,10 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
         && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
         && (astGrandParent != nullptr) && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
         && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        double value;
+        bool validValue;
+        double value = convertToDouble(ast->mPimpl->mValue, &validValue);
 
-        if (!convertToDouble(ast->mPimpl->mValue, value) || !areEqual(value, 1.0)) {
+        if (!validValue || !areEqual(value, 1.0)) {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             auto variable = astGreatGrandParent->mPimpl->mOwnedRightChild->variable();
 

@@ -49,8 +49,8 @@
 %feature("docstring") libcellml::Annotator::componentRef
 "Return the ComponentPtr with the given component_ref identifier.";
 
-%feature("docstring") libcellml::Annotator::unit
-"Returns a Unit, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
+%feature("docstring") libcellml::Annotator::unitsItem
+"Returns a UnitsItem, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
 
 %feature("docstring") libcellml::Annotator::connection
 "Return a VariablePair that defines a connection with given identifier.";
@@ -106,8 +106,8 @@
 %feature("docstring") libcellml::Annotator::assignTestValueId
 "Assign an automatically generated, unique identifier to the test value of the given reset.";
 
-%feature("docstring") libcellml::Annotator::assignUnitId
-"Assign an automatically generated, unique identifier to the unit given by the units and index supplied.";
+%feature("docstring") libcellml::Annotator::assignUnitsItemId
+"Assign an automatically generated, unique identifier to the units item given by the units and index supplied.";
 
 %feature("docstring") libcellml::Annotator::assignUnitsId
 "Assign an automatically generated, unique identifier to the given units.";

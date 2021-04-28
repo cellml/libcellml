@@ -29,44 +29,44 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Unit::UnitImpl struct.
+ * @brief The UnitsItem::UnitsItemImpl struct.
  *
- * The private implementation for the Unit class.
+ * The private implementation for the UnitsItem class.
  */
-struct Unit::UnitImpl
+struct UnitsItem::UnitsItemImpl
 {
-    UnitsWeakPtr mUnits; /**< Units that owns this unit.*/
-    size_t mIndex = std::numeric_limits<size_t>::max(); /**< Index of this unit.*/
+    UnitsWeakPtr mUnits; /**< Units that owns this units item.*/
+    size_t mIndex = std::numeric_limits<size_t>::max(); /**< Index of this units item.*/
 };
 
-Unit::Unit(const UnitsPtr &units, size_t index)
-    : mPimpl(new UnitImpl())
+UnitsItem::UnitsItem(const UnitsPtr &units, size_t index)
+    : mPimpl(new UnitsItemImpl())
 {
     mPimpl->mUnits = units;
     mPimpl->mIndex = index;
 }
 
-Unit::~Unit()
+UnitsItem::~UnitsItem()
 {
     delete mPimpl;
 }
 
-UnitPtr Unit::create(const UnitsPtr &units, size_t index) noexcept
+UnitsItemPtr UnitsItem::create(const UnitsPtr &units, size_t index) noexcept
 {
-    return std::shared_ptr<Unit> {new Unit {units, index}};
+    return std::shared_ptr<UnitsItem> {new UnitsItem {units, index}};
 }
 
-UnitsPtr Unit::units() const
+UnitsPtr UnitsItem::units() const
 {
     return mPimpl->mUnits.lock();
 }
 
-size_t Unit::index() const
+size_t UnitsItem::index() const
 {
     return mPimpl->mIndex;
 }
 
-bool Unit::isValid() const
+bool UnitsItem::isValid() const
 {
     return mPimpl->mIndex < mPimpl->mUnits.lock()->unitCount();
 }
@@ -192,16 +192,16 @@ void AnyCellmlElement::AnyCellmlElementImpl::setTestValue(const ResetPtr &reset)
     mItem = reset;
 }
 
-void AnyCellmlElement::AnyCellmlElementImpl::setUnit(const UnitPtr &unit)
-{
-    mType = CellmlElementType::UNIT;
-    mItem = unit;
-}
-
 void AnyCellmlElement::AnyCellmlElementImpl::setUnits(const UnitsPtr &units)
 {
     mType = CellmlElementType::UNITS;
     mItem = units;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setUnitsItem(const UnitsItemPtr &unitsItem)
+{
+    mType = CellmlElementType::UNITS_ITEM;
+    mItem = unitsItem;
 }
 
 void AnyCellmlElement::AnyCellmlElementImpl::setVariable(const VariablePtr &variable)
@@ -315,19 +315,19 @@ ResetPtr AnyCellmlElement::testValue() const
     return nullptr;
 }
 
-UnitPtr AnyCellmlElement::unit() const
+UnitsPtr AnyCellmlElement::units() const
 {
-    if (mPimpl->mType == CellmlElementType::UNIT) {
-        return std::any_cast<UnitPtr>(mPimpl->mItem);
+    if (mPimpl->mType == CellmlElementType::UNITS) {
+        return std::any_cast<UnitsPtr>(mPimpl->mItem);
     }
 
     return nullptr;
 }
 
-UnitsPtr AnyCellmlElement::units() const
+UnitsItemPtr AnyCellmlElement::unitsItem() const
 {
-    if (mPimpl->mType == CellmlElementType::UNITS) {
-        return std::any_cast<UnitsPtr>(mPimpl->mItem);
+    if (mPimpl->mType == CellmlElementType::UNITS_ITEM) {
+        return std::any_cast<UnitsItemPtr>(mPimpl->mItem);
     }
 
     return nullptr;
