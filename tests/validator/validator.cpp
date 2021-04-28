@@ -2291,7 +2291,7 @@ TEST(Validator, unitComplexCycleChangeOrderOfUnits)
 {
     // Same test as unitComplexCycle except the order of the units
     // added to the model is different.  This changes the order
-    // that the loop is detected  in.
+    // that the loop is detected in.
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
 
