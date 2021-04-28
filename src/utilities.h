@@ -731,7 +731,7 @@ HistoryEntry createHistoryEntry(const ComponentPtr &component);
 
 IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
                                    const std::string &type,
-                                   const HistoryList &history,
+                                   const History &history,
                                    const std::string &action);
 
 // Would be nice to add documentation to these.

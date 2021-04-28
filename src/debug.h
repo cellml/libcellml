@@ -100,7 +100,7 @@ void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr 
 void printStringStringMap(const StringStringMap &map);
 void printConnectionMap(const ConnectionMap &map);
 void printAst(const AnalyserEquationAstPtr &ast);
-void printHistory(const HistoryList &history);
+void printHistory(const History &history);
 void printHistoryEntry(const HistoryEntry &historyEntry);
 
 } // namespace libcellml
