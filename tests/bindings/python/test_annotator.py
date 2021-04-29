@@ -169,8 +169,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertFalse(annotator.isUnique("duplicateId2"))
 
     def test_assign_by_type(self):
-        import libcellml
-        from libcellml import Annotator, Parser, Variable
+        from libcellml import Annotator, Parser, Variable, CellmlElementType
         from libcellml import UnitsItem, VariablePair
 
         annotator = Annotator()
