@@ -474,7 +474,7 @@ class AnnotatorTestCase(unittest.TestCase):
                 (CellmlElementType.ENCAPSULATION, model),
             ),
             "duplicateId4": (
-                (CellmlElementType.UNIT, ((model.units("units2"), 0))),
+                (CellmlElementType.UNITS_ITEM, ((model.units("units2"), 0))),
                 (CellmlElementType.COMPONENT, model.component("component1")),
                 (CellmlElementType.COMPONENT, model.component("component4")),
                 (CellmlElementType.MAP_VARIABLES, (c2v1, c3v1)),
@@ -580,7 +580,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(resetItem.reset().testValue(), item.testValue().testValue())
 
         item = annotator.item('unit_1')
-        self.assertEqual(CellmlElementType.UNIT, item.type())
+        self.assertEqual(CellmlElementType.UNITS_ITEM, item.type())
         self.assertEqual('units2', item.unitsItem().units().name())
         self.assertTrue(item.unitsItem().isValid())
 

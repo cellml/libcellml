@@ -176,7 +176,7 @@ void AnyCellmlElement::AnyCellmlElementImpl::setUnits(const UnitsPtr &units)
 
 void AnyCellmlElement::AnyCellmlElementImpl::setUnitsItem(const UnitsItemPtr &unitsItem)
 {
-    mType = CellmlElementType::UNIT;
+    mType = CellmlElementType::UNITS_ITEM;
     mItem = unitsItem;
 }
 
@@ -290,7 +290,7 @@ UnitsPtr AnyCellmlElement::units() const
 
 UnitsItemPtr AnyCellmlElement::unitsItem() const
 {
-    if (mPimpl->mType == CellmlElementType::UNIT) {
+    if (mPimpl->mType == CellmlElementType::UNITS_ITEM) {
         return std::any_cast<UnitsItemPtr>(mPimpl->mItem);
     }
 

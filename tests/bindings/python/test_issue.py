@@ -19,7 +19,7 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(CellmlElementType.MODEL, int)
         self.assertIsInstance(CellmlElementType.UNDEFINED, int)
         self.assertIsInstance(CellmlElementType.UNITS, int)
-        self.assertIsInstance(CellmlElementType.UNIT, int)
+        self.assertIsInstance(CellmlElementType.UNITS_ITEM, int)
         self.assertIsInstance(CellmlElementType.VARIABLE, int)
 
     def test_reference_rule_enum(self):
