@@ -187,7 +187,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da55", model.id())
 
         self.assertEqual("", model.encapsulationId())
-        annotator.assignId(model, libcellml.CellmlElementType.ENCAPSULATION)
+        annotator.assignId(model, CellmlElementType.ENCAPSULATION)
         self.assertEqual("b4da56", model.encapsulationId())
 
         self.assertEqual("", c.id())
@@ -195,14 +195,14 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da57", c.id())
 
         self.assertEqual("", c.encapsulationId())
-        annotator.assignId(c, libcellml.CellmlElementType.COMPONENT_REF)
+        annotator.assignId(c, CellmlElementType.COMPONENT_REF)
         self.assertEqual("b4da58", c.encapsulationId())
 
         c2v1 = model.component("component2").variable("variable1")
         c3v1 = model.component("component3").variable("variable1")
 
         self.assertEqual("", Variable.equivalenceConnectionId(c2v1, c3v1))
-        annotator.assignId(VariablePair(c2v1, c3v1), libcellml.CellmlElementType.CONNECTION)
+        annotator.assignId(VariablePair(c2v1, c3v1), CellmlElementType.CONNECTION)
         self.assertEqual("b4da59", Variable.equivalenceConnectionId(c2v1, c3v1))
 
         self.assertEqual("", Variable.equivalenceMappingId(c2v1, c3v1))
@@ -228,11 +228,11 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da5d", r.id())
 
         self.assertEqual("", r.testValueId())
-        annotator.assignId(r, libcellml.CellmlElementType.TEST_VALUE)
+        annotator.assignId(r, CellmlElementType.TEST_VALUE)
         self.assertEqual("b4da5e", r.testValueId())
 
         self.assertEqual("", r.resetValueId())
-        annotator.assignId(r, libcellml.CellmlElementType.RESET_VALUE)
+        annotator.assignId(r, CellmlElementType.RESET_VALUE)
         self.assertEqual("b4da5f", r.resetValueId())
 
         i = model.component("component1").importSource()
@@ -328,6 +328,8 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("", component2.id())
         self.assertEqual("b4da56", units.unitId(0))
 
+        self.assertEqual("", annotator.assignId(None, CellmlElementType.UNDEFINED))
+
         item = annotator.item("id3")
         annotator.assignId(item.component())
         self.assertEqual("b4da57", component3.id())
@@ -361,7 +363,6 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da57", component3.id())
 
     def test_auto_id_individual(self):
-        import libcellml
         from libcellml import Annotator, CellmlElementType, Parser, Variable
         from libcellml import UnitsItem, VariablePair
 
@@ -372,17 +373,16 @@ class AnnotatorTestCase(unittest.TestCase):
 
         annotator.setModel(model)
 
-        self.assertEqual("b4da55", annotator.assignId(model.component(0)))
+        self.assertEqual("b4da55", annotator.assignId(model.component(0), CellmlElementType.COMPONENT))
         self.assertEqual("b4da55", model.component(0).id())
 
-        self.assertEqual("b4da56",
-                         annotator.assignId(model.component("component2"), libcellml.CellmlElementType.COMPONENT_REF))
+        self.assertEqual("b4da56", annotator.assignId(model.component("component2"), CellmlElementType.COMPONENT_REF))
         self.assertEqual("b4da56", model.component("component2").encapsulationId())
 
         self.assertEqual("b4da57", annotator.assignId(VariablePair(model.component("component2").variable("variable1"),
                                                                    model.component("component2").variable(
                                                                        "variable1").equivalentVariable(0)),
-                                                      libcellml.CellmlElementType.CONNECTION))
+                                                      CellmlElementType.CONNECTION))
 
         self.assertEqual("b4da57", Variable.equivalenceConnectionId(model.component("component2").variable("variable1"),
                                                                     model.component("component2").variable(
@@ -393,22 +393,23 @@ class AnnotatorTestCase(unittest.TestCase):
 
         self.assertEqual("b4da59", annotator.assignId(VariablePair(model.component("component2").variable("variable2"),
                                                                    model.component("component2").variable(
-                                                                       "variable2").equivalentVariable(0))))
+                                                                       "variable2").equivalentVariable(0)),
+                                                      CellmlElementType.MAP_VARIABLES))
         self.assertEqual("b4da59", Variable.equivalenceMappingId(model.component("component2").variable("variable2"),
                                                                  model.component("component2").variable(
                                                                      "variable2").equivalentVariable(0)))
-        self.assertEqual("b4da5a", annotator.assignId(model))
+        self.assertEqual("b4da5a", annotator.assignId(model, CellmlElementType.MODEL))
         self.assertEqual("b4da5a", model.id())
 
-        self.assertEqual("b4da5b", annotator.assignId(model.component("component2").reset(0)))
+        self.assertEqual("b4da5b", annotator.assignId(model.component("component2").reset(0), CellmlElementType.RESET))
         self.assertEqual("b4da5b", model.component("component2").reset(0).id())
 
-        self.assertEqual("b4da5c", annotator.assignId(model.component("component2").reset(0),
-                                                      libcellml.CellmlElementType.RESET_VALUE))
+        self.assertEqual("b4da5c",
+                         annotator.assignId(model.component("component2").reset(0), CellmlElementType.RESET_VALUE))
         self.assertEqual("b4da5c", model.component("component2").reset(0).resetValueId())
 
-        self.assertEqual("b4da5d", annotator.assignId(model.component("component2").reset(0),
-                                                      libcellml.CellmlElementType.TEST_VALUE))
+        self.assertEqual("b4da5d",
+                         annotator.assignId(model.component("component2").reset(0), CellmlElementType.TEST_VALUE))
         self.assertEqual("b4da5d", model.component("component2").reset(0).testValueId())
 
         self.assertEqual("b4da5e", annotator.assignId(UnitsItem(model.units(1), 0)))
@@ -420,7 +421,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da60", annotator.assignId(model.component(1).variable(0)))
         self.assertEqual("b4da60", model.component(1).variable(0).id())
 
-        self.assertEqual("b4da61", annotator.assignId(model, libcellml.CellmlElementType.ENCAPSULATION))
+        self.assertEqual("b4da61", annotator.assignId(model, CellmlElementType.ENCAPSULATION))
         self.assertEqual("b4da61", model.encapsulationId())
 
     def test_list_duplicate_ids(self):
