@@ -328,8 +328,6 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("", component2.id())
         self.assertEqual("b4da56", units.unitId(0))
 
-#        self.assertEqual("", annotator.assignId(None))
-
         item = annotator.item("id3")
         annotator.assignId(item.component())
         self.assertEqual("b4da57", component3.id())
