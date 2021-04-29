@@ -187,7 +187,11 @@ ComponentPtr AnyCellmlElement::component() const
 {
     if ((mPimpl->mType == CellmlElementType::COMPONENT)
         || (mPimpl->mType == CellmlElementType::COMPONENT_REF)) {
-        return std::any_cast<ComponentPtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<ComponentPtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -197,7 +201,11 @@ VariablePairPtr AnyCellmlElement::variablePair() const
 {
     if ((mPimpl->mType == CellmlElementType::CONNECTION)
         || (mPimpl->mType == CellmlElementType::MAP_VARIABLES)) {
-        return std::any_cast<VariablePairPtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<VariablePairPtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -206,7 +214,11 @@ VariablePairPtr AnyCellmlElement::variablePair() const
 ImportSourcePtr AnyCellmlElement::importSource() const
 {
     if (mPimpl->mType == CellmlElementType::IMPORT) {
-        return std::any_cast<ImportSourcePtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<ImportSourcePtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -216,7 +228,11 @@ ModelPtr AnyCellmlElement::model() const
 {
     if ((mPimpl->mType == CellmlElementType::ENCAPSULATION)
         || (mPimpl->mType == CellmlElementType::MODEL)) {
-        return std::any_cast<ModelPtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<ModelPtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -225,7 +241,11 @@ ModelPtr AnyCellmlElement::model() const
 ResetPtr AnyCellmlElement::reset() const
 {
     if (mPimpl->mType == CellmlElementType::RESET) {
-        return std::any_cast<ResetPtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<ResetPtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -234,7 +254,11 @@ ResetPtr AnyCellmlElement::reset() const
 ResetPtr AnyCellmlElement::resetValue() const
 {
     if (mPimpl->mType == CellmlElementType::RESET_VALUE) {
-        return std::any_cast<ResetPtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<ResetPtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -243,7 +267,11 @@ ResetPtr AnyCellmlElement::resetValue() const
 ResetPtr AnyCellmlElement::testValue() const
 {
     if (mPimpl->mType == CellmlElementType::TEST_VALUE) {
-        return std::any_cast<ResetPtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<ResetPtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -252,7 +280,11 @@ ResetPtr AnyCellmlElement::testValue() const
 UnitsPtr AnyCellmlElement::units() const
 {
     if (mPimpl->mType == CellmlElementType::UNITS) {
-        return std::any_cast<UnitsPtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<UnitsPtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -261,7 +293,11 @@ UnitsPtr AnyCellmlElement::units() const
 UnitsItemPtr AnyCellmlElement::unitsItem() const
 {
     if (mPimpl->mType == CellmlElementType::UNIT) {
-        return std::any_cast<UnitsItemPtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<UnitsItemPtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;
@@ -270,7 +306,11 @@ UnitsItemPtr AnyCellmlElement::unitsItem() const
 VariablePtr AnyCellmlElement::variable() const
 {
     if (mPimpl->mType == CellmlElementType::VARIABLE) {
-        return std::any_cast<VariablePtr>(mPimpl->mItem);
+        try {
+            return std::any_cast<VariablePtr>(mPimpl->mItem);
+        } catch(const std::bad_any_cast& e) {
+            return nullptr;
+        }
     }
 
     return nullptr;

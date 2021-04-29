@@ -1011,6 +1011,36 @@ TEST(Annotator, automaticIdAllItemsNoId)
     EXPECT_EQ("b4da63", annotator->assignId(itemMapVariables2));
 }
 
+TEST(Annotator, assignModelIdBadInput)
+{
+    auto annotator = libcellml::Annotator::create();
+    libcellml::ModelPtr nullModel = nullptr;
+    EXPECT_EQ("", annotator->assignId(nullModel));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::VARIABLE));
+}
+
+TEST(Annotator, assignVariableIdBadInput)
+{
+    auto annotator = libcellml::Annotator::create();
+    libcellml::VariablePtr nullVariable = nullptr;
+    EXPECT_EQ("", annotator->assignId(nullVariable));
+}
+
+TEST(Annotator, assignComponentIdBadInput)
+{
+    auto annotator = libcellml::Annotator::create();
+    libcellml::ComponentPtr nullComponent = nullptr;
+    EXPECT_EQ("", annotator->assignId(nullComponent));
+    EXPECT_EQ("", annotator->assignId(libcellml::Component::create(), libcellml::CellmlElementType::MODEL));
+}
+
+TEST(Annotator, assignUnitsIdBadInput)
+{
+    auto annotator = libcellml::Annotator::create();
+    libcellml::UnitsPtr nullUnits = nullptr;
+    EXPECT_EQ("", annotator->assignId(nullUnits));
+}
+
 TEST(Annotator, assignUnitsItemIdBadInput)
 {
     auto annotator = libcellml::Annotator::create();
@@ -1018,10 +1048,26 @@ TEST(Annotator, assignUnitsItemIdBadInput)
     EXPECT_EQ("", annotator->assignId(libcellml::UnitsItem::create(nullptr, std::numeric_limits<size_t>::max())));
 }
 
+TEST(Annotator, assignResetIdBadInput)
+{
+    auto annotator = libcellml::Annotator::create();
+    libcellml::ResetPtr nullReset = nullptr;
+    EXPECT_EQ("", annotator->assignId(nullReset));
+    EXPECT_EQ("", annotator->assignId(libcellml::Reset::create(), libcellml::CellmlElementType::MODEL));
+}
+
+TEST(Annotator, assignImportSourceIdBadInput)
+{
+    auto annotator = libcellml::Annotator::create();
+    libcellml::ImportSourcePtr nullImportSource = nullptr;
+    EXPECT_EQ("", annotator->assignId(nullImportSource));
+}
+
 TEST(Annotator, assignVariablePairIdBadInput)
 {
     auto annotator = libcellml::Annotator::create();
     EXPECT_EQ("", annotator->assignId(libcellml::VariablePair::create(nullptr, nullptr)));
+    EXPECT_EQ("", annotator->assignId(libcellml::VariablePair::create(nullptr, nullptr), libcellml::CellmlElementType::MODEL));
 }
 
 TEST(Annotator, assignImportSourceId)
