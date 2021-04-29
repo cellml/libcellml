@@ -330,7 +330,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                     } else {
                         auto issue = std::shared_ptr<Issue> {new Issue {}};
                         issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid attribute '" + childAttribute->name() + "'.");
-                        issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+                        issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
                         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_ATTRIBUTE);
                         mParser->addIssue(issue);
                     }
@@ -347,7 +347,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 // Empty encapsulations are valid, but may not be intended.
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' does not contain any child elements.");
-                issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+                issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
                 issue->mPimpl->setLevel(libcellml::Issue::Level::WARNING);
                 mParser->addIssue(issue);
@@ -381,7 +381,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         if (encapsulationNodes.size() > 1) {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             issue->mPimpl->setDescription("Model '" + model->name() + "' has more than one encapsulation element.");
-            issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+            issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
             mParser->addIssue(issue);
         }
@@ -937,7 +937,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
             } else {
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponentName + "' as a component in a component_ref but it does not exist in the model.");
-                issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+                issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT);
                 mParser->addIssue(issue);
             }
@@ -946,7 +946,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
         } else {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid component_ref attribute '" + attribute->name() + "'.");
-            issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+            issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT);
             mParser->addIssue(issue);
         }
@@ -955,7 +955,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
     if (!parentComponent && parentComponentName.empty()) {
         auto issue = std::shared_ptr<Issue> {new Issue {}};
         issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref element.");
-        issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+        issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT);
         mParser->addIssue(issue);
     } else if (parentComponent) {
@@ -977,7 +977,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
             if (hasNonWhitespaceCharacters(textNode)) {
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+                issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
                 mParser->addIssue(issue);
             }
@@ -986,7 +986,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
         } else {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + childComponentNode->name() + "'.");
-            issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+            issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
             mParser->addIssue(issue);
         }
@@ -1023,7 +1023,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             if (hasNonWhitespaceCharacters(textNode)) {
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+                issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_CHILD);
                 mParser->addIssue(issue);
             } else {
@@ -1036,7 +1036,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         } else {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + componentRefNode->name() + "'.");
-            issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+            issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
             mParser->addIssue(issue);
         }
@@ -1047,14 +1047,14 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             if (parentComponent->componentCount() == 0) {
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponent->name() + "' as a parent component_ref but it does not have any children.");
-                issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+                issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
                 mParser->addIssue(issue);
             }
         } else if (!parentComponent && haveComponentRef) {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' specifies an invalid parent component_ref that also does not have any children.");
-            issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+            issue->mPimpl->mItem->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
             mParser->addIssue(issue);
         }

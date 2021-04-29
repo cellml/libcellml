@@ -1235,7 +1235,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             issue->mPimpl->setDescription("The differential equation for variable '" + variable->name()
                                           + "' in component '" + owningComponent(variable)->name()
                                           + "' must be of the first order.");
-            issue->mPimpl->mItem->mPimpl->setMath(owningComponent(variable));
+            issue->mPimpl->mItem->mPimpl->setComponent(owningComponent(variable), CellmlElementType::MATH);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
 
             mAnalyser->addIssue(issue);
