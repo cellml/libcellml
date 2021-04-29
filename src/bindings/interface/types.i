@@ -91,11 +91,11 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::AnyCellmlElement::testValue
 "Return the item as a test value.";
 
-%feature("docstring") libcellml::AnyCellmlElement::unitsItem
-"Return the item as a units item.";
-
 %feature("docstring") libcellml::AnyCellmlElement::units
 "Return the item as a units.";
+
+%feature("docstring") libcellml::AnyCellmlElement::unitsItem
+"Return the item as a units item.";
 
 %feature("docstring") libcellml::AnyCellmlElement::variable
 "Return the item as a variable.";
