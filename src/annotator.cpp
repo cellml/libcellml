@@ -96,7 +96,7 @@ struct Annotator::AnnotatorImpl
     void doSetEncapsulationIds();
     void doSetConnectionIds(const ComponentPtr &parent);
     void doSetMapVariablesIds(const ComponentPtr &parent);
-    void doSetComponentRefIds(const ComponentPtr &parent);
+    void doSetComponentEncapsulationIds(const ComponentPtr &parent);
     void doClearComponentIds(const ComponentPtr &component);
 
     size_t idCount(const std::string &id, size_t index) const;
@@ -811,7 +811,7 @@ bool Annotator::assignIds(CellmlElementType type)
             break;
         case CellmlElementType::COMPONENT_REF:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetComponentRefIds(model->component(index));
+                mPimpl->doSetComponentEncapsulationIds(model->component(index));
             }
             break;
         case CellmlElementType::CONNECTION:
@@ -1045,7 +1045,7 @@ void Annotator::AnnotatorImpl::doSetMapVariablesIds(const ComponentPtr &parent)
     }
 }
 
-void Annotator::AnnotatorImpl::doSetComponentRefIds(const ComponentPtr &parent)
+void Annotator::AnnotatorImpl::doSetComponentEncapsulationIds(const ComponentPtr &parent)
 {
     if (parent->encapsulationId().empty() && parent->componentCount() > 0) {
         auto id = makeUniqueId();
@@ -1062,7 +1062,7 @@ void Annotator::AnnotatorImpl::doSetComponentRefIds(const ComponentPtr &parent)
             entry->mPimpl->setComponent(parent->component(c), CellmlElementType::COMPONENT_REF);
             mIdList.insert(std::make_pair(id, convertToWeak(entry)));
         }
-        doSetComponentRefIds(parent->component(c));
+        doSetComponentEncapsulationIds(parent->component(c));
     }
 }
 
@@ -1106,7 +1106,7 @@ void Annotator::AnnotatorImpl::doSetAllAutomaticIds()
         doSetTestValueIds(component);
         doSetConnectionIds(component);
         doSetMapVariablesIds(component);
-        doSetComponentRefIds(component);
+        doSetComponentEncapsulationIds(component);
     }
     doSetEncapsulationIds();
 }
