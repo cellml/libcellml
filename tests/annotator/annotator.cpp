@@ -494,7 +494,7 @@ TEST(Annotator, automaticIdsComponents)
     EXPECT_EQ("b4da57", component3->id());
 }
 
-TEST(Annotator, automaticIdsComponentRefs)
+TEST(Annotator, automaticIdsComponentEncapsulations)
 {
     auto annotator = libcellml::Annotator::create();
     auto model = libcellml::Model::create();
@@ -955,7 +955,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
     auto annotator = libcellml::Annotator::create();
 
     auto itemComponent = model->component("component1");
-    auto itemComponentRef = model->component("component2");
+    auto itemComponentEncapsulation = model->component("component2");
     auto itemConnection = libcellml::VariablePair::create(
         model->component("component2")->variable("variable1"),
         model->component("component2")->component("component3")->variable("variable1"));
@@ -977,7 +977,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
 
     // Expect each have had a change of identifier.
     EXPECT_EQ("b4da55", annotator->assignId(itemComponent));
-    EXPECT_EQ("b4da56", annotator->assignId(itemComponentRef, libcellml::CellmlElementType::COMPONENT_REF));
+    EXPECT_EQ("b4da56", annotator->assignId(itemComponentEncapsulation, libcellml::CellmlElementType::COMPONENT_REF));
     EXPECT_EQ("b4da57", annotator->assignId(itemConnection, libcellml::CellmlElementType::CONNECTION));
     EXPECT_EQ("b4da58", annotator->assignId(itemImportSource));
     EXPECT_EQ("b4da59", annotator->assignId(itemMapVariables));
@@ -1181,7 +1181,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
         model->component("component2")->variable("variable2")->equivalentVariable(0));
 
     auto itemComponent = model->component(0);
-    auto itemComponentRef = model->component("component2");
+    auto itemComponentEncapsulation = model->component("component2");
     auto const &itemConnection = connection;
     auto itemEncapsulation = model;
     auto itemImportSource = model->component("component1")->importSource();
@@ -1197,7 +1197,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     annotator->setModel(model);
 
     EXPECT_EQ(model, owningModel(itemComponent));
-    EXPECT_EQ(model, owningModel(itemComponentRef));
+    EXPECT_EQ(model, owningModel(itemComponentEncapsulation));
     EXPECT_EQ(model, owningModel(itemConnection->variable1()));
     EXPECT_EQ(model, owningModel(itemMapVariables->variable1()));
     EXPECT_EQ(model, owningModel(itemReset));
@@ -1209,7 +1209,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
 
     // Expect each have had a change of identifier.
     EXPECT_EQ("b4da55", annotator->assignId(itemComponent));
-    EXPECT_EQ("b4da56", annotator->assignId(itemComponentRef, libcellml::CellmlElementType::COMPONENT_REF));
+    EXPECT_EQ("b4da56", annotator->assignId(itemComponentEncapsulation, libcellml::CellmlElementType::COMPONENT_REF));
     EXPECT_EQ("b4da57", annotator->assignId(itemConnection, libcellml::CellmlElementType::CONNECTION));
     EXPECT_EQ("b4da58", annotator->assignId(itemImportSource));
     EXPECT_EQ("b4da59", annotator->assignId(itemMapVariables));
@@ -1260,7 +1260,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     auto annotator = libcellml::Annotator::create();
 
     auto itemComponent = model->component(0);
-    auto itemComponentRef = model->component("component2");
+    auto itemComponentEncapsulation = model->component("component2");
     auto itemConnection = libcellml::VariablePair::create(
         model->component("component2")->variable(0),
         model->component("component2")->variable(0)->equivalentVariable(0));
@@ -1280,7 +1280,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     annotator->setModel(model);
 
     EXPECT_EQ(model, owningModel(itemComponent));
-    EXPECT_EQ(model, owningModel(itemComponentRef));
+    EXPECT_EQ(model, owningModel(itemComponentEncapsulation));
     EXPECT_EQ(model, owningModel(itemConnection->variable1()));
     EXPECT_EQ(model, owningModel(itemMapVariables->variable1()));
     EXPECT_EQ(model, owningModel(itemReset));
@@ -1292,7 +1292,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
 
     // Expect each to change, even though the existing identifiers were fine.
     EXPECT_EQ("b4da55", annotator->assignId(itemComponent));
-    EXPECT_EQ("b4da56", annotator->assignId(itemComponentRef));
+    EXPECT_EQ("b4da56", annotator->assignId(itemComponentEncapsulation));
     EXPECT_EQ("b4da57", annotator->assignId(itemConnection));
     EXPECT_EQ("b4da58", annotator->assignId(itemEncapsulation));
     EXPECT_EQ("b4da59", annotator->assignId(itemImportSource));
@@ -1313,7 +1313,7 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     auto annotator = libcellml::Annotator::create();
 
     auto itemComponent = model->component(0);
-    auto itemComponentRef = model->component("component2");
+    auto itemComponentEncapsulation = model->component("component2");
     auto itemConnection = libcellml::VariablePair::create(
         model->component("component2")->variable(0)->equivalentVariable(0),
         model->component("component2")->variable(0));
@@ -1336,7 +1336,7 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
 
     // Expect each have no change, since they are in a different model.
     EXPECT_EQ("", annotator->assignId(itemComponent));
-    EXPECT_EQ("", annotator->assignId(itemComponentRef));
+    EXPECT_EQ("", annotator->assignId(itemComponentEncapsulation));
     EXPECT_EQ("", annotator->assignId(itemConnection));
     EXPECT_EQ("", annotator->assignId(itemEncapsulation));
     EXPECT_EQ("", annotator->assignId(itemMapVariables));
