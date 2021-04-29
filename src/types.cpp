@@ -214,8 +214,8 @@ ImportSourcePtr AnyCellmlElement::importSource() const
 
 ModelPtr AnyCellmlElement::model() const
 {
-    if ((mPimpl->mType == CellmlElementType::MODEL)
-        || (mPimpl->mType == CellmlElementType::ENCAPSULATION)) {
+    if ((mPimpl->mType == CellmlElementType::ENCAPSULATION)
+        || (mPimpl->mType == CellmlElementType::MODEL)) {
         return std::any_cast<ModelPtr>(mPimpl->mItem);
     }
 

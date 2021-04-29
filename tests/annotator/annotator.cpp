@@ -378,16 +378,16 @@ TEST(Annotator, castingOnRetrieval)
             EXPECT_TRUE((model->component("component2") == c1) || (model->component("component2") == c2));
             EXPECT_TRUE((model->component("component2")->component("component3") == c1) || (model->component("component2")->component("component3") == c2));
             break;
-        case libcellml::CellmlElementType::MAP_VARIABLES:
-            v1v2 = itemInfo->variablePair();
-            EXPECT_TRUE((v1v2->variable1() == model->component("component2")->variable("variable1")) || (v1v2->variable1() == model->component("component2")->component("component3")->variable("variable1")));
-            EXPECT_TRUE((v1v2->variable2() == model->component("component2")->variable("variable1")) || (v1v2->variable2() == model->component("component2")->component("component3")->variable("variable1")));
+        case libcellml::CellmlElementType::ENCAPSULATION:
+            EXPECT_EQ(model, itemInfo->model());
             break;
         case libcellml::CellmlElementType::IMPORT:
             EXPECT_EQ(model->component("component1")->importSource(), itemInfo->importSource());
             break;
-        case libcellml::CellmlElementType::ENCAPSULATION:
-            EXPECT_EQ(model, itemInfo->model());
+        case libcellml::CellmlElementType::MAP_VARIABLES:
+            v1v2 = itemInfo->variablePair();
+            EXPECT_TRUE((v1v2->variable1() == model->component("component2")->variable("variable1")) || (v1v2->variable1() == model->component("component2")->component("component3")->variable("variable1")));
+            EXPECT_TRUE((v1v2->variable2() == model->component("component2")->variable("variable1")) || (v1v2->variable2() == model->component("component2")->component("component3")->variable("variable1")));
             break;
         case libcellml::CellmlElementType::MODEL:
             EXPECT_EQ(model, itemInfo->model());
@@ -411,8 +411,8 @@ TEST(Annotator, castingOnRetrieval)
         case libcellml::CellmlElementType::VARIABLE:
             EXPECT_EQ(model->component("component2")->variable("variable1"), itemInfo->variable());
             break;
-        case libcellml::CellmlElementType::UNDEFINED:
         case libcellml::CellmlElementType::MATH:
+        case libcellml::CellmlElementType::UNDEFINED:
             break;
         }
     }
@@ -1674,6 +1674,12 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                 EXPECT_TRUE("variable1" == testPair->variable1()->name() || "variable2" == testPair->variable1()->name());
                 EXPECT_TRUE("variable1" == testPair->variable2()->name() || "variable2" == testPair->variable2()->name());
                 break;
+            case libcellml::CellmlElementType::ENCAPSULATION:
+                EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->model());
+                break;
+            case libcellml::CellmlElementType::IMPORT:
+                EXPECT_EQ(std::any_cast<libcellml::ImportSourcePtr>(expectedItems[id][index].second), item->importSource());
+                break;
             case libcellml::CellmlElementType::MAP_VARIABLES:
                 testPair = item->variablePair();
                 if (id == "duplicateId1") {
@@ -1691,12 +1697,6 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                         EXPECT_EQ("variable2", testPair->variable2()->name());
                     }
                 }
-                break;
-            case libcellml::CellmlElementType::ENCAPSULATION:
-                EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->model());
-                break;
-            case libcellml::CellmlElementType::IMPORT:
-                EXPECT_EQ(std::any_cast<libcellml::ImportSourcePtr>(expectedItems[id][index].second), item->importSource());
                 break;
             case libcellml::CellmlElementType::MODEL:
                 EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->model());
@@ -1818,15 +1818,15 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
                 pair = std::any_cast<libcellml::VariablePairPtr>(expectedItems[id][index].second);
                 testPair = item->variablePair();
                 break;
-            case libcellml::CellmlElementType::MAP_VARIABLES:
-                pair = std::any_cast<libcellml::VariablePairPtr>(expectedItems[id][index].second);
-                testPair = item->variablePair();
-                break;
             case libcellml::CellmlElementType::ENCAPSULATION:
                 EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->model());
                 break;
             case libcellml::CellmlElementType::IMPORT:
                 EXPECT_EQ(std::any_cast<libcellml::ImportSourcePtr>(expectedItems[id][index].second), item->importSource());
+                break;
+            case libcellml::CellmlElementType::MAP_VARIABLES:
+                pair = std::any_cast<libcellml::VariablePairPtr>(expectedItems[id][index].second);
+                testPair = item->variablePair();
                 break;
             case libcellml::CellmlElementType::MODEL:
                 EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), item->model());
