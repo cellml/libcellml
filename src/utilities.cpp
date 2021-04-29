@@ -296,22 +296,10 @@ bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &
                     v->setUnits(model->units(u->name()));
                 } else {
                     descriptionList.push_back(std::make_pair(v, "Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'."));
-//                    auto issue = std::shared_ptr<Issue> {new Issue {}};
-//                    issue->mPimpl->setDescription();
-//                    issue->mPimpl->setLevel(Issue::Level::WARNING);
-//                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
-//                    issue->mPimpl->mItem->mPimpl->setVariable(v);
-//                    issueList.push_back(issue);
                     status = false;
                 }
             } else if (model != nullptr) {
                 descriptionList.push_back(std::make_pair(v, "The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'."));
-//                auto issue = std::shared_ptr<Issue> {new Issue {}};
-//                issue->mPimpl->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
-//                issue->mPimpl->setLevel(Issue::Level::WARNING);
-//                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
-//                issue->mPimpl->mItem->mPimpl->setVariable(v);
-//                issueList.push_back(issue);
                 status = false;
             }
         }
