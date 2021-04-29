@@ -335,9 +335,10 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
         (type == CellmlElementType::COMPONENT_REF)) {
         ComponentWeakPtr weakComponent = item->component();
         converted->mPimpl->mItem = weakComponent;
-    } else if (type == CellmlElementType::CONNECTION) {
-        // We don't store a weak pointer for connections because the map is the
-        // owner of this object.
+    } else if ((type == CellmlElementType::CONNECTION) ||
+               (type == CellmlElementType::MAP_VARIABLES)) {
+        // We don't store a weak pointer for connections / map variables because
+        // the map is the owner of the VariablePair object.
         converted->mPimpl->mItem = item->variablePair();
     } else if ((type == CellmlElementType::ENCAPSULATION) ||
                (type == CellmlElementType::MODEL)) {
@@ -346,10 +347,6 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
     } else if (type == CellmlElementType::IMPORT) {
         ImportSourceWeakPtr weakImportSource = item->importSource();
         converted->mPimpl->mItem = weakImportSource;
-    } else if (type == CellmlElementType::MAP_VARIABLES) {
-        // We don't store a weak pointer for map variables because the map is
-        // the owner of this object.
-        converted->mPimpl->mItem = item->variablePair();
     } else if (type == CellmlElementType::RESET) {
         ResetWeakPtr weakReset = item->reset();
         converted->mPimpl->mItem = weakReset;
@@ -363,8 +360,8 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
         UnitsWeakPtr weakUnits = item->units();
         converted->mPimpl->mItem = weakUnits;
     } else if (type == CellmlElementType::UNITS_ITEM) {
-        // We don't store a weak pointer for unit because the map is the owner of the
-        // Unit object.
+        // We don't store a weak pointer for units item because the map is the
+        // owner of the UnitsItem object.
         converted->mPimpl->mItem = item->unitsItem();
     } else if (type == CellmlElementType::VARIABLE) {
         VariableWeakPtr weakVariable = item->variable();
@@ -379,12 +376,8 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToShared(const AnyCellmlEle
     auto converted = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
     auto type = item->type();
 
-    if (type == CellmlElementType::COMPONENT) {
-        auto component = std::any_cast<ComponentWeakPtr>(item->mPimpl->mItem).lock();
-        if (component != nullptr) {
-            converted->mPimpl->setComponent(component);
-        }
-    } else if (type == CellmlElementType::COMPONENT_REF) {
+    if ((type == CellmlElementType::COMPONENT)
+        || (type == CellmlElementType::COMPONENT_REF)) {
         auto component = std::any_cast<ComponentWeakPtr>(item->mPimpl->mItem).lock();
         if (component != nullptr) {
             converted->mPimpl->setComponent(component, type);
@@ -432,7 +425,7 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToShared(const AnyCellmlEle
             converted->mPimpl->setUnits(units);
         }
     } else if (type == CellmlElementType::UNITS_ITEM) {
-        // Unit references are not held as weak pointers.
+        // Unit items are not held as weak pointers.
         auto unitsItem = item->unitsItem();
         if ((unitsItem != nullptr) && unitsItem->isValid()) {
             converted->mPimpl->setUnitsItem(unitsItem);
