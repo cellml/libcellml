@@ -99,7 +99,7 @@ struct Annotator::AnnotatorImpl
     void doSetComponentRefIds(const ComponentPtr &parent);
     void doClearComponentIds(const ComponentPtr &component);
 
-    size_t exists(const std::string &id, size_t index) const;
+    size_t idCount(const std::string &id, size_t index) const;
     bool canReturnItem(const std::string &id, size_t index) const;
 
     size_t generateHash();
@@ -507,7 +507,7 @@ void Annotator::AnnotatorImpl::addInvalidArgument(CellmlElementType type) const
     mAnnotator->addIssue(issue);
 }
 
-size_t Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
+size_t Annotator::AnnotatorImpl::idCount(const std::string &id, size_t index) const
 {
     if (!mAnnotator->hasModel()) {
         addIssueNoModel();
@@ -524,10 +524,11 @@ size_t Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) con
 
 bool Annotator::AnnotatorImpl::canReturnItem(const std::string &id, size_t index) const
 {
-    auto count = exists(id, index);
+    auto count = idCount(id, index);
     if (count == 1) {
         return true;
-    } else if (count != 0 && index < count) {
+    }
+    if ((count != 0) && (index < count)) {
         addIssueNonUnique(id);
         return true;
     }
