@@ -22,6 +22,9 @@
 %feature("docstring") libcellml::Annotator::component
 "Return the component with the given identifier.";
 
+%feature("docstring") libcellml::Annotator::encapsulation
+"Return the model with the given encapsulation identifier.";
+
 %feature("docstring") libcellml::Annotator::model
 "Return the model assigned to this Annotator or the model with the given identifier.";
 
@@ -42,6 +45,9 @@
 
 %feature("docstring") libcellml::Annotator::resetValue
 "Return the ResetPtr whose reset_value has the given identifier.";
+
+%feature("docstring") libcellml::Annotator::componentEncapsulation
+"Return the ComponentPtr with the given component_ref identifier.";
 
 %feature("docstring") libcellml::Annotator::unitsItem
 "Returns a UnitsItem, a pair consisting of UnitsPtr and index which defines the Unit with the given identifier.";
@@ -69,12 +75,6 @@
 
 %feature("docstring") libcellml::Annotator::duplicateIds
 "Return a list of identifier strings which are duplicated within the stored model.";
-
-%feature("docstring") libcellml::Annotator::encapsulation
-"Return the model with the given encapsulation identifier.";
-
-%feature("docstring") libcellml::Annotator::componentEncapsulation
-"Return the ComponentPtr with the given component_ref identifier.";
 
 %feature("docstring") libcellml::Annotator::itemCount
 "Return the number of items in the stored model with the given identifier.";
