@@ -45,8 +45,8 @@ enum class CellmlElementType
     RESET_VALUE,
     TEST_VALUE,
     UNDEFINED,
-    UNITS,
     UNIT,
+    UNITS,
     VARIABLE,
 };
 
