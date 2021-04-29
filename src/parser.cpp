@@ -393,7 +393,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     // Link units to their names.
     DescriptionList issueList;
     traverseComponentEntityTreeLinkingUnits(model, issueList);
-    for( const auto &entry : issueList) {
+    for (const auto &entry : issueList) {
         auto issue = std::shared_ptr<Issue> {new Issue {}};
         issue->mPimpl->setDescription(entry.second);
         issue->mPimpl->setLevel(Issue::Level::WARNING);

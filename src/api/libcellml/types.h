@@ -334,7 +334,6 @@ public:
      */
     VariablePtr variable() const;
 
-
     /**
      * @brief Get the connection.
      *
