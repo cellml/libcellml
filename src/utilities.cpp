@@ -277,6 +277,55 @@ bool areNearlyEqual(double a, double b)
     return ulpsDistance(a, b) <= ulpsEpsilon;
 }
 
+bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &descriptionList)
+{
+    bool status = true;
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            if (model == owningModel(v)) {
+                // Units are already linked, and exist in this model.
+                continue;
+            }
+            if ((model == nullptr) && !isStandardUnit(u)) {
+                model = owningModel(component);
+                if (model->hasUnits(u->name())) {
+                    v->setUnits(model->units(u->name()));
+                } else {
+                    descriptionList.push_back(std::make_pair(v, "Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'."));
+                    status = false;
+                }
+            } else if (model != nullptr) {
+                descriptionList.push_back(std::make_pair(v, "The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'."));
+                status = false;
+            }
+        }
+    }
+    return status;
+}
+
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity)
+{
+    DescriptionList issueList;
+    return traverseComponentEntityTreeLinkingUnits(componentEntity, issueList);
+}
+
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, DescriptionList &issueList)
+{
+    auto component = std::dynamic_pointer_cast<Component>(componentEntity);
+    bool status = (component != nullptr) ?
+                      linkComponentVariableUnits(component, issueList) :
+                      true;
+    for (size_t index = 0; index < componentEntity->componentCount(); ++index) {
+        auto c = componentEntity->component(index);
+        status = traverseComponentEntityTreeLinkingUnits(c, issueList) && status;
+    }
+    return status;
+}
+
 std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &componentEntity)
 {
     std::vector<ComponentPtr> importedComponents;

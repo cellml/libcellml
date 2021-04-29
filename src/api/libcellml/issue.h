@@ -33,7 +33,6 @@ class LIBCELLML_EXPORT Issue
     friend class Analyser;
     friend class Annotator;
     friend class Importer;
-    friend class Model;
     friend class Parser;
     friend class Validator;
 

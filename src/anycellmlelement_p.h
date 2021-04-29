@@ -32,22 +32,15 @@ struct AnyCellmlElement::AnyCellmlElementImpl
     CellmlElementType mType = CellmlElementType::UNDEFINED; /**< Type for the CellML element. */
     std::any mItem = nullptr; /**< std::any item cast for the item. */
 
-    void setComponent(const ComponentPtr &component);
-    void setComponentRef(const ComponentPtr &component);
-    void setConnection(const VariablePairPtr &variablePair);
-    void setConnection(const VariablePtr &variable1, const VariablePtr &variable2);
-    void setEncapsulation(const ModelPtr &model);
+    void setComponent(const ComponentPtr &component, CellmlElementType type = CellmlElementType::COMPONENT);
     void setImportSource(const ImportSourcePtr &importSource);
-    void setMapVariables(const VariablePairPtr &variablePair);
-    void setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2);
-    void setMath(const ComponentPtr &component);
-    void setModel(const ModelPtr &model);
-    void setReset(const ResetPtr &reset);
-    void setResetValue(const ResetPtr &reset);
-    void setTestValue(const ResetPtr &reset);
+    void setModel(const ModelPtr &model, CellmlElementType type = CellmlElementType::MODEL);
+    void setReset(const ResetPtr &reset, CellmlElementType type = CellmlElementType::RESET);
     void setUnits(const UnitsPtr &units);
     void setUnitsItem(const UnitsItemPtr &unitsItem);
     void setVariable(const VariablePtr &variable);
+    void setVariablePair(const VariablePairPtr &pair, CellmlElementType type);
+    void setVariablePair(const VariablePtr &variable1, const VariablePtr &variable2, CellmlElementType type);
 };
 
 } // namespace libcellml

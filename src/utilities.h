@@ -602,16 +602,16 @@ std::string makeUniqueId(IdList &idList);
  * Function to support linking units names to their corresponding @c Units items.
  *
  * @param component The component to check.
- * @param issueList A vector of @c IssuePtr items in which unlinked units are recorded for reporting.
+ * @param descriptionList A @c std::vector of @c std::string items in which unlinked units are recorded for reporting.
  *
  * @return @c true if all variables have been successfully linked to units, @c false otherwise.
  */
-bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList);
+bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &descriptionList);
 
 /**
  * @overload
  *
- * @brief Utility function used when linking units names to their corresponding @c Units items.
+ * @brief Utility function used when linking units names to their corresponding @ref Units items.
  *
  * Returns @c true if all variables in the component can be linked to their units, or
  * @c false otherwise.
@@ -628,11 +628,11 @@ bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &component
  *  Utility function used when linking units names to their corresponding @c Units items.
  *
  * @param componentEntity The component entity to check.
- * @param issueList An optional @c std::vector of @c IssuePtr items which is used to record cases of missing units.
+ * @param descriptionList An optional @c std::vector of @c std::string items which is used to record cases of missing units.
  *
  * @return @c true upon success; @c false if not all variables could be linked to units.
  * */
-bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList);
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, DescriptionList &descriptionList);
 
 /**
  * @brief Test whether a component contains variables naming units which have not yet

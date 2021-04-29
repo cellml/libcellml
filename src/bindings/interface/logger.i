@@ -59,7 +59,6 @@
 %}
 
 %ignore libcellml::Logger::Logger();
-%ignore libcellml::Logger::addIssues;
 
 %include "libcellml/types.h"
 %include "libcellml/logger.h"
