@@ -215,8 +215,8 @@ CellmlElementType AnyCellmlElement::type() const
 
 ComponentPtr AnyCellmlElement::component() const
 {
-    if ((mPimpl->mType == CellmlElementType::COMPONENT) ||
-        (mPimpl->mType == CellmlElementType::COMPONENT_REF)) {
+    if ((mPimpl->mType == CellmlElementType::COMPONENT)
+        || (mPimpl->mType == CellmlElementType::COMPONENT_REF)) {
         return std::any_cast<ComponentPtr>(mPimpl->mItem);
     }
 
@@ -225,8 +225,8 @@ ComponentPtr AnyCellmlElement::component() const
 
 VariablePairPtr AnyCellmlElement::variablePair() const
 {
-    if ((mPimpl->mType == CellmlElementType::CONNECTION) ||
-        (mPimpl->mType == CellmlElementType::MAP_VARIABLES)) {
+    if ((mPimpl->mType == CellmlElementType::CONNECTION)
+        || (mPimpl->mType == CellmlElementType::MAP_VARIABLES)) {
         return std::any_cast<VariablePairPtr>(mPimpl->mItem);
     }
 
@@ -244,8 +244,8 @@ ImportSourcePtr AnyCellmlElement::importSource() const
 
 ModelPtr AnyCellmlElement::model() const
 {
-    if ((mPimpl->mType == CellmlElementType::MODEL) ||
-        (mPimpl->mType == CellmlElementType::ENCAPSULATION)) {
+    if ((mPimpl->mType == CellmlElementType::MODEL)
+        || (mPimpl->mType == CellmlElementType::ENCAPSULATION)) {
         return std::any_cast<ModelPtr>(mPimpl->mItem);
     }
 

@@ -331,17 +331,17 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
 
     converted->mPimpl->mType = type;
 
-    if ((type == CellmlElementType::COMPONENT) ||
-        (type == CellmlElementType::COMPONENT_REF)) {
+    if ((type == CellmlElementType::COMPONENT)
+        || (type == CellmlElementType::COMPONENT_REF)) {
         ComponentWeakPtr weakComponent = item->component();
         converted->mPimpl->mItem = weakComponent;
-    } else if ((type == CellmlElementType::CONNECTION) ||
-               (type == CellmlElementType::MAP_VARIABLES)) {
+    } else if ((type == CellmlElementType::CONNECTION)
+               || (type == CellmlElementType::MAP_VARIABLES)) {
         // We don't store a weak pointer for connections / map variables because
         // the map is the owner of the VariablePair object.
         converted->mPimpl->mItem = item->variablePair();
-    } else if ((type == CellmlElementType::ENCAPSULATION) ||
-               (type == CellmlElementType::MODEL)) {
+    } else if ((type == CellmlElementType::ENCAPSULATION)
+               || (type == CellmlElementType::MODEL)) {
         ModelWeakPtr weakModel = item->model();
         converted->mPimpl->mItem = weakModel;
     } else if (type == CellmlElementType::IMPORT) {
@@ -382,8 +382,8 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToShared(const AnyCellmlEle
         if (component != nullptr) {
             converted->mPimpl->setComponent(component, type);
         }
-    } else if ((type == CellmlElementType::CONNECTION) ||
-               (type == CellmlElementType::MAP_VARIABLES)) {
+    } else if ((type == CellmlElementType::CONNECTION)
+               || (type == CellmlElementType::MAP_VARIABLES)) {
         // Connections are not held as weak pointers.
         auto variablePair = item->variablePair();
         if ((variablePair != nullptr) && variablePair->isValid()) {
@@ -1237,8 +1237,8 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) c
         modelBased = owningModel(item->component()) == model;
     } else if (type == CellmlElementType::COMPONENT_REF) {
         modelBased = owningModel(item->component()) == model;
-    } else if ((type == CellmlElementType::CONNECTION) ||
-               (type == CellmlElementType::MAP_VARIABLES)) {
+    } else if ((type == CellmlElementType::CONNECTION)
+               || (type == CellmlElementType::MAP_VARIABLES)) {
         auto variablePair = item->variablePair();
         modelBased = (owningModel(variablePair->variable1()) == model)
                      && (owningModel(variablePair->variable2()) == model);
@@ -1276,8 +1276,8 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyCellmlElementPtr &itemWeak, c
                || (type == CellmlElementType::COMPONENT_REF)) {
         itemsEqual = equals(std::any_cast<ComponentWeakPtr>(itemWeak->mPimpl->mItem),
                             std::any_cast<ComponentWeakPtr>(item->mPimpl->mItem));
-    } else if ((type == CellmlElementType::CONNECTION) ||
-               (type == CellmlElementType::MAP_VARIABLES)) {
+    } else if ((type == CellmlElementType::CONNECTION)
+               || (type == CellmlElementType::MAP_VARIABLES)) {
         // Connections and map variables are not stored as a weak pointer so we can compare
         // shared pointers directly.
         itemsEqual = itemWeak->variablePair() == item->variablePair();
@@ -1293,8 +1293,8 @@ bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
         if ((unitsItem != nullptr) && (unitsItem->units() != nullptr)) {
             return true;
         }
-    } else if ((type == CellmlElementType::ENCAPSULATION) ||
-               (type == CellmlElementType::MODEL)) {
+    } else if ((type == CellmlElementType::ENCAPSULATION)
+               || (type == CellmlElementType::MODEL)) {
         if (item->model() != nullptr) {
             return true;
         }
@@ -1330,8 +1330,8 @@ bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
         if (item->component() != nullptr) {
             return true;
         }
-    } else if ((type == CellmlElementType::CONNECTION) ||
-               (type == CellmlElementType::MAP_VARIABLES)) {
+    } else if ((type == CellmlElementType::CONNECTION)
+               || (type == CellmlElementType::MAP_VARIABLES)) {
         auto variablePair = item->variablePair();
         if ((variablePair != nullptr)
             && (variablePair->variable1() != nullptr)
