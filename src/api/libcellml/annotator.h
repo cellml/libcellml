@@ -143,11 +143,7 @@ public:
      *
      * From a list of all items with the given @p id return the @ref Component at that location.
      *
-     * A @c nullptr will be returned if:
-     *  - no item with the given @p id exists in the stored model;
-     *  - the given @p index is beyond the range [0, \#itemCount(id));
-     *  - the item stored at the @p index is not a @c ComponentPtr; or
-     *  - the annotator does not have a model attached.
+     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
@@ -156,6 +152,19 @@ public:
      */
     ComponentPtr componentEncapsulation(const std::string &id, size_t index = 0);
 
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this method returns a @c ModelPtr in the @p index position, if it exists.
+     *
+     * From a list of all items with the given @p id return the @ref Model at that location.
+     *
+     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
+     *
+     * @param id A @c std::string representing the identifier of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c ModelPtr on success otherwise @c nullptr.
+     */
     ModelPtr encapsulation(const std::string &id, size_t index = 0);
 
     /**
