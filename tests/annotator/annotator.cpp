@@ -1007,7 +1007,6 @@ TEST(Annotator, automaticIdAllItemsNoId)
     EXPECT_EQ("b4da63", annotator->assignId(itemMapVariables2));
 }
 
-
 TEST(Annotator, assignUnitsItemIdBadInput)
 {
     auto annotator = libcellml::Annotator::create();
