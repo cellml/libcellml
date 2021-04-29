@@ -313,15 +313,15 @@ bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &component
     return traverseComponentEntityTreeLinkingUnits(componentEntity, issueList);
 }
 
-bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, DescriptionList &issueList)
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, DescriptionList &descriptionList)
 {
     auto component = std::dynamic_pointer_cast<Component>(componentEntity);
     bool status = (component != nullptr) ?
-                      linkComponentVariableUnits(component, issueList) :
+                      linkComponentVariableUnits(component, descriptionList) :
                       true;
     for (size_t index = 0; index < componentEntity->componentCount(); ++index) {
         auto c = componentEntity->component(index);
-        status = traverseComponentEntityTreeLinkingUnits(c, issueList) && status;
+        status = traverseComponentEntityTreeLinkingUnits(c, descriptionList) && status;
     }
     return status;
 }
