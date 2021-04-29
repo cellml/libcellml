@@ -389,15 +389,11 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToShared(const AnyCellmlEle
         if ((variablePair != nullptr) && variablePair->isValid()) {
             converted->mPimpl->setVariablePair(variablePair, type);
         }
-    } else if (type == CellmlElementType::ENCAPSULATION) {
+    } else if ((type == CellmlElementType::ENCAPSULATION)
+               || (type == CellmlElementType::MODEL)) {
         auto model = std::any_cast<ModelWeakPtr>(item->mPimpl->mItem).lock();
         if (model != nullptr) {
-            converted->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
-        }
-    } else if (type == CellmlElementType::MODEL) {
-        auto model = std::any_cast<ModelWeakPtr>(item->mPimpl->mItem).lock();
-        if (model != nullptr) {
-            converted->mPimpl->setModel(model);
+            converted->mPimpl->setModel(model, type);
         }
     } else if (type == CellmlElementType::IMPORT) {
         auto importSource = std::any_cast<ImportSourceWeakPtr>(item->mPimpl->mItem).lock();
@@ -1217,9 +1213,8 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) c
     auto model = mModel.lock();
     if (type == CellmlElementType::UNIT) {
         modelBased = owningModel(item->unitsItem()->units()) == model;
-    } else if (type == CellmlElementType::MODEL) {
-        modelBased = item->model() == model;
-    } else if (type == CellmlElementType::ENCAPSULATION) {
+    } else if ((type == CellmlElementType::ENCAPSULATION)
+               || (type == CellmlElementType::MODEL)) {
         modelBased = item->model() == model;
     } else if (type == CellmlElementType::RESET) {
         modelBased = owningModel(item->reset()) == model;
@@ -1233,9 +1228,8 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) c
         modelBased = true;
     } else if (type == CellmlElementType::VARIABLE) {
         modelBased = owningModel(item->variable()) == model;
-    } else if (type == CellmlElementType::COMPONENT) {
-        modelBased = owningModel(item->component()) == model;
-    } else if (type == CellmlElementType::COMPONENT_REF) {
+    } else if ((type == CellmlElementType::COMPONENT)
+               || (type == CellmlElementType::COMPONENT_REF)) {
         modelBased = owningModel(item->component()) == model;
     } else if ((type == CellmlElementType::CONNECTION)
                || (type == CellmlElementType::MAP_VARIABLES)) {
