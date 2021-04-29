@@ -956,10 +956,14 @@ TEST(Annotator, automaticIdAllItemsNoId)
 
     auto itemComponent = model->component("component1");
     auto itemComponentRef = model->component("component2");
-    auto itemConnection = libcellml::VariablePair::create(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable1"));
+    auto itemConnection = libcellml::VariablePair::create(
+        model->component("component2")->variable("variable1"),
+        model->component("component2")->component("component3")->variable("variable1"));
     auto const &itemEncapsulation = model;
     auto itemImportSource = model->component("component1")->importSource();
-    auto itemMapVariables = libcellml::VariablePair::create(model->component("component2")->variable("variable2"), model->component("component2")->component("component3")->variable("variable2"));
+    auto itemMapVariables = libcellml::VariablePair::create(
+        model->component("component2")->variable("variable2"),
+        model->component("component2")->component("component3")->variable("variable2"));
     auto const &itemModel = model;
     auto itemReset = model->component("component2")->reset(0);
     auto itemResetValue = model->component("component2")->reset(0);
