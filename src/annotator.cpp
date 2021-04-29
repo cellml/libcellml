@@ -247,13 +247,13 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
         id = reset->testValueId();
         if (!id.empty()) {
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setTestValue(reset);
+            entry->mPimpl->setReset(reset, CellmlElementType::TEST_VALUE);
             idList.insert(std::make_pair(id, convertToWeak(entry)));
         }
         id = reset->resetValueId();
         if (!id.empty()) {
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setResetValue(reset);
+            entry->mPimpl->setReset(reset, CellmlElementType::RESET_VALUE);
             idList.insert(std::make_pair(id, convertToWeak(entry)));
         }
     }
@@ -408,12 +408,12 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToShared(const AnyCellmlEle
     } else if (type == CellmlElementType::RESET_VALUE) {
         auto reset = std::any_cast<ResetWeakPtr>(item->mPimpl->mItem).lock();
         if (reset != nullptr) {
-            converted->mPimpl->setResetValue(reset);
+            converted->mPimpl->setReset(reset, CellmlElementType::RESET_VALUE);
         }
     } else if (type == CellmlElementType::TEST_VALUE) {
         auto reset = std::any_cast<ResetWeakPtr>(item->mPimpl->mItem).lock();
         if (reset != nullptr) {
-            converted->mPimpl->setTestValue(reset);
+            converted->mPimpl->setReset(reset, CellmlElementType::TEST_VALUE);
         }
     } else if (type == CellmlElementType::UNITS) {
         auto units = std::any_cast<UnitsWeakPtr>(item->mPimpl->mItem).lock();
@@ -980,7 +980,7 @@ void Annotator::AnnotatorImpl::doSetResetValueIds(const ComponentPtr &parent)
             auto id = makeUniqueId();
             parent->reset(r)->setResetValueId(id);
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setResetValue(parent->reset(r));
+            entry->mPimpl->setReset(parent->reset(r), CellmlElementType::RESET_VALUE);
             mIdList.insert(std::make_pair(id, convertToWeak(entry)));
         }
     }
@@ -996,7 +996,7 @@ void Annotator::AnnotatorImpl::doSetTestValueIds(const ComponentPtr &parent)
             auto id = makeUniqueId();
             parent->reset(r)->setTestValueId(id);
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setTestValue(parent->reset(r));
+            entry->mPimpl->setReset(parent->reset(r), CellmlElementType::TEST_VALUE);
             mIdList.insert(std::make_pair(id, convertToWeak(entry)));
         }
     }
