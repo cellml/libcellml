@@ -1016,6 +1016,14 @@ TEST(Annotator, assignModelIdBadInput)
     auto annotator = libcellml::Annotator::create();
     libcellml::ModelPtr nullModel = nullptr;
     EXPECT_EQ("", annotator->assignId(nullModel));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::COMPONENT));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::CONNECTION));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::IMPORT));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::RESET));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::RESET_VALUE));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::TEST_VALUE));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::UNITS));
+    EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::UNIT));
     EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::VARIABLE));
 }
 
