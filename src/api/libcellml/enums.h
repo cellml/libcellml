@@ -46,7 +46,7 @@ enum class CellmlElementType
     TEST_VALUE,
     UNDEFINED,
     UNITS,
-    UNIT,
+    UNITS_ITEM,
     VARIABLE,
 };
 
