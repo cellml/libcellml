@@ -189,7 +189,7 @@ ComponentPtr AnyCellmlElement::component() const
         || (mPimpl->mType == CellmlElementType::COMPONENT_REF)) {
         try {
             return std::any_cast<ComponentPtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -203,7 +203,7 @@ VariablePairPtr AnyCellmlElement::variablePair() const
         || (mPimpl->mType == CellmlElementType::MAP_VARIABLES)) {
         try {
             return std::any_cast<VariablePairPtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -216,7 +216,7 @@ ImportSourcePtr AnyCellmlElement::importSource() const
     if (mPimpl->mType == CellmlElementType::IMPORT) {
         try {
             return std::any_cast<ImportSourcePtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -230,7 +230,7 @@ ModelPtr AnyCellmlElement::model() const
         || (mPimpl->mType == CellmlElementType::MODEL)) {
         try {
             return std::any_cast<ModelPtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -243,7 +243,7 @@ ResetPtr AnyCellmlElement::reset() const
     if (mPimpl->mType == CellmlElementType::RESET) {
         try {
             return std::any_cast<ResetPtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -256,7 +256,7 @@ ResetPtr AnyCellmlElement::resetValue() const
     if (mPimpl->mType == CellmlElementType::RESET_VALUE) {
         try {
             return std::any_cast<ResetPtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -269,7 +269,7 @@ ResetPtr AnyCellmlElement::testValue() const
     if (mPimpl->mType == CellmlElementType::TEST_VALUE) {
         try {
             return std::any_cast<ResetPtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -282,7 +282,7 @@ UnitsPtr AnyCellmlElement::units() const
     if (mPimpl->mType == CellmlElementType::UNITS) {
         try {
             return std::any_cast<UnitsPtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -295,7 +295,7 @@ UnitsItemPtr AnyCellmlElement::unitsItem() const
     if (mPimpl->mType == CellmlElementType::UNIT) {
         try {
             return std::any_cast<UnitsItemPtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
@@ -308,7 +308,7 @@ VariablePtr AnyCellmlElement::variable() const
     if (mPimpl->mType == CellmlElementType::VARIABLE) {
         try {
             return std::any_cast<VariablePtr>(mPimpl->mItem);
-        } catch(const std::bad_any_cast& e) {
+        } catch (const std::bad_any_cast &) {
             return nullptr;
         }
     }
