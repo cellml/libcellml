@@ -53,7 +53,7 @@ static const std::map<CellmlElementType, std::string> typeToString = {
     {CellmlElementType::TEST_VALUE, "test_value"},
     {CellmlElementType::UNDEFINED, "undefined"},
     {CellmlElementType::UNITS, "units"},
-    {CellmlElementType::UNITS_ITEM, "unit"},
+    {CellmlElementType::UNIT, "unit"},
     {CellmlElementType::VARIABLE, "variable"}};
 
 struct Annotator::AnnotatorImpl
@@ -359,7 +359,7 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
     } else if (type == CellmlElementType::UNITS) {
         UnitsWeakPtr weakUnits = item->units();
         converted->mPimpl->mItem = weakUnits;
-    } else if (type == CellmlElementType::UNITS_ITEM) {
+    } else if (type == CellmlElementType::UNIT) {
         // We don't store a weak pointer for units item because the map is the
         // owner of the UnitsItem object.
         converted->mPimpl->mItem = item->unitsItem();
@@ -424,7 +424,7 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToShared(const AnyCellmlEle
         if (units != nullptr) {
             converted->mPimpl->setUnits(units);
         }
-    } else if (type == CellmlElementType::UNITS_ITEM) {
+    } else if (type == CellmlElementType::UNIT) {
         // Unit items are not held as weak pointers.
         auto unitsItem = item->unitsItem();
         if ((unitsItem != nullptr) && unitsItem->isValid()) {
@@ -855,7 +855,7 @@ bool Annotator::assignIds(CellmlElementType type)
         case CellmlElementType::UNITS:
             mPimpl->doSetUnitsIds();
             break;
-        case CellmlElementType::UNITS_ITEM:
+        case CellmlElementType::UNIT:
             mPimpl->doSetUnitsItemIds();
             break;
         case CellmlElementType::VARIABLE:
@@ -1164,7 +1164,7 @@ std::string Annotator::AnnotatorImpl::id(const AnyCellmlElementPtr &item)
         id = item->resetValue()->resetValueId();
     } else if (type == CellmlElementType::TEST_VALUE) {
         id = item->testValue()->testValueId();
-    } else if (type == CellmlElementType::UNITS_ITEM) {
+    } else if (type == CellmlElementType::UNIT) {
         auto unitItem = item->unitsItem();
         id = unitItem->units()->unitId(unitItem->index());
     } else if (type == CellmlElementType::UNITS) {
@@ -1178,7 +1178,7 @@ std::string Annotator::AnnotatorImpl::id(const AnyCellmlElementPtr &item)
 void Annotator::AnnotatorImpl::setId(const AnyCellmlElementPtr &item, const std::string &id)
 {
     CellmlElementType type = item->type();
-    if (type == CellmlElementType::UNITS_ITEM) {
+    if (type == CellmlElementType::UNIT) {
         auto unitsItem = item->unitsItem();
         unitsItem->units()->setUnitId(unitsItem->index(), id);
     } else if (type == CellmlElementType::MODEL) {
@@ -1215,7 +1215,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) c
     bool modelBased = false;
     CellmlElementType type = item->type();
     auto model = mModel.lock();
-    if (type == CellmlElementType::UNITS_ITEM) {
+    if (type == CellmlElementType::UNIT) {
         modelBased = owningModel(item->unitsItem()->units()) == model;
     } else if (type == CellmlElementType::MODEL) {
         modelBased = item->model() == model;
@@ -1251,7 +1251,7 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyCellmlElementPtr &itemWeak, c
     bool itemsEqual = false;
     auto item = convertToWeak(itemShared);
     CellmlElementType type = itemWeak->type();
-    if (type == CellmlElementType::UNITS_ITEM) {
+    if (type == CellmlElementType::UNIT) {
         // Unit is not actually stored as a weak pointer so we can compare shared pointers directly.
         itemsEqual = itemWeak->unitsItem() == itemShared->unitsItem();
     } else if ((type == CellmlElementType::MODEL)
@@ -1288,7 +1288,7 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyCellmlElementPtr &itemWeak, c
 bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
 {
     CellmlElementType type = item->type();
-    if (type == CellmlElementType::UNITS_ITEM) {
+    if (type == CellmlElementType::UNIT) {
         auto unitsItem = item->unitsItem();
         if ((unitsItem != nullptr) && (unitsItem->units() != nullptr)) {
             return true;

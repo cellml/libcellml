@@ -20,7 +20,7 @@ EMSCRIPTEN_BINDINGS(libcellml_enums) {
         .value("RESET_VALUE", libcellml::CellmlElementType::RESET_VALUE)
         .value("TEST_VALUE", libcellml::CellmlElementType::TEST_VALUE)
         .value("UNDEFINED", libcellml::CellmlElementType::UNDEFINED)
-        .value("UNIT", libcellml::CellmlElementType::UNITS_ITEM)
+        .value("UNIT", libcellml::CellmlElementType::UNIT)
         .value("UNITS", libcellml::CellmlElementType::UNITS)
         .value("VARIABLE", libcellml::CellmlElementType::VARIABLE)
     ;
