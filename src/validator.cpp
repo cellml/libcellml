@@ -583,7 +583,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
     if (!isCellmlIdentifier(componentRef)) {
         auto issue = makeIssueIllegalIdentifier(componentRef);
         issue->mPimpl->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute. " + issue->description());
-        issue->mPimpl->mItem->mPimpl->setComponentRef(component);
+        issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::COMPONENT_REF);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
         mValidator->addIssue(issue);
     }
@@ -974,7 +974,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
-                issue->mPimpl->mItem->mPimpl->setMath(component);
+                issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_MATHML);
                 mValidator->addIssue(issue);
             }
@@ -990,7 +990,7 @@ bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, co
 
     IssuePtr issue = makeIssueIllegalIdentifier(unitsName);
     issue->mPimpl->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute. " + issue->description());
-    issue->mPimpl->mItem->mPimpl->setMath(component);
+    issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS);
     mValidator->addIssue(issue);
 
@@ -1024,7 +1024,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
                 cellmlAttributesToRemove.push_back(attribute);
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace. Attribute 'units' is the only CellML namespace attribute allowed.");
-                issue->mPimpl->mItem->mPimpl->setMath(component);
+                issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_MATHML);
                 mValidator->addIssue(issue);
             }
@@ -1046,7 +1046,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
             if (!isStandardUnitName(unitsName)) {
                 auto issue = std::shared_ptr<Issue> {new Issue {}};
                 issue->mPimpl->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in the model '" + model->name() + "' or a standard unit.");
-                issue->mPimpl->mItem->mPimpl->setMath(component);
+                issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS);
                 mValidator->addIssue(issue);
             }
@@ -1072,7 +1072,7 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
         if (std::find(variableNames.begin(), variableNames.end(), textInNode) == variableNames.end()) {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             issue->mPimpl->setDescription("MathML ci element has the child text '" + textInNode + "' which does not correspond with any variable names present in component '" + component->name() + "'.");
-            issue->mPimpl->mItem->mPimpl->setMath(component);
+            issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CI_VARIABLE_REF);
             mValidator->addIssue(issue);
         }
@@ -1105,7 +1105,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
         if (!childNode->isComment() && !childNode->isText() && !isSupportedMathMLElement(childNode)) {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             issue->mPimpl->setDescription("Math has a '" + childNode->name() + "' element that is not a supported MathML element.");
-            issue->mPimpl->mItem->mPimpl->setMath(component);
+            issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CHILD);
             mValidator->addIssue(issue);
         }
@@ -1117,7 +1117,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
         if (!nextNode->isComment() && !nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             auto issue = std::shared_ptr<Issue> {new Issue {}};
             issue->mPimpl->setDescription("Math has a '" + nextNode->name() + "' element that is not a supported MathML element.");
-            issue->mPimpl->mItem->mPimpl->setMath(component);
+            issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CHILD);
             mValidator->addIssue(issue);
         }
@@ -1177,7 +1177,7 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
 
                     IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
                     err->mPimpl->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
-                    err->mPimpl->mItem->mPimpl->setMapVariables(VariablePair::create(variable, equivalentVariable));
+                    err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
                     err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE);
                     mValidator->addIssue(err);
                 }
@@ -1234,7 +1234,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
                 alreadyReported.push_back(pair);
                 IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
                 err->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + variable->units()->name() + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentVariable->units()->name() + "'. The mismatch is: " + hints);
-                err->mPimpl->mItem->mPimpl->setMapVariables(VariablePair::create(variable, equivalentVariable));
+                err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
                 err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
             }
@@ -1251,7 +1251,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
             if (component == nullptr) {
                 IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
                 err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->mPimpl->mItem->mPimpl->setMapVariables(VariablePair::create(variable, equivalentVariable));
+                err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
                 err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mValidator->addIssue(err);
             }

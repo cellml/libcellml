@@ -64,67 +64,6 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
     return equalEntities(other, entities);
 }
 
-bool Model::ModelImpl::linkComponentVariableUnits(const ComponentPtr &component,
-                                                  std::vector<IssuePtr> &issueList)
-{
-    bool status = true;
-    for (size_t index = 0; index < component->variableCount(); ++index) {
-        auto v = component->variable(index);
-        auto u = v->units();
-
-        if (u != nullptr) {
-            auto model = owningModel(u);
-            if (model == owningModel(v)) {
-                // Units are already linked, and exist in this model.
-                continue;
-            }
-            if ((model == nullptr) && !isStandardUnit(u)) {
-                model = owningModel(component);
-                if (model->hasUnits(u->name())) {
-                    v->setUnits(model->units(u->name()));
-                } else {
-                    auto issue = std::shared_ptr<Issue> {new Issue {}};
-                    issue->mPimpl->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
-                    issue->mPimpl->setLevel(Issue::Level::WARNING);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
-                    issue->mPimpl->mItem->mPimpl->setVariable(v);
-                    issueList.push_back(issue);
-                    status = false;
-                }
-            } else if (model != nullptr) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
-                issue->mPimpl->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
-                issue->mPimpl->setLevel(Issue::Level::WARNING);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
-                issue->mPimpl->mItem->mPimpl->setVariable(v);
-                issueList.push_back(issue);
-                status = false;
-            }
-        }
-    }
-    return status;
-}
-
-bool Model::ModelImpl::traverseTreeLinkingUnits(const ComponentEntityPtr &componentEntity)
-{
-    std::vector<IssuePtr> issueList;
-    return traverseTreeLinkingUnits(componentEntity, issueList);
-}
-
-bool Model::ModelImpl::traverseTreeLinkingUnits(const ComponentEntityPtr &componentEntity,
-                                                std::vector<IssuePtr> &issueList)
-{
-    auto component = std::dynamic_pointer_cast<Component>(componentEntity);
-    bool status = (component != nullptr) ?
-                      linkComponentVariableUnits(component, issueList) :
-                      true;
-    for (size_t index = 0; index < componentEntity->componentCount(); ++index) {
-        auto c = componentEntity->component(index);
-        status = traverseTreeLinkingUnits(c, issueList) && status;
-    }
-    return status;
-}
-
 Model::Model()
     : mPimpl(new ModelImpl())
 {
@@ -303,7 +242,7 @@ size_t Model::unitsCount() const
 
 bool Model::linkUnits()
 {
-    return mPimpl->traverseTreeLinkingUnits(shared_from_this());
+    return traverseComponentEntityTreeLinkingUnits(shared_from_this());
 }
 
 bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
