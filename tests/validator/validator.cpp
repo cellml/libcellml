@@ -3330,7 +3330,7 @@ TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
 TEST(Validator, importInvalidComponentReference)
 {
     const std::string errorMessage =
-        "Imported component 'imported_component' refers to component 'missing_component' which does not appear in 'has_component_that_is_invalid'.";
+        "Imported component 'imported_component' refers to component 'missing_component' which does not appear in 'component_that_is_invalid.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
