@@ -712,7 +712,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                 }
             } else {
                 auto issue = Issue::create();
-                issue->setDescription(descriptionPrefix + "'" + componentName + "' refers to component '" + componentRef + "' which does not appear in '" + importModel->name() + "'.");
+                issue->setDescription(descriptionPrefix + "'" + componentName + "' refers to component '" + componentRef + "' which does not appear in '" + component->importSource()->url() + "'.");
                 issue->setComponent(component);
                 issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
                 mValidator->addIssue(issue);
