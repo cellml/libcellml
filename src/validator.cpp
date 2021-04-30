@@ -895,7 +895,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
                 }
             } else {
                 auto issue = Issue::create();
-                issue->setDescription("Imported units '" + units->name() + "' refers to units '" + unitsRef + "' which does not appear in '" + importSourceModel->name() + "'.");
+                issue->setDescription("Imported units '" + units->name() + "' refers to units '" + unitsRef + "' which does not appear in '" + importSource->url() + "'.");
                 issue->setUnits(units);
                 issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                 mValidator->addIssue(issue);

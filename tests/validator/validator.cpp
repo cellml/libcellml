@@ -3270,7 +3270,7 @@ TEST(Validator, importInvalidUnitsNotDirectlyDeterminedFromImport)
 TEST(Validator, importInvalidUnitsReference)
 {
     const std::string errorMessage =
-        "Imported units 'i_am_bad' refers to units 'ps3' which does not appear in 'units_library'.";
+        "Imported units 'i_am_bad' refers to units 'ps3' which does not appear in 'units_library.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
