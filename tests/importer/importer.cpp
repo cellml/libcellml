@@ -94,6 +94,19 @@ TEST(Importer, warningCircularImportReferencesUnits)
     EXPECT_EQ(errorMessage, importer->error(0)->description());
 }
 
+TEST(Importer, importingCommonUnitsDefinitions)
+{
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("importer/common_units_import_1.xml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    EXPECT_EQ(size_t(0), importer->errorCount());
+    printIssues(importer);
+}
+
+
 TEST(Importer, warningUnrequiredCircularDependencyComponent)
 {
     auto parser = libcellml::Parser::create();
