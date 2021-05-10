@@ -748,7 +748,8 @@ IndexStack indexStackOf(const ComponentPtr &component);
  *
  * @return The history entry.
  */
-HistoryEntry createHistoryEntry(const UnitsPtr &units);
+//HistoryEntry createHistoryEntry(const UnitsPtr &units);
+ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsPtr &units);
 
 /**
  * @brief Create a history entry for a @ref Component.
@@ -759,7 +760,12 @@ HistoryEntry createHistoryEntry(const UnitsPtr &units);
  *
  * @return The history entry.
  */
-HistoryEntry createHistoryEntry(const ComponentPtr &component);
+//HistoryEntry createHistoryEntry(const ComponentPtr &component);
+ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentPtr &component);
+
+std::string importeeModelUrl(const ImportTrack &importTrack, const std::string url);
+
+bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s);
 
 /**
  * @brief Make a cyclic dependency issue.
@@ -777,6 +783,9 @@ IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
                                    const std::string &type,
                                    const History &history,
                                    const std::string &action);
+
+IssuePtr makeIssueCyclicDependency2(const ImportTrack &history,
+                                    const std::string &action);
 
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);

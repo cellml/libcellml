@@ -1381,24 +1381,37 @@ bool areEqual(const std::string &str1, const std::string &str2)
     return str1 == str2;
 }
 
-HistoryEntry recordNamedVisit(const std::string &name, const ImportedEntityPtr &importedEntity)
+void recordUrl(const ImportStepPtr &importStep, const ImportedEntityPtr &importedEntity)
 {
-    auto h = std::make_tuple(name, std::string(), std::string());
     if (importedEntity->isImport()) {
-        h = std::make_tuple(name, importedEntity->importReference(), importedEntity->importSource()->url());
+        importStep->mDestinationUrl = importedEntity->importSource()->url();
     }
+}
 
+ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsPtr &units)
+{
+    auto h = std::make_shared<ImportStep>(owningModel(units), units, sourceUrl, "");
+    recordUrl(h, units);
     return h;
 }
 
-HistoryEntry createHistoryEntry(const UnitsPtr &units)
+ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentPtr &component)
 {
-    return recordNamedVisit(units->name(), units);
+    auto h = std::make_shared<ImportStep>(owningModel(component), component, sourceUrl, "");
+    recordUrl(h, component);
+    return h;
 }
 
-HistoryEntry createHistoryEntry(const ComponentPtr &component)
+std::string importeeModelUrl(const ImportTrack &importTrack, const std::string url)
 {
-    return recordNamedVisit(component->name(), component);
+    for (auto i = importTrack.size(); i-- > 0; ) {
+        auto importStep = importTrack[i];
+        if (importStep->mDestinationUrl != url) {
+            return importStep->mDestinationUrl;
+        }
+    }
+
+    return "this";
 }
 
 IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
@@ -1418,6 +1431,45 @@ IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
     while (i < history.size()) {
         h = history[i];
         msgHistory += " - " + typeString + " '" + std::get<0>(h) + "' references " + typeString + " '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'";
+        if (i == history.size() - 2) {
+            msgHistory += "; and\n";
+        } else if (i == history.size() - 1) {
+            msgHistory += ".";
+        } else {
+            msgHistory += ";\n";
+        }
+        ++i;
+    }
+
+    auto issue = Issue::create();
+    issue->setDescription(msgHeader + msgHistory);
+    issue->setLevel(Issue::Level::ERROR);
+    issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
+    return issue;
+}
+
+bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s)
+{
+    return std::find_if(hh.begin(), hh.end(),
+                        [=](const ImportStepPtr &i) -> bool { return s->isSemanticallyEquivalentInfoset(i); }) != hh.end();
+}
+
+IssuePtr makeIssueCyclicDependency2(const ImportTrack &history,
+                                    const std::string &action)
+{
+    auto origin = history.front();
+    auto model = origin->mModel;
+    bool isComponent = origin->mType == "component";
+    std::string typeStringPrefix = isComponent ? "a " : "";
+    std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
+                            + typeStringPrefix + origin->mType + " in the model '"
+                            + model->name() + "'. The dependency loop is:\n";
+    ImportStepPtr h;
+    size_t i = 0;
+    std::string msgHistory;
+    while (i < history.size()) {
+        h = history[i];
+        msgHistory += " - " + h->mType + " '" + h->mName + "' specifies an import from '" + h->mSourceUrl + "' to '" + h->mDestinationUrl + "'";
         if (i == history.size() - 2) {
             msgHistory += "; and\n";
         } else if (i == history.size() - 1) {
