@@ -165,7 +165,7 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(ImportHistory &history) const
         if (importedSource != nullptr) {
             ModelPtr model = importedSource->model();
             if (model != nullptr) {
-                ImportHistoryEntry h = std::make_pair(model, mUnits->name());
+                ImportHistoryEntry h = std::make_tuple(model, "units", mUnits->name());
                 if (std::find(history.begin(), history.end(), h) != history.end()) {
                     return false;
                 }
@@ -199,7 +199,7 @@ bool Units::UnitsImpl::isResolvedWithHistory(ImportHistory &history) const
             if (importedUnits == nullptr) {
                 resolved = false;
             } else {
-                ImportHistoryEntry h = std::make_pair(model, mUnits->name());
+                ImportHistoryEntry h = std::make_tuple(model, "units", mUnits->name());
                 if (std::find(history.begin(), history.end(), h) != history.end()) {
                     resolved = false;
                 } else if (importedUnits->isImport()) {

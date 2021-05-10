@@ -133,7 +133,7 @@ bool Component::ComponentImpl::isResolvedWithHistory(ImportHistory &history) con
             if (importedComponent == nullptr) {
                 resolved = false;
             } else {
-                ImportHistoryEntry h = std::make_pair(model, mComponent->name());
+                ImportHistoryEntry h = std::make_tuple(model, "component", mComponent->name());
                 if (std::find(history.begin(), history.end(), h) != history.end()) {
                     resolved = false;
                 } else {

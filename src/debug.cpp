@@ -36,9 +36,23 @@ void printHistory(const History &history)
 
 }
 
+void printImportTrack(const ImportTrack &history)
+{
+    for (auto tt : history) {
+        printImportStep(tt);
+    }
+
+}
+
 void printHistoryEntry(const HistoryEntry &historyEntry)
 {
     Debug() << "'" << std::get<0>(historyEntry) << "' '" << std::get<1>(historyEntry) << "' '" << std::get<2>(historyEntry) << "'";
+}
+
+void printImportStep(const ImportStepPtr &historyEntry)
+{
+    Debug() << "'" << historyEntry->mModel->name() << "' '" << historyEntry->mName << "' '" << historyEntry->mSourceUrl << "' -> '" << historyEntry->mDestinationUrl << "'";
+//    Debug() << "'" << std::get<0>(historyEntry)->name() << "' '" << std::get<1>(historyEntry) << "' -> '" << std::get<2>(historyEntry) << "'";
 }
 
 void printStack(const IndexStack &stack)

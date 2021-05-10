@@ -50,18 +50,17 @@ TEST(Importer, noWarningDiamondImport)
     EXPECT_TRUE(model->hasUnresolvedImports());
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_EQ(size_t(0), importer->errorCount());
 }
 
 TEST(Importer, warningCircularImportReferencesComponent)
 {
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_cyclic' references component 'c2' in '"
-        + resourcePath("importer/") + "circularImport_2.cellml';\n"
-                                      " - component 'c2' references component 'c3' in '"
-        + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
-                                      " - component 'c3' references component 'i_am_cyclic' in '"
-        + resourcePath("importer/") + "circularImport_1.cellml'.";
+        " - component 'i_am_cyclic' specifies an import from 'this' to '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
+        " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
+        " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'; and\n"
+        " - component 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularImport_1.cellml' to '" + resourcePath("importer/") + "circularImport_2.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
@@ -78,12 +77,11 @@ TEST(Importer, warningCircularImportReferencesUnits)
 {
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - units 'i_am_cyclic' references units 'u2' in '"
-        + resourcePath("importer/") + "circularUnits_2.cellml';\n"
-                                      " - units 'u2' references units 'u3' in '"
-        + resourcePath("importer/") + "circularUnits_3.cellml'; and\n"
-                                      " - units 'u3' references units 'i_am_cyclic' in '"
-        + resourcePath("importer/") + "circularUnits_1.cellml'.";
+        " - units 'i_am_cyclic' specifies an import from 'this' to '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
+        " - units 'u2' specifies an import from '" + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml';\n"
+        " - units 'u3' specifies an import from '" + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'; and\n"
+        " - units 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularUnits_1.cellml' to '" + resourcePath("importer/") + "circularUnits_2.cellml'.";
+
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/circularUnits_1.cellml"));
@@ -93,19 +91,6 @@ TEST(Importer, warningCircularImportReferencesUnits)
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(errorMessage, importer->error(0)->description());
 }
-
-TEST(Importer, importingCommonUnitsDefinitions)
-{
-    auto parser = libcellml::Parser::create();
-    auto importer = libcellml::Importer::create();
-    auto model = parser->parseModel(fileContents("importer/common_units_import_1.xml"));
-    EXPECT_EQ(size_t(0), parser->issueCount());
-    importer->resolveImports(model, resourcePath("importer/"));
-    EXPECT_EQ(size_t(0), importer->issueCount());
-    EXPECT_EQ(size_t(0), importer->errorCount());
-    printIssues(importer);
-}
-
 
 TEST(Importer, warningUnrequiredCircularDependencyComponent)
 {
@@ -1070,4 +1055,15 @@ TEST(Importer, removeAllModels)
     importer->removeAllModels();
 
     EXPECT_EQ(size_t(0), importer->libraryCount());
+}
+
+TEST(Importer, importingCommonUnitsDefinitions)
+{
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("importer/common_units_import_1.xml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    EXPECT_EQ(size_t(0), importer->errorCount());
 }
