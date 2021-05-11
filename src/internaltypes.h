@@ -63,6 +63,7 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
 
 using ComponentConstPtr = std::shared_ptr<const Component>; /**< Type definition for shared component const pointer. */
 using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Type definition for shared component entity const pointer. */
+using ImportedEntityConstPtr = std::shared_ptr<const ImportedEntity>; /**< Type definition for shared imported entity const pointer. */
 using ModelConstPtr = std::shared_ptr<const Model>; /**< Type definition for shared model const pointer. */
 using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type definition for shared parented entity const pointer. */
 
@@ -95,7 +96,7 @@ public:
         setDestinationModel(units);
     }
 
-    ImportStep(const ModelPtr &model, const ComponentPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
+    ImportStep(const ModelPtr &model, const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
         : mDestinationModel(nullptr)
         , mDestinationUrl(destinationUrl)
         , mModel(model)
@@ -108,14 +109,14 @@ public:
         setDestinationModel(component);
     }
 
-    void setReferenceName(const ImportedEntityPtr &importedEntity)
+    void setReferenceName(const ImportedEntityConstPtr &importedEntity)
     {
         if (importedEntity->isImport()) {
             mReferenceName = importedEntity->importReference();
         }
     }
 
-    void setDestinationModel(const ImportedEntityPtr &importedEntity)
+    void setDestinationModel(const ImportedEntityConstPtr &importedEntity)
     {
         if (importedEntity->isImport()) {
             mDestinationModel = importedEntity->importSource()->model();

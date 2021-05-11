@@ -759,7 +759,7 @@ ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsPtr &uni
  *
  * @return The history entry.
  */
-ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentPtr &component);
+ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component);
 
 std::string importeeModelUrl(const ImportTrack &importTrack, const std::string url);
 
