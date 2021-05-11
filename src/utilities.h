@@ -763,7 +763,7 @@ ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentPtr 
 
 std::string importeeModelUrl(const ImportTrack &importTrack, const std::string url);
 
-bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s);
+bool checkForImportCycles(const ImportTrack &history, const ImportStepPtr &h);
 
 /**
  * @brief Make a cyclic dependency issue.

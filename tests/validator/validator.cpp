@@ -3396,11 +3396,8 @@ TEST(Validator, cImportThatValidatorReturnsFalsePositive)
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
-    auto result = importer->resolveImports(model, resourcePath("importer/"));
-    EXPECT_TRUE(result);
+    importer->resolveImports(model, resourcePath("importer/"));
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-//    EXPECT_EQ(errorMessage, validator->issue(0)->description());
-
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }

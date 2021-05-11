@@ -1414,13 +1414,13 @@ std::string importeeModelUrl(const ImportTrack &importTrack, const std::string u
     return ORIGIN_MODEL_REF;
 }
 
-bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s)
+bool checkForImportCycles(const ImportTrack &history, const ImportStepPtr &h)
 {
-    for (size_t index = 0; index < hh.size(); ++index) {
-        auto entry = hh.at(index);
-        if (s->mDestinationUrl == entry->mSourceUrl) {
+    for (size_t index = 0; index < history.size(); ++index) {
+        auto entry = history.at(index);
+        if (h->mDestinationUrl == entry->mSourceUrl) {
             return true;
-        } else if (entry->mSourceUrl == ORIGIN_MODEL_REF && entry->mModel->equals(s->mDestinationModel)) {
+        } else if (entry->mSourceUrl == ORIGIN_MODEL_REF && entry->mModel->equals(h->mDestinationModel)) {
             return true;
         }
     }

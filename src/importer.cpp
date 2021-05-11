@@ -63,14 +63,14 @@ struct Importer::ImporterImpl
     std::string resolvingUrl(const ImportSourcePtr &importSource) const;
     std::string modelUrl(const ModelPtr &model) const;
 
-    bool fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, ImportTrack &hh);
+    bool fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, ImportTrack &history);
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchImportSource(const ImportSourcePtr &importSource, const std::string &baseFile);
-    bool fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, ImportTrack &hh);
+    bool fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, ImportTrack &history);
 
-    bool checkForImportCycles(const ImportSourcePtr &importSource, const ImportTrack &hh, const ImportStepPtr &s, const std::string &action) const;
-    bool checkUnitsForCycles(const UnitsPtr &units, ImportTrack &hh) const;
-    bool checkComponentForCycles(const ComponentPtr &component, ImportTrack &hh);
+    bool checkForImportCycles(const ImportSourcePtr &importSource, const ImportTrack &history, const ImportStepPtr &h, const std::string &action) const;
+    bool checkUnitsForCycles(const UnitsPtr &units, ImportTrack &history) const;
+    bool checkComponentForCycles(const ComponentPtr &component, ImportTrack &history);
 
     bool hasImportCycles(const ModelPtr &model);
 };
@@ -118,7 +118,7 @@ std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSo
     return modelUrl(model);
 }
 
-bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, ImportTrack &hh) const
+bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, ImportTrack &history) const
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
@@ -133,7 +133,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, ImportTr
             // If the child units are imported, check them too.
             auto model = owningModel(units);
             if ((model != nullptr) && model->hasUnits(ref)) {
-                if (checkUnitsForCycles(model->units(ref), hh)) {
+                if (checkUnitsForCycles(model->units(ref), history)) {
                     return true;
                 }
             }
@@ -147,11 +147,11 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, ImportTr
     auto unitsModel= owningModel(units);
     auto s = std::make_shared<ImportStep>(unitsModel, units, modelUrl(unitsModel), resolvingUrl);
 
-    if (checkForImportCycles(units->importSource(), hh, s, "flatten")) {
+    if (checkForImportCycles(units->importSource(), history, s, "flatten")) {
         return true;
     }
 
-    hh.push_back(s);
+    history.push_back(s);
 
     // If the dependencies have not been recorded already, then check it.
     auto model = units->importSource()->model();
@@ -175,21 +175,21 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, ImportTr
         return true;
     }
 
-    return checkUnitsForCycles(importedUnits, hh);
+    return checkUnitsForCycles(importedUnits, history);
 }
 
-bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &component, ImportTrack &hh)
+bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &component, ImportTrack &history)
 {
     std::string resolvingUrl = ImporterImpl::resolvingUrl(component->importSource());
     auto h = std::make_tuple(component->name(), component->importReference(), resolvingUrl);
     auto componentModel = owningModel(component);
     auto s = std::make_shared<ImportStep>(componentModel, component, modelUrl(componentModel), resolvingUrl);
 
-    if (checkForImportCycles(component->importSource(), hh, s, "flatten")) {
+    if (checkForImportCycles(component->importSource(), history, s, "flatten")) {
         return true;
     }
 
-    hh.push_back(s);
+    history.push_back(s);
 
     // If the dependencies have not been recorded already, then check it.
     if (component->isImport()) {
@@ -214,7 +214,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
             return true;
         }
 
-        if (importedComponent->isImport() && checkComponentForCycles(importedComponent, hh)) {
+        if (importedComponent->isImport() && checkComponentForCycles(importedComponent, history)) {
             return true;
         }
     }
@@ -224,18 +224,18 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
 
 bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
 {
-    ImportTrack hh;
+    ImportTrack history;
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
-        hh.clear();
-        if (checkUnitsForCycles(units, hh)) {
+        history.clear();
+        if (checkUnitsForCycles(units, history)) {
             return true;
         }
     }
 
     for (const ComponentPtr &component : getImportedComponents(model)) {
-        hh.clear();
-        if (checkComponentForCycles(component, hh)) {
+        history.clear();
+        if (checkComponentForCycles(component, history)) {
             return true;
         }
     }
@@ -299,11 +299,11 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
     return true;
 }
 
-bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const ImportTrack &hh, const ImportStepPtr &s, const std::string &action) const
+bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const ImportTrack &history, const ImportStepPtr &h, const std::string &action) const
 {
-   if (libcellml::checkForImportCycles(hh, s)) {
-        auto cyclicHistory = hh;
-        cyclicHistory.push_back(s);
+   if (libcellml::checkForImportCycles(history, h)) {
+        auto cyclicHistory = history;
+        cyclicHistory.push_back(h);
         auto issue = makeIssueCyclicDependency(cyclicHistory, action);
         issue->setImportSource(importSource);
         mImporter->addIssue(issue);
@@ -325,7 +325,7 @@ bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSour
     return true;
 }
 
-bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, ImportTrack &hh)
+bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, ImportTrack &history)
 {
     // Given the importComponent, check whether it has been resolved previously.  If so, return.
     // If not, check for model, and parse/instantiate/add to library if needed.
@@ -338,7 +338,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     if (!importComponent->isImport()) {
         // This component is not an import, but a descendant is.
         for (size_t c = 0; c < importComponent->componentCount(); ++c) {
-            if (!fetchComponent(importComponent->component(c), baseFile, hh)) {
+            if (!fetchComponent(importComponent->component(c), baseFile, history)) {
                 return false;
             }
         }
@@ -353,11 +353,11 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     auto h = std::make_tuple(importComponent->name(), importComponent->importReference(), resolvingUrl);
     auto componentModel= owningModel(importComponent);
     auto s = std::make_shared<ImportStep>(componentModel, importComponent, modelUrl(componentModel), resolvingUrl);
-    if (checkForImportCycles(importComponent->importSource(), hh, s, "resolve")) {
+    if (checkForImportCycles(importComponent->importSource(), history, s, "resolve")) {
         return false;
     }
 
-    hh.push_back(s);
+    history.push_back(s);
 
     // Check that the model instance in the library has resolved all of the required dependencies.
     auto sourceModel = importComponent->importSource()->model();
@@ -369,13 +369,13 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         auto newBase = baseFile + directoryPath(importComponent->importSource()->url());
 
         // Fetch this component, if needed.
-        if (!fetchComponent(sourceComponent, newBase, hh)) {
+        if (!fetchComponent(sourceComponent, newBase, history)) {
             return false;
         }
 
         // Fetch any components encapsulated inside the imported component.
         for (size_t c = 0; c < sourceComponent->componentCount(); ++c) {
-            if (!fetchComponent(sourceComponent->component(c), newBase, hh)) {
+            if (!fetchComponent(sourceComponent->component(c), newBase, history)) {
                 return false;
             }
         }
@@ -391,7 +391,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
                 mImporter->addIssue(issue);
                 return false;
             }
-            if (!fetchUnits(units, newBase, hh)) {
+            if (!fetchUnits(units, newBase, history)) {
                 return false;
             }
         }
@@ -407,7 +407,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     return true;
 }
 
-bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, ImportTrack &hh)
+bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, ImportTrack &history)
 {
     if (!importUnits->isImport()) {
         return true;
@@ -421,11 +421,11 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     auto h = std::make_tuple(importUnits->name(), importUnits->importReference(), resolvingUrl);
     auto unitsModel= owningModel(importUnits);
     auto s = std::make_shared<ImportStep>(unitsModel, importUnits, modelUrl(unitsModel), resolvingUrl);
-    if (checkForImportCycles(importUnits->importSource(), hh, s, "resolve")) {
+    if (checkForImportCycles(importUnits->importSource(), history, s, "resolve")) {
         return false;
     }
 
-    hh.push_back(s);
+    history.push_back(s);
 
     // Check Unit children for reliance on imported Units items.
     auto sourceModel = importUnits->importSource()->model();
@@ -435,7 +435,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         auto newBase = baseFile + directoryPath(importUnits->importSource()->url());
 
         // Check whether the sourceUnits are themselves an import.
-        if (!fetchUnits(sourceUnits, newBase, hh)) {
+        if (!fetchUnits(sourceUnits, newBase, history)) {
             return false;
         }
 
@@ -459,7 +459,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
                 return false;
             }
             if (sourceUnit->isImport() && !sourceUnit->isResolved()) {
-                if (!fetchUnits(sourceUnit, newBase, hh)) {
+                if (!fetchUnits(sourceUnit, newBase, history)) {
                     return false;
                 }
             }
@@ -479,13 +479,13 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
 bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 {
     bool status = true;
-    ImportTrack hh;
+    ImportTrack history;
 
     clearImports(model);
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
-        hh.clear();
-        if (!mPimpl->fetchUnits(units, baseFile, hh)) {
+        history.clear();
+        if (!mPimpl->fetchUnits(units, baseFile, history)) {
             // Get the last issue recorded and change its object to be the top-level importing item.
             issue(issueCount() - 1)->setUnits(units);
             status = false;
@@ -493,8 +493,8 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
     }
 
     for (const ComponentPtr &component : getImportedComponents(model)) {
-        hh.clear();
-        if (!mPimpl->fetchComponent(component, baseFile, hh)) {
+        history.clear();
+        if (!mPimpl->fetchComponent(component, baseFile, history)) {
             issue(issueCount() - 1)->setComponent(component);
             status = false;
         }
