@@ -53,7 +53,7 @@ struct Component::ComponentImpl
     bool equalVariables(const ComponentPtr &other) const;
     bool equalResets(const ComponentPtr &other) const;
 
-    bool isResolvedWithHistory(ImportTrack &history, const ComponentConstPtr &component) const;
+    bool isResolvedWithHistory(History &history, const ComponentConstPtr &component) const;
 };
 
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
@@ -121,7 +121,7 @@ ComponentPtr Component::create(const std::string &name) noexcept
     return std::shared_ptr<Component> {new Component {name}};
 }
 
-bool Component::ComponentImpl::isResolvedWithHistory(ImportTrack &history, const ComponentConstPtr &component) const
+bool Component::ComponentImpl::isResolvedWithHistory(History &history, const ComponentConstPtr &component) const
 {
     bool resolved = true;
     if (mComponent->isImport()) {
@@ -457,7 +457,7 @@ bool Component::requiresImports()
 
 bool Component::doIsResolved() const
 {
-    ImportTrack history;
+    History history;
     return mPimpl->isResolvedWithHistory(history, shared_from_this());
 }
 
