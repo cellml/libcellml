@@ -25,6 +25,8 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 
+#include <iostream>
+
 namespace libcellml {
 
 using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
@@ -75,6 +77,7 @@ using ImportStepPtr = std::shared_ptr<ImportStep>;
 class ImportStep
 {
 public:
+    ModelPtr mDestinationModel;
     std::string mDestinationUrl;
     ModelPtr mModel;
     std::string mName;
@@ -83,7 +86,8 @@ public:
     std::string mType;
 
     ImportStep(const ModelPtr &model, const UnitsPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
-        : mDestinationUrl(destinationUrl)
+        : mDestinationModel(nullptr)
+        , mDestinationUrl(destinationUrl)
         , mModel(model)
         , mName(units->name())
         , mReferenceName()
@@ -91,10 +95,12 @@ public:
         , mType("units")
     {
         setReferenceName(units);
+        setDestinationModel(units);
     }
 
     ImportStep(const ModelPtr &model, const ComponentPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
-        : mDestinationUrl(destinationUrl)
+        : mDestinationModel(nullptr)
+        , mDestinationUrl(destinationUrl)
         , mModel(model)
         , mName(component->name())
         , mReferenceName()
@@ -102,6 +108,7 @@ public:
         , mType("component")
     {
         setReferenceName(component);
+        setDestinationModel(component);
     }
 
     void setReferenceName(const ImportedEntityPtr &importedEntity)
@@ -111,14 +118,16 @@ public:
         }
     }
 
-    bool isSemanticallyEquivalentInfoset(const ImportStepPtr& other)
+    void setDestinationModel(const ImportedEntityPtr &importedEntity)
     {
-        if (other->mSourceUrl == mDestinationUrl) {
-            return true;
-        } else if (other->mSourceUrl == "this") {
-            return mModel->equals(other->mModel);
+        if (importedEntity->isImport()) {
+            mDestinationModel = importedEntity->importSource()->model();
         }
-        return false;
+    }
+
+    bool compareModels(const ImportStepPtr &other)
+    {
+        return mModel->equals(other->mModel);
     }
 };
 

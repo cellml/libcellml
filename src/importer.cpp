@@ -367,11 +367,7 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importComponent->importSource());
     auto h = std::make_tuple(importComponent->name(), importComponent->importReference(), resolvingUrl);
     auto componentModel= owningModel(importComponent);
-//    auto s = std::make_tuple(componentModel, std::string("this"), resolvingUrl);
     auto s = std::make_shared<ImportStep>(componentModel, importComponent, modelUrl(componentModel), resolvingUrl);
-//    if (origModel != componentModel) {
-//        s->mSourceUrl = modelUrl(componentModel);
-//    }
     if (checkForImportCycles(importComponent->importSource(), "component", history, h, hh, s, "resolve")) {
         return false;
     }
@@ -440,11 +436,7 @@ bool Importer::ImporterImpl::fetchUnits(const ModelPtr &/*origModel*/, const Uni
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
     auto h = std::make_tuple(importUnits->name(), importUnits->importReference(), resolvingUrl);
     auto unitsModel= owningModel(importUnits);
-//    auto s = std::make_tuple(unitsModel, std::string("this"), resolvingUrl);
     auto s = std::make_shared<ImportStep>(unitsModel, importUnits, modelUrl(unitsModel), resolvingUrl);
-//    if (origModel != unitsModel) {
-//        s->mSourceUrl = modelUrl(unitsModel);
-//    }
     if (checkForImportCycles(importUnits->importSource(), "units", history, h, hh, s, "resolve")) {
         return false;
     }
