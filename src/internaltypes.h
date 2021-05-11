@@ -128,9 +128,6 @@ public:
 
 using History = std::vector<ImportStepPtr>; /**< Type definition for history.*/
 
-using ImportHistoryEntry = std::tuple<ModelPtr, std::string, std::string>; /**< Type definition for an import history entry.*/
-using ImportHistory = std::vector<ImportHistoryEntry>; /**< Type definition for import history.*/
-
 using Strings = std::vector<std::string>; /**< Type definition for strings.*/
 
 } // namespace libcellml
