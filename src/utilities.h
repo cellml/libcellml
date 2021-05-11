@@ -748,7 +748,6 @@ IndexStack indexStackOf(const ComponentPtr &component);
  *
  * @return The history entry.
  */
-//HistoryEntry createHistoryEntry(const UnitsPtr &units);
 ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsPtr &units);
 
 /**
@@ -760,7 +759,6 @@ ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsPtr &uni
  *
  * @return The history entry.
  */
-//HistoryEntry createHistoryEntry(const ComponentPtr &component);
 ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentPtr &component);
 
 std::string importeeModelUrl(const ImportTrack &importTrack, const std::string url);
@@ -772,18 +770,11 @@ bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s);
  *
  * Make a cyclic dependency issue.
  *
- * @param model The @ref Model the issue is associated with.
- * @param type The type, one of {"units", "component"};
  * @param history The history of the cyclic dependency.
  * @param action The action that made cyclic dependency, e.g. "resolve", "flatten".
  *
  * @return The issue.
  */
-IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
-                                   const std::string &type,
-                                   const History &history,
-                                   const std::string &action);
-
 IssuePtr makeIssueCyclicDependency2(const ImportTrack &history,
                                     const std::string &action);
 
