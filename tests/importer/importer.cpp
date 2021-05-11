@@ -1021,6 +1021,10 @@ TEST(Importer, isResolvedCircularImportUnits)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
 
+    // It is possible however difficult to make a circular import with units.
+    auto importModel = u->importSource()->model();
+    importModel->units("u2")->importSource()->model()->units("u3")->importSource()->model()->units("i_am_cyclic")->importSource()->setModel(importModel);
+
     EXPECT_FALSE(u->isResolved());
 }
 
@@ -1037,6 +1041,10 @@ TEST(Importer, isResolvedCircularImportComponent)
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
+
+    // It is possible however difficult to make a circular import with components.
+    auto importModel = c->importSource()->model();
+    importModel->component("c2")->importSource()->model()->component("c3")->importSource()->model()->component("i_am_cyclic")->importSource()->setModel(importModel);
 
     EXPECT_FALSE(c->isResolved());
 }

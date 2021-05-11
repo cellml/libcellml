@@ -2995,13 +2995,6 @@ TEST(Validator, circularImportReferencesComponent)
         " - component 'i_am_cyclic' specifies an import from 'this' to '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
         " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
         " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'.";
-//        " - component 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularImport_1.cellml' to '" + resourcePath("importer/") + "circularImport_2.cellml'.";
-//        " - component 'i_am_cyclic' references component 'c2' in '"
-//        + resourcePath("importer/") + "circularImport_2.cellml';\n"
-//                                      " - component 'c2' references component 'c3' in '"
-//        + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
-//                                      " - component 'c3' references component 'i_am_cyclic' in '"
-//        + resourcePath("importer/") + "circularImport_1.cellml'.";
     const std::string errorMessageValidator =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_cyclic' specifies an import from 'this' to 'circularImport_2.cellml';\n"
@@ -3387,4 +3380,27 @@ TEST(Validator, unitsErrorInImportedComponent)
     validator->validateModel(model1);
     EXPECT_EQ(size_t(1), validator->errorCount());
     EXPECT_EQ(errorMessage, validator->error(0)->description());
+}
+
+TEST(Validator, cImportThatValidatorReturnsFalsePositive)
+{
+    const std::string errorMessage = "incorrect";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
+    auto model = parser->parseModel(fileContents("importer/importing_bad_design_c_shape_import_hierarchy.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto result = importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_TRUE(result);
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+//    EXPECT_EQ(errorMessage, validator->issue(0)->description());
+
 }

@@ -100,8 +100,6 @@ void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr 
 void printStringStringMap(const StringStringMap &map);
 void printConnectionMap(const ConnectionMap &map);
 void printAst(const AnalyserEquationAstPtr &ast);
-void printHistory(const History &history);
-void printHistoryEntry(const HistoryEntry &historyEntry);
 void printImportTrack(const ImportTrack &history);
 void printImportStep(const ImportStepPtr &historyEntry);
 

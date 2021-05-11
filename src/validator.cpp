@@ -573,29 +573,13 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
     }
 }
 
-bool completeImportInformation(const ImportStepPtr &h)
-{
-    return !h->mName.empty() && !h->mSourceUrl.empty() && !h->mDestinationUrl.empty();
-}
-
-ImportStepPtr extractImportInformation(const ImportTrack &history)
-{
-    ImportStepPtr h = history.back();
-    auto i = history.size() - 1;
-    while (!completeImportInformation(h)) {
-        auto temp = history.at(--i);
-        h->mDestinationUrl = temp->mDestinationUrl;//std::make_tuple(std::get<0>(temp), std::get<0>(h), std::get<2>(temp));
-    }
-
-    return h;
-}
-
 void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const ImportTrack &history, const ComponentPtr &component, const UnitsPtr &units) const
 {
     const std::string skipThis = "Cyclic dependencies";
     const std::string notOriginMarker = "NOT ORIGIN: ";
     const std::string dataBoundaryMarker = "&";
     const std::string dataSeparator = ";";
+
     for (size_t i = initialErrorCount; i < mValidator->issueCount(); ++i) {
         auto issue = mValidator->issue(i);
         auto description = issue->description();
@@ -646,7 +630,7 @@ void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount,
                 issue->setDescription(os.str());
             } else {
                 // Get name, reference, and import source from history.
-                auto h = extractImportInformation(history);
+                auto h = history.back();
                 os << notOriginMarker << dataBoundaryMarker << h->mName << dataSeparator << h->mReferenceName << dataSeparator << h->mDestinationUrl << dataBoundaryMarker << description;
                 issue->setDescription(os.str());
             }
