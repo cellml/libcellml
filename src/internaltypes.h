@@ -68,14 +68,9 @@ using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type 
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
-using HistoryEntry = std::tuple<std::string, std::string, std::string>; /**< Type definition for a history entry.*/
-using History = std::vector<HistoryEntry>; /**< Type definition for history.*/
-
-
-//using ImportStep = std::tuple<std::string, std::string, std::string, std::string, std::string>;
-using ImportStep2 = std::tuple<ModelPtr, std::string, std::string>;
 class ImportStep;
 using ImportStepPtr = std::shared_ptr<ImportStep>;
+
 class ImportStep
 {
 public:
@@ -127,10 +122,6 @@ public:
         }
     }
 
-    bool compareModels(const ImportStepPtr &other)
-    {
-        return mModel->equals(other->mModel);
-    }
 };
 
 using ImportTrack = std::vector<ImportStepPtr>;
