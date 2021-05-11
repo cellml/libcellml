@@ -3382,7 +3382,7 @@ TEST(Validator, unitsErrorInImportedComponent)
     EXPECT_EQ(errorMessage, validator->error(0)->description());
 }
 
-TEST(Validator, cImportThatValidatorReturnsFalsePositive)
+TEST(Validator, cImportThatIllustratesBadPractice)
 {
     const std::string errorMessage = "incorrect";
 
