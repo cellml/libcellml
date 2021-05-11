@@ -1381,40 +1381,40 @@ bool areEqual(const std::string &str1, const std::string &str2)
     return str1 == str2;
 }
 
-void recordUrl(const ImportStepPtr &importStep, const ImportedEntityConstPtr &importedEntity)
+void recordUrl(const HistoryEpochPtr &historyEpoch, const ImportedEntityConstPtr &importedEntity)
 {
     if (importedEntity->isImport()) {
-        importStep->mDestinationUrl = importedEntity->importSource()->url();
+        historyEpoch->mDestinationUrl = importedEntity->importSource()->url();
     }
 }
 
-ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units)
+HistoryEpochPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units)
 {
-    auto h = std::make_shared<ImportStep>(owningModel(units), units, sourceUrl, "");
+    auto h = std::make_shared<HistoryEpoch>(owningModel(units), units, sourceUrl, "");
     recordUrl(h, units);
     return h;
 }
 
-ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component)
+HistoryEpochPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component)
 {
-    auto h = std::make_shared<ImportStep>(owningModel(component), component, sourceUrl, "");
+    auto h = std::make_shared<HistoryEpoch>(owningModel(component), component, sourceUrl, "");
     recordUrl(h, component);
     return h;
 }
 
-std::string importeeModelUrl(const History &importTrack, const std::string url)
+std::string importeeModelUrl(const History &history, const std::string url)
 {
-    for (auto i = importTrack.size(); i-- > 0; ) {
-        auto importStep = importTrack[i];
-        if (importStep->mDestinationUrl != url) {
-            return importStep->mDestinationUrl;
+    for (auto i = history.size(); i-- > 0; ) {
+        auto historyEpoch = history[i];
+        if (historyEpoch->mDestinationUrl != url) {
+            return historyEpoch->mDestinationUrl;
         }
     }
 
     return ORIGIN_MODEL_REF;
 }
 
-bool checkForImportCycles(const History &history, const ImportStepPtr &h)
+bool checkForImportCycles(const History &history, const HistoryEpochPtr &h)
 {
     for (size_t index = 0; index < history.size(); ++index) {
         auto entry = history.at(index);
@@ -1436,7 +1436,7 @@ IssuePtr makeIssueCyclicDependency(const History &history, const std::string &ac
     std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
                             + typeStringPrefix + origin->mType + " in the model '"
                             + model->name() + "'. The dependency loop is:\n";
-    ImportStepPtr h;
+    HistoryEpochPtr h;
     size_t i = 0;
     std::string msgHistory;
     while (i < history.size()) {

@@ -70,10 +70,10 @@ using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for sha
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
-class ImportStep; /**< Forward declaration of import step class. */
-using ImportStepPtr = std::shared_ptr<ImportStep>; /**< Type definition for shared import step pointer. */
+class HistoryEpoch; /**< Forward declaration of import step class. */
+using HistoryEpochPtr = std::shared_ptr<HistoryEpoch>; /**< Type definition for shared import step pointer. */
 
-class ImportStep
+class HistoryEpoch
 {
 public:
     ModelPtr mDestinationModel;
@@ -84,7 +84,7 @@ public:
     std::string mSourceUrl;
     std::string mType;
 
-    ImportStep(const ModelPtr &model, const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
+    HistoryEpoch(const ModelPtr &model, const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
         : mDestinationModel(nullptr)
         , mDestinationUrl(destinationUrl)
         , mModel(model)
@@ -97,7 +97,7 @@ public:
         setDestinationModel(units);
     }
 
-    ImportStep(const ModelPtr &model, const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
+    HistoryEpoch(const ModelPtr &model, const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
         : mDestinationModel(nullptr)
         , mDestinationUrl(destinationUrl)
         , mModel(model)
@@ -126,7 +126,7 @@ public:
 
 };
 
-using History = std::vector<ImportStepPtr>; /**< Type definition for history.*/
+using History = std::vector<HistoryEpochPtr>; /**< Type definition for history.*/
 
 using Strings = std::vector<std::string>; /**< Type definition for strings.*/
 

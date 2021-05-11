@@ -36,7 +36,7 @@ void printHistory(const History &history)
 
 }
 
-void printHistoryEpoch(const ImportStepPtr &historyEpoch)
+void printHistoryEpoch(const HistoryEpochPtr &historyEpoch)
 {
     Debug() << "'" << historyEpoch->mModel->name() << "' '" << historyEpoch->mName << "' '" << historyEpoch->mSourceUrl << "' -> '" << historyEpoch->mDestinationUrl << "'";
 }

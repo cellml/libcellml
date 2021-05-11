@@ -436,10 +436,10 @@ struct Validator::ValidatorImpl
     void handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const History &history, const ComponentPtr &component, const UnitsPtr &units) const;
 };
 
-bool checkForLocalCycles(const History &history, const ImportStepPtr &h)
+bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
 {
     return std::find_if(history.begin(), history.end(),
-                        [=](const ImportStepPtr &i) -> bool { return i->mName == h->mName; }) != history.end();
+                        [=](const HistoryEpochPtr &i) -> bool { return i->mName == h->mName; }) != history.end();
 }
 
 Validator::Validator()
