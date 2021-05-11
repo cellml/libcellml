@@ -140,7 +140,7 @@ struct Units::UnitsImpl
      */
     bool isBaseUnit(const std::string &name) const;
 
-    bool isBaseUnitWithHistory(ImportHistory &history) const;
+    bool isBaseUnitWithHistory(ImportTrack &history, const UnitsConstPtr &units) const;
 
     bool isResolvedWithHistory(ImportTrack &history, const UnitsConstPtr &units) const;
 
@@ -158,21 +158,21 @@ bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
     return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
 }
 
-bool Units::UnitsImpl::isBaseUnitWithHistory(ImportHistory &history) const
+bool Units::UnitsImpl::isBaseUnitWithHistory(ImportTrack &history, const UnitsConstPtr &units) const
 {
     if (mUnits->isImport()) {
         ImportSourcePtr importedSource = mUnits->importSource();
         if (importedSource != nullptr) {
             ModelPtr model = importedSource->model();
             if (model != nullptr) {
-                ImportHistoryEntry h = std::make_tuple(model, "units", mUnits->name());
-                if (std::find(history.begin(), history.end(), h) != history.end()) {
+                auto h = createImportStep(importeeModelUrl(history, mUnits->importSource()->url()), units);
+                if (checkForImportCycles(history, h)) {
                     return false;
                 }
                 history.push_back(h);
                 if (model->hasUnits(mUnits->importReference())) {
-                    auto unit = model->units(mUnits->importReference());
-                    return unit->mPimpl->isBaseUnitWithHistory(history); // Call isBaseUnit recursively until unit is no longer an import
+                    auto importedUnits = model->units(mUnits->importReference());
+                    return importedUnits->mPimpl->isBaseUnitWithHistory(history, importedUnits); // Call isBaseUnit recursively until unit is no longer an import
                 }
             }
         }
@@ -330,8 +330,8 @@ UnitsPtr Units::create(const std::string &name) noexcept
 
 bool Units::isBaseUnit() const
 {
-    ImportHistory history;
-    return mPimpl->isBaseUnitWithHistory(history);
+    ImportTrack history;
+    return mPimpl->isBaseUnitWithHistory(history, shared_from_this());
 }
 
 bool Units::doEquals(const EntityPtr &other) const
