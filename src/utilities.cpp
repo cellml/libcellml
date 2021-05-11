@@ -1388,7 +1388,7 @@ void recordUrl(const ImportStepPtr &importStep, const ImportedEntityConstPtr &im
     }
 }
 
-ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsPtr &units)
+ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units)
 {
     auto h = std::make_shared<ImportStep>(owningModel(units), units, sourceUrl, "");
     recordUrl(h, units);

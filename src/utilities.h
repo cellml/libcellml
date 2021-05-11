@@ -748,7 +748,7 @@ IndexStack indexStackOf(const ComponentPtr &component);
  *
  * @return The history entry.
  */
-ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsPtr &units);
+ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units);
 
 /**
  * @brief Create a history entry for a @ref Component.
