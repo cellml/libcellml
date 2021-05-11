@@ -704,7 +704,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                 auto h = createImportStep(importeeModelUrl(history, component->importSource()->url()), component);
                 if (checkForImportCycles(history, h)) {
                     history.push_back(h);
-                    auto issue = makeIssueCyclicDependency2(history, "resolve"); //modelsVisited.front(), "component", history, "resolve");
+                    auto issue = makeIssueCyclicDependency(history, "resolve");
                     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
                     issue->setImportSource(component->importSource());
                     mValidator->addIssue(issue);
@@ -887,7 +887,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, ImportTrack 
 
                 if (checkForImportCycles(history, h)) {
                     history.push_back(h);
-                    auto issue = makeIssueCyclicDependency2(history, "resolve");
+                    auto issue = makeIssueCyclicDependency(history, "resolve");
                     issue->setUnits(units);
                     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                     mValidator->addIssue(issue);

@@ -1427,8 +1427,7 @@ bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s)
     return false;
 }
 
-IssuePtr makeIssueCyclicDependency2(const ImportTrack &history,
-                                    const std::string &action)
+IssuePtr makeIssueCyclicDependency(const ImportTrack &history, const std::string &action)
 {
     auto origin = history.front();
     auto model = origin->mModel;

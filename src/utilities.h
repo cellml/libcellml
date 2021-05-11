@@ -775,8 +775,7 @@ bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s);
  *
  * @return The issue.
  */
-IssuePtr makeIssueCyclicDependency2(const ImportTrack &history,
-                                    const std::string &action);
+IssuePtr makeIssueCyclicDependency(const ImportTrack &history, const std::string &action);
 
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);

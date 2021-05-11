@@ -319,7 +319,7 @@ bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importS
    if (libcellml::checkForImportCycles(hh, s)) {
         auto cyclicHistory = hh;
         cyclicHistory.push_back(s);
-        auto issue = makeIssueCyclicDependency2(cyclicHistory, action);
+        auto issue = makeIssueCyclicDependency(cyclicHistory, action);
         issue->setImportSource(importSource);
         mImporter->addIssue(issue);
         return true;
