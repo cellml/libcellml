@@ -1420,7 +1420,7 @@ bool checkForImportCycles(const ImportTrack &history, const ImportStepPtr &h)
         auto entry = history.at(index);
         if (h->mDestinationUrl == entry->mSourceUrl) {
             return true;
-        } else if (entry->mSourceUrl == ORIGIN_MODEL_REF && entry->mModel->equals(h->mDestinationModel)) {
+        } else if ((entry->mSourceUrl == ORIGIN_MODEL_REF) && (entry->mModel != nullptr) && (entry->mModel->equals(h->mDestinationModel))) {
             return true;
         }
     }
