@@ -140,9 +140,9 @@ struct Units::UnitsImpl
      */
     bool isBaseUnit(const std::string &name) const;
 
-    bool isBaseUnitWithHistory(ImportTrack &history, const UnitsConstPtr &units) const;
+    bool isBaseUnitWithHistory(History &history, const UnitsConstPtr &units) const;
 
-    bool isResolvedWithHistory(ImportTrack &history, const UnitsConstPtr &units) const;
+    bool isResolvedWithHistory(History &history, const UnitsConstPtr &units) const;
 
     Units *mUnits = nullptr;
 };
@@ -158,7 +158,7 @@ bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
     return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
 }
 
-bool Units::UnitsImpl::isBaseUnitWithHistory(ImportTrack &history, const UnitsConstPtr &units) const
+bool Units::UnitsImpl::isBaseUnitWithHistory(History &history, const UnitsConstPtr &units) const
 {
     if (mUnits->isImport()) {
         ImportSourcePtr importedSource = mUnits->importSource();
@@ -187,7 +187,7 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(ImportTrack &history, const UnitsCo
     return (mUnits->unitCount() == 0) && standardUnitCheck;
 }
 
-bool Units::UnitsImpl::isResolvedWithHistory(ImportTrack &history, const UnitsConstPtr &units) const
+bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstPtr &units) const
 {
     bool resolved = true;
     if (mUnits->isImport()) {
@@ -330,7 +330,7 @@ UnitsPtr Units::create(const std::string &name) noexcept
 
 bool Units::isBaseUnit() const
 {
-    ImportTrack history;
+    History history;
     return mPimpl->isBaseUnitWithHistory(history, shared_from_this());
 }
 
@@ -813,7 +813,7 @@ UnitsPtr Units::clone() const
 
 bool Units::doIsResolved() const
 {
-    ImportTrack history;
+    History history;
     return mPimpl->isResolvedWithHistory(history, shared_from_this());
 }
 

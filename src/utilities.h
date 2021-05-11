@@ -761,9 +761,9 @@ ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr
  */
 ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component);
 
-std::string importeeModelUrl(const ImportTrack &importTrack, const std::string url);
+std::string importeeModelUrl(const History &importTrack, const std::string url);
 
-bool checkForImportCycles(const ImportTrack &history, const ImportStepPtr &h);
+bool checkForImportCycles(const History &history, const ImportStepPtr &h);
 
 /**
  * @brief Make a cyclic dependency issue.
@@ -775,7 +775,7 @@ bool checkForImportCycles(const ImportTrack &history, const ImportStepPtr &h);
  *
  * @return The issue.
  */
-IssuePtr makeIssueCyclicDependency(const ImportTrack &history, const std::string &action);
+IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action);
 
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);

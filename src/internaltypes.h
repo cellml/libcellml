@@ -126,7 +126,7 @@ public:
 
 };
 
-using ImportTrack = std::vector<ImportStepPtr>; /**< Type definition for import track.*/
+using History = std::vector<ImportStepPtr>; /**< Type definition for history.*/
 
 using ImportHistoryEntry = std::tuple<ModelPtr, std::string, std::string>; /**< Type definition for an import history entry.*/
 using ImportHistory = std::vector<ImportHistoryEntry>; /**< Type definition for import history.*/

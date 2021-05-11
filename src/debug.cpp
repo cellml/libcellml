@@ -28,7 +28,7 @@ limitations under the License.
 
 namespace libcellml {
 
-void printHistory(const ImportTrack &history)
+void printHistory(const History &history)
 {
     for (auto h : history) {
         printHistoryEpoch(h);

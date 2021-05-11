@@ -63,14 +63,14 @@ struct Importer::ImporterImpl
     std::string resolvingUrl(const ImportSourcePtr &importSource) const;
     std::string modelUrl(const ModelPtr &model) const;
 
-    bool fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, ImportTrack &history);
+    bool fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, History &history);
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchImportSource(const ImportSourcePtr &importSource, const std::string &baseFile);
-    bool fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, ImportTrack &history);
+    bool fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, History &history);
 
-    bool checkForImportCycles(const ImportSourcePtr &importSource, const ImportTrack &history, const ImportStepPtr &h, const std::string &action) const;
-    bool checkUnitsForCycles(const UnitsPtr &units, ImportTrack &history) const;
-    bool checkComponentForCycles(const ComponentPtr &component, ImportTrack &history);
+    bool checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const ImportStepPtr &h, const std::string &action) const;
+    bool checkUnitsForCycles(const UnitsPtr &units, History &history) const;
+    bool checkComponentForCycles(const ComponentPtr &component, History &history);
 
     bool hasImportCycles(const ModelPtr &model);
 };
@@ -118,7 +118,7 @@ std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSo
     return modelUrl(model);
 }
 
-bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, ImportTrack &history) const
+bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History &history) const
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
@@ -178,7 +178,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, ImportTr
     return checkUnitsForCycles(importedUnits, history);
 }
 
-bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &component, ImportTrack &history)
+bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &component, History &history)
 {
     std::string resolvingUrl = ImporterImpl::resolvingUrl(component->importSource());
     auto h = std::make_tuple(component->name(), component->importReference(), resolvingUrl);
@@ -224,7 +224,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
 
 bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
 {
-    ImportTrack history;
+    History history;
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
@@ -299,7 +299,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
     return true;
 }
 
-bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const ImportTrack &history, const ImportStepPtr &h, const std::string &action) const
+bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const ImportStepPtr &h, const std::string &action) const
 {
    if (libcellml::checkForImportCycles(history, h)) {
         auto cyclicHistory = history;
@@ -325,7 +325,7 @@ bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSour
     return true;
 }
 
-bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, ImportTrack &history)
+bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, History &history)
 {
     // Given the importComponent, check whether it has been resolved previously.  If so, return.
     // If not, check for model, and parse/instantiate/add to library if needed.
@@ -407,7 +407,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     return true;
 }
 
-bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, ImportTrack &history)
+bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, History &history)
 {
     if (!importUnits->isImport()) {
         return true;
@@ -479,7 +479,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
 bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 {
     bool status = true;
-    ImportTrack history;
+    History history;
 
     clearImports(model);
 

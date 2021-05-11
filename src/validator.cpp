@@ -159,7 +159,7 @@ struct Validator::ValidatorImpl
      * @param history The history of visited components.
      * @param modelsVisited The list of visited models.
      */
-    void validateComponent(const ComponentPtr &component, ImportTrack &history, std::vector<ModelPtr> &modelsVisited) const;
+    void validateComponent(const ComponentPtr &component, History &history, std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the component tree of the given @p component.
@@ -173,7 +173,7 @@ struct Validator::ValidatorImpl
      * @param history The history of visited components.
      * @param modelsVisited The list of visited models.
      */
-    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, ImportTrack &history, std::vector<ModelPtr> &modelsVisited);
+    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -185,7 +185,7 @@ struct Validator::ValidatorImpl
      * @param history The history of units visited.
      * @param modelsVisited The list of visited models.
      */
-    void validateUnits(const UnitsPtr &units, ImportTrack &history, std::vector<ModelPtr> modelsVisited) const;
+    void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> modelsVisited) const;
 
     /**
      * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
@@ -239,7 +239,7 @@ struct Validator::ValidatorImpl
      * @param history The history of units visited.
      * @param modelsVisited The list of visited models.
      */
-    void validateUnitsUnitsItem(size_t index, const UnitsPtr &units, ImportTrack &history, const std::vector<ModelPtr> &modelsVisited) const;
+    void validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the @p variable using the CellML 2.0 Specification.
@@ -433,10 +433,10 @@ struct Validator::ValidatorImpl
      * @param component The originating component if type is @c Component.
      * @param units The originating units if type is @c Units.
      */
-    void handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const ImportTrack &history, const ComponentPtr &component, const UnitsPtr &units) const;
+    void handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const History &history, const ComponentPtr &component, const UnitsPtr &units) const;
 };
 
-bool checkForLocalCycles(const ImportTrack &history, const ImportStepPtr &h)
+bool checkForLocalCycles(const History &history, const ImportStepPtr &h)
 {
     return std::find_if(history.begin(), history.end(),
                         [=](const ImportStepPtr &i) -> bool { return i->mName == h->mName; }) != history.end();
@@ -489,7 +489,7 @@ void Validator::validateModel(const ModelPtr &model)
         // Check for components in this model.
         if (model->componentCount() > 0) {
             std::vector<std::string> componentNames;
-            ImportTrack history;
+            History history;
             for (size_t i = 0; i < model->componentCount(); ++i) {
                 history.clear();
                 ComponentPtr component = model->component(i);
@@ -498,7 +498,7 @@ void Validator::validateModel(const ModelPtr &model)
         }
         // Check for units in this model.
         if (model->unitsCount() > 0) {
-            ImportTrack history;
+            History history;
             for (size_t i = 0; i < model->unitsCount(); ++i) {
                 history.clear();
                 UnitsPtr units = model->units(i);
@@ -529,7 +529,7 @@ void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const s
     }
 }
 
-void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, ImportTrack &history, std::vector<ModelPtr> &modelsVisited)
+void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
 {
     validateUniqueName(model, component->name(), componentNames);
     for (size_t i = 0; i < component->componentCount(); ++i) {
@@ -573,7 +573,7 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
     }
 }
 
-void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const ImportTrack &history, const ComponentPtr &component, const UnitsPtr &units) const
+void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const History &history, const ComponentPtr &component, const UnitsPtr &units) const
 {
     const std::string skipThis = "Cyclic dependencies";
     const std::string notOriginMarker = "NOT ORIGIN: ";
@@ -638,7 +638,7 @@ void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount,
     }
 }
 
-void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, ImportTrack &history, std::vector<ModelPtr> &modelsVisited) const
+void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, History &history, std::vector<ModelPtr> &modelsVisited) const
 {
     size_t initialIssueCount = mValidator->issueCount();
     bool isOriginatingModel = modelsVisited.size() == 1;
@@ -776,7 +776,7 @@ bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &des
     return false;
 }
 
-void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, ImportTrack &history, std::vector<ModelPtr> modelsVisited) const
+void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> modelsVisited) const
 {
     auto h = createImportStep(ORIGIN_MODEL_REF, units);
     if (checkForLocalCycles(history, h)) {
@@ -947,7 +947,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, ImportTrack 
     handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Units", unitsName, history, nullptr, units);
 }
 
-void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsPtr &units, ImportTrack &history, const std::vector<ModelPtr> &modelsVisited) const
+void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const
 {
     // Validate the unit at the given index.
     std::string reference;

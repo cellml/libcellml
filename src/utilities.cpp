@@ -1402,7 +1402,7 @@ ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentCons
     return h;
 }
 
-std::string importeeModelUrl(const ImportTrack &importTrack, const std::string url)
+std::string importeeModelUrl(const History &importTrack, const std::string url)
 {
     for (auto i = importTrack.size(); i-- > 0; ) {
         auto importStep = importTrack[i];
@@ -1414,7 +1414,7 @@ std::string importeeModelUrl(const ImportTrack &importTrack, const std::string u
     return ORIGIN_MODEL_REF;
 }
 
-bool checkForImportCycles(const ImportTrack &history, const ImportStepPtr &h)
+bool checkForImportCycles(const History &history, const ImportStepPtr &h)
 {
     for (size_t index = 0; index < history.size(); ++index) {
         auto entry = history.at(index);
@@ -1427,7 +1427,7 @@ bool checkForImportCycles(const ImportTrack &history, const ImportStepPtr &h)
     return false;
 }
 
-IssuePtr makeIssueCyclicDependency(const ImportTrack &history, const std::string &action)
+IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action)
 {
     auto origin = history.front();
     auto model = origin->mModel;
