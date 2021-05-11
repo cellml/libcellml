@@ -40,6 +40,8 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 double convertToDouble(const std::string &in, bool *ok)
@@ -1448,10 +1450,35 @@ IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
     return issue;
 }
 
+bool modelExists(const ImportTrack &hh, const ImportStepPtr &s)
+{
+    Debug() << "Checking to see if this model exists already!!!";
+    bool value = std::find_if(hh.begin(), hh.end(),
+                              [=](const ImportStepPtr &i) -> bool { bool val = s->compareModels(i);Debug() << "Checking: " << s->mModel->name() << " 0 " << i->mModel->name() << " - " << val;return val;  }) != hh.end();
+    Debug() << "found: " << value;
+    return value;
+}
 bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s)
 {
-    return std::find_if(hh.begin(), hh.end(),
-                        [=](const ImportStepPtr &i) -> bool { return s->isSemanticallyEquivalentInfoset(i); }) != hh.end();
+    Debug() << "========== checkForImportCycles";
+    printImportTrack(hh);
+    Debug() << "-";
+    printImportStep(s);
+    Debug() << "=";
+    for (size_t index = 0; index < hh.size(); ++index) {
+        auto entry = hh.at(index);
+        Debug() << s->mDestinationUrl << " - " << entry->mSourceUrl;
+        if (s->mDestinationUrl == entry->mSourceUrl) {
+            return true;
+        } else if (entry->mSourceUrl == "this" && entry->mModel->equals(s->mDestinationModel)) {
+            Debug() << " source url is this.";
+            return true;
+        }
+    }
+    Debug() << "out";
+    return false;
+//    return std::find_if(hh.begin(), hh.end(),
+//                        [=](const ImportStepPtr &i) -> bool { return s->isSemanticallyEquivalentInfoset(i); }) != hh.end();
 }
 
 IssuePtr makeIssueCyclicDependency2(const ImportTrack &history,

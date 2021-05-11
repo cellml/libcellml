@@ -702,7 +702,8 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
             auto importedComponent = importModel->component(componentRef);
             if (importedComponent != nullptr) {
                 auto h = createImportStep(importeeModelUrl(history, component->importSource()->url()), component);
-                if (checkForLocalCycles(history, h)) {
+                if (checkForImportCycles(history, h)) {
+                    history.push_back(h);
                     auto issue = makeIssueCyclicDependency2(history, "resolve"); //modelsVisited.front(), "component", history, "resolve");
                     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
                     issue->setImportSource(component->importSource());
@@ -712,8 +713,8 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                     modelsVisited.push_back(importModel);
                     validateComponent(importedComponent, history, modelsVisited);
                     modelsVisited.pop_back();
-                    history.pop_back();
                 }
+                history.pop_back();
             } else {
                 auto issue = Issue::create();
                 issue->setDescription(descriptionPrefix + "'" + componentName + "' refers to component '" + componentRef + "' which does not appear in '" + component->importSource()->url() + "'.");

@@ -58,9 +58,8 @@ TEST(Importer, warningCircularImportReferencesComponent)
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_cyclic' specifies an import from 'this' to '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
-        " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
-        " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'; and\n"
-        " - component 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularImport_1.cellml' to '" + resourcePath("importer/") + "circularImport_2.cellml'.";
+        " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
+        " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
@@ -78,9 +77,8 @@ TEST(Importer, warningCircularImportReferencesUnits)
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
         " - units 'i_am_cyclic' specifies an import from 'this' to '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
-        " - units 'u2' specifies an import from '" + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml';\n"
-        " - units 'u3' specifies an import from '" + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'; and\n"
-        " - units 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularUnits_1.cellml' to '" + resourcePath("importer/") + "circularUnits_2.cellml'.";
+        " - units 'u2' specifies an import from '" + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml'; and\n"
+        " - units 'u3' specifies an import from '" + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
