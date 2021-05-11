@@ -1414,40 +1414,6 @@ std::string importeeModelUrl(const ImportTrack &importTrack, const std::string u
     return "this";
 }
 
-IssuePtr makeIssueCyclicDependency(const ModelPtr &model,
-                                   const std::string &type,
-                                   const History &history,
-                                   const std::string &action)
-{
-    bool isComponent = type == "component";
-    std::string typeString = isComponent ? "component" : "units";
-    std::string typeStringPrefix = isComponent ? "a " : "";
-    std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
-                            + typeStringPrefix + typeString + " in the model '"
-                            + model->name() + "'. The dependency loop is:\n";
-    HistoryEntry h;
-    size_t i = 0;
-    std::string msgHistory;
-    while (i < history.size()) {
-        h = history[i];
-        msgHistory += " - " + typeString + " '" + std::get<0>(h) + "' references " + typeString + " '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'";
-        if (i == history.size() - 2) {
-            msgHistory += "; and\n";
-        } else if (i == history.size() - 1) {
-            msgHistory += ".";
-        } else {
-            msgHistory += ";\n";
-        }
-        ++i;
-    }
-
-    auto issue = Issue::create();
-    issue->setDescription(msgHeader + msgHistory);
-    issue->setLevel(Issue::Level::ERROR);
-    issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
-    return issue;
-}
-
 bool checkForImportCycles(const ImportTrack &hh, const ImportStepPtr &s)
 {
     for (size_t index = 0; index < hh.size(); ++index) {
