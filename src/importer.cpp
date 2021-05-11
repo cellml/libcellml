@@ -105,7 +105,7 @@ std::string Importer::ImporterImpl::modelUrl(const ModelPtr &model) const
         }
     }
 
-    return std::string("this");
+    return std::string(ORIGIN_MODEL_REF);
 }
 
 std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSource) const
@@ -147,11 +147,6 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &/*origModel*/, 
     auto h = std::make_tuple(units->name(), units->importReference(), resolvingUrl);
     auto unitsModel= owningModel(units);
     auto s = std::make_shared<ImportStep>(unitsModel, units, modelUrl(unitsModel), resolvingUrl);
-//    auto s = std::make_tuple(unitsModel, std::string("this"), resolvingUrl);
-//    if (origModel != unitsModel) {
-//        s->mSourceUrl = modelUrl(unitsModel);
-//        std::get<1>(s) = modelUrl(unitsModel);
-//    }
 
     if (checkForImportCycles(units->importSource(), "units", history, h, hh, s, "flatten")) {
         return true;
@@ -190,11 +185,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ModelPtr &/*origModel
     std::string resolvingUrl = ImporterImpl::resolvingUrl(component->importSource());
     auto h = std::make_tuple(component->name(), component->importReference(), resolvingUrl);
     auto componentModel = owningModel(component);
-//    auto s = std::make_tuple(componentModel, std::string("this"), resolvingUrl);
     auto s = std::make_shared<ImportStep>(componentModel, component, modelUrl(componentModel), resolvingUrl);
-//    if (origModel != componentModel) {
-//        s->mSourceUrl = modelUrl(componentModel);
-//    }
 
     if (checkForImportCycles(component->importSource(), "component", history, h, hh, s, "flatten")) {
         return true;
