@@ -748,7 +748,7 @@ IndexStack indexStackOf(const ComponentPtr &component);
  *
  * @return The history entry.
  */
-ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units);
+HistoryEpochPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units);
 
 /**
  * @brief Create a history entry for a @ref Component.
@@ -759,11 +759,11 @@ ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr
  *
  * @return The history entry.
  */
-ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component);
+HistoryEpochPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component);
 
-std::string importeeModelUrl(const History &importTrack, const std::string url);
+std::string importeeModelUrl(const History &history, const std::string url);
 
-bool checkForImportCycles(const History &history, const ImportStepPtr &h);
+bool checkForImportCycles(const History &history, const HistoryEpochPtr &h);
 
 /**
  * @brief Make a cyclic dependency issue.

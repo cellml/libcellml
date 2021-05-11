@@ -68,7 +68,7 @@ struct Importer::ImporterImpl
     bool fetchImportSource(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, History &history);
 
-    bool checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const ImportStepPtr &h, const std::string &action) const;
+    bool checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action) const;
     bool checkUnitsForCycles(const UnitsPtr &units, History &history) const;
     bool checkComponentForCycles(const ComponentPtr &component, History &history);
 
@@ -145,7 +145,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(units->importSource());
     auto h = std::make_tuple(units->name(), units->importReference(), resolvingUrl);
     auto unitsModel= owningModel(units);
-    auto s = std::make_shared<ImportStep>(unitsModel, units, modelUrl(unitsModel), resolvingUrl);
+    auto s = std::make_shared<HistoryEpoch>(unitsModel, units, modelUrl(unitsModel), resolvingUrl);
 
     if (checkForImportCycles(units->importSource(), history, s, "flatten")) {
         return true;
@@ -183,7 +183,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
     std::string resolvingUrl = ImporterImpl::resolvingUrl(component->importSource());
     auto h = std::make_tuple(component->name(), component->importReference(), resolvingUrl);
     auto componentModel = owningModel(component);
-    auto s = std::make_shared<ImportStep>(componentModel, component, modelUrl(componentModel), resolvingUrl);
+    auto s = std::make_shared<HistoryEpoch>(componentModel, component, modelUrl(componentModel), resolvingUrl);
 
     if (checkForImportCycles(component->importSource(), history, s, "flatten")) {
         return true;
@@ -299,7 +299,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
     return true;
 }
 
-bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const ImportStepPtr &h, const std::string &action) const
+bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action) const
 {
    if (libcellml::checkForImportCycles(history, h)) {
         auto cyclicHistory = history;
@@ -352,7 +352,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importComponent->importSource());
     auto h = std::make_tuple(importComponent->name(), importComponent->importReference(), resolvingUrl);
     auto componentModel= owningModel(importComponent);
-    auto s = std::make_shared<ImportStep>(componentModel, importComponent, modelUrl(componentModel), resolvingUrl);
+    auto s = std::make_shared<HistoryEpoch>(componentModel, importComponent, modelUrl(componentModel), resolvingUrl);
     if (checkForImportCycles(importComponent->importSource(), history, s, "resolve")) {
         return false;
     }
@@ -420,7 +420,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
     auto h = std::make_tuple(importUnits->name(), importUnits->importReference(), resolvingUrl);
     auto unitsModel= owningModel(importUnits);
-    auto s = std::make_shared<ImportStep>(unitsModel, importUnits, modelUrl(unitsModel), resolvingUrl);
+    auto s = std::make_shared<HistoryEpoch>(unitsModel, importUnits, modelUrl(unitsModel), resolvingUrl);
     if (checkForImportCycles(importUnits->importSource(), history, s, "resolve")) {
         return false;
     }
