@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#"
+  xmlns:cellml="http://www.cellml.org/cellml/2.0#"
+  xmlns:xlink="http://www.w3.org/1999/xlink" name="component_library">
+  <component name="component_in_component_library" />
+</model>

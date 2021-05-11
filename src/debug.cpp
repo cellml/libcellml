@@ -28,17 +28,17 @@ limitations under the License.
 
 namespace libcellml {
 
-void printImportTrack(const ImportTrack &history)
+void printHistory(const ImportTrack &history)
 {
-    for (auto tt : history) {
-        printImportStep(tt);
+    for (auto h : history) {
+        printHistoryEpoch(h);
     }
 
 }
 
-void printImportStep(const ImportStepPtr &historyEntry)
+void printHistoryEpoch(const ImportStepPtr &historyEpoch)
 {
-    Debug() << "'" << historyEntry->mModel->name() << "' '" << historyEntry->mName << "' '" << historyEntry->mSourceUrl << "' -> '" << historyEntry->mDestinationUrl << "'";
+    Debug() << "'" << historyEpoch->mModel->name() << "' '" << historyEpoch->mName << "' '" << historyEpoch->mSourceUrl << "' -> '" << historyEpoch->mDestinationUrl << "'";
 }
 
 void printStack(const IndexStack &stack)
