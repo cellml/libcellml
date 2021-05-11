@@ -66,11 +66,12 @@ using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Typ
 using ImportedEntityConstPtr = std::shared_ptr<const ImportedEntity>; /**< Type definition for shared imported entity const pointer. */
 using ModelConstPtr = std::shared_ptr<const Model>; /**< Type definition for shared model const pointer. */
 using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type definition for shared parented entity const pointer. */
+using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for shared units const pointer. */
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
-class ImportStep;
-using ImportStepPtr = std::shared_ptr<ImportStep>;
+class ImportStep; /**< Forward declaration of import step class. */
+using ImportStepPtr = std::shared_ptr<ImportStep>; /**< Type definition for shared import step pointer. */
 
 class ImportStep
 {
@@ -83,7 +84,7 @@ public:
     std::string mSourceUrl;
     std::string mType;
 
-    ImportStep(const ModelPtr &model, const UnitsPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
+    ImportStep(const ModelPtr &model, const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
         : mDestinationModel(nullptr)
         , mDestinationUrl(destinationUrl)
         , mModel(model)
@@ -125,7 +126,7 @@ public:
 
 };
 
-using ImportTrack = std::vector<ImportStepPtr>;
+using ImportTrack = std::vector<ImportStepPtr>; /**< Type definition for import track.*/
 
 using ImportHistoryEntry = std::tuple<ModelPtr, std::string, std::string>; /**< Type definition for an import history entry.*/
 using ImportHistory = std::vector<ImportHistoryEntry>; /**< Type definition for import history.*/

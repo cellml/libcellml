@@ -142,7 +142,7 @@ struct Units::UnitsImpl
 
     bool isBaseUnitWithHistory(ImportHistory &history) const;
 
-    bool isResolvedWithHistory(ImportHistory &history) const;
+    bool isResolvedWithHistory(ImportTrack &history, const UnitsConstPtr &units) const;
 
     Units *mUnits = nullptr;
 };
@@ -187,7 +187,7 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(ImportHistory &history) const
     return (mUnits->unitCount() == 0) && standardUnitCheck;
 }
 
-bool Units::UnitsImpl::isResolvedWithHistory(ImportHistory &history) const
+bool Units::UnitsImpl::isResolvedWithHistory(ImportTrack &history, const UnitsConstPtr &units) const
 {
     bool resolved = true;
     if (mUnits->isImport()) {
@@ -199,12 +199,12 @@ bool Units::UnitsImpl::isResolvedWithHistory(ImportHistory &history) const
             if (importedUnits == nullptr) {
                 resolved = false;
             } else {
-                ImportHistoryEntry h = std::make_tuple(model, "units", mUnits->name());
-                if (std::find(history.begin(), history.end(), h) != history.end()) {
+                auto h = createImportStep(importeeModelUrl(history, mUnits->importSource()->url()), units);
+                if (checkForImportCycles(history, h)) {
                     resolved = false;
                 } else if (importedUnits->isImport()) {
                     history.push_back(h);
-                    resolved = importedUnits->mPimpl->isResolvedWithHistory(history);
+                    resolved = importedUnits->mPimpl->isResolvedWithHistory(history, importedUnits);
                 } else {
                     for (size_t u = 0; (u < importedUnits->unitCount()) && resolved; ++u) {
                         std::string reference;
@@ -221,7 +221,7 @@ bool Units::UnitsImpl::isResolvedWithHistory(ImportHistory &history) const
                             resolved = false;
                         } else {
                             history.push_back(h);
-                            resolved = childUnits->mPimpl->isResolvedWithHistory(history);
+                            resolved = childUnits->mPimpl->isResolvedWithHistory(history, childUnits);
                         }
                     }
                 }
@@ -813,8 +813,8 @@ UnitsPtr Units::clone() const
 
 bool Units::doIsResolved() const
 {
-    ImportHistory history;
-    return mPimpl->isResolvedWithHistory(history);
+    ImportTrack history;
+    return mPimpl->isResolvedWithHistory(history, shared_from_this());
 }
 
 } // namespace libcellml
