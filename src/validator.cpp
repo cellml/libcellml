@@ -794,7 +794,7 @@ bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &des
 
 void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, ImportTrack &history, std::vector<ModelPtr> modelsVisited) const
 {
-    auto h = createImportStep("this", units);
+    auto h = createImportStep(ORIGIN_MODEL_REF, units);
     if (checkForLocalCycles(history, h)) {
         history.push_back(h);
         std::string des;
