@@ -53,7 +53,7 @@ struct Component::ComponentImpl
     bool equalVariables(const ComponentPtr &other) const;
     bool equalResets(const ComponentPtr &other) const;
 
-    bool isResolvedWithHistory(ImportHistory &history) const;
+    bool isResolvedWithHistory(ImportTrack &history, const ComponentConstPtr &component) const;
 };
 
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
@@ -121,7 +121,7 @@ ComponentPtr Component::create(const std::string &name) noexcept
     return std::shared_ptr<Component> {new Component {name}};
 }
 
-bool Component::ComponentImpl::isResolvedWithHistory(ImportHistory &history) const
+bool Component::ComponentImpl::isResolvedWithHistory(ImportTrack &history, const ComponentConstPtr &component) const
 {
     bool resolved = true;
     if (mComponent->isImport()) {
@@ -133,18 +133,19 @@ bool Component::ComponentImpl::isResolvedWithHistory(ImportHistory &history) con
             if (importedComponent == nullptr) {
                 resolved = false;
             } else {
-                ImportHistoryEntry h = std::make_tuple(model, "component", mComponent->name());
-                if (std::find(history.begin(), history.end(), h) != history.end()) {
+                auto h = createImportStep(importeeModelUrl(history, mComponent->importSource()->url()), component);
+                if (checkForImportCycles(history, h)) {
                     resolved = false;
                 } else {
                     history.push_back(h);
-                    resolved = importedComponent->mPimpl->isResolvedWithHistory(history);
+                    resolved = importedComponent->mPimpl->isResolvedWithHistory(history, importedComponent);
                 }
             }
         }
     }
     for (size_t i = 0; (i < mComponent->componentCount()) && resolved; ++i) {
-        resolved = mComponent->component(i)->mPimpl->isResolvedWithHistory(history);
+        auto currentComponent = mComponent->component(i);
+        resolved = currentComponent->mPimpl->isResolvedWithHistory(history, currentComponent);
     }
 
     return resolved;
@@ -456,8 +457,8 @@ bool Component::requiresImports()
 
 bool Component::doIsResolved() const
 {
-    ImportHistory history;
-    return mPimpl->isResolvedWithHistory(history);
+    ImportTrack history;
+    return mPimpl->isResolvedWithHistory(history, shared_from_this());
 }
 
 bool Component::doEquals(const EntityPtr &other) const

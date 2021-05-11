@@ -1381,7 +1381,7 @@ bool areEqual(const std::string &str1, const std::string &str2)
     return str1 == str2;
 }
 
-void recordUrl(const ImportStepPtr &importStep, const ImportedEntityPtr &importedEntity)
+void recordUrl(const ImportStepPtr &importStep, const ImportedEntityConstPtr &importedEntity)
 {
     if (importedEntity->isImport()) {
         importStep->mDestinationUrl = importedEntity->importSource()->url();
@@ -1395,7 +1395,7 @@ ImportStepPtr createImportStep(const std::string &sourceUrl, const UnitsPtr &uni
     return h;
 }
 
-ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentPtr &component)
+ImportStepPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component)
 {
     auto h = std::make_shared<ImportStep>(owningModel(component), component, sourceUrl, "");
     recordUrl(h, component);
