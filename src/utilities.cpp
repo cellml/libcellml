@@ -1390,16 +1390,26 @@ void recordUrl(const HistoryEpochPtr &historyEpoch, const ImportedEntityConstPtr
 
 HistoryEpochPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units)
 {
-    auto h = std::make_shared<HistoryEpoch>(owningModel(units), units, sourceUrl, "");
+    auto h = std::make_shared<HistoryEpoch>(units, sourceUrl, "");
     recordUrl(h, units);
     return h;
 }
 
+HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
+{
+    return std::make_shared<HistoryEpoch>(units, sourceUrl, destinationUrl);
+}
+
 HistoryEpochPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component)
 {
-    auto h = std::make_shared<HistoryEpoch>(owningModel(component), component, sourceUrl, "");
+    auto h = std::make_shared<HistoryEpoch>(component, sourceUrl, "");
     recordUrl(h, component);
     return h;
+}
+
+HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
+{
+    return std::make_shared<HistoryEpoch>(component, sourceUrl, destinationUrl);
 }
 
 std::string importeeModelUrl(const History &history, const std::string url)
@@ -1420,7 +1430,7 @@ bool checkForImportCycles(const History &history, const HistoryEpochPtr &h)
         auto entry = history.at(index);
         if (h->mDestinationUrl == entry->mSourceUrl) {
             return true;
-        } else if ((entry->mSourceUrl == ORIGIN_MODEL_REF) && (entry->mModel != nullptr) && (entry->mModel->equals(h->mDestinationModel))) {
+        } else if ((entry->mSourceUrl == ORIGIN_MODEL_REF) && (entry->mSourceModel != nullptr) && (entry->mSourceModel->equals(h->mDestinationModel))) {
             return true;
         }
     }
@@ -1430,7 +1440,7 @@ bool checkForImportCycles(const History &history, const HistoryEpochPtr &h)
 IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action)
 {
     auto origin = history.front();
-    auto model = origin->mModel;
+    auto model = origin->mSourceModel;
     bool isComponent = origin->mType == "component";
     std::string typeStringPrefix = isComponent ? "a " : "";
     std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
