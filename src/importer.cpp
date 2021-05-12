@@ -143,13 +143,13 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
 
     // If they are imported, then they can't have any child unit elements anyway.
     auto unitsModel= owningModel(units);
-    auto s = createHistoryEpoch(units, modelUrl(unitsModel), resolvingUrl(units->importSource()));
+    auto h = createHistoryEpoch(units, modelUrl(unitsModel), resolvingUrl(units->importSource()));
 
-    if (checkForImportCycles(units->importSource(), history, s, "flatten")) {
+    if (checkForImportCycles(units->importSource(), history, h, "flatten")) {
         return true;
     }
 
-    history.push_back(s);
+    history.push_back(h);
 
     // If the dependencies have not been recorded already, then check it.
     auto model = units->importSource()->model();
@@ -179,13 +179,13 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
 bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &component, History &history)
 {
     auto componentModel = owningModel(component);
-    auto s = createHistoryEpoch(component, modelUrl(componentModel), resolvingUrl(component->importSource()));
+    auto h = createHistoryEpoch(component, modelUrl(componentModel), resolvingUrl(component->importSource()));
 
-    if (checkForImportCycles(component->importSource(), history, s, "flatten")) {
+    if (checkForImportCycles(component->importSource(), history, h, "flatten")) {
         return true;
     }
 
-    history.push_back(s);
+    history.push_back(h);
 
     // If the dependencies have not been recorded already, then check it.
     if (component->isImport()) {
@@ -347,12 +347,13 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importComponent->importSource());
     auto importComponentModel= owningModel(importComponent);
-    auto s = createHistoryEpoch(importComponent, modelUrl(importComponentModel), resolvingUrl);
-    if (checkForImportCycles(importComponent->importSource(), history, s, "resolve")) {
+    auto h = createHistoryEpoch(importComponent, modelUrl(importComponentModel), resolvingUrl);
+
+    if (checkForImportCycles(importComponent->importSource(), history, h, "resolve")) {
         return false;
     }
 
-    history.push_back(s);
+    history.push_back(h);
 
     // Check that the model instance in the library has resolved all of the required dependencies.
     auto sourceModel = importComponent->importSource()->model();
@@ -415,6 +416,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
     auto unitsModel= owningModel(importUnits);
     auto h = createHistoryEpoch(importUnits, modelUrl(unitsModel), resolvingUrl);
+
     if (checkForImportCycles(importUnits->importSource(), history, h, "resolve")) {
         return false;
     }
