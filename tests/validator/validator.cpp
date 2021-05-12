@@ -3411,6 +3411,37 @@ TEST(Validator, cImportThatIllustratesBadPractice)
     EXPECT_EQ(size_t(0), validator->issueCount());
 
     importer->resolveImports(model, resourcePath("importer/"));
+    printIssues(importer);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
+TEST(Validator, zImportThatIllustratesBadPractice)
+{
+    const std::string errorMessage =
+            "Cyclic dependencies were found when attempting to resolve a component in the model 'import_component_from_library_and_another_component'. The dependency loop is:\n"
+            " - component 'c1' specifies an import from 'this' to '"
+            + resourcePath("importer/") + "component_library.cellml'; and\n"
+                                          " - component 'c1_imported' specifies an import from '"
+            + resourcePath("importer/") + "component_library.cellml' to '" + resourcePath("importer/") + "layer1/importing_bad_design_z_import_hierarchy.cellml'.";
+
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
+    auto model = parser->parseModel(fileContents("importer/importing_bad_design_z_import_hierarchy.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    // The importer incorrectly thinks the 2nd import is the same as the original model because it cannot determine which file the
+    // original model came from.  It should be noted that the 2nd import is the same as the original model but from a different directory.
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(errorMessage, importer->error(0)->description());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
