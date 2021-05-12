@@ -165,7 +165,7 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(History &history, const UnitsConstP
         if (importedSource != nullptr) {
             ModelPtr model = importedSource->model();
             if (model != nullptr) {
-                auto h = createImportStep(importeeModelUrl(history, mUnits->importSource()->url()), units);
+                auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
                 if (checkForImportCycles(history, h)) {
                     return false;
                 }
@@ -199,7 +199,7 @@ bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstP
             if (importedUnits == nullptr) {
                 resolved = false;
             } else {
-                auto h = createImportStep(importeeModelUrl(history, mUnits->importSource()->url()), units);
+                auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
                 if (checkForImportCycles(history, h)) {
                     resolved = false;
                 } else if (importedUnits->isImport()) {

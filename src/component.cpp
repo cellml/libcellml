@@ -133,7 +133,7 @@ bool Component::ComponentImpl::isResolvedWithHistory(History &history, const Com
             if (importedComponent == nullptr) {
                 resolved = false;
             } else {
-                auto h = createImportStep(importeeModelUrl(history, mComponent->importSource()->url()), component);
+                auto h = createHistoryEpoch(component, importeeModelUrl(history, mComponent->importSource()->url()));
                 if (checkForImportCycles(history, h)) {
                     resolved = false;
                 } else {

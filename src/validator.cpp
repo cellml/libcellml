@@ -685,7 +685,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
         if (importModel != nullptr) {
             auto importedComponent = importModel->component(componentRef);
             if (importedComponent != nullptr) {
-                auto h = createImportStep(importeeModelUrl(history, component->importSource()->url()), component);
+                auto h = createHistoryEpoch(component, importeeModelUrl(history, component->importSource()->url()));
                 if (checkForImportCycles(history, h)) {
                     history.push_back(h);
                     auto issue = makeIssueCyclicDependency(history, "resolve");
@@ -778,7 +778,7 @@ bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &des
 
 void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> modelsVisited) const
 {
-    auto h = createImportStep(ORIGIN_MODEL_REF, units);
+    auto h = createHistoryEpoch(units, ORIGIN_MODEL_REF);
     if (checkForLocalCycles(history, h)) {
         history.push_back(h);
         std::string des;
