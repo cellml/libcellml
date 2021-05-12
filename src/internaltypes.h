@@ -73,56 +73,39 @@ using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition f
 class HistoryEpoch; /**< Forward declaration of import step class. */
 using HistoryEpochPtr = std::shared_ptr<HistoryEpoch>; /**< Type definition for shared import step pointer. */
 
+/**
+ * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
+ *
+ * This class holds information for defining an epoch in the history of resolving a @ref Component
+ * or @ref Units.
+ */
 class HistoryEpoch
 {
 public:
     ModelPtr mDestinationModel;
     std::string mDestinationUrl;
-    ModelPtr mModel;
+    ModelPtr mSourceModel;
     std::string mName;
     std::string mReferenceName;
     std::string mSourceUrl;
     std::string mType;
 
-    HistoryEpoch(const ModelPtr &model, const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
-        : mDestinationModel(nullptr)
-        , mDestinationUrl(destinationUrl)
-        , mModel(model)
-        , mName(units->name())
-        , mReferenceName()
-        , mSourceUrl(sourceUrl)
-        , mType("units")
-    {
-        setReferenceName(units);
-        setDestinationModel(units);
-    }
+    /**
+     * @brief Create a HistoryEpoch.
+     *
+     * Create a history epoch for a @ref Units.
+     *
+     * @param units
+     * @param sourceUrl
+     * @param destinationUrl
+     */
+    HistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl);
 
-    HistoryEpoch(const ModelPtr &model, const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
-        : mDestinationModel(nullptr)
-        , mDestinationUrl(destinationUrl)
-        , mModel(model)
-        , mName(component->name())
-        , mReferenceName()
-        , mSourceUrl(sourceUrl)
-        , mType("component")
-    {
-        setReferenceName(component);
-        setDestinationModel(component);
-    }
+    HistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl);
 
-    void setReferenceName(const ImportedEntityConstPtr &importedEntity)
-    {
-        if (importedEntity->isImport()) {
-            mReferenceName = importedEntity->importReference();
-        }
-    }
+    void setReferenceName(const ImportedEntityConstPtr &importedEntity);
 
-    void setDestinationModel(const ImportedEntityConstPtr &importedEntity)
-    {
-        if (importedEntity->isImport()) {
-            mDestinationModel = importedEntity->importSource()->model();
-        }
-    }
+    void setDestinationModel(const ImportedEntityConstPtr &importedEntity);
 
 };
 
