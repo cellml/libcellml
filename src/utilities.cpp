@@ -1412,7 +1412,7 @@ HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std
     return std::make_shared<HistoryEpoch>(component, sourceUrl, destinationUrl);
 }
 
-std::string importeeModelUrl(const History &history, const std::string url)
+std::string importeeModelUrl(const History &history, const std::string &url)
 {
     for (auto i = history.size(); i-- > 0; ) {
         auto historyEpoch = history[i];
