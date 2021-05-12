@@ -1429,7 +1429,6 @@ bool checkForImportCycles(const History &history, const HistoryEpochPtr &h)
     return std::any_of(history.begin(), history.end(), [h](const auto &entry) {
         return ((h->mDestinationUrl == entry->mSourceUrl) || ((entry->mSourceUrl == ORIGIN_MODEL_REF) && (entry->mSourceModel != nullptr) && (entry->mSourceModel->equals(h->mDestinationModel))));
     });
-
 }
 
 IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action)
