@@ -142,7 +142,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
     }
 
     // If they are imported, then they can't have any child unit elements anyway.
-    auto unitsModel= owningModel(units);
+    auto unitsModel = owningModel(units);
     auto h = createHistoryEpoch(units, modelUrl(unitsModel), resolvingUrl(units->importSource()));
 
     if (checkForImportCycles(units->importSource(), history, h, "flatten")) {
@@ -297,7 +297,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
 
 bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action) const
 {
-   if (libcellml::checkForImportCycles(history, h)) {
+    if (libcellml::checkForImportCycles(history, h)) {
         auto cyclicHistory = history;
         cyclicHistory.push_back(h);
         auto issue = makeIssueCyclicDependency(cyclicHistory, action);
@@ -346,7 +346,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     }
 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importComponent->importSource());
-    auto importComponentModel= owningModel(importComponent);
+    auto importComponentModel = owningModel(importComponent);
     auto h = createHistoryEpoch(importComponent, modelUrl(importComponentModel), resolvingUrl);
 
     if (checkForImportCycles(importComponent->importSource(), history, h, "resolve")) {
@@ -414,7 +414,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     }
 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
-    auto unitsModel= owningModel(importUnits);
+    auto unitsModel = owningModel(importUnits);
     auto h = createHistoryEpoch(importUnits, modelUrl(unitsModel), resolvingUrl);
 
     if (checkForImportCycles(importUnits->importSource(), history, h, "resolve")) {

@@ -439,7 +439,8 @@ struct Validator::ValidatorImpl
 bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
 {
     return std::find_if(history.begin(), history.end(),
-                        [=](const HistoryEpochPtr &i) -> bool { return i->mName == h->mName; }) != history.end();
+                        [=](const HistoryEpochPtr &i) -> bool { return i->mName == h->mName; })
+           != history.end();
 }
 
 Validator::Validator()
@@ -612,7 +613,8 @@ void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount,
                         if (depth > 1) {
                             os << " which";
                         }
-                        os << " has an error:" << std::endl << "   - ";
+                        os << " has an error:" << std::endl
+                           << "   - ";
                     } else {
                         os << " imports:" << std::endl;
                     }
