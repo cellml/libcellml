@@ -58,5 +58,4 @@ void HistoryEpoch::setDestinationModel(const ImportedEntityConstPtr &importedEnt
     }
 }
 
-
 } // namespace libcellml

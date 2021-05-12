@@ -129,7 +129,6 @@ public:
      * @param importedEntity The imported entity to set the destination model for.
      */
     void setDestinationModel(const ImportedEntityConstPtr &importedEntity);
-
 };
 
 using History = std::vector<HistoryEpochPtr>; /**< Type definition for history.*/
