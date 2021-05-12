@@ -1388,7 +1388,7 @@ void recordUrl(const HistoryEpochPtr &historyEpoch, const ImportedEntityConstPtr
     }
 }
 
-HistoryEpochPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units)
+HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl)
 {
     auto h = std::make_shared<HistoryEpoch>(units, sourceUrl, "");
     recordUrl(h, units);
@@ -1400,7 +1400,7 @@ HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string
     return std::make_shared<HistoryEpoch>(units, sourceUrl, destinationUrl);
 }
 
-HistoryEpochPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component)
+HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl)
 {
     auto h = std::make_shared<HistoryEpoch>(component, sourceUrl, "");
     recordUrl(h, component);
