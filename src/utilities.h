@@ -799,7 +799,7 @@ HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std
  * @param url The destination URL of the imported entity.
  * @return A std::string.
  */
-std::string importeeModelUrl(const History &history, const std::string url);
+std::string importeeModelUrl(const History &history, const std::string &url);
 
 /**
  * @brief Check through the @p history and determine if @p h has already been visited.
