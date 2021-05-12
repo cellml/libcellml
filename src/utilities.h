@@ -789,8 +789,27 @@ HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std
  */
 HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl);
 
+/**
+ * @brief Figure out the URL of the importee from the history.
+ *
+ * Look through the history to figure out the importee import URL.
+ * @ref ORIGIN_MODEL_REF is returned by default.
+ *
+ * @param history The history of locations visited.
+ * @param url The destination URL of the imported entity.
+ * @return A std::string.
+ */
 std::string importeeModelUrl(const History &history, const std::string url);
 
+/**
+ * @brief Check through the @p history and determine if @p h has already been visited.
+ *
+ * Check through the @p history and determine if @p h has already been visited.
+ *
+ * @param history The history of locations visited.
+ * @param h The epoch to check for existence.
+ * @return @c true if @p h is already present in @p history, @c false otherwise.
+ */
 bool checkForImportCycles(const History &history, const HistoryEpochPtr &h);
 
 /**
