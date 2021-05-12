@@ -62,6 +62,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.cpp
