@@ -1426,11 +1426,11 @@ std::string importeeModelUrl(const History &history, const std::string &url)
 
 bool checkForImportCycles(const History &history, const HistoryEpochPtr &h)
 {
-    for (size_t index = 0; index < history.size(); ++index) {
-        auto entry = history.at(index);
+    for (const auto &entry : history) {
         if (h->mDestinationUrl == entry->mSourceUrl) {
             return true;
-        } else if ((entry->mSourceUrl == ORIGIN_MODEL_REF) && (entry->mSourceModel != nullptr) && (entry->mSourceModel->equals(h->mDestinationModel))) {
+        }
+        if ((entry->mSourceUrl == ORIGIN_MODEL_REF) && (entry->mSourceModel != nullptr) && (entry->mSourceModel->equals(h->mDestinationModel))) {
             return true;
         }
     }

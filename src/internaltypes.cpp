@@ -25,7 +25,6 @@ HistoryEpoch::HistoryEpoch(const UnitsConstPtr &units, const std::string &source
     , mDestinationUrl(destinationUrl)
     , mSourceModel(owningModel(units))
     , mName(units->name())
-    , mReferenceName()
     , mSourceUrl(sourceUrl)
     , mType("units")
 {
@@ -38,7 +37,6 @@ HistoryEpoch::HistoryEpoch(const ComponentConstPtr &component, const std::string
     , mDestinationUrl(destinationUrl)
     , mSourceModel(owningModel(component))
     , mName(component->name())
-    , mReferenceName()
     , mSourceUrl(sourceUrl)
     , mType("component")
 {
