@@ -142,10 +142,8 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
     }
 
     // If they are imported, then they can't have any child unit elements anyway.
-    std::string resolvingUrl = ImporterImpl::resolvingUrl(units->importSource());
-    auto h = std::make_tuple(units->name(), units->importReference(), resolvingUrl);
     auto unitsModel= owningModel(units);
-    auto s = std::make_shared<HistoryEpoch>(unitsModel, units, modelUrl(unitsModel), resolvingUrl);
+    auto s = createHistoryEpoch(units, modelUrl(unitsModel), resolvingUrl(units->importSource()));
 
     if (checkForImportCycles(units->importSource(), history, s, "flatten")) {
         return true;
@@ -180,10 +178,8 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
 
 bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &component, History &history)
 {
-    std::string resolvingUrl = ImporterImpl::resolvingUrl(component->importSource());
-    auto h = std::make_tuple(component->name(), component->importReference(), resolvingUrl);
     auto componentModel = owningModel(component);
-    auto s = std::make_shared<HistoryEpoch>(componentModel, component, modelUrl(componentModel), resolvingUrl);
+    auto s = createHistoryEpoch(component, modelUrl(componentModel), resolvingUrl(component->importSource()));
 
     if (checkForImportCycles(component->importSource(), history, s, "flatten")) {
         return true;
@@ -350,9 +346,8 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     }
 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importComponent->importSource());
-    auto h = std::make_tuple(importComponent->name(), importComponent->importReference(), resolvingUrl);
-    auto componentModel= owningModel(importComponent);
-    auto s = std::make_shared<HistoryEpoch>(componentModel, importComponent, modelUrl(componentModel), resolvingUrl);
+    auto importComponentModel= owningModel(importComponent);
+    auto s = createHistoryEpoch(importComponent, modelUrl(importComponentModel), resolvingUrl);
     if (checkForImportCycles(importComponent->importSource(), history, s, "resolve")) {
         return false;
     }
@@ -418,14 +413,13 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     }
 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
-    auto h = std::make_tuple(importUnits->name(), importUnits->importReference(), resolvingUrl);
     auto unitsModel= owningModel(importUnits);
-    auto s = std::make_shared<HistoryEpoch>(unitsModel, importUnits, modelUrl(unitsModel), resolvingUrl);
-    if (checkForImportCycles(importUnits->importSource(), history, s, "resolve")) {
+    auto h = createHistoryEpoch(importUnits, modelUrl(unitsModel), resolvingUrl);
+    if (checkForImportCycles(importUnits->importSource(), history, h, "resolve")) {
         return false;
     }
 
-    history.push_back(s);
+    history.push_back(h);
 
     // Check Unit children for reliance on imported Units items.
     auto sourceModel = importUnits->importSource()->model();

@@ -749,6 +749,7 @@ IndexStack indexStackOf(const ComponentPtr &component);
  * @return The history entry.
  */
 HistoryEpochPtr createImportStep(const std::string &sourceUrl, const UnitsConstPtr &units);
+HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl);
 
 /**
  * @brief Create a history entry for a @ref Component.
@@ -760,6 +761,7 @@ HistoryEpochPtr createImportStep(const std::string &sourceUrl, const UnitsConstP
  * @return The history entry.
  */
 HistoryEpochPtr createImportStep(const std::string &sourceUrl, const ComponentConstPtr &component);
+HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl);
 
 std::string importeeModelUrl(const History &history, const std::string url);
 

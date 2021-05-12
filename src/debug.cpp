@@ -38,7 +38,7 @@ void printHistory(const History &history)
 
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch)
 {
-    Debug() << "'" << historyEpoch->mModel->name() << "' '" << historyEpoch->mName << "' '" << historyEpoch->mSourceUrl << "' -> '" << historyEpoch->mDestinationUrl << "'";
+    Debug() << "'" << historyEpoch->mSourceModel->name() << "' '" << historyEpoch->mName << "' '" << historyEpoch->mSourceUrl << "' -> '" << historyEpoch->mDestinationUrl << "'";
 }
 
 void printStack(const IndexStack &stack)
