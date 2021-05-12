@@ -95,16 +95,39 @@ public:
      *
      * Create a history epoch for a @ref Units.
      *
-     * @param units
-     * @param sourceUrl
-     * @param destinationUrl
+     * @param units The @p units to create an epoch for.
+     * @param sourceUrl The source URL of the @p units.
+     * @param destinationUrl The destination URL of the @p units.
      */
     HistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl);
 
+    /**
+     * @brief Create a HistoryEpoch.
+     *
+     * Create a history epoch for a @ref Component.
+     *
+     * @param component The @p component to create an epoch for.
+     * @param sourceUrl The source URL of the @p component.
+     * @param destinationUrl The destination URL of the @p component.
+     */
     HistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl);
 
+    /**
+     * @brief Set the reference name for the imported entity.
+     *
+     * If the entity is imported set the reference name for it.
+     *
+     * @param importedEntity The imported entity to set the reference name for.
+     */
     void setReferenceName(const ImportedEntityConstPtr &importedEntity);
 
+    /**
+     * @brief Set the destination model to the resolving model from the imported entity.
+     *
+     * If the entity is imported set the destination model to the resolving model for it.
+     *
+     * @param importedEntity The imported entity to set the destination model for.
+     */
     void setDestinationModel(const ImportedEntityConstPtr &importedEntity);
 
 };
