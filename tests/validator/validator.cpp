@@ -3398,8 +3398,6 @@ TEST(Validator, unitsErrorInImportedComponent)
 
 TEST(Validator, cImportThatIllustratesBadPractice)
 {
-    const std::string errorMessage = "incorrect";
-
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
     auto importer = libcellml::Importer::create();
@@ -3411,7 +3409,6 @@ TEST(Validator, cImportThatIllustratesBadPractice)
     EXPECT_EQ(size_t(0), validator->issueCount());
 
     importer->resolveImports(model, resourcePath("importer/"));
-    printIssues(importer);
     EXPECT_EQ(size_t(0), importer->issueCount());
 
     validator->validateModel(model);
@@ -3421,11 +3418,11 @@ TEST(Validator, cImportThatIllustratesBadPractice)
 TEST(Validator, zImportThatIllustratesBadPractice)
 {
     const std::string errorMessage =
-            "Cyclic dependencies were found when attempting to resolve a component in the model 'import_component_from_library_and_another_component'. The dependency loop is:\n"
-            " - component 'c1' specifies an import from 'this' to '"
-            + resourcePath("importer/") + "component_library.cellml'; and\n"
-                                          " - component 'c1_imported' specifies an import from '"
-            + resourcePath("importer/") + "component_library.cellml' to '" + resourcePath("importer/") + "layer1/importing_bad_design_z_import_hierarchy.cellml'.";
+        "Cyclic dependencies were found when attempting to resolve a component in the model 'import_component_from_library_and_another_component'. The dependency loop is:\n"
+        " - component 'c1' specifies an import from 'this' to '"
+        + resourcePath("importer/") + "component_library.cellml'; and\n"
+                                      " - component 'c1_imported' specifies an import from '"
+        + resourcePath("importer/") + "component_library.cellml' to '" + resourcePath("importer/") + "layer1/importing_bad_design_z_import_hierarchy.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
