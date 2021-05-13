@@ -102,5 +102,6 @@ void printConnectionMap(const ConnectionMap &map);
 void printAst(const AnalyserEquationAstPtr &ast);
 void printHistory(const History &history);
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch);
+void printImportLibrary(const ImportLibrary &importlibrary);
 
 } // namespace libcellml

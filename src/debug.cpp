@@ -497,4 +497,17 @@ void printAst(const AnalyserEquationAstPtr &ast)
     doPrintAst(ast, nullptr, false);
 }
 
+void printImportLibrary(const ImportLibrary &importlibrary)
+{
+    Debug() << " == Import library ==";
+    for ( const auto &entry : importlibrary) {
+        std::string name = "(null)";
+        if (entry.second != nullptr) {
+            name = entry.second->name();
+        }
+        Debug() << entry.first << " - " << name;
+    }
+    Debug() << " == ";
+}
+
 } // namespace libcellml
