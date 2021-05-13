@@ -939,7 +939,8 @@ TEST(ModelFlattening, resolveFlattenMissingModel)
 
 TEST(ModelFlattening, resolveFlattenMissingComponent)
 {
-    const std::string e = "Component 'left' imports a component named 'pointyBit' from the model imported from '"
+    const std::string e =
+        "Component 'left' imports a component named 'pointyBit' from the model imported from '"
         + resourcePath("importer/") + "diamond_point.cellml'. The component could not be found.";
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("importer/diamond.cellml"));
@@ -961,7 +962,8 @@ TEST(ModelFlattening, resolveFlattenMissingComponent)
 
 TEST(ModelFlattening, resolveFlattenMissingUnits)
 {
-    const std::string e = "Units 'units1_imported' imports units named 'units1' from the model imported from '"
+    const std::string e =
+        "Units 'units1_imported' imports units named 'units1' from the model imported from '"
         + resourcePath("importer/") + "units_source.cellml'. The units could not be found.";
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("importer/units_imported.cellml"));
