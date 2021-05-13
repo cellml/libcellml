@@ -400,6 +400,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         return false;
     }
 
+    history.pop_back();
     return true;
 }
 
@@ -469,6 +470,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         return false;
     }
 
+    history.pop_back();
     return true;
 }
 
