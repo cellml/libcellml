@@ -3443,3 +3443,23 @@ TEST(Validator, zImportThatIllustratesBadPractice)
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
+
+TEST(Validator, zOffsetImportThatIllustratesBadPractice)
+{
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
+
+    auto model = parser->parseModel(fileContents("importer/importing_bad_design_z_offset_import_hierarchy.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    // With the import offset the importer can correctly identify that the models are in fact from different locations.
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->errorCount());
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
