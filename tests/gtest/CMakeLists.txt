@@ -29,7 +29,7 @@ option(gtest_disable_pthreads "Disable uses of pthreads in gtest." OFF)
 # ${gtest_BINARY_DIR}.
 # Language "C" is required for find_package(Threads).
 project(gtest CXX C)
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.10.2)
 
 # Define helper functions and macros used by Google Test.
 include(cmake/internal_utils.cmake)
