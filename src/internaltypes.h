@@ -29,7 +29,7 @@ limitations under the License.
 
 namespace libcellml {
 
-const std::string ORIGIN_MODEL_REF = "this";
+const std::string ORIGIN_MODEL_REF = ":this:";
 
 using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
 

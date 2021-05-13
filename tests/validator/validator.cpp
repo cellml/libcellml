@@ -2992,7 +2992,7 @@ TEST(Validator, circularImportReferencesComponent)
 {
     const std::string errorMessageImporter =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_cyclic' specifies an import from 'this' to '"
+        " - component 'i_am_cyclic' specifies an import from ':this:' to '"
         + resourcePath("importer/") + "circularImport_2.cellml';\n"
                                       " - component 'c2' specifies an import from '"
         + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
@@ -3000,7 +3000,7 @@ TEST(Validator, circularImportReferencesComponent)
         + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'.";
     const std::string errorMessageValidator =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_cyclic' specifies an import from 'this' to 'circularImport_2.cellml';\n"
+        " - component 'i_am_cyclic' specifies an import from ':this:' to 'circularImport_2.cellml';\n"
         " - component 'c2' specifies an import from 'circularImport_2.cellml' to 'circularImport_3.cellml'; and\n"
         " - component 'c3' specifies an import from 'circularImport_3.cellml' to 'circularImport_1.cellml'.";
 
@@ -3028,7 +3028,7 @@ TEST(Validator, circularImportReferencesUnits)
 {
     const std::string errorMessageImporter =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - units 'i_am_cyclic' specifies an import from 'this' to '"
+        " - units 'i_am_cyclic' specifies an import from ':this:' to '"
         + resourcePath("importer/") + "circularUnits_2.cellml';\n"
                                       " - units 'u2' specifies an import from '"
         + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml'; and\n"
@@ -3064,7 +3064,7 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
 {
     const std::vector<std::string> errorMessagesValidator = {
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - units 'i_am_duplicated' specifies an import from 'this' to 'circularUnits_2.cellml';\n"
+        " - units 'i_am_duplicated' specifies an import from ':this:' to 'circularUnits_2.cellml';\n"
         " - units 'u2' specifies an import from 'circularUnits_2.cellml' to 'circularUnits_3.cellml';\n"
         " - units 'u3' specifies an import from 'circularUnits_3.cellml' to 'circularUnits_1.cellml'; and\n"
         " - units 'i_am_cyclic' specifies an import from 'circularUnits_1.cellml' to 'circularUnits_2.cellml'.",
@@ -3073,7 +3073,7 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
 
     const std::string errorMessageImporter =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - units 'i_am_duplicated' specifies an import from 'this' to '"
+        " - units 'i_am_duplicated' specifies an import from ':this:' to '"
         + resourcePath("importer/") + "circularUnits_2.cellml';\n"
                                       " - units 'u2' specifies an import from '"
         + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml';\n"
@@ -3107,7 +3107,7 @@ TEST(Validator, circularImportedComponentsDuplicateNames)
 {
     const std::vector<std::string> errorMessagesValidator = {
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_duplicated' specifies an import from 'this' to 'circularImport_2.cellml';\n"
+        " - component 'i_am_duplicated' specifies an import from ':this:' to 'circularImport_2.cellml';\n"
         " - component 'c2' specifies an import from 'circularImport_2.cellml' to 'circularImport_3.cellml';\n"
         " - component 'c3' specifies an import from 'circularImport_3.cellml' to 'circularImport_1.cellml'; and\n"
         " - component 'i_am_cyclic' specifies an import from 'circularImport_1.cellml' to 'circularImport_2.cellml'.",
@@ -3115,7 +3115,7 @@ TEST(Validator, circularImportedComponentsDuplicateNames)
     };
     const std::string errorMessageImporter =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_duplicated' specifies an import from 'this' to '"
+        " - component 'i_am_duplicated' specifies an import from ':this:' to '"
         + resourcePath("importer/") + "circularImport_2.cellml';\n"
                                       " - component 'c2' specifies an import from '"
         + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
@@ -3419,7 +3419,7 @@ TEST(Validator, zImportThatIllustratesBadPractice)
 {
     const std::string errorMessage =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'import_component_from_library_and_another_component'. The dependency loop is:\n"
-        " - component 'c1' specifies an import from 'this' to '"
+        " - component 'c1' specifies an import from ':this:' to '"
         + resourcePath("importer/") + "component_library.cellml'; and\n"
                                       " - component 'c1_imported' specifies an import from '"
         + resourcePath("importer/") + "component_library.cellml' to '" + resourcePath("importer/") + "layer1/importing_bad_design_z_import_hierarchy.cellml'.";
