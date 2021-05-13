@@ -142,8 +142,9 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
     }
 
     // If they are imported, then they can't have any child unit elements anyway.
+    std::string resolvingUrl = ImporterImpl::resolvingUrl(units->importSource());
     auto unitsModel = owningModel(units);
-    auto h = createHistoryEpoch(units, modelUrl(unitsModel), resolvingUrl(units->importSource()));
+    auto h = createHistoryEpoch(units, modelUrl(unitsModel), resolvingUrl);
 
     if (checkForImportCycles(units->importSource(), history, h, "flatten")) {
         return true;
@@ -155,7 +156,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
     auto model = units->importSource()->model();
     if (model == nullptr) {
         auto issue = Issue::create();
-        issue->setDescription("Units '" + units->name() + "' requires a model imported from '" + units->importSource()->url() + "' which is not available in the importer.");
+        issue->setDescription("Units '" + units->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
         issue->setLevel(Issue::Level::ERROR);
         issue->setImportSource(units->importSource());
         issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
@@ -165,7 +166,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
     auto importedUnits = model->units(units->importReference());
     if (importedUnits == nullptr) {
         auto issue = Issue::create();
-        issue->setDescription("Units '" + units->name() + "' imports units named '" + units->importReference() + "' from the model imported from '" + units->importSource()->url() + "'. The units could not be found.");
+        issue->setDescription("Units '" + units->name() + "' imports units named '" + units->importReference() + "' from the model imported from '" + resolvingUrl + "'. The units could not be found.");
         issue->setLevel(Issue::Level::ERROR);
         issue->setImportSource(units->importSource());
         issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
@@ -178,8 +179,9 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
 
 bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &component, History &history)
 {
+    std::string resolvingUrl = ImporterImpl::resolvingUrl(component->importSource());
     auto componentModel = owningModel(component);
-    auto h = createHistoryEpoch(component, modelUrl(componentModel), resolvingUrl(component->importSource()));
+    auto h = createHistoryEpoch(component, modelUrl(componentModel), resolvingUrl);
 
     if (checkForImportCycles(component->importSource(), history, h, "flatten")) {
         return true;
@@ -192,7 +194,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
         auto model = component->importSource()->model();
         if (model == nullptr) {
             auto issue = Issue::create();
-            issue->setDescription("Component '" + component->name() + "' requires a model imported from '" + component->importSource()->url() + "' which is not available in the importer.");
+            issue->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
             issue->setLevel(Issue::Level::ERROR);
             issue->setImportSource(component->importSource());
             issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
@@ -202,7 +204,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
         auto importedComponent = model->component(component->importReference(), true);
         if (importedComponent == nullptr) {
             auto issue = Issue::create();
-            issue->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + component->importSource()->url() + "'. The component could not be found.");
+            issue->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
             issue->setLevel(Issue::Level::ERROR);
             issue->setImportSource(component->importSource());
             issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
