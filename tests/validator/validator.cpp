@@ -3208,7 +3208,7 @@ TEST(Validator, importSecondGenComponentWithInvalidUri)
     EXPECT_EQ(errorMessageValidator, validator->issue(0)->description());
 }
 
-TEST(Validator, highIndexUnitsImport)
+TEST(Validator, importedUnitBasedOnNonExistingUnit)
 {
     const std::string errorMessageImporter =
         "Import of units 'i_am_bad' from '"
