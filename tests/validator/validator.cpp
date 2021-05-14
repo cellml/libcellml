@@ -2173,7 +2173,7 @@ TEST(Validator, unitSimpleCycle)
     //           +----------------------------------------+
 
     const std::vector<std::string> expectedIssues = {
-        "Cyclic units exist: 'grandfather' -> 'child' -> 'father' -> 'grandfather'",
+        "Cyclic units exist: 'grandfather' -> 'child' -> 'father' -> 'grandfather'.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
