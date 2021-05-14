@@ -1648,7 +1648,7 @@ bool isCellmlIdentifier(const std::string &name)
  *
  * @param startChar The character to test.
  *
- * @return True if the character is in the allowed unicode ranges for a start character in an XML name.
+ * @return True if the character is in the allowed Unicode ranges for a start character in an XML name.
  */
 bool isNameStartChar(uint32_t startChar)
 {
@@ -1700,7 +1700,7 @@ uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
  *
  * @param text The std::string to breakdown.
  *
- * @return A vector of @c uint32_t of the unicode character values.
+ * @return A vector of @c uint32_t of the Unicode character values.
  */
 std::vector<uint32_t> characterBreakdown(const std::string &text)
 {
@@ -1732,13 +1732,13 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
 }
 
 /**
- * @brief Test to determine if character is a valid XML name char.
+ * @brief Test to determine if @p nameChar is a valid XML name character.
  *
  * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
  *
  * @param nameChar The character to test.
  *
- * @return True if the character is in the allowed unicode ranges for an XML name character.
+ * @return True if the character is in the allowed Unicode ranges for an XML name character.
  */
 bool isNameChar(uint32_t nameChar)
 {
