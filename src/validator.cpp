@@ -719,7 +719,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
             validateVariable(variable, variableNames);
             variableNames.push_back(variable->name());
         }
-        // Check for resets in this component
+        // Check for resets in this component.
         for (size_t i = 0; i < component->resetCount(); ++i) {
             ResetPtr reset = component->reset(i);
             validateReset(reset, component);
@@ -795,7 +795,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
         }
         if (!hasCycleAlreadyBeenReported(names)) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Cyclic units exist: " + des);
+            issue->setDescription("Cyclic units exist: " + des + ".");
             issue->setUnits(units);
             issue->setReferenceRule(Issue::ReferenceRule::UNIT_CIRCULAR_REF);
             mValidator->addIssue(issue);
@@ -961,9 +961,9 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
     units->unitAttributes(index, reference, prefix, exponent, multiplier, id);
     if (isCellmlIdentifier(reference)) {
         ModelPtr model = owningModel(units);
-        if (model->hasUnits(reference) && (!isStandardUnitName(reference))) {
+        if (model->hasUnits(reference) && !isStandardUnitName(reference)) {
             validateUnits(model->units(reference), history, modelsVisited);
-        } else if (!model->hasUnits(reference) && (!isStandardUnitName(reference))) {
+        } else if (!model->hasUnits(reference) && !isStandardUnitName(reference)) {
             IssuePtr issue = Issue::create();
             issue->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
             issue->setUnitsItem(UnitsItem::create(units, index));

@@ -2292,7 +2292,7 @@ libcellml::ModelPtr unitComplexCycle(bool order)
 TEST(Validator, unitComplexCycle)
 {
     const std::vector<std::string> expectedIssues = {
-        "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'",
+        "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -2309,7 +2309,7 @@ TEST(Validator, unitComplexCycleChangeOrderOfUnits)
     // added to the model is different.  This changes the order
     // that the loop is detected in.
     const std::vector<std::string> expectedIssues = {
-        "Cyclic units exist: 'brotherFromAnotherMother' -> 'father' -> 'grandfather' -> 'brotherFromAnotherMother'",
+        "Cyclic units exist: 'brotherFromAnotherMother' -> 'father' -> 'grandfather' -> 'brotherFromAnotherMother'.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();

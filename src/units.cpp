@@ -172,7 +172,8 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(History &history, const UnitsConstP
                 history.push_back(h);
                 if (model->hasUnits(mUnits->importReference())) {
                     auto importedUnits = model->units(mUnits->importReference());
-                    return importedUnits->mPimpl->isBaseUnitWithHistory(history, importedUnits); // Call isBaseUnit recursively until unit is no longer an import
+                    // Call isBaseUnit recursively until unit is no longer an import.
+                    return importedUnits->mPimpl->isBaseUnitWithHistory(history, importedUnits);
                 }
             }
         }
