@@ -1672,7 +1672,7 @@ bool isNameStartChar(uint32_t startChar)
 }
 
 /**
- * @brief Convert a variable width codepoint to uint32 form.
+ * @brief Convert a variable width code point to uint32 form.
  *
  * @param text The @c std::string to convert.
  * @param initialValue The starting point for the conversion.
@@ -1693,9 +1693,9 @@ uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
 }
 
 /**
- * @brief Breakdown a string into codepoints.
+ * @brief Breakdown a string into code points.
  *
- * Breakdown the @p text into a vector of codepoints as described by
+ * Breakdown the @p text into a vector of code points as described by
  * @c uint32_t.
  *
  * @param text The std::string to breakdown.
@@ -1707,25 +1707,25 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
     std::vector<uint32_t> breakdown;
     std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
     for (size_t i = 0; i < text.length();) {
-        size_t codepointLength = 1;
+        size_t codePointLength = 1;
         uint32_t value = 0;
         auto unsignedText = static_cast<uint8_t>(text[i]);
         if ((unsignedText & 0xf8U) == 0xf0U) {
-            codepointLength = 4;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codepointLength)));
+            codePointLength = 4;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
         } else if ((unsignedText & 0xf0U) == 0xe0U) {
-            codepointLength = 3;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codepointLength), 1));
+            codePointLength = 3;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 1));
         } else if ((unsignedText & 0xe0U) == 0xc0U) {
-            codepointLength = 2;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codepointLength), 2));
+            codePointLength = 2;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 2));
         } else {
-            auto subText = text.substr(i, codepointLength);
+            auto subText = text.substr(i, codePointLength);
             value = static_cast<uint8_t>(subText[0]);
             breakdown.push_back(value);
         }
 
-        i += codepointLength;
+        i += codePointLength;
     }
 
     return breakdown;
