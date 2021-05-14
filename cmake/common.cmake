@@ -187,6 +187,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -performance-inefficient-string-concatenation
       readability-*
       -readability-convert-member-functions-to-static
+      -readability-function-cognitive-complexity
       -readability-magic-numbers
       -readability-qualified-auto
       ${_DISABLED_READABILITY_CHECKS}
