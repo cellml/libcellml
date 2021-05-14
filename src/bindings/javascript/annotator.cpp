@@ -1,7 +1,7 @@
 
-# include <emscripten/bind.h>
+#include <emscripten/bind.h>
 
-# include "libcellml/annotator.h"
+#include "libcellml/annotator.h"
 
 using namespace emscripten;
 
