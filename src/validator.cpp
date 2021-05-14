@@ -1627,9 +1627,9 @@ Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
 }
 
 /**
- * @brief Test to determine if the @p name is a valid CellML identifier.
+ * @brief Test to determine if @p name is a valid CellML identifier.
  *
- * Test to determine if the @p name is a valid CellML identifier.
+ * Test to determine if @p name is a valid CellML identifier.
  *
  * @param name The name to test.
  *
@@ -1642,9 +1642,9 @@ bool isCellmlIdentifier(const std::string &name)
 }
 
 /**
- * @brief Test to determine if character is a valid XML name start char.
+ * @brief Test to determine if @p startChar is a valid XML name start character.
  *
- * Start name char is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
+ * A start name character is is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
  *
  * @param startChar The character to test.
  *
@@ -1672,12 +1672,14 @@ bool isNameStartChar(uint32_t startChar)
 }
 
 /**
- * @brief Convert a variable width code point to uint32 form.
+ * @brief Convert @p text to a uint32 form.
+ *
+ * Convert a variable width code point to uint32 form.
  *
  * @param text The @c std::string to convert.
  * @param initialValue The starting point for the conversion.
  *
- * @return uint32 form of the @p text.
+ * @return uint32 form of @p text.
  */
 uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
 {
@@ -1695,7 +1697,7 @@ uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
 /**
  * @brief Breakdown a string into code points.
  *
- * Breakdown the @p text into a vector of code points as described by
+ * Breakdown @p text into a vector of code points as described by
  * @c uint32_t.
  *
  * @param text The std::string to breakdown.
