@@ -239,7 +239,7 @@ struct Validator::ValidatorImpl
      * @param history The history of units visited.
      * @param modelsVisited The list of visited models.
      */
-    void validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const;
+    void validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the @p variable using the CellML 2.0 Specification.
@@ -754,7 +754,7 @@ bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(std::vector<std::stri
 {
     std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
     bool found = false;
-    for (size_t i = 0; i < mValidator->issueCount() && !found; ++i) {
+    for (size_t i = 0; (i < mValidator->issueCount()) && !found; ++i) {
         auto issue = mValidator->issue(i);
         if (issue->description().substr(0, 20) == "Cyclic units exist: ") {
             auto loop = issue->description().substr(20);
@@ -821,7 +821,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
 
     size_t unitsWithNameCount = 0;
     size_t unitsWithImportSource = 0;
-    for (size_t i = 0; i < model->unitsCount() && modelsVisited.size() == 1; ++i) {
+    for (size_t i = 0; (i < model->unitsCount()) && modelsVisited.size() == 1; ++i) {
         auto tmpUnits = model->units(i);
         if (tmpUnits->name() == unitsName) {
             unitsWithNameCount += 1;
@@ -949,7 +949,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
     handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Units", unitsName, history, nullptr, units);
 }
 
-void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, const std::vector<ModelPtr> &modelsVisited) const
+void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited) const
 {
     // Validate the unit at the given index.
     std::string reference;
