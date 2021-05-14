@@ -1642,13 +1642,13 @@ bool isCellmlIdentifier(const std::string &name)
 }
 
 /**
- * @brief Test to determine if character is a valid xml name start char.
+ * @brief Test to determine if character is a valid XML name start char.
  *
  * Start name char is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
  *
  * @param startChar The character to test.
  *
- * @return True if the character is in the allowed unicode ranges for a start character in a name.
+ * @return True if the character is in the allowed unicode ranges for a start character in an XML name.
  */
 bool isNameStartChar(uint32_t startChar)
 {
@@ -1734,11 +1734,11 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
 /**
  * @brief Test to determine if character is a valid XML name char.
  *
- * Name char is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
+ * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
  *
  * @param nameChar The character to test.
  *
- * @return True if the character is in the allowed unicode ranges for a name.
+ * @return True if the character is in the allowed unicode ranges for an XML name character.
  */
 bool isNameChar(uint32_t nameChar)
 {
@@ -1755,13 +1755,13 @@ bool isNameChar(uint32_t nameChar)
 }
 
 /**
- * @brief Test to determine if name is a valid XML name.
+ * @brief Test to determine if @p name is a valid XML name.
  *
- * Name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
+ * An XML name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
  *
  * @param name The @c std::string to test.
  *
- * @return True if the name is a valid xml name.
+ * @return True if the name is a valid XML name.
  */
 bool isValidW3IdName(const std::string &name)
 {
