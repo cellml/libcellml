@@ -500,7 +500,7 @@ void printAst(const AnalyserEquationAstPtr &ast)
 void printImportLibrary(const ImportLibrary &importlibrary)
 {
     Debug() << " == Import library ==";
-    for ( const auto &entry : importlibrary) {
+    for (const auto &entry : importlibrary) {
         std::string name = "(null)";
         if (entry.second != nullptr) {
             name = entry.second->name();
