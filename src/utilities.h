@@ -526,8 +526,7 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
  * @brief Split a string.
  *
  * Split the given string with the given delimiter.  If a delimiter is not given
- * then the default delimiter is used.  The default delimiter is ';'.  If the
- * delimiter is not found in @p content then a copy is returned.
+ * then ';' is used.  If the delimiter is not found a copy of @p content is returned.
  *
  * @param content The @c std::string to split.
  * @param delimiter The delimiter to split the string with, default ';'.
