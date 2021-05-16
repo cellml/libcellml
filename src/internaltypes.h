@@ -25,8 +25,6 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 
-#include <iostream>
-
 namespace libcellml {
 
 const std::string ORIGIN_MODEL_REF = ":this:";
