@@ -318,7 +318,7 @@ struct Validator::ValidatorImpl
      * @param history The history of units visited.
      * @param modelsVisited The list of visited models.
      */
-    void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> modelsVisited) const;
+    void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
@@ -916,7 +916,7 @@ bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &des
     return false;
 }
 
-void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> modelsVisited) const
+void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited) const
 {
     auto h = createHistoryEpoch(units, ORIGIN_MODEL_REF);
     if (checkForLocalCycles(history, h)) {
