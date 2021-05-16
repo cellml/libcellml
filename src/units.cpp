@@ -190,46 +190,55 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(History &history, const UnitsConstP
 
 bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstPtr &units) const
 {
-    bool resolved = true;
-    if (mUnits->isImport()) {
-        auto model = mUnits->importSource()->model();
-        if (model == nullptr) {
-            resolved = false;
-        } else {
-            auto importedUnits = model->units(mUnits->importReference());
-            if (importedUnits == nullptr) {
-                resolved = false;
-            } else {
-                auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
-                if (checkForImportCycles(history, h)) {
-                    resolved = false;
-                } else if (importedUnits->isImport()) {
-                    history.push_back(h);
-                    resolved = importedUnits->mPimpl->isResolvedWithHistory(history, importedUnits);
-                } else {
-                    for (size_t u = 0; (u < importedUnits->unitCount()) && resolved; ++u) {
-                        std::string reference;
-                        std::string prefix;
-                        std::string id;
-                        double exponent;
-                        double multiplier;
-                        importedUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
-                        if (isStandardUnitName(reference)) {
-                            continue;
-                        }
-                        auto childUnits = model->units(reference);
-                        if (childUnits == nullptr) {
-                            resolved = false;
-                        } else {
-                            history.push_back(h);
-                            resolved = childUnits->mPimpl->isResolvedWithHistory(history, childUnits);
-                        }
-                    }
-                }
-            }
+    if (!mUnits->isImport()) {
+        return true;
+    }
+
+    auto model = mUnits->importSource()->model();
+    if (model == nullptr) {
+        return false;
+    }
+
+    auto importedUnits = model->units(mUnits->importReference());
+    if (importedUnits == nullptr) {
+        return false;
+    }
+
+    auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
+    if (checkForImportCycles(history, h)) {
+        return false;
+    }
+
+    if (importedUnits->isImport()) {
+        history.push_back(h);
+
+        return importedUnits->mPimpl->isResolvedWithHistory(history, importedUnits);
+    }
+
+    for (size_t u = 0; (u < importedUnits->unitCount()); ++u) {
+        std::string reference;
+        std::string prefix;
+        std::string id;
+        double exponent;
+        double multiplier;
+        importedUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
+        if (isStandardUnitName(reference)) {
+            continue;
+        }
+
+        auto childUnits = model->units(reference);
+        if (childUnits == nullptr) {
+            return false;
+        }
+
+        history.push_back(h);
+
+        if (!childUnits->mPimpl->isResolvedWithHistory(history, childUnits)) {
+            return false;
         }
     }
-    return resolved;
+
+    return true;
 }
 
 /**
