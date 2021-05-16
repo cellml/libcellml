@@ -555,7 +555,7 @@ struct Validator::ValidatorImpl
     /**
      * @brief Deal with errors raised from imports.
      *
-     * When an error is raised by an imported entity track back to the originating model and
+     * When an error is raised by an imported entity, track back to the originating model and
      * assign the source @ref Units or @ref Component that the error belongs to.
      *
      * @param initialErrorCount The initial number of errors in the validator.
