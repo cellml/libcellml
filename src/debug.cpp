@@ -30,7 +30,7 @@ namespace libcellml {
 
 void printHistory(const History &history)
 {
-    for (auto h : history) {
+    for (const auto &h : history) {
         printHistoryEpoch(h);
     }
 
