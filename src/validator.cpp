@@ -757,7 +757,10 @@ bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(std::vector<std::stri
     for (size_t i = 0; (i < mValidator->issueCount()) && !found; ++i) {
         auto issue = mValidator->issue(i);
         if (issue->description().substr(0, 20) == "Cyclic units exist: ") {
+            // Remove prefix to loop information.
             auto loop = issue->description().substr(20);
+            // Remove suffix to loop information.
+            loop.pop_back();
             auto parts = split(loop, " -> ");
             auto existingNamesInCycle = namesInCycle(parts);
             found = testNamesInCycle == existingNamesInCycle;
@@ -784,7 +787,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
     if (checkForLocalCycles(history, h)) {
         history.push_back(h);
         std::string des;
-        std::vector<std::string> names;
+        Strings names;
         for (const auto &entry : history) {
             if (!des.empty()) {
                 des += " -> ";
