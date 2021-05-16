@@ -42,7 +42,7 @@ namespace libcellml {
 /**
  * Type definition for a list of issue descriptions.
  */
-using IssuesList = std::vector<std::vector<std::string>>;
+using IssuesList = std::vector<Strings>;
 
 /**
 * @brief Validate that equivalent variable pairs in the @p model
@@ -280,7 +280,7 @@ struct Validator::ValidatorImpl
      * @param name The name of the component to validate.
      * @param names The list of component names already used in the model.
      */
-    void validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const;
+    void validateUniqueName(const ModelPtr &model, const std::string &name, NameList &names) const;
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -306,7 +306,7 @@ struct Validator::ValidatorImpl
      * @param history The history of visited components.
      * @param modelsVisited The list of visited models.
      */
-    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
+    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -383,7 +383,7 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
      */
-    void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames) const;
+    void validateVariable(const VariablePtr &variable, const NameList &variableNames) const;
 
     /**
      * @brief Validate the @p reset using the CellML 2.0 Specification.
@@ -437,7 +437,7 @@ struct Validator::ValidatorImpl
      * @param component The component the @p node is a part of.
      * @param variableNames A list of variable names.
      */
-    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const;
+    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const;
 
     /**
      * @brief Validate the text of a @c cn element.
@@ -463,7 +463,7 @@ struct Validator::ValidatorImpl
      * @param component The component that the math @c XmlNode @p node is contained within.
      * @param variableNames A @c vector list of the names of variables found within the @p component.
      */
-    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const;
+    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const;
 
     /**
      * @brief Check if the provided @p node is a supported MathML element.
@@ -538,7 +538,7 @@ struct Validator::ValidatorImpl
      *
      * @return @c true if the @p names have already been reported in a cyclic issue, @c false otherwise.
      */
-    bool hasCycleAlreadyBeenReported(std::vector<std::string> names) const;
+    bool hasCycleAlreadyBeenReported(NameList names) const;
 
     /**
      * @brief Check to see if the @p description is already present in the issues.
@@ -622,7 +622,7 @@ void Validator::validateModel(const ModelPtr &model)
         std::vector<ModelPtr> modelsVisited = {model};
         // Check for components in this model.
         if (model->componentCount() > 0) {
-            std::vector<std::string> componentNames;
+            NameList componentNames;
             History history;
             for (size_t i = 0; i < model->componentCount(); ++i) {
                 history.clear();
@@ -648,7 +648,7 @@ void Validator::validateModel(const ModelPtr &model)
     }
 }
 
-void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const
+void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, NameList &names) const
 {
     if (!name.empty()) {
         if (std::find(names.begin(), names.end(), name) != names.end()) {
@@ -663,7 +663,7 @@ void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const s
     }
 }
 
-void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
+void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
 {
     validateUniqueName(model, component->name(), componentNames);
     for (size_t i = 0; i < component->componentCount(); ++i) {
@@ -845,7 +845,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
 
     } else {
         // Check for variables in this component.
-        std::vector<std::string> variableNames;
+        NameList variableNames;
         // Validate variable(s).
         for (size_t i = 0; i < component->variableCount(); ++i) {
             VariablePtr variable = component->variable(i);
@@ -867,7 +867,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
     handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Component", componentName, history, component, nullptr);
 }
 
-std::set<std::string> namesInCycle(std::vector<std::string> allNames)
+std::set<std::string> namesInCycle(NameList allNames)
 {
     std::string cycleStartName = allNames.back();
     allNames.pop_back();
@@ -883,7 +883,7 @@ std::set<std::string> namesInCycle(std::vector<std::string> allNames)
     return namesInCycle;
 }
 
-bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(std::vector<std::string> names) const
+bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(NameList names) const
 {
     std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
     bool found = false;
@@ -1145,7 +1145,7 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
     }
 }
 
-void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames) const
+void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const NameList &variableNames) const
 {
     ComponentPtr component = owningComponent(variable);
     auto variableName = variable->name();
@@ -1400,7 +1400,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         }
 
         XmlNodePtr nodeCopy = node;
-        std::vector<std::string> variableNames;
+        NameList variableNames;
         for (size_t i = 0; i < component->variableCount(); ++i) {
             std::string variableName = component->variable(i)->name();
             if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
@@ -1519,7 +1519,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const
+void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const
 {
     XmlNodePtr childNode = node->firstChild();
     std::string textInNode = text(childNode);
@@ -1535,7 +1535,7 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const
+void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const
 {
     if (node->isMathmlElement("cn")) {
         validateAndCleanCnNode(node, component);
@@ -1939,7 +1939,7 @@ void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::st
         idMap[id].second.emplace_back(info);
         idMap[id] = std::make_pair(idMap[id].first + 1, idMap[id].second);
     } else {
-        std::vector<std::string> infos;
+        Strings infos;
         infos.emplace_back(info);
         idMap.emplace(id, std::make_pair(1, infos));
     }

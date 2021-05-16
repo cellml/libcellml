@@ -41,7 +41,7 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 /**
  * Vector of base units.
  */
-static const std::vector<std::string> baseUnitsList = {
+static const NameList baseUnitsList = {
     "ampere",
     "candela",
     "dimensionless",
@@ -151,7 +151,7 @@ static const std::map<std::string, int> standardPrefixList = {
 /**
  * List of MathML elements supported by CellML.
  */
-static const std::vector<std::string> supportedMathMLElements = {
+static const NameList supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
     "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
@@ -533,7 +533,7 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
  *
  * @return A @c std::vector of @c std::strings.
  */
-std::vector<std::string> split(const std::string &content, const std::string &delimiter = ";");
+Strings split(const std::string &content, const std::string &delimiter = ";");
 
 /**
  * @brief Trim whitespace from the front of a string (in place).
