@@ -3056,6 +3056,12 @@ TEST(Validator, circularImportReferencesUnits)
 
 TEST(Validator, circularImportedUnitsDuplicateNames)
 {
+    const std::string errorMessageImporter =
+        std::string("Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n")
+        + " - units 'i_am_duplicated' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
+        + " - units 'u2' specifies an import from '" + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml';\n"
+        + " - units 'u3' specifies an import from '" + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'; and\n"
+        + " - units 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularUnits_1.cellml' to '" + resourcePath("importer/") + "circularUnits_2.cellml'.";
     const std::vector<std::string> errorMessagesValidator = {
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
         " - units 'i_am_duplicated' specifies an import from ':this:' to 'circularUnits_2.cellml';\n"
@@ -3064,13 +3070,6 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
         " - units 'i_am_cyclic' specifies an import from 'circularUnits_1.cellml' to 'circularUnits_2.cellml'.",
         "Model 'circularImport1' contains multiple units with the name 'i_am_duplicated'. Valid units names must be unique to their model.",
     };
-
-    const std::string errorMessageImporter =
-        std::string("Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n")
-        + " - units 'i_am_duplicated' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
-        + " - units 'u2' specifies an import from '" + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml';\n"
-        + " - units 'u3' specifies an import from '" + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'; and\n"
-        + " - units 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularUnits_1.cellml' to '" + resourcePath("importer/") + "circularUnits_2.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3095,6 +3094,12 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
 
 TEST(Validator, circularImportedComponentsDuplicateNames)
 {
+    const std::string errorMessageImporter =
+        std::string("Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n")
+        + " - component 'i_am_duplicated' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
+        + " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
+        + " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'; and\n"
+        + " - component 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularImport_1.cellml' to '" + resourcePath("importer/") + "circularImport_2.cellml'.";
     const std::vector<std::string> errorMessagesValidator = {
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_duplicated' specifies an import from ':this:' to 'circularImport_2.cellml';\n"
@@ -3103,12 +3108,6 @@ TEST(Validator, circularImportedComponentsDuplicateNames)
         " - component 'i_am_cyclic' specifies an import from 'circularImport_1.cellml' to 'circularImport_2.cellml'.",
         "Model 'circularImport1' contains multiple components with the name 'i_am_duplicated'. Valid component names must be unique to their model.",
     };
-    const std::string errorMessageImporter =
-        std::string("Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n")
-        + " - component 'i_am_duplicated' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
-        + " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
-        + " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'; and\n"
-        + " - component 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularImport_1.cellml' to '" + resourcePath("importer/") + "circularImport_2.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3163,12 +3162,12 @@ TEST(Validator, importComponentWithInvalidName)
 
 TEST(Validator, importSecondGenComponentWithInvalidUri)
 {
+    const std::string errorMessageImporter =
+        "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "i am broken and invalid.cellml' failed: the file could not be opened.";
     const std::string errorMessageValidator =
         "Imported component 'c' is not valid because:\n"
         "  -> Component 'c' importing 'c' from 'invalid_import_url.cellml' has an error:\n"
         "   - Import of component 'c' has an invalid URI in the xlink:href attribute.";
-    const std::string errorMessageImporter =
-        "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "i am broken and invalid.cellml' failed: the file could not be opened.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
