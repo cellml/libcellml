@@ -39,7 +39,7 @@ If an issue does not exist for the required work (e.g. implementation of a featu
 The issue is the place to discuss the particulars related to the issue, discussions on determining the scope of the issue or clarification of any points that are unclear.
 
 To create a new issue, go to the :libcellml_repo:`libCellML repository` GitHub page, and select the :code:`Issues` tab.
-Use the green button on the right hand side to create a new issue.  
+Use the green button on the right hand side to create a new issue.
 You will need to add a description of what you've encountered, as well as any small snippets of code that help describe it.
 
 
@@ -128,7 +128,7 @@ Satisfying the feedback
 =======================
 It is important to respond to all feedback appropriately, the review process will check to make sure that all comments have been dealt with.
 Feel free to respond to comments as appropriate, e.g. through code changes, posting a direct reply, etc.
-Where you need to change code in response to a comment, be sure to include the commit code (a 7 digit hex number) in your reply, so that others can see where and how the changes were made. 
+Where you need to change code in response to a comment, be sure to include the commit code (a 7 digit hex number) in your reply, so that others can see where and how the changes were made.
 
 Completing
 ==========

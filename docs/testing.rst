@@ -34,6 +34,6 @@ When your libCellML has built successfully, and with tests included, executables
 - **Coverage tests** Coverage tests make sure that each line of code is covered by one or more unit tests.
   - A summary of coverage of the C++ code is accessible through :code:`make llvm_coverage`, which result in statistics of line coverage.
   - For detailed information regarding specific lines in each file that need test coverage, use the command **TODO**.
-- **Formatting tests** Check that the code is correctly formatted using the :code:`make test_clang_format`, if you have CLang installed.  
+- **Formatting tests** Check that the code is correctly formatted using the :code:`make test_clang_format`, if you have CLang installed.
   **TODO** Check what other OS use?
 - **Memory tests** TODO

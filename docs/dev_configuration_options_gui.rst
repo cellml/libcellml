@@ -10,10 +10,10 @@ Config                                      Default         Description
 ------------------------------------------- --------------- -----------------------------------------
 :code:`LIBCELLML_TREAT_WARNINGS_AS_ERRORS`  ON              Treat warnings as errors
 ------------------------------------------- --------------- -----------------------------------------
-:code:`INSTALL_PREFIX`                                      Install path prefix 
+:code:`INSTALL_PREFIX`                                      Install path prefix
 ------------------------------------------- --------------- -----------------------------------------
 :code:`UNIT_TESTS`                          ON              Enable tests
 ------------------------------------------- --------------- -----------------------------------------
-:code:`LibXml2_DIR`                                         Path to the cmake directory within your 
-                                                            installation directory for libXML2 
+:code:`LibXml2_DIR`                                         Path to the cmake directory within your
+                                                            installation directory for libXML2
 =========================================== =============== =========================================

@@ -51,7 +51,7 @@ source_suffix = '.rst'
 extlinks = {
     # NB for deployment outside of the libcellml.org domain, you will need to include the root of the href for the
     # :api: shortcut here.  This only works internally.
-    'api': ('/documentation/api/latest/classlibcellml_1_1%s', ''),  
+    'api': ('/documentation/api/latest/classlibcellml_1_1%s', ''),
     'buildbot': ('https://buildbot.net/%s',''),
     'cellml': ('https://www.cellml.org/%s',''),
     'cellml2spec': ('https://www.cellml.org/specifications/cellml_2.0%s', ''),

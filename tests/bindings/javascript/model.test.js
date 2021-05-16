@@ -23,7 +23,7 @@ describe("Model tests", () => {
     });
   test('Checking Model name.', () => {
     const m = new libcellml.Model()
-   
+
     expect(m.name()).toBe('');
 
     m.setName('model-test')

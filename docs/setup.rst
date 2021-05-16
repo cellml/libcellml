@@ -98,22 +98,22 @@ The following sub-sections provide guidance on how to install the recommended to
 
 LibXml2
 -------
-:libxml2:`LibXml2<>` is a parser and toolkit for manipulating XML files and text.  
-It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.  
+:libxml2:`LibXml2<>` is a parser and toolkit for manipulating XML files and text.
+It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
 
 - **Windows** On Windows, it's easiest to install using the packaged version available from :opencmiss_repo:`the OpenCMISS site<>` .
-  You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.  
+  You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.
   Source code for building it yourself can be downloaded from the :libxml2:`LibXml2<>` site.
 - **Linux** LibXml2 can be installed using :code:`sudo apt install libxml2-dev`.
-- **macOS** LibXML2 is already installed on macOS, so no further action is required on that platform.  
+- **macOS** LibXML2 is already installed on macOS, so no further action is required on that platform.
 
 .. _setup_doxygen:
 
 Doxygen
 -------
-:doxygen:`Doxygen<>` is software which assembles documentation files directly from annotated source code, including the generation of inheritance and dependency tree diagrams for classes.  
-In order for libCellML to build its documentation you will need to have Doxygen and its dependencies installed.  
-Note that this does not affect your use of the libCellML library itself. 
+:doxygen:`Doxygen<>` is software which assembles documentation files directly from annotated source code, including the generation of inheritance and dependency tree diagrams for classes.
+In order for libCellML to build its documentation you will need to have Doxygen and its dependencies installed.
+Note that this does not affect your use of the libCellML library itself.
 
 - **Windows** Binary distributions are available from the :doxygen:`download page of the Doxygen website </download.html#srcbin>`.
   You may also need to download and install the Graphviz package in order to generate the class hierarchy diagrams.
@@ -126,13 +126,13 @@ Note that this does not affect your use of the libCellML library itself.
 
 Python (optional)
 -----------------
-:python:`Python<>` is an open-source language which is syntactically easier to read than other higher-level languages.  
-It is commonly used as a scripting language for experimentation, and is included here to allow libCellML to be accessed from Python-based programs.  
+:python:`Python<>` is an open-source language which is syntactically easier to read than other higher-level languages.
+It is commonly used as a scripting language for experimentation, and is included here to allow libCellML to be accessed from Python-based programs.
 Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the :ref:`Building LibCellML <configure_and_build>` page.
 
-- **Windows** Python binaries for Windows can be found on :python:`the Python download page</downloads/windows/>`, or you can build your own from source files if you prefer. 
+- **Windows** Python binaries for Windows can be found on :python:`the Python download page</downloads/windows/>`, or you can build your own from source files if you prefer.
 
-- **Linux** Linux natively includes Python, but depending on the age of your machine and system installation, you may like to upgrade to a more recent version from the :python:`Python download page</downloads/source/>` .   
+- **Linux** Linux natively includes Python, but depending on the age of your machine and system installation, you may like to upgrade to a more recent version from the :python:`Python download page</downloads/source/>` .
 
 - **macOS** Python is already installed, though depending on the age of your machine you may like to upgrade it to a :python:`later version from the Python site<downloads/mac-osx/>` .
 
@@ -140,13 +140,13 @@ Note that creation of Python bindings is optional, and can be enabled/disabled a
 
 SWIG for Python bindings (optional)
 -----------------------------------
-:swig:`SWIG<>` is a tool which acts as a translator between code written in C++ and other languages, including :python:`Python<>`.  
-Here SWIG is used to generate the optional Python bindings for libCellML.  
-The current version (0.9) of libCellML uses SWIG 4.0.0. 
+:swig:`SWIG<>` is a tool which acts as a translator between code written in C++ and other languages, including :python:`Python<>`.
+Here SWIG is used to generate the optional Python bindings for libCellML.
+The current version (0.9) of libCellML uses SWIG 4.0.0.
 
 - **Windows** SWIG for Windows is available from the :swigwin_download:`Swigwin download page<>`.
 
-- **Linux** Both Python and SWIG are already included, so no further action is needed.  
+- **Linux** Both Python and SWIG are already included, so no further action is needed.
 
 - **macOS** SWIG for macOS can be accessed using the :swig:`downloads for Unix/Linux sources</download.html>` and building them locally according to the instructions provided on that page.
 
@@ -154,9 +154,9 @@ The current version (0.9) of libCellML uses SWIG 4.0.0.
 
 Sphinx for Python documentation (optional)
 ------------------------------------------
-:sphinx:`Sphinx<>` is an additional documentation tool used here to assemble documentation of the Python bindings.  
+:sphinx:`Sphinx<>` is an additional documentation tool used here to assemble documentation of the Python bindings.
 Instructions for all operating systems can be found on their :sphinx:`Installation page</usage/installation.html>`.
-The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an :github_rtd:`import error</3812>` despite being reported fixed since version Sphinx 1.7.2).  
+The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an :github_rtd:`import error</3812>` despite being reported fixed since version Sphinx 1.7.2).
 
 
 .. _setup_codebase:

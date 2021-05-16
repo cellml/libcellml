@@ -22,10 +22,10 @@ While there are many types of contribution, this section focuses on contribution
    :ref:`Dependency versions and compatibility<versions>`
    :ref:`Configuring and building libCellML<configure_and_build>`
    :ref:`Testing libCellML<testing>`
-   :ref:`Contributing to libCellML<contributing>` 
+   :ref:`Contributing to libCellML<contributing>`
    :ref:`Review Process<review_process>`
    :ref:`Coding Standards<coding_standards>`
-   :ref:`Glossary<glossary_page>` 
+   :ref:`Glossary<glossary_page>`
 
 .. toctree::
    :hidden:
