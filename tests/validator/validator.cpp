@@ -3278,7 +3278,8 @@ TEST(Validator, importInvalidUnitsReference)
 
 TEST(Validator, importInvalidComponentNotDirectlyDeterminedFromImport)
 {
-    const std::string errorMessage1 = "Component 'invalid_component' does not have a valid 'id' attribute, '8ioisfje+'.";
+    const std::string errorMessage1 =
+        "Component 'invalid_component' does not have a valid 'id' attribute, '8ioisfje+'.";
     const std::string errorMessage2 =
         "Imported component 'imported_component' is not valid because:\n"
         "  -> Component 'imported_component' importing 'invalid_component' from 'component_that_is_invalid.cellml' has an error:\n"
