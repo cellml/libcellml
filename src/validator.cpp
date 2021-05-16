@@ -113,21 +113,21 @@ bool isNameStartChar(uint32_t startChar)
 {
     // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
     return (startChar == 0x3AU)
-            || ((0x41U <= startChar) && (startChar <= 0x5AU))
-            || (startChar == 0x5FU)
-            || ((0x61U <= startChar) && (startChar <= 0x7AU))
-            || ((0xC0U <= startChar) && (startChar <= 0xD6U))
-            || ((0xD8U <= startChar) && (startChar <= 0xF6U))
-            || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
-            || ((0x370U <= startChar) && (startChar <= 0x37DU))
-            || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
-            || ((0x200CU <= startChar) && (startChar <= 0x200DU))
-            || ((0x2070U <= startChar) && (startChar <= 0x218FU))
-            || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
-            || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
-            || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
-            || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
-            || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
+           || ((0x41U <= startChar) && (startChar <= 0x5AU))
+           || (startChar == 0x5FU)
+           || ((0x61U <= startChar) && (startChar <= 0x7AU))
+           || ((0xC0U <= startChar) && (startChar <= 0xD6U))
+           || ((0xD8U <= startChar) && (startChar <= 0xF6U))
+           || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
+           || ((0x370U <= startChar) && (startChar <= 0x37DU))
+           || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
+           || ((0x200CU <= startChar) && (startChar <= 0x200DU))
+           || ((0x2070U <= startChar) && (startChar <= 0x218FU))
+           || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
+           || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
+           || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
+           || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
+           || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
 }
 
 /**
