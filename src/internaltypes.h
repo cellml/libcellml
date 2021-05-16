@@ -110,7 +110,7 @@ public:
     /**
      * @brief Set the reference name for the imported entity.
      *
-     * If the entity is imported set the reference name for it.
+     * If the entity is imported, set the reference name for it.
      *
      * @param importedEntity The imported entity to set the reference name for.
      */
@@ -119,7 +119,7 @@ public:
     /**
      * @brief Set the destination model to the resolving model from the imported entity.
      *
-     * If the entity is imported set the destination model to the resolving model for it.
+     * If the entity is imported, set the destination model to the resolving model for it.
      *
      * @param importedEntity The imported entity to set the destination model for.
      */
