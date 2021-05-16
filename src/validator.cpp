@@ -96,16 +96,149 @@ IssuePtr makeIssueIllegalIdentifier(const std::string &name);
  *
  * @param name The @c std::string identifier to check.
  *
- * @return @c true if @name is a valid CellML identifier and @c false otherwise.
+ * @return @c true if @p name is a valid CellML identifier and @c false otherwise.
  */
 bool isCellmlIdentifier(const std::string &name);
 
 /**
- * @brief isValidW3IdName
- * @param name
- * @return
+ * @brief Test to determine if @p startChar is a valid XML name start character.
+ *
+ * A start name character is is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
+ *
+ * @param startChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for a start character in an XML name.
  */
-bool isValidW3IdName(const std::string &name);
+bool isNameStartChar(uint32_t startChar)
+{
+    // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    return (startChar == 0x3AU)
+            || ((0x41U <= startChar) && (startChar <= 0x5AU))
+            || (startChar == 0x5FU)
+            || ((0x61U <= startChar) && (startChar <= 0x7AU))
+            || ((0xC0U <= startChar) && (startChar <= 0xD6U))
+            || ((0xD8U <= startChar) && (startChar <= 0xF6U))
+            || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
+            || ((0x370U <= startChar) && (startChar <= 0x37DU))
+            || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
+            || ((0x200CU <= startChar) && (startChar <= 0x200DU))
+            || ((0x2070U <= startChar) && (startChar <= 0x218FU))
+            || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
+            || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
+            || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
+            || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
+            || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
+}
+
+/**
+ * @brief Convert @p text to a uint32 form.
+ *
+ * Convert a variable width code point to uint32 form.
+ *
+ * @param text The @c std::string to convert.
+ * @param initialValue The starting point for the conversion.
+ *
+ * @return uint32 form of @p text.
+ */
+uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
+{
+    const std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
+    uint32_t value = 0;
+    size_t index = 0;
+    for (size_t j = initialValue; j < 4; ++j) {
+        auto tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
+        value |= tempValue;
+    }
+
+    return value;
+}
+
+/**
+ * @brief Breakdown a string into code points.
+ *
+ * Breakdown @p text into a vector of code points as described by
+ * @c uint32_t.
+ *
+ * @param text The std::string to breakdown.
+ *
+ * @return A vector of @c uint32_t of the Unicode character values.
+ */
+std::vector<uint32_t> characterBreakdown(const std::string &text)
+{
+    std::vector<uint32_t> breakdown;
+    std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
+    for (size_t i = 0; i < text.length();) {
+        size_t codePointLength = 1;
+        uint32_t value = 0;
+        auto unsignedText = static_cast<uint8_t>(text[i]);
+        if ((unsignedText & 0xf8U) == 0xf0U) {
+            codePointLength = 4;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
+        } else if ((unsignedText & 0xf0U) == 0xe0U) {
+            codePointLength = 3;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 1));
+        } else if ((unsignedText & 0xe0U) == 0xc0U) {
+            codePointLength = 2;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 2));
+        } else {
+            auto subText = text.substr(i, codePointLength);
+            value = static_cast<uint8_t>(subText[0]);
+            breakdown.push_back(value);
+        }
+
+        i += codePointLength;
+    }
+
+    return breakdown;
+}
+
+/**
+ * @brief Test to determine if @p nameChar is a valid XML name character.
+ *
+ * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
+ *
+ * @param nameChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for an XML name character.
+ */
+bool isNameChar(uint32_t nameChar)
+{
+    if (isNameStartChar(nameChar)) {
+        return true;
+    }
+    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
+           || (nameChar == 0x2DU)
+           || (nameChar == 0x2EU)
+           || (nameChar == 0xB7U)
+           || ((0x0300U <= nameChar) && (nameChar <= 0x036FU))
+           || ((0x203FU <= nameChar) && (nameChar <= 0x2040U));
+}
+
+/**
+ * @brief Test to determine if @p name is a valid XML name.
+ *
+ * An XML name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
+ *
+ * @param name The @c std::string to test.
+ *
+ * @return True if the name is a valid XML name.
+ */
+bool isValidXmlName(const std::string &name)
+{
+    if (!name.empty()) {
+        auto breakdown = characterBreakdown(name);
+        if (!isNameStartChar(breakdown[0])) {
+            return false;
+        }
+        for (size_t i = 1; i < breakdown.size(); ++i) {
+            if (!isNameChar(breakdown[i])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 /**
  * @brief Validate the provided @p name is a valid CellML identifier.
@@ -479,7 +612,7 @@ void Validator::validateModel(const ModelPtr &model)
             addIssue(issue);
         }
         // Check for a valid identifier.
-        if (!isValidW3IdName(model->id())) {
+        if (!isValidXmlName(model->id())) {
             IssuePtr issue = Issue::create();
             issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
             issue->setModel(model);
@@ -545,7 +678,7 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
     std::string url = importSource->url();
 
     // Check for a valid identifier.
-    if (!isValidW3IdName(importSource->id())) {
+    if (!isValidXmlName(importSource->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setImportSource(importSource);
@@ -661,7 +794,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
         mValidator->addIssue(issue);
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(component->id())) {
+    if (!isValidXmlName(component->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setComponent(component);
@@ -929,7 +1062,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
         }
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(units->id())) {
+    if (!isValidXmlName(units->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setUnits(units);
@@ -981,7 +1114,7 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
         mValidator->addIssue(issue);
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(id)) {
+    if (!isValidXmlName(id)) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setUnitsItem(UnitsItem::create(units, index));
@@ -1035,7 +1168,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addIssue(issue);
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(variable->id())) {
+    if (!isValidXmlName(variable->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setVariable(variable);
@@ -1117,7 +1250,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     }
 
     // Check for a valid identifier.
-    if (!isValidW3IdName(reset->id())) {
+    if (!isValidXmlName(reset->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setReset(reset);
@@ -1166,7 +1299,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     }
 
     // Check for a valid identifier.
-    if (!isValidW3IdName(reset->testValueId())) {
+    if (!isValidXmlName(reset->testValueId())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setReset(reset);
@@ -1174,7 +1307,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         mValidator->addIssue(issue);
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(reset->resetValueId())) {
+    if (!isValidXmlName(reset->resetValueId())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setReset(reset);
@@ -1629,161 +1762,6 @@ Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
     return Issue::ReferenceRule::UNDEFINED;
 }
 
-/**
- * @brief Test to determine if @p name is a valid CellML identifier.
- *
- * Test to determine if @p name is a valid CellML identifier.
- *
- * @param name The name to test.
- *
- * @return True if the name is a valid CellML identifier, false otherwise.
- */
-bool isCellmlIdentifier(const std::string &name)
-{
-    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
-    return isValid == Issue::ReferenceRule::UNDEFINED;
-}
-
-/**
- * @brief Test to determine if @p startChar is a valid XML name start character.
- *
- * A start name character is is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
- *
- * @param startChar The character to test.
- *
- * @return True if the character is in the allowed Unicode ranges for a start character in an XML name.
- */
-bool isNameStartChar(uint32_t startChar)
-{
-    // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-    return (startChar == 0x3AU)
-            || ((0x41U <= startChar) && (startChar <= 0x5AU))
-            || (startChar == 0x5FU)
-            || ((0x61U <= startChar) && (startChar <= 0x7AU))
-            || ((0xC0U <= startChar) && (startChar <= 0xD6U))
-            || ((0xD8U <= startChar) && (startChar <= 0xF6U))
-            || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
-            || ((0x370U <= startChar) && (startChar <= 0x37DU))
-            || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
-            || ((0x200CU <= startChar) && (startChar <= 0x200DU))
-            || ((0x2070U <= startChar) && (startChar <= 0x218FU))
-            || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
-            || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
-            || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
-            || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
-            || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
-}
-
-/**
- * @brief Convert @p text to a uint32 form.
- *
- * Convert a variable width code point to uint32 form.
- *
- * @param text The @c std::string to convert.
- * @param initialValue The starting point for the conversion.
- *
- * @return uint32 form of @p text.
- */
-uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
-{
-    const std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
-    uint32_t value = 0;
-    size_t index = 0;
-    for (size_t j = initialValue; j < 4; ++j) {
-        auto tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
-        value |= tempValue;
-    }
-
-    return value;
-}
-
-/**
- * @brief Breakdown a string into code points.
- *
- * Breakdown @p text into a vector of code points as described by
- * @c uint32_t.
- *
- * @param text The std::string to breakdown.
- *
- * @return A vector of @c uint32_t of the Unicode character values.
- */
-std::vector<uint32_t> characterBreakdown(const std::string &text)
-{
-    std::vector<uint32_t> breakdown;
-    std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
-    for (size_t i = 0; i < text.length();) {
-        size_t codePointLength = 1;
-        uint32_t value = 0;
-        auto unsignedText = static_cast<uint8_t>(text[i]);
-        if ((unsignedText & 0xf8U) == 0xf0U) {
-            codePointLength = 4;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
-        } else if ((unsignedText & 0xf0U) == 0xe0U) {
-            codePointLength = 3;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 1));
-        } else if ((unsignedText & 0xe0U) == 0xc0U) {
-            codePointLength = 2;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 2));
-        } else {
-            auto subText = text.substr(i, codePointLength);
-            value = static_cast<uint8_t>(subText[0]);
-            breakdown.push_back(value);
-        }
-
-        i += codePointLength;
-    }
-
-    return breakdown;
-}
-
-/**
- * @brief Test to determine if @p nameChar is a valid XML name character.
- *
- * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
- *
- * @param nameChar The character to test.
- *
- * @return True if the character is in the allowed Unicode ranges for an XML name character.
- */
-bool isNameChar(uint32_t nameChar)
-{
-    if (isNameStartChar(nameChar)) {
-        return true;
-    }
-    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
-           || (nameChar == 0x2DU)
-           || (nameChar == 0x2EU)
-           || (nameChar == 0xB7U)
-           || ((0x0300U <= nameChar) && (nameChar <= 0x036FU))
-           || ((0x203FU <= nameChar) && (nameChar <= 0x2040U));
-}
-
-/**
- * @brief Test to determine if @p name is a valid XML name.
- *
- * An XML name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
- *
- * @param name The @c std::string to test.
- *
- * @return True if the name is a valid XML name.
- */
-bool isValidW3IdName(const std::string &name)
-{
-    if (!name.empty()) {
-        auto breakdown = characterBreakdown(name);
-        if (!isNameStartChar(breakdown[0])) {
-            return false;
-        }
-        for (size_t i = 1; i < breakdown.size(); ++i) {
-            if (!isNameChar(breakdown[i])) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 IssuePtr makeIssueIllegalIdentifier(const std::string &name)
 {
     IssuePtr issue = Issue::create();
@@ -1802,6 +1780,12 @@ IssuePtr makeIssueIllegalIdentifier(const std::string &name)
     }
 
     return issue;
+}
+
+bool isCellmlIdentifier(const std::string &name)
+{
+    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
+    return isValid == Issue::ReferenceRule::UNDEFINED;
 }
 
 bool unitsAreEquivalent(const ModelPtr &model,
@@ -2003,7 +1987,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     // Encapsulation.
     if (!model->encapsulationId().empty()) {
         // Check for a valid identifier.
-        if (!isValidW3IdName(model->encapsulationId())) {
+        if (!isValidXmlName(model->encapsulationId())) {
             IssuePtr issue = Issue::create();
             issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
             issue->setModel(model);
@@ -2064,7 +2048,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                         "between variable '" + item->name() + "' in component '" + component->name()
                         + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
                     // Check for a valid identifier.
-                    if (!isValidW3IdName(mappingId)) {
+                    if (!isValidXmlName(mappingId)) {
                         IssuePtr issue = Issue::create();
                         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
                         issue->setMapVariables(item, equiv);
@@ -2084,7 +2068,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                         + "' because of variable equivalence between variables '" + item->name()
                         + "' and '" + equiv->name() + "'";
                     // Check for a valid identifier.
-                    if (!isValidW3IdName(connectionId)) {
+                    if (!isValidXmlName(connectionId)) {
                         IssuePtr issue = Issue::create();
                         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
                         issue->setConnection(item, equiv);
@@ -2134,7 +2118,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     // Hierarchy.
     if (!component->encapsulationId().empty()) {
         // Check for a valid identifier.
-        if (!isValidW3IdName(component->encapsulationId())) {
+        if (!isValidXmlName(component->encapsulationId())) {
             IssuePtr issue = Issue::create();
             issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
             issue->setComponent(component);
