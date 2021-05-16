@@ -1077,5 +1077,4 @@ TEST(Importer, importingCommonUnitsDefinitions)
     EXPECT_EQ(size_t(0), parser->issueCount());
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(0), importer->issueCount());
-    EXPECT_EQ(size_t(0), importer->errorCount());
 }

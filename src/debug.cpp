@@ -30,7 +30,7 @@ namespace libcellml {
 
 void printHistory(const History &history)
 {
-    for (auto h : history) {
+    for (const auto &h : history) {
         printHistoryEpoch(h);
     }
 
@@ -500,7 +500,7 @@ void printAst(const AnalyserEquationAstPtr &ast)
 void printImportLibrary(const ImportLibrary &importlibrary)
 {
     Debug() << " == Import library ==";
-    for ( const auto &entry : importlibrary) {
+    for (const auto &entry : importlibrary) {
         std::string name = "(null)";
         if (entry.second != nullptr) {
             name = entry.second->name();

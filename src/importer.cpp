@@ -105,7 +105,7 @@ std::string Importer::ImporterImpl::modelUrl(const ModelPtr &model) const
         }
     }
 
-    return std::string(ORIGIN_MODEL_REF);
+    return ORIGIN_MODEL_REF;
 }
 
 std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSource) const
