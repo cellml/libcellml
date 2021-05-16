@@ -739,54 +739,32 @@ std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
 IndexStack indexStackOf(const ComponentPtr &component);
 
 /**
- * @brief Create a history epoch for a @ref Units.
+ * @brief Create a history epoch for a @ref Units with optional destination URL.
  *
- * Create a history epoch for a @ref Units.
- *
- * @param units The @ref Units to create a history entry for.
- * @param sourceUrl The source URL for the units.
- *
- * @return The history epoch.
- */
-HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl);
-
-/**
- * @brief Create a history epoch for a @ref Units with destination URL.
- *
- * Create a history epoch for a @ref Units with destination URL.
+ * Create a history epoch for a @ref Units.  If a destination URL is not given
+ * then it will be taken from the import source if the @p units is an imported units.
  *
  * @param units The @ref Units to create a history entry for.
  * @param sourceUrl The source URL for the units.
- * @param destinationUrl The destination URL for the units.
+ * @param destinationUrl The optional destination URL for the units.
  *
  * @return The history epoch.
  */
-HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl);
+HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl = "");
 
 /**
- * @brief Create a history epoch for a @ref Component.
+ * @brief Create a history epoch for a @ref Component with optional destination URL.
  *
- * Create a history epoch for a @ref Component.
+ * Create a history epoch for a @ref Component.  If a destination URL is not given
+ * then it will be taken from the import source if the @p component is an imported component.
  *
  * @param component The @ref Component to create a history entry for.
  * @param sourceUrl The source URL for the component.
+ * @param destinationUrl The optional destination URL for the component.
  *
  * @return The history epoch.
  */
-HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl);
-
-/**
- * @brief Create a history epoch for a @ref Component with destination URL.
- *
- * Create a history epoch for a @ref Component with destination URL.
- *
- * @param component The @ref Component to create a history entry for.
- * @param sourceUrl The source URL for the component.
- * @param destinationUrl The destination URL for the component.
- *
- * @return The history epoch.
- */
-HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl);
+HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl = "");
 
 /**
  * @brief Figure out the URL of the importee from the history.
