@@ -41,7 +41,7 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 /**
  * Vector of base units.
  */
-static const std::vector<std::string> baseUnitsList = {
+static const NameList baseUnitsList = {
     "ampere",
     "candela",
     "dimensionless",
@@ -151,7 +151,7 @@ static const std::map<std::string, int> standardPrefixList = {
 /**
  * List of MathML elements supported by CellML.
  */
-static const std::vector<std::string> supportedMathMLElements = {
+static const NameList supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
     "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
@@ -526,15 +526,14 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
  * @brief Split a string.
  *
  * Split the given string with the given delimiter.  If a delimiter is not given
- * then the default delimiter is used.  The default delimiter is ';'.  If the
- * delimiter is not found in @p content then a copy is returned.
+ * then ';' is used.  If the delimiter is not found a copy of @p content is returned.
  *
  * @param content The @c std::string to split.
  * @param delimiter The delimiter to split the string with, default ';'.
  *
  * @return A @c std::vector of @c std::strings.
  */
-std::vector<std::string> split(const std::string &content, const std::string &delimiter = ";");
+Strings split(const std::string &content, const std::string &delimiter = ";");
 
 /**
  * @brief Trim whitespace from the front of a string (in place).
@@ -740,54 +739,32 @@ std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
 IndexStack indexStackOf(const ComponentPtr &component);
 
 /**
- * @brief Create a history epoch for a @ref Units.
+ * @brief Create a history epoch for a @ref Units with optional destination URL.
  *
- * Create a history epoch for a @ref Units.
- *
- * @param units The @ref Units to create a history entry for.
- * @param sourceUrl The source URL for the units.
- *
- * @return The history epoch.
- */
-HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl);
-
-/**
- * @brief Create a history epoch for a @ref Units with destination URL.
- *
- * Create a history epoch for a @ref Units with destination URL.
+ * Create a history epoch for a @ref Units.  If a destination URL is not given
+ * then it will be taken from the import source if the @p units is an imported units.
  *
  * @param units The @ref Units to create a history entry for.
  * @param sourceUrl The source URL for the units.
- * @param destinationUrl The destination URL for the units.
+ * @param destinationUrl The optional destination URL for the units.
  *
  * @return The history epoch.
  */
-HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl);
+HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl = "");
 
 /**
- * @brief Create a history epoch for a @ref Component.
+ * @brief Create a history epoch for a @ref Component with optional destination URL.
  *
- * Create a history epoch for a @ref Component.
+ * Create a history epoch for a @ref Component.  If a destination URL is not given
+ * then it will be taken from the import source if the @p component is an imported component.
  *
  * @param component The @ref Component to create a history entry for.
  * @param sourceUrl The source URL for the component.
+ * @param destinationUrl The optional destination URL for the component.
  *
  * @return The history epoch.
  */
-HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl);
-
-/**
- * @brief Create a history epoch for a @ref Component with destination URL.
- *
- * Create a history epoch for a @ref Component with destination URL.
- *
- * @param component The @ref Component to create a history entry for.
- * @param sourceUrl The source URL for the component.
- * @param destinationUrl The destination URL for the component.
- *
- * @return The history epoch.
- */
-HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl);
+HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl = "");
 
 /**
  * @brief Figure out the URL of the importee from the history.

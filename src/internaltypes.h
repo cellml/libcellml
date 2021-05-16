@@ -25,8 +25,6 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 
-#include <iostream>
-
 namespace libcellml {
 
 const std::string ORIGIN_MODEL_REF = ":this:";
@@ -70,9 +68,6 @@ using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for sha
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
-class HistoryEpoch; /**< Forward declaration of import step class. */
-using HistoryEpochPtr = std::shared_ptr<HistoryEpoch>; /**< Type definition for shared import step pointer. */
-
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
  *
@@ -115,7 +110,7 @@ public:
     /**
      * @brief Set the reference name for the imported entity.
      *
-     * If the entity is imported set the reference name for it.
+     * If the entity is imported, set the reference name for it.
      *
      * @param importedEntity The imported entity to set the reference name for.
      */
@@ -124,13 +119,14 @@ public:
     /**
      * @brief Set the destination model to the resolving model from the imported entity.
      *
-     * If the entity is imported set the destination model to the resolving model for it.
+     * If the entity is imported, set the destination model to the resolving model for it.
      *
      * @param importedEntity The imported entity to set the destination model for.
      */
     void setDestinationModel(const ImportedEntityConstPtr &importedEntity);
 };
 
+using HistoryEpochPtr = std::shared_ptr<HistoryEpoch>; /**< Type definition for shared history epoch pointer. */
 using History = std::vector<HistoryEpochPtr>; /**< Type definition for history.*/
 
 using Strings = std::vector<std::string>; /**< Type definition for strings.*/

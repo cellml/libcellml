@@ -42,7 +42,7 @@ namespace libcellml {
 /**
  * Type definition for a list of issue descriptions.
  */
-using IssuesList = std::vector<std::vector<std::string>>;
+using IssuesList = std::vector<Strings>;
 
 /**
 * @brief Validate that equivalent variable pairs in the @p model
@@ -96,16 +96,149 @@ IssuePtr makeIssueIllegalIdentifier(const std::string &name);
  *
  * @param name The @c std::string identifier to check.
  *
- * @return @c true if @name is a valid CellML identifier and @c false otherwise.
+ * @return @c true if @p name is a valid CellML identifier and @c false otherwise.
  */
 bool isCellmlIdentifier(const std::string &name);
 
 /**
- * @brief isValidW3IdName
- * @param name
- * @return
+ * @brief Test to determine if @p startChar is a valid XML name start character.
+ *
+ * A start name character is is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
+ *
+ * @param startChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for a start character in an XML name.
  */
-bool isValidW3IdName(const std::string &name);
+bool isNameStartChar(uint32_t startChar)
+{
+    // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    return (startChar == 0x3AU)
+           || ((0x41U <= startChar) && (startChar <= 0x5AU))
+           || (startChar == 0x5FU)
+           || ((0x61U <= startChar) && (startChar <= 0x7AU))
+           || ((0xC0U <= startChar) && (startChar <= 0xD6U))
+           || ((0xD8U <= startChar) && (startChar <= 0xF6U))
+           || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
+           || ((0x370U <= startChar) && (startChar <= 0x37DU))
+           || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
+           || ((0x200CU <= startChar) && (startChar <= 0x200DU))
+           || ((0x2070U <= startChar) && (startChar <= 0x218FU))
+           || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
+           || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
+           || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
+           || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
+           || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
+}
+
+/**
+ * @brief Convert @p text to a uint32 form.
+ *
+ * Convert a variable width code point to uint32 form.
+ *
+ * @param text The @c std::string to convert.
+ * @param initialValue The starting point for the conversion.
+ *
+ * @return uint32 form of @p text.
+ */
+uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
+{
+    const std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
+    uint32_t value = 0;
+    size_t index = 0;
+    for (size_t j = initialValue; j < 4; ++j) {
+        auto tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
+        value |= tempValue;
+    }
+
+    return value;
+}
+
+/**
+ * @brief Breakdown a string into code points.
+ *
+ * Breakdown @p text into a vector of code points as described by
+ * @c uint32_t.
+ *
+ * @param text The std::string to breakdown.
+ *
+ * @return A vector of @c uint32_t of the Unicode character values.
+ */
+std::vector<uint32_t> characterBreakdown(const std::string &text)
+{
+    std::vector<uint32_t> breakdown;
+    std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
+    for (size_t i = 0; i < text.length();) {
+        size_t codePointLength = 1;
+        uint32_t value = 0;
+        auto unsignedText = static_cast<uint8_t>(text[i]);
+        if ((unsignedText & 0xf8U) == 0xf0U) {
+            codePointLength = 4;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
+        } else if ((unsignedText & 0xf0U) == 0xe0U) {
+            codePointLength = 3;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 1));
+        } else if ((unsignedText & 0xe0U) == 0xc0U) {
+            codePointLength = 2;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 2));
+        } else {
+            auto subText = text.substr(i, codePointLength);
+            value = static_cast<uint8_t>(subText[0]);
+            breakdown.push_back(value);
+        }
+
+        i += codePointLength;
+    }
+
+    return breakdown;
+}
+
+/**
+ * @brief Test to determine if @p nameChar is a valid XML name character.
+ *
+ * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
+ *
+ * @param nameChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for an XML name character.
+ */
+bool isNameChar(uint32_t nameChar)
+{
+    if (isNameStartChar(nameChar)) {
+        return true;
+    }
+    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
+           || (nameChar == 0x2DU)
+           || (nameChar == 0x2EU)
+           || (nameChar == 0xB7U)
+           || ((0x0300U <= nameChar) && (nameChar <= 0x036FU))
+           || ((0x203FU <= nameChar) && (nameChar <= 0x2040U));
+}
+
+/**
+ * @brief Test to determine if @p name is a valid XML name.
+ *
+ * An XML name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
+ *
+ * @param name The @c std::string to test.
+ *
+ * @return True if the name is a valid XML name.
+ */
+bool isValidXmlName(const std::string &name)
+{
+    if (!name.empty()) {
+        auto breakdown = characterBreakdown(name);
+        if (!isNameStartChar(breakdown[0])) {
+            return false;
+        }
+        for (size_t i = 1; i < breakdown.size(); ++i) {
+            if (!isNameChar(breakdown[i])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 /**
  * @brief Validate the provided @p name is a valid CellML identifier.
@@ -147,7 +280,7 @@ struct Validator::ValidatorImpl
      * @param name The name of the component to validate.
      * @param names The list of component names already used in the model.
      */
-    void validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const;
+    void validateUniqueName(const ModelPtr &model, const std::string &name, NameList &names) const;
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -173,7 +306,7 @@ struct Validator::ValidatorImpl
      * @param history The history of visited components.
      * @param modelsVisited The list of visited models.
      */
-    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
+    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -250,7 +383,7 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
      */
-    void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames) const;
+    void validateVariable(const VariablePtr &variable, const NameList &variableNames) const;
 
     /**
      * @brief Validate the @p reset using the CellML 2.0 Specification.
@@ -304,7 +437,7 @@ struct Validator::ValidatorImpl
      * @param component The component the @p node is a part of.
      * @param variableNames A list of variable names.
      */
-    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const;
+    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const;
 
     /**
      * @brief Validate the text of a @c cn element.
@@ -330,7 +463,7 @@ struct Validator::ValidatorImpl
      * @param component The component that the math @c XmlNode @p node is contained within.
      * @param variableNames A @c vector list of the names of variables found within the @p component.
      */
-    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const;
+    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const;
 
     /**
      * @brief Check if the provided @p node is a supported MathML element.
@@ -405,7 +538,7 @@ struct Validator::ValidatorImpl
      *
      * @return @c true if the @p names have already been reported in a cyclic issue, @c false otherwise.
      */
-    bool hasCycleAlreadyBeenReported(std::vector<std::string> names) const;
+    bool hasCycleAlreadyBeenReported(NameList names) const;
 
     /**
      * @brief Check to see if the @p description is already present in the issues.
@@ -422,7 +555,7 @@ struct Validator::ValidatorImpl
     /**
      * @brief Deal with errors raised from imports.
      *
-     * When an error is raised by an imported entity track back to the originating model and
+     * When an error is raised by an imported entity, track back to the originating model and
      * assign the source @ref Units or @ref Component that the error belongs to.
      *
      * @param initialErrorCount The initial number of errors in the validator.
@@ -479,7 +612,7 @@ void Validator::validateModel(const ModelPtr &model)
             addIssue(issue);
         }
         // Check for a valid identifier.
-        if (!isValidW3IdName(model->id())) {
+        if (!isValidXmlName(model->id())) {
             IssuePtr issue = Issue::create();
             issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
             issue->setModel(model);
@@ -489,7 +622,7 @@ void Validator::validateModel(const ModelPtr &model)
         std::vector<ModelPtr> modelsVisited = {model};
         // Check for components in this model.
         if (model->componentCount() > 0) {
-            std::vector<std::string> componentNames;
+            NameList componentNames;
             History history;
             for (size_t i = 0; i < model->componentCount(); ++i) {
                 history.clear();
@@ -515,7 +648,7 @@ void Validator::validateModel(const ModelPtr &model)
     }
 }
 
-void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const
+void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, NameList &names) const
 {
     if (!name.empty()) {
         if (std::find(names.begin(), names.end(), name) != names.end()) {
@@ -530,7 +663,7 @@ void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const s
     }
 }
 
-void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
+void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
 {
     validateUniqueName(model, component->name(), componentNames);
     for (size_t i = 0; i < component->componentCount(); ++i) {
@@ -545,7 +678,7 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
     std::string url = importSource->url();
 
     // Check for a valid identifier.
-    if (!isValidW3IdName(importSource->id())) {
+    if (!isValidXmlName(importSource->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setImportSource(importSource);
@@ -576,10 +709,10 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
 
 void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const History &history, const ComponentPtr &component, const UnitsPtr &units) const
 {
-    const std::string skipThis = "Cyclic dependencies";
-    const std::string notOriginMarker = "NOT ORIGIN: ";
-    const std::string dataBoundaryMarker = "&";
-    const std::string dataSeparator = ";";
+    static const std::string skipThis = "Cyclic dependencies";
+    static const std::string notOriginMarker = "NOT ORIGIN: ";
+    static const std::string dataBoundaryMarker = "&";
+    static const std::string dataSeparator = ";";
 
     for (size_t i = initialErrorCount; i < mValidator->issueCount(); ++i) {
         auto issue = mValidator->issue(i);
@@ -661,7 +794,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
         mValidator->addIssue(issue);
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(component->id())) {
+    if (!isValidXmlName(component->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setComponent(component);
@@ -712,7 +845,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
 
     } else {
         // Check for variables in this component.
-        std::vector<std::string> variableNames;
+        NameList variableNames;
         // Validate variable(s).
         for (size_t i = 0; i < component->variableCount(); ++i) {
             VariablePtr variable = component->variable(i);
@@ -734,7 +867,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
     handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Component", componentName, history, component, nullptr);
 }
 
-std::set<std::string> namesInCycle(std::vector<std::string> allNames)
+std::set<std::string> namesInCycle(NameList allNames)
 {
     std::string cycleStartName = allNames.back();
     allNames.pop_back();
@@ -750,14 +883,17 @@ std::set<std::string> namesInCycle(std::vector<std::string> allNames)
     return namesInCycle;
 }
 
-bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(std::vector<std::string> names) const
+bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(NameList names) const
 {
     std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
     bool found = false;
     for (size_t i = 0; (i < mValidator->issueCount()) && !found; ++i) {
         auto issue = mValidator->issue(i);
         if (issue->description().substr(0, 20) == "Cyclic units exist: ") {
+            // Remove prefix to loop information.
             auto loop = issue->description().substr(20);
+            // Remove suffix to loop information.
+            loop.pop_back();
             auto parts = split(loop, " -> ");
             auto existingNamesInCycle = namesInCycle(parts);
             found = testNamesInCycle == existingNamesInCycle;
@@ -784,7 +920,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
     if (checkForLocalCycles(history, h)) {
         history.push_back(h);
         std::string des;
-        std::vector<std::string> names;
+        Strings names;
         for (const auto &entry : history) {
             if (!des.empty()) {
                 des += " -> ";
@@ -926,7 +1062,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
         }
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(units->id())) {
+    if (!isValidXmlName(units->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setUnits(units);
@@ -978,7 +1114,7 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
         mValidator->addIssue(issue);
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(id)) {
+    if (!isValidXmlName(id)) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setUnitsItem(UnitsItem::create(units, index));
@@ -1009,7 +1145,7 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
     }
 }
 
-void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames) const
+void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const NameList &variableNames) const
 {
     ComponentPtr component = owningComponent(variable);
     auto variableName = variable->name();
@@ -1032,7 +1168,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addIssue(issue);
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(variable->id())) {
+    if (!isValidXmlName(variable->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setVariable(variable);
@@ -1114,7 +1250,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     }
 
     // Check for a valid identifier.
-    if (!isValidW3IdName(reset->id())) {
+    if (!isValidXmlName(reset->id())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setReset(reset);
@@ -1163,7 +1299,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     }
 
     // Check for a valid identifier.
-    if (!isValidW3IdName(reset->testValueId())) {
+    if (!isValidXmlName(reset->testValueId())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setReset(reset);
@@ -1171,7 +1307,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         mValidator->addIssue(issue);
     }
     // Check for a valid identifier.
-    if (!isValidW3IdName(reset->resetValueId())) {
+    if (!isValidXmlName(reset->resetValueId())) {
         IssuePtr issue = Issue::create();
         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
         issue->setReset(reset);
@@ -1264,7 +1400,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         }
 
         XmlNodePtr nodeCopy = node;
-        std::vector<std::string> variableNames;
+        NameList variableNames;
         for (size_t i = 0; i < component->variableCount(); ++i) {
             std::string variableName = component->variable(i)->name();
             if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
@@ -1383,7 +1519,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const
+void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const
 {
     XmlNodePtr childNode = node->firstChild();
     std::string textInNode = text(childNode);
@@ -1399,7 +1535,7 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const
+void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const
 {
     if (node->isMathmlElement("cn")) {
         validateAndCleanCnNode(node, component);
@@ -1626,161 +1762,6 @@ Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
     return Issue::ReferenceRule::UNDEFINED;
 }
 
-/**
- * @brief Test to determine if @p name is a valid CellML identifier.
- *
- * Test to determine if @p name is a valid CellML identifier.
- *
- * @param name The name to test.
- *
- * @return True if the name is a valid CellML identifier, false otherwise.
- */
-bool isCellmlIdentifier(const std::string &name)
-{
-    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
-    return isValid == Issue::ReferenceRule::UNDEFINED;
-}
-
-/**
- * @brief Test to determine if @p startChar is a valid XML name start character.
- *
- * A start name character is is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
- *
- * @param startChar The character to test.
- *
- * @return True if the character is in the allowed Unicode ranges for a start character in an XML name.
- */
-bool isNameStartChar(uint32_t startChar)
-{
-    // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-    return (startChar == 0x3AU)
-           || ((0x41U <= startChar) && (startChar <= 0x5AU))
-           || (startChar == 0x5FU)
-           || ((0x61U <= startChar) && (startChar <= 0x7AU))
-           || ((0xC0U <= startChar) && (startChar <= 0xD6U))
-           || ((0xD8U <= startChar) && (startChar <= 0xF6U))
-           || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
-           || ((0x370U <= startChar) && (startChar <= 0x37DU))
-           || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
-           || ((0x200CU <= startChar) && (startChar <= 0x200DU))
-           || ((0x2070U <= startChar) && (startChar <= 0x218FU))
-           || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
-           || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
-           || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
-           || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
-           || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
-}
-
-/**
- * @brief Convert @p text to a uint32 form.
- *
- * Convert a variable width code point to uint32 form.
- *
- * @param text The @c std::string to convert.
- * @param initialValue The starting point for the conversion.
- *
- * @return uint32 form of @p text.
- */
-uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
-{
-    const std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
-    uint32_t value = 0;
-    size_t index = 0;
-    for (size_t j = initialValue; j < 4; ++j) {
-        auto tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
-        value |= tempValue;
-    }
-
-    return value;
-}
-
-/**
- * @brief Breakdown a string into code points.
- *
- * Breakdown @p text into a vector of code points as described by
- * @c uint32_t.
- *
- * @param text The std::string to breakdown.
- *
- * @return A vector of @c uint32_t of the Unicode character values.
- */
-std::vector<uint32_t> characterBreakdown(const std::string &text)
-{
-    std::vector<uint32_t> breakdown;
-    std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
-    for (size_t i = 0; i < text.length();) {
-        size_t codePointLength = 1;
-        uint32_t value = 0;
-        auto unsignedText = static_cast<uint8_t>(text[i]);
-        if ((unsignedText & 0xf8U) == 0xf0U) {
-            codePointLength = 4;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
-        } else if ((unsignedText & 0xf0U) == 0xe0U) {
-            codePointLength = 3;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 1));
-        } else if ((unsignedText & 0xe0U) == 0xc0U) {
-            codePointLength = 2;
-            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 2));
-        } else {
-            auto subText = text.substr(i, codePointLength);
-            value = static_cast<uint8_t>(subText[0]);
-            breakdown.push_back(value);
-        }
-
-        i += codePointLength;
-    }
-
-    return breakdown;
-}
-
-/**
- * @brief Test to determine if @p nameChar is a valid XML name character.
- *
- * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
- *
- * @param nameChar The character to test.
- *
- * @return True if the character is in the allowed Unicode ranges for an XML name character.
- */
-bool isNameChar(uint32_t nameChar)
-{
-    if (isNameStartChar(nameChar)) {
-        return true;
-    }
-    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
-           || (nameChar == 0x2DU)
-           || (nameChar == 0x2EU)
-           || (nameChar == 0xB7U)
-           || ((0x0300U <= nameChar) && (nameChar <= 0x036FU))
-           || ((0x203FU <= nameChar) && (nameChar <= 0x2040U));
-}
-
-/**
- * @brief Test to determine if @p name is a valid XML name.
- *
- * An XML name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
- *
- * @param name The @c std::string to test.
- *
- * @return True if the name is a valid XML name.
- */
-bool isValidW3IdName(const std::string &name)
-{
-    if (!name.empty()) {
-        auto breakdown = characterBreakdown(name);
-        if (!isNameStartChar(breakdown[0])) {
-            return false;
-        }
-        for (size_t i = 1; i < breakdown.size(); ++i) {
-            if (!isNameChar(breakdown[i])) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 IssuePtr makeIssueIllegalIdentifier(const std::string &name)
 {
     IssuePtr issue = Issue::create();
@@ -1799,6 +1780,12 @@ IssuePtr makeIssueIllegalIdentifier(const std::string &name)
     }
 
     return issue;
+}
+
+bool isCellmlIdentifier(const std::string &name)
+{
+    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
+    return isValid == Issue::ReferenceRule::UNDEFINED;
 }
 
 bool unitsAreEquivalent(const ModelPtr &model,
@@ -1952,7 +1939,7 @@ void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::st
         idMap[id].second.emplace_back(info);
         idMap[id] = std::make_pair(idMap[id].first + 1, idMap[id].second);
     } else {
-        std::vector<std::string> infos;
+        Strings infos;
         infos.emplace_back(info);
         idMap.emplace(id, std::make_pair(1, infos));
     }
@@ -2000,7 +1987,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     // Encapsulation.
     if (!model->encapsulationId().empty()) {
         // Check for a valid identifier.
-        if (!isValidW3IdName(model->encapsulationId())) {
+        if (!isValidXmlName(model->encapsulationId())) {
             IssuePtr issue = Issue::create();
             issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
             issue->setModel(model);
@@ -2061,7 +2048,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                         "between variable '" + item->name() + "' in component '" + component->name()
                         + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
                     // Check for a valid identifier.
-                    if (!isValidW3IdName(mappingId)) {
+                    if (!isValidXmlName(mappingId)) {
                         IssuePtr issue = Issue::create();
                         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
                         issue->setMapVariables(item, equiv);
@@ -2081,7 +2068,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                         + "' because of variable equivalence between variables '" + item->name()
                         + "' and '" + equiv->name() + "'";
                     // Check for a valid identifier.
-                    if (!isValidW3IdName(connectionId)) {
+                    if (!isValidXmlName(connectionId)) {
                         IssuePtr issue = Issue::create();
                         issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
                         issue->setConnection(item, equiv);
@@ -2131,7 +2118,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     // Hierarchy.
     if (!component->encapsulationId().empty()) {
         // Check for a valid identifier.
-        if (!isValidW3IdName(component->encapsulationId())) {
+        if (!isValidXmlName(component->encapsulationId())) {
             IssuePtr issue = Issue::create();
             issue->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
             issue->setComponent(component);
