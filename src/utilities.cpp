@@ -1388,28 +1388,22 @@ void recordUrl(const HistoryEpochPtr &historyEpoch, const ImportedEntityConstPtr
     }
 }
 
-HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl)
-{
-    auto h = std::make_shared<HistoryEpoch>(units, sourceUrl, "");
-    recordUrl(h, units);
-    return h;
-}
-
 HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
 {
-    return std::make_shared<HistoryEpoch>(units, sourceUrl, destinationUrl);
-}
-
-HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl)
-{
-    auto h = std::make_shared<HistoryEpoch>(component, sourceUrl, "");
-    recordUrl(h, component);
+    auto h = std::make_shared<HistoryEpoch>(units, sourceUrl, destinationUrl);
+    if (destinationUrl == "") {
+        recordUrl(h, units);
+    }
     return h;
 }
 
 HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
 {
-    return std::make_shared<HistoryEpoch>(component, sourceUrl, destinationUrl);
+    auto h = std::make_shared<HistoryEpoch>(component, sourceUrl, destinationUrl);
+    if (destinationUrl == "") {
+        recordUrl(h, component);
+    }
+    return h;
 }
 
 std::string importeeModelUrl(const History &history, const std::string &url)
