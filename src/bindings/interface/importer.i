@@ -43,7 +43,7 @@ and False if the URL key does not exist."
 "Clears the links with other models from all import sources."
 
 %feature("docstring") libcellml::Importer::key
-"Returns a string corresponding to the key at which a model is stored in the 
+"Returns a string corresponding to the key at which a model is stored in the
 library by index, or an empty string if the index is out of range."
 
 %feature("docstring") libcellml::Importer::removeAllModels
