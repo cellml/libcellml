@@ -959,7 +959,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
 
     size_t unitsWithNameCount = 0;
     size_t unitsWithImportSource = 0;
-    for (size_t i = 0; (i < model->unitsCount()) && modelsVisited.size() == 1; ++i) {
+    for (size_t i = 0; (i < model->unitsCount()) && (modelsVisited.size() == 1); ++i) {
         auto tmpUnits = model->units(i);
         if (tmpUnits->name() == unitsName) {
             unitsWithNameCount += 1;
