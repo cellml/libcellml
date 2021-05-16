@@ -566,7 +566,9 @@ struct Validator::ValidatorImpl
      * @param component The originating component if type is @c Component.
      * @param units The originating units if type is @c Units.
      */
-    void handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const History &history, const ComponentPtr &component, const UnitsPtr &units) const;
+    void handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type,
+                                 const std::string &name, const History &history, const ComponentPtr &component,
+                                 const UnitsPtr &units) const;
 };
 
 bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
