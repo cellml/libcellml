@@ -91,7 +91,7 @@ IssuePtr makeIssueIllegalIdentifier(const std::string &name);
 /**
  * @brief Check if the provided @p name is a valid CellML identifier.
  *
- * Test if the given name is a valid CellML identifier according to
+ * Test if the given @p name is a valid CellML identifier according to
  * the CellML 2.0 specification.
  *
  * @param name The @c std::string identifier to check.
@@ -133,7 +133,7 @@ bool isNameStartChar(uint32_t startChar)
 /**
  * @brief Convert @p text to a uint32 form.
  *
- * Convert a variable width code point to uint32 form.
+ * Convert a variable-width code point to uint32 form.
  *
  * @param text The @c std::string to convert.
  * @param initialValue The starting point for the conversion.
