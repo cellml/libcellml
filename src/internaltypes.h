@@ -68,8 +68,8 @@ using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for sha
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 
-class HistoryEpoch; /**< Forward declaration of import step class. */
-using HistoryEpochPtr = std::shared_ptr<HistoryEpoch>; /**< Type definition for shared import step pointer. */
+class HistoryEpoch; /**< Forward declaration of history epoch class. */
+using HistoryEpochPtr = std::shared_ptr<HistoryEpoch>; /**< Type definition for shared history epoch pointer. */
 
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
