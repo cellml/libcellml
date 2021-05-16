@@ -1391,7 +1391,7 @@ void recordUrl(const HistoryEpochPtr &historyEpoch, const ImportedEntityConstPtr
 HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
 {
     auto h = std::make_shared<HistoryEpoch>(units, sourceUrl, destinationUrl);
-    if (destinationUrl == "") {
+    if (destinationUrl.empty()) {
         recordUrl(h, units);
     }
     return h;
@@ -1400,7 +1400,7 @@ HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string
 HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
 {
     auto h = std::make_shared<HistoryEpoch>(component, sourceUrl, destinationUrl);
-    if (destinationUrl == "") {
+    if (destinationUrl.empty()) {
         recordUrl(h, component);
     }
     return h;
