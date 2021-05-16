@@ -709,10 +709,10 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
 
 void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const History &history, const ComponentPtr &component, const UnitsPtr &units) const
 {
-    const std::string skipThis = "Cyclic dependencies";
-    const std::string notOriginMarker = "NOT ORIGIN: ";
-    const std::string dataBoundaryMarker = "&";
-    const std::string dataSeparator = ";";
+    static const std::string skipThis = "Cyclic dependencies";
+    static const std::string notOriginMarker = "NOT ORIGIN: ";
+    static const std::string dataBoundaryMarker = "&";
+    static const std::string dataSeparator = ";";
 
     for (size_t i = initialErrorCount; i < mValidator->issueCount(); ++i) {
         auto issue = mValidator->issue(i);
