@@ -2991,13 +2991,10 @@ TEST(Validator, invalidIdsOnEveryElement)
 TEST(Validator, circularImportReferencesComponent)
 {
     const std::string errorMessageImporter =
-        "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_cyclic' specifies an import from ':this:' to '"
-        + resourcePath("importer/") + "circularImport_2.cellml';\n"
-                                      " - component 'c2' specifies an import from '"
-        + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
-                                                                                                    " - component 'c3' specifies an import from '"
-        + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n")
+        + " - component 'i_am_cyclic' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
+        + " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
+        + " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'.";
     const std::string errorMessageValidator =
         "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
         " - component 'i_am_cyclic' specifies an import from ':this:' to 'circularImport_2.cellml';\n"
@@ -3027,13 +3024,10 @@ TEST(Validator, circularImportReferencesComponent)
 TEST(Validator, circularImportReferencesUnits)
 {
     const std::string errorMessageImporter =
-        "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - units 'i_am_cyclic' specifies an import from ':this:' to '"
-        + resourcePath("importer/") + "circularUnits_2.cellml';\n"
-                                      " - units 'u2' specifies an import from '"
-        + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml'; and\n"
-                                                                                                   " - units 'u3' specifies an import from '"
-        + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n")
+        + " - units 'i_am_cyclic' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
+        + " - units 'u2' specifies an import from '" + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml'; and\n"
+        + " - units 'u3' specifies an import from '" + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'.";
     const std::string errorMessageValidator =
         "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
         " - units 'i_am_cyclic' references units 'u2' in 'circularUnits_2.cellml';\n"
@@ -3072,15 +3066,11 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
     };
 
     const std::string errorMessageImporter =
-        "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - units 'i_am_duplicated' specifies an import from ':this:' to '"
-        + resourcePath("importer/") + "circularUnits_2.cellml';\n"
-                                      " - units 'u2' specifies an import from '"
-        + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml';\n"
-                                                                                                   " - units 'u3' specifies an import from '"
-        + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'; and\n"
-                                                                                                   " - units 'i_am_cyclic' specifies an import from '"
-        + resourcePath("importer/") + "circularUnits_1.cellml' to '" + resourcePath("importer/") + "circularUnits_2.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n")
+        + " - units 'i_am_duplicated' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
+        + " - units 'u2' specifies an import from '" + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml';\n"
+        + " - units 'u3' specifies an import from '" + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'; and\n"
+        + " - units 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularUnits_1.cellml' to '" + resourcePath("importer/") + "circularUnits_2.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3114,15 +3104,11 @@ TEST(Validator, circularImportedComponentsDuplicateNames)
         "Model 'circularImport1' contains multiple components with the name 'i_am_duplicated'. Valid component names must be unique to their model.",
     };
     const std::string errorMessageImporter =
-        "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_duplicated' specifies an import from ':this:' to '"
-        + resourcePath("importer/") + "circularImport_2.cellml';\n"
-                                      " - component 'c2' specifies an import from '"
-        + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
-                                                                                                    " - component 'c3' specifies an import from '"
-        + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'; and\n"
-                                                                                                    " - component 'i_am_cyclic' specifies an import from '"
-        + resourcePath("importer/") + "circularImport_1.cellml' to '" + resourcePath("importer/") + "circularImport_2.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n")
+        + " - component 'i_am_duplicated' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
+        + " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml';\n"
+        + " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'; and\n"
+        + " - component 'i_am_cyclic' specifies an import from '" + resourcePath("importer/") + "circularImport_1.cellml' to '" + resourcePath("importer/") + "circularImport_2.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3150,9 +3136,7 @@ TEST(Validator, importComponentWithInvalidName)
 {
     const std::vector<std::string> errorMessages = {
         "Import of component 'c' has an invalid URI in the xlink:href attribute.",
-        "The attempt to resolve imports with the model at '"
-            + resourcePath("importer/")
-            + "i am broken and invalid.cellml' failed: the file could not be opened.",
+        "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "i am broken and invalid.cellml' failed: the file could not be opened.",
     };
 
     auto parser = libcellml::Parser::create();
@@ -3184,9 +3168,7 @@ TEST(Validator, importSecondGenComponentWithInvalidUri)
         "  -> Component 'c' importing 'c' from 'invalid_import_url.cellml' has an error:\n"
         "   - Import of component 'c' has an invalid URI in the xlink:href attribute.";
     const std::string errorMessageImporter =
-        "The attempt to resolve imports with the model at '"
-        + resourcePath("importer/")
-        + "i am broken and invalid.cellml' failed: the file could not be opened.";
+        "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "i am broken and invalid.cellml' failed: the file could not be opened.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -3211,8 +3193,7 @@ TEST(Validator, importSecondGenComponentWithInvalidUri)
 TEST(Validator, importedUnitBasedOnNonExistingUnit)
 {
     const std::string errorMessageImporter =
-        "Import of units 'i_am_bad' from '"
-        + resourcePath("importer/") + "units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
+        "Import of units 'i_am_bad' from '" + resourcePath("importer/") + "units_library.cellml' requires units named 'ps', which relies on child units named 'seconds', which cannot be found.";
     const std::string errorMessageValidator =
         "Imported units 'i_am_bad' is not valid because:\n"
         "  -> Units 'i_am_bad' importing 'ps' from 'units_library.cellml' has an error:\n"
@@ -3418,11 +3399,9 @@ TEST(Validator, cImportThatIllustratesBadPractice)
 TEST(Validator, zImportThatIllustratesBadPractice)
 {
     const std::string errorMessage =
-        "Cyclic dependencies were found when attempting to resolve a component in the model 'import_component_from_library_and_another_component'. The dependency loop is:\n"
-        " - component 'c1' specifies an import from ':this:' to '"
-        + resourcePath("importer/") + "component_library.cellml'; and\n"
-                                      " - component 'c1_imported' specifies an import from '"
-        + resourcePath("importer/") + "component_library.cellml' to '" + resourcePath("importer/") + "layer1/importing_bad_design_z_import_hierarchy.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve a component in the model 'import_component_from_library_and_another_component'. The dependency loop is:\n")
+        + " - component 'c1' specifies an import from ':this:' to '" + resourcePath("importer/") + "component_library.cellml'; and\n"
+        + " - component 'c1_imported' specifies an import from '" + resourcePath("importer/") + "component_library.cellml' to '" + resourcePath("importer/") + "layer1/importing_bad_design_z_import_hierarchy.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
