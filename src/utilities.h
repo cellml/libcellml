@@ -41,7 +41,7 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 /**
  * Vector of base units.
  */
-static const std::vector<std::string> baseUnitsList = {
+static const NameList baseUnitsList = {
     "ampere",
     "candela",
     "dimensionless",
@@ -151,7 +151,7 @@ static const std::map<std::string, int> standardPrefixList = {
 /**
  * List of MathML elements supported by CellML.
  */
-static const std::vector<std::string> supportedMathMLElements = {
+static const NameList supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
     "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
@@ -448,10 +448,11 @@ bool isStandardPrefixName(const std::string &name);
  *
  * @param component The @c ComponentPtr to search for the @c VariablePtr in.
  * @param variable The @c VariablePtr to return the index of.
+ *
  * @return The index of the @p variable found in the component.  Returns the
  * number of variables in the component if the variable was not found.
  */
-size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+size_t indexOf(const VariablePtr &variable, const ComponentConstPtr &component);
 
 /**
  * @brief Test to determine if @p variable1 and @p variable2 are equivalent.
@@ -522,6 +523,19 @@ Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
 void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
 
 /**
+ * @brief Split a string.
+ *
+ * Split the given string with the given delimiter.  If a delimiter is not given
+ * then ';' is used.  If the delimiter is not found a copy of @p content is returned.
+ *
+ * @param content The @c std::string to split.
+ * @param delimiter The delimiter to split the string with, default ';'.
+ *
+ * @return A @c std::vector of @c std::strings.
+ */
+Strings split(const std::string &content, const std::string &delimiter = ";");
+
+/**
  * @brief Trim whitespace from the front of a string (in place).
  *
  * Remove whitespace from the front of a string, modifying the passed string.
@@ -579,6 +593,20 @@ static inline std::string trimCopy(std::string s)
     trim(s);
     return s;
 }
+
+/**
+ * @brief Replace text in string.
+ *
+ * Replace the @c std::string @p from in @p string with @c std::string @p to.
+ * If the string @p from is not found in @p string then the @p string is returned unchanged.
+ *
+ * @param string The string to make the substution in.
+ * @param from The string to replace.
+ * @param to The replacement string.
+ *
+ * @return The modified string.
+ */
+std::string replace(std::string string, const std::string &from, const std::string &to);
 
 /**
  * @brief Collect all existing identifier attributes within the given model.
@@ -648,18 +676,6 @@ bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &component
  */
 bool areComponentVariableUnitsUnlinked(const ComponentPtr &component);
 
-void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
-void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
-void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
-NameList componentNames(const ModelPtr &model);
-NameList unitsNamesUsed(const ComponentPtr &component);
-IndexStack reverseEngineerIndexStack(const ComponentPtr &component);
-EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
-std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
-ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
-void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
-std::string replace(std::string string, const std::string &from, const std::string &to);
-
 /**
  * @brief Create a connection map for the given variables.
  *
@@ -710,5 +726,89 @@ bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entitie
  * @return A @c std::vector of all the @ref ImportSource s found in the model.
  */
 std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
+
+/**
+ * @brief Return the @ref IndexStack for the given @p component.
+ *
+ * Return the @ref IndexStack for the given @p component.
+ *
+ * @param component The component to find the index stack for.
+ *
+ * @return An @ref IndexStack.
+ */
+IndexStack indexStackOf(const ComponentPtr &component);
+
+/**
+ * @brief Create a history epoch for a @ref Units with optional destination URL.
+ *
+ * Create a history epoch for a @ref Units.  If a destination URL is not given
+ * then it will be taken from the import source if the @p units is an imported units.
+ *
+ * @param units The @ref Units to create a history entry for.
+ * @param sourceUrl The source URL for the units.
+ * @param destinationUrl The optional destination URL for the units.
+ *
+ * @return The history epoch.
+ */
+HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl = "");
+
+/**
+ * @brief Create a history epoch for a @ref Component with optional destination URL.
+ *
+ * Create a history epoch for a @ref Component.  If a destination URL is not given
+ * then it will be taken from the import source if the @p component is an imported component.
+ *
+ * @param component The @ref Component to create a history entry for.
+ * @param sourceUrl The source URL for the component.
+ * @param destinationUrl The optional destination URL for the component.
+ *
+ * @return The history epoch.
+ */
+HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl = "");
+
+/**
+ * @brief Figure out the URL of the importee from the history.
+ *
+ * Look through the history to figure out the importee import URL.
+ * @ref ORIGIN_MODEL_REF is returned by default.
+ *
+ * @param history The history of locations visited.
+ * @param url The destination URL of the imported entity.
+ * @return A std::string.
+ */
+std::string importeeModelUrl(const History &history, const std::string &url);
+
+/**
+ * @brief Check through the @p history and determine if @p h has already been visited.
+ *
+ * Check through the @p history and determine if @p h has already been visited.
+ *
+ * @param history The history of locations visited.
+ * @param h The epoch to check for existence.
+ * @return @c true if @p h is already present in @p history, @c false otherwise.
+ */
+bool checkForImportCycles(const History &history, const HistoryEpochPtr &h);
+
+/**
+ * @brief Make a cyclic dependency issue.
+ *
+ * Make a cyclic dependency issue.
+ *
+ * @param history The history of the cyclic dependency.
+ * @param action The action that made cyclic dependency, e.g. "resolve", "flatten".
+ *
+ * @return The issue.
+ */
+IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action);
+
+void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
+void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
+void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
+NameList componentNames(const ModelPtr &model);
+NameList unitsNamesUsed(const ComponentPtr &component);
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 
 } // namespace libcellml

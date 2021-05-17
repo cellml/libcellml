@@ -28,12 +28,17 @@ limitations under the License.
 
 namespace libcellml {
 
-void printHistory(const std::vector<std::tuple<std::string, std::string, std::string>> &history)
+void printHistory(const History &history)
 {
-    for (auto tt : history) {
-        Debug() << std::get<0>(tt) << " " << std::get<1>(tt) << " " << std::get<2>(tt);
+    for (const auto &h : history) {
+        printHistoryEpoch(h);
     }
 
+}
+
+void printHistoryEpoch(const HistoryEpochPtr &historyEpoch)
+{
+    Debug() << "'" << historyEpoch->mSourceModel->name() << "' '" << historyEpoch->mName << "' '" << historyEpoch->mSourceUrl << "' -> '" << historyEpoch->mDestinationUrl << "'";
 }
 
 void printStack(const IndexStack &stack)
@@ -490,6 +495,19 @@ void doPrintAst(const AnalyserEquationAstPtr &ast,
 void printAst(const AnalyserEquationAstPtr &ast)
 {
     doPrintAst(ast, nullptr, false);
+}
+
+void printImportLibrary(const ImportLibrary &importlibrary)
+{
+    Debug() << " == Import library ==";
+    for (const auto &entry : importlibrary) {
+        std::string name = "(null)";
+        if (entry.second != nullptr) {
+            name = entry.second->name();
+        }
+        Debug() << entry.first << " - " << name;
+    }
+    Debug() << " == ";
 }
 
 } // namespace libcellml

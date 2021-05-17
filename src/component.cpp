@@ -41,6 +41,7 @@ namespace libcellml {
  */
 struct Component::ComponentImpl
 {
+    Component *mComponent = nullptr;
     std::string mMath;
     std::vector<ResetPtr> mResets;
     std::vector<VariablePtr> mVariables;
@@ -51,6 +52,8 @@ struct Component::ComponentImpl
 
     bool equalVariables(const ComponentPtr &other) const;
     bool equalResets(const ComponentPtr &other) const;
+
+    bool isResolvedWithHistory(History &history, const ComponentConstPtr &component) const;
 };
 
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
@@ -88,11 +91,13 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
 Component::Component()
     : mPimpl(new ComponentImpl())
 {
+    mPimpl->mComponent = this;
 }
 
 Component::Component(const std::string &name)
     : mPimpl(new ComponentImpl())
 {
+    mPimpl->mComponent = this;
     setName(name);
 }
 
@@ -114,6 +119,36 @@ ComponentPtr Component::create() noexcept
 ComponentPtr Component::create(const std::string &name) noexcept
 {
     return std::shared_ptr<Component> {new Component {name}};
+}
+
+bool Component::ComponentImpl::isResolvedWithHistory(History &history, const ComponentConstPtr &component) const
+{
+    bool resolved = true;
+    if (mComponent->isImport()) {
+        auto model = mComponent->importSource()->model();
+        if (model == nullptr) {
+            resolved = false;
+        } else {
+            auto importedComponent = model->component(mComponent->importReference());
+            if (importedComponent == nullptr) {
+                resolved = false;
+            } else {
+                auto h = createHistoryEpoch(component, importeeModelUrl(history, mComponent->importSource()->url()));
+                if (checkForImportCycles(history, h)) {
+                    resolved = false;
+                } else {
+                    history.push_back(h);
+                    resolved = importedComponent->mPimpl->isResolvedWithHistory(history, importedComponent);
+                }
+            }
+        }
+    }
+    for (size_t i = 0; (i < mComponent->componentCount()) && resolved; ++i) {
+        auto currentComponent = mComponent->component(i);
+        resolved = currentComponent->mPimpl->isResolvedWithHistory(history, currentComponent);
+    }
+
+    return resolved;
 }
 
 bool Component::doAddComponent(const ComponentPtr &component)
@@ -359,21 +394,6 @@ bool Component::hasReset(const ResetPtr &reset) const
     return mPimpl->findReset(reset) != mPimpl->mResets.end();
 }
 
-size_t getVariableIndexInComponent(const std::shared_ptr<const Component> &component, const VariablePtr &variable)
-{
-    size_t index = 0;
-    bool found = false;
-    while (index < component->variableCount() && !found) {
-        if (component->variable(index) == variable) {
-            found = true;
-        } else {
-            ++index;
-        }
-    }
-
-    return index;
-}
-
 ComponentPtr Component::clone() const
 {
     auto c = create();
@@ -397,12 +417,12 @@ ComponentPtr Component::clone() const
         auto r = reset(index);
         auto rClone = r->clone();
         c->addReset(rClone);
-        size_t variableIndex = getVariableIndexInComponent(shared_from_this(), r->variable());
+        size_t variableIndex = indexOf(r->variable(), shared_from_this());
         if (variableIndex < variableCount()) {
             auto v = c->variable(variableIndex);
             rClone->setVariable(v);
         }
-        size_t testVariableIndex = getVariableIndexInComponent(shared_from_this(), r->testVariable());
+        size_t testVariableIndex = indexOf(r->testVariable(), shared_from_this());
         if (testVariableIndex < variableCount()) {
             auto v = c->variable(testVariableIndex);
             rClone->setTestVariable(v);
@@ -437,25 +457,8 @@ bool Component::requiresImports()
 
 bool Component::doIsResolved() const
 {
-    bool resolved = true;
-    if (isImport()) {
-        auto model = importSource()->model();
-        if (model == nullptr) {
-            resolved = false;
-        } else {
-            auto importedComponent = model->component(importReference());
-            if (importedComponent == nullptr) {
-                resolved = false;
-            } else {
-                resolved = importedComponent->isResolved();
-            }
-        }
-    }
-    for (size_t i = 0; (i < componentCount()) && resolved; ++i) {
-        resolved = component(i)->isResolved();
-    }
-
-    return resolved;
+    History history;
+    return mPimpl->isResolvedWithHistory(history, shared_from_this());
 }
 
 bool Component::doEquals(const EntityPtr &other) const

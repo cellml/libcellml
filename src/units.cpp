@@ -122,7 +122,7 @@ struct UnitDefinition
  */
 struct Units::UnitsImpl
 {
-    std::vector<UnitDefinition> mUnits; /**< A vector of unit defined for this Units.*/
+    std::vector<UnitDefinition> mUnitDefinitions; /**< A vector of unit defined for this Units.*/
 
     std::vector<UnitDefinition>::const_iterator findUnit(const std::string &reference) const;
 
@@ -139,17 +139,106 @@ struct Units::UnitsImpl
      * "candela", "dimensionless", "kelvin", "kilogram", "metre", "mole" , "second".
      */
     bool isBaseUnit(const std::string &name) const;
+
+    bool isBaseUnitWithHistory(History &history, const UnitsConstPtr &units) const;
+
+    bool isResolvedWithHistory(History &history, const UnitsConstPtr &units) const;
+
+    Units *mUnits = nullptr;
 };
 
 std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std::string &reference) const
 {
-    return std::find_if(mUnits.begin(), mUnits.end(),
+    return std::find_if(mUnitDefinitions.begin(), mUnitDefinitions.end(),
                         [=](const UnitDefinition &u) -> bool { return u.mReference == reference; });
 }
 
 bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
 {
     return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
+}
+
+bool Units::UnitsImpl::isBaseUnitWithHistory(History &history, const UnitsConstPtr &units) const
+{
+    if (mUnits->isImport()) {
+        ImportSourcePtr importedSource = mUnits->importSource();
+        if (importedSource != nullptr) {
+            ModelPtr model = importedSource->model();
+            if (model != nullptr) {
+                auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
+                if (checkForImportCycles(history, h)) {
+                    return false;
+                }
+                history.push_back(h);
+                if (model->hasUnits(mUnits->importReference())) {
+                    auto importedUnits = model->units(mUnits->importReference());
+                    // Call isBaseUnit recursively until unit is no longer an import.
+                    return importedUnits->mPimpl->isBaseUnitWithHistory(history, importedUnits);
+                }
+            }
+        }
+        return false;
+    }
+
+    auto unitsName = mUnits->name();
+    bool standardUnitCheck = true;
+    if (isStandardUnitName(unitsName)) {
+        standardUnitCheck = isBaseUnit(unitsName);
+    }
+    return (mUnits->unitCount() == 0) && standardUnitCheck;
+}
+
+bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstPtr &units) const
+{
+    if (!mUnits->isImport()) {
+        return true;
+    }
+
+    auto model = mUnits->importSource()->model();
+    if (model == nullptr) {
+        return false;
+    }
+
+    auto importedUnits = model->units(mUnits->importReference());
+    if (importedUnits == nullptr) {
+        return false;
+    }
+
+    auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
+    if (checkForImportCycles(history, h)) {
+        return false;
+    }
+
+    if (importedUnits->isImport()) {
+        history.push_back(h);
+
+        return importedUnits->mPimpl->isResolvedWithHistory(history, importedUnits);
+    }
+
+    for (size_t u = 0; (u < importedUnits->unitCount()); ++u) {
+        std::string reference;
+        std::string prefix;
+        std::string id;
+        double exponent;
+        double multiplier;
+        importedUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
+        if (isStandardUnitName(reference)) {
+            continue;
+        }
+
+        auto childUnits = model->units(reference);
+        if (childUnits == nullptr) {
+            return false;
+        }
+
+        history.push_back(h);
+
+        if (!childUnits->mPimpl->isResolvedWithHistory(history, childUnits)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -224,11 +313,13 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
 Units::Units()
     : mPimpl(new UnitsImpl())
 {
+    mPimpl->mUnits = this;
 }
 
 Units::Units(const std::string &name)
     : mPimpl(new UnitsImpl())
 {
+    mPimpl->mUnits = this;
     setName(name);
 }
 
@@ -249,24 +340,8 @@ UnitsPtr Units::create(const std::string &name) noexcept
 
 bool Units::isBaseUnit() const
 {
-    if (isImport()) {
-        ImportSourcePtr importedSource = importSource();
-        if (importedSource != nullptr) {
-            ModelPtr model = importedSource->model();
-            if (model != nullptr && model->hasUnits(importReference())) {
-                auto unit = model->units(importReference());
-                return unit->isBaseUnit(); // Call isBaseUnit recursively until unit is no longer an import
-            }
-        }
-        return false;
-    }
-
-    auto unitsName = name();
-    bool standardUnitCheck = true;
-    if (isStandardUnitName(unitsName)) {
-        standardUnitCheck = mPimpl->isBaseUnit(unitsName);
-    }
-    return unitCount() == 0 && standardUnitCheck;
+    History history;
+    return mPimpl->isBaseUnitWithHistory(history, shared_from_this());
 }
 
 bool Units::doEquals(const EntityPtr &other) const
@@ -278,7 +353,7 @@ bool Units::doEquals(const EntityPtr &other) const
     auto units = std::dynamic_pointer_cast<Units>(other);
 
     if ((units == nullptr)
-        || (mPimpl->mUnits.size() != units->unitCount())
+        || (mPimpl->mUnitDefinitions.size() != units->unitCount())
         || !ImportedEntity::doEquals(units)) {
         return false;
     }
@@ -291,11 +366,11 @@ bool Units::doEquals(const EntityPtr &other) const
     double exponent;
     double multiplier;
     std::string id;
-    std::vector<size_t> unmatchedUnitIndex(mPimpl->mUnits.size());
+    std::vector<size_t> unmatchedUnitIndex(mPimpl->mUnitDefinitions.size());
 
     std::iota(unmatchedUnitIndex.begin(), unmatchedUnitIndex.end(), 0);
 
-    for (const auto &unitDefinition : mPimpl->mUnits) {
+    for (const auto &unitDefinition : mPimpl->mUnitDefinitions) {
         bool unitFound = false;
         size_t index = 0;
 
@@ -347,7 +422,7 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     ud.mMultiplier = multiplier;
     ud.mId = id;
 
-    mPimpl->mUnits.push_back(ud);
+    mPimpl->mUnitDefinitions.push_back(ud);
 }
 
 void Units::addUnit(const std::string &reference, Prefix prefix, double exponent,
@@ -415,21 +490,21 @@ void Units::unitAttributes(StandardUnit standardUnit, std::string &prefix, doubl
     std::string dummyReference;
     const std::string reference = standardUnitToString.find(standardUnit)->second;
     auto result = mPimpl->findUnit(reference);
-    unitAttributes(size_t(result - mPimpl->mUnits.begin()), dummyReference, prefix, exponent, multiplier, id);
+    unitAttributes(size_t(result - mPimpl->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
 void Units::unitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     std::string dummyReference;
     auto result = mPimpl->findUnit(reference);
-    unitAttributes(size_t(result - mPimpl->mUnits.begin()), dummyReference, prefix, exponent, multiplier, id);
+    unitAttributes(size_t(result - mPimpl->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
 void Units::unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     UnitDefinition ud;
-    if (index < mPimpl->mUnits.size()) {
-        ud = mPimpl->mUnits.at(index);
+    if (index < mPimpl->mUnitDefinitions.size()) {
+        ud = mPimpl->mUnitDefinitions.at(index);
     }
     reference = ud.mReference;
     prefix = ud.mPrefix;
@@ -484,8 +559,8 @@ double Units::unitAttributeMultiplier(size_t index) const
 
 bool Units::setUnitId(size_t index, const std::string &id) const
 {
-    if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits[index].mId = id;
+    if (index < mPimpl->mUnitDefinitions.size()) {
+        mPimpl->mUnitDefinitions[index].mId = id;
         return true;
     }
     return false;
@@ -493,8 +568,8 @@ bool Units::setUnitId(size_t index, const std::string &id) const
 
 std::string Units::unitId(size_t index) const
 {
-    if (index < mPimpl->mUnits.size()) {
-        return mPimpl->mUnits.at(index).mId;
+    if (index < mPimpl->mUnitDefinitions.size()) {
+        return mPimpl->mUnitDefinitions.at(index).mId;
     }
     return "";
 }
@@ -503,8 +578,8 @@ bool Units::removeUnit(const std::string &reference)
 {
     bool status = false;
     auto result = mPimpl->findUnit(reference);
-    if (result != mPimpl->mUnits.end()) {
-        mPimpl->mUnits.erase(result);
+    if (result != mPimpl->mUnitDefinitions.end()) {
+        mPimpl->mUnitDefinitions.erase(result);
         status = true;
     }
 
@@ -514,8 +589,8 @@ bool Units::removeUnit(const std::string &reference)
 bool Units::removeUnit(size_t index)
 {
     bool status = false;
-    if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ptrdiff_t(index));
+    if (index < mPimpl->mUnitDefinitions.size()) {
+        mPimpl->mUnitDefinitions.erase(mPimpl->mUnitDefinitions.begin() + ptrdiff_t(index));
         status = true;
     }
 
@@ -530,7 +605,7 @@ bool Units::removeUnit(StandardUnit standardUnit)
 
 void Units::removeAllUnits()
 {
-    mPimpl->mUnits.clear();
+    mPimpl->mUnitDefinitions.clear();
 }
 
 void Units::setSourceUnits(ImportSourcePtr &importSource, const std::string &name)
@@ -541,7 +616,7 @@ void Units::setSourceUnits(ImportSourcePtr &importSource, const std::string &nam
 
 size_t Units::unitCount() const
 {
-    return mPimpl->mUnits.size();
+    return mPimpl->mUnitDefinitions.size();
 }
 
 double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool checkCompatibility)
@@ -738,7 +813,7 @@ UnitsPtr Units::clone() const
     std::string id;
     double exponent;
     double multiplier;
-    for (size_t index = 0; index < mPimpl->mUnits.size(); ++index) {
+    for (size_t index = 0; index < mPimpl->mUnitDefinitions.size(); ++index) {
         unitAttributes(index, reference, prefix, exponent, multiplier, id);
         units->addUnit(reference, prefix, exponent, multiplier, id);
     }
@@ -748,41 +823,8 @@ UnitsPtr Units::clone() const
 
 bool Units::doIsResolved() const
 {
-    bool resolved = true;
-    if (isImport()) {
-        auto model = importSource()->model();
-        if (model == nullptr) {
-            resolved = false;
-        } else {
-            auto importedUnits = model->units(importReference());
-            if (importedUnits == nullptr) {
-                resolved = false;
-            } else {
-                if (importedUnits->isImport()) {
-                    resolved = importedUnits->isResolved();
-                } else {
-                    for (size_t u = 0; (u < importedUnits->unitCount()) && resolved; ++u) {
-                        std::string reference;
-                        std::string prefix;
-                        std::string id;
-                        double exponent;
-                        double multiplier;
-                        importedUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
-                        if (isStandardUnitName(reference)) {
-                            continue;
-                        }
-                        auto childUnits = model->units(reference);
-                        if (childUnits == nullptr) {
-                            resolved = false;
-                        } else {
-                            resolved = childUnits->isResolved();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return resolved;
+    History history;
+    return mPimpl->isResolvedWithHistory(history, shared_from_this());
 }
 
 } // namespace libcellml

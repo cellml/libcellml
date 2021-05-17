@@ -72,6 +72,22 @@ bool hasNonWhitespaceCharacters(const std::string &input)
     return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
+Strings split(const std::string &content, const std::string &delimiter)
+{
+    Strings strings;
+    size_t current;
+    size_t previous = 0;
+    current = content.find(delimiter);
+    while (current != std::string::npos) {
+        strings.push_back(content.substr(previous, current - previous));
+        previous = current + delimiter.size();
+        current = content.find(delimiter, previous);
+    }
+    strings.push_back(content.substr(previous, current - previous));
+
+    return strings;
+}
+
 std::string convertToString(double value, bool fullPrecision)
 {
     std::ostringstream strs;
@@ -585,7 +601,7 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
     componentEntity->removeComponent(component, false);
 }
 
-size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable)
+size_t indexOf(const VariablePtr &variable, const ComponentConstPtr &component)
 {
     size_t index = 0;
     bool found = false;
@@ -705,7 +721,7 @@ NameList findComponentCnUnitsNames(const ComponentPtr &component);
 void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
 void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
-IndexStack reverseEngineerIndexStack(const VariablePtr &variable);
+IndexStack indexStackOf(const VariablePtr &variable);
 VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model);
 void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model);
 IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
@@ -818,11 +834,11 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
     return index;
 }
 
-IndexStack reverseEngineerIndexStack(const ComponentPtr &component)
+IndexStack indexStackOf(const ComponentPtr &component)
 {
     auto dummyVariable = Variable::create();
     component->addVariable(dummyVariable);
-    IndexStack indexStack = reverseEngineerIndexStack(dummyVariable);
+    IndexStack indexStack = indexStackOf(dummyVariable);
     indexStack.pop_back();
     component->removeVariable(dummyVariable);
 
@@ -975,11 +991,11 @@ NameList unitsNamesUsed(const ComponentPtr &component)
     return unitNames;
 }
 
-IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
+IndexStack indexStackOf(const VariablePtr &variable)
 {
     IndexStack indexStack;
     ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-    indexStack.push_back(getVariableIndexInComponent(component, variable));
+    indexStack.push_back(indexOf(variable, component));
 
     ComponentEntityPtr parent = component;
     ComponentEntityPtr grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
@@ -1003,7 +1019,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
                 indexStack.push_back(index);
             }
             auto equivalentVariable = variable->equivalentVariable(j);
-            auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
+            auto equivalentVariableIndexStack = indexStackOf(equivalentVariable);
             if (equivalenceMap.count(indexStack) == 0) {
                 equivalenceMap.emplace(indexStack, std::vector<IndexStack>());
             }
@@ -1363,6 +1379,82 @@ bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entitie
 bool areEqual(const std::string &str1, const std::string &str2)
 {
     return str1 == str2;
+}
+
+void recordUrl(const HistoryEpochPtr &historyEpoch, const ImportedEntityConstPtr &importedEntity)
+{
+    if (importedEntity->isImport()) {
+        historyEpoch->mDestinationUrl = importedEntity->importSource()->url();
+    }
+}
+
+HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl)
+{
+    auto h = std::make_shared<HistoryEpoch>(units, sourceUrl, destinationUrl);
+    if (destinationUrl.empty()) {
+        recordUrl(h, units);
+    }
+    return h;
+}
+
+HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl)
+{
+    auto h = std::make_shared<HistoryEpoch>(component, sourceUrl, destinationUrl);
+    if (destinationUrl.empty()) {
+        recordUrl(h, component);
+    }
+    return h;
+}
+
+std::string importeeModelUrl(const History &history, const std::string &url)
+{
+    for (auto i = history.size(); i-- > 0;) {
+        auto historyEpoch = history[i];
+        if (historyEpoch->mDestinationUrl != url) {
+            return historyEpoch->mDestinationUrl;
+        }
+    }
+
+    return ORIGIN_MODEL_REF;
+}
+
+bool checkForImportCycles(const History &history, const HistoryEpochPtr &h)
+{
+    return std::any_of(history.begin(), history.end(), [h](const auto &entry) {
+        return ((h->mDestinationUrl == entry->mSourceUrl) || ((entry->mSourceUrl == ORIGIN_MODEL_REF) && (entry->mSourceModel != nullptr) && (entry->mSourceModel->equals(h->mDestinationModel))));
+    });
+}
+
+IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action)
+{
+    auto origin = history.front();
+    auto model = origin->mSourceModel;
+    bool isComponent = origin->mType == "component";
+    std::string typeStringPrefix = isComponent ? "a " : "";
+    std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
+                            + typeStringPrefix + origin->mType + " in the model '"
+                            + model->name() + "'. The dependency loop is:\n";
+    HistoryEpochPtr h;
+    size_t i = 0;
+    std::string msgHistory;
+    while (i < history.size()) {
+        h = history[i];
+        msgHistory += " - " + h->mType + " '" + h->mName + "' specifies an import from '" + h->mSourceUrl + "' to '" + h->mDestinationUrl + "'";
+        if (i == history.size() - 2) {
+            msgHistory += "; and\n";
+        } else if (i == history.size() - 1) {
+            msgHistory += ".";
+        } else {
+            msgHistory += ";\n";
+        }
+        ++i;
+    }
+
+    auto issue = Issue::create();
+    issue->setDescription(msgHeader + msgHistory);
+    issue->setLevel(Issue::Level::ERROR);
+    issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
+    return issue;
 }
 
 } // namespace libcellml
