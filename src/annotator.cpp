@@ -156,7 +156,7 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
     id = component->encapsulationId();
     if (!id.empty()) {
         auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-        entry->mPimpl->setComponent(component, CellmlElementType::COMPONENT_REF);
+        entry->mPimpl->setComponentRef(component);
         idList.insert(std::make_pair(id, convertToWeak(entry)));
     }
     // Variables.
@@ -198,7 +198,7 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
                 }
                 if (!found) {
                     auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-                    entry->mPimpl->setVariablePair(variable, equivalentVariable, CellmlElementType::MAP_VARIABLES);
+                    entry->mPimpl->setMapVariables(variable, equivalentVariable);
                     idList.insert(std::make_pair(id, convertToWeak(entry)));
                 }
             }
@@ -229,7 +229,7 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
                 }
                 if (!found) {
                     auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-                    entry->mPimpl->setVariablePair(variable, equivalentVariable, CellmlElementType::CONNECTION);
+                    entry->mPimpl->setConnection(variable, equivalentVariable);
                     idList.insert(std::make_pair(id, convertToWeak(entry)));
                 }
             }
@@ -247,13 +247,13 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
         id = reset->testValueId();
         if (!id.empty()) {
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setReset(reset, CellmlElementType::TEST_VALUE);
+            entry->mPimpl->setTestValue(reset);
             idList.insert(std::make_pair(id, convertToWeak(entry)));
         }
         id = reset->resetValueId();
         if (!id.empty()) {
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setReset(reset, CellmlElementType::RESET_VALUE);
+            entry->mPimpl->setResetValue(reset);
             idList.insert(std::make_pair(id, convertToWeak(entry)));
         }
     }
@@ -317,7 +317,7 @@ ItemList Annotator::AnnotatorImpl::listIdsAndItems(const ModelPtr &model)
     id = model->encapsulationId();
     if (!id.empty()) {
         auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-        entry->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
+        entry->mPimpl->setEncapsulation(model);
         idList.insert(std::make_pair(id, convertToWeak(entry)));
     }
 
@@ -384,7 +384,7 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToShared(const AnyCellmlEle
         }
     } else if ((type == CellmlElementType::CONNECTION)
                || (type == CellmlElementType::MAP_VARIABLES)) {
-        // Connections are not held as weak pointers.
+        // Connections and map variables are not held as weak pointers.
         auto variablePair = item->variablePair();
         if ((variablePair != nullptr) && variablePair->isValid()) {
             converted->mPimpl->setVariablePair(variablePair, type);
@@ -408,12 +408,12 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToShared(const AnyCellmlEle
     } else if (type == CellmlElementType::RESET_VALUE) {
         auto reset = std::any_cast<ResetWeakPtr>(item->mPimpl->mItem).lock();
         if (reset != nullptr) {
-            converted->mPimpl->setReset(reset, CellmlElementType::RESET_VALUE);
+            converted->mPimpl->setResetValue(reset);
         }
     } else if (type == CellmlElementType::TEST_VALUE) {
         auto reset = std::any_cast<ResetWeakPtr>(item->mPimpl->mItem).lock();
         if (reset != nullptr) {
-            converted->mPimpl->setReset(reset, CellmlElementType::TEST_VALUE);
+            converted->mPimpl->setTestValue(reset);
         }
     } else if (type == CellmlElementType::UNIT) {
         // Unit items are not held as weak pointers.
@@ -461,7 +461,7 @@ void Annotator::setModel(const ModelPtr &model)
 
 void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
 {
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    auto issue = Issue::IssueImpl::create();
     issue->mPimpl->setDescription("Could not find an item with an identifier of '" + id + "' in the model.");
     issue->mPimpl->setLevel(Issue::Level::WARNING);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_FOUND);
@@ -470,7 +470,7 @@ void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
 
 void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id) const
 {
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    auto issue = Issue::IssueImpl::create();
     issue->mPimpl->setDescription("The identifier '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
     issue->mPimpl->setLevel(Issue::Level::WARNING);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE);
@@ -479,7 +479,7 @@ void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id) const
 
 void Annotator::AnnotatorImpl::addIssueNoModel() const
 {
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    auto issue = Issue::IssueImpl::create();
     issue->mPimpl->setDescription("This Annotator object does not have a model to work with.");
     issue->mPimpl->setLevel(Issue::Level::ERROR);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NO_MODEL);
@@ -488,7 +488,7 @@ void Annotator::AnnotatorImpl::addIssueNoModel() const
 
 void Annotator::AnnotatorImpl::addInvalidArgument(CellmlElementType type) const
 {
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    auto issue = Issue::IssueImpl::create();
     auto description = "The item is internally inconsistent: the enum type '" + cellmlElementTypeAsString(type) + "' cannot be used with the stored item.";
     issue->mPimpl->setDescription(description);
     issue->mPimpl->setLevel(Issue::Level::ERROR);
@@ -787,7 +787,7 @@ bool Annotator::assignAllIds()
 bool Annotator::assignAllIds(ModelPtr &model)
 {
     if (model == nullptr) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("The Model supplied is a nullptr. No action has been taken.");
         issue->mPimpl->setLevel(Issue::Level::ERROR);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NULL_MODEL);
@@ -980,7 +980,7 @@ void Annotator::AnnotatorImpl::doSetResetValueIds(const ComponentPtr &parent)
             auto id = makeUniqueId();
             parent->reset(r)->setResetValueId(id);
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setReset(parent->reset(r), CellmlElementType::RESET_VALUE);
+            entry->mPimpl->setResetValue(parent->reset(r));
             mIdList.insert(std::make_pair(id, convertToWeak(entry)));
         }
     }
@@ -996,7 +996,7 @@ void Annotator::AnnotatorImpl::doSetTestValueIds(const ComponentPtr &parent)
             auto id = makeUniqueId();
             parent->reset(r)->setTestValueId(id);
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setReset(parent->reset(r), CellmlElementType::TEST_VALUE);
+            entry->mPimpl->setTestValue(parent->reset(r));
             mIdList.insert(std::make_pair(id, convertToWeak(entry)));
         }
     }
@@ -1015,7 +1015,7 @@ void Annotator::AnnotatorImpl::doSetConnectionIds(const ComponentPtr &parent)
                 auto id = makeUniqueId();
                 Variable::setEquivalenceConnectionId(v1, v2, id);
                 auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-                entry->mPimpl->setVariablePair(v1, v2, CellmlElementType::CONNECTION);
+                entry->mPimpl->setConnection(v1, v2);
                 mIdList.insert(std::make_pair(id, convertToWeak(entry)));
             }
         }
@@ -1035,7 +1035,7 @@ void Annotator::AnnotatorImpl::doSetMapVariablesIds(const ComponentPtr &parent)
                 auto id = makeUniqueId();
                 Variable::setEquivalenceMappingId(v1, v2, id);
                 auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-                entry->mPimpl->setVariablePair(v1, v2, CellmlElementType::MAP_VARIABLES);
+                entry->mPimpl->setMapVariables(v1, v2);
                 mIdList.insert(std::make_pair(id, convertToWeak(entry)));
             }
         }
@@ -1051,7 +1051,7 @@ void Annotator::AnnotatorImpl::doSetComponentEncapsulationIds(const ComponentPtr
         auto id = makeUniqueId();
         parent->setEncapsulationId(id);
         auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-        entry->mPimpl->setComponent(parent, CellmlElementType::COMPONENT_REF);
+        entry->mPimpl->setComponentRef(parent);
         mIdList.insert(std::make_pair(id, convertToWeak(entry)));
     }
     for (size_t c = 0; c < parent->componentCount(); ++c) {
@@ -1059,7 +1059,7 @@ void Annotator::AnnotatorImpl::doSetComponentEncapsulationIds(const ComponentPtr
             auto id = makeUniqueId();
             parent->component(c)->setEncapsulationId(id);
             auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-            entry->mPimpl->setComponent(parent->component(c), CellmlElementType::COMPONENT_REF);
+            entry->mPimpl->setComponentRef(parent->component(c));
             mIdList.insert(std::make_pair(id, convertToWeak(entry)));
         }
         doSetComponentEncapsulationIds(parent->component(c));
@@ -1073,7 +1073,7 @@ void Annotator::AnnotatorImpl::doSetEncapsulationIds()
         auto id = makeUniqueId();
         model->setEncapsulationId(id);
         auto entry = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
-        entry->mPimpl->setModel(model, CellmlElementType::ENCAPSULATION);
+        entry->mPimpl->setEncapsulation(model);
         mIdList.insert(std::make_pair(id, convertToWeak(entry)));
     }
 }
