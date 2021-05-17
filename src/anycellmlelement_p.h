@@ -33,9 +33,18 @@ struct AnyCellmlElement::AnyCellmlElementImpl
     std::any mItem = nullptr; /**< std::any item cast for the item. */
 
     void setComponent(const ComponentPtr &component, CellmlElementType type = CellmlElementType::COMPONENT);
+    void setComponentRef(const ComponentPtr &component);
+    void setConnection(const VariablePairPtr &pair);
+    void setConnection(const VariablePtr &variable1, const VariablePtr &variable2);
+    void setEncapsulation(const ModelPtr &model);
     void setImportSource(const ImportSourcePtr &importSource);
+    void setMapVariables(const VariablePairPtr &pair);
+    void setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2);
+    void setMath(const ComponentPtr &component);
     void setModel(const ModelPtr &model, CellmlElementType type = CellmlElementType::MODEL);
     void setReset(const ResetPtr &reset, CellmlElementType type = CellmlElementType::RESET);
+    void setResetValue(const ResetPtr &reset);
+    void setTestValue(const ResetPtr &reset);
     void setUnits(const UnitsPtr &units);
     void setUnitsItem(const UnitsItemPtr &unitsItem);
     void setVariable(const VariablePtr &variable);

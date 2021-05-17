@@ -219,6 +219,7 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
     bool status = false;
     if (removeUnits(index)) {
         mPimpl->mUnits.insert(mPimpl->mUnits.begin() + ptrdiff_t(index), units);
+        units->setParent(shared_from_this());
         status = true;
     }
 

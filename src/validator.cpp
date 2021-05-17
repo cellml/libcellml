@@ -21,9 +21,11 @@ limitations under the License.
 #include <libxml/uri.h>
 #include <map>
 #include <set>
+#include <sstream>
 #include <stdexcept>
 
 #include "libcellml/component.h"
+#include "libcellml/importer.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
@@ -38,6 +40,11 @@ limitations under the License.
 #include "xmlutils.h"
 
 namespace libcellml {
+
+/**
+ * Type definition for a list of issue descriptions.
+ */
+using IssuesList = std::vector<Strings>;
 
 /**
 * @brief Validate that equivalent variable pairs in the @p model
@@ -74,14 +81,154 @@ void updateBaseUnitCount(const ModelPtr &model,
 /**
  * @brief Check if the provided @p name is a valid CellML identifier.
  *
- * Test if the given name is a valid CellML identifier according to
+ * Test if the given @p name is a valid CellML identifier according to
  * the CellML 2.0 specification.
  *
  * @param name The @c std::string identifier to check.
  *
- * @return @c true if @name is a valid CellML identifier and @c false otherwise.
+ * @return @c true if @p name is a valid CellML identifier and @c false otherwise.
  */
 bool isCellmlIdentifier(const std::string &name);
+
+/**
+ * @brief Test to determine if @p startChar is a valid XML name start character.
+ *
+ * A start name character is is defined here: https://www.w3.org/TR/xml11/#NT-NameStartChar.
+ *
+ * @param startChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for a start character in an XML name.
+ */
+bool isNameStartChar(uint32_t startChar)
+{
+    // ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    return (startChar == 0x3AU)
+           || ((0x41U <= startChar) && (startChar <= 0x5AU))
+           || (startChar == 0x5FU)
+           || ((0x61U <= startChar) && (startChar <= 0x7AU))
+           || ((0xC0U <= startChar) && (startChar <= 0xD6U))
+           || ((0xD8U <= startChar) && (startChar <= 0xF6U))
+           || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
+           || ((0x370U <= startChar) && (startChar <= 0x37DU))
+           || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
+           || ((0x200CU <= startChar) && (startChar <= 0x200DU))
+           || ((0x2070U <= startChar) && (startChar <= 0x218FU))
+           || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
+           || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
+           || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
+           || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
+           || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
+}
+
+/**
+ * @brief Convert @p text to a uint32 form.
+ *
+ * Convert a variable-width code point to uint32 form.
+ *
+ * @param text The @c std::string to convert.
+ * @param initialValue The starting point for the conversion.
+ *
+ * @return uint32 form of @p text.
+ */
+uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
+{
+    const std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
+    uint32_t value = 0;
+    size_t index = 0;
+    for (size_t j = initialValue; j < 4; ++j) {
+        auto tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
+        value |= tempValue;
+    }
+
+    return value;
+}
+
+/**
+ * @brief Breakdown a string into code points.
+ *
+ * Breakdown @p text into a vector of code points as described by
+ * @c uint32_t.
+ *
+ * @param text The std::string to breakdown.
+ *
+ * @return A vector of @c uint32_t of the Unicode character values.
+ */
+std::vector<uint32_t> characterBreakdown(const std::string &text)
+{
+    std::vector<uint32_t> breakdown;
+    std::vector<uint8_t> bitShifts = {24, 16, 8, 0};
+    for (size_t i = 0; i < text.length();) {
+        size_t codePointLength = 1;
+        uint32_t value = 0;
+        auto unsignedText = static_cast<uint8_t>(text[i]);
+        if ((unsignedText & 0xf8U) == 0xf0U) {
+            codePointLength = 4;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
+        } else if ((unsignedText & 0xf0U) == 0xe0U) {
+            codePointLength = 3;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 1));
+        } else if ((unsignedText & 0xe0U) == 0xc0U) {
+            codePointLength = 2;
+            breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength), 2));
+        } else {
+            auto subText = text.substr(i, codePointLength);
+            value = static_cast<uint8_t>(subText[0]);
+            breakdown.push_back(value);
+        }
+
+        i += codePointLength;
+    }
+
+    return breakdown;
+}
+
+/**
+ * @brief Test to determine if @p nameChar is a valid XML name character.
+ *
+ * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
+ *
+ * @param nameChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for an XML name character.
+ */
+bool isNameChar(uint32_t nameChar)
+{
+    if (isNameStartChar(nameChar)) {
+        return true;
+    }
+    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
+           || (nameChar == 0x2DU)
+           || (nameChar == 0x2EU)
+           || (nameChar == 0xB7U)
+           || ((0x0300U <= nameChar) && (nameChar <= 0x036FU))
+           || ((0x203FU <= nameChar) && (nameChar <= 0x2040U));
+}
+
+/**
+ * @brief Test to determine if @p name is a valid XML name.
+ *
+ * An XML name is defined here: https://www.w3.org/TR/xml11/#NT-Name.
+ *
+ * @param name The @c std::string to test.
+ *
+ * @return True if the name is a valid XML name.
+ */
+bool isValidXmlName(const std::string &name)
+{
+    if (!name.empty()) {
+        auto breakdown = characterBreakdown(name);
+        if (!isNameStartChar(breakdown[0])) {
+            return false;
+        }
+        for (size_t i = 1; i < breakdown.size(); ++i) {
+            if (!isNameChar(breakdown[i])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 /**
  * @brief Validate the provided @p name is a valid CellML identifier.
@@ -122,7 +269,7 @@ struct Validator::ValidatorImpl
      *
      * @return An @c IssuePtr if the @p name is illegal, @c nullptr otherwise.
      */
-    IssuePtr makeIssueIllegalIdentifier(const std::string &name);
+    IssuePtr makeIssueIllegalIdentifier(const std::string &name) const;
 
     /**
      * @brief Validate the given name is unique in the model.
@@ -135,7 +282,7 @@ struct Validator::ValidatorImpl
      * @param name The name of the component to validate.
      * @param names The list of component names already used in the model.
      */
-    void validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const;
+    void validateUniqueName(const ModelPtr &model, const std::string &name, NameList &names) const;
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -144,20 +291,10 @@ struct Validator::ValidatorImpl
      * the CellML 2.0 Specification. Any issues will be logged in the @c Validator.
      *
      * @param component The component to validate.
+     * @param history The history of visited components.
+     * @param modelsVisited The list of visited models.
      */
-    void validateComponent(const ComponentPtr &component);
-
-    /**
-     * @brief Validate an imported component.
-     *
-     * Validates the imported @p component.  Any issues will be
-     * logged to the @c Validator.
-     *
-     * @sa validateComponent
-     *
-     * @param component The imported component to validate.
-     */
-    void validateImportedComponent(const ComponentPtr &component);
+    void validateComponent(const ComponentPtr &component, History &history, std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the component tree of the given @p component.
@@ -168,8 +305,10 @@ struct Validator::ValidatorImpl
      * @param component The @c Component to validate.
      * @param componentNames The list of already used component names used
      * to track repeated component names.
+     * @param history The history of visited components.
+     * @param modelsVisited The list of visited models.
      */
-    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames);
+    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -178,9 +317,10 @@ struct Validator::ValidatorImpl
      * the CellML 2.0 Specification. Any issues will be logged in the @c Validator.
      *
      * @param units The units to validate.
-     * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
+     * @param history The history of units visited.
+     * @param modelsVisited The list of visited models.
      */
-    void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames);
+    void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
@@ -231,9 +371,10 @@ struct Validator::ValidatorImpl
      *
      * @param index The index of the @c unit to validate from @p units.
      * @param units The units to validate.
-     * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
+     * @param history The history of units visited.
+     * @param modelsVisited The list of visited models.
      */
-    void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames);
+    void validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited) const;
 
     /**
      * @brief Validate the @p variable using the CellML 2.0 Specification.
@@ -244,7 +385,7 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
      */
-    void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames);
+    void validateVariable(const VariablePtr &variable, const NameList &variableNames) const;
 
     /**
      * @brief Validate the @p reset using the CellML 2.0 Specification.
@@ -255,7 +396,7 @@ struct Validator::ValidatorImpl
      * @param reset The reset to validate.
      * @param component The component the reset belongs to.
      */
-    void validateReset(const ResetPtr &reset, const ComponentPtr &component);
+    void validateReset(const ResetPtr &reset, const ComponentPtr &component) const;
 
     /**
      * @brief Validate the math @p input @c std::string.
@@ -266,7 +407,7 @@ struct Validator::ValidatorImpl
      * @param input The math @c std::string to validate.
      * @param component The component containing the math @c std::string to be validated.
      */
-    void validateMath(const std::string &input, const ComponentPtr &component);
+    void validateMath(const std::string &input, const ComponentPtr &component) const;
 
     /**
      * @brief Traverse the node tree for invalid MathML elements.
@@ -277,7 +418,7 @@ struct Validator::ValidatorImpl
      * @param node The node to check children and sibling nodes.
      * @param component The component the MathML belongs to.
      */
-    void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
+    void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component) const;
 
     /**
      * @brief Validate and clean the @cn node.
@@ -287,7 +428,7 @@ struct Validator::ValidatorImpl
      * @param node The node @c cn element.
      * @param component The component the @p node is a part of.
      */
-    void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component);
+    void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component) const;
 
     /**
      * @brief Validate that the @c ci node has a reference to a variable.
@@ -298,7 +439,7 @@ struct Validator::ValidatorImpl
      * @param component The component the @p node is a part of.
      * @param variableNames A list of variable names.
      */
-    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const;
+    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const;
 
     /**
      * @brief Validate the text of a @c cn element.
@@ -311,7 +452,7 @@ struct Validator::ValidatorImpl
      *
      * @return  @c true if the @c cn units is valid, @c false otherwise.
      */
-    bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode);
+    bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode) const;
 
     /**
      * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
@@ -324,7 +465,7 @@ struct Validator::ValidatorImpl
      * @param component The component that the math @c XmlNode @p node is contained within.
      * @param variableNames A @c vector list of the names of variables found within the @p component.
      */
-    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames);
+    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const;
 
     /**
      * @brief Check if the provided @p node is a supported MathML element.
@@ -335,26 +476,7 @@ struct Validator::ValidatorImpl
      * @param node The @c XmlNode node to check against the list of supported MathML elements.
      * @return @c true if @node is a supported MathML element and @c false otherwise.
      */
-    bool isSupportedMathMLElement(const XmlNodePtr &node);
-
-    /**
-    * @brief Checks dependency hierarchies of units in the model.
-    *
-    * @param model The model containing the units to be tested.
-    */
-    void validateNoUnitsAreCyclic(const ModelPtr &model);
-
-    /**
-    * @brief Utility function called recursively by validateNoUnitsAreCyclic.
-    *
-    * @param model The model containing the units to be tested.
-    * @param parent The current @c Units pointer to test.
-    * @param history A vector of the chained dependencies. Cyclic variables exist where the first and last units are equal.
-    * @param errorList An array of loops, returned so that the reported issues are not too repetitive.
-    */
-    void checkUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                             std::vector<std::string> &history,
-                             std::vector<std::vector<std::string>> &errorList);
+    bool isSupportedMathMLElement(const XmlNodePtr &node) const;
 
     /** @brief Function to check IDs within the model scope are unique.
      *
@@ -399,7 +521,64 @@ struct Validator::ValidatorImpl
      * @param idMap The IdMap under construction.
      */
     void buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input);
+
+    /**
+     * @brief Validate the import source xlink:href and id.
+     *
+     * @param importSource The import source to validate.
+     * @param importName The name of the entity that the import is called.
+     * @param importType The type of the entity the import is, either 'units', or 'component'.
+     */
+    void validateImportSource(const ImportSourcePtr &importSource, const std::string &importName, const std::string &importType) const;
+
+    /**
+     * @brief Check if the @p names are already part of a cyclic issues.
+     *
+     * Check to see if the @p names have already been reported in a cyclic issue.
+     *
+     * @param names The names that make up the cycle.
+     *
+     * @return @c true if the @p names have already been reported in a cyclic issue, @c false otherwise.
+     */
+    bool hasCycleAlreadyBeenReported(NameList names) const;
+
+    /**
+     * @brief Check to see if the @p description is already present in the issues.
+     *
+     * Check to see if the @p description has already been reported in
+     * existing issues.
+     *
+     * @param description The description to check for prior existence.
+     *
+     * @return @c true if the description is already present, @c false otherwise.
+     */
+    bool checkIssuesForDuplications(const std::string &description) const;
+
+    /**
+     * @brief Deal with errors raised from imports.
+     *
+     * When an error is raised by an imported entity, track back to the originating model and
+     * assign the source @ref Units or @ref Component that the error belongs to.
+     *
+     * @param initialErrorCount The initial number of errors in the validator.
+     * @param isOriginatingModel @c true if currently validating the origin model, @c false otherwise.
+     * @param type The type of import, either @c Units or @c Component.
+     * @param name The name of the importing entity.
+     * @param history History list of visited imported entities.
+     * @param component The originating component if type is @c Component.
+     * @param units The originating units if type is @c Units.
+     */
+    void handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type,
+                                 const std::string &name, const History &history, const ComponentPtr &component,
+                                 const UnitsPtr &units) const;
 };
+
+bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
+{
+    return std::find_if(history.begin(), history.end(),
+                        [=](const HistoryEpochPtr &i) -> bool { return i->mName == h->mName; })
+           != history.end();
+}
 
 Validator::Validator()
     : mPimpl(new ValidatorImpl())
@@ -423,7 +602,7 @@ void Validator::validateModel(const ModelPtr &model)
     removeAllIssues();
 
     if (model == nullptr) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
         issue->mPimpl->setDescription("The model is null.");
         addIssue(issue);
@@ -436,96 +615,33 @@ void Validator::validateModel(const ModelPtr &model)
             issue->mPimpl->setDescription("Model '" + model->name() + "' does not have a valid name attribute. " + issue->description());
             addIssue(issue);
         }
+        // Check for a valid identifier.
+        if (!isValidXmlName(model->id())) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+            issue->mPimpl->mItem->mPimpl->setModel(model);
+            issue->mPimpl->setDescription("Model '" + model->name() + "' does not have a valid 'id' attribute, '" + model->id() + "'.");
+            addIssue(issue);
+        }
+        std::vector<ModelPtr> modelsVisited = {model};
         // Check for components in this model.
         if (model->componentCount() > 0) {
-            std::vector<std::string> componentNames;
+            NameList componentNames;
+            History history;
             for (size_t i = 0; i < model->componentCount(); ++i) {
+                history.clear();
                 ComponentPtr component = model->component(i);
-                mPimpl->validateComponentTree(model, component, componentNames);
+                mPimpl->validateComponentTree(model, component, componentNames, history, modelsVisited);
             }
         }
         // Check for units in this model.
         if (model->unitsCount() > 0) {
-            std::vector<std::string> unitsNames;
-            std::vector<std::string> unitsRefs;
-            std::vector<std::string> unitsImportSources;
+            History history;
             for (size_t i = 0; i < model->unitsCount(); ++i) {
+                history.clear();
                 UnitsPtr units = model->units(i);
-                std::string unitsName = units->name();
-                if (!unitsName.empty()) {
-                    if (units->isImport()) {
-                        // Check for a units_ref.
-                        std::string unitsRef = units->importReference();
-                        std::string importSource = units->importSource()->url();
-                        bool foundImportIssue = false;
-                        if (!isCellmlIdentifier(unitsRef)) {
-                            auto issue = mPimpl->makeIssueIllegalIdentifier(unitsRef);
-                            issue->mPimpl->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
-                            issue->mPimpl->mItem->mPimpl->setUnits(units);
-                            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
-                            addIssue(issue);
-                            foundImportIssue = true;
-                        }
-                        // Check for a xlink:href and its format.
-                        if (importSource.empty()) {
-                            auto issue = std::shared_ptr<Issue> {new Issue {}};
-                            issue->mPimpl->setDescription("Import of units '" + unitsName + "' does not have a valid locator xlink:href attribute.");
-                            issue->mPimpl->mItem->mPimpl->setImportSource(units->importSource());
-                            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
-                            addIssue(issue);
-                            foundImportIssue = true;
-                        } else {
-                            xmlURIPtr uri = xmlParseURI(importSource.c_str());
-                            if (uri == nullptr) {
-                                auto issue = std::shared_ptr<Issue> {new Issue {}};
-                                issue->mPimpl->setDescription("Import of units '" + unitsName + "' has an invalid URI in the xlink:href attribute.");
-                                issue->mPimpl->mItem->mPimpl->setImportSource(units->importSource());
-                                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
-                                addIssue(issue);
-                            } else {
-                                xmlFreeURI(uri);
-                            }
-                        }
-                        // Check if we already have another import from the same source with the same units_ref.
-                        // (This looks for matching entries at the same position in the source and ref vectors).
-                        if (!unitsImportSources.empty() && (!foundImportIssue)) {
-                            auto usedImportSource = std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource);
-                            auto usedImportSourceAt = usedImportSource - unitsImportSources.begin();
-                            auto usedUnitsRefs = std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef);
-                            auto usedUnitsRefsAt = usedUnitsRefs - unitsRefs.begin();
-                            if ((usedImportSource != unitsImportSources.end()) && (usedUnitsRefs != unitsRefs.end()) && (usedUnitsRefsAt == usedImportSourceAt)) {
-                                auto issue = std::shared_ptr<Issue> {new Issue {}};
-                                issue->mPimpl->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
-                                issue->mPimpl->mItem->mPimpl->setModel(model);
-                                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
-                                addIssue(issue);
-                            }
-                        }
-                        // Push back the unique sources and refs.
-                        unitsImportSources.push_back(importSource);
-                        unitsRefs.push_back(unitsRef);
-                    }
-                    // Check for duplicate units names in this model.
-                    if (std::find(unitsNames.begin(), unitsNames.end(), unitsName) != unitsNames.end()) {
-                        auto issue = std::shared_ptr<Issue> {new Issue {}};
-                        issue->mPimpl->setDescription("Model '" + model->name() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.");
-                        issue->mPimpl->mItem->mPimpl->setModel(model);
-                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_NAME_UNIQUE);
-                        addIssue(issue);
-                    }
-                    unitsNames.push_back(unitsName);
-                }
+                mPimpl->validateUnits(units, history, modelsVisited);
             }
-            for (size_t i = 0; i < model->unitsCount(); ++i) {
-                // Validate units.
-                UnitsPtr units = model->units(i);
-                mPimpl->validateUnits(units, unitsNames);
-            }
-        }
-
-        // Check that unit relationships are not cyclical.
-        if (model->unitsCount() > 0) {
-            mPimpl->validateNoUnitsAreCyclic(model);
         }
 
         // Validate any connections / variable equivalence networks in the model.
@@ -536,11 +652,11 @@ void Validator::validateModel(const ModelPtr &model)
     }
 }
 
-void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const
+void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, NameList &names) const
 {
     if (!name.empty()) {
         if (std::find(names.begin(), names.end(), name) != names.end()) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Model '" + model->name() + "' contains multiple components with the name '" + name + "'. Valid component names must be unique to their model.");
             issue->mPimpl->mItem->mPimpl->setModel(model);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME_UNIQUE);
@@ -551,54 +667,41 @@ void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const s
     }
 }
 
-void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames)
+void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
 {
     validateUniqueName(model, component->name(), componentNames);
     for (size_t i = 0; i < component->componentCount(); ++i) {
         auto childComponent = component->component(i);
-        validateComponentTree(model, childComponent, componentNames);
+        validateComponentTree(model, childComponent, componentNames, history, modelsVisited);
     }
-    if (component->isImport()) {
-        validateImportedComponent(component);
-    } else {
-        validateComponent(component);
-    }
+    validateComponent(component, history, modelsVisited);
 }
 
-void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &component)
+void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &importSource, const std::string &importName, const std::string &importType) const
 {
-    if (!isCellmlIdentifier(component->name())) {
-        auto issue = makeIssueIllegalIdentifier(component->name());
-        issue->mPimpl->mItem->mPimpl->setComponent(component);
-        issue->mPimpl->setDescription("Imported component '" + component->name() + "' does not have a valid name attribute. " + issue->description());
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_NAME);
+    std::string url = importSource->url();
+
+    // Check for a valid identifier.
+    if (!isValidXmlName(importSource->id())) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+        issue->mPimpl->setDescription("Import of " + importType + " '" + importName + "' does not have a valid 'id' attribute, '" + importSource->id() + "'.");
         mValidator->addIssue(issue);
     }
 
-    // Check for a component_ref; assumes imported if the import source is not null.
-    std::string componentRef = component->importReference();
-    std::string importSource = component->importSource()->url();
-    std::string componentName = component->name();
-
-    if (!isCellmlIdentifier(componentRef)) {
-        auto issue = makeIssueIllegalIdentifier(componentRef);
-        issue->mPimpl->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute. " + issue->description());
-        issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::COMPONENT_REF);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
-        mValidator->addIssue(issue);
-    }
-    if (importSource.empty()) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
-        issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+    if (url.empty()) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Import of " + importType + " '" + importName + "' does not have a valid locator xlink:href attribute.");
+        issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
         mValidator->addIssue(issue);
     } else {
-        xmlURIPtr uri = xmlParseURI(importSource.c_str());
+        xmlURIPtr uri = xmlParseURI(url.c_str());
         if (uri == nullptr) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
-            issue->mPimpl->setDescription("Import of component '" + componentName + "' has an invalid URI in the xlink:href attribute.");
-            issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Import of " + importType + " '" + importName + "' has an invalid URI in the xlink:href attribute.");
+            issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
             mValidator->addIssue(issue);
 
@@ -608,84 +711,385 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
     }
 }
 
-void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
+void Validator::ValidatorImpl::handleErrorsFromImports(size_t initialErrorCount, bool isOriginatingModel, const std::string &type, const std::string &name, const History &history, const ComponentPtr &component, const UnitsPtr &units) const
 {
+    static const std::string skipThis = "Cyclic dependencies";
+    static const std::string notOriginMarker = "NOT ORIGIN: ";
+    static const std::string dataBoundaryMarker = "&";
+    static const std::string dataSeparator = ";";
+
+    for (size_t i = initialErrorCount; i < mValidator->issueCount(); ++i) {
+        auto issue = mValidator->issue(i);
+        auto description = issue->description();
+        if (description.substr(0, skipThis.length()) != skipThis) {
+            std::ostringstream os;
+            if (isOriginatingModel) {
+                // If error is not from this model then set this component or units.
+                size_t depth = 0;
+                size_t pos = description.find(notOriginMarker);
+                size_t originalDescriptionStart = 0;
+                while (pos != std::string::npos) {
+                    if (depth == 0) {
+                        os << "Imported ";
+                        if (type == "Component") {
+                            os << "component ";
+                        } else {
+                            os << "units ";
+                        }
+                        os << "'" << name << "' is not valid because:" << std::endl;
+                    }
+                    size_t startMarker = description.find(dataBoundaryMarker, pos);
+                    size_t endMarker = description.find(dataBoundaryMarker, startMarker + 1);
+                    std::string importInfo = description.substr(startMarker + 1, endMarker - startMarker - 1);
+                    auto ss = split(importInfo);
+                    os << "  -> " << type << " '" << ss[0] << "' importing '" << ss[1] << "' from '" << ss[2] << "'";
+                    originalDescriptionStart = endMarker + 1;
+                    pos = description.find(notOriginMarker, pos + 1);
+                    depth += 1;
+                    if (pos == std::string::npos) {
+                        if (depth > 1) {
+                            os << " which";
+                        }
+                        os << " has an error:" << std::endl
+                           << "   - ";
+                    } else {
+                        os << " imports:" << std::endl;
+                    }
+                }
+
+                if (depth > 0) {
+                    if (type == "Component") {
+                        issue->mPimpl->mItem->mPimpl->setComponent(component);
+                    } else {
+                        issue->mPimpl->mItem->mPimpl->setUnits(units);
+                    }
+                }
+
+                os << description.substr(originalDescriptionStart);
+                issue->mPimpl->setDescription(os.str());
+            } else {
+                // Get name, reference, and import source from history.
+                auto h = history.back();
+                os << notOriginMarker << dataBoundaryMarker << h->mName << dataSeparator << h->mReferenceName << dataSeparator << h->mDestinationUrl << dataBoundaryMarker << description;
+                issue->mPimpl->setDescription(os.str());
+            }
+        }
+    }
+}
+
+void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, History &history, std::vector<ModelPtr> &modelsVisited) const
+{
+    size_t initialIssueCount = mValidator->issueCount();
+    bool isOriginatingModel = modelsVisited.size() == 1;
+
+    std::string componentName = component->name();
+
     // Check for a valid name attribute.
-    if (!isCellmlIdentifier(component->name())) {
-        auto issue = makeIssueIllegalIdentifier(component->name());
+    bool isImported = component->isImport();
+    std::string descriptionPrefix = "Component ";
+    if (isImported) {
+        descriptionPrefix = "Imported component ";
+    }
+    if (!isCellmlIdentifier(componentName)) {
+        auto issue = makeIssueIllegalIdentifier(componentName);
         issue->mPimpl->mItem->mPimpl->setComponent(component);
-        issue->mPimpl->setDescription("Component '" + component->name() + "' does not have a valid name attribute. " + issue->description());
+        issue->mPimpl->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid name attribute. " + issue->description());
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
-    // Check for variables in this component.
-    std::vector<std::string> variableNames;
-    if (component->variableCount() > 0) {
-        // Check for duplicate variable names and construct vector of valid names in case
-        // we have a variable initial_value set by reference.
-        for (size_t i = 0; i < component->variableCount(); ++i) {
-            std::string variableName = component->variable(i)->name();
-            if (!variableName.empty()) {
-                if (std::find(variableNames.begin(), variableNames.end(), variableName) != variableNames.end()) {
-                    auto issue = std::shared_ptr<Issue> {new Issue {}};
-                    issue->mPimpl->setDescription("Component '" + component->name() + "' contains multiple variables with the name '" + variableName + "'. Valid variable names must be unique to their component.");
-                    issue->mPimpl->mItem->mPimpl->setComponent(component);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
+    // Check for a valid identifier.
+    if (!isValidXmlName(component->id())) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->mPimpl->mItem->mPimpl->setComponent(component);
+        issue->mPimpl->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid 'id' attribute, '" + component->id() + "'.");
+        mValidator->addIssue(issue);
+    }
+
+    if (isImported) {
+        // Check for a component_ref; assumes imported if the import source is not null.
+        std::string componentRef = component->importReference();
+
+        if (!isCellmlIdentifier(componentRef)) {
+            auto issue = makeIssueIllegalIdentifier(componentRef);
+            issue->mPimpl->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid component_ref attribute. " + issue->description());
+            issue->mPimpl->mItem->mPimpl->setComponent(component);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
+            mValidator->addIssue(issue);
+        }
+
+        validateImportSource(component->importSource(), componentName, "component");
+
+        auto importModel = component->importSource()->model();
+        if (importModel != nullptr) {
+            auto importedComponent = importModel->component(componentRef);
+            if (importedComponent != nullptr) {
+                auto h = createHistoryEpoch(component, importeeModelUrl(history, component->importSource()->url()));
+                if (checkForImportCycles(history, h)) {
+                    history.push_back(h);
+                    auto issue = Issue::IssueImpl::createCyclicDependencyIssue(history, "resolve");
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
+                    issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
                     mValidator->addIssue(issue);
+                } else {
+                    history.push_back(h);
+                    modelsVisited.push_back(importModel);
+                    validateComponent(importedComponent, history, modelsVisited);
+                    modelsVisited.pop_back();
                 }
-                variableNames.push_back(variableName);
+                history.pop_back();
+            } else {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription(descriptionPrefix + "'" + componentName + "' refers to component '" + componentRef + "' which does not appear in '" + component->importSource()->url() + "'.");
+                issue->mPimpl->mItem->mPimpl->setComponent(component);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
+                mValidator->addIssue(issue);
             }
         }
+
+    } else {
+        // Check for variables in this component.
+        NameList variableNames;
         // Validate variable(s).
         for (size_t i = 0; i < component->variableCount(); ++i) {
             VariablePtr variable = component->variable(i);
             validateVariable(variable, variableNames);
+            variableNames.push_back(variable->name());
+        }
+        // Check for resets in this component.
+        for (size_t i = 0; i < component->resetCount(); ++i) {
+            ResetPtr reset = component->reset(i);
+            validateReset(reset, component);
+        }
+
+        // Validate math through the private implementation (for XML handling).
+        if (!component->math().empty()) {
+            validateMath(component->math(), component);
         }
     }
-    // Check for resets in this component
-    for (size_t i = 0; i < component->resetCount(); ++i) {
-        ResetPtr reset = component->reset(i);
-        validateReset(reset, component);
-    }
 
-    // Validate math through the private implementation (for XML handling).
-    if (!component->math().empty()) {
-        validateMath(component->math(), component);
-    }
+    handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Component", componentName, history, component, nullptr);
 }
 
-void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
+std::set<std::string> namesInCycle(NameList allNames)
 {
+    std::string cycleStartName = allNames.back();
+    allNames.pop_back();
+    std::reverse(allNames.begin(), allNames.end());
+    std::set<std::string> namesInCycle = {cycleStartName};
+    for (const auto &name : allNames) {
+        if (name == cycleStartName) {
+            break;
+        }
+        namesInCycle.emplace(name);
+    }
+
+    return namesInCycle;
+}
+
+bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(NameList names) const
+{
+    std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
+    bool found = false;
+    for (size_t i = 0; (i < mValidator->issueCount()) && !found; ++i) {
+        auto issue = mValidator->issue(i);
+        if (issue->description().substr(0, 20) == "Cyclic units exist: ") {
+            // Remove prefix to loop information.
+            auto loop = issue->description().substr(20);
+            // Remove suffix to loop information.
+            loop.pop_back();
+            auto parts = split(loop, " -> ");
+            auto existingNamesInCycle = namesInCycle(parts);
+            found = testNamesInCycle == existingNamesInCycle;
+        }
+    }
+
+    return found;
+}
+
+bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &description) const
+{
+    size_t count = mValidator->issueCount();
+    for (size_t i = 0; i < count; ++i) {
+        if (mValidator->issue(count - 1 - i)->description() == description) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited) const
+{
+    auto h = createHistoryEpoch(units, ORIGIN_MODEL_REF);
+    if (checkForLocalCycles(history, h)) {
+        history.push_back(h);
+        std::string des;
+        Strings names;
+        for (const auto &entry : history) {
+            if (!des.empty()) {
+                des += " -> ";
+            }
+            auto tmp = "'" + entry->mName + "'";
+            names.push_back(tmp);
+            des += tmp;
+        }
+        if (!hasCycleAlreadyBeenReported(names)) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Cyclic units exist: " + des + ".");
+            issue->mPimpl->mItem->mPimpl->setUnits(units);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_CIRCULAR_REF);
+            mValidator->addIssue(issue);
+        }
+        history.pop_back();
+        return;
+    }
+
+    std::string unitsName = units->name();
+    size_t initialIssueCount = mValidator->issueCount();
+    bool isOriginatingModel = modelsVisited.size() == 1;
+
+    std::string unitsRef;
+    std::string unitsImportUrl;
+    if (units->isImport()) {
+        unitsRef = units->importReference();
+        unitsImportUrl = units->importSource()->url();
+        h->mReferenceName = unitsRef;
+        h->mSourceUrl = importeeModelUrl(history, units->importSource()->url());
+    }
+
+    auto model = owningModel(units);
+
+    size_t unitsWithNameCount = 0;
+    size_t unitsWithImportSource = 0;
+    for (size_t i = 0; (i < model->unitsCount()) && (modelsVisited.size() == 1); ++i) {
+        auto tmpUnits = model->units(i);
+        if (tmpUnits->name() == unitsName) {
+            unitsWithNameCount += 1;
+        }
+        if (tmpUnits->isImport()) {
+            if (tmpUnits->importReference() == unitsRef && tmpUnits->importSource()->url() == unitsImportUrl) {
+                unitsWithImportSource += 1;
+            }
+        }
+    }
+
+    if (units->isImport()) {
+        // Check for a units_ref.
+        size_t currentIssueCount = mValidator->issueCount();
+        if (!isCellmlIdentifier(unitsRef)) {
+            auto issue = makeIssueIllegalIdentifier(unitsRef);
+            issue->mPimpl->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
+            issue->mPimpl->mItem->mPimpl->setUnits(units);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+            mValidator->addIssue(issue);
+        }
+
+        auto importSource = units->importSource();
+        validateImportSource(importSource, unitsName, "units");
+
+        bool foundImportIssue = mValidator->issueCount() > currentIssueCount;
+
+        // Check if we already have another import from the same source with the same units_ref.
+        // (This looks for matching entries at the same position in the source and ref vectors).
+        if ((unitsWithImportSource > 1) && !foundImportIssue) {
+            auto description = "Model '" + model->name() + "' contains multiple imported units from '" + unitsImportUrl + "' with the same units_ref attribute '" + unitsRef + "'.";
+            if (!checkIssuesForDuplications(description)) {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription(description);
+                issue->mPimpl->mItem->mPimpl->setModel(model);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+                mValidator->addIssue(issue);
+            }
+        }
+
+        auto importSourceModel = importSource->model();
+        if (importSourceModel != nullptr) {
+            auto importedUnits = importSourceModel->units(unitsRef);
+            if (importedUnits != nullptr) {
+                Strings importUnitsNames;
+                Strings importUnitsRefs;
+                Strings importUnitsImportSources;
+                IssuesList importIssueList;
+
+                if (checkForImportCycles(history, h)) {
+                    history.push_back(h);
+                    auto issue = Issue::IssueImpl::createCyclicDependencyIssue(history, "resolve");
+                    issue->mPimpl->mItem->mPimpl->setUnits(units);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+                    mValidator->addIssue(issue);
+                } else {
+                    modelsVisited.push_back(importSourceModel);
+                    history.push_back(h);
+                    validateUnits(importedUnits, history, modelsVisited);
+                    modelsVisited.pop_back();
+                }
+            } else {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Imported units '" + units->name() + "' refers to units '" + unitsRef + "' which does not appear in '" + importSource->url() + "'.");
+                issue->mPimpl->mItem->mPimpl->setUnits(units);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+                mValidator->addIssue(issue);
+            }
+        }
+    }
+    // Check for duplicate units names in this model.
+    if (unitsWithNameCount > 1) {
+        std::string description = "Model '" + model->name() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.";
+        if (!checkIssuesForDuplications(description)) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription(description);
+            issue->mPimpl->mItem->mPimpl->setModel(model);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_NAME_UNIQUE);
+            mValidator->addIssue(issue);
+        }
+    }
     // Check for a valid name attribute.
-    if (!isCellmlIdentifier(units->name())) {
-        auto issue = makeIssueIllegalIdentifier(units->name());
+    if (!isCellmlIdentifier(unitsName)) {
+        auto issue = makeIssueIllegalIdentifier(unitsName);
         issue->mPimpl->mItem->mPimpl->setUnits(units);
         if (units->isImport()) {
-            issue->mPimpl->setDescription("Imported units '" + units->name() + "' does not have a valid name attribute. " + issue->description());
+            issue->mPimpl->setDescription("Imported units '" + unitsName + "' does not have a valid name attribute. " + issue->description());
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_NAME);
         } else {
-            issue->mPimpl->setDescription("Units '" + units->name() + "' does not have a valid name attribute. " + issue->description());
+            issue->mPimpl->setDescription("Units '" + unitsName + "' does not have a valid name attribute. " + issue->description());
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_NAME);
         }
         mValidator->addIssue(issue);
     } else {
         // Check for a matching standard units.
-        if (isStandardUnitName(units->name())) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
-            issue->mPimpl->setDescription("Units is named '" + units->name() + "' which is a protected standard unit name.");
+        if (isStandardUnitName(unitsName)) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Units is named '" + unitsName + "' which is a protected standard unit name.");
             issue->mPimpl->mItem->mPimpl->setUnits(units);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_STANDARD);
             mValidator->addIssue(issue);
         }
     }
-    if (units->unitCount() > 0) {
-        for (size_t i = 0; i < units->unitCount(); ++i) {
-            validateUnitsUnit(i, units, unitsNames);
+    // Check for a valid identifier.
+    if (!isValidXmlName(units->id())) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->mPimpl->mItem->mPimpl->setUnits(units);
+        std::string descriptionStart = "Units";
+        if (units->isImport()) {
+            descriptionStart = "Imported units";
         }
+        issue->mPimpl->setDescription(descriptionStart + " '" + unitsName + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
+        mValidator->addIssue(issue);
     }
+
+    if (units->unitCount() > 0) {
+        history.push_back(h);
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            validateUnitsUnitsItem(i, units, history, modelsVisited);
+        }
+        history.pop_back();
+    }
+
+    handleErrorsFromImports(initialIssueCount, isOriginatingModel, "Units", unitsName, history, nullptr, units);
 }
 
-void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames)
+void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited) const
 {
     // Validate the unit at the given index.
     std::string reference;
@@ -696,8 +1100,11 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
 
     units->unitAttributes(index, reference, prefix, exponent, multiplier, id);
     if (isCellmlIdentifier(reference)) {
-        if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) && (!isStandardUnitName(reference))) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+        ModelPtr model = owningModel(units);
+        if (model->hasUnits(reference) && !isStandardUnitName(reference)) {
+            validateUnits(model->units(reference), history, modelsVisited);
+        } else if (!model->hasUnits(reference) && !isStandardUnitName(reference)) {
+            auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
             issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
@@ -710,10 +1117,18 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
         mValidator->addIssue(issue);
     }
+    // Check for a valid identifier.
+    if (!isValidXmlName(id)) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
+        issue->mPimpl->setDescription("Unit in units '" + units->name() + "' does not have a valid 'id' attribute, '" + units->id() + "'.");
+        mValidator->addIssue(issue);
+    }
     if (!prefix.empty()) {
         if (!isStandardPrefixName(prefix)) {
             if (!isCellMLInteger(prefix)) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
                 issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
@@ -723,7 +1138,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                     int test = std::stoi(prefix);
                     (void)test;
                 } catch (std::out_of_range &) {
-                    auto issue = std::shared_ptr<Issue> {new Issue {}};
+                    auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
                     issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
                     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
@@ -734,20 +1149,40 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     }
 }
 
-void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames)
+void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const NameList &variableNames) const
 {
+    ComponentPtr component = owningComponent(variable);
+    auto variableName = variable->name();
+    if (!variableName.empty()) {
+        if (std::find(variableNames.begin(), variableNames.end(), variableName) != variableNames.end()) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Component '" + component->name() + "' contains multiple variables with the name '" + variableName + "'. Valid variable names must be unique to their component.");
+            issue->mPimpl->mItem->mPimpl->setComponent(component);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
+            mValidator->addIssue(issue);
+        }
+    }
+
     // Check for a valid name attribute.
-    if (!isCellmlIdentifier(variable->name())) {
-        auto issue = makeIssueIllegalIdentifier(variable->name());
-        issue->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid name attribute. " + issue->description());
+    if (!isCellmlIdentifier(variableName)) {
+        auto issue = makeIssueIllegalIdentifier(variableName);
+        issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' does not have a valid name attribute. " + issue->description());
         issue->mPimpl->mItem->mPimpl->setVariable(variable);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
         mValidator->addIssue(issue);
     }
+    // Check for a valid identifier.
+    if (!isValidXmlName(variable->id())) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->mPimpl->mItem->mPimpl->setVariable(variable);
+        issue->mPimpl->setDescription("Variable '" + variableName + "' does not have a valid 'id' attribute, '" + variable->id() + "'.");
+        mValidator->addIssue(issue);
+    }
     // Check for a valid units attribute.
     if (variable->units() == nullptr) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have any units specified.");
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' does not have any units specified.");
         issue->mPimpl->mItem->mPimpl->setVariable(variable);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
@@ -755,16 +1190,15 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         std::string unitsName = variable->units()->name();
         if (!isCellmlIdentifier(unitsName)) {
             auto issue = makeIssueIllegalIdentifier(unitsName);
-            issue->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid units attribute. The attribute given is '" + unitsName + "'. " + issue->description());
+            issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' does not have a valid units attribute. The attribute given is '" + unitsName + "'. " + issue->description());
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
             mValidator->addIssue(issue);
         } else if (!isStandardUnitName(unitsName)) {
-            ComponentPtr component = owningComponent(variable);
             ModelPtr model = owningModel(component);
             if ((model != nullptr) && !model->hasUnits(unitsName)) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
-                issue->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
                 mValidator->addIssue(issue);
@@ -775,8 +1209,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
     if (!variable->interfaceType().empty()) {
         std::string interfaceType = variable->interfaceType();
         if ((interfaceType != "public") && (interfaceType != "private") && (interfaceType != "none") && (interfaceType != "public_and_private")) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
-            issue->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_INTERFACE);
             mValidator->addIssue(issue);
@@ -786,11 +1220,11 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
     if (!variable->initialValue().empty()) {
         std::string initialValue = variable->initialValue();
         // Check if initial value is a variable reference
-        if (!(std::find(variableNames.begin(), variableNames.end(), initialValue) != variableNames.end())) {
+        if (!component->hasVariable(initialValue)) {
             // Otherwise, check that the initial value can be converted to a double
             if (!isCellMLReal(initialValue)) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
-                issue->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' has an invalid initial value '" + initialValue + "'. Initial values must be a real number string or a variable reference.");
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' has an invalid initial value '" + initialValue + "'. Initial values must be a real number string or a variable reference.");
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_INITIAL_VALUE);
                 mValidator->addIssue(issue);
@@ -799,7 +1233,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
     }
 }
 
-void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
+void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component) const
 {
     bool noOrder = false;
     bool noVariable = false;
@@ -817,6 +1251,15 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         description += "with order '" + convertToString(reset->order()) + "', ";
     } else {
         noOrder = true;
+    }
+
+    // Check for a valid identifier.
+    if (!isValidXmlName(reset->id())) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->mPimpl->mItem->mPimpl->setReset(reset);
+        issue->mPimpl->setDescription(description + "' does not have a valid 'id' attribute, '" + reset->id() + "'.");
+        mValidator->addIssue(issue);
     }
 
     if (reset->variable() == nullptr) {
@@ -859,50 +1302,67 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         validateMath(resetValueString, component);
     }
 
+    // Check for a valid identifier.
+    if (!isValidXmlName(reset->testValueId())) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->mPimpl->mItem->mPimpl->setReset(reset);
+        issue->mPimpl->setDescription(description + "' does not have a valid test_value 'id' attribute, '" + reset->testValueId() + "'.");
+        mValidator->addIssue(issue);
+    }
+    // Check for a valid identifier.
+    if (!isValidXmlName(reset->resetValueId())) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+        issue->mPimpl->mItem->mPimpl->setReset(reset);
+        issue->mPimpl->setDescription(description + "' does not have a valid reset_value 'id' attribute, '" + reset->resetValueId() + "'.");
+        mValidator->addIssue(issue);
+    }
+
     if (noOrder) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not have an order set.");
         issue->mPimpl->mItem->mPimpl->setComponent(component);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_ORDER);
         mValidator->addIssue(issue);
     }
     if (noVariable) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not reference a variable.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (noTestVariable) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not reference a test_variable.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (noTestValue) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not have a test_value specified.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VALUE);
         mValidator->addIssue(issue);
     }
     if (noResetValue) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not have a reset_value specified.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_RESET_VALUE);
         mValidator->addIssue(issue);
     }
     if (varOutsideComponent) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "refers to a variable '" + reset->variable()->name() + "' in a different component '" + varParentName + "'.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (testVarOutsideComponent) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "refers to a test_variable '" + reset->testVariable()->name() + "' in a different component '" + testVarParentName + "'.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
@@ -910,7 +1370,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     }
 }
 
-void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
+void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component) const
 {
     // Parse as XML first.
     std::vector<XmlDocPtr> docs = multiRootXml(input);
@@ -918,7 +1378,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         // Copy any XML parsing issues into the common validator issue handler.
         if (doc->xmlErrorCount() > 0) {
             for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("LibXml2 error: " + doc->xmlError(i));
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
                 mValidator->addIssue(issue);
@@ -926,7 +1386,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         }
         XmlNodePtr node = doc->rootNode();
         if (node == nullptr) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setComponent(component);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
@@ -934,7 +1394,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             return;
         }
         if (!node->isMathmlElement("math")) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
             issue->mPimpl->mItem->mPimpl->setComponent(component);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
@@ -944,7 +1404,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         }
 
         XmlNodePtr nodeCopy = node;
-        std::vector<std::string> variableNames;
+        NameList variableNames;
         for (size_t i = 0; i < component->variableCount(); ++i) {
             std::string variableName = component->variable(i)->name();
             if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
@@ -972,9 +1432,9 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         // Copy any MathML validation errors into the common validator error handler.
         if (mathmlDoc->xmlErrorCount() > 0) {
             for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
-                issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
+                issue->mPimpl->mItem->mPimpl->setMath(component);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_MATHML);
                 mValidator->addIssue(issue);
             }
@@ -982,7 +1442,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     }
 }
 
-bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode)
+bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode) const
 {
     if (isCellmlIdentifier(unitsName)) {
         return true;
@@ -990,7 +1450,7 @@ bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, co
 
     IssuePtr issue = makeIssueIllegalIdentifier(unitsName);
     issue->mPimpl->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute. " + issue->description());
-    issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
+    issue->mPimpl->mItem->mPimpl->setMath(component);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS);
     mValidator->addIssue(issue);
 
@@ -1007,7 +1467,7 @@ std::string text(const XmlNodePtr &node)
     return {};
 }
 
-void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component)
+void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component) const
 {
     // Get cellml:units attribute.
     XmlAttributePtr attribute = node->firstAttribute();
@@ -1022,9 +1482,9 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
                 cellmlAttributesToRemove.push_back(attribute);
             } else if (attribute->inNamespaceUri(CELLML_2_0_NS)) {
                 cellmlAttributesToRemove.push_back(attribute);
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace. Attribute 'units' is the only CellML namespace attribute allowed.");
-                issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
+                issue->mPimpl->mItem->mPimpl->setMath(component);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_MATHML);
                 mValidator->addIssue(issue);
             }
@@ -1044,9 +1504,9 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
         if (!model->hasUnits(unitsName)) {
             // Check for a matching standard units.
             if (!isStandardUnitName(unitsName)) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in the model '" + model->name() + "' or a standard unit.");
-                issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
+                issue->mPimpl->mItem->mPimpl->setMath(component);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS);
                 mValidator->addIssue(issue);
             }
@@ -1063,23 +1523,23 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const
+void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const
 {
     XmlNodePtr childNode = node->firstChild();
     std::string textInNode = text(childNode);
     if (!textInNode.empty()) {
         // Check whether we can find this text as a variable name in this component.
         if (std::find(variableNames.begin(), variableNames.end(), textInNode) == variableNames.end()) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("MathML ci element has the child text '" + textInNode + "' which does not correspond with any variable names present in component '" + component->name() + "'.");
-            issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
+            issue->mPimpl->mItem->mPimpl->setMath(component);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CI_VARIABLE_REF);
             mValidator->addIssue(issue);
         }
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames)
+void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames) const
 {
     if (node->isMathmlElement("cn")) {
         validateAndCleanCnNode(node, component);
@@ -1098,14 +1558,14 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     }
 }
 
-void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component)
+void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component) const
 {
     XmlNodePtr childNode = node->firstChild();
     if (childNode != nullptr) {
         if (!childNode->isComment() && !childNode->isText() && !isSupportedMathMLElement(childNode)) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Math has a '" + childNode->name() + "' element that is not a supported MathML element.");
-            issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
+            issue->mPimpl->mItem->mPimpl->setMath(component);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CHILD);
             mValidator->addIssue(issue);
         }
@@ -1115,9 +1575,9 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     XmlNodePtr nextNode = node->next();
     if (nextNode != nullptr) {
         if (!nextNode->isComment() && !nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Math has a '" + nextNode->name() + "' element that is not a supported MathML element.");
-            issue->mPimpl->mItem->mPimpl->setComponent(component, CellmlElementType::MATH);
+            issue->mPimpl->mItem->mPimpl->setMath(component);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CHILD);
             mValidator->addIssue(issue);
         }
@@ -1175,9 +1635,9 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
                     alreadyReported.push_back(pair);
                     std::string equivalentComponentName = equivalentComponent->name();
 
-                    IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
+                    IssuePtr err = Issue::IssueImpl::create();
                     err->mPimpl->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
-                    err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
+                    err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
                     err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE);
                     mValidator->addIssue(err);
                 }
@@ -1186,7 +1646,7 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
     } else {
         auto interfaceTypeString = variable->interfaceType();
         if (!interfaceTypeIsCompatible(interfaceType, interfaceTypeString)) {
-            IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
+            IssuePtr err = Issue::IssueImpl::create();
             if (interfaceTypeString.empty()) {
                 err->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + componentName + "' has no interface type set. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
             } else {
@@ -1232,9 +1692,9 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
             if (it == alreadyReported.end()) {
                 VariablePairPtr pair = VariablePair::create(variable, equivalentVariable);
                 alreadyReported.push_back(pair);
-                IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
+                IssuePtr err = Issue::IssueImpl::create();
                 err->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + variable->units()->name() + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentVariable->units()->name() + "'. The mismatch is: " + hints);
-                err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
+                err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
                 err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
             }
@@ -1249,9 +1709,9 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
         if (equivalentVariable->hasEquivalentVariable(variable)) {
             auto component = owningComponent(equivalentVariable);
             if (component == nullptr) {
-                IssuePtr err = std::shared_ptr<Issue> {new Issue {}};
+                IssuePtr err = Issue::IssueImpl::create();
                 err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->mPimpl->mItem->mPimpl->setVariablePair(VariablePair::create(variable, equivalentVariable), CellmlElementType::MAP_VARIABLES);
+                err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
                 err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mValidator->addIssue(err);
             }
@@ -1281,7 +1741,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model) const
     }
 }
 
-bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
+bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node) const
 {
     return (node->namespaceUri() == MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
@@ -1306,15 +1766,9 @@ Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
     return Issue::ReferenceRule::UNDEFINED;
 }
 
-bool isCellmlIdentifier(const std::string &name)
+IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string &name) const
 {
-    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
-    return isValid == Issue::ReferenceRule::UNDEFINED;
-}
-
-IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string &name)
-{
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    auto issue = Issue::IssueImpl::create();
     auto referenceRule = validateCellmlIdentifier(name);
     issue->mPimpl->setReferenceRule(referenceRule);
 
@@ -1330,6 +1784,12 @@ IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string 
     }
 
     return issue;
+}
+
+bool isCellmlIdentifier(const std::string &name)
+{
+    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
+    return isValid == Issue::ReferenceRule::UNDEFINED;
 }
 
 bool unitsAreEquivalent(const ModelPtr &model,
@@ -1447,86 +1907,6 @@ void updateBaseUnitCount(const ModelPtr &model,
     }
 }
 
-void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
-{
-    std::vector<std::string> history;
-    std::vector<std::vector<std::string>> issueList;
-
-    for (size_t i = 0; i < model->unitsCount(); ++i) {
-        // Test each units' dependencies for presence of self in tree.
-        UnitsPtr u = model->units(i);
-        history.push_back(u->name());
-        checkUnitsForCycles(model, u, history, issueList);
-        // Have to delete this each time to prevent reinitialisation with previous base variables.
-        history.clear();
-    }
-
-    if (!issueList.empty()) {
-        std::vector<std::map<std::string, bool>> reportedIssueList;
-        for (auto &issues : issueList) {
-            std::map<std::string, bool> hash;
-
-            for (auto &e : issues) {
-                hash.insert(std::pair<std::string, bool>(e, true));
-            }
-
-            // Only return as issue if this combo has not been reported already.
-            if (std::find(reportedIssueList.begin(), reportedIssueList.end(), hash) == reportedIssueList.end()) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
-                std::string des = "'";
-                for (size_t j = 0; j < issues.size() - 1; ++j) {
-                    des += issues[j] + "' -> '";
-                }
-                des += issues[issues.size() - 1] + "'";
-                issue->mPimpl->setDescription("Cyclic units exist: " + des);
-                auto cyclicUnits = model->units(issues[issues.size() - 1]);
-                issue->mPimpl->mItem->mPimpl->setUnits(cyclicUnits);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_CIRCULAR_REF);
-                mValidator->addIssue(issue);
-                reportedIssueList.push_back(hash);
-            }
-        }
-    }
-}
-
-void Validator::ValidatorImpl::checkUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                                                   std::vector<std::string> &history,
-                                                   std::vector<std::vector<std::string>> &errorList)
-{
-    if (parent->isBaseUnit()) {
-        return;
-    }
-
-    // Recursive function to check for self-referencing in unit definitions.
-    std::string id;
-    std::string ref;
-    std::string prefix;
-    double exp;
-    double mult;
-
-    // Take history, and copy it for each new branch.
-    for (size_t i = 0; i < parent->unitCount(); ++i) {
-        parent->unitAttributes(i, ref, prefix, exp, mult, id);
-        if (std::find(history.begin(), history.end(), ref) != history.end()) {
-            history.push_back(ref);
-            // Print to error output *only* when the first and last units are the same
-            // otherwise we get lasso shapes reported.
-            if (history.front() == history.back()) {
-                errorList.push_back(history);
-            }
-        } else {
-            // Step into dependencies if they are not built-in units.
-            if (model->hasUnits(ref)) {
-                UnitsPtr child = model->units(ref);
-                history.push_back(ref);
-                // Making a copy of the history vector to this point.
-                std::vector<std::string> childHistory(history);
-                checkUnitsForCycles(model, child, childHistory, errorList);
-            }
-        }
-    }
-}
-
 void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
 {
     auto idMap = buildModelIdMap(model);
@@ -1547,7 +1927,7 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
                     desc += ".\n";
                 }
             }
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL);
             issue->mPimpl->setLevel(Issue::Level::ERROR);
             issue->mPimpl->setDescription(desc);
@@ -1563,7 +1943,7 @@ void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::st
         idMap[id].second.emplace_back(info);
         idMap[id] = std::make_pair(idMap[id].first + 1, idMap[id].second);
     } else {
-        std::vector<std::string> infos;
+        Strings infos;
         infos.emplace_back(info);
         idMap.emplace(id, std::make_pair(1, infos));
     }
@@ -1610,6 +1990,15 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     }
     // Encapsulation.
     if (!model->encapsulationId().empty()) {
+        // Check for a valid identifier.
+        if (!isValidXmlName(model->encapsulationId())) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+            issue->mPimpl->mItem->mPimpl->setModel(model);
+            issue->mPimpl->setDescription("Model '" + model->name() + "' does not have a valid encapsulation 'id' attribute, '" + model->encapsulationId() + "'.");
+            mValidator->addIssue(issue);
+        }
+
         info = " - encapsulation in model '" + model->name() + "'";
         addIdMapItem(model->encapsulationId(), info, idMap);
     }
@@ -1659,18 +2048,40 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                 std::string mappingId = Variable::equivalenceMappingId(item, equiv);
                 // Variable mapping.
                 if ((s1 < s2) && !mappingId.empty()) {
-                    info = " - variable equivalence between variable '" + item->name() + "' in component '" + component->name()
-                           + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
+                    std::string mappingDescription =
+                        "between variable '" + item->name() + "' in component '" + component->name()
+                        + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
+                    // Check for a valid identifier.
+                    if (!isValidXmlName(mappingId)) {
+                        auto issue = Issue::IssueImpl::create();
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+                        issue->mPimpl->mItem->mPimpl->setMapVariables(item, equiv);
+                        issue->mPimpl->setDescription("Variable equivalence " + mappingDescription + ", does not have a valid map_variables 'id' attribute, '" + mappingId + "'.");
+                        mValidator->addIssue(issue);
+                    }
+
+                    info = " - variable equivalence " + mappingDescription;
                     addIdMapItem(mappingId, info, idMap);
                 }
                 // Connections.
                 auto connectionId = Variable::equivalenceConnectionId(item, equiv);
                 std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
                 if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
+                    std::string connectionDescription =
+                        "between components '" + component->name() + "' and '" + equivParent->name()
+                        + "' because of variable equivalence between variables '" + item->name()
+                        + "' and '" + equiv->name() + "'";
+                    // Check for a valid identifier.
+                    if (!isValidXmlName(connectionId)) {
+                        auto issue = Issue::IssueImpl::create();
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+                        issue->mPimpl->mItem->mPimpl->setConnection(item, equiv);
+                        issue->mPimpl->setDescription("Connection " + connectionDescription + ", does not have a valid connection 'id' attribute, '" + connectionId + "'.");
+                        mValidator->addIssue(issue);
+                    }
+
                     reportedConnections.insert(connection);
-                    info = " - connection between components '" + component->name() + "' and '" + equivParent->name()
-                           + "' because of variable equivalence between variables '" + item->name()
-                           + "' and '" + equiv->name() + "'";
+                    info = " - connection " + connectionDescription;
                     addIdMapItem(connectionId, info, idMap);
                 }
             }
@@ -1708,8 +2119,17 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
         addIdMapItem(component->importSource()->id(), info, idMap);
     }
 
-    // Connections.
+    // Hierarchy.
     if (!component->encapsulationId().empty()) {
+        // Check for a valid identifier.
+        if (!isValidXmlName(component->encapsulationId())) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
+            issue->mPimpl->mItem->mPimpl->setComponent(component);
+            issue->mPimpl->setDescription("Component '" + component->name() + "' does not have a valid encapsulation 'id' attribute, '" + component->encapsulationId() + "'.");
+            mValidator->addIssue(issue);
+        }
+
         info = " - encapsulation component_ref to component '" + component->name() + "'";
         addIdMapItem(component->encapsulationId(), info, idMap);
     }

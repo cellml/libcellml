@@ -331,7 +331,6 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
  *
  * The private implementation for the Analyser class.
  */
-using Strings = std::vector<std::string>;
 using UnitsMap = std::map<std::string, double>;
 using UnitsMaps = std::vector<UnitsMap>;
 using UnitsMultipliers = std::vector<double>;
@@ -1059,7 +1058,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
         } else if ((variable != internalVariable->mVariable)
                    && !variable->initialValue().empty()
                    && !internalVariable->mVariable->initialValue().empty()) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             auto trackedVariableComponent = owningComponent(internalVariable->mVariable);
 
             issue->mPimpl->setDescription("Variable '" + variable->name()
@@ -1088,7 +1087,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
             auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(initialisingVariable);
 
             if (initialisingInternalVariable->mType != AnalyserInternalVariable::Type::CONSTANT) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                auto issue = Issue::IssueImpl::create();
 
                 issue->mPimpl->setDescription("Variable '" + variable->name()
                                               + "' in component '" + component->name()
@@ -1180,7 +1179,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
                     for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
                         if (!voiEquivalentVariable->initialValue().empty()) {
-                            auto issue = std::shared_ptr<Issue> {new Issue {}};
+                            auto issue = Issue::IssueImpl::create();
 
                             issue->mPimpl->setDescription("Variable '" + voiEquivalentVariable->name()
                                                           + "' in component '" + owningComponent(voiEquivalentVariable)->name()
@@ -1205,7 +1204,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                 }
             }
         } else if (!mModel->areEquivalentVariables(variable, mModel->mPimpl->mVoi->variable())) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
 
             issue->mPimpl->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
                                           + "' in component '" + owningComponent(mModel->mPimpl->mVoi->variable())->name()
@@ -1229,13 +1228,13 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
         double value = convertToDouble(ast->mPimpl->mValue, &validValue);
 
         if (!validValue || !areEqual(value, 1.0)) {
-            auto issue = std::shared_ptr<Issue> {new Issue {}};
+            auto issue = Issue::IssueImpl::create();
             auto variable = astGreatGrandParent->mPimpl->mOwnedRightChild->variable();
 
             issue->mPimpl->setDescription("The differential equation for variable '" + variable->name()
                                           + "' in component '" + owningComponent(variable)->name()
                                           + "' must be of the first order.");
-            issue->mPimpl->mItem->mPimpl->setComponent(owningComponent(variable), CellmlElementType::MATH);
+            issue->mPimpl->mItem->mPimpl->setMath(owningComponent(variable));
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
 
             mAnalyser->addIssue(issue);
@@ -2247,7 +2246,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                  issueDescriptions);
 
             for (const auto &issueDescription : issueDescriptions) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                auto issue = Issue::IssueImpl::create();
 
                 issue->mPimpl->setDescription(issueDescription);
                 issue->mPimpl->setLevel(Issue::Level::WARNING);
@@ -2308,7 +2307,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
 
             if (!issueType.empty()) {
-                auto issue = std::shared_ptr<Issue> {new Issue {}};
+                auto issue = Issue::IssueImpl::create();
                 auto realVariable = internalVariable->mVariable;
 
                 issue->mPimpl->setDescription("Variable '" + realVariable->name()
@@ -2382,7 +2381,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                 if (variable != nullptr) {
                     if (owningModel(variable) != model) {
-                        auto issue = std::shared_ptr<Issue> {new Issue {}};
+                        auto issue = Issue::IssueImpl::create();
 
                         issue->mPimpl->setDescription("Variable '" + variable->name()
                                                       + "' in component '" + owningComponent(variable)->name()
@@ -2476,7 +2475,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE;
                     }
 
-                    auto issue = std::shared_ptr<Issue> {new Issue {}};
+                    auto issue = Issue::IssueImpl::create();
 
                     issue->mPimpl->setDescription(description);
                     issue->mPimpl->setLevel(Issue::Level::MESSAGE);
