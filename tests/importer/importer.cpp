@@ -50,16 +50,16 @@ TEST(Importer, noWarningDiamondImport)
     EXPECT_TRUE(model->hasUnresolvedImports());
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_EQ(size_t(0), importer->errorCount());
 }
 
 TEST(Importer, warningCircularImportReferencesComponent)
 {
     const std::string errorMessage =
-        "Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n"
-        " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
-        " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
-        " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
-        " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve a component in the model 'circularImport1'. The dependency loop is:\n")
+        + " - component 'i_am_cyclic' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularImport_2.cellml';\n"
+        + " - component 'c2' specifies an import from '" + resourcePath("importer/") + "circularImport_2.cellml' to '" + resourcePath("importer/") + "circularImport_3.cellml'; and\n"
+        + " - component 'c3' specifies an import from '" + resourcePath("importer/") + "circularImport_3.cellml' to '" + resourcePath("importer/") + "circularImport_1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
@@ -75,11 +75,11 @@ TEST(Importer, warningCircularImportReferencesComponent)
 TEST(Importer, warningCircularImportReferencesUnits)
 {
     const std::string errorMessage =
-        "Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n"
-        " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml';\n"
-        " - units 'u2' is imported from 'u3' in 'circularUnits_3.cellml';\n"
-        " - units 'u3' is imported from 'i_am_cyclic' in 'circularUnits_1.cellml'; and\n"
-        " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve units in the model 'circularImport1'. The dependency loop is:\n")
+        + " - units 'i_am_cyclic' specifies an import from ':this:' to '" + resourcePath("importer/") + "circularUnits_2.cellml';\n"
+        + " - units 'u2' specifies an import from '" + resourcePath("importer/") + "circularUnits_2.cellml' to '" + resourcePath("importer/") + "circularUnits_3.cellml'; and\n"
+        + " - units 'u3' specifies an import from '" + resourcePath("importer/") + "circularUnits_3.cellml' to '" + resourcePath("importer/") + "circularUnits_1.cellml'.";
+
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/circularUnits_1.cellml"));
@@ -286,18 +286,19 @@ TEST(Importer, importUnitsNotDuplicated)
 
 TEST(Importer, duplicatesImportedOnceOnly)
 {
-    std::string in = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
-                     "<model name=\"forked_import\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-                     "  <import xlink:href=\"prong.cellml\">\n"
-                     "    <component name=\"left\" component_ref=\"component1\" />\n"
-                     "  </import>\n"
-                     "  <import xlink:href=\"prong.cellml\">\n"
-                     "    <component name=\"right\" component_ref=\"component1\" />\n"
-                     "  </import>\n"
-                     "  <import xlink:href=\"prong.cellml\">\n"
-                     "    <component name=\"centre\" component_ref=\"component1\" />\n"
-                     "  </import>\n"
-                     "</model>";
+    std::string in =
+        "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
+        "<model name=\"forked_import\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xlink:href=\"prong.cellml\">\n"
+        "    <component name=\"left\" component_ref=\"component1\" />\n"
+        "  </import>\n"
+        "  <import xlink:href=\"prong.cellml\">\n"
+        "    <component name=\"right\" component_ref=\"component1\" />\n"
+        "  </import>\n"
+        "  <import xlink:href=\"prong.cellml\">\n"
+        "    <component name=\"centre\" component_ref=\"component1\" />\n"
+        "  </import>\n"
+        "</model>";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
     auto importer = libcellml::Importer::create();
@@ -542,6 +543,7 @@ TEST(Importer, rangeOfValidSituations)
     // ... and can be flattened as expected too.
     auto flattenedFunkyModel = importer->flattenModel(funkyModel);
     EXPECT_EQ(size_t(0), importer->issueCount());
+
     flattenedFunkyModel->setName("flattenedFunkyModel");
     validator->validateModel(flattenedFunkyModel);
     EXPECT_EQ(size_t(0), validator->issueCount());
@@ -724,8 +726,8 @@ TEST(Importer, importSourceGetSetModel)
 TEST(Importer, resolveWithMissingItems)
 {
     std::vector<std::string> e = {
-        "Import of units 'i_dont_exist' from 'units_source.cellml' requires units named 'i_dont_exist' which cannot be found.",
-        "Import of component 'i_dont_exist' from 'components_source.cellml' requires component named 'i_dont_exist' which cannot be found.",
+        "Import of units 'i_dont_exist' from '" + resourcePath("importer/") + "units_source.cellml' requires units named 'i_dont_exist' which cannot be found.",
+        "Import of component 'i_dont_exist' from '" + resourcePath("importer/") + "components_source.cellml' requires component named 'i_dont_exist' which cannot be found.",
     };
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_nonexistent_items.cellml"));
@@ -739,7 +741,7 @@ TEST(Importer, resolveWithMissingItems)
 
 TEST(Importer, resolveWithMissingChildComponents)
 {
-    std::string e = "Import of component 'child' from 'components_source.cellml' requires component named 'i_dont_exist' which cannot be found.";
+    std::string e = "Import of component 'child' from '" + resourcePath("importer/") + "components_source.cellml' requires component named 'i_dont_exist' which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_children.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -763,7 +765,7 @@ TEST(Importer, resolveWithPresentChildUnits)
 
 TEST(Importer, resolveWithMissingChildUnits)
 {
-    std::string e = "Import of units 'units1' from 'units_children.cellml' requires units named 'units_with_imaginary_children', which relies on child units named 'I_dont_exist', which cannot be found.";
+    std::string e = "Import of units 'units1' from '" + resourcePath("importer/") + "units_children.cellml' requires units named 'units_with_imaginary_children', which relies on child units named 'I_dont_exist', which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_units_with_missing_children.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -776,7 +778,7 @@ TEST(Importer, resolveWithMissingChildUnits)
 
 TEST(Importer, resolveWithMissingChildDependentUnits)
 {
-    std::string e = "Import of component 'component' from 'concrete' requires units named 'other_units_that_dont_exist' which cannot be found.";
+    std::string e = "Import of component 'component' from '" + resourcePath("importer/") + "components_missing_units.cellml' requires units named 'other_units_that_dont_exist' which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_units.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -843,9 +845,7 @@ TEST(Importer, complicatedHHImportMissingGateModel)
 {
     // In this test the generic gate model which is imported by deeply encapsulated components
     // through three generations of imports, is missing. It's used here to give coverage.
-    auto e = "The attempt to resolve imports with the model at '"
-             + resourcePath("importer/HH/GateModel.cellml")
-             + "' failed: the file could not be opened.";
+    auto e = "The attempt to resolve imports with the model at '" + resourcePath("importer/HH/GateModel.cellml") + "' failed: the file could not be opened.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/HH/MembraneModel.cellml"));
     auto importer = libcellml::Importer::create();
@@ -1005,7 +1005,7 @@ TEST(Importer, isResolvedReferencedUnitsMissing)
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
-TEST(Importer, isResolvedCircularImport)
+TEST(Importer, isResolvedCircularImportUnits)
 {
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
@@ -1019,7 +1019,32 @@ TEST(Importer, isResolvedCircularImport)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
 
+    // It is possible however difficult to make a circular import with units.
+    auto importModel = u->importSource()->model();
+    importModel->units("u2")->importSource()->model()->units("u3")->importSource()->model()->units("i_am_cyclic")->importSource()->setModel(importModel);
+
     EXPECT_FALSE(u->isResolved());
+}
+
+TEST(Importer, isResolvedCircularImportComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("importer/circularImport_1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto c = model->component(0);
+
+    EXPECT_FALSE(c->isResolved());
+
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+
+    // It is possible however difficult to make a circular import with components.
+    auto importModel = c->importSource()->model();
+    importModel->component("c2")->importSource()->model()->component("c3")->importSource()->model()->component("i_am_cyclic")->importSource()->setModel(importModel);
+
+    EXPECT_FALSE(c->isResolved());
 }
 
 TEST(Importer, removeAllModels)
@@ -1034,4 +1059,14 @@ TEST(Importer, removeAllModels)
     importer->removeAllModels();
 
     EXPECT_EQ(size_t(0), importer->libraryCount());
+}
+
+TEST(Importer, importingCommonUnitsDefinitions)
+{
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("importer/common_units_import_1.xml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
 }

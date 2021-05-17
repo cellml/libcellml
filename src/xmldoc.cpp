@@ -25,6 +25,7 @@ limitations under the License.
 
 #include <zlib.h>
 
+#include "internaltypes.h"
 #include "libcellmlconfig_p.h"
 #include "mathmldtd.h"
 #include "xmlnode.h"
@@ -63,7 +64,7 @@ void structuredErrorCallback(void *userData, xmlErrorPtr error)
 struct XmlDoc::XmlDocImpl
 {
     xmlDocPtr mXmlDocPtr = nullptr;
-    std::vector<std::string> mXmlErrors;
+    Strings mXmlErrors;
     size_t bufferPointer = 0;
 };
 

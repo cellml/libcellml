@@ -231,13 +231,14 @@ ParserPtr Parser::create() noexcept
 ModelPtr Parser::parseModel(const std::string &input)
 {
     removeAllIssues();
-    ModelPtr model = Model::create();
+    ModelPtr model = nullptr;
     if (input.empty()) {
         IssuePtr issue = Issue::create();
         issue->setDescription("Model string is empty.");
         issue->setReferenceRule(Issue::ReferenceRule::XML);
         addIssue(issue);
     } else {
+        model = Model::create();
         mPimpl->updateModel(model, input);
     }
     return model;

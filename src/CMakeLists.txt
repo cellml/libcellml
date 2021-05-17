@@ -10,7 +10,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.cmake_minimum_required (VERSION 3.1)
+# limitations under the License.
 
 include(GenerateExportHeader)
 
@@ -62,6 +62,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.cpp
@@ -132,6 +133,7 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.h
   ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generator_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h

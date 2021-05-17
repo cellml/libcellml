@@ -38,8 +38,6 @@ limitations under the License.
 
 namespace libcellml {
 
-using HistorySearchVector = std::vector<std::tuple<std::string, std::string, std::string>>;
-
 /**
  * @brief The Importer::ImporterImpl struct.
  *
@@ -59,21 +57,21 @@ struct Importer::ImporterImpl
 
     ImportLibrary mLibrary;
 
-    IssuePtr makeIssueCyclicDependency(const ModelPtr &model, Type type,
-                                       HistorySearchVector &history,
-                                       const std::string &action) const;
-
     std::vector<ImportSourcePtr> mImports;
     std::vector<ImportSourcePtr>::const_iterator findImportSource(const ImportSourcePtr &importSource) const;
 
+    std::string resolvingUrl(const ImportSourcePtr &importSource) const;
+    std::string modelUrl(const ModelPtr &model) const;
+
+    bool fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, History &history);
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
-    bool fetchImportSource(const ModelPtr &origModel, const ImportSourcePtr &importSource, Type type, const std::string &baseFile, HistorySearchVector &history);
+    bool fetchImportSource(const ImportSourcePtr &importSource, const std::string &baseFile);
+    bool fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, History &history);
 
-    bool fetchComponent(const ModelPtr &origModel, const ComponentPtr &importComponent, const std::string &baseFile, HistorySearchVector &history);
-    bool fetchUnits(const ModelPtr &origModel, const UnitsPtr &importUnits, const std::string &baseFile, HistorySearchVector &history);
+    bool checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action) const;
+    bool checkUnitsForCycles(const UnitsPtr &units, History &history) const;
+    bool checkComponentForCycles(const ComponentPtr &component, History &history);
 
-    bool checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistorySearchVector &history);
-    bool checkComponentForCycles(const ModelPtr &origModel, const ComponentPtr &component, HistorySearchVector &history);
     bool hasImportCycles(const ModelPtr &model);
 };
 
@@ -99,7 +97,28 @@ std::vector<ImportSourcePtr>::const_iterator Importer::ImporterImpl::findImportS
                         [=](const ImportSourcePtr &importSrc) -> bool { return importSource->equals(importSrc); });
 }
 
-bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, const UnitsPtr &units, HistorySearchVector &history)
+std::string Importer::ImporterImpl::modelUrl(const ModelPtr &model) const
+{
+    for (const auto &entry : mLibrary) {
+        if (entry.second == model) {
+            return entry.first;
+        }
+    }
+
+    return ORIGIN_MODEL_REF;
+}
+
+std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSource) const
+{
+    auto model = importSource->model();
+    if (model == nullptr) {
+        return importSource->url();
+    }
+
+    return modelUrl(model);
+}
+
+bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History &history) const
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
@@ -114,7 +133,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, cons
             // If the child units are imported, check them too.
             auto model = owningModel(units);
             if ((model != nullptr) && model->hasUnits(ref)) {
-                if (checkUnitsForCycles(origModel, model->units(ref), history)) {
+                if (checkUnitsForCycles(model->units(ref), history)) {
                     return true;
                 }
             }
@@ -123,94 +142,98 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const ModelPtr &origModel, cons
     }
 
     // If they are imported, then they can't have any child unit elements anyway.
-    auto h = std::make_tuple(units->name(), units->importReference(), units->importSource()->url());
+    std::string resolvingUrl = ImporterImpl::resolvingUrl(units->importSource());
+    auto unitsModel = owningModel(units);
+    auto h = createHistoryEpoch(units, modelUrl(unitsModel), resolvingUrl);
+
+    if (checkForImportCycles(units->importSource(), history, h, "flatten")) {
+        return true;
+    }
+
+    history.push_back(h);
 
     // If the dependencies have not been recorded already, then check it.
-    if (std::find(history.begin(), history.end(), h) == history.end()) {
-        history.emplace_back(h);
+    auto model = units->importSource()->model();
+    if (model == nullptr) {
+        auto issue = Issue::create();
+        issue->setDescription("Units '" + units->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
+        issue->setLevel(Issue::Level::ERROR);
+        issue->setImportSource(units->importSource());
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+        mImporter->addIssue(issue);
+        return true;
+    }
+    auto importedUnits = model->units(units->importReference());
+    if (importedUnits == nullptr) {
+        auto issue = Issue::create();
+        issue->setDescription("Units '" + units->name() + "' imports units named '" + units->importReference() + "' from the model imported from '" + resolvingUrl + "'. The units could not be found.");
+        issue->setLevel(Issue::Level::ERROR);
+        issue->setImportSource(units->importSource());
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
+        mImporter->addIssue(issue);
+        return true;
+    }
 
-        auto model = units->importSource()->model();
+    return checkUnitsForCycles(importedUnits, history);
+}
+
+bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &component, History &history)
+{
+    std::string resolvingUrl = ImporterImpl::resolvingUrl(component->importSource());
+    auto componentModel = owningModel(component);
+    auto h = createHistoryEpoch(component, modelUrl(componentModel), resolvingUrl);
+
+    if (checkForImportCycles(component->importSource(), history, h, "flatten")) {
+        return true;
+    }
+
+    history.push_back(h);
+
+    // If the dependencies have not been recorded already, then check it.
+    if (component->isImport()) {
+        auto model = component->importSource()->model();
         if (model == nullptr) {
             auto issue = Issue::create();
-            issue->setDescription("Units '" + units->name() + "' requires a model imported from '" + units->importSource()->url() + "' which is not available in the importer.");
+            issue->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
             issue->setLevel(Issue::Level::ERROR);
-            issue->setImportSource(units->importSource());
+            issue->setImportSource(component->importSource());
             issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
             mImporter->addIssue(issue);
             return true;
         }
-        auto importedUnits = model->units(units->importReference());
-        if (importedUnits == nullptr) {
+        auto importedComponent = model->component(component->importReference(), true);
+        if (importedComponent == nullptr) {
             auto issue = Issue::create();
-            issue->setDescription("Units '" + units->name() + "' imports units named '" + units->importReference() + "' from the model imported from '" + units->importSource()->url() + "'. The units could not be found.");
+            issue->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
             issue->setLevel(Issue::Level::ERROR);
-            issue->setImportSource(units->importSource());
-            issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
+            issue->setImportSource(component->importSource());
+            issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
             mImporter->addIssue(issue);
             return true;
         }
-        return checkUnitsForCycles(origModel, importedUnits, history);
-    }
-    // Otherwise, return true indicating that cycles have been found.
-    history.emplace_back(h);
-    mImporter->addIssue(makeIssueCyclicDependency(origModel, Type::UNITS, history, "flatten"));
-    return true;
-}
 
-bool Importer::ImporterImpl::checkComponentForCycles(const ModelPtr &origModel, const ComponentPtr &component, HistorySearchVector &history)
-{
-    auto h = std::make_tuple(component->name(), component->importReference(), component->importSource()->url());
-
-    // If the dependencies have not been recorded already, then check it.
-    if (std::find(history.begin(), history.end(), h) == history.end()) {
-        history.emplace_back(h);
-
-        if (component->isImport()) {
-            auto model = component->importSource()->model();
-            if (model == nullptr) {
-                auto issue = Issue::create();
-                issue->setDescription("Component '" + component->name() + "' requires a model imported from '" + component->importSource()->url() + "' which is not available in the importer.");
-                issue->setLevel(Issue::Level::ERROR);
-                issue->setImportSource(component->importSource());
-                issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
-                mImporter->addIssue(issue);
-                return true;
-            }
-            auto importedComponent = model->component(component->importReference(), true);
-            if (importedComponent == nullptr) {
-                auto issue = Issue::create();
-                issue->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + component->importSource()->url() + "'. The component could not be found.");
-                issue->setLevel(Issue::Level::ERROR);
-                issue->setImportSource(component->importSource());
-                issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
-                mImporter->addIssue(issue);
-                return true;
-            }
-            if (importedComponent->isImport() && checkComponentForCycles(origModel, importedComponent, history)) {
-                return true;
-            }
+        if (importedComponent->isImport() && checkComponentForCycles(importedComponent, history)) {
+            return true;
         }
-        return false;
     }
 
-    // Otherwise, return true indicating that cycles have been found.
-    history.emplace_back(h);
-    mImporter->addIssue(makeIssueCyclicDependency(origModel, Type::COMPONENT, history, "flatten"));
-    return true;
+    return false;
 }
 
 bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
 {
-    HistorySearchVector history;
+    History history;
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
-        if (checkUnitsForCycles(model, units, history)) {
+        history.clear();
+        if (checkUnitsForCycles(units, history)) {
             return true;
         }
     }
 
     for (const ComponentPtr &component : getImportedComponents(model)) {
-        if (checkComponentForCycles(model, component, history)) {
+        history.clear();
+        if (checkComponentForCycles(component, history)) {
             return true;
         }
     }
@@ -218,27 +241,10 @@ bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
     return false;
 }
 
-bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
+std::string directoryPath(const std::string &filename)
 {
-    for (const UnitsPtr &units : getImportedUnits(model)) {
-        auto importSource = units->importSource();
-        auto h = std::make_tuple(units->name(), units->importReference(), importSource->url());
-        if (std::find(history.begin(), history.end(), h) != history.end()) {
-            history.emplace_back(h);
-            return true;
-        }
-    }
-
-    for (const ComponentPtr &component : getImportedComponents(model)) {
-        auto importSource = component->importSource();
-        auto h = std::make_tuple(component->name(), component->importReference(), importSource->url());
-        if (std::find(history.begin(), history.end(), h) != history.end()) {
-            history.emplace_back(h);
-            return true;
-        }
-    }
-
-    return false;
+    // We can be naive here as we know what we are dealing with.
+    return filename.substr(0, filename.find_last_of('/') + 1);
 }
 
 /**
@@ -254,12 +260,6 @@ bool hasImportCycle(ModelPtr &model, HistorySearchVector &history)
  *
  * @return The full path from the @p base location to the @p filename
  */
-std::string directoryPath(const std::string &filename)
-{
-    // We can be naive here as we know what we are dealing with.
-    return filename.substr(0, filename.find_last_of('/') + 1);
-}
-
 std::string resolvePath(const std::string &filename, const std::string &base)
 {
     return directoryPath(base) + filename;
@@ -297,7 +297,21 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
     return true;
 }
 
-bool Importer::ImporterImpl::fetchImportSource(const ModelPtr &origModel, const ImportSourcePtr &importSource, Type type, const std::string &baseFile, HistorySearchVector &history)
+bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action) const
+{
+    if (libcellml::checkForImportCycles(history, h)) {
+        auto cyclicHistory = history;
+        cyclicHistory.push_back(h);
+        auto issue = makeIssueCyclicDependency(cyclicHistory, action);
+        issue->setImportSource(importSource);
+        mImporter->addIssue(issue);
+        return true;
+    }
+
+    return false;
+}
+
+bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSource, const std::string &baseFile)
 {
     // If the model has never been retrieved, get it and add to library.
     if (!importSource->hasModel()) {
@@ -305,22 +319,11 @@ bool Importer::ImporterImpl::fetchImportSource(const ModelPtr &origModel, const 
             return false;
         }
     }
-    // Check for cycles.
-    std::string url = importSource->url();
-    if (mLibrary.count(url) == 0) {
-        url = resolvePath(url, baseFile);
-    }
-    auto model = mLibrary[url];
-    if (hasImportCycle(model, history)) {
-        auto issue = makeIssueCyclicDependency(origModel, type, history, "resolve");
-        issue->setImportSource(importSource);
-        mImporter->addIssue(issue);
-        return false;
-    }
+
     return true;
 }
 
-bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const ComponentPtr &importComponent, const std::string &baseFile, HistorySearchVector &history)
+bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, History &history)
 {
     // Given the importComponent, check whether it has been resolved previously.  If so, return.
     // If not, check for model, and parse/instantiate/add to library if needed.
@@ -333,17 +336,26 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
     if (!importComponent->isImport()) {
         // This component is not an import, but a descendant is.
         for (size_t c = 0; c < importComponent->componentCount(); ++c) {
-            if (!fetchComponent(origModel, importComponent->component(c), baseFile, history)) {
+            if (!fetchComponent(importComponent->component(c), baseFile, history)) {
                 return false;
             }
         }
         return true;
     }
 
-    history.emplace_back(std::make_tuple(importComponent->name(), importComponent->importReference(), importComponent->importSource()->url()));
-    if (!fetchImportSource(origModel, importComponent->importSource(), Type::COMPONENT, baseFile, history)) {
+    if (!fetchImportSource(importComponent->importSource(), baseFile)) {
         return false;
     }
+
+    std::string resolvingUrl = ImporterImpl::resolvingUrl(importComponent->importSource());
+    auto importComponentModel = owningModel(importComponent);
+    auto h = createHistoryEpoch(importComponent, modelUrl(importComponentModel), resolvingUrl);
+
+    if (checkForImportCycles(importComponent->importSource(), history, h, "resolve")) {
+        return false;
+    }
+
+    history.push_back(h);
 
     // Check that the model instance in the library has resolved all of the required dependencies.
     auto sourceModel = importComponent->importSource()->model();
@@ -355,13 +367,13 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
         auto newBase = baseFile + directoryPath(importComponent->importSource()->url());
 
         // Fetch this component, if needed.
-        if (!fetchComponent(origModel, sourceComponent, newBase, history)) {
+        if (!fetchComponent(sourceComponent, newBase, history)) {
             return false;
         }
 
         // Fetch any components encapsulated inside the imported component.
         for (size_t c = 0; c < sourceComponent->componentCount(); ++c) {
-            if (!fetchComponent(origModel, sourceComponent->component(c), newBase, history)) {
+            if (!fetchComponent(sourceComponent->component(c), newBase, history)) {
                 return false;
             }
         }
@@ -371,38 +383,48 @@ bool Importer::ImporterImpl::fetchComponent(const ModelPtr &origModel, const Com
             auto units = sourceModel->units(unitName);
             if (units == nullptr) {
                 auto issue = Issue::create();
-                issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importReference() + "' requires units named '" + unitName + "' which cannot be found.");
+                issue->setDescription("Import of component '" + importComponent->name() + "' from '" + resolvingUrl + "' requires units named '" + unitName + "' which cannot be found.");
                 issue->setComponent(importComponent);
                 issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
                 mImporter->addIssue(issue);
                 return false;
             }
-            if (!fetchUnits(origModel, units, newBase, history)) {
+            if (!fetchUnits(units, newBase, history)) {
                 return false;
             }
         }
     } else {
         auto issue = Issue::create();
-        issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importSource()->url() + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
+        issue->setDescription("Import of component '" + importComponent->name() + "' from '" + resolvingUrl + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
         issue->setComponent(importComponent);
         issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
         mImporter->addIssue(issue);
         return false;
     }
 
+    history.pop_back();
     return true;
 }
 
-bool Importer::ImporterImpl::fetchUnits(const ModelPtr &origModel, const UnitsPtr &importUnits, const std::string &baseFile, HistorySearchVector &history)
+bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, History &history)
 {
     if (!importUnits->isImport()) {
         return true;
     }
 
-    history.emplace_back(std::make_tuple(importUnits->name(), importUnits->importReference(), importUnits->importSource()->url()));
-    if (!fetchImportSource(origModel, importUnits->importSource(), Type::UNITS, baseFile, history)) {
+    if (!fetchImportSource(importUnits->importSource(), baseFile)) {
         return false;
     }
+
+    std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
+    auto unitsModel = owningModel(importUnits);
+    auto h = createHistoryEpoch(importUnits, modelUrl(unitsModel), resolvingUrl);
+
+    if (checkForImportCycles(importUnits->importSource(), history, h, "resolve")) {
+        return false;
+    }
+
+    history.push_back(h);
 
     // Check Unit children for reliance on imported Units items.
     auto sourceModel = importUnits->importSource()->model();
@@ -412,7 +434,7 @@ bool Importer::ImporterImpl::fetchUnits(const ModelPtr &origModel, const UnitsPt
         auto newBase = baseFile + directoryPath(importUnits->importSource()->url());
 
         // Check whether the sourceUnits are themselves an import.
-        if (!fetchUnits(origModel, sourceUnits, newBase, history)) {
+        if (!fetchUnits(sourceUnits, newBase, history)) {
             return false;
         }
 
@@ -429,79 +451,51 @@ bool Importer::ImporterImpl::fetchUnits(const ModelPtr &origModel, const UnitsPt
             auto sourceUnit = sourceModel->units(reference);
             if (sourceUnit == nullptr) {
                 auto issue = Issue::create();
-                issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
+                issue->setDescription("Import of units '" + importUnits->name() + "' from '" + resolvingUrl + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
                 issue->setUnits(sourceUnits);
                 issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
                 mImporter->addIssue(issue);
                 return false;
             }
             if (sourceUnit->isImport() && !sourceUnit->isResolved()) {
-                if (!fetchUnits(origModel, sourceUnit, newBase, history)) {
+                if (!fetchUnits(sourceUnit, newBase, history)) {
                     return false;
                 }
             }
         }
     } else {
         auto issue = Issue::create();
-        issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
+        issue->setDescription("Import of units '" + importUnits->name() + "' from '" + resolvingUrl + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
         issue->setUnits(importUnits);
         issue->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
         mImporter->addIssue(issue);
         return false;
     }
 
+    history.pop_back();
     return true;
-}
-
-IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
-                                                           Type type,
-                                                           HistorySearchVector &history,
-                                                           const std::string &action) const
-{
-    std::string msg = "Cyclic dependencies were found when attempting to " + action + " "
-                      + std::string((type == Type::UNITS) ? "units" : "a component") + " in the model '"
-                      + model->name() + "'. The dependency loop is:\n";
-    std::tuple<std::string, std::string, std::string> h;
-    auto hSize = history.size();
-    std::string typeString = (type == Type::UNITS) ? "units" : "component";
-    for (size_t i = 0; i < hSize; ++i) {
-        h = history[i];
-        msg += " - " + typeString + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'";
-        if (i != hSize - 1) {
-            msg += ";";
-            if (i == hSize - 2) {
-                msg += " and";
-            }
-            msg += "\n";
-        } else {
-            msg += ".";
-        }
-    }
-    auto issue = Issue::create();
-    issue->setDescription(msg);
-    issue->setLevel(Issue::Level::ERROR);
-    issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
-    history.clear();
-    return issue;
 }
 
 bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 {
     bool status = true;
-    HistorySearchVector history;
+    History history;
 
     clearImports(model);
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
-        if (!mPimpl->fetchUnits(model, units, baseFile, history)) {
+        if (!mPimpl->fetchUnits(units, baseFile, history)) {
+            // Get the last issue recorded and change its object to be the top-level importing item.
+            issue(issueCount() - 1)->setUnits(units);
             status = false;
         }
     }
 
     for (const ComponentPtr &component : getImportedComponents(model)) {
         history.clear();
-        if (!mPimpl->fetchComponent(model, component, baseFile, history)) {
+        if (!mPimpl->fetchComponent(component, baseFile, history)) {
+            issue(issueCount() - 1)->setComponent(component);
             status = false;
         }
     }
@@ -545,10 +539,10 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         NameList compNames = componentNames(model);
 
         // Determine the stack for the destination component.
-        IndexStack destinationComponentBaseIndexStack = reverseEngineerIndexStack(component);
+        IndexStack destinationComponentBaseIndexStack = indexStackOf(component);
 
         // Determine the stack for the source component.
-        IndexStack importedComponentBaseIndexStack = reverseEngineerIndexStack(importedComponent);
+        IndexStack importedComponentBaseIndexStack = indexStackOf(importedComponent);
 
         // Generate equivalence map for the source component.
         EquivalenceMap map;

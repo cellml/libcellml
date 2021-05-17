@@ -329,7 +329,6 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
  *
  * The private implementation for the Analyser class.
  */
-using Strings = std::vector<std::string>;
 using UnitsMap = std::map<std::string, double>;
 using UnitsMaps = std::vector<UnitsMap>;
 using UnitsMultipliers = std::vector<double>;
