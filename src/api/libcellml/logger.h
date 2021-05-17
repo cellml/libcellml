@@ -56,7 +56,7 @@ public:
 
     /**
      *  Add a vector of issues to the logger.
-     *
+     * 
      * @param issues A @c std::vector of @c IssuePtr items to add.
      */
     void addIssues(const std::vector<IssuePtr> &issues);

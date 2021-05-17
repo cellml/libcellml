@@ -7,7 +7,7 @@ module.exports = ({github, context}) => {
   upload_url = upload_url.split('{').shift()
 
     console.log(context)
-
+  
   const files = process.env.DATA.split(';')
   for (let index in files) {
     const assetPath = files[index]
@@ -22,4 +22,4 @@ module.exports = ({github, context}) => {
       data: fs.readFileSync(assetPath)
     });
   }
-}
+} 

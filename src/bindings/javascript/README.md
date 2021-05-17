@@ -88,7 +88,7 @@ const init = async () => {
     render: h => h(App),
   }).$mount('#app');
 };
-
+ 
 init();
 ```
 
