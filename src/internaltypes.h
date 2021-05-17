@@ -20,9 +20,13 @@ limitations under the License.
 #include <unordered_set>
 #include <vector>
 
-#include "libcellml/types.h"
+#include "libcellml/component.h"
+#include "libcellml/model.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
+
+const std::string ORIGIN_MODEL_REF = ":this:";
 
 using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
 
@@ -55,10 +59,76 @@ using ResetWeakPtr = std::weak_ptr<Reset>; /**< Type definition for weak reset p
 using UnitsWeakPtr = std::weak_ptr<Units>; /**< Type definition for weak units pointer. */
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
+using ComponentConstPtr = std::shared_ptr<const Component>; /**< Type definition for shared component const pointer. */
 using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Type definition for shared component entity const pointer. */
+using ImportedEntityConstPtr = std::shared_ptr<const ImportedEntity>; /**< Type definition for shared imported entity const pointer. */
 using ModelConstPtr = std::shared_ptr<const Model>; /**< Type definition for shared model const pointer. */
 using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type definition for shared parented entity const pointer. */
+using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for shared units const pointer. */
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
+
+/**
+ * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
+ *
+ * This class holds information for defining an epoch in the history of resolving a @ref Component
+ * or @ref Units.
+ */
+class HistoryEpoch
+{
+public:
+    ModelPtr mDestinationModel;
+    std::string mDestinationUrl;
+    ModelPtr mSourceModel;
+    std::string mName;
+    std::string mReferenceName;
+    std::string mSourceUrl;
+    std::string mType;
+
+    /**
+     * @brief Create a HistoryEpoch.
+     *
+     * Create a history epoch for a @ref Units.
+     *
+     * @param units The @p units to create an epoch for.
+     * @param sourceUrl The source URL of the @p units.
+     * @param destinationUrl The destination URL of the @p units.
+     */
+    HistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl);
+
+    /**
+     * @brief Create a HistoryEpoch.
+     *
+     * Create a history epoch for a @ref Component.
+     *
+     * @param component The @p component to create an epoch for.
+     * @param sourceUrl The source URL of the @p component.
+     * @param destinationUrl The destination URL of the @p component.
+     */
+    HistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl);
+
+    /**
+     * @brief Set the reference name for the imported entity.
+     *
+     * If the entity is imported, set the reference name for it.
+     *
+     * @param importedEntity The imported entity to set the reference name for.
+     */
+    void setReferenceName(const ImportedEntityConstPtr &importedEntity);
+
+    /**
+     * @brief Set the destination model to the resolving model from the imported entity.
+     *
+     * If the entity is imported, set the destination model to the resolving model for it.
+     *
+     * @param importedEntity The imported entity to set the destination model for.
+     */
+    void setDestinationModel(const ImportedEntityConstPtr &importedEntity);
+};
+
+using HistoryEpochPtr = std::shared_ptr<HistoryEpoch>; /**< Type definition for shared history epoch pointer. */
+using History = std::vector<HistoryEpochPtr>; /**< Type definition for history.*/
+
+using Strings = std::vector<std::string>; /**< Type definition for strings.*/
 
 } // namespace libcellml

@@ -10,7 +10,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.cmake_minimum_required (VERSION 3.1)
+# limitations under the License.
 
 function(target_warnings_as_errors _TARGET)
   set(_COMPILER_WAE)
@@ -188,6 +188,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -performance-inefficient-string-concatenation
       readability-*
       -readability-convert-member-functions-to-static
+      -readability-function-cognitive-complexity
       -readability-magic-numbers
       -readability-qualified-auto
       ${_DISABLED_READABILITY_CHECKS}

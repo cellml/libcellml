@@ -2699,3 +2699,35 @@ TEST(Units, unknownUnitsScalingFactorIncompatible)
     auto scaling = libcellml::Units::scalingFactor(u1, u1, false);
     EXPECT_EQ(0.0, scaling);
 }
+
+TEST(Units, circularImportDeeperLevelBaseUnits)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto model2 = libcellml::Model::create("model2");
+    auto model3 = libcellml::Model::create("model3");
+
+    auto units1 = libcellml::Units::create("units1");
+    auto units2 = libcellml::Units::create("units2");
+    auto units3 = libcellml::Units::create("units3");
+
+    auto imp1 = libcellml::ImportSource::create();
+    auto imp2 = libcellml::ImportSource::create();
+    auto imp3 = libcellml::ImportSource::create();
+
+    imp1->setModel(model2);
+    imp2->setModel(model3);
+    imp3->setModel(model2);
+
+    model1->addUnits(units1);
+    model2->addUnits(units2);
+    model3->addUnits(units3);
+
+    units1->setImportSource(imp1);
+    units1->setImportReference("units2");
+    units2->setImportSource(imp2);
+    units2->setImportReference("units3");
+    units3->setImportSource(imp3);
+    units3->setImportReference("units2");
+
+    EXPECT_FALSE(units1->isBaseUnit());
+}

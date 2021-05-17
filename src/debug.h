@@ -100,6 +100,8 @@ void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr 
 void printStringStringMap(const StringStringMap &map);
 void printConnectionMap(const ConnectionMap &map);
 void printAst(const AnalyserEquationAstPtr &ast);
-void printHistory(const std::vector<std::tuple<std::string, std::string, std::string>> &history);
+void printHistory(const History &history);
+void printHistoryEpoch(const HistoryEpochPtr &historyEpoch);
+void printImportLibrary(const ImportLibrary &importlibrary);
 
 } // namespace libcellml
