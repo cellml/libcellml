@@ -72,7 +72,7 @@ public:
      *
      * @param model The @c Model whose imports need resolution.
      * @param baseFile The @c std::string location on local disk of the source @c Model.
-     *
+     * 
      * @return @c true if all imports have been resolved successfully, @c false otherwise.
      */
     bool resolveImports(ModelPtr &model, const std::string &baseFile);
@@ -107,11 +107,11 @@ public:
 
     /**
      * @brief Get the key string under which a model is stored in the library, at the given @p index.
-     *
+     * 
      * Get the key string under which a model is stored in the library, at the given @p index.
-     *
+     * 
      * @param index The index of the key to return.
-     *
+     * 
      * @return If successful, a string under which the model has been stored, or an empty string otherwise.
      */
     std::string key(const size_t &index);
@@ -160,7 +160,7 @@ public:
 
     /**
      * @brief Remove all models from the library.
-     *
+     * 
      * Remove all models from the library.
      */
     void removeAllModels();
