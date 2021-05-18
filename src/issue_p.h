@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "libcellml/issue.h"
 
+#include "anycellmlelement_p.h"
 #include "internaltypes.h"
 
 namespace libcellml {
@@ -32,7 +33,7 @@ struct Issue::IssueImpl
     std::string mDescription; /**< The string description for why this issue was raised. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
-    AnyCellmlElementPtr mItem = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
+    AnyCellmlElementPtr mItem = AnyCellmlElement::AnyCellmlElementImpl::create(); /**< The item for this issue. */
 
     /**
      * @brief Create an issue.
