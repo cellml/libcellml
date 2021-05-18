@@ -55,7 +55,10 @@ limitations under the License.
 namespace libcellml {
 
 struct AnalyserInternalEquation;
+struct AnalyserInternalVariable;
+
 using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
+using AnalyserInternalVariablePtr = std::shared_ptr<AnalyserInternalVariable>;
 
 struct AnalyserInternalVariable
 {
@@ -78,7 +81,7 @@ struct AnalyserInternalVariable
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
 
-    explicit AnalyserInternalVariable(const VariablePtr &variable);
+    static AnalyserInternalVariablePtr create(const VariablePtr &variable);
 
     void setVariable(const VariablePtr &variable,
                      bool checkInitialValue = true);
@@ -87,11 +90,13 @@ struct AnalyserInternalVariable
     void makeState();
 };
 
-using AnalyserInternalVariablePtr = std::shared_ptr<AnalyserInternalVariable>;
-
-AnalyserInternalVariable::AnalyserInternalVariable(const VariablePtr &variable)
+AnalyserInternalVariablePtr AnalyserInternalVariable::create(const VariablePtr &variable)
 {
-    setVariable(variable);
+    auto res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {}};
+
+    res->setVariable(variable);
+
+    return res;
 }
 
 void AnalyserInternalVariable::setVariable(const VariablePtr &variable,
@@ -606,7 +611,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // No internal variable exists for the given variable, so create one, track
     // it and return it.
 
-    res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {variable}};
+    res = AnalyserInternalVariable::create(variable);
 
     mInternalVariables.push_back(res);
 
