@@ -157,8 +157,8 @@ struct AnalyserInternalEquation
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
 
-    explicit AnalyserInternalEquation(const ComponentPtr &component);
-    explicit AnalyserInternalEquation(const AnalyserInternalVariablePtr &variable);
+    static AnalyserInternalEquationPtr create(const ComponentPtr &component);
+    static AnalyserInternalEquationPtr create(const AnalyserInternalVariablePtr &variable);
 
     void addVariable(const AnalyserInternalVariablePtr &variable);
     void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
@@ -173,16 +173,24 @@ struct AnalyserInternalEquation
                const AnalyserModelPtr &model);
 };
 
-AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
-    : mAst(AnalyserEquationAst::create())
-    , mComponent(component)
+AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
 {
+    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+
+    res->mAst = AnalyserEquationAst::create();
+    res->mComponent = component;
+
+    return res;
 }
 
-AnalyserInternalEquation::AnalyserInternalEquation(const AnalyserInternalVariablePtr &variable)
-    : mVariable(variable)
-    , mComponent(owningComponent(variable->mVariable))
+AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInternalVariablePtr &variable)
 {
+    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+
+    res->mVariable = variable;
+    res->mComponent = owningComponent(variable->mVariable);
+
+    return res;
 }
 
 void AnalyserInternalEquation::addVariable(const AnalyserInternalVariablePtr &variable)
@@ -1030,7 +1038,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                     // Create and keep track of the equation associated with the
                     // given node.
 
-                    auto internalEquation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
+                    auto internalEquation = AnalyserInternalEquation::create(component);
 
                     mInternalEquations.push_back(internalEquation);
 
@@ -2365,7 +2373,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
-                mInternalEquations.push_back(std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {internalVariable}});
+                mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
             }
         }
 
