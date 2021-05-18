@@ -39,8 +39,6 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
                               public std::enable_shared_from_this<Model>
 #endif
 {
-    friend class Parser;
-
 public:
     ~Model() override; /**< Destructor. */
     Model(const Model &rhs) = delete; /**< Copy constructor. */
