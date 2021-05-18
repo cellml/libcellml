@@ -335,12 +335,12 @@ public:
     VariablePtr variable() const;
 
     /**
-     * @brief Get the connection.
+     * @brief Get the variable pair.
      *
-     * Get the connection.
+     * Get the variable pair.
      *
-     * @return The connection as a @ref VariablePair, or @c nullptr if the
-     * internal type is not @ref CellmlElementType::CONNECTION.
+     * @return The a @ref VariablePair, or @c nullptr if the
+     * internal type is not @ref CellmlElementType::CONNECTION or @ref CellMLElementType::MAP_VARIABLES.
      */
     VariablePairPtr variablePair() const;
 
