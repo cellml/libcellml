@@ -339,7 +339,7 @@ struct Analyser::AnalyserImpl
 {
     Analyser *mAnalyser = nullptr;
 
-    AnalyserModelPtr mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
+    AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
     std::vector<AnalyserExternalVariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
@@ -2205,7 +2205,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     mAnalyser->removeAllIssues();
 
-    mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
+    mModel = AnalyserModel::AnalyserModelImpl::create();
 
     mInternalVariables.clear();
     mInternalEquations.clear();
