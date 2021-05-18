@@ -114,7 +114,6 @@ TEST(Validator, invalidElementIdAttribute)
     const std::vector<std::string> expectedIssues = {
         "Model 'valid_name' does not have a valid 'id' attribute, '993-++$@'.",
     };
-
     const std::vector<std::string> expectedSpecificationHeadings = {
         "1.2.5",
     };

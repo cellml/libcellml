@@ -827,9 +827,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                 auto h = createHistoryEpoch(component, importeeModelUrl(history, component->importSource()->url()));
                 if (checkForImportCycles(history, h)) {
                     history.push_back(h);
-                    auto description = formDescriptionOfCyclicDependency(history, "resolve");
-                    IssuePtr issue = Issue::IssueImpl::create();
-                    issue->mPimpl->setDescription(description);
+                    auto issue = Issue::IssueImpl::createCyclicDependencyIssue(history, "resolve");
                     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
                     issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
                     mValidator->addIssue(issue);
@@ -1015,9 +1013,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
 
                 if (checkForImportCycles(history, h)) {
                     history.push_back(h);
-                    auto description = formDescriptionOfCyclicDependency(history, "resolve");
-                    IssuePtr issue = Issue::IssueImpl::create();
-                    issue->mPimpl->setDescription(description);
+                    auto issue = Issue::IssueImpl::createCyclicDependencyIssue(history, "resolve");
                     issue->mPimpl->mItem->mPimpl->setUnits(units);
                     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                     mValidator->addIssue(issue);
@@ -1770,12 +1766,6 @@ Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
     return Issue::ReferenceRule::UNDEFINED;
 }
 
-bool isCellmlIdentifier(const std::string &name)
-{
-    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
-    return isValid == Issue::ReferenceRule::UNDEFINED;
-}
-
 IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string &name) const
 {
     auto issue = Issue::IssueImpl::create();
@@ -1794,6 +1784,12 @@ IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string 
     }
 
     return issue;
+}
+
+bool isCellmlIdentifier(const std::string &name)
+{
+    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
+    return isValid == Issue::ReferenceRule::UNDEFINED;
 }
 
 bool unitsAreEquivalent(const ModelPtr &model,
@@ -2059,7 +2055,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                     if (!isValidXmlName(mappingId)) {
                         auto issue = Issue::IssueImpl::create();
                         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
-                        issue->mPimpl->mItem->mPimpl->setVariablePair(item, equiv, CellmlElementType::MAP_VARIABLES);
+                        issue->mPimpl->mItem->mPimpl->setMapVariables(item, equiv);
                         issue->mPimpl->setDescription("Variable equivalence " + mappingDescription + ", does not have a valid map_variables 'id' attribute, '" + mappingId + "'.");
                         mValidator->addIssue(issue);
                     }
@@ -2079,7 +2075,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                     if (!isValidXmlName(connectionId)) {
                         auto issue = Issue::IssueImpl::create();
                         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
-                        issue->mPimpl->mItem->mPimpl->setVariablePair(item, equiv, CellmlElementType::CONNECTION);
+                        issue->mPimpl->mItem->mPimpl->setConnection(item, equiv);
                         issue->mPimpl->setDescription("Connection " + connectionDescription + ", does not have a valid connection 'id' attribute, '" + connectionId + "'.");
                         mValidator->addIssue(issue);
                     }

@@ -789,18 +789,6 @@ std::string importeeModelUrl(const History &history, const std::string &url);
  */
 bool checkForImportCycles(const History &history, const HistoryEpochPtr &h);
 
-/**
- * @brief Form the description for a cyclic dependency.
- *
- * Form the description for a cyclic dependency.
- *
- * @param history The history of the cyclic dependency.
- * @param action The action that made cyclic dependency, e.g. "resolve", "flatten".
- *
- * @return The @c std::string description of the cyclic dependency.
- */
-std::string formDescriptionOfCyclicDependency(const History &history, const std::string &action);
-
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
 void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);

@@ -300,6 +300,32 @@ ResetPtr AnyCellmlElement::reset() const
     return nullptr;
 }
 
+ResetPtr AnyCellmlElement::resetValue() const
+{
+    if (mPimpl->mType == CellmlElementType::RESET_VALUE) {
+        try {
+            return std::any_cast<ResetPtr>(mPimpl->mItem);
+        } catch (const std::bad_any_cast &) {
+            return nullptr;
+        }
+    }
+
+    return nullptr;
+}
+
+ResetPtr AnyCellmlElement::testValue() const
+{
+    if (mPimpl->mType == CellmlElementType::TEST_VALUE) {
+        try {
+            return std::any_cast<ResetPtr>(mPimpl->mItem);
+        } catch (const std::bad_any_cast &) {
+            return nullptr;
+        }
+    }
+
+    return nullptr;
+}
+
 UnitsPtr AnyCellmlElement::units() const
 {
     if (mPimpl->mType == CellmlElementType::UNITS) {

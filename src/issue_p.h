@@ -43,6 +43,18 @@ struct Issue::IssueImpl
      */
     static IssuePtr create();
 
+    /**
+     * @brief Create a cyclic dependency issue.
+     *
+     * Create a cyclic dependency issue.
+     *
+     * @param history The history of the cyclic dependency.
+     * @param action The action that made cyclic dependency, e.g. "resolve", "flatten".
+     *
+     * @return The issue.
+     */
+    static IssuePtr createCyclicDependencyIssue(const History &history, const std::string &action);
+
     void setDescription(const std::string &description);
     void setLevel(Level level);
     void setReferenceRule(ReferenceRule referenceRule);

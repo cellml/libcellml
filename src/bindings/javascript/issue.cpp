@@ -123,8 +123,6 @@ EMSCRIPTEN_BINDINGS(libcellml_issue) {
         .function("item", &libcellml::Issue::item)
         .function("url", &libcellml::Issue::url)
         .function("referenceHeading", &libcellml::Issue::referenceHeading)
-<<<<<<< HEAD
-=======
         .function("component", &libcellml::Issue::component)
         .function("importSource", &libcellml::Issue::importSource)
         .function("model", &libcellml::Issue::model)
@@ -142,6 +140,5 @@ EMSCRIPTEN_BINDINGS(libcellml_issue) {
         .function("cellmlElementType", &libcellml::Issue::cellmlElementType)
         .function("item", &libcellml::Issue::item)
         .function("clear", &libcellml::Issue::clear)
->>>>>>> ff11fa1b30563643382d566b12feaca90589117e
     ;
 }

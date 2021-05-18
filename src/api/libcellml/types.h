@@ -285,6 +285,26 @@ public:
     ResetPtr reset() const;
 
     /**
+     * @brief Get the reset value.
+     *
+     * Get the reset value.
+     *
+     * @return The reset value as a @ref Reset, or @c nullptr if the internal
+     * type is not @ref CellmlElementType::RESET_VALUE.
+     */
+    ResetPtr resetValue() const;
+
+    /**
+     * @brief Get the test value.
+     *
+     * Get the test value.
+     *
+     * @return The test value as a @ref Reset, or @c nullptr if the internal
+     * type is not @ref CellmlElementType::TEST_VALUE.
+     */
+    ResetPtr testValue() const;
+
+    /**
      * @brief Get the units.
      *
      * Get the units.
@@ -315,12 +335,12 @@ public:
     VariablePtr variable() const;
 
     /**
-     * @brief Get the variable pair.
+     * @brief Get the connection.
      *
-     * Get the variable pair.
+     * Get the connection.
      *
-     * @return The a @ref VariablePair, or @c nullptr if the
-     * internal type is not @ref CellmlElementType::CONNECTION or @ref CellMLElementType::MAP_VARIABLES.
+     * @return The connection as a @ref VariablePair, or @c nullptr if the
+     * internal type is not @ref CellmlElementType::CONNECTION.
      */
     VariablePairPtr variablePair() const;
 
