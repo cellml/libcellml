@@ -477,7 +477,6 @@ void Annotator::AnnotatorImpl::addIssueNoModel() const
 {
     auto issue = Issue::IssueImpl::create();
     issue->mPimpl->setDescription("This Annotator object does not have a model to work with.");
-    issue->mPimpl->setLevel(Issue::Level::ERROR);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NO_MODEL);
     mAnnotator->addIssue(issue);
 }
@@ -487,7 +486,6 @@ void Annotator::AnnotatorImpl::addInvalidArgument(CellmlElementType type) const
     auto issue = Issue::IssueImpl::create();
     auto description = "The item is internally inconsistent: the enum type '" + cellmlElementTypeAsString(type) + "' cannot be used with the stored item.";
     issue->mPimpl->setDescription(description);
-    issue->mPimpl->setLevel(Issue::Level::ERROR);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE);
     mAnnotator->addIssue(issue);
 }
@@ -785,7 +783,6 @@ bool Annotator::assignAllIds(ModelPtr &model)
     if (model == nullptr) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("The Model supplied is a nullptr. No action has been taken.");
-        issue->mPimpl->setLevel(Issue::Level::ERROR);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NULL_MODEL);
         return false;
     }
