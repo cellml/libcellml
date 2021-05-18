@@ -285,26 +285,6 @@ public:
     ResetPtr reset() const;
 
     /**
-     * @brief Get the reset value.
-     *
-     * Get the reset value.
-     *
-     * @return The reset value as a @ref Reset, or @c nullptr if the internal
-     * type is not @ref CellmlElementType::RESET_VALUE.
-     */
-    ResetPtr resetValue() const;
-
-    /**
-     * @brief Get the test value.
-     *
-     * Get the test value.
-     *
-     * @return The test value as a @ref Reset, or @c nullptr if the internal
-     * type is not @ref CellmlElementType::TEST_VALUE.
-     */
-    ResetPtr testValue() const;
-
-    /**
      * @brief Get the units.
      *
      * Get the units.

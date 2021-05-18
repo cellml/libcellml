@@ -575,11 +575,11 @@ class AnnotatorTestCase(unittest.TestCase):
 
         item = annotator.item('reset_value_1')
         self.assertEqual(CellmlElementType.RESET_VALUE, item.type())
-        self.assertEqual(resetItem.reset().resetValue(), item.resetValue().resetValue())
+        self.assertEqual(resetItem.reset().resetValue(), item.reset().resetValue())
 
         item = annotator.item('test_value_1')
         self.assertEqual(CellmlElementType.TEST_VALUE, item.type())
-        self.assertEqual(resetItem.reset().testValue(), item.testValue().testValue())
+        self.assertEqual(resetItem.reset().testValue(), item.reset().testValue())
 
         item = annotator.item('unit_1')
         self.assertEqual(CellmlElementType.UNIT, item.type())
