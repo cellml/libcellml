@@ -114,6 +114,11 @@ bool VariablePair::isValid() const
     return (mPimpl->mVariable1.lock() != nullptr) && (mPimpl->mVariable2.lock() != nullptr);
 }
 
+AnyCellmlElementPtr AnyCellmlElement::AnyCellmlElementImpl::create()
+{
+    return std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
+}
+
 void AnyCellmlElement::AnyCellmlElementImpl::setComponent(const ComponentPtr &component, CellmlElementType type)
 {
     mType = type;

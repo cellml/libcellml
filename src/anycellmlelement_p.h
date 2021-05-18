@@ -32,6 +32,15 @@ struct AnyCellmlElement::AnyCellmlElementImpl
     CellmlElementType mType = CellmlElementType::UNDEFINED; /**< Type for the CellML element. */
     std::any mItem = nullptr; /**< std::any item cast for the item. */
 
+    /**
+     * @brief Create an any CellML element.
+     *
+     * Create an any CellML element.
+     *
+     * @return The any CellML element.
+     */
+    static AnyCellmlElementPtr create();
+
     void setComponent(const ComponentPtr &component, CellmlElementType type = CellmlElementType::COMPONENT);
     void setComponentRef(const ComponentPtr &component);
     void setConnection(const VariablePairPtr &pair);
