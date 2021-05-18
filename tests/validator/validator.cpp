@@ -54,6 +54,7 @@ TEST(Validator, unnamedModel)
     const std::vector<std::string> expectedUrls = {
         "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
     };
+
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
     validator->validateModel(model);
