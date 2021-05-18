@@ -79,6 +79,43 @@ void updateBaseUnitCount(const ModelPtr &model,
                          double uExp, double logMult, int direction);
 
 /**
+ * @brief Validate the provided @p name is a valid CellML identifier.
+ *
+ * Checks if the provided @p name is a valid CellML identifier according
+ * to the CellML 2.0 specification. This requires a non-zero length Unicode
+ * character sequence containing basic Latin alphanumeric characters or
+ * underscores that does not begin with a number.  Returns the rule in the
+ * specification that the given @p name violates.  If the name is a valid
+ * name then Issue::ReferenceRule::UNDEFINED is returned.
+ *
+ * @param name The @c std::string identifier to check.
+ *
+ * @return Returns UNDEFINED if the name is a valid CellML identifier
+ * otherwise one of:
+ *  - DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM;
+ *  - DATA_REPR_IDENTIFIER_LATIN_ALPHANUM; or
+ *  - DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM.
+ */
+Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
+{
+    // One or more alphabetic characters.
+    if (!name.empty()) {
+        // Does not start with numeric character.
+        if (isdigit(name[0]) != 0) {
+            return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM;
+        }
+        // Basic Latin alphanumeric characters and underscores.
+        if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos) {
+            return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM;
+        }
+    } else {
+        // Empty string.
+        return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM;
+    }
+    return Issue::ReferenceRule::UNDEFINED;
+}
+
+/**
  * @brief Check if the provided @p name is a valid CellML identifier.
  *
  * Test if the given @p name is a valid CellML identifier according to
@@ -88,7 +125,11 @@ void updateBaseUnitCount(const ModelPtr &model,
  *
  * @return @c true if @p name is a valid CellML identifier and @c false otherwise.
  */
-bool isCellmlIdentifier(const std::string &name);
+bool isCellmlIdentifier(const std::string &name)
+{
+    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
+    return isValid == Issue::ReferenceRule::UNDEFINED;
+}
 
 /**
  * @brief Test to determine if @p startChar is a valid XML name start character.
@@ -229,26 +270,6 @@ bool isValidXmlName(const std::string &name)
     }
     return true;
 }
-
-/**
- * @brief Validate the provided @p name is a valid CellML identifier.
- *
- * Checks if the provided @p name is a valid CellML identifier according
- * to the CellML 2.0 specification. This requires a non-zero length Unicode
- * character sequence containing basic Latin alphanumeric characters or
- * underscores that does not begin with a number.  Returns the rule in the
- * specification that the given @p name violates.  If the name is a valid
- * name then Issue::ReferenceRule::UNDEFINED is returned.
- *
- * @param name The @c std::string identifier to check.
- *
- * @return Returns UNDEFINED if the name is a valid CellML identifier
- * otherwise one of:
- *  - DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM;
- *  - DATA_REPR_IDENTIFIER_LATIN_ALPHANUM; or
- *  - DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM.
- */
-Issue::ReferenceRule validateCellmlIdentifier(const std::string &name);
 
 /**
  * @brief The Validator::ValidatorImpl struct.
@@ -827,7 +848,9 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                 auto h = createHistoryEpoch(component, importeeModelUrl(history, component->importSource()->url()));
                 if (checkForImportCycles(history, h)) {
                     history.push_back(h);
-                    auto issue = Issue::IssueImpl::createCyclicDependencyIssue(history, "resolve");
+                    auto description = formDescriptionOfCyclicDependency(history, "resolve");
+                    IssuePtr issue = Issue::IssueImpl::create();
+                    issue->mPimpl->setDescription(description);
                     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
                     issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
                     mValidator->addIssue(issue);
@@ -1013,7 +1036,9 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
 
                 if (checkForImportCycles(history, h)) {
                     history.push_back(h);
-                    auto issue = Issue::IssueImpl::createCyclicDependencyIssue(history, "resolve");
+                    auto description = formDescriptionOfCyclicDependency(history, "resolve");
+                    IssuePtr issue = Issue::IssueImpl::create();
+                    issue->mPimpl->setDescription(description);
                     issue->mPimpl->mItem->mPimpl->setUnits(units);
                     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                     mValidator->addIssue(issue);
@@ -1747,25 +1772,6 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node) 
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
 }
 
-Issue::ReferenceRule validateCellmlIdentifier(const std::string &name)
-{
-    // One or more alphabetic characters.
-    if (!name.empty()) {
-        // Does not start with numeric character.
-        if (isdigit(name[0]) != 0) {
-            return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM;
-        }
-        // Basic Latin alphanumeric characters and underscores.
-        if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos) {
-            return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM;
-        }
-    } else {
-        // Empty string.
-        return Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM;
-    }
-    return Issue::ReferenceRule::UNDEFINED;
-}
-
 IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string &name) const
 {
     auto issue = Issue::IssueImpl::create();
@@ -1784,12 +1790,6 @@ IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string 
     }
 
     return issue;
-}
-
-bool isCellmlIdentifier(const std::string &name)
-{
-    Issue::ReferenceRule isValid = validateCellmlIdentifier(name);
-    return isValid == Issue::ReferenceRule::UNDEFINED;
 }
 
 bool unitsAreEquivalent(const ModelPtr &model,

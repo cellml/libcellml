@@ -304,8 +304,11 @@ bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importS
     if (libcellml::checkForImportCycles(history, h)) {
         auto cyclicHistory = history;
         cyclicHistory.push_back(h);
-        auto issue = Issue::IssueImpl::createCyclicDependencyIssue(cyclicHistory, action);
+        auto description = formDescriptionOfCyclicDependency(cyclicHistory, action);
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription(description);
         issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
         mImporter->addIssue(issue);
         return true;
     }
@@ -321,6 +324,7 @@ bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSour
             return false;
         }
     }
+
     return true;
 }
 
