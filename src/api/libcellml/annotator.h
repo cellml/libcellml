@@ -89,7 +89,7 @@ public:
      *  - <CellmlElementType::RESET_VALUE, @ref ResetPtr> - Retrieve the identifier with Reset::resetValueId (const std::string &).
      *  - <CellmlElementType::TEST_VALUE, @ref ResetPtr> - Retrieve the identifier with Reset::testValueId (const std::string &).
      *  - <CellmlElementType::UNDEFINED, @c nullptr>.
-     *  - <CellmlElementType::UNIT, @ref UnitPtr> - Retrieve the identifier with Units::unitId(size_t) const.
+     *  - <CellmlElementType::UNIT, @ref UnitsItemPtr> - Retrieve the identifier with Units::unitId(size_t) const.
      *  - <CellmlElementType::UNITS, @ref UnitsPtr> - Retrieve the identifier with Units::id().
      *  - <CellmlElementType::VARIABLE, @ref VariablePtr> - Retrieve the identifier with Variable::id().
      *

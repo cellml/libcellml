@@ -136,7 +136,7 @@ TEST(Annotator, getVariablePairFromId)
 
     annotator->setModel(model);
 
-    // Unit items are returned as a CellmlElementType enum and a UnitPtr which holds a parent and an index:
+    // Unit items are returned as a CellmlElementType enum and a UnitsItemPtr which holds a parent and an index:
     EXPECT_EQ(libcellml::CellmlElementType::UNIT, annotator->item("unit1_id")->type());
     EXPECT_EQ(units, annotator->item("unit1_id")->unitsItem()->units());
     EXPECT_EQ(size_t(0), annotator->item("unit1_id")->unitsItem()->index());
