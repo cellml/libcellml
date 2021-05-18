@@ -45,7 +45,7 @@ jobs:
         mkdir $WORK_DIR
         mkdir $SRC_DIR
         # fetch libraries
-        git clone https://github.com/hsorby/l1bcellml -b develop --depth 1 $SRC_DIR/libcellml
+        git clone https://github.com/cellml/libcellml -b release --depth 1 $SRC_DIR/libcellml
         git clone https://github.com/OpenCMISS-Dependencies/zlib -b v1.2.3 --depth 1 $SRC_DIR/zlib
         git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.10 --depth 1 $SRC_DIR/libxml2
         curl -L https://cfhcable.dl.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz > $DOWNLOADS_DIR/swig-4.0.2.tar.gz
