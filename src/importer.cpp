@@ -207,7 +207,6 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
         if (importedComponent == nullptr) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
-            issue->mPimpl->setLevel(Issue::Level::ERROR);
             issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
             mImporter->addIssue(issue);
