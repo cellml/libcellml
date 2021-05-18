@@ -1415,32 +1415,4 @@ bool checkForImportCycles(const History &history, const HistoryEpochPtr &h)
     });
 }
 
-std::string formDescriptionOfCyclicDependency(const History &history, const std::string &action)
-{
-    auto origin = history.front();
-    auto model = origin->mSourceModel;
-    bool isComponent = origin->mType == "component";
-    std::string typeStringPrefix = isComponent ? "a " : "";
-    std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
-                            + typeStringPrefix + origin->mType + " in the model '"
-                            + model->name() + "'. The dependency loop is:\n";
-    HistoryEpochPtr h;
-    size_t i = 0;
-    std::string msgHistory;
-    while (i < history.size()) {
-        h = history[i];
-        msgHistory += " - " + h->mType + " '" + h->mName + "' specifies an import from '" + h->mSourceUrl + "' to '" + h->mDestinationUrl + "'";
-        if (i == history.size() - 2) {
-            msgHistory += "; and\n";
-        } else if (i == history.size() - 1) {
-            msgHistory += ".";
-        } else {
-            msgHistory += ";\n";
-        }
-        ++i;
-    }
-
-    return msgHeader + msgHistory;
-}
-
 } // namespace libcellml

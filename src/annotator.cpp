@@ -347,10 +347,14 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
     } else if (type == CellmlElementType::IMPORT) {
         ImportSourceWeakPtr weakImportSource = item->importSource();
         converted->mPimpl->mItem = weakImportSource;
-    } else if ((type == CellmlElementType::RESET)
-               || (type == CellmlElementType::RESET_VALUE)
-               || (type == CellmlElementType::TEST_VALUE)) {
+    } else if (type == CellmlElementType::RESET) {
         ResetWeakPtr weakReset = item->reset();
+        converted->mPimpl->mItem = weakReset;
+    } else if (type == CellmlElementType::RESET_VALUE) {
+        ResetWeakPtr weakReset = item->resetValue();
+        converted->mPimpl->mItem = weakReset;
+    } else if (type == CellmlElementType::TEST_VALUE) {
+        ResetWeakPtr weakReset = item->testValue();
         converted->mPimpl->mItem = weakReset;
     } else if (type == CellmlElementType::UNIT) {
         // We don't store a weak pointer for units item because the map is the
@@ -665,7 +669,7 @@ ResetPtr Annotator::testValue(const std::string &id, size_t index)
     mPimpl->update();
     if (mPimpl->canReturnItem(id, index)) {
         auto i = items(id).at(index);
-        return i->reset();
+        return i->testValue();
     }
     return nullptr;
 }
@@ -675,7 +679,7 @@ ResetPtr Annotator::resetValue(const std::string &id, size_t index)
     mPimpl->update();
     if (mPimpl->canReturnItem(id, index)) {
         auto i = items(id).at(index);
-        return i->reset();
+        return i->resetValue();
     }
     return nullptr;
 }
@@ -1153,9 +1157,9 @@ std::string Annotator::AnnotatorImpl::id(const AnyCellmlElementPtr &item)
     } else if (type == CellmlElementType::RESET) {
         id = item->reset()->id();
     } else if (type == CellmlElementType::RESET_VALUE) {
-        id = item->reset()->resetValueId();
+        id = item->resetValue()->resetValueId();
     } else if (type == CellmlElementType::TEST_VALUE) {
-        id = item->reset()->testValueId();
+        id = item->testValue()->testValueId();
     } else if (type == CellmlElementType::UNIT) {
         auto unitItem = item->unitsItem();
         id = unitItem->units()->unitId(unitItem->index());
@@ -1189,9 +1193,9 @@ void Annotator::AnnotatorImpl::setId(const AnyCellmlElementPtr &item, const std:
     } else if (type == CellmlElementType::RESET) {
         item->reset()->setId(id);
     } else if (type == CellmlElementType::RESET_VALUE) {
-        item->reset()->setResetValueId(id);
+        item->resetValue()->setResetValueId(id);
     } else if (type == CellmlElementType::TEST_VALUE) {
-        item->reset()->setTestValueId(id);
+        item->testValue()->setTestValueId(id);
     } else if (type == CellmlElementType::UNIT) {
         auto unitsItem = item->unitsItem();
         unitsItem->units()->setUnitId(unitsItem->index(), id);
@@ -1220,10 +1224,12 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) c
         modelBased = item->model() == model;
     } else if (type == CellmlElementType::IMPORT) {
         modelBased = true;
-    } else if ((type == CellmlElementType::RESET)
-               || (type == CellmlElementType::RESET_VALUE)
-               || (type == CellmlElementType::TEST_VALUE)) {
+    } else if (type == CellmlElementType::RESET) {
         modelBased = owningModel(item->reset()) == model;
+    } else if (type == CellmlElementType::RESET_VALUE) {
+        modelBased = owningModel(item->resetValue()) == model;
+    } else if (type == CellmlElementType::TEST_VALUE) {
+        modelBased = owningModel(item->testValue()) == model;
     } else if (type == CellmlElementType::UNIT) {
         modelBased = owningModel(item->unitsItem()->units()) == model;
     } else if (type == CellmlElementType::UNITS) {
@@ -1298,10 +1304,16 @@ bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
         if (item->importSource() != nullptr) {
             return true;
         }
-    } else if ((type == CellmlElementType::RESET)
-               || (type == CellmlElementType::RESET_VALUE)
-               || (type == CellmlElementType::TEST_VALUE)) {
+    } else if (type == CellmlElementType::RESET) {
         if (item->reset() != nullptr) {
+            return true;
+        }
+    } else if (type == CellmlElementType::RESET_VALUE) {
+        if (item->resetValue() != nullptr) {
+            return true;
+        }
+    } else if (type == CellmlElementType::TEST_VALUE) {
+        if (item->testValue() != nullptr) {
             return true;
         }
     } else if (type == CellmlElementType::UNIT) {

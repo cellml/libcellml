@@ -168,9 +168,9 @@ TEST(Annotator, getVariablePairFromId)
 
     // Reset children are returned as CellmlElementType enum and reset pointer:
     EXPECT_EQ(libcellml::CellmlElementType::RESET_VALUE, annotator->item("reset_value_id")->type());
-    EXPECT_EQ(reset, annotator->item("reset_value_id")->reset());
+    EXPECT_EQ(reset, annotator->item("reset_value_id")->resetValue());
     EXPECT_EQ(libcellml::CellmlElementType::TEST_VALUE, annotator->item("test_value_id")->type());
-    EXPECT_EQ(reset, annotator->item("test_value_id")->reset());
+    EXPECT_EQ(reset, annotator->item("test_value_id")->testValue());
 }
 
 TEST(Annotator, errorHandling)
@@ -396,10 +396,10 @@ TEST(Annotator, castingOnRetrieval)
             EXPECT_EQ(model->component("component2")->reset(0), itemInfo->reset());
             break;
         case libcellml::CellmlElementType::RESET_VALUE:
-            EXPECT_EQ(model->component("component2")->reset(0), itemInfo->reset());
+            EXPECT_EQ(model->component("component2")->reset(0), itemInfo->resetValue());
             break;
         case libcellml::CellmlElementType::TEST_VALUE:
-            EXPECT_EQ(model->component("component2")->reset(0), itemInfo->reset());
+            EXPECT_EQ(model->component("component2")->reset(0), itemInfo->testValue());
             break;
         case libcellml::CellmlElementType::UNIT:
             EXPECT_EQ(model->units("units2"), itemInfo->unitsItem()->units());
@@ -1759,10 +1759,10 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                 EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->reset());
                 break;
             case libcellml::CellmlElementType::RESET_VALUE:
-                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->reset());
+                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->resetValue());
                 break;
             case libcellml::CellmlElementType::TEST_VALUE:
-                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->reset());
+                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->testValue());
                 break;
             case libcellml::CellmlElementType::UNIT: {
                 auto ue = std::any_cast<libcellml::UnitsItemPtr>(expectedItems[id][index].second);
@@ -1889,10 +1889,10 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
                 EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->reset());
                 break;
             case libcellml::CellmlElementType::RESET_VALUE:
-                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->reset());
+                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->resetValue());
                 break;
             case libcellml::CellmlElementType::TEST_VALUE:
-                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->reset());
+                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), item->testValue());
                 break;
             case libcellml::CellmlElementType::UNIT: {
                 auto ue = std::any_cast<libcellml::UnitsItemPtr>(expectedItems[id][index].second);
