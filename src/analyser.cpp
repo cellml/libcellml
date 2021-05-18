@@ -1194,7 +1194,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                     }
 
                     if (!isVoiInitialised) {
-                        mModel->mPimpl->mVoi = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
+                        mModel->mPimpl->mVoi = AnalyserVariable::AnalyserVariableImpl::create();
 
                         mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
                                                                0, nullptr, voi, nullptr);
@@ -2538,7 +2538,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                 // Populate and keep track of the state/variable.
 
-                auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
+                auto stateOrVariable = AnalyserVariable::AnalyserVariableImpl::create();
                 auto equation = equationMappings[internalVariable->mVariable];
 
                 stateOrVariable->mPimpl->populate(type,
