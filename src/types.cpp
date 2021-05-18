@@ -68,7 +68,12 @@ size_t UnitsItem::index() const
 
 bool UnitsItem::isValid() const
 {
-    return mPimpl->mIndex < mPimpl->mUnits.lock()->unitCount();
+    auto units = mPimpl->mUnits.lock();
+    if (units != nullptr) {
+        return mPimpl->mIndex < units->unitCount();
+    }
+
+    return false;
 }
 
 /**
