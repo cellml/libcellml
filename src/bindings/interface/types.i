@@ -85,12 +85,6 @@ Provides support for shared pointers declared in types.h.
 %feature("docstring") libcellml::AnyCellmlElement::reset
 "Return the item as a reset.";
 
-%feature("docstring") libcellml::AnyCellmlElement::resetValue
-"Return the item as a reset value.";
-
-%feature("docstring") libcellml::AnyCellmlElement::testValue
-"Return the item as a test value.";
-
 %feature("docstring") libcellml::AnyCellmlElement::units
 "Return the item as a units.";
 
