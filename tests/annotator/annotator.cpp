@@ -162,7 +162,7 @@ TEST(Annotator, getVariablePairFromId)
     EXPECT_EQ(libcellml::CellmlElementType::COMPONENT_REF, annotator->item("component_ref1_id")->type());
     EXPECT_EQ(c1, annotator->item("component_ref1_id")->component());
 
-    // Encapsulation is returned as CellmlElementType enum and ModelPtr :
+    // Encapsulation is returned as CellmlElementType enum and ModelPtr:
     EXPECT_EQ(libcellml::CellmlElementType::ENCAPSULATION, annotator->item("encapsulation_id")->type());
     EXPECT_EQ(model, annotator->item("encapsulation_id")->model());
 
