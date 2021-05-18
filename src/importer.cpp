@@ -159,7 +159,6 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
     if (model == nullptr) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("Units '" + units->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
-        issue->mPimpl->setLevel(Issue::Level::ERROR);
         issue->mPimpl->mItem->mPimpl->setImportSource(units->importSource());
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
         mImporter->addIssue(issue);
@@ -169,7 +168,6 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
     if (importedUnits == nullptr) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("Units '" + units->name() + "' imports units named '" + units->importReference() + "' from the model imported from '" + resolvingUrl + "'. The units could not be found.");
-        issue->mPimpl->setLevel(Issue::Level::ERROR);
         issue->mPimpl->mItem->mPimpl->setImportSource(units->importSource());
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
         mImporter->addIssue(issue);
@@ -197,7 +195,6 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
         if (model == nullptr) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
-            issue->mPimpl->setLevel(Issue::Level::ERROR);
             issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
             mImporter->addIssue(issue);

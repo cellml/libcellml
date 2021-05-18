@@ -1929,7 +1929,6 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
             }
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL);
-            issue->mPimpl->setLevel(Issue::Level::ERROR);
             issue->mPimpl->setDescription(desc);
             issue->mPimpl->mItem->mPimpl->setModel(model);
             mValidator->addIssue(issue);
