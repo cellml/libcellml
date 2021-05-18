@@ -1441,11 +1441,6 @@ std::string formDescriptionOfCyclicDependency(const History &history, const std:
     }
 
     return msgHeader + msgHistory;
-//    auto issue = std::shared_ptr<Issue> {new Issue {}};
-//    issue->mPimpl->setDescription(msgHeader + msgHistory);
-//    issue->setLevel(Issue::Level::ERROR);
-//    issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
-//    return issue;
 }
 
 } // namespace libcellml

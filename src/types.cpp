@@ -120,10 +120,48 @@ void AnyCellmlElement::AnyCellmlElementImpl::setComponent(const ComponentPtr &co
     mItem = component;
 }
 
+void AnyCellmlElement::AnyCellmlElementImpl::setComponentRef(const ComponentPtr &component)
+{
+    mType = CellmlElementType::COMPONENT_REF;
+    mItem = component;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setEncapsulation(const ModelPtr &model)
+{
+    mType = CellmlElementType::ENCAPSULATION;
+    mItem = model;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setConnection(const VariablePairPtr &pair)
+{
+    setVariablePair(pair, CellmlElementType::CONNECTION);
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setConnection(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    setConnection(VariablePair::create(variable1, variable2));
+}
+
 void AnyCellmlElement::AnyCellmlElementImpl::setImportSource(const ImportSourcePtr &importSource)
 {
     mType = CellmlElementType::IMPORT;
     mItem = importSource;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setMapVariables(const VariablePairPtr &pair)
+{
+    setVariablePair(pair, CellmlElementType::MAP_VARIABLES);
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    setMapVariables(VariablePair::create(variable1, variable2));
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setMath(const ComponentPtr &component)
+{
+    mType = CellmlElementType::MATH;
+    mItem = component;
 }
 
 void AnyCellmlElement::AnyCellmlElementImpl::setModel(const ModelPtr &model, CellmlElementType type)
@@ -135,6 +173,18 @@ void AnyCellmlElement::AnyCellmlElementImpl::setModel(const ModelPtr &model, Cel
 void AnyCellmlElement::AnyCellmlElementImpl::setReset(const ResetPtr &reset, CellmlElementType type)
 {
     mType = type;
+    mItem = reset;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setResetValue(const ResetPtr &reset)
+{
+    mType = CellmlElementType::RESET_VALUE;
+    mItem = reset;
+}
+
+void AnyCellmlElement::AnyCellmlElementImpl::setTestValue(const ResetPtr &reset)
+{
+    mType = CellmlElementType::TEST_VALUE;
     mItem = reset;
 }
 
@@ -164,8 +214,7 @@ void AnyCellmlElement::AnyCellmlElementImpl::setVariablePair(const VariablePairP
 
 void AnyCellmlElement::AnyCellmlElementImpl::setVariablePair(const VariablePtr &variable1, const VariablePtr &variable2, CellmlElementType type)
 {
-    mType = type;
-    mItem = VariablePair::create(variable1, variable2);
+    setVariablePair(VariablePair::create(variable1, variable2), type);
 }
 
 AnyCellmlElement::AnyCellmlElement()
