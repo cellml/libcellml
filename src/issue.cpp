@@ -27,38 +27,6 @@ IssuePtr Issue::IssueImpl::create()
     return std::shared_ptr<Issue> {new Issue {}};
 }
 
-IssuePtr Issue::IssueImpl::createCyclicDependencyIssue(const History &history, const std::string &action)
-{
-    auto origin = history.front();
-    auto model = origin->mSourceModel;
-    bool isComponent = origin->mType == "component";
-    std::string typeStringPrefix = isComponent ? "a " : "";
-    std::string msgHeader = "Cyclic dependencies were found when attempting to " + action + " "
-                            + typeStringPrefix + origin->mType + " in the model '"
-                            + model->name() + "'. The dependency loop is:\n";
-    HistoryEpochPtr h;
-    size_t i = 0;
-    std::string msgHistory;
-    while (i < history.size()) {
-        h = history[i];
-        msgHistory += " - " + h->mType + " '" + h->mName + "' specifies an import from '" + h->mSourceUrl + "' to '" + h->mDestinationUrl + "'";
-        if (i == history.size() - 2) {
-            msgHistory += "; and\n";
-        } else if (i == history.size() - 1) {
-            msgHistory += ".";
-        } else {
-            msgHistory += ";\n";
-        }
-        ++i;
-    }
-
-    auto issue = Issue::IssueImpl::create();
-    issue->mPimpl->setDescription(msgHeader + msgHistory);
-    issue->mPimpl->setLevel(Issue::Level::ERROR);
-    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
-    return issue;
-}
-
 void Issue::IssueImpl::setDescription(const std::string &description)
 {
     mDescription = description;
