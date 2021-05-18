@@ -34,6 +34,15 @@ struct Model::ModelImpl
     std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
     std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
 
+    /**
+     * @brief Test to see if the units of this @ref Model are equal to the units of the @p other @ref Model.
+     *
+     * The units of this @ref Model are tested against the @p other @ref Model's units, and compared for equality.
+     *
+     * @param other The @ref Model to test against.
+     *
+     * @return @c true if this @ref Model's units are equal to the @p other @ref Model's units, @c false otherwise.
+     */
     bool equalUnits(const ModelPtr &other) const;
 };
 
