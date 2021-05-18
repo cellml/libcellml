@@ -1282,8 +1282,8 @@ bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &
 
 bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity)
 {
-    DescriptionList issueList;
-    return traverseComponentEntityTreeLinkingUnits(componentEntity, issueList);
+    DescriptionList descriptionList;
+    return traverseComponentEntityTreeLinkingUnits(componentEntity, descriptionList);
 }
 
 bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, DescriptionList &descriptionList)
