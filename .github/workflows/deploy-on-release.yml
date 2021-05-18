@@ -50,14 +50,14 @@ jobs:
         git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.10 --depth 1 $SRC_DIR/libxml2
         curl -L https://cfhcable.dl.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz > $DOWNLOADS_DIR/swig-4.0.2.tar.gz
         curl -L ${{ matrix.config.python_tarball }} > $DOWNLOADS_DIR/Python.tar.gz
-        
+
     - name: Extract source code
       shell: bash
       run: |
         cd $SRC_DIR
         tar -xzf $DOWNLOADS_DIR/swig-4.0.2.tar.gz
         tar -xzf $DOWNLOADS_DIR/Python.tar.gz
-        
+
     - name: Build and instal zlib
       shell: bash
       run: |
@@ -66,7 +66,7 @@ jobs:
         cd $WORK_DIR/build-zlib
         make -j3
         make install
-        
+
     - name: Build and instal libXml2
       shell: bash
       run: |
@@ -74,12 +74,12 @@ jobs:
         cd $WORK_DIR/build-libxml2
         make -j3
         make install
-        
+
     - name: Instal openssl and libffi headers
       shell: bash
       run: |
         yum -y install libffi-devel openssl-devel
-        
+
     - name: Build and instal Python
       shell: bash
       run: |
@@ -87,17 +87,17 @@ jobs:
         curl -L https://gist.githubusercontent.com/hsorby/6481eed3abb20cf3cfe6bdc7a9c852d9/raw/4701096ce95130eb239945bb7875fdd9ab33bfde/python-${{ matrix.config.python_full_version }}.patch > patch.txt
         patch -i patch.txt ${{ matrix.config.python_patch_file }}
         ./configure --enable-shared --enable-optimizations
-        make -j3 build_all 
+        make -j3 build_all
         make altinstall
         # Update ld cache
         ldconfig
-        
+
     - name: Create virtual environment
       shell: bash
       run: |
         pip${{ matrix.config.python_version }} install virtualenv
         virtualenv $WORK_DIR/venv
-        
+
     - name: Build and instal swig
       shell: bash
       run: |
@@ -106,7 +106,7 @@ jobs:
         $SRC_DIR/swig-4.0.2/configure --without-alllang --with-python --with-python3
         make -j3
         make install
-        
+
     - name: Build libcellml
       shell: bash
       run: |
@@ -116,13 +116,13 @@ jobs:
         cmake -S $SRC_DIR/libcellml -B $WORK_DIR/build-libcellml -D COVERAGE=OFF -D BUILD_TYPE=Release -D Python_FIND_VIRTUALENV=ONLY
         cd $WORK_DIR/build-libcellml
         make -j3
-        
+
     - name: Test
       shell: bash
       run: |
         cd $WORK_DIR/build-libcellml
         make test
-        
+
     - name: Create Python Package
       shell: bash
       run: |
@@ -131,7 +131,7 @@ jobs:
         pip${{ matrix.config.python_version }} install setuptools twine wheel auditwheel
         cd $WORK_DIR/build-libcellml/src/bindings/python
         python${{ matrix.config.python_version }} setup.py bdist_wheel
-        
+
     - name: Test Python Package
       shell: bash
       run: |
@@ -144,7 +144,7 @@ jobs:
         whl=`ls $WORK_DIR/build-libcellml/src/bindings/python/wheelhouse/*.whl`
         pip install $whl
         python -c "import libcellml"
-        
+
     - name: Upload Python Package
       shell: bash
       env:
