@@ -18,6 +18,8 @@ limitations under the License.
 
 #include "libcellml/issue.h"
 
+#include "internaltypes.h"
+
 namespace libcellml {
 
 /**
@@ -31,6 +33,27 @@ struct Issue::IssueImpl
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
     AnyCellmlElementPtr mItem = std::shared_ptr<AnyCellmlElement> {new AnyCellmlElement {}};
+
+    /**
+     * @brief Create an issue.
+     *
+     * Create an issue.
+     *
+     * @return The issue.
+     */
+    static IssuePtr create();
+
+    /**
+     * @brief Create a cyclic dependency issue.
+     *
+     * Create a cyclic dependency issue.
+     *
+     * @param history The history of the cyclic dependency.
+     * @param action The action that made cyclic dependency, e.g. "resolve", "flatten".
+     *
+     * @return The issue.
+     */
+    static IssuePtr createCyclicDependencyIssue(const History &history, const std::string &action);
 
     void setDescription(const std::string &description);
     void setLevel(Level level);
