@@ -404,7 +404,7 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
  * @brief Check if the provided @p name is a standard unit.
  *
  * Checks if the provided @p name is one of the standard units in the
- * @c Units::StandardUnit @c enum. Returns @c true if @p name is a standard unit
+ * @ref Units::StandardUnit @c enum. Returns @c true if @p name is a standard unit
  * and @c false otherwise.
  *
  * @param name The @c std::string name to check against the list of standard units.
@@ -414,13 +414,13 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
 bool isStandardUnitName(const std::string &name);
 
 /**
- * @brief Test if the provided @c Units is a standard unit.
+ * @brief Test if the provided @ref Units is a standard unit.
  *
  * Tests to determine if the provided @p units is equivalent to
  * a standard unit.  Returns @c true if the @p units is a standard unit
  * and @c false otherwise.
  *
- * @param units The @c Units to test.
+ * @param units The @ref Units to test.
  *
  * @return @c true if @p units is a standard unit, @c false otherwise.
  */
@@ -627,7 +627,7 @@ IdList listIds(const ModelPtr &model);
 std::string makeUniqueId(IdList &idList);
 
 /**
- * Function to support linking units names to their corresponding @c Units items.
+ * Function to support linking units names to their corresponding @ref Units items.
  *
  * @param component The component to check.
  * @param descriptionList A @c std::vector of @c std::string items in which unlinked units are recorded for reporting.
@@ -653,7 +653,7 @@ bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &component
 /**
  * @overload
  *
- *  Utility function used when linking units names to their corresponding @c Units items.
+ *  Utility function used when linking units names to their corresponding @ref Units items.
  *
  * @param componentEntity The component entity to check.
  * @param descriptionList An optional @c std::vector of @c std::string items which is used to record cases of missing units.
@@ -664,9 +664,9 @@ bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &component
 
 /**
  * @brief Test whether a component contains variables naming units which have not yet
- *        been linked to @c Units items.
+ *        been linked to @ref Units items.
  *
- * Utility function used when linking units names to their corresponding @c Units items. It
+ * Utility function used when linking units names to their corresponding @ref Units items. It
  * will return a value of @c true when there are variables without linked units, or @c false
  * otherwise.
  *
