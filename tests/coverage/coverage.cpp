@@ -97,3 +97,10 @@ TEST(Annotator, automaticIdsUndefined)
 
     EXPECT_EQ("", model->id());
 }
+
+TEST(Coverage, unitsItem)
+{
+    auto unitsItem = libcellml::UnitsItem::create(nullptr, 0);
+
+    EXPECT_FALSE(unitsItem->isValid());
+}
