@@ -2731,3 +2731,10 @@ TEST(Units, circularImportDeeperLevelBaseUnits)
 
     EXPECT_FALSE(units1->isBaseUnit());
 }
+
+TEST(Units, coverage)
+{
+    auto unitsItem = libcellml::UnitsItem::create(nullptr, 0);
+
+    EXPECT_FALSE(unitsItem->isValid());
+}
