@@ -103,12 +103,12 @@ public:
     UnitsItem &operator=(UnitsItem rhs) = delete; /**< Assignment operator. */
 
     /**
-     * @brief Create a unit reference object.
+     * @brief Create a units item reference object.
      *
-     * Factory method to create a @ref UnitsItemPtr.  Create a unit with @ref Units
+     * Factory method to create a @ref UnitsItemPtr.  Create a units item with @ref Units
      * and index with::
      *
-     *   auto unit = libcellml::UnitsItemPtr::create(units, index);
+     *   auto unitsItem = libcellml::UnitsItemPtr::create(units, index);
      *
      * @return A smart pointer to a @ref UnitsItemPtr object.
      */
