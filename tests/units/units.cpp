@@ -2734,25 +2734,7 @@ TEST(Units, circularImportDeeperLevelBaseUnits)
 
 TEST(Units, coverage)
 {
-    libcellml::UnitsItemPtr unitsItem;
-
-    {
-        auto units = libcellml::Units::create("units");
-
-        units->addUnit("second", 1.0, "second_id");
-
-        auto model = libcellml::Model::create("model");
-
-        model->addUnits(units);
-
-        auto annotator = libcellml::Annotator::create();
-
-        annotator->setModel(model);
-
-        unitsItem = annotator->item("second_id")->unitsItem();
-
-        EXPECT_TRUE(unitsItem->isValid());
-    }
+    auto unitsItem = libcellml::UnitsItem::create(nullptr, 0);
 
     EXPECT_FALSE(unitsItem->isValid());
 }
