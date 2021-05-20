@@ -73,11 +73,11 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::setUnits
 "Sets the :class`Units` relevant to this issue (``None`` to unset).";
 
-%feature("docstring") libcellml::Issue::unit
-"Get the :class:`Unit` relevant to this issue (or ``None``).";
+%feature("docstring") libcellml::Issue::unitsItem
+"Get the :class:`UnitsItem` relevant to this issue (or ``None``).";
 
-%feature("docstring") libcellml::Issue::setUnit
-"Sets the :class`Unit` relevant to this issue (``None`` to unset).";
+%feature("docstring") libcellml::Issue::setUnitsItem
+"Sets the :class`UnitsItem` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::variable
 "Get the :class:`Variable` relevant to this issue (or ``None``).";
@@ -168,8 +168,8 @@ from libcellml import CellmlElementType
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
-    Issue(const UnitPtr &unit) {
-        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unit));
+    Issue(const UnitsItemPtr &unitsItem) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unitsItem));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
@@ -208,7 +208,7 @@ from libcellml import CellmlElementType
             elif cellmlElementType == CellmlElementType.TEST_VALUE:
                 _issue.Issue_setTestValue(self, item)
             elif cellmlElementType == CellmlElementType.UNIT:
-                _issue.Issue_setUnit(self, item)
+                _issue.Issue_setUnitsItem(self, item)
             elif cellmlElementType == CellmlElementType.UNITS:
                 _issue.Issue_setUnits(self, item)
             elif cellmlElementType == CellmlElementType.VARIABLE:
@@ -239,7 +239,7 @@ from libcellml import CellmlElementType
             elif cellmlElementType == CellmlElementType.TEST_VALUE:
                 return (cellmlElementType, _issue.Issue_testValue(self))
             elif cellmlElementType == CellmlElementType.UNIT:
-                return (cellmlElementType, _issue.Issue_unit(self))
+                return (cellmlElementType, _issue.Issue_unitsItem(self))
             elif cellmlElementType == CellmlElementType.UNITS:
                 return (cellmlElementType, _issue.Issue_units(self))
             elif cellmlElementType == CellmlElementType.VARIABLE:

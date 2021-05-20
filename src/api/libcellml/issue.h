@@ -104,7 +104,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const UnitPtr &unit) noexcept;
+    static IssuePtr create(const UnitsItemPtr &unitsItem) noexcept;
 
     /**
      * @brief The issue Level enum class.
@@ -130,6 +130,7 @@ public:
 
         // Specification errors.
         XML,
+        XML_ID_ATTRIBUTE,
         DATA_REPR_IDENTIFIER_UNICODE,
         DATA_REPR_IDENTIFIER_LATIN_ALPHANUM,
         DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM,
@@ -561,23 +562,23 @@ public:
     ResetPtr testValue() const;
 
     /**
-     * @brief Set the @ref Unit whose relevant to this issue.
+     * @brief Set the @ref UnitsItem whose relevant to this issue.
      *
      * The internal type will be set to @c CellmlElementType::UNIT.
      *
-     * @param unit A @ref Unit relevant to this issue.
+     * @param unitsItem A @ref UnitsItem relevant to this issue.
      */
-    void setUnit(const UnitPtr &unit);
+    void setUnitsItem(const UnitsItemPtr &unitsItem);
 
     /**
-     * @brief Get the unit relevant to this issue.
+     * @brief Get the units item relevant to this issue.
      *
-     * Get the unit relevant to this issue.
+     * Get the units item relevant to this issue.
      *
-     * @return A @ref Unit relevant to this issue,
+     * @return A @ref UnitsItem relevant to this issue,
      *         or @c nullptr if the internal type is not @c CellmlElementType::UNIT.
      */
-    UnitPtr unit() const;
+    UnitsItemPtr unitsItem() const;
 
     /**
      * @brief Set the @ref Model whose encapsulation is relevant to this issue.
@@ -711,13 +712,13 @@ private:
     explicit Issue(const VariablePtr &variable);
 
     /**
-     * @brief Constructs an Issue for the unit.
+     * @brief Constructs an Issue for the units item.
      *
-     * Convenience constructor for creating an issue for the unit.
+     * Convenience constructor for creating an issue for the units item.
      *
-     * @param unit The unit the issue references.
+     * @param unitsItem The units item the issue references.
      */
-    explicit Issue(const UnitPtr &unit);
+    explicit Issue(const UnitsItemPtr &unitsItem);
 
     struct IssueImpl; /**< Forward declaration for pImpl idiom, @private. */
     IssueImpl *mPimpl; /**< Private member to implementation pointer, @private. */

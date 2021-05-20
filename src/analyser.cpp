@@ -329,7 +329,6 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
  *
  * The private implementation for the Analyser class.
  */
-using Strings = std::vector<std::string>;
 using UnitsMap = std::map<std::string, double>;
 using UnitsMaps = std::vector<UnitsMap>;
 using UnitsMultipliers = std::vector<double>;
@@ -1223,9 +1222,10 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
         && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
         && (astGrandParent != nullptr) && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
         && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        double value;
+        bool validValue;
+        double value = convertToDouble(ast->mPimpl->mValue, &validValue);
 
-        if (!convertToDouble(ast->mPimpl->mValue, value) || !areEqual(value, 1.0)) {
+        if (!validValue || !areEqual(value, 1.0)) {
             auto issue = Issue::create();
             auto variable = astGreatGrandParent->mPimpl->mOwnedRightChild->variable();
 
@@ -1309,7 +1309,7 @@ void Analyser::AnalyserImpl::updateUnitsMap(const ModelPtr &model,
                     } else {
                         updateUnitsMap(model, reference, unitsMap, userUnitsMap,
                                        exponent * unitsExponent,
-                                       unitsMultiplier + (std::log10(multiplier) + standardPrefixList.at(prefix)) * unitsExponent);
+                                       unitsMultiplier + (std::log10(multiplier) + convertPrefixToInt(prefix)) * unitsExponent);
                     }
                 }
             }
@@ -1539,11 +1539,11 @@ void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
                 units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
 
                 if (isStandardUnitName(reference)) {
-                    newUnitsMultiplier += unitsMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + standardPrefixList.at(prefix)) * exponent * unitsExponent;
+                    newUnitsMultiplier += unitsMultiplier + (standardMultiplierList.at(reference) + std::log10(multiplier) + convertPrefixToInt(prefix)) * exponent * unitsExponent;
                 } else {
                     updateUnitsMultiplier(model, reference, newUnitsMultiplier,
                                           exponent * unitsExponent,
-                                          unitsMultiplier + (std::log10(multiplier) + standardPrefixList.at(prefix)) * unitsExponent);
+                                          unitsMultiplier + (std::log10(multiplier) + convertPrefixToInt(prefix)) * unitsExponent);
                 }
             }
         }

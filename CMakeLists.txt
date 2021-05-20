@@ -10,14 +10,14 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.cmake_minimum_required (VERSION 3.1)
+# limitations under the License.
 
 cmake_minimum_required(VERSION 3.10.2)
 
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
 set(_PROJECT_VERSION 0.2.0)
-set(PROJECT_DEVELOPER_VERSION -dev.19)
+set(PROJECT_DEVELOPER_VERSION -dev.20)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.
