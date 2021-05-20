@@ -41,7 +41,7 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 /**
  * Vector of base units.
  */
-static const std::vector<std::string> baseUnitsList = {
+static const NameList baseUnitsList = {
     "ampere",
     "candela",
     "dimensionless",
@@ -137,7 +137,6 @@ static const std::map<std::string, int> standardPrefixList = {
     {"kilo", 3},
     {"hecto", 2},
     {"deca", 1},
-    {"", 0},
     {"deci", -1},
     {"centi", -2},
     {"milli", -3},
@@ -147,61 +146,12 @@ static const std::map<std::string, int> standardPrefixList = {
     {"femto", -15},
     {"atto", -18},
     {"zepto", -21},
-    {"yocto", -24},
-    {"24", 24},
-    {"23", 23},
-    {"22", 22},
-    {"21", 21},
-    {"20", 20},
-    {"19", 19},
-    {"18", 18},
-    {"17", 17},
-    {"16", 16},
-    {"15", 15},
-    {"14", 14},
-    {"13", 13},
-    {"12", 12},
-    {"11", 11},
-    {"10", 10},
-    {"9", 9},
-    {"8", 8},
-    {"7", 7},
-    {"6", 6},
-    {"5", 5},
-    {"4", 4},
-    {"3", 3},
-    {"2", 2},
-    {"1", 1},
-    {"0", 0},
-    {"-1", -1},
-    {"-2", -2},
-    {"-3", -3},
-    {"-4", -4},
-    {"-5", -5},
-    {"-6", -6},
-    {"-7", -7},
-    {"-8", -8},
-    {"-9", -9},
-    {"-10", -10},
-    {"-11", -11},
-    {"-12", -12},
-    {"-13", -13},
-    {"-14", -14},
-    {"-15", -15},
-    {"-16", -16},
-    {"-17", -17},
-    {"-18", -18},
-    {"-19", -19},
-    {"-20", -20},
-    {"-21", -21},
-    {"-22", -22},
-    {"-23", -23},
-    {"-24", -24}};
+    {"yocto", -24}};
 
 /**
  * List of MathML elements supported by CellML.
  */
-static const std::vector<std::string> supportedMathMLElements = {
+static const NameList supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
     "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
@@ -221,38 +171,54 @@ static const std::map<Variable::InterfaceType, std::string> interfaceTypeToStrin
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
 /**
- * @brief Convert the @p in @c std::string to the @p out @c double.
+ * @brief Convert the @p in @c std::string to a @c double.
  *
- * Convert the @p in @c std::string to a @c double. If @p in can be converted
- * using @c std::stod, return @c true and update @p out, otherwise return
- * @c false. To avoid returning @c false, @p in must be known to be convertible
- * to a @c double before calling this function.
+ * Convert the @p in @c std::string to a @c double.
+ * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * and @c false if it didn't.
+ *
+ * If the @p in is not a CellML real the conversion will not succeed.
  *
  * @sa isCellMLReal
  *
  * @param in The @c std::string value to convert to a @c double.
- * @param out The @c double value resulting in the conversion.
+ * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
  *
- * @return @c true if @in represents a @c double, @c false otherwise.
+ * @return The double value of @p in.
  */
-bool convertToDouble(const std::string &in, double &out);
+double convertToDouble(const std::string &in, bool *ok = nullptr);
 
 /**
- * @brief Convert the @p in @c std::string to the @p out @c int.
+ * @brief Convert the @p in @c std::string to an @c int.
  *
- * Convert the @p in @c std::string to an @c int. If @p in can be converted
- * using @c std::stoi, return @c true and update @p out, otherwise return
- * @c false. To avoid returning @c false, @p in must be known to be convertible
- * to an @c int before calling this function.
+ * Convert the @p in @c std::string to an @c int.
+ * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * and @c false if it didn't.
+ *
+ * If @p in is not a CellML integer the conversion will not succeed.
  *
  * @sa isCellMLInteger
  *
  * @param in The @c std::string value to convert to an @c int.
- * @param out The @c int value resulting in the conversion.
+ * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
  *
- * @return @c true if @in represents an @c int, @c false otherwise.
+ * @return The integer value of @p in.
  */
-bool convertToInt(const std::string &in, int &out);
+int convertToInt(const std::string &in, bool *ok = nullptr);
+
+/**
+ * @brief Convert a units prefix to an int.
+ *
+ * Converts the given units prefix (@p in) into its equivalent integer value.
+ * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * and @c false if it didn't.
+ *
+ * @param in The @c std::string value to convert to an @c int.
+ * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
+ *
+ * @return The integer value of the @p prefix.
+ */
+int convertPrefixToInt(const std::string &in, bool *ok = nullptr);
 
 /**
  * @brief Convert a @c int to @c std::string format.
@@ -482,10 +448,11 @@ bool isStandardPrefixName(const std::string &name);
  *
  * @param component The @c ComponentPtr to search for the @c VariablePtr in.
  * @param variable The @c VariablePtr to return the index of.
+ *
  * @return The index of the @p variable found in the component.  Returns the
  * number of variables in the component if the variable was not found.
  */
-size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+size_t indexOf(const VariablePtr &variable, const ComponentConstPtr &component);
 
 /**
  * @brief Test to determine if @p variable1 and @p variable2 are equivalent.
@@ -556,6 +523,19 @@ Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
 void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
 
 /**
+ * @brief Split a string.
+ *
+ * Split the given string with the given delimiter.  If a delimiter is not given
+ * then ';' is used.  If the delimiter is not found a copy of @p content is returned.
+ *
+ * @param content The @c std::string to split.
+ * @param delimiter The delimiter to split the string with, default ';'.
+ *
+ * @return A @c std::vector of @c std::strings.
+ */
+Strings split(const std::string &content, const std::string &delimiter = ";");
+
+/**
  * @brief Trim whitespace from the front of a string (in place).
  *
  * Remove whitespace from the front of a string, modifying the passed string.
@@ -613,6 +593,20 @@ static inline std::string trimCopy(std::string s)
     trim(s);
     return s;
 }
+
+/**
+ * @brief Replace text in string.
+ *
+ * Replace the @c std::string @p from in @p string with @c std::string @p to.
+ * If the string @p from is not found in @p string then the @p string is returned unchanged.
+ *
+ * @param string The string to make the substution in.
+ * @param from The string to replace.
+ * @param to The replacement string.
+ *
+ * @return The modified string.
+ */
+std::string replace(std::string string, const std::string &from, const std::string &to);
 
 /**
  * @brief Collect all existing identifier attributes within the given model.
@@ -682,18 +676,6 @@ bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &component
  */
 bool areComponentVariableUnitsUnlinked(const ComponentPtr &component);
 
-void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
-void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
-void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
-NameList componentNames(const ModelPtr &model);
-NameList unitsNamesUsed(const ComponentPtr &component);
-IndexStack reverseEngineerIndexStack(const ComponentPtr &component);
-EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
-std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
-ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
-void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
-std::string replace(std::string string, const std::string &from, const std::string &to);
-
 /**
  * @brief Create a connection map for the given variables.
  *
@@ -744,5 +726,89 @@ bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entitie
  * @return A @c std::vector of all the @ref ImportSource s found in the model.
  */
 std::vector<ImportSourcePtr> getAllImportSources(const ModelConstPtr &model);
+
+/**
+ * @brief Return the @ref IndexStack for the given @p component.
+ *
+ * Return the @ref IndexStack for the given @p component.
+ *
+ * @param component The component to find the index stack for.
+ *
+ * @return An @ref IndexStack.
+ */
+IndexStack indexStackOf(const ComponentPtr &component);
+
+/**
+ * @brief Create a history epoch for a @ref Units with optional destination URL.
+ *
+ * Create a history epoch for a @ref Units.  If a destination URL is not given
+ * then it will be taken from the import source if the @p units is an imported units.
+ *
+ * @param units The @ref Units to create a history entry for.
+ * @param sourceUrl The source URL for the units.
+ * @param destinationUrl The optional destination URL for the units.
+ *
+ * @return The history epoch.
+ */
+HistoryEpochPtr createHistoryEpoch(const UnitsConstPtr &units, const std::string &sourceUrl, const std::string &destinationUrl = "");
+
+/**
+ * @brief Create a history epoch for a @ref Component with optional destination URL.
+ *
+ * Create a history epoch for a @ref Component.  If a destination URL is not given
+ * then it will be taken from the import source if the @p component is an imported component.
+ *
+ * @param component The @ref Component to create a history entry for.
+ * @param sourceUrl The source URL for the component.
+ * @param destinationUrl The optional destination URL for the component.
+ *
+ * @return The history epoch.
+ */
+HistoryEpochPtr createHistoryEpoch(const ComponentConstPtr &component, const std::string &sourceUrl, const std::string &destinationUrl = "");
+
+/**
+ * @brief Figure out the URL of the importee from the history.
+ *
+ * Look through the history to figure out the importee import URL.
+ * @ref ORIGIN_MODEL_REF is returned by default.
+ *
+ * @param history The history of locations visited.
+ * @param url The destination URL of the imported entity.
+ * @return A std::string.
+ */
+std::string importeeModelUrl(const History &history, const std::string &url);
+
+/**
+ * @brief Check through the @p history and determine if @p h has already been visited.
+ *
+ * Check through the @p history and determine if @p h has already been visited.
+ *
+ * @param history The history of locations visited.
+ * @param h The epoch to check for existence.
+ * @return @c true if @p h is already present in @p history, @c false otherwise.
+ */
+bool checkForImportCycles(const History &history, const HistoryEpochPtr &h);
+
+/**
+ * @brief Make a cyclic dependency issue.
+ *
+ * Make a cyclic dependency issue.
+ *
+ * @param history The history of the cyclic dependency.
+ * @param action The action that made cyclic dependency, e.g. "resolve", "flatten".
+ *
+ * @return The issue.
+ */
+IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action);
+
+void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
+void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
+void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
+NameList componentNames(const ModelPtr &model);
+NameList unitsNamesUsed(const ComponentPtr &component);
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 
 } // namespace libcellml

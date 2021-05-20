@@ -106,10 +106,10 @@ Issue::Issue(const ResetPtr &reset)
     mPimpl->mCellmlElementType = CellmlElementType::RESET;
 }
 
-Issue::Issue(const UnitPtr &unit)
+Issue::Issue(const UnitsItemPtr &unitsItem)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mItem = std::make_any<UnitPtr>(unit);
+    mPimpl->mItem = std::make_any<UnitsItemPtr>(unitsItem);
     mPimpl->mCellmlElementType = CellmlElementType::UNIT;
 }
 
@@ -188,10 +188,10 @@ IssuePtr Issue::create(const VariablePtr &variable) noexcept
     return nullptr;
 }
 
-IssuePtr Issue::create(const UnitPtr &unit) noexcept
+IssuePtr Issue::create(const UnitsItemPtr &unitsItem) noexcept
 {
-    if (unit->isValid()) {
-        auto issue = std::shared_ptr<Issue> {new Issue {unit}};
+    if (unitsItem->isValid()) {
+        auto issue = std::shared_ptr<Issue> {new Issue {unitsItem}};
         issue->mPimpl->mCellmlElementType = CellmlElementType::UNIT;
         return issue;
     }
@@ -276,7 +276,7 @@ void Issue::setItem(CellmlElementType cellmlElementType, const std::any &item)
             mPimpl->clearItem();
             break;
         case CellmlElementType::UNIT:
-            mPimpl->mItem = std::any_cast<UnitPtr>(item);
+            mPimpl->mItem = std::any_cast<UnitsItemPtr>(item);
             break;
         case CellmlElementType::UNITS:
             mPimpl->mItem = std::any_cast<UnitsPtr>(item);
@@ -407,7 +407,7 @@ UnitsPtr Issue::units() const
                nullptr;
 }
 
-void Issue::setUnit(const UnitPtr &unit)
+void Issue::setUnitsItem(const UnitsItemPtr &unit)
 {
     if (unit->isValid()) {
         setItem(CellmlElementType::UNIT, unit);
@@ -416,10 +416,10 @@ void Issue::setUnit(const UnitPtr &unit)
     }
 }
 
-UnitPtr Issue::unit() const
+UnitsItemPtr Issue::unitsItem() const
 {
     return (mPimpl->mCellmlElementType == CellmlElementType::UNIT) ?
-               std::any_cast<UnitPtr>(mPimpl->mItem) :
+               std::any_cast<UnitsItemPtr>(mPimpl->mItem) :
                nullptr;
 }
 
@@ -547,6 +547,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 
     // Validation errors related to the CellML Specification:
     {Issue::ReferenceRule::XML, {"XML", "1.2.1", baseSpecificationUrl, "specA02"}},
+    {Issue::ReferenceRule::XML_ID_ATTRIBUTE, {"XML", "1.2.5", baseSpecificationUrl, "specA02"}},
     {Issue::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE, {"DATA_REPR_IDENTIFIER_UNICODE", "1.3.1.1", baseSpecificationUrl, "specA03"}},
     {Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM, {"DATA_REPR_IDENTIFIER_LATIN_ALPHANUM", "1.3.1.1", baseSpecificationUrl, "specA03"}},
     {Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM, {"DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM", "1.3.1.1", baseSpecificationUrl, "specA03"}},
@@ -609,9 +610,9 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::MATH_MATHML, {"MATH_MATHML", "2.12.1", baseSpecificationUrl, "specB12"}},
     {Issue::ReferenceRule::MATH_CHILD, {"MATH_CHILD", "2.12.2", baseSpecificationUrl, "specB12"}},
     {Issue::ReferenceRule::MATH_CI_VARIABLE_REF, {"MATH_CI_VARIABLE_REF", "2.12.3", baseSpecificationUrl, "specB12"}},
-    {Issue::ReferenceRule::MATH_CN_UNITS, {"MATH_CN_UNITS", "2.13.4", baseSpecificationUrl, "specB13"}},
-    {Issue::ReferenceRule::MATH_CN_BASE10, {"MATH_CN_BASE10", "2.13.5", baseSpecificationUrl, "specB13"}},
-    {Issue::ReferenceRule::MATH_CN_FORMAT, {"MATH_CN_FORMAT", "2.13.5", baseSpecificationUrl, "specB13"}},
+    {Issue::ReferenceRule::MATH_CN_UNITS, {"MATH_CN_UNITS", "2.12.4", baseSpecificationUrl, "specB13"}},
+    {Issue::ReferenceRule::MATH_CN_BASE10, {"MATH_CN_BASE10", "2.12.5", baseSpecificationUrl, "specB13"}},
+    {Issue::ReferenceRule::MATH_CN_FORMAT, {"MATH_CN_FORMAT", "2.12.5", baseSpecificationUrl, "specB13"}},
     {Issue::ReferenceRule::ENCAPSULATION_ATTRIBUTE, {"ENCAPSULATION_ATTRIBUTE", "2.13", baseSpecificationUrl, "specB13"}},
     {Issue::ReferenceRule::ENCAPSULATION_CHILD, {"ENCAPSULATION_CHILD", "2.13.1", baseSpecificationUrl, "specB13"}},
     {Issue::ReferenceRule::COMPONENT_REF_COMPONENT, {"COMPONENT_REF_COMPONENT", "2.14.1", baseSpecificationUrl, "specB14"}},

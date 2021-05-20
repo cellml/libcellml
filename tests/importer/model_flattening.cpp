@@ -842,17 +842,16 @@ TEST(ModelFlattening, importedComponentsWithConnectionsToChildren)
 TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 {
     const std::string resolveError =
-        "Cyclic dependencies were found when attempting to resolve a component in the model 'importExample2b'. The dependency loop is:\n"
-        " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
-        " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
-        " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
-        " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve a component in the model 'importExample2b'. The dependency loop is:\n")
+        + " - component 'sideB' specifies an import from ':this:' to '" + resourcePath("modelflattening/") + "circularImport1.cellml';\n"
+        + " - component 'shared' specifies an import from '" + resourcePath("modelflattening/") + "circularImport1.cellml' to '" + resourcePath("modelflattening/") + "circularImport2.cellml'; and\n"
+        + " - component 'circular2' specifies an import from '" + resourcePath("modelflattening/") + "circularImport2.cellml' to '" + resourcePath("modelflattening/") + "circularImport1.cellml'.";
+
     const std::string flattenError =
-        "Cyclic dependencies were found when attempting to flatten a component in the model 'importExample2b'. The dependency loop is:\n"
-        " - component 'sideB' is imported from 'shared' in 'circularImport1.cellml';\n"
-        " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml';\n"
-        " - component 'circular2' is imported from 'shared' in 'circularImport1.cellml'; and\n"
-        " - component 'shared' is imported from 'circular2' in 'circularImport2.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to flatten a component in the model 'importExample2b'. The dependency loop is:\n")
+        + " - component 'sideB' specifies an import from ':this:' to '" + resourcePath("modelflattening/") + "circularImport1.cellml';\n"
+        + " - component 'shared' specifies an import from '" + resourcePath("modelflattening/") + "circularImport1.cellml' to '" + resourcePath("modelflattening/") + "circularImport2.cellml'; and\n"
+        + " - component 'circular2' specifies an import from '" + resourcePath("modelflattening/") + "circularImport2.cellml' to '" + resourcePath("modelflattening/") + "circularImport1.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("modelflattening/importExample2b.cellml"));
@@ -876,17 +875,16 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
 TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
 {
     const std::string resolveError =
-        "Cyclic dependencies were found when attempting to resolve units in the model 'importExampleUnits'. The dependency loop is:\n"
-        " - units 'sideB' is imported from 'myChildIsCircular' in 'circularImport1units.cellml';\n"
-        " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml';\n"
-        " - units 'circular2' is imported from 'shared' in 'circularImport1units.cellml'; and\n"
-        " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to resolve units in the model 'importExampleUnits'. The dependency loop is:\n")
+        + " - units 'sideB' specifies an import from ':this:' to '" + resourcePath("modelflattening/") + "circularImport1units.cellml';\n"
+        + " - units 'shared' specifies an import from '" + resourcePath("modelflattening/") + "circularImport1units.cellml' to '" + resourcePath("modelflattening/") + "circularImport2units.cellml'; and\n"
+        + " - units 'circular2' specifies an import from '" + resourcePath("modelflattening/") + "circularImport2units.cellml' to '" + resourcePath("modelflattening/") + "circularImport1units.cellml'.";
+
     const std::string flattenError =
-        "Cyclic dependencies were found when attempting to flatten units in the model 'importExampleUnits'. The dependency loop is:\n"
-        " - units 'sideB' is imported from 'myChildIsCircular' in 'circularImport1units.cellml';\n"
-        " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml';\n"
-        " - units 'circular2' is imported from 'shared' in 'circularImport1units.cellml'; and\n"
-        " - units 'shared' is imported from 'circular2' in 'circularImport2units.cellml'.";
+        std::string("Cyclic dependencies were found when attempting to flatten units in the model 'importExampleUnits'. The dependency loop is:\n")
+        + " - units 'sideB' specifies an import from ':this:' to '" + resourcePath("modelflattening/") + "circularImport1units.cellml';\n"
+        + " - units 'shared' specifies an import from '" + resourcePath("modelflattening/") + "circularImport1units.cellml' to '" + resourcePath("modelflattening/") + "circularImport2units.cellml'; and\n"
+        + " - units 'circular2' specifies an import from '" + resourcePath("modelflattening/") + "circularImport2units.cellml' to '" + resourcePath("modelflattening/") + "circularImport1units.cellml'.";
 
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("modelflattening/importExampleUnits.cellml"));
@@ -929,7 +927,8 @@ TEST(ModelFlattening, resolveFlattenMissingModel)
 
 TEST(ModelFlattening, resolveFlattenMissingComponent)
 {
-    const std::string e = "Component 'left' imports a component named 'pointyBit' from the model imported from 'diamond_point.cellml'. The component could not be found.";
+    const std::string e =
+        "Component 'left' imports a component named 'pointyBit' from the model imported from '" + resourcePath("importer/") + "diamond_point.cellml'. The component could not be found.";
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("importer/diamond.cellml"));
     auto importer = libcellml::Importer::create();
@@ -950,7 +949,8 @@ TEST(ModelFlattening, resolveFlattenMissingComponent)
 
 TEST(ModelFlattening, resolveFlattenMissingUnits)
 {
-    const std::string e = "Units 'units1_imported' imports units named 'units1' from the model imported from 'units_source.cellml'. The units could not be found.";
+    const std::string e =
+        "Units 'units1_imported' imports units named 'units1' from the model imported from '" + resourcePath("importer/") + "units_source.cellml'. The units could not be found.";
     auto parser = libcellml::Parser::create();
     auto originalModel = parser->parseModel(fileContents("importer/units_imported.cellml"));
     auto importer = libcellml::Importer::create();
