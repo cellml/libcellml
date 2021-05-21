@@ -14,6 +14,10 @@ jobs:
     name: ${{ matrix.config.name }}
     runs-on: ubuntu-20.04
     container: quay.io/pypa/manylinux2014_x86_64
+    env:
+      DOWNLOADS_DIR: /home/downloads
+      WORK_DIR: /home/work
+      SRC_DIR: /home/src
     strategy:
       fail-fast: false
       matrix:
@@ -28,182 +32,116 @@ jobs:
             python_version: 3.8, python_full_version: 3.8.6, python_patch_file: "Modules/Setup",
             python_tarball: "https://www.python.org/ftp/python/3.8.6/Python-3.8.6.tgz"
           }
+        - {
+            name: "Many Linux 2014 Py39", cc: "cl", cxx: "cl",
+            python_version: 3.9, python_full_version: 3.9.5, python_patch_file: "Modules/Setup",
+            python_tarball: "https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tgz"
+          }
     steps:
     - name: Download source code
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
-        mkdir $downloads_dir
-        mkdir $work_dir
-        mkdir $src_dir
-
+        mkdir $DOWNLOADS_DIR
+        mkdir $WORK_DIR
+        mkdir $SRC_DIR
         # fetch libraries
-        git clone https://github.com/cellml/libcellml -b release --depth 1 $src_dir/libcellml
-        git clone https://github.com/OpenCMISS-Dependencies/zlib -b v1.2.3 --depth 1 $src_dir/zlib
-        git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.6 --depth 1 $src_dir/libxml2
-
-        curl -L https://cfhcable.dl.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz > $downloads_dir/swig-4.0.2.tar.gz
-        curl -L ${{ matrix.config.python_tarball }} > $downloads_dir/Python.tar.gz
-        curl -L https://www.openssl.org/source/openssl-1.1.1h.tar.gz > $downloads_dir/openssl-1.1.1h.tar.gz
-        curl -L ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz > $downloads_dir/libffi-3.2.1.tar.gz
+        git clone https://github.com/cellml/libcellml -b release --depth 1 $SRC_DIR/libcellml
+        git clone https://github.com/OpenCMISS-Dependencies/zlib -b v1.2.3 --depth 1 $SRC_DIR/zlib
+        git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.10 --depth 1 $SRC_DIR/libxml2
+        curl -L https://cfhcable.dl.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz > $DOWNLOADS_DIR/swig-4.0.2.tar.gz
+        curl -L ${{ matrix.config.python_tarball }} > $DOWNLOADS_DIR/Python.tar.gz
 
     - name: Extract source code
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
-        cd $src_dir
-        tar -xzf $downloads_dir/swig-4.0.2.tar.gz
-        tar -xzf $downloads_dir/openssl-1.1.1h.tar.gz
-        tar -xzf $downloads_dir/libffi-3.2.1.tar.gz
-        tar -xzf $downloads_dir/Python.tar.gz
+        cd $SRC_DIR
+        tar -xzf $DOWNLOADS_DIR/swig-4.0.2.tar.gz
+        tar -xzf $DOWNLOADS_DIR/Python.tar.gz
 
     - name: Build and instal zlib
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
         # build libraries
-        cmake -S $src_dir/zlib -B $work_dir/build-zlib -D CMAKE_BUILD_TYPE=Release -D BUILD_TESTS=OFF
-        cd $work_dir/build-zlib
+        cmake -S $SRC_DIR/zlib -B $WORK_DIR/build-zlib -D CMAKE_BUILD_TYPE=Release -D BUILD_TESTS=OFF
+        cd $WORK_DIR/build-zlib
         make -j3
         make install
 
     - name: Build and instal libXml2
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
-        cmake -S $src_dir/libxml2 -B $work_dir/build-libxml2 -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=OFF -D BUILD_TESTS=OFF
-        cd $work_dir/build-libxml2
+        cmake -S $SRC_DIR/libxml2 -B $WORK_DIR/build-libxml2 -D CMAKE_BUILD_TYPE=Release  -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=OFF -D LIBXML2_BUILD_TESTS=OFF -D LIBXML2_WITH_LZMA=OFF -D LIBXML2_WITH_PYTHON=OFF -D LIBXML2_WITH_ICONV=OFF -D LIBXML2_WITH_PROGRAMS=OFF -D LIBXML2_WITH_TESTS=OFF
+        cd $WORK_DIR/build-libxml2
         make -j3
         make install
 
-    - name: Build and instal openssl
+    - name: Instal openssl and libffi headers
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
-        mkdir $work_dir/build-openssl
-        cd $work_dir/build-openssl
-        $src_dir/openssl-1.1.1h/config --libdir=/usr/local/lib
-        make -j3
-        make install_sw
-
-    - name: Build and instal libffi
-      shell: bash
-      run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
-        mkdir $work_dir/build-libffi-3.2.1
-        cd $work_dir/build-libffi-3.2.1
-        $src_dir/libffi-3.2.1/configure --without-docs  --libdir=/usr/local/lib
-        make -j3
-        make install
-
-        cd /usr/local/lib
-        ln -s /usr/local/lib64/libffi.so
-        ln -s /usr/local/lib64/libffi.la
+        yum -y install libffi-devel openssl-devel
 
     - name: Build and instal Python
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
-        export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
-
-        cd $src_dir/Python*
-        curl -L https://gist.githubusercontent.com/hsorby/6481eed3abb20cf3cfe6bdc7a9c852d9/raw/ccd32fe61325bb8cdae1776a0535f06084761b0c/python-${{ matrix.config.python_full_version }}.patch > patch.txt
+        cd $SRC_DIR/Python*
+        curl -L https://gist.githubusercontent.com/hsorby/6481eed3abb20cf3cfe6bdc7a9c852d9/raw/4701096ce95130eb239945bb7875fdd9ab33bfde/python-${{ matrix.config.python_full_version }}.patch > patch.txt
         patch -i patch.txt ${{ matrix.config.python_patch_file }}
-        ./configure --enable-shared --enable-optimizations --with-openssl=/usr/local/ --with-system-ffi
+        ./configure --enable-shared --enable-optimizations
         make -j3 build_all
         make altinstall
+        # Update ld cache
+        ldconfig
+
+    - name: Create virtual environment
+      shell: bash
+      run: |
+        pip${{ matrix.config.python_version }} install virtualenv
+        virtualenv $WORK_DIR/venv
 
     - name: Build and instal swig
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
-        mkdir $work_dir/build-swig
-        cd $work_dir/build-swig
-        $src_dir/swig-4.0.2/configure
+        mkdir $WORK_DIR/build-swig
+        cd $WORK_DIR/build-swig
+        $SRC_DIR/swig-4.0.2/configure --without-alllang --with-python --with-python3
         make -j3
         make install
 
     - name: Build libcellml
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-        ls /usr/local/bin
-
-        export LD_LIBRARY_PATH=/usr/local/lib
-
-        cmake -S $src_dir/libcellml -B $work_dir/build-libcellml -D COVERAGE=OFF -D BUILD_TYPE=Release
-        cd $work_dir/build-libcellml
+        source $WORK_DIR/venv/bin/activate
+        which python
+        python --version
+        cmake -S $SRC_DIR/libcellml -B $WORK_DIR/build-libcellml -D COVERAGE=OFF -D BUILD_TYPE=Release -D Python_FIND_VIRTUALENV=ONLY
+        cd $WORK_DIR/build-libcellml
         make -j3
 
     - name: Test
       shell: bash
       run: |
-        downloads_dir=/home/downloads
-        work_dir=/home/work
-        src_dir=/home/src
-
-        export LD_LIBRARY_PATH=/usr/local/lib
-
-        cd $work_dir/build-libcellml
+        cd $WORK_DIR/build-libcellml
         make test
 
     - name: Create Python Package
       shell: bash
       run: |
         # Create Python Package
-
-        work_dir=/home/work
-
-        export LD_LIBRARY_PATH=/usr/local/lib
-
         python${{ matrix.config.python_version }} -m pip install --upgrade pip
         pip${{ matrix.config.python_version }} install setuptools twine wheel auditwheel
-        cd $work_dir/build-libcellml/src/bindings/python
+        cd $WORK_DIR/build-libcellml/src/bindings/python
         python${{ matrix.config.python_version }} setup.py bdist_wheel
 
     - name: Test Python Package
       shell: bash
       run: |
         # Test Python Package
-
-        work_dir=/home/work
-
-        cd $work_dir/build-libcellml/src/bindings/python
-
-        export LD_LIBRARY_PATH=/usr/local/lib
-
-        python${{ matrix.config.python_version }} -m venv $work_dir/venv_test
-        source $work_dir/venv_test/bin/activate
-
-        whl=`ls $work_dir/build-libcellml/src/bindings/python/dist/*.whl`
+        cd $WORK_DIR/build-libcellml/src/bindings/python
+        python${{ matrix.config.python_version }} -m venv $WORK_DIR/venv_test
+        source $WORK_DIR/venv_test/bin/activate
+        whl=`ls $WORK_DIR/build-libcellml/src/bindings/python/dist/*.whl`
         auditwheel repair $whl
-        whl=`ls $work_dir/build-libcellml/src/bindings/python/wheelhouse/*.whl`
+        whl=`ls $WORK_DIR/build-libcellml/src/bindings/python/wheelhouse/*.whl`
         pip install $whl
         python -c "import libcellml"
 
@@ -213,16 +151,8 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        # Upload Python packages
-
-        work_dir=/home/work
-
-        export LD_LIBRARY_PATH=/usr/local/lib
-
-        cd $work_dir/build-libcellml/src/bindings/python
-
+        cd $WORK_DIR/build-libcellml/src/bindings/python
         twine upload --skip-existing wheelhouse/*
-
 
   os-binaries:
     name: ${{ matrix.config.name }}
