@@ -38,7 +38,7 @@ public:
     Annotator &operator=(Annotator rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Create a @c Annotator object.
+     * @brief Create a @ref Annotator object.
      *
      * Factory method to create a @ref Annotator.  Create an
      * annotator with:
@@ -73,11 +73,11 @@ public:
     /**
      * @brief Retrieves an item with the given identifier string.
      *
-     * The item returned is a @c std::pair containing:
+     * The item returned is a @ref AnyCellmlElementPtr containing:
      *  - a @ref CellmlElementType enum, and
      *  - a @c std::any item containing the item.
      *
-     * Possible pairs returned returned are:
+     * Possible contents returned returned are:
      *  - <CellmlElementType::COMPONENT, @ref ComponentPtr> - Retrieve the identifier with Component::id().
      *  - <CellmlElementType::COMPONENT_REF, @ref ComponentPtr> - Retrieve the identifier with Component::encapsulationId().
      *  - <CellmlElementType::CONNECTION, @ref VariablePairPtr> - Retrieve the identifier with Variable::equivalenceConnectionId(const VariablePtr &,const VariablePtr &).
@@ -95,7 +95,7 @@ public:
      *
      * @param id A @c std::string representing the @p id to retrieve.
      *
-     * @return An @c AnyCellmlElement item (as described above).
+     * @return An @ref AnyCellmlElement item (as described above).
      */
     AnyCellmlElementPtr item(const std::string &id);
 
@@ -105,7 +105,7 @@ public:
      * From a list of items in the stored model with the given @p id string,
      * this method returns the item in the @p index position.
      *
-     * See item(const std::string &) for a full breakdown of the @c AnyCellmlElement return value.
+     * See item(const std::string &) for a full breakdown of the @ref AnyCellmlElement return value.
      *
      * @overload
      *
@@ -114,32 +114,32 @@ public:
      * @param id A @c std::string representing the @p id to retrieve.
      * @param index The index of the item to return from the list of items with @p id.
      *
-     * @return An @c AnyCellmlElement item as described in item(const std::string &).
+     * @return An @ref AnyCellmlElement item as described in item(const std::string &).
      */
     AnyCellmlElementPtr item(const std::string &id, size_t index);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Component in the @p index position, if it exists.
+     *        this method returns a @ref Component in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref Component at that location.
      *
      * A @c nullptr will be returned if:
      *  - no item with the given @p id exists in the stored model;
      *  - the given @p index is beyond the range [0, \#itemCount(id));
-     *  - the item stored at the @p index is not a @c ComponentPtr; or
+     *  - the item stored at the @p index is not a @ref ComponentPtr; or
      *  - the annotator does not have a model attached.
      *
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Component on success otherwise @c nullptr.
+     * @return A @ref Component on success otherwise @c nullptr.
      */
     ComponentPtr component(const std::string &id, size_t index = 0);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Component in the @p index position, if it exists.
+     *        this method returns a @ref Component in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref Component at that location.
      *
@@ -148,13 +148,13 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Component on success otherwise @c nullptr.
+     * @return A @ref Component on success otherwise @c nullptr.
      */
     ComponentPtr componentEncapsulation(const std::string &id, size_t index = 0);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Model in the @p index position, if it exists.
+     *        this method returns a @ref Model in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref Model at that location.
      *
@@ -163,13 +163,13 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Model on success otherwise @c nullptr.
+     * @return A @ref Model on success otherwise @c nullptr.
      */
     ModelPtr encapsulation(const std::string &id, size_t index = 0);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Variable in the @p index position, if it exists.
+     *        this method returns a @ref Variable in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref Variable at that location.
      *
@@ -178,7 +178,7 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Variable on success otherwise @c nullptr.
+     * @return A @ref Variable on success otherwise @c nullptr.
      */
     VariablePtr variable(const std::string &id, size_t index = 0);
 
@@ -193,13 +193,13 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Reset on success otherwise @c nullptr.
+     * @return A @ref Reset on success otherwise @c nullptr.
      */
     ResetPtr reset(const std::string &id, size_t index = 0);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Model in the @p index position, if it exists.
+     *        this method returns a @ref Model in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref Model at that location.
      *
@@ -208,13 +208,13 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Model on success otherwise @c nullptr.
+     * @return A @ref Model on success otherwise @c nullptr.
      */
     ModelPtr model(const std::string &id, size_t index = 0);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c ImportSource in the @p index position, if it exists.
+     *        this method returns a @ref ImportSource in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref ImportSource at that location.
      *
@@ -223,7 +223,7 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return An @c ImportSource on success otherwise @c nullptr.
+     * @return An @ref ImportSource on success otherwise @c nullptr.
      */
     ImportSourcePtr importSource(const std::string &id, size_t index = 0);
 
@@ -244,7 +244,7 @@ public:
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c VariablePair in the @p index position, if it exists.
+     *        this method returns a @ref VariablePair in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref VariablePair at that location.
      *
@@ -253,13 +253,13 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c VariablePair on success otherwise @c nullptr.
+     * @return A @ref VariablePair on success otherwise @c nullptr.
      */
     VariablePairPtr mapVariables(const std::string &id, size_t index = 0);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c VariablePair in the @p index position, if it exists.
+     *        this method returns a @ref VariablePair in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref VariablePair at that location.
      *
@@ -268,7 +268,7 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c VariablePair on success otherwise @c nullptr.
+     * @return A @ref VariablePair on success otherwise @c nullptr.
      */
     VariablePairPtr connection(const std::string &id, size_t index = 0);
 
@@ -289,7 +289,7 @@ public:
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Reset in the @p index position, if it exists.
+     *        this method returns a @ref Reset in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref Reset at that location.
      *
@@ -298,13 +298,13 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Reset on success otherwise @c nullptr.
+     * @return A @ref Reset on success otherwise @c nullptr.
      */
     ResetPtr testValue(const std::string &id, size_t index = 0);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @c Reset in the @p index position, if it exists.
+     *        this method returns a @ref Reset in the @p index position, if it exists.
      *
      * From a list of all items with the given @p id return the @ref Reset at that location.
      *
@@ -313,7 +313,7 @@ public:
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
-     * @return A @c Reset on success otherwise @c nullptr.
+     * @return A @ref Reset on success otherwise @c nullptr.
      */
     ResetPtr resetValue(const std::string &id, size_t index = 0);
 
@@ -344,7 +344,7 @@ public:
      *
      * @overload
      *
-     * @param model The @c Model to which identifiers will be assigned.
+     * @param model The @ref Model to which identifiers will be assigned.
      *
      * @return @c true if any identifiers have been changed, @c false otherwise.
      */
@@ -358,7 +358,7 @@ public:
      *
      * Existing identifiers will not be changed.
      *
-     * @param type Items of this @c CellmlElementType will all be assigned a new identifier.
+     * @param type Items of this @ref CellmlElementType will all be assigned a new identifier.
      *
      * @return @c true if any identifiers have been changed, @c false otherwise.
      */
@@ -394,7 +394,7 @@ public:
     bool isUnique(const std::string &id);
 
     /**
-     * @brief Return a @c std::vector of @c AnyCellmlElement items which have the given @p id.
+     * @brief Return a @c std::vector of @ref AnyCellmlElement items which have the given @p id.
      *
      * Return all items with the given @p id.
      *
@@ -403,7 +403,7 @@ public:
      *
      * @param id A @c std::string used to identify the items to retrieve.
      *
-     * @return a @c std::vector of @c AnyCellmlElement items.
+     * @return a @c std::vector of @ref AnyCellmlElement items.
      */
     std::vector<AnyCellmlElementPtr> items(const std::string &id);
 
@@ -453,8 +453,8 @@ public:
      *
      * @overload
      *
-     * @param model A @c Model model to which the new identifier will be assigned.
-     * @param type An @c CellmlElementType enumeration.
+     * @param model A @ref Model model to which the new identifier will be assigned.
+     * @param type An @ref CellmlElementType enumeration.
      *
      * @return the new identifier string.
      */
@@ -476,8 +476,8 @@ public:
      *
      * @overload
      *
-     * @param component A @c Component item.
-     * @param type An @c CellmlElementType enumeration.
+     * @param component A @ref Component item.
+     * @param type An @ref CellmlElementType enumeration.
      *
      * @return the new identifier string.
      */
@@ -495,7 +495,7 @@ public:
      *
      * @overload
      *
-     * @param importSource An @c ImportSourcePtr to which the new identifier will be assigned.
+     * @param importSource An @ref ImportSourcePtr to which the new identifier will be assigned.
      *
      * @return the new identifier string.
      */
@@ -520,7 +520,7 @@ public:
      * @overload
      *
      * @param reset A @ref ResetPtr.
-     * @param type An @c CellmlElementType enumeration.
+     * @param type An @ref CellmlElementType enumeration.
      *
      * @return the new identifier string.
      */
@@ -538,7 +538,7 @@ public:
      *
      * @overload
      *
-     * @param units A @c UnitsPtr item to which the new identifier is assigned.
+     * @param units A @ref UnitsPtr item to which the new identifier is assigned.
      *
      * @return the new identifier string.
      */
@@ -574,7 +574,7 @@ public:
      *
      * @overload
      *
-     * @param variable A @c Variable item to which the new identifier is assigned.
+     * @param variable A @ref Variable item to which the new identifier is assigned.
      *
      * @return the new identifier string.
      */
@@ -596,8 +596,8 @@ public:
      *
      * @overload
      *
-     * @param pair A @c VariablePair item.
-     * @param type A @c CellmlElementType enumeration.
+     * @param pair A @ref VariablePair item.
+     * @param type A @ref CellmlElementType enumeration.
      *
      * @return the new identifier string.
      */
@@ -621,9 +621,9 @@ public:
      *
      * @overload
      *
-     * @param variable1 A @c VariablePtr item defining to the first item in a connection or equivalence.
-     * @param variable2 A @c VariablePtr item defining to the second item in a connection or equivalence.
-     * @param type A @c CellmlElementType enumeration.
+     * @param variable1 A @ref VariablePtr item defining to the first item in a connection or equivalence.
+     * @param variable2 A @ref VariablePtr item defining to the second item in a connection or equivalence.
+     * @param type A @ref CellmlElementType enumeration.
      *
      * @return the new identifier string.
      */
@@ -643,7 +643,7 @@ public:
      *
      * @overload
      *
-     * @param units A @c Units containing the child unit item.
+     * @param units A @ref Units containing the child unit item.
      * @param index The index at which the child unit exists within the parent @p units item.
      *
      * @return the new identifier string.
