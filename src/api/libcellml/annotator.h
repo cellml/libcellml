@@ -71,27 +71,18 @@ public:
     ModelPtr model() const;
 
     /**
-     * @brief Retrieves an item with the given identifier string.
+     * @brief Return the item with the @p id.
      *
-     * The item returned is a @ref AnyCellmlElementPtr containing:
-     *  - a @ref CellmlElementType enum, and
-     *  - a @c std::any item containing the item.
+     * Return the item with the given @p id string. The item returned is an
+     * @ref AnyCellmlElement object containing both:
+     *  - a type (as a @ref CellmlElementType enum); and
+     *  - an item, which can be a @ref Component, @ref ImportSource, @ref Model,
+     *    @ref Reset, @ref Units, @ref UnitsItem, @ref Variable, or
+     *    @ref VariablePair.
      *
-     * Possible contents returned returned are:
-     *  - <CellmlElementType::COMPONENT, @ref ComponentPtr> - Retrieve the identifier with Component::id().
-     *  - <CellmlElementType::COMPONENT_REF, @ref ComponentPtr> - Retrieve the identifier with Component::encapsulationId().
-     *  - <CellmlElementType::CONNECTION, @ref VariablePairPtr> - Retrieve the identifier with Variable::equivalenceConnectionId(const VariablePtr &,const VariablePtr &).
-     *  - <CellmlElementType::ENCAPSULATION, @ref ModelPtr> - Retrieve the identifier with Model::encapsulationId().
-     *  - <CellmlElementType::IMPORT, @ref ImportSourcePtr> - Retrieve the identifier with ImportSource::id().
-     *  - <CellmlElementType::MAP_VARIABLES, @ref VariablePairPtr> - Retrieve the identifier with Variable::equivalenceMappingId(const VariablePtr &, const VariablePtr &).
-     *  - <CellmlElementType::MODEL, @ref ModelPtr> - Retrieve the identifier with Model::id().
-     *  - <CellmlElementType::RESET, @ref ResetPtr> - Retrieve the identifier with Reset::id().
-     *  - <CellmlElementType::RESET_VALUE, @ref ResetPtr> - Retrieve the identifier with Reset::resetValueId (const std::string &).
-     *  - <CellmlElementType::TEST_VALUE, @ref ResetPtr> - Retrieve the identifier with Reset::testValueId (const std::string &).
-     *  - <CellmlElementType::UNDEFINED, @c nullptr>.
-     *  - <CellmlElementType::UNIT, @ref UnitsItemPtr> - Retrieve the identifier with Units::unitId(size_t) const.
-     *  - <CellmlElementType::UNITS, @ref UnitsPtr> - Retrieve the identifier with Units::id().
-     *  - <CellmlElementType::VARIABLE, @ref VariablePtr> - Retrieve the identifier with Variable::id().
+     * @overload
+     *
+     * @sa item(const std::string &, size_t)
      *
      * @param id A @c std::string representing the @p id to retrieve.
      *
