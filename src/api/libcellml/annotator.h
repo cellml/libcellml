@@ -80,8 +80,6 @@ public:
      *    @ref Reset, @ref Units, @ref UnitsItem, @ref Variable, or
      *    @ref VariablePair.
      *
-     * @overload
-     *
      * @sa item(const std::string &, size_t)
      *
      * @param id A @c std::string representing the @p id to retrieve.
