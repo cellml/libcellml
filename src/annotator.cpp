@@ -520,12 +520,9 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
         addIssueNotFound(id);
         return false;
     }
-    if (index < count) {
-        addIssueNonUnique(id);
-        return true;
-    }
 
-    return false;
+    addIssueNonUnique(id);
+    return true;
 }
 
 AnyCellmlElementPtr Annotator::item(const std::string &id, size_t index)
