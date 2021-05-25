@@ -99,8 +99,23 @@ struct Annotator::AnnotatorImpl
     void doSetComponentEncapsulationIds(const ComponentPtr &parent);
     void doClearComponentIds(const ComponentPtr &component);
 
-    size_t idCount(const std::string &id, size_t index) const;
-    bool canReturnItem(const std::string &id, size_t index) const;
+    /**
+     * @brief Test to determine if the given @p id at the given @p index exists.
+     *
+     * Test to determine if the given @p id at the given @p index exists.  Returns @c true
+     * if the item does exist at the @p index and @c false otherwise.
+     *
+     * Logs the following errors (if encountered):
+     *  - missing model,
+     *  - no id; or
+     *  - duplicate ids.
+     *
+     * @param id A @c std::string representing the @p id to retrieve.
+     * @param index The index of the item with @p id.
+     *
+     * @return @c true if the @p id exists at @p index, @c false otherwise.
+     */
+    bool exists(const std::string &id, size_t index) const;
 
     size_t generateHash();
     void doUpdateComponentHash(const ComponentPtr &component, std::string &idsString);
@@ -490,28 +505,22 @@ void Annotator::AnnotatorImpl::addInvalidArgument(CellmlElementType type) const
     mAnnotator->addIssue(issue);
 }
 
-size_t Annotator::AnnotatorImpl::idCount(const std::string &id, size_t index) const
+bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
 {
     if (!mAnnotator->hasModel()) {
         addIssueNoModel();
-        return 0;
+        return false;
     }
 
-    auto count = mIdList.count(id);
-    if ((count <= index) || (count == 0)) {
-        addIssueNotFound(id);
-        return 0;
-    }
-    return count;
-}
-
-bool Annotator::AnnotatorImpl::canReturnItem(const std::string &id, size_t index) const
-{
-    auto count = idCount(id, index);
+    auto count = mAnnotator->itemCount(id);
     if (count == 1) {
         return true;
     }
-    if ((count != 0) && (index < count)) {
+    if (count <= index) {
+        addIssueNotFound(id);
+        return false;
+    }
+    if (index < count) {
         addIssueNonUnique(id);
         return true;
     }
@@ -519,23 +528,9 @@ bool Annotator::AnnotatorImpl::canReturnItem(const std::string &id, size_t index
     return false;
 }
 
-AnyCellmlElementPtr Annotator::item(const std::string &id)
-{
-    AnyCellmlElementPtr retrieved = AnyCellmlElement::AnyCellmlElementImpl::create();
-    auto num = itemCount(id);
-    if (num == 1) {
-        retrieved = item(id, 0);
-    } else if (num == 0) {
-        mPimpl->addIssueNotFound(id);
-    } else {
-        mPimpl->addIssueNonUnique(id);
-    }
-    return retrieved;
-}
-
 AnyCellmlElementPtr Annotator::item(const std::string &id, size_t index)
 {
-    return mPimpl->canReturnItem(id, index) ? std::move(items(id)[index]) : AnyCellmlElement::AnyCellmlElementImpl::create();
+    return mPimpl->exists(id, index) ? std::move(items(id)[index]) : AnyCellmlElement::AnyCellmlElementImpl::create();
 }
 
 bool Annotator::isUnique(const std::string &id)
@@ -581,7 +576,7 @@ std::vector<std::string> Annotator::ids()
 ComponentPtr Annotator::component(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->component();
     }
@@ -591,7 +586,7 @@ ComponentPtr Annotator::component(const std::string &id, size_t index)
 VariablePtr Annotator::variable(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->variable();
     }
@@ -601,7 +596,7 @@ VariablePtr Annotator::variable(const std::string &id, size_t index)
 ModelPtr Annotator::model(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->model();
     }
@@ -611,7 +606,7 @@ ModelPtr Annotator::model(const std::string &id, size_t index)
 ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->model();
     }
@@ -621,7 +616,7 @@ ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
 ComponentPtr Annotator::componentEncapsulation(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->component();
     }
@@ -631,7 +626,7 @@ ComponentPtr Annotator::componentEncapsulation(const std::string &id, size_t ind
 UnitsPtr Annotator::units(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->units();
     }
@@ -641,7 +636,7 @@ UnitsPtr Annotator::units(const std::string &id, size_t index)
 ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->importSource();
     }
@@ -651,7 +646,7 @@ ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
 ResetPtr Annotator::reset(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->reset();
     }
@@ -661,7 +656,7 @@ ResetPtr Annotator::reset(const std::string &id, size_t index)
 ResetPtr Annotator::testValue(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->reset();
     }
@@ -671,7 +666,7 @@ ResetPtr Annotator::testValue(const std::string &id, size_t index)
 ResetPtr Annotator::resetValue(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->reset();
     }
@@ -681,7 +676,7 @@ ResetPtr Annotator::resetValue(const std::string &id, size_t index)
 VariablePairPtr Annotator::mapVariables(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->variablePair();
     }
@@ -691,7 +686,7 @@ VariablePairPtr Annotator::mapVariables(const std::string &id, size_t index)
 VariablePairPtr Annotator::connection(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->variablePair();
     }
@@ -701,7 +696,7 @@ VariablePairPtr Annotator::connection(const std::string &id, size_t index)
 UnitsItemPtr Annotator::unitsItem(const std::string &id, size_t index)
 {
     mPimpl->update();
-    if (mPimpl->canReturnItem(id, index)) {
+    if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         return i->unitsItem();
     }

@@ -217,7 +217,7 @@ TEST(Annotator, duplicateIdBehaviour)
 
     annotator->setModel(model);
 
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("duplicateId")->type());
+    EXPECT_EQ(libcellml::CellmlElementType::MODEL, annotator->item("duplicateId")->type());
     EXPECT_EQ(size_t(1), annotator->issueCount());
     EXPECT_EQ(expectedErrors[0], annotator->issue(0)->description());
 
