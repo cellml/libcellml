@@ -517,7 +517,6 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
         return false;
     }
 
-
     auto count = mAnnotator->itemCount(id);
     if (count == 1) {
         return true;
@@ -538,8 +537,7 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
 
 AnyCellmlElementPtr Annotator::item(const std::string &id, size_t index)
 {
-    auto privateIndex = realIndex(index);
-    return mPimpl->exists(id, index) ? std::move(items(id)[privateIndex]) : AnyCellmlElement::AnyCellmlElementImpl::create();
+    return mPimpl->exists(id, index) ? std::move(items(id)[realIndex(index)]) : AnyCellmlElement::AnyCellmlElementImpl::create();
 }
 
 bool Annotator::isUnique(const std::string &id)
@@ -586,8 +584,7 @@ ComponentPtr Annotator::component(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->component();
     }
     return nullptr;
@@ -597,8 +594,7 @@ VariablePtr Annotator::variable(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->variable();
     }
     return nullptr;
@@ -608,8 +604,7 @@ ModelPtr Annotator::model(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->model();
     }
     return nullptr;
@@ -619,8 +614,7 @@ ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->model();
     }
     return nullptr;
@@ -630,8 +624,7 @@ ComponentPtr Annotator::componentEncapsulation(const std::string &id, size_t ind
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->component();
     }
     return nullptr;
@@ -641,8 +634,7 @@ UnitsPtr Annotator::units(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->units();
     }
     return nullptr;
@@ -652,8 +644,7 @@ ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->importSource();
     }
     return nullptr;
@@ -663,8 +654,7 @@ ResetPtr Annotator::reset(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->reset();
     }
     return nullptr;
@@ -674,8 +664,7 @@ ResetPtr Annotator::testValue(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->reset();
     }
     return nullptr;
@@ -685,8 +674,7 @@ ResetPtr Annotator::resetValue(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->reset();
     }
     return nullptr;
@@ -696,8 +684,7 @@ VariablePairPtr Annotator::mapVariables(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->variablePair();
     }
     return nullptr;
@@ -707,8 +694,7 @@ VariablePairPtr Annotator::connection(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->variablePair();
     }
     return nullptr;
@@ -718,8 +704,7 @@ UnitsItemPtr Annotator::unitsItem(const std::string &id, size_t index)
 {
     mPimpl->update();
     if (mPimpl->exists(id, index)) {
-        auto privateIndex = realIndex(index);
-        auto i = items(id).at(privateIndex);
+        auto i = items(id).at(realIndex(index));
         return i->unitsItem();
     }
     return nullptr;
