@@ -181,28 +181,24 @@ TEST(Annotator, errorHandling)
     EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
     EXPECT_EQ(size_t(1), annotator->issueCount());
 
-    // Building an empty model will result in an empty map and return an error.
+    // Building an empty model will result in an empty map.
     annotator->setModel(model);
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
-    EXPECT_EQ(size_t(1), annotator->issueCount());
 
-    model->setId("model_id"); // Add an identifier into the model and rebuild.
-    annotator->setModel(model);
+    // Test that an unfound identifier that is expected to be unique doesn't raise an issue.
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
+    EXPECT_EQ(size_t(0), annotator->issueCount());
 
     // Test that an Issue is created and logged when an identifier is not found.
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist", 2)->type());
     EXPECT_EQ(size_t(1), annotator->issueCount());
 
     // Test that repeated calls to the same unfound identifier generate new errors.
-    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist", 2)->type());
     EXPECT_EQ(size_t(2), annotator->issueCount());
 }
 
 TEST(Annotator, duplicateIdBehaviour)
 {
-    std::vector<std::string> expectedErrors = {
-        "The identifier 'duplicateId' occurs 3 times in the model so a unique item cannot be located.",
-    };
     auto model = libcellml::Model::create("model");
     auto annotator = libcellml::Annotator::create();
     auto component = libcellml::Component::create();
@@ -217,9 +213,8 @@ TEST(Annotator, duplicateIdBehaviour)
 
     annotator->setModel(model);
 
-    EXPECT_EQ(libcellml::CellmlElementType::MODEL, annotator->item("duplicateId")->type());
-    EXPECT_EQ(size_t(1), annotator->issueCount());
-    EXPECT_EQ(expectedErrors[0], annotator->issue(0)->description());
+    EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("duplicateId")->type());
+    EXPECT_EQ(size_t(0), annotator->issueCount());
 
     EXPECT_FALSE(annotator->isUnique("duplicateId"));
     EXPECT_EQ(size_t(3), annotator->itemCount("duplicateId"));
@@ -311,10 +306,9 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     // Expect that the errors have been cleared.
     EXPECT_EQ(size_t(0), annotator->errorCount());
 
-    // Can return a model with this id but a warning will also be created.
-    EXPECT_NE(nullptr, annotator->model("duplicateId"));
-    EXPECT_NE(nullptr, annotator->encapsulation("duplicateId"));
-
+    // Cannot find unique id so no item is available.
+    EXPECT_EQ(nullptr, annotator->model("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId"));
     EXPECT_EQ(nullptr, annotator->component("duplicateId"));
     EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
     EXPECT_EQ(nullptr, annotator->units("duplicateId"));
@@ -327,11 +321,7 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId"));
     EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
 
-    EXPECT_EQ(size_t(13), annotator->issueCount());
-    EXPECT_EQ(size_t(13), annotator->warningCount());
-    for (size_t i = 0; i < annotator->issueCount(); ++i) {
-        EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(i)->description());
-    }
+    EXPECT_EQ(size_t(0), annotator->issueCount());
 }
 
 TEST(Annotator, castingOnRetrieval)
@@ -1013,9 +1003,15 @@ TEST(Annotator, automaticIdAllItemsNoId)
 
 TEST(Annotator, assignModelIdBadInput)
 {
+    const std::string errorMessage =
+            "The item is internally inconsistent: the enum type 'model' cannot be used with the stored item.";
+
     auto annotator = libcellml::Annotator::create();
     libcellml::ModelPtr nullModel = nullptr;
     EXPECT_EQ("", annotator->assignId(nullModel));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ(errorMessage, annotator->error(0)->description());
+
     EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::COMPONENT));
     EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::CONNECTION));
     EXPECT_EQ("", annotator->assignId(libcellml::Model::create(), libcellml::CellmlElementType::IMPORT));
