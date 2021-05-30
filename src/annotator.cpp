@@ -520,16 +520,19 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index, bool 
 
 AnyCellmlElementPtr Annotator::item(const std::string &id)
 {
+    mPimpl->update();
     return mPimpl->exists(id, 0, true) ? std::move(items(id)[0]) : AnyCellmlElement::AnyCellmlElementImpl::create();
 }
 
 AnyCellmlElementPtr Annotator::item(const std::string &id, size_t index)
 {
+    mPimpl->update();
     return mPimpl->exists(id, index) ? std::move(items(id)[index]) : AnyCellmlElement::AnyCellmlElementImpl::create();
 }
 
 bool Annotator::isUnique(const std::string &id)
 {
+    mPimpl->update();
     return mPimpl->mIdList.count(id) == 1;
 }
 
@@ -546,6 +549,7 @@ std::vector<AnyCellmlElementPtr> Annotator::items(const std::string &id)
 
 std::vector<std::string> Annotator::duplicateIds()
 {
+    mPimpl->update();
     std::vector<std::string> ids;
     for (auto i = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); i != end; i = mPimpl->mIdList.upper_bound(i->first)) {
         auto next = i;
@@ -559,6 +563,7 @@ std::vector<std::string> Annotator::duplicateIds()
 
 std::vector<std::string> Annotator::ids()
 {
+    mPimpl->update();
     std::vector<std::string> ids;
     for (auto i = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); i != end; i = mPimpl->mIdList.upper_bound(i->first)) {
         if (!i->first.empty()) {
@@ -832,6 +837,7 @@ void Annotator::clearAllIds()
 {
     auto model = mPimpl->mModel.lock();
     if (model != nullptr) {
+        mPimpl->update();
         model->removeId();
         for (size_t i = 0; i < model->unitsCount(); ++i) {
             auto units = model->units(i);
@@ -1558,6 +1564,7 @@ std::string Annotator::assignId(const VariablePtr &variable1, const VariablePtr 
 
 size_t Annotator::itemCount(const std::string &id)
 {
+    mPimpl->update();
     return mPimpl->mIdList.count(id);
 }
 
