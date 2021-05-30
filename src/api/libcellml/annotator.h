@@ -77,10 +77,7 @@ public:
      * If no item can be found an empty @ref AnyCellmlElement is returned.
      * If there are multiple items with the same @p id string an empty @ref AnyCellmlElement is returned.
      *
-     * Issues are logged if:
-     *  - there is no stored model,
-     *  - there is no item with the given @p id; or
-     *  - there are multiple items with the given @p id.
+     * An issue is logged if there is no stored model.
      *
      * The item returned is an @ref AnyCellmlElement object containing both:
      *  - a type (as a @ref CellmlElementType enum); and
@@ -118,6 +115,24 @@ public:
     AnyCellmlElementPtr item(const std::string &id, size_t index);
 
     /**
+     * @brief Retrieve a component from the stored model with @p id.
+     *
+     * Find and return the component with the given @p id string.
+     *
+     * If either:
+     *  - no component can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the component to retrieve.
+     *
+     * @return A @ref Component on success otherwise @c nullptr.
+     */
+    ComponentPtr component(const std::string &id);
+
+    /**
      * @brief From a list of items in the stored model with the given @p id string,
      *        this method returns a @ref Component in the @p index position, if it exists.
      *
@@ -135,7 +150,23 @@ public:
      * @return A @ref Component on success otherwise @c nullptr.
      */
     ComponentPtr component(const std::string &id, size_t index);
-    ComponentPtr component(const std::string &id);
+
+    /**
+     * @brief Retrieve a component with encapsulation id from the stored model with @p id.
+     *
+     * Find and return the component with encapsulation id with the given @p id string.
+     * If either:
+     *  - no component with encapsulation id with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the component with encapsulation id to retrieve.
+     *
+     * @return A @ref Component on success otherwise @c nullptr.
+     */
+    ComponentPtr componentEncapsulation(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -143,15 +174,29 @@ public:
      *
      * From a list of all items with the given @p id return the @ref Component at that location.
      *
-     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
-     *
      * @param id A @c std::string representing the identifier of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
      *
      * @return A @ref Component on success otherwise @c nullptr.
      */
     ComponentPtr componentEncapsulation(const std::string &id, size_t index);
-    ComponentPtr componentEncapsulation(const std::string &id);
+
+    /**
+     * @brief Retrieve a model from the stored model with @p id.
+     *
+     * Find and return the model with the given @p id string.
+     * If either:
+     *  - no model with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the model to retrieve.
+     *
+     * @return A @ref Model on success otherwise @c nullptr.
+     */
+    ModelPtr encapsulation(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -167,7 +212,23 @@ public:
      * @return A @ref Model on success otherwise @c nullptr.
      */
     ModelPtr encapsulation(const std::string &id, size_t index);
-    ModelPtr encapsulation(const std::string &id);
+
+    /**
+     * @brief Retrieve a variable from the stored model with @p id.
+     *
+     * Find and return the variable with the given @p id string.
+     * If either:
+     *  - no variable with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the variable to retrieve.
+     *
+     * @return A @ref Variable on success otherwise @c nullptr.
+     */
+    VariablePtr variable(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -183,7 +244,23 @@ public:
      * @return A @ref Variable on success otherwise @c nullptr.
      */
     VariablePtr variable(const std::string &id, size_t index);
-    VariablePtr variable(const std::string &id);
+
+    /**
+     * @brief Retrieve a reset from the stored model with @p id.
+     *
+     * Find and return the reset with the given @p id string.
+     * If either:
+     *  - no reset with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the reset to retrieve.
+     *
+     * @return A @ref Reset on success otherwise @c nullptr.
+     */
+    ResetPtr reset(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -199,7 +276,23 @@ public:
      * @return A @ref Reset on success otherwise @c nullptr.
      */
     ResetPtr reset(const std::string &id, size_t index);
-    ResetPtr reset(const std::string &id);
+
+    /**
+     * @brief Retrieve a model from the stored model with @p id.
+     *
+     * Find and return the model with the given @p id string.
+     * If either:
+     *  - no model with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the model to retrieve.
+     *
+     * @return A @ref Model on success otherwise @c nullptr.
+     */
+    ModelPtr model(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -215,7 +308,23 @@ public:
      * @return A @ref Model on success otherwise @c nullptr.
      */
     ModelPtr model(const std::string &id, size_t index);
-    ModelPtr model(const std::string &id);
+
+    /**
+     * @brief Retrieve an import source from the stored model with @p id.
+     *
+     * Find and return the import source with the given @p id string.
+     * If either:
+     *  - no import source with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the import source to retrieve.
+     *
+     * @return A @ref ImportSource on success otherwise @c nullptr.
+     */
+    ImportSourcePtr importSource(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -231,7 +340,23 @@ public:
      * @return An @ref ImportSource on success otherwise @c nullptr.
      */
     ImportSourcePtr importSource(const std::string &id, size_t index);
-    ImportSourcePtr importSource(const std::string &id);
+
+    /**
+     * @brief Retrieve a units from the stored model with @p id.
+     *
+     * Find and return the units with the given @p id string.
+     * If either:
+     *  - no units with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the units to retrieve.
+     *
+     * @return A @ref Units on success otherwise @c nullptr.
+     */
+    UnitsPtr units(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -247,22 +372,22 @@ public:
      * @return A @ref Units on success otherwise @c nullptr.
      */
     UnitsPtr units(const std::string &id, size_t index);
-    UnitsPtr units(const std::string &id);
 
     /**
-     * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @ref VariablePair in the @p index position, if it exists.
+     * @brief Retrieve a variable pair from the stored model with @p id.
      *
-     * From a list of all items with the given @p id return the @ref VariablePair at that location.
+     * Find and return the variable pair with the given @p id string.
+     * If either:
+     *  - no variable pair with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
      *
-     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
+     * An issue is logged if there is no stored model.
      *
-     * @param id A @c std::string representing the identifier of the item to retrieve.
-     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     * @param id A @c std::string representing the identifier of the variable pair to retrieve.
      *
      * @return A @ref VariablePair on success otherwise @c nullptr.
      */
-    VariablePairPtr mapVariables(const std::string &id, size_t index);
     VariablePairPtr mapVariables(const std::string &id);
 
     /**
@@ -278,8 +403,56 @@ public:
      *
      * @return A @ref VariablePair on success otherwise @c nullptr.
      */
-    VariablePairPtr connection(const std::string &id, size_t index);
+    VariablePairPtr mapVariables(const std::string &id, size_t index);
+
+    /**
+     * @brief Retrieve a variable pair from the stored model with @p id.
+     *
+     * Find and return the variable pair with the given @p id string.
+     * If either:
+     *  - no variable pair with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the variable pair to retrieve.
+     *
+     * @return A @ref VariablePair on success otherwise @c nullptr.
+     */
     VariablePairPtr connection(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this method returns a @ref VariablePair in the @p index position, if it exists.
+     *
+     * From a list of all items with the given @p id return the @ref VariablePair at that location.
+     *
+     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
+     *
+     * @param id A @c std::string representing the identifier of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @ref VariablePair on success otherwise @c nullptr.
+     */
+    VariablePairPtr connection(const std::string &id, size_t index);
+
+    /**
+     * @brief Retrieve a units item from the stored model with @p id.
+     *
+     * Find and return the units item with the given @p id string.
+     * If either:
+     *  - no units item with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the units item to retrieve.
+     *
+     * @return A @ref UnitsItem on success otherwise @c nullptr.
+     */
+    UnitsItemPtr unitsItem(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -295,22 +468,22 @@ public:
      * @return A @ref UnitsItem on success otherwise @c nullptr.
      */
     UnitsItemPtr unitsItem(const std::string &id, size_t index);
-    UnitsItemPtr unitsItem(const std::string &id);
 
     /**
-     * @brief From a list of items in the stored model with the given @p id string,
-     *        this method returns a @ref Reset in the @p index position, if it exists.
+     * @brief Retrieve a reset with test value id from the stored model with @p id.
      *
-     * From a list of all items with the given @p id return the @ref Reset at that location.
+     * Find and return the reset with test value id with the given @p id string.
+     * If either:
+     *  - no reset with test value id with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
      *
-     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
+     * An issue is logged if there is no stored model.
      *
-     * @param id A @c std::string representing the identifier of the item to retrieve.
-     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     * @param id A @c std::string representing the identifier of the reset with test value id to retrieve.
      *
      * @return A @ref Reset on success otherwise @c nullptr.
      */
-    ResetPtr testValue(const std::string &id, size_t index);
     ResetPtr testValue(const std::string &id);
 
     /**
@@ -326,8 +499,39 @@ public:
      *
      * @return A @ref Reset on success otherwise @c nullptr.
      */
-    ResetPtr resetValue(const std::string &id, size_t index);
+    ResetPtr testValue(const std::string &id, size_t index);
+
+    /**
+     * @brief Retrieve a reset with reset value id from the stored model with @p id.
+     *
+     * Find and return the reset with reset value id with the given @p id string.
+     * If either:
+     *  - no reset with reset value id with @p id can be found; or
+     *  - the @p id is not unique across the stored model,
+     * then a @c nullptr is returned.
+     *
+     * An issue is logged if there is no stored model.
+     *
+     * @param id A @c std::string representing the identifier of the reset with reset value id to retrieve.
+     *
+     * @return A @ref Reset on success otherwise @c nullptr.
+     */
     ResetPtr resetValue(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this method returns a @ref Reset in the @p index position, if it exists.
+     *
+     * From a list of all items with the given @p id return the @ref Reset at that location.
+     *
+     * @see component(const std::string &, size_t) for times when a @c nullptr is returned.
+     *
+     * @param id A @c std::string representing the identifier of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @ref Reset on success otherwise @c nullptr.
+     */
+    ResetPtr resetValue(const std::string &id, size_t index);
 
     /**
      * @brief Assign an identifier to every item without one in the model.
