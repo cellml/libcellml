@@ -71,10 +71,11 @@ public:
     ModelPtr model() const;
 
     /**
-     * @brief Return the item at @p index with the @p id.
+     * @brief Return the item with the @p id.
      *
-     * From a list of items extracted from the stored model find and return the item with
-     * the given @p id string and @p index.  The default @p index is zero if none is given.
+     * Find and return the item with the given @p id string.
+     * If no item can be found an empty @ref AnyCellmlElement is returned.
+     * If there are multiple items with the same @p id string an empty @ref AnyCellmlElement is returned.
      *
      * Issues are logged if:
      *  - there is no stored model,
@@ -94,12 +95,27 @@ public:
      *    - @ref VariablePair.
      *
      * @param id A @c std::string representing the @p id to retrieve.
+     *
+     * @return An @ref AnyCellmlElement item.
+     */
+    AnyCellmlElementPtr item(const std::string &id);
+
+    /**
+     * @brief Return the item at @p index with the @p id.
+     *
+     * From a list of items extracted from the stored model find and return the item with
+     * the given @p id string and @p index.
+     *
+     * An Issue is logged if:
+     *  - there is no stored model; or
+     *  - there is no item with the given @p id and @p index.
+     *
+     * @param id A @c std::string representing the @p id to retrieve.
      * @param index The index of the item to return from the list of items with @p id.
-     *              The defualt index is zero if none is given.
      *
      * @return An @ref AnyCellmlElement item as described in item(const std::string &).
      */
-    AnyCellmlElementPtr item(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    AnyCellmlElementPtr item(const std::string &id, size_t index);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -118,7 +134,8 @@ public:
      *
      * @return A @ref Component on success otherwise @c nullptr.
      */
-    ComponentPtr component(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    ComponentPtr component(const std::string &id, size_t index);
+    ComponentPtr component(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -133,7 +150,8 @@ public:
      *
      * @return A @ref Component on success otherwise @c nullptr.
      */
-    ComponentPtr componentEncapsulation(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    ComponentPtr componentEncapsulation(const std::string &id, size_t index);
+    ComponentPtr componentEncapsulation(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -148,7 +166,8 @@ public:
      *
      * @return A @ref Model on success otherwise @c nullptr.
      */
-    ModelPtr encapsulation(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    ModelPtr encapsulation(const std::string &id, size_t index);
+    ModelPtr encapsulation(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -163,7 +182,8 @@ public:
      *
      * @return A @ref Variable on success otherwise @c nullptr.
      */
-    VariablePtr variable(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    VariablePtr variable(const std::string &id, size_t index);
+    VariablePtr variable(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -178,7 +198,8 @@ public:
      *
      * @return A @ref Reset on success otherwise @c nullptr.
      */
-    ResetPtr reset(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    ResetPtr reset(const std::string &id, size_t index);
+    ResetPtr reset(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -193,7 +214,8 @@ public:
      *
      * @return A @ref Model on success otherwise @c nullptr.
      */
-    ModelPtr model(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    ModelPtr model(const std::string &id, size_t index);
+    ModelPtr model(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -208,7 +230,8 @@ public:
      *
      * @return An @ref ImportSource on success otherwise @c nullptr.
      */
-    ImportSourcePtr importSource(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    ImportSourcePtr importSource(const std::string &id, size_t index);
+    ImportSourcePtr importSource(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -223,7 +246,8 @@ public:
      *
      * @return A @ref Units on success otherwise @c nullptr.
      */
-    UnitsPtr units(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    UnitsPtr units(const std::string &id, size_t index);
+    UnitsPtr units(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -238,7 +262,8 @@ public:
      *
      * @return A @ref VariablePair on success otherwise @c nullptr.
      */
-    VariablePairPtr mapVariables(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    VariablePairPtr mapVariables(const std::string &id, size_t index);
+    VariablePairPtr mapVariables(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -253,7 +278,8 @@ public:
      *
      * @return A @ref VariablePair on success otherwise @c nullptr.
      */
-    VariablePairPtr connection(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    VariablePairPtr connection(const std::string &id, size_t index);
+    VariablePairPtr connection(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -268,7 +294,8 @@ public:
      *
      * @return A @ref UnitsItem on success otherwise @c nullptr.
      */
-    UnitsItemPtr unitsItem(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    UnitsItemPtr unitsItem(const std::string &id, size_t index);
+    UnitsItemPtr unitsItem(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -283,7 +310,8 @@ public:
      *
      * @return A @ref Reset on success otherwise @c nullptr.
      */
-    ResetPtr testValue(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    ResetPtr testValue(const std::string &id, size_t index);
+    ResetPtr testValue(const std::string &id);
 
     /**
      * @brief From a list of items in the stored model with the given @p id string,
@@ -298,7 +326,8 @@ public:
      *
      * @return A @ref Reset on success otherwise @c nullptr.
      */
-    ResetPtr resetValue(const std::string &id, size_t index = std::numeric_limits<size_t>::max());
+    ResetPtr resetValue(const std::string &id, size_t index);
+    ResetPtr resetValue(const std::string &id);
 
     /**
      * @brief Assign an identifier to every item without one in the model.
