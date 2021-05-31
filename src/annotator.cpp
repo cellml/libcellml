@@ -124,6 +124,7 @@ struct Annotator::AnnotatorImpl
     void addIssueNoModel() const;
     void addIssueInvalidArgument(CellmlElementType type) const;
     void addIssueNotFound(const std::string &id) const;
+    void addIssueNonUnique(const std::string &id) const;
 };
 
 Annotator::Annotator()
@@ -455,6 +456,7 @@ void Annotator::AnnotatorImpl::buildIdList()
 
 void Annotator::AnnotatorImpl::update()
 {
+    mAnnotator->removeAllIssues();
     size_t hash = generateHash();
     if (mHash != hash) {
         buildIdList();
@@ -464,10 +466,9 @@ void Annotator::AnnotatorImpl::update()
 
 void Annotator::setModel(const ModelPtr &model)
 {
-    removeAllIssues();
     mPimpl->mModel = model;
-    mPimpl->buildIdList();
-    mPimpl->mHash = mPimpl->generateHash();
+    mPimpl->mHash = 0;
+    mPimpl->update();
 }
 
 void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
@@ -496,6 +497,15 @@ void Annotator::AnnotatorImpl::addIssueInvalidArgument(CellmlElementType type) c
     mAnnotator->addIssue(issue);
 }
 
+void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id) const
+{
+    auto issue = Issue::IssueImpl::create();
+    issue->mPimpl->setDescription("The identifier '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
+    issue->mPimpl->setLevel(Issue::Level::WARNING);
+    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE);
+    mAnnotator->addIssue(issue);
+}
+
 bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index, bool unique) const
 {
     if (!mAnnotator->hasModel()) {
@@ -507,7 +517,8 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index, bool 
     if (count == 1) {
         return true;
     }
-    if (unique) {
+    if (unique && count > 1) {
+        addIssueNonUnique(id);
         return false;
     }
     if (count <= index) {
