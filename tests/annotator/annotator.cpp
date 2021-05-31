@@ -186,7 +186,7 @@ TEST(Annotator, errorHandling)
 
     // Test that an unfound identifier that is expected to be unique doesn't raise an issue.
     EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist")->type());
-    EXPECT_EQ(size_t(0), annotator->issueCount());
+    EXPECT_EQ(size_t(1), annotator->issueCount());
 
     // Test that an Issue is created and logged when an identifier is not found.
     EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist", 2)->type());
@@ -194,7 +194,7 @@ TEST(Annotator, errorHandling)
 
     // Test that repeated calls to the same unfound identifier generate new errors.
     EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("i_dont_exist", 2)->type());
-    EXPECT_EQ(size_t(2), annotator->issueCount());
+    EXPECT_EQ(size_t(1), annotator->issueCount());
 }
 
 TEST(Annotator, duplicateIdBehaviour)
@@ -214,7 +214,7 @@ TEST(Annotator, duplicateIdBehaviour)
     annotator->setModel(model);
 
     EXPECT_EQ(libcellml::CellmlElementType::UNDEFINED, annotator->item("duplicateId")->type());
-    EXPECT_EQ(size_t(0), annotator->issueCount());
+    EXPECT_EQ(size_t(1), annotator->issueCount());
 
     EXPECT_FALSE(annotator->isUnique("duplicateId"));
     EXPECT_EQ(size_t(3), annotator->itemCount("duplicateId"));
@@ -281,47 +281,116 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     auto model = parser->parseModel(modelStringDuplicateIds);
 
     EXPECT_EQ(nullptr, annotator->model("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->component("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->units("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->unitsItem("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->componentEncapsulation("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->connection("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
 
-    // Expect errors because the annotator library hasn't been built and no model exists.
-    EXPECT_EQ(size_t(13), annotator->issueCount());
-    EXPECT_EQ(size_t(13), annotator->errorCount());
-    for (size_t i = 0; i < annotator->issueCount(); ++i) {
-        EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(i)->description());
-    }
+    EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->component("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->units("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->unitsItem("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->componentEncapsulation("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->connection("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ("This Annotator object does not have a model to work with.", annotator->error(0)->description());
 
     annotator->setModel(model);
 
     // Expect that the errors have been cleared.
     EXPECT_EQ(size_t(0), annotator->errorCount());
+    EXPECT_EQ(size_t(0), annotator->warningCount());
+    EXPECT_EQ(size_t(0), annotator->messageCount());
 
     // Cannot find unique id so no item is available.
     EXPECT_EQ(nullptr, annotator->model("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->component("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->units("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->unitsItem("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->componentEncapsulation("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->connection("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId"));
-    EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
 
-    EXPECT_EQ(size_t(0), annotator->issueCount());
+    EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->component("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->units("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->unitsItem("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->componentEncapsulation("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->connection("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
+
+    EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
+    EXPECT_EQ(size_t(1), annotator->warningCount());
+    EXPECT_EQ("The identifier 'duplicateId' occurs 29 times in the model so a unique item cannot be located.", annotator->warning(0)->description());
 }
 
 TEST(Annotator, castingOnRetrieval)
