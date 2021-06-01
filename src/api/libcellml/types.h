@@ -16,7 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <any>
 #include <map>
 #include <memory>
 #include <utility>
@@ -41,6 +40,10 @@ class AnalyserVariable; /**< Forward declaration of AnalyserVariable class. */
 using AnalyserVariablePtr = std::shared_ptr<AnalyserVariable>; /**< Type definition for shared analyser variable pointer. */
 class Annotator; /**< Forward declaration of Annotator class. */
 using AnnotatorPtr = std::shared_ptr<Annotator>; /**< Type definition for @c std::shared Annotator pointer. */
+
+class AnyCellmlElement; /**< Forward declaration of AnyCellmlElement class. */
+using AnyCellmlElementPtr = std::shared_ptr<AnyCellmlElement>; /**< Type definition for @c std::shared AnyCellmlElement pointer. */
+
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
@@ -100,12 +103,12 @@ public:
     UnitsItem &operator=(UnitsItem rhs) = delete; /**< Assignment operator. */
 
     /**
-     * @brief Create a unit reference object.
+     * @brief Create a units item reference object.
      *
-     * Factory method to create a @ref UnitsItemPtr.  Create a unit with @ref Units
+     * Factory method to create a @ref UnitsItemPtr.  Create a units item with @ref Units
      * and index with::
      *
-     *   auto unit = libcellml::UnitsItemPtr::create(units, index);
+     *   auto unitsItem = libcellml::UnitsItemPtr::create(units, index);
      *
      * @return A smart pointer to a @ref UnitsItemPtr object.
      */
@@ -211,30 +214,121 @@ private:
 };
 
 /**
- * @brief Type definition for CellmlElementType and a std::any.
+ * @brief The AnyCellmlElement class
  *
- * An AnyItem is a @c std::pair containing:
- *  - a @ref CellmlElementType enum, and
- *  - a @c std::any item.
- *
- * Use @c std::any_cast to cast the item to its underlying type.
- *
- * Casts to use for the second item in the pair are mapped according to the following statements:
- *  - CellmlElementType::COMPONENT => std::any_cast<ComponentPtr>.
- *  - CellmlElementType::COMPONENT_REF => std::any_cast<ComponentPtr>.
- *  - CellmlElementType::CONNECTION => std::any_cast<VariablePairPtr>.
- *  - CellmlElementType::ENCAPSULATION => std::any_cast<ModelPtr>.
- *  - CellmlElementType::IMPORT => std::any_cast<ImportSourcePtr>.
- *  - CellmlElementType::MAP_VARIABLES => std::any_cast<VariablePairPtr>.
- *  - CellmlElementType::MODEL => std::any_cast<ModelPtr>.
- *  - CellmlElementType::RESET => std::any_cast<ResetPtr>.
- *  - CellmlElementType::RESET_VALUE => std::any_cast<ResetPtr>.
- *  - CellmlElementType::TEST_VALUE => std::any_cast<ResetPtr>.
- *  - CellmlElementType::UNDEFINED => not castable.
- *  - CellmlElementType::UNIT => std::any_cast<UnitsItemPtr>.
- *  - CellmlElementType::UNITS => std::any_cast<UnitsPtr>.
- *  - CellmlElementType::VARIABLE => std::any_cast<VariablePtr>.
+ * The AnyCellmlElement class contains a @ref Model, @ref Component, etc.,
+ * depending on the @ref CellmlElementType enum that describes which type is
+ * stored.
  */
-using AnyItem = std::pair<CellmlElementType, std::any>;
+class LIBCELLML_EXPORT AnyCellmlElement
+{
+    friend class Analyser;
+    friend class Annotator;
+    friend class Importer;
+    friend class Issue;
+    friend class Parser;
+    friend class Validator;
+
+public:
+    ~AnyCellmlElement(); /**< Destructor. */
+    AnyCellmlElement(const AnyCellmlElement &rhs) = delete; /**< Copy constructor. */
+    AnyCellmlElement(AnyCellmlElement &&rhs) noexcept = delete; /**< Move constructor. */
+    AnyCellmlElement &operator=(AnyCellmlElement rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Get the @ref CellmlElementType.
+     *
+     * Get the @ref CellmlElementType.
+     *
+     * @return The type.
+     */
+    CellmlElementType type() const;
+
+    /**
+     * @brief Get the component.
+     *
+     * Get the component.
+     *
+     * @return The @ref Component, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::COMPONENT.
+     */
+    ComponentPtr component() const;
+
+    /**
+     * @brief Get the import source.
+     *
+     * Get the import source.
+     *
+     * @return The @ref ImportSource, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::IMPORT.
+     */
+    ImportSourcePtr importSource() const;
+
+    /**
+     * @brief Get the model.
+     *
+     * Get the model.
+     *
+     * @return The @ref Model, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::MODEL.
+     */
+    ModelPtr model() const;
+
+    /**
+     * @brief Get the reset.
+     *
+     * Get the reset.
+     *
+     * @return The @ref Reset, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::RESET.
+     */
+    ResetPtr reset() const;
+
+    /**
+     * @brief Get the units.
+     *
+     * Get the units.
+     *
+     * @return The @ref Units, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::UNITS.
+     */
+    UnitsPtr units() const;
+
+    /**
+     * @brief Get the units item.
+     *
+     * Get the units item.
+     *
+     * @return The @ref UnitsItem, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::UNIT.
+     */
+    UnitsItemPtr unitsItem() const;
+
+    /**
+     * @brief Get the variable.
+     *
+     * Get the variable.
+     *
+     * @return The @ref Variable, or @c nullptr if the internal type is not
+     * @ref CellmlElementType::VARIABLE.
+     */
+    VariablePtr variable() const;
+
+    /**
+     * @brief Get the variable pair.
+     *
+     * Get the variable pair.
+     *
+     * @return The a @ref VariablePair, or @c nullptr if the
+     * internal type is not @ref CellmlElementType::CONNECTION or @ref CellMLElementType::MAP_VARIABLES.
+     */
+    VariablePairPtr variablePair() const;
+
+private:
+    AnyCellmlElement(); /**< Constructor, @private. */
+
+    struct AnyCellmlElementImpl; /**< Forward declaration for pImpl idiom. */
+    AnyCellmlElementImpl *mPimpl; /**< Private member to implementation pointer. */
+};
 
 } // namespace libcellml

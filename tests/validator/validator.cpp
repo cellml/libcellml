@@ -51,10 +51,14 @@ TEST(Validator, unnamedModel)
     const std::vector<std::string> expectedSpecificationHeadings = {
         "2.1.1",
     };
+    const std::vector<std::string> expectedUrls = {
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
+    };
+
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
     validator->validateModel(model);
-    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, validator);
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS_URLS(expectedIssues, expectedSpecificationHeadings, expectedUrls, validator);
 }
 
 TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
@@ -72,6 +76,13 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
         "2.7.1",
         "2.7.1",
         "2.7.1",
+    };
+    const std::vector<std::string> expectedUrls = {
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -96,7 +107,7 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
 
     v->validateModel(model);
 
-    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, v);
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS_URLS(expectedIssues, expectedSpecificationHeadings, expectedUrls, v);
 }
 
 TEST(Validator, invalidElementIdAttribute)
@@ -104,9 +115,11 @@ TEST(Validator, invalidElementIdAttribute)
     const std::vector<std::string> expectedIssues = {
         "Model 'valid_name' does not have a valid 'id' attribute, '993-++$@'.",
     };
-
     const std::vector<std::string> expectedSpecificationHeadings = {
         "1.2.5",
+    };
+    const std::vector<std::string> expectedUrls = {
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specA02.html?issue=XML",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create("valid_name");
@@ -116,7 +129,7 @@ TEST(Validator, invalidElementIdAttribute)
 
     v->validateModel(model);
 
-    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, v);
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS_URLS(expectedIssues, expectedSpecificationHeadings, expectedUrls, v);
 }
 
 TEST(Validator, namedModelWithUnnamedComponent)
@@ -2207,7 +2220,7 @@ TEST(Validator, unitSimpleCycle)
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
     auto issue = v->issue(0);
-    EXPECT_EQ("grandfather", issue->units()->name());
+    EXPECT_EQ("grandfather", issue->item()->units()->name());
 }
 
 libcellml::ModelPtr unitComplexCycle(bool order)
@@ -3014,7 +3027,7 @@ TEST(Validator, circularImportReferencesComponent)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
-    EXPECT_EQ(model->component(0), importer->issue(0)->component());
+    EXPECT_EQ(model->component(0), importer->issue(0)->item()->component());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
@@ -3047,7 +3060,7 @@ TEST(Validator, circularImportReferencesUnits)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
-    EXPECT_EQ(model->units(0), importer->error(0)->units());
+    EXPECT_EQ(model->units(0), importer->error(0)->item()->units());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
@@ -3081,12 +3094,12 @@ TEST(Validator, circularImportedUnitsDuplicateNames)
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(errorMessagesValidator[1], validator->issue(0)->description());
-    EXPECT_EQ(model, validator->error(0)->model());
+    EXPECT_EQ(model, validator->error(0)->item()->model());
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(errorMessageImporter, importer->issue(0)->description());
-    EXPECT_EQ(model->units(0), importer->issue(0)->units());
+    EXPECT_EQ(model->units(0), importer->issue(0)->item()->units());
 
     validator->validateModel(model);
     EXPECT_EQ_ISSUES(errorMessagesValidator, validator);
@@ -3119,12 +3132,12 @@ TEST(Validator, circularImportedComponentsDuplicateNames)
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(errorMessagesValidator[1], validator->issue(0)->description());
-    EXPECT_EQ(model, validator->error(0)->model());
+    EXPECT_EQ(model, validator->error(0)->item()->model());
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(errorMessageImporter, importer->issue(0)->description());
-    EXPECT_EQ(model->units(0), importer->issue(0)->units());
+    EXPECT_EQ(model->units(0), importer->issue(0)->item()->units());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(2), validator->issueCount());
@@ -3148,7 +3161,7 @@ TEST(Validator, importComponentWithInvalidName)
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
-    EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
+    EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->item()->importSource());
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->errorCount());
@@ -3157,7 +3170,7 @@ TEST(Validator, importComponentWithInvalidName)
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(errorMessages[0], validator->issue(0)->description());
-    EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->importSource());
+    EXPECT_EQ(model->component("c")->importSource(), validator->error(0)->item()->importSource());
 }
 
 TEST(Validator, importSecondGenComponentWithInvalidUri)
@@ -3182,7 +3195,7 @@ TEST(Validator, importSecondGenComponentWithInvalidUri)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(errorMessageImporter, importer->issue(0)->description());
-    EXPECT_EQ(model->component("c", true), importer->issue(0)->component());
+    EXPECT_EQ(model->component("c", true), importer->issue(0)->item()->component());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());
@@ -3211,7 +3224,7 @@ TEST(Validator, importedUnitBasedOnNonExistingUnit)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(errorMessageImporter, importer->error(0)->description());
-    EXPECT_EQ(model->units(1), importer->issue(0)->units());
+    EXPECT_EQ(model->units(1), importer->issue(0)->item()->units());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->issueCount());

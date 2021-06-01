@@ -98,17 +98,9 @@ TEST(Annotator, automaticIdsUndefined)
     EXPECT_EQ("", model->id());
 }
 
-TEST(Annotator, automaticIdUndefined)
+TEST(Coverage, unitsItem)
 {
-    auto annotator = libcellml::Annotator::create();
-    auto model = libcellml::Model::create();
+    auto unitsItem = libcellml::UnitsItem::create(nullptr, 0);
 
-    annotator->setModel(model);
-
-    auto pair = std::make_pair(libcellml::CellmlElementType::UNDEFINED, nullptr);
-
-    annotator->assignId(pair);
-    EXPECT_TRUE(annotator->hasModel());
-
-    EXPECT_EQ("", model->id());
+    EXPECT_FALSE(unitsItem->isValid());
 }

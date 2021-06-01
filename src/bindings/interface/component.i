@@ -101,8 +101,8 @@ resets and False otherwise.";
 "Create a copy of this component.";
 
 %feature("docstring") libcellml::Component::requiresImports
-"Determines whether this component relies on any imports.  If this component 
-or any of its encapsulated components are imported, returns @c true, 
+"Determines whether this component relies on any imports.  If this component
+or any of its encapsulated components are imported, returns @c true,
 otherwise @c false.";
 
 #if defined(SWIGPYTHON)
