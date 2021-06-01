@@ -31,29 +31,15 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "anycellmlelement_p.h"
 #include "internaltypes.h"
+#include "issue_p.h"
+#include "model_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
 
 namespace libcellml {
-
-/**
- * @brief The Model::ModelImpl struct.
- *
- * This struct is the private implementation struct for the Model class.  Separating
- * the implementation from the definition allows for greater flexibility when
- * distributing the code.
- */
-struct Model::ModelImpl
-{
-    std::vector<UnitsPtr> mUnits;
-
-    std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
-    std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
-
-    bool equalUnits(const ModelPtr &other) const;
-};
 
 std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const std::string &name) const
 {
