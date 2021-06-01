@@ -16,7 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <any>
 #include <map>
 #include <unordered_set>
 #include <vector>
@@ -35,6 +34,7 @@ using IndexStack = std::vector<size_t>; /**< Type definition for tracking indici
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
 
 using NameList = std::vector<std::string>; /**< Type definition for list of names. */
+using DescriptionList = std::vector<std::pair<VariablePtr, std::string>>; /**< Type definition for list of variables and associated description. */
 using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
 
 // VariableMap

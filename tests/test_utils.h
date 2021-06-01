@@ -88,15 +88,22 @@ void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = fals
 void TEST_EXPORT printModel(const libcellml::ModelPtr &model, bool includeMaths = true);
 void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, bool includeMaths = true);
 
+std::vector<libcellml::CellmlElementType> TEST_EXPORT expectedCellmlElementTypes(size_t size, libcellml::CellmlElementType type);
+std::vector<libcellml::Issue::Level> TEST_EXPORT expectedLevels(size_t size, libcellml::Issue::Level level);
+std::vector<libcellml::Issue::ReferenceRule> TEST_EXPORT expectedReferenceRules(size_t size, libcellml::Issue::ReferenceRule rule);
+std::vector<std::string> TEST_EXPORT expectedUrls(size_t size, std::string url);
+
 void TEST_EXPORT expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger);
-void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issues,
-                                                        const std::vector<std::string> &specificationHeadings,
-                                                        const libcellml::LoggerPtr &logger);
-void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevelsReferenceRules(const std::vector<std::string> &issues,
-                                                                         const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
-                                                                         const std::vector<libcellml::Issue::Level> &levels,
-                                                                         const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
-                                                                         const libcellml::LoggerPtr &logger);
+void TEST_EXPORT expectEqualIssuesSpecificationHeadingsUrls(const std::vector<std::string> &issues,
+                                                            const std::vector<std::string> &specificationHeadings,
+                                                            const std::vector<std::string> &urls,
+                                                            const libcellml::LoggerPtr &logger);
+void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vector<std::string> &issues,
+                                                                             const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
+                                                                             const std::vector<libcellml::Issue::Level> &levels,
+                                                                             const std::vector<libcellml::Issue::ReferenceRule> &referenceRules,
+                                                                             const std::vector<std::string> &urls,
+                                                                             const libcellml::LoggerPtr &logger);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",
@@ -114,10 +121,10 @@ void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::Mo
     SCOPED_TRACE("Issue occurred here."); \
     expectEqualIssues(issues, logger)
 
-#define EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(issues, specificationHeadings, logger) \
+#define EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS_URLS(issues, specificationHeadings, urls, logger) \
     SCOPED_TRACE("Issue occurred here."); \
-    expectEqualIssuesSpecificationHeadings(issues, specificationHeadings, logger)
+    expectEqualIssuesSpecificationHeadingsUrls(issues, specificationHeadings, urls, logger)
 
-#define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES(issues, cellmlElementTypes, levels, referenceRules, logger) \
+#define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(issues, cellmlElementTypes, levels, referenceRules, urls, logger) \
     SCOPED_TRACE("Issue occured here."); \
-    expectEqualIssuesCellmlElementTypesLevelsReferenceRules(issues, cellmlElementTypes, levels, referenceRules, logger)
+    expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(issues, cellmlElementTypes, levels, referenceRules, urls, logger)
