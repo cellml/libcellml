@@ -39,7 +39,7 @@ struct Generator::GeneratorImpl
 
     std::string mCode;
 
-    GeneratorProfilePtr mOwnedProfile = libcellml::GeneratorProfile::create();
+    GeneratorProfilePtr mOwnedProfile = GeneratorProfile::create();
     GeneratorProfileWeakPtr mProfile;
     GeneratorProfilePtr mLockedProfile;
 
