@@ -586,262 +586,132 @@ std::vector<std::string> Annotator::ids()
 
 ComponentPtr Annotator::component(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->component();
-    }
-    return nullptr;
+    return item(id, index)->component();
 }
 
 ComponentPtr Annotator::component(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->component();
-    }
-    return nullptr;
+    return item(id)->component();
 }
 
 ComponentPtr Annotator::componentEncapsulation(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->component();
-    }
-    return nullptr;
+    return item(id, index)->component();
 }
 
 ComponentPtr Annotator::componentEncapsulation(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->component();
-    }
-    return nullptr;
+    return item(id)->component();
 }
 
 VariablePairPtr Annotator::connection(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->variablePair();
-    }
-    return nullptr;
+    return item(id, index)->variablePair();
 }
 
 VariablePairPtr Annotator::connection(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->variablePair();
-    }
-    return nullptr;
+    return item(id)->variablePair();
 }
 
 ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->model();
-    }
-    return nullptr;
+    return item(id, index)->model();
 }
 
 ModelPtr Annotator::encapsulation(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->model();
-    }
-    return nullptr;
+    return item(id)->model();
 }
 
 ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->importSource();
-    }
-    return nullptr;
+    return item(id, index)->importSource();
 }
 
 ImportSourcePtr Annotator::importSource(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->importSource();
-    }
-    return nullptr;
+    return item(id)->importSource();
 }
 
 VariablePairPtr Annotator::mapVariables(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->variablePair();
-    }
-    return nullptr;
+    return item(id, index)->variablePair();
 }
 
 VariablePairPtr Annotator::mapVariables(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->variablePair();
-    }
-    return nullptr;
+    return item(id)->variablePair();
 }
 
 ModelPtr Annotator::model(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->model();
-    }
-    return nullptr;
+    return item(id, index)->model();
 }
 
 ModelPtr Annotator::model(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->model();
-    }
-    return nullptr;
+    return item(id)->model();
 }
 
 ResetPtr Annotator::reset(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->reset();
-    }
-    return nullptr;
+    return item(id, index)->reset();
 }
 
 ResetPtr Annotator::reset(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->reset();
-    }
-    return nullptr;
+    return item(id)->reset();
 }
 
 ResetPtr Annotator::resetValue(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->reset();
-    }
-    return nullptr;
+    return item(id, index)->reset();
 }
 
 ResetPtr Annotator::resetValue(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->reset();
-    }
-    return nullptr;
+    return item(id)->reset();
 }
 
 ResetPtr Annotator::testValue(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->reset();
-    }
-    return nullptr;
+    return item(id, index)->reset();
 }
 
 ResetPtr Annotator::testValue(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->reset();
-    }
-    return nullptr;
+    return item(id)->reset();
 }
 
 UnitsPtr Annotator::units(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->units();
-    }
-    return nullptr;
+    return item(id, index)->units();
 }
 
 UnitsPtr Annotator::units(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->units();
-    }
-    return nullptr;
+    return item(id)->units();
 }
 
 UnitsItemPtr Annotator::unitsItem(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->unitsItem();
-    }
-    return nullptr;
+    return item(id, index)->unitsItem();
 }
 
 UnitsItemPtr Annotator::unitsItem(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->unitsItem();
-    }
-    return nullptr;
+    return item(id)->unitsItem();
 }
 
 VariablePtr Annotator::variable(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, index)) {
-        auto i = items(id).at(index);
-        return i->variable();
-    }
-    return nullptr;
+    return item(id, index)->variable();
 }
 
 VariablePtr Annotator::variable(const std::string &id)
 {
-    mPimpl->update();
-    if (mPimpl->exists(id, 0, true)) {
-        auto i = items(id).at(0);
-        return i->variable();
-    }
-    return nullptr;
+    return item(id)->variable();
 }
 
 void Annotator::clearAllIds()
