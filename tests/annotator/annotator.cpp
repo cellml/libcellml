@@ -1073,7 +1073,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
 TEST(Annotator, assignModelIdBadInput)
 {
     const std::string errorMessage =
-            "The item is internally inconsistent: the enum type 'model' cannot be used with the stored item.";
+        "The item is internally inconsistent: the enum type 'model' cannot be used with the stored item.";
 
     auto annotator = libcellml::Annotator::create();
     libcellml::ModelPtr nullModel = nullptr;
