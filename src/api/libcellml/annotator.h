@@ -77,7 +77,8 @@ public:
      * If no item can be found an empty @ref AnyCellmlElement is returned.
      * If there are multiple items with the same @p id string an empty @ref AnyCellmlElement is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue is logged if a problem was encountered.
+     * Any previous issues will be cleared when this method is used.
      *
      * The item returned is an @ref AnyCellmlElement object containing both:
      *  - a type (as a @ref CellmlElementType enum); and
@@ -107,6 +108,8 @@ public:
      *  - there is no stored model; or
      *  - there is no item with the given @p id and @p index.
      *
+     * Any previous issues will be cleared when this method is used.
+     *
      * @param id A @c std::string representing the @p id to retrieve.
      * @param index The index of the item to return from the list of items with @p id.
      *
@@ -124,7 +127,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the component to retrieve.
      *
@@ -160,7 +163,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the component with encapsulation id to retrieve.
      *
@@ -190,7 +193,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the model to retrieve.
      *
@@ -222,7 +225,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the variable to retrieve.
      *
@@ -254,7 +257,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the reset to retrieve.
      *
@@ -286,7 +289,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the model to retrieve.
      *
@@ -318,7 +321,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the import source to retrieve.
      *
@@ -350,7 +353,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the units to retrieve.
      *
@@ -382,7 +385,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the variable pair to retrieve.
      *
@@ -414,7 +417,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the variable pair to retrieve.
      *
@@ -446,7 +449,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the units item to retrieve.
      *
@@ -478,7 +481,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the reset with test value id to retrieve.
      *
@@ -510,7 +513,7 @@ public:
      *  - the @p id is not unique across the stored model,
      * then a @c nullptr is returned.
      *
-     * An issue is logged if there is no stored model.
+     * An issue with information on the specific problem encountered is logged if a @c nullptr is returned.
      *
      * @param id A @c std::string representing the identifier of the reset with reset value id to retrieve.
      *
