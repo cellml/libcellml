@@ -239,10 +239,55 @@ bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
     return false;
 }
 
-std::string directoryPath(const std::string &filename)
+/**
+ * @brief Take a path and normalise the directory separator character.
+ *
+ * Take a path and normalise the directory separator character.
+ *
+ * @param path The path to normalise.
+ *
+ * @return A @c std::string with normalised directory separator character.
+ */
+std::string normaliseDirectorySeparator(const std::string &path)
 {
-    // We can be naive here as we know what we are dealing with.
-    return filename.substr(0, filename.find_last_of('/') + 1);
+    auto normalisedPath = path;
+    std::replace(normalisedPath.begin(), normalisedPath.end(), '\\', '/');
+    return normalisedPath;
+}
+
+/**
+ * @brief Normalise the directory path.
+ *
+ * Normalise the directory path of the input making sure that the
+ * directory separator is a '/' and that the path ends with a '/'.
+ *
+ * @param path The path to normalise.
+ *
+ * @return A @c std::string normalised path.
+ */
+std::string normalisePath(const std::string &path)
+{
+    auto normalisedPath = normaliseDirectorySeparator(path);
+    if (!normalisedPath.empty() && (normalisedPath.compare(normalisedPath.length() - 1, 1, "/") != 0)) {
+        normalisedPath += "/";
+    }
+    return normalisedPath;
+}
+
+/**
+ * @brief Get the path from a URL.
+ *
+ * Get a path from a URL, given that the URL is assumed to be a reference to a local file.
+ * The path returned is in normalised form.
+ *
+ * @param url The URL to extract the path from.
+ *
+ * @return The @c std::string normalised path of the URL.
+ */
+std::string pathFromUrl(const std::string &url)
+{
+    auto normalisedUrl = normaliseDirectorySeparator(url);
+    return normalisedUrl.substr(0, normalisedUrl.find_last_of('/') + 1);
 }
 
 /**
@@ -260,14 +305,14 @@ std::string directoryPath(const std::string &filename)
  */
 std::string resolvePath(const std::string &filename, const std::string &base)
 {
-    return directoryPath(base) + filename;
+    return pathFromUrl(base) + filename;
 }
 
 bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile)
 {
-    std::string url = importSource->url();
+    std::string url = normaliseDirectorySeparator(importSource->url());
     if (mLibrary.count(url) == 0) {
-        url = resolvePath(importSource->url(), baseFile);
+        url = resolvePath(url, baseFile);
     }
 
     ModelPtr model;
@@ -365,7 +410,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         // Check whether the sourceComponent is itself an import. Note that the file path passed in
         // here must be the path to the sourceModel, rather than the path to the previous import, so that
         // the chain always tests local to the importing model first.
-        auto newBase = baseFile + directoryPath(importComponent->importSource()->url());
+        auto newBase = baseFile + pathFromUrl(importComponent->importSource()->url());
 
         // Fetch this component, if needed.
         if (!fetchComponent(sourceComponent, newBase, history)) {
@@ -432,7 +477,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     auto sourceUnits = sourceModel->units(importUnits->importReference());
 
     if (sourceUnits != nullptr) {
-        auto newBase = baseFile + directoryPath(importUnits->importSource()->url());
+        auto newBase = baseFile + pathFromUrl(importUnits->importSource()->url());
 
         // Check whether the sourceUnits are themselves an import.
         if (!fetchUnits(sourceUnits, newBase, history)) {
@@ -477,16 +522,17 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     return true;
 }
 
-bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
+bool Importer::resolveImports(ModelPtr &model, const std::string &baseFilePath)
 {
     bool status = true;
     History history;
 
     clearImports(model);
+    auto normalisedBaseFilePath = normalisePath(baseFilePath);
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
-        if (!mPimpl->fetchUnits(units, baseFile, history)) {
+        if (!mPimpl->fetchUnits(units, normalisedBaseFilePath, history)) {
             // Get the last issue recorded and change its object to be the top-level importing item.
             issue(issueCount() - 1)->mPimpl->mItem->mPimpl->setUnits(units);
             status = false;
@@ -495,7 +541,7 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 
     for (const ComponentPtr &component : getImportedComponents(model)) {
         history.clear();
-        if (!mPimpl->fetchComponent(component, baseFile, history)) {
+        if (!mPimpl->fetchComponent(component, normalisedBaseFilePath, history)) {
             issue(issueCount() - 1)->mPimpl->mItem->mPimpl->setComponent(component);
             status = false;
         }
@@ -685,8 +731,9 @@ size_t Importer::libraryCount()
 
 ModelPtr Importer::library(const std::string &key)
 {
-    if (mPimpl->mLibrary.count(key) != 0) {
-        return mPimpl->mLibrary[key];
+    auto normalisedKey = normaliseDirectorySeparator(key);
+    if (mPimpl->mLibrary.count(normalisedKey) != 0) {
+        return mPimpl->mLibrary[normalisedKey];
     }
     return nullptr;
 }
@@ -707,21 +754,23 @@ ModelPtr Importer::library(const size_t &index)
 
 bool Importer::addModel(const ModelPtr &model, const std::string &key)
 {
-    if (mPimpl->mLibrary.count(key) != 0) {
+    auto normalisedKey = normaliseDirectorySeparator(key);
+    if (mPimpl->mLibrary.count(normalisedKey) != 0) {
         // If the key already exists in the library, do nothing.
         return false;
     }
-    mPimpl->mLibrary.insert(std::make_pair(key, model));
+    mPimpl->mLibrary.insert(std::make_pair(normalisedKey, model));
     return true;
 }
 
 bool Importer::replaceModel(const ModelPtr &model, const std::string &key)
 {
-    if (mPimpl->mLibrary.count(key) == 0) {
+    auto normalisedKey = normaliseDirectorySeparator(key);
+    if (mPimpl->mLibrary.count(normalisedKey) == 0) {
         // If the key is not found, do nothing.
         return false;
     }
-    mPimpl->mLibrary[key] = model;
+    mPimpl->mLibrary[normalisedKey] = model;
     return true;
 }
 
