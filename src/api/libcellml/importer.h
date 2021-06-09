@@ -67,15 +67,15 @@ public:
      * @brief Resolve all imports in the @p model.
      *
      * Resolve all @c Component and @c Units imports by loading the models
-     * from local disk through relative URLs.  The @p baseFile is used to determine
-     * the full path to the source model relative to this one.
+     * from local disk through relative URLs.  The @p basePath defines
+     * the full path to the directory that import URLs are relative to.
      *
      * @param model The @c Model whose imports need resolution.
-     * @param baseFile The @c std::string location on local disk of the source @c Model.
+     * @param basePath The (effective) directory on local disk of the source @c Model.
      *
      * @return @c true if all imports have been resolved successfully, @c false otherwise.
      */
-    bool resolveImports(ModelPtr &model, const std::string &baseFile);
+    bool resolveImports(ModelPtr &model, const std::string &basePath);
 
     /**
      * @brief Return the number of models present in the importer's library.
