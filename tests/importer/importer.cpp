@@ -1070,3 +1070,39 @@ TEST(Importer, importingCommonUnitsDefinitions)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(0), importer->issueCount());
 }
+
+TEST(Importer, baseFileEndingInBackSlash)
+{
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto importedUnits = parser->parseModel(fileContents("importer/units_imported.cellml"));
+
+    EXPECT_TRUE(importedUnits->hasUnresolvedImports());
+    importer->resolveImports(importedUnits, resourcePath("importer/"));
+    EXPECT_FALSE(importedUnits->hasUnresolvedImports());
+}
+
+TEST(Importer, baseFileEndingInForwardSlash)
+{
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto importedUnits = parser->parseModel(fileContents("importer/units_imported.cellml"));
+
+    EXPECT_TRUE(importedUnits->hasUnresolvedImports());
+    importer->resolveImports(importedUnits, resourcePath("importer\\"));
+    EXPECT_FALSE(importedUnits->hasUnresolvedImports());
+}
+
+TEST(Importer, baseFileNotEndingInSlash)
+{
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto importedUnits = parser->parseModel(fileContents("importer/units_imported.cellml"));
+
+    EXPECT_TRUE(importedUnits->hasUnresolvedImports());
+    importer->resolveImports(importedUnits, resourcePath("importer"));
+    EXPECT_FALSE(importedUnits->hasUnresolvedImports());
+}
