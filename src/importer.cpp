@@ -522,17 +522,17 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     return true;
 }
 
-bool Importer::resolveImports(ModelPtr &model, const std::string &baseFilePath)
+bool Importer::resolveImports(ModelPtr &model, const std::string &basePath)
 {
     bool status = true;
     History history;
 
     clearImports(model);
-    auto normalisedBaseFilePath = normalisePath(baseFilePath);
+    auto normalisedBasePath = normalisePath(basePath);
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
-        if (!mPimpl->fetchUnits(units, normalisedBaseFilePath, history)) {
+        if (!mPimpl->fetchUnits(units, normalisedBasePath, history)) {
             // Get the last issue recorded and change its object to be the top-level importing item.
             issue(issueCount() - 1)->mPimpl->mItem->mPimpl->setUnits(units);
             status = false;
@@ -541,7 +541,7 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &baseFilePath)
 
     for (const ComponentPtr &component : getImportedComponents(model)) {
         history.clear();
-        if (!mPimpl->fetchComponent(component, normalisedBaseFilePath, history)) {
+        if (!mPimpl->fetchComponent(component, normalisedBasePath, history)) {
             issue(issueCount() - 1)->mPimpl->mItem->mPimpl->setComponent(component);
             status = false;
         }
