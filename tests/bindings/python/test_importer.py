@@ -60,13 +60,13 @@ class ImporterTestCase(unittest.TestCase):
         i.resolveImports(m1, resource_path('importer/'))
         self.assertFalse(m1.hasUnresolvedImports())
 
-        self.assertTrue(m1.hasUnresolvedImports())
-        i.resolveImports(m1, resource_path('importer'))
-        self.assertFalse(m1.hasUnresolvedImports())
+        self.assertTrue(m2.hasUnresolvedImports())
+        i.resolveImports(m2, resource_path('importer'))
+        self.assertFalse(m2.hasUnresolvedImports())
 
-        self.assertTrue(m1.hasUnresolvedImports())
-        i.resolveImports(m1, resource_path('importer\\'))
-        self.assertFalse(m1.hasUnresolvedImports())
+        self.assertTrue(m3.hasUnresolvedImports())
+        i.resolveImports(m3, resource_path('importer\\'))
+        self.assertFalse(m3.hasUnresolvedImports())
 
     def test_importer(self):
         from libcellml import Importer, Parser, Printer
