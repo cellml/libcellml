@@ -1071,7 +1071,7 @@ TEST(Importer, importingCommonUnitsDefinitions)
     EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
-TEST(Importer, baseFileEndingInBackSlash)
+TEST(Importer, basePathEndingInForwardSlash)
 {
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
@@ -1083,7 +1083,7 @@ TEST(Importer, baseFileEndingInBackSlash)
     EXPECT_FALSE(importedUnits->hasUnresolvedImports());
 }
 
-TEST(Importer, baseFileEndingInForwardSlash)
+TEST(Importer, basePathEndingInBackSlash)
 {
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
@@ -1095,7 +1095,7 @@ TEST(Importer, baseFileEndingInForwardSlash)
     EXPECT_FALSE(importedUnits->hasUnresolvedImports());
 }
 
-TEST(Importer, baseFileNotEndingInSlash)
+TEST(Importer, basePathNotEndingInSlash)
 {
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
