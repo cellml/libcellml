@@ -71,7 +71,7 @@ public:
      * the full path to the directory that import URLs are relative to.
      *
      * @param model The @c Model whose imports need resolution.
-     * @param basePath The (effective) directory on local disk of the source @c Model.
+     * @param basePath The full path used to resolve relative import URLs.
      *
      * @return @c true if all imports have been resolved successfully, @c false otherwise.
      */
