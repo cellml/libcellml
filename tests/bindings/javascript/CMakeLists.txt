@@ -32,7 +32,7 @@ set(TEST_PACKAGE_JSON "{
   \"description\": \"Tests for libcellml.js\",
   \"main\": \"index.js\",
   \"scripts\": {
-    \"test\": \"jest\"
+    \"test\": \"jest --detectOpenHandles\"
   },
   \"author\": \"\",
   \"license\": \"Apache-2.0\",
