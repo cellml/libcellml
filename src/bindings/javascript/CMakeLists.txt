@@ -14,6 +14,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
@@ -47,8 +48,9 @@ add_executable(libcellml $<TARGET_OBJECTS:javascript-bindings>)
 
 target_link_libraries(libcellml PUBLIC javascript-bindings)
 
+# Don't need this anymore (breaks linking)? -s USE_ES6_IMPORT_META=0
 set_target_properties(libcellml PROPERTIES
-  LINK_FLAGS "--bind -s 'EXPORT_NAME=\"libCellML\"' -s EXPORT_ES6=1 -s MODULARIZE=1 -s USE_ES6_IMPORT_META=0  -s ALLOW_MEMORY_GROWTH=1"
+  LINK_FLAGS "--bind -s 'EXPORT_NAME=\"libCellML\"' -s EXPORT_ES6=1 -s MODULARIZE=1  -s ALLOW_MEMORY_GROWTH=1"
 )
 
 add_executable(libcellml.common $<TARGET_OBJECTS:javascript-bindings>)
