@@ -320,7 +320,7 @@ public:
      * Get the variable pair.
      *
      * @return The a @ref VariablePair, or @c nullptr if the
-     * internal type is not @ref CellmlElementType::CONNECTION or @ref CellMLElementType::MAP_VARIABLES.
+     * internal type is not @ref CellmlElementType::CONNECTION or @ref CellmlElementType::MAP_VARIABLES.
      */
     VariablePairPtr variablePair() const;
 
