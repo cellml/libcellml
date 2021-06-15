@@ -1109,22 +1109,26 @@ TEST(Importer, basePathNotEndingInSlash)
 
 TEST(Importer, importInvalidXml)
 {
+    auto e = "The attempt to import the model at '" + resourcePath("importer/not_even_proper.xml") + "' failed: the file is not valid XML.";
+
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
 
     auto model = parser->parseModel(fileContents("importer/import_invalid_xml.cellml"));
 
     importer->resolveImports(model, resourcePath("importer"));
-    EXPECT_EQ(size_t(3), importer->errorCount());
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+
 }
 
-TEST(Importer, importInvalidCellmlModel)
+TEST(Importer, importInvalidUnitsFromCellmlModel)
 {
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
 
-    auto model = parser->parseModel(fileContents("importer/import_invalid_cellml.cellml"));
+    auto model = parser->parseModel(fileContents("importer/import_invalid_units.cellml"));
 
     importer->resolveImports(model, resourcePath("importer"));
-    EXPECT_EQ(size_t(3), importer->issueCount());
+    EXPECT_EQ(size_t(3), importer->errorCount());
 }
