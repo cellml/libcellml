@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="invalid_model">
+  <units name="units1">
+    <unit prefix="milli" offset="32" units="second"/>
+  </units>
+</model>

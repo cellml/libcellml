@@ -1106,3 +1106,25 @@ TEST(Importer, basePathNotEndingInSlash)
     importer->resolveImports(importedUnits, resourcePath("importer"));
     EXPECT_FALSE(importedUnits->hasUnresolvedImports());
 }
+
+TEST(Importer, importInvalidXml)
+{
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto model = parser->parseModel(fileContents("importer/import_invalid_xml.cellml"));
+
+    importer->resolveImports(model, resourcePath("importer"));
+    EXPECT_EQ(size_t(3), importer->errorCount());
+}
+
+TEST(Importer, importInvalidCellmlModel)
+{
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto model = parser->parseModel(fileContents("importer/import_invalid_cellml.cellml"));
+
+    importer->resolveImports(model, resourcePath("importer"));
+    EXPECT_EQ(size_t(3), importer->issueCount());
+}
