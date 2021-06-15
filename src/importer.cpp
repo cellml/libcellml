@@ -332,6 +332,19 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         buffer << file.rdbuf();
         auto parser = Parser::create();
         model = parser->parseModel(buffer.str());
+        auto errorCount = parser->errorCount();
+        if (errorCount > 0) {
+            for (size_t index = 0; index < errorCount; ++index) {
+                if (parser->error(index)->referenceRule() == Issue::ReferenceRule::XML) {
+                    auto issue = Issue::IssueImpl::create();
+                    issue->mPimpl->setDescription("The attempt to import the model at '" + url + "' failed: the file is not valid XML.");
+                    issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+                    mImporter->addIssue(issue);
+                    return false;
+                }
+            }
+        }
         mLibrary.insert(std::make_pair(url, model));
     } else {
         model = mLibrary[url];
