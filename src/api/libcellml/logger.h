@@ -67,6 +67,8 @@ public:
      */
     IssuePtr issue(size_t index) const;
 
+    bool removeIssue(size_t index);
+
     /**
      * @brief Get the number of issues with level of ERROR.
      *
@@ -88,6 +90,8 @@ public:
      * @return A reference to the error at the given index on success, @c nullptr otherwise.
      */
     IssuePtr error(size_t index) const;
+
+    bool removeError(size_t index);
 
     /**
      * @brief Get the number of issues with level of WARNING.
@@ -111,6 +115,8 @@ public:
      */
     IssuePtr warning(size_t index) const;
 
+    bool removeWarning(size_t index);
+
     /**
      * @brief Get the number of issues with level of MESSAGE.
      *
@@ -133,6 +139,8 @@ public:
      * @c nullptr otherwise.
      */
     IssuePtr message(size_t index) const;
+
+    bool removeMessage(size_t index);
 
 protected:
     Logger(); /**< Constructor, @private. */
