@@ -152,10 +152,11 @@ public:
         INVALID_ARGUMENT,
 
         // Importer class issues:
-        IMPORTER_NULL_MODEL,
+        IMPORTER_ERROR_IMPORTING_UNITS,
         IMPORTER_MISSING_FILE,
         IMPORTER_MISSING_COMPONENT,
         IMPORTER_MISSING_UNITS,
+        IMPORTER_NULL_MODEL,
 
         // Analyser issues:
         ANALYSER_UNITS,
