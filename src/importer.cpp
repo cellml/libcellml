@@ -342,6 +342,8 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
                     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
                     mImporter->addIssue(issue);
                     return false;
+                } else {
+                    mImporter->addIssue(parser->error(index));
                 }
             }
         }
@@ -471,11 +473,28 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         return true;
     }
 
+    size_t startIndex = mImporter->errorCount();
     if (!fetchImportSource(importUnits->importSource(), baseFile)) {
         return false;
     }
 
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
+
+    size_t endIndex = mImporter->errorCount();
+    for (size_t index = startIndex; index < endIndex; ++index) {
+        auto error = mImporter->error(index);
+        auto errorUnits = error->item()->units();
+        mImporter->removeError(index);
+        if (errorUnits != nullptr && errorUnits->name() == importUnits->importReference()) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Encountered an error when importing units '" + importUnits->importReference() + "' from '" + resolvingUrl + "'.");
+            issue->mPimpl->mItem->mPimpl->setUnits(importUnits);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_ERROR_IMPORTING_UNITS);
+            mImporter->addIssue(issue);
+            return false;
+        }
+    }
+
     auto unitsModel = owningModel(importUnits);
     auto h = createHistoryEpoch(importUnits, modelUrl(unitsModel), resolvingUrl);
 

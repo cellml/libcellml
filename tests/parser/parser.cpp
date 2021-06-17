@@ -645,6 +645,7 @@ TEST(Parser, emptyEncapsulation)
     p->parseModel(in);
     EXPECT_EQ_ISSUES(expectedIssues, p);
     EXPECT_EQ(libcellml::Issue::Level::WARNING, p->issue(0)->level());
+    EXPECT_TRUE(p->removeWarning(0));
 }
 
 TEST(Parser, validEncapsulation)

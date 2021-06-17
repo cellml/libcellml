@@ -1124,11 +1124,14 @@ TEST(Importer, importInvalidXml)
 
 TEST(Importer, importInvalidUnitsFromCellmlModel)
 {
+    auto e = "Encountered an error when importing units '" + resourcePath("importer/not_even_proper.xml") + "'.";
+
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
 
     auto model = parser->parseModel(fileContents("importer/import_invalid_units.cellml"));
 
     importer->resolveImports(model, resourcePath("importer"));
-    EXPECT_EQ(size_t(3), importer->errorCount());
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
 }
