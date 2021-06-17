@@ -63,6 +63,11 @@ IssuePtr Logger::error(size_t index) const
     return issue;
 }
 
+bool Logger::removeError(size_t /*index*/)
+{
+    return false;
+}
+
 size_t Logger::warningCount() const
 {
     return mPimpl->mWarnings.size();
@@ -77,6 +82,11 @@ IssuePtr Logger::warning(size_t index) const
     return issue;
 }
 
+bool Logger::removeWarning(size_t /*index*/)
+{
+    return false;
+}
+
 size_t Logger::messageCount() const
 {
     return mPimpl->mMessages.size();
@@ -89,6 +99,11 @@ IssuePtr Logger::message(size_t index) const
         issue = mPimpl->mIssues.at(mPimpl->mMessages.at(index));
     }
     return issue;
+}
+
+bool Logger::removeMessage(size_t /*index*/)
+{
+    return false;
 }
 
 void Logger::removeAllIssues()
@@ -130,6 +145,11 @@ IssuePtr Logger::issue(size_t index) const
         issue = mPimpl->mIssues.at(index);
     }
     return issue;
+}
+
+bool Logger::removeIssue(size_t /*index*/)
+{
+    return false;
 }
 
 } // namespace libcellml
