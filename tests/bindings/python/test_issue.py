@@ -140,6 +140,10 @@ class IssueTestCase(unittest.TestCase):
         self.assertEqual(None, p.warning(0))
         self.assertEqual(0, p.messageCount())
         self.assertEqual(None, p.message(0))
+        self.assertFalse(p.removeError(3))
+        self.assertFalse(p.removeIssue(0))
+        self.assertFalse(p.removeWarning(2))
+        self.assertFalse(p.removeMessage(0))
 
 
 if __name__ == '__main__':

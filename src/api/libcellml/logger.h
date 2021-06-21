@@ -67,6 +67,18 @@ public:
      */
     IssuePtr issue(size_t index) const;
 
+    /**
+     * @brief Remove issue at the specified @p index.
+     *
+     * Removes an issue at @p index.  If @c true is returned
+     * then the issue at @p index was successfully removed.
+     * If @p index is within the range [0, \#issues)
+     * then @c true is returned, otherwise @c false is returned.
+     *
+     * @param index The index of the issue to remove.
+     *
+     * @return @c true if the issue is removed, @c false otherwise.
+     */
     bool removeIssue(size_t index);
 
     /**
@@ -91,6 +103,18 @@ public:
      */
     IssuePtr error(size_t index) const;
 
+    /**
+     * @brief Remove issue of level ERROR at the specified @p index.
+     *
+     * Removes a error at @p index.  If @c true is returned
+     * then the error at @p index was successfully removed.
+     * If @p index is within the range [0, \#errors)
+     * then @c true is returned, otherwise @c false is returned.
+     *
+     * @param index The index of the error to remove.
+     *
+     * @return @c true if the error is removed, @c false otherwise.
+     */
     bool removeError(size_t index);
 
     /**
@@ -115,6 +139,18 @@ public:
      */
     IssuePtr warning(size_t index) const;
 
+    /**
+     * @brief Remove issue of level WARNING at the specified @p index.
+     *
+     * Removes a warning at @p index.  If @c true is returned
+     * then the warning at @p index was successfully removed.
+     * If @p index is within the range [0, \#warnings)
+     * then @c true is returned, otherwise @c false is returned.
+     *
+     * @param index The index of the warning to remove.
+     *
+     * @return @c true if the warning is removed, @c false otherwise.
+     */
     bool removeWarning(size_t index);
 
     /**
@@ -140,6 +176,18 @@ public:
      */
     IssuePtr message(size_t index) const;
 
+    /**
+     * @brief Remove issue of level MESSAGE at the specified @p index.
+     *
+     * Removes a message at @p index.  If @c true is returned
+     * then the message at @p index was successfully removed.
+     * If @p index is within the range [0, \#messages)
+     * then @c true is returned, otherwise @c false is returned.
+     *
+     * @param index The index of the message to remove.
+     *
+     * @return @c true if the message is removed, @c false otherwise.
+     */
     bool removeMessage(size_t index);
 
 protected:

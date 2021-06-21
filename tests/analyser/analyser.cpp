@@ -876,6 +876,7 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
                                                                    analyser);
 
     EXPECT_TRUE(analyser->removeMessage(0));
+    EXPECT_FALSE(analyser->removeMessage(0));
 }
 
 TEST(Analyser, coverage)
