@@ -1119,7 +1119,6 @@ TEST(Importer, importInvalidXml)
     importer->resolveImports(model, resourcePath("importer"));
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(e, importer->error(0)->description());
-
 }
 
 TEST(Importer, importInvalidUnitsFromCellmlModel)
