@@ -342,9 +342,8 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
                     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
                     mImporter->addIssue(issue);
                     return false;
-                } else {
-                    mImporter->addIssue(parser->error(index));
                 }
+                mImporter->addIssue(parser->error(index));
             }
         }
         mLibrary.insert(std::make_pair(url, model));
