@@ -66,8 +66,8 @@ IssuePtr Logger::error(size_t index) const
 bool Logger::removeError(size_t index)
 {
     if (index < mPimpl->mErrors.size()) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + mPimpl->mErrors.at(index));
-        mPimpl->mErrors.erase(mPimpl->mErrors.begin() + index);
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mErrors.at(index)));
+        mPimpl->mErrors.erase(mPimpl->mErrors.begin() + ptrdiff_t(index));
         return true;
     }
     return false;
@@ -90,8 +90,8 @@ IssuePtr Logger::warning(size_t index) const
 bool Logger::removeWarning(size_t index)
 {
     if (index < mPimpl->mWarnings.size()) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + mPimpl->mWarnings.at(index));
-        mPimpl->mWarnings.erase(mPimpl->mWarnings.begin() + index);
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mWarnings.at(index)));
+        mPimpl->mWarnings.erase(mPimpl->mWarnings.begin() + ptrdiff_t(index));
         return true;
     }
     return false;
@@ -114,8 +114,8 @@ IssuePtr Logger::message(size_t index) const
 bool Logger::removeMessage(size_t index)
 {
     if (index < mPimpl->mMessages.size()) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + mPimpl->mMessages.at(index));
-        mPimpl->mMessages.erase(mPimpl->mMessages.begin() + index);
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mMessages.at(index)));
+        mPimpl->mMessages.erase(mPimpl->mMessages.begin() + ptrdiff_t(index));
         return true;
     }
     return false;
@@ -166,7 +166,7 @@ bool Logger::removeIssue(size_t index)
 {
     auto issue = this->issue(index);
     if (issue != nullptr) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + index);
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(index));
         libcellml::Issue::Level level = issue->level();
         switch (level) {
         case libcellml::Issue::Level::ERROR:
