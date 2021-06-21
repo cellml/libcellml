@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
@@ -41,6 +43,8 @@ TEST(Coverage, connectionComment)
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
     EXPECT_EQ(size_t(4), p->issueCount());
+    EXPECT_TRUE(p->removeIssue(2));
+    EXPECT_EQ(size_t(3), p->issueCount());
 }
 
 TEST(Coverage, importWithNonHrefXlink)
@@ -103,4 +107,48 @@ TEST(Coverage, unitsItem)
     auto unitsItem = libcellml::UnitsItem::create(nullptr, 0);
 
     EXPECT_FALSE(unitsItem->isValid());
+}
+
+TEST(Coverage, removeWarningViaRemoveIssue)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <encapsulation/>\n"
+        "</model>\n";
+
+    const std::vector<std::string> expectedIssues = {
+        "Encapsulation in model 'model_name' does not contain any child elements.",
+    };
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+
+    EXPECT_EQ(size_t(1), p->issueCount());
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, p->issue(0)->level());
+    EXPECT_TRUE(p->removeIssue(0));
+    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_FALSE(p->removeIssue(0));
+}
+
+TEST(Coverage, removeMessageViaRemoveIssue)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("V")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(1), analyser->issueCount());
+    EXPECT_EQ(libcellml::Issue::Level::MESSAGE, analyser->issue(0)->level());
+    EXPECT_TRUE(analyser->removeIssue(0));
+    EXPECT_FALSE(analyser->removeIssue(0));
+    EXPECT_EQ(size_t(0), analyser->issueCount());
 }

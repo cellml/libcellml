@@ -3,4 +3,14 @@
   <units name="units1">
     <unit prefix="milli" offset="32" units="second"/>
   </units>
+  <component name="component1">
+    <variable name="v1" units="units1"/>
+    <wrong />
+  </component>
+  <component name="component2">
+    <variable name="variable2" path="/here"/>
+  </component>
+  <component name="component3">
+    <reset name="variable2" />
+  </component>
 </model>

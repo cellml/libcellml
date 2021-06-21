@@ -1124,12 +1124,60 @@ TEST(Importer, importInvalidXml)
 
 TEST(Importer, importInvalidUnitsFromCellmlModel)
 {
-    auto e = "Encountered an error when importing units '" + resourcePath("importer/not_even_proper.xml") + "'.";
+    auto e = "Encountered an error when resolving units 'units1_imported' from '" + resourcePath("importer/invalid_model.cellml") + "'.";
 
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
 
     auto model = parser->parseModel(fileContents("importer/import_invalid_units.cellml"));
+
+    importer->resolveImports(model, resourcePath("importer"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+}
+
+TEST(Importer, importInvalidComponentFromCellmlModelComponentError)
+{
+    auto e = "Encountered an error when resolving component 'component1_imported' from '" + resourcePath("importer/invalid_model.cellml") + "'.";
+
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto model = parser->parseModel(fileContents("importer/import_invalid_component.cellml"));
+    model->component(0)->setImportReference("component1");
+    model->component(0)->setName("component1_imported");
+
+    importer->resolveImports(model, resourcePath("importer"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+}
+
+TEST(Importer, importInvalidComponentFromCellmlModelVariableError)
+{
+    auto e = "Encountered an error when resolving component 'component2_imported' from '" + resourcePath("importer/invalid_model.cellml") + "'.";
+
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto model = parser->parseModel(fileContents("importer/import_invalid_component.cellml"));
+    model->component(0)->setImportReference("component2");
+    model->component(0)->setName("component2_imported");
+
+    importer->resolveImports(model, resourcePath("importer"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+}
+
+TEST(Importer, importInvalidComponentFromCellmlModelResetError)
+{
+    auto e = "Encountered an error when resolving component 'component3_imported' from '" + resourcePath("importer/invalid_model.cellml") + "'.";
+
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto model = parser->parseModel(fileContents("importer/import_invalid_component.cellml"));
+    model->component(0)->setImportReference("component3");
+    model->component(0)->setName("component3_imported");
 
     importer->resolveImports(model, resourcePath("importer"));
     EXPECT_EQ(size_t(1), importer->errorCount());

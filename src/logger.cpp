@@ -63,8 +63,13 @@ IssuePtr Logger::error(size_t index) const
     return issue;
 }
 
-bool Logger::removeError(size_t /*index*/)
+bool Logger::removeError(size_t index)
 {
+    if (index < mPimpl->mErrors.size()) {
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + mPimpl->mErrors.at(index));
+        mPimpl->mErrors.erase(mPimpl->mErrors.begin() + index);
+        return true;
+    }
     return false;
 }
 
@@ -82,8 +87,13 @@ IssuePtr Logger::warning(size_t index) const
     return issue;
 }
 
-bool Logger::removeWarning(size_t /*index*/)
+bool Logger::removeWarning(size_t index)
 {
+    if (index < mPimpl->mWarnings.size()) {
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + mPimpl->mWarnings.at(index));
+        mPimpl->mWarnings.erase(mPimpl->mWarnings.begin() + index);
+        return true;
+    }
     return false;
 }
 
@@ -101,8 +111,13 @@ IssuePtr Logger::message(size_t index) const
     return issue;
 }
 
-bool Logger::removeMessage(size_t /*index*/)
+bool Logger::removeMessage(size_t index)
 {
+    if (index < mPimpl->mMessages.size()) {
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + mPimpl->mMessages.at(index));
+        mPimpl->mMessages.erase(mPimpl->mMessages.begin() + index);
+        return true;
+    }
     return false;
 }
 
@@ -147,8 +162,25 @@ IssuePtr Logger::issue(size_t index) const
     return issue;
 }
 
-bool Logger::removeIssue(size_t /*index*/)
+bool Logger::removeIssue(size_t index)
 {
+    auto issue = this->issue(index);
+    if (issue != nullptr) {
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + index);
+        libcellml::Issue::Level level = issue->level();
+        switch (level) {
+        case libcellml::Issue::Level::ERROR:
+            mPimpl->mErrors.erase(std::remove_if(mPimpl->mErrors.begin(), mPimpl->mErrors.end(), [=](size_t errorIndex) -> bool { return errorIndex == index; }), mPimpl->mErrors.end());
+            break;
+        case libcellml::Issue::Level::WARNING:
+            mPimpl->mWarnings.erase(std::remove_if(mPimpl->mWarnings.begin(), mPimpl->mWarnings.end(), [=](size_t warningIndex) -> bool { return warningIndex == index; }), mPimpl->mWarnings.end());
+            break;
+        case libcellml::Issue::Level::MESSAGE:
+            mPimpl->mMessages.erase(std::remove_if(mPimpl->mMessages.begin(), mPimpl->mMessages.end(), [=](size_t messageIndex) -> bool { return messageIndex == index; }), mPimpl->mMessages.end());
+            break;
+        }
+        return true;
+    }
     return false;
 }
 
