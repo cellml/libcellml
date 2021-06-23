@@ -68,18 +68,22 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
 }
 
 inline Model::ModelImpl *Model::pFunc()
-{ return dynamic_cast<Model::ModelImpl *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<Model::ModelImpl *>( Entity::pFunc() );
+}
 
 inline Model::ModelImpl const *Model::pFunc() const
-{ return dynamic_cast<Model::ModelImpl const *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<Model::ModelImpl const *>( Entity::pFunc() );
+}
 
 Model::Model()
-    : ComponentEntity(std::make_unique<Model::ModelImpl>())
+    : ComponentEntity(new Model::ModelImpl())
 {
 }
 
 Model::Model(const std::string &name)
-    : ComponentEntity(std::make_unique<Model::ModelImpl>())
+    : ComponentEntity(new Model::ModelImpl())
 {
     setName(name);
 }

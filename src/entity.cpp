@@ -29,17 +29,22 @@ using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entit
 
 inline Entity::EntityImpl *Entity::pFunc()
 {
-    return mPimpl.get();
+    return mPimpl;
 }
 
 inline Entity::EntityImpl const * Entity::pFunc() const
 {
-    return mPimpl.get();
+    return mPimpl;
 }
 
-Entity::Entity( std::unique_ptr<Entity::EntityImpl> derivedPimpl )
-    : mPimpl( std::move( derivedPimpl ) )
+Entity::Entity( Entity::EntityImpl *derivedPimpl )
+    : mPimpl( derivedPimpl )
 {
+}
+
+Entity::~Entity()
+{
+    delete mPimpl;
 }
 
 void Entity::setId(const std::string &id)

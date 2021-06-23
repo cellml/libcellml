@@ -32,7 +32,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT Entity
 {
 public:
-    virtual ~Entity() = default; /**< Destructor. */
+    virtual ~Entity(); /**< Destructor. */
     Entity(const Entity &rhs) = delete; /**< Copy constructor. */
     Entity(Entity &&rhs) noexcept = delete; /**< Move constructor. */
     Entity &operator=(Entity rhs) = delete; /**< Assignment operator. */
@@ -85,16 +85,17 @@ public:
     bool equals(const EntityPtr &other) const;
 
 protected:
+    virtual bool doEquals(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
+
     class EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
 
-    explicit Entity(std::unique_ptr<EntityImpl> derivedPimpl); /**< Constructor, @private. */
-    virtual bool doEquals(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
+    explicit Entity(EntityImpl *derivedPimpl); /**< Constructor, @private. */
 
     EntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
     EntityImpl const * pFunc() const; /**< Const getter for private implementation pointer, @private. */
 
 private:
-    std::unique_ptr<EntityImpl> mPimpl; /**< Private member to implementation pointer, @private. */
+    EntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

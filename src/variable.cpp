@@ -43,19 +43,23 @@ std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVar
 }
 
 inline Variable::VariableImpl *Variable::pFunc()
-{ return dynamic_cast<Variable::VariableImpl *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<Variable::VariableImpl *>( Entity::pFunc() );
+}
 
 inline Variable::VariableImpl const *Variable::pFunc() const
-{ return dynamic_cast<Variable::VariableImpl const *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<Variable::VariableImpl const *>( Entity::pFunc() );
+}
 
 Variable::Variable()
-    : NamedEntity(std::make_unique<Variable::VariableImpl>())
+    : NamedEntity(new Variable::VariableImpl())
 {
     pFunc()->mVariable = this;
 }
 
 Variable::Variable(const std::string &name)
-    : NamedEntity(std::make_unique<Variable::VariableImpl>())
+    : NamedEntity(new Variable::VariableImpl())
 {
     pFunc()->mVariable = this;
     setName(name);

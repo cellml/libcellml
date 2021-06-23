@@ -27,18 +27,22 @@ limitations under the License.
 namespace libcellml {
 
 inline Reset::ResetImpl *Reset::pFunc()
-{ return dynamic_cast<Reset::ResetImpl *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<Reset::ResetImpl *>( Entity::pFunc() );
+}
 
 inline Reset::ResetImpl const *Reset::pFunc() const
-{ return dynamic_cast<Reset::ResetImpl const *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<Reset::ResetImpl const *>( Entity::pFunc() );
+}
 
 Reset::Reset()
-    : ParentedEntity(std::make_unique<Reset::ResetImpl>())
+    : ParentedEntity(new Reset::ResetImpl())
 {
 }
 
 Reset::Reset(int order)
-    : ParentedEntity(std::make_unique<Reset::ResetImpl>())
+    : ParentedEntity(new Reset::ResetImpl())
 {
     setOrder(order);
 }
