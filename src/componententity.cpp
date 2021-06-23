@@ -53,10 +53,6 @@ ComponentEntity::ComponentEntity( std::unique_ptr<ComponentEntityImpl> pImpl )
 {
 }
 
-ComponentEntity::~ComponentEntity()
-{
-}
-
 bool ComponentEntity::addComponent(const ComponentPtr &component)
 {
     if (component == nullptr) {
