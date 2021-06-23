@@ -57,13 +57,16 @@ public:
     std::string name() const;
 
 protected:
-    NamedEntity(); /**< Constructor, @private. */
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-private:
-    struct NamedEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
-    NamedEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class NamedEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    NamedEntity(); /**< Constructor, @private. */
+    NamedEntity( std::unique_ptr<NamedEntityImpl> pImpl ); /**< Constructor for derived classes, @private. */
+
+    NamedEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    NamedEntityImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

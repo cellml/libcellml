@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "libcellml/exportdefinitions.h"
@@ -84,12 +85,16 @@ public:
     bool equals(const EntityPtr &other) const;
 
 protected:
-    Entity(); /**< Constructor, @private. */
+    class EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    Entity(std::unique_ptr<EntityImpl> derivedPimpl); /**< Constructor, @private. */
     virtual bool doEquals(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
 
+    EntityImpl *pFunc() { return mPimpl.get(); } /**< Getter for private implementation pointer, @private. */
+    EntityImpl const * pFunc() const { return mPimpl.get(); } /**< Const getter for private implementation pointer, @private. */
+
 private:
-    struct EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
-    EntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    std::unique_ptr<EntityImpl> mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

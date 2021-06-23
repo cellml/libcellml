@@ -30,6 +30,8 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Reset: public ParentedEntity
 {
+    friend class Component;
+
 public:
     ~Reset() override; /**< Destructor. */
     Reset(const Reset &rhs) = delete; /**< Copy constructor. */
@@ -269,13 +271,16 @@ public:
     ResetPtr clone() const;
 
 private:
+    class ResetImpl; /**< Forward declaration for pImpl idiom, @private. */
+
     Reset(); /**< Constructor, @private. */
     explicit Reset(int order); /**< Constructor with int parameter, @private. */
+    Reset( std::unique_ptr<ResetImpl> pImpl ); /**< Constructor for derived classes, @private. */
+
+    ResetImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    ResetImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
-
-    struct ResetImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ResetImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

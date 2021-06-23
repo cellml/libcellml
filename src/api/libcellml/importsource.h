@@ -130,8 +130,10 @@ protected:
 private:
     ImportSource(); /**< Constructor, @private. */
 
-    struct ImportSourceImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ImportSourceImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ImportSourceImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ImportSourceImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    ImportSourceImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
