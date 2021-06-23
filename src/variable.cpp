@@ -129,8 +129,9 @@ void Variable::removeAllEquivalences()
 {
     auto thisVariable = shared_from_this();
     for (const auto &variable : pFunc()->mEquivalentVariables) {
-        if (!variable.expired()) {
-            variable.lock()->pFunc()->unsetEquivalentTo(thisVariable);
+        auto equivalentVariable = variable.lock();
+        if (equivalentVariable != nullptr) {
+            equivalentVariable->pFunc()->unsetEquivalentTo(thisVariable);
         }
     }
     pFunc()->mEquivalentVariables.clear();
@@ -149,7 +150,15 @@ VariablePtr Variable::equivalentVariable(size_t index) const
 
 size_t Variable::equivalentVariableCount() const
 {
-    return pFunc()->mEquivalentVariables.size();
+    size_t count = 0;
+    for (auto &variableWeak : pFunc()->mEquivalentVariables) {
+        auto variable = variableWeak.lock();
+        if (variable != nullptr) {
+            ++count;
+        }
+
+    }
+    return count;
 }
 
 bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
