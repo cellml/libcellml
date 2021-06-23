@@ -48,11 +48,6 @@ inline ComponentEntity::ComponentEntityImpl *ComponentEntity::pFunc()
 inline ComponentEntity::ComponentEntityImpl const *ComponentEntity::pFunc() const
 { return static_cast<ComponentEntity::ComponentEntityImpl const *>( Entity::pFunc() ); }
 
-ComponentEntity::ComponentEntity()
-    : NamedEntity(std::unique_ptr<ComponentEntity::ComponentEntityImpl>( new ComponentEntity::ComponentEntityImpl() ))
-{
-}
-
 ComponentEntity::ComponentEntity( std::unique_ptr<ComponentEntityImpl> pImpl )
     : NamedEntity(std::move(pImpl))
 {

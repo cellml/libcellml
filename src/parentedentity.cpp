@@ -29,11 +29,6 @@ inline ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc()
 inline ParentedEntity::ParentedEntityImpl const *ParentedEntity::pFunc() const
 { return static_cast<ParentedEntity::ParentedEntityImpl const *>( Entity::pFunc() ); }
 
-ParentedEntity::ParentedEntity()
-    : Entity(std::unique_ptr<ParentedEntity::ParentedEntityImpl>( new ParentedEntity::ParentedEntityImpl() ))
-{
-}
-
 ParentedEntity::ParentedEntity( std::unique_ptr<ParentedEntity::ParentedEntityImpl> pImpl )
     : Entity(std::move(pImpl))
 {
