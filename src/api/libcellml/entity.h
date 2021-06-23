@@ -32,7 +32,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT Entity
 {
 public:
-    virtual ~Entity(); /**< Destructor. */
+    virtual ~Entity() = default; /**< Destructor. */
     Entity(const Entity &rhs) = delete; /**< Copy constructor. */
     Entity(Entity &&rhs) noexcept = delete; /**< Move constructor. */
     Entity &operator=(Entity rhs) = delete; /**< Assignment operator. */

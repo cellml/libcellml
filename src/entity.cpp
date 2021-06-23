@@ -32,10 +32,6 @@ Entity::Entity( std::unique_ptr<Entity::EntityImpl> derivedPimpl )
 {
 }
 
-Entity::~Entity()
-{
-}
-
 void Entity::setId(const std::string &id)
 {
     pFunc()->mId = id;
