@@ -42,13 +42,17 @@ std::vector<ComponentPtr>::const_iterator ComponentEntity::ComponentEntityImpl::
 }
 
 inline ComponentEntity::ComponentEntityImpl *ComponentEntity::pFunc()
-{ return dynamic_cast<ComponentEntity::ComponentEntityImpl *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<ComponentEntity::ComponentEntityImpl *>( Entity::pFunc() );
+}
 
 inline ComponentEntity::ComponentEntityImpl const *ComponentEntity::pFunc() const
-{ return dynamic_cast<ComponentEntity::ComponentEntityImpl const *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<ComponentEntity::ComponentEntityImpl const *>( Entity::pFunc() );
+}
 
-ComponentEntity::ComponentEntity( std::unique_ptr<ComponentEntityImpl> pImpl )
-    : NamedEntity(std::move(pImpl))
+ComponentEntity::ComponentEntity(ComponentEntityImpl *pImpl )
+    : NamedEntity(pImpl)
 {
 }
 

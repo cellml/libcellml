@@ -42,19 +42,23 @@ std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std
 }
 
 inline Units::UnitsImpl *Units::pFunc()
-{ return dynamic_cast<Units::UnitsImpl *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<Units::UnitsImpl *>( Entity::pFunc() );
+}
 
 inline Units::UnitsImpl const *Units::pFunc() const
-{ return dynamic_cast<Units::UnitsImpl const *>( Entity::pFunc() ); }
+{
+    return dynamic_cast<Units::UnitsImpl const *>( Entity::pFunc() );
+}
 
 Units::Units()
-    : NamedEntity(std::make_unique<Units::UnitsImpl>())
+    : NamedEntity(new Units::UnitsImpl())
 {
     pFunc()->mUnits = this;
 }
 
 Units::Units(const std::string &name)
-    : NamedEntity(std::make_unique<Units::UnitsImpl>())
+    : NamedEntity(new Units::UnitsImpl())
 {
     pFunc()->mUnits = this;
     setName(name);
