@@ -29,11 +29,6 @@ inline NamedEntity::NamedEntityImpl *NamedEntity::pFunc()
 inline NamedEntity::NamedEntityImpl const *NamedEntity::pFunc() const
 { return static_cast<NamedEntity::NamedEntityImpl const *>( Entity::pFunc() ); }
 
-NamedEntity::NamedEntity()
-    : ParentedEntity(std::unique_ptr<NamedEntity::NamedEntityImpl>( new NamedEntity::NamedEntityImpl() ))
-{
-}
-
 NamedEntity::NamedEntity( std::unique_ptr<NamedEntity::NamedEntityImpl> pImpl )
     : ParentedEntity(std::move( pImpl ))
 {

@@ -315,7 +315,6 @@ protected:
 
     class ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
 
-    ComponentEntity(); /**< ComponentEntity Constructor. */
     ComponentEntity( std::unique_ptr<ComponentEntityImpl> pImpl ); /**< Constructor for derived classes, @private. */
 
     ComponentEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */

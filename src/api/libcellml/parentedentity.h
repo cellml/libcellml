@@ -81,7 +81,6 @@ public:
 protected:
     class ParentedEntityImpl; /**< Forward declaration for pImpl idiom. */
 
-    ParentedEntity(); /**< Constructor. */
     ParentedEntity( std::unique_ptr<ParentedEntityImpl> pImpl ); /**< Constructor for derived classes, @private. */
 
     ParentedEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */

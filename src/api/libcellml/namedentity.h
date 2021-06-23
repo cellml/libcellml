@@ -62,7 +62,6 @@ protected:
 
     class NamedEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
 
-    NamedEntity(); /**< Constructor, @private. */
     NamedEntity( std::unique_ptr<NamedEntityImpl> pImpl ); /**< Constructor for derived classes, @private. */
 
     NamedEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
