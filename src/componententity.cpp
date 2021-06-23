@@ -113,7 +113,6 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     auto result = pFunc()->findComponent(component);
     if (result != pFunc()->mComponents.end()) {
         component->removeParent();
-        component->removeAllVariables();
         pFunc()->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
