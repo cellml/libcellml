@@ -33,12 +33,12 @@ inline Reset::ResetImpl const *Reset::pFunc() const
 { return dynamic_cast<Reset::ResetImpl const *>( Entity::pFunc() ); }
 
 Reset::Reset()
-    : ParentedEntity(std::unique_ptr<Reset::ResetImpl>( new Reset::ResetImpl() ))
+    : ParentedEntity(std::make_unique<Reset::ResetImpl>())
 {
 }
 
 Reset::Reset(int order)
-    : ParentedEntity(std::unique_ptr<Reset::ResetImpl>( new Reset::ResetImpl() ))
+    : ParentedEntity(std::make_unique<Reset::ResetImpl>())
 {
     setOrder(order);
 }

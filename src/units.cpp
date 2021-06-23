@@ -48,13 +48,13 @@ inline Units::UnitsImpl const *Units::pFunc() const
 { return dynamic_cast<Units::UnitsImpl const *>( Entity::pFunc() ); }
 
 Units::Units()
-    : NamedEntity(std::unique_ptr<Units::UnitsImpl>( new Units::UnitsImpl() ))
+    : NamedEntity(std::make_unique<Units::UnitsImpl>())
 {
     pFunc()->mUnits = this;
 }
 
 Units::Units(const std::string &name)
-    : NamedEntity(std::unique_ptr<Units::UnitsImpl>( new Units::UnitsImpl() ))
+    : NamedEntity(std::make_unique<Units::UnitsImpl>())
 {
     pFunc()->mUnits = this;
     setName(name);

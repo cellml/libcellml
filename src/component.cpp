@@ -74,13 +74,13 @@ inline Component::ComponentImpl const *Component::pFunc() const
 { return dynamic_cast<Component::ComponentImpl const *>( Entity::pFunc() ); }
 
 Component::Component()
-    : ComponentEntity(std::unique_ptr<Component::ComponentImpl>( new Component::ComponentImpl() ))
+    : ComponentEntity(std::make_unique<Component::ComponentImpl>())
 {
     pFunc()->mComponent = this;
 }
 
 Component::Component(const std::string &name)
-    : ComponentEntity(std::unique_ptr<Component::ComponentImpl>( new Component::ComponentImpl() ))
+    : ComponentEntity(std::make_unique<Component::ComponentImpl>())
 {
     pFunc()->mComponent = this;
     setName(name);
