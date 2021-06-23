@@ -74,12 +74,12 @@ inline Model::ModelImpl const *Model::pFunc() const
 { return dynamic_cast<Model::ModelImpl const *>( Entity::pFunc() ); }
 
 Model::Model()
-    : ComponentEntity(std::unique_ptr<Model::ModelImpl>( new Model::ModelImpl() ))
+    : ComponentEntity(std::make_unique<Model::ModelImpl>())
 {
 }
 
 Model::Model(const std::string &name)
-    : ComponentEntity(std::unique_ptr<Model::ModelImpl>( new Model::ModelImpl() ))
+    : ComponentEntity(std::make_unique<Model::ModelImpl>())
 {
     setName(name);
 }

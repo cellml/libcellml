@@ -49,13 +49,13 @@ inline Variable::VariableImpl const *Variable::pFunc() const
 { return dynamic_cast<Variable::VariableImpl const *>( Entity::pFunc() ); }
 
 Variable::Variable()
-    : NamedEntity(std::unique_ptr<Variable::VariableImpl>( new Variable::VariableImpl() ))
+    : NamedEntity(std::make_unique<Variable::VariableImpl>())
 {
     pFunc()->mVariable = this;
 }
 
 Variable::Variable(const std::string &name)
-    : NamedEntity(std::unique_ptr<Variable::VariableImpl>( new Variable::VariableImpl() ))
+    : NamedEntity(std::make_unique<Variable::VariableImpl>())
 {
     pFunc()->mVariable = this;
     setName(name);

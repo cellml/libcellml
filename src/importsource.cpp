@@ -52,7 +52,7 @@ inline ImportSource::ImportSourceImpl const *ImportSource::pFunc() const
 { return dynamic_cast<ImportSource::ImportSourceImpl const *>( Entity::pFunc() ); }
 
 ImportSource::ImportSource()
-    : Entity(std::unique_ptr<ImportSource::ImportSourceImpl>( new ImportSource::ImportSourceImpl() ))
+    : Entity(std::make_unique<ImportSource::ImportSourceImpl>())
 {
 }
 
