@@ -90,8 +90,8 @@ protected:
     explicit Entity(std::unique_ptr<EntityImpl> derivedPimpl); /**< Constructor, @private. */
     virtual bool doEquals(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
 
-    EntityImpl *pFunc() { return mPimpl.get(); } /**< Getter for private implementation pointer, @private. */
-    EntityImpl const * pFunc() const { return mPimpl.get(); } /**< Const getter for private implementation pointer, @private. */
+    EntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    EntityImpl const * pFunc() const; /**< Const getter for private implementation pointer, @private. */
 
 private:
     std::unique_ptr<EntityImpl> mPimpl; /**< Private member to implementation pointer, @private. */
