@@ -34,10 +34,6 @@ ParentedEntity::ParentedEntity( std::unique_ptr<ParentedEntity::ParentedEntityIm
 {
 }
 
-ParentedEntity::~ParentedEntity()
-{
-}
-
 ParentedEntityPtr ParentedEntity::parent() const
 {
     return pFunc()->mParent.lock();

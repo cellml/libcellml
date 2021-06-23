@@ -60,10 +60,6 @@ Units::Units(const std::string &name)
     setName(name);
 }
 
-Units::~Units()
-{
-}
-
 bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
 {
     return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
