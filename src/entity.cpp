@@ -27,6 +27,16 @@ namespace libcellml {
 
 using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entity pointer. */
 
+inline Entity::EntityImpl *Entity::pFunc()
+{
+    return mPimpl.get();
+}
+
+inline Entity::EntityImpl const * Entity::pFunc() const
+{
+    return mPimpl.get();
+}
+
 Entity::Entity( std::unique_ptr<Entity::EntityImpl> derivedPimpl )
     : mPimpl( std::move( derivedPimpl ) )
 {
