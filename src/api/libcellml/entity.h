@@ -87,7 +87,7 @@ public:
 protected:
     class EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
 
-    Entity(std::unique_ptr<EntityImpl> derivedPimpl); /**< Constructor, @private. */
+    explicit Entity(std::unique_ptr<EntityImpl> derivedPimpl); /**< Constructor, @private. */
     virtual bool doEquals(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
 
     EntityImpl *pFunc() { return mPimpl.get(); } /**< Getter for private implementation pointer, @private. */
