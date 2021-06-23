@@ -275,7 +275,6 @@ private:
 
     Reset(); /**< Constructor, @private. */
     explicit Reset(int order); /**< Constructor with int parameter, @private. */
-    Reset( std::unique_ptr<ResetImpl> pImpl ); /**< Constructor for derived classes, @private. */
 
     ResetImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
     ResetImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
