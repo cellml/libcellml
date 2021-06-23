@@ -21,36 +21,30 @@ limitations under the License.
 
 #include "libcellml/variable.h"
 
+#include "reset_p.h"
 #include "utilities.h"
 
 namespace libcellml {
 
-/**
- * @brief The Reset::ResetImpl struct.
- *
- * The private implementation for the Reset class.
- */
-struct Reset::ResetImpl
-{
-    int mOrder = 0; /**< The relative order of the reset.*/
-    bool mOrderSet = false; /**< Whether the relative order of the reset has been set.*/
-    VariablePtr mVariable; /**< The associated variable for the reset.*/
-    VariablePtr mTestVariable; /**< The associated test_variable for the reset.*/
-    std::string mTestValue; /**< The MathML string for the test_value.*/
-    std::string mTestValueId; /**< The identifier of the test_value block */
-    std::string mResetValue; /**< The MathML string for the reset_value.*/
-    std::string mResetValueId; /**< The identifier of the reset_value block */
-};
+inline Reset::ResetImpl *Reset::pFunc()
+{ return static_cast<Reset::ResetImpl *>( Entity::pFunc() ); }
+
+inline Reset::ResetImpl const *Reset::pFunc() const
+{ return static_cast<Reset::ResetImpl const *>( Entity::pFunc() ); }
 
 Reset::Reset()
-    : mPimpl(new ResetImpl())
+    : ParentedEntity(std::unique_ptr<Reset::ResetImpl>( new Reset::ResetImpl() ))
 {
 }
 
 Reset::Reset(int order)
-    : mPimpl(new ResetImpl())
+    : ParentedEntity(std::unique_ptr<Reset::ResetImpl>( new Reset::ResetImpl() ))
 {
     setOrder(order);
+}
+
+Reset::~Reset()
+{
 }
 
 ResetPtr Reset::create() noexcept
@@ -63,120 +57,115 @@ ResetPtr Reset::create(int order) noexcept
     return std::shared_ptr<Reset> {new Reset {order}};
 }
 
-Reset::~Reset()
-{
-    delete mPimpl;
-}
-
 void Reset::setOrder(int order)
 {
-    mPimpl->mOrder = order;
-    mPimpl->mOrderSet = true;
+    pFunc()->mOrder = order;
+    pFunc()->mOrderSet = true;
 }
 
 int Reset::order() const
 {
-    return mPimpl->mOrder;
+    return pFunc()->mOrder;
 }
 
 void Reset::unsetOrder()
 {
-    mPimpl->mOrderSet = false;
+    pFunc()->mOrderSet = false;
 }
 
 bool Reset::isOrderSet()
 {
-    return mPimpl->mOrderSet;
+    return pFunc()->mOrderSet;
 }
 
 void Reset::setVariable(const VariablePtr &variable)
 {
-    mPimpl->mVariable = variable;
+    pFunc()->mVariable = variable;
 }
 
 VariablePtr Reset::variable() const
 {
-    return mPimpl->mVariable;
+    return pFunc()->mVariable;
 }
 
 void Reset::setTestVariable(const VariablePtr &variable)
 {
-    mPimpl->mTestVariable = variable;
+    pFunc()->mTestVariable = variable;
 }
 
 VariablePtr Reset::testVariable() const
 {
-    return mPimpl->mTestVariable;
+    return pFunc()->mTestVariable;
 }
 
 void Reset::appendTestValue(const std::string &math)
 {
-    mPimpl->mTestValue.append(math);
+    pFunc()->mTestValue.append(math);
 }
 
 std::string Reset::testValue() const
 {
-    return mPimpl->mTestValue;
+    return pFunc()->mTestValue;
 }
 
 void Reset::setTestValueId(const std::string &id)
 {
-    mPimpl->mTestValueId = id;
+    pFunc()->mTestValueId = id;
 }
 
 void Reset::removeTestValueId()
 {
-    mPimpl->mTestValueId = "";
+    pFunc()->mTestValueId = "";
 }
 
 std::string Reset::testValueId() const
 {
-    return mPimpl->mTestValueId;
+    return pFunc()->mTestValueId;
 }
 
 void Reset::setTestValue(const std::string &math)
 {
-    mPimpl->mTestValue = math;
+    pFunc()->mTestValue = math;
 }
 
 void Reset::removeTestValue()
 {
-    mPimpl->mTestValue = "";
+    pFunc()->mTestValue = "";
 }
 
 void Reset::appendResetValue(const std::string &math)
 {
-    mPimpl->mResetValue.append(math);
+    pFunc()->mResetValue.append(math);
 }
 
 std::string Reset::resetValue() const
 {
-    return mPimpl->mResetValue;
+    return pFunc()->mResetValue;
 }
 
 void Reset::setResetValue(const std::string &math)
 {
-    mPimpl->mResetValue = math;
+    pFunc()->mResetValue = math;
 }
 
 void Reset::removeResetValue()
 {
-    mPimpl->mResetValue = "";
+    pFunc()->mResetValue = "";
 }
 
 void Reset::setResetValueId(const std::string &id)
 {
-    mPimpl->mResetValueId = id;
+    pFunc()->mResetValueId = id;
 }
 
 void Reset::removeResetValueId()
 {
-    mPimpl->mResetValueId = "";
+    pFunc()->mResetValueId = "";
 }
 
 std::string Reset::resetValueId() const
 {
-    return mPimpl->mResetValueId;
+    return pFunc()->mResetValueId;
 }
 
 ResetPtr Reset::clone() const
@@ -189,11 +178,11 @@ ResetPtr Reset::clone() const
     r->setResetValueId(resetValueId());
     r->setTestValue(testValue());
     r->setTestValueId(testValueId());
-    if (mPimpl->mVariable != nullptr) {
-        r->setVariable(mPimpl->mVariable->clone());
+    if (pFunc()->mVariable != nullptr) {
+        r->setVariable(pFunc()->mVariable->clone());
     }
-    if (mPimpl->mTestVariable != nullptr) {
-        r->setTestVariable(mPimpl->mTestVariable->clone());
+    if (pFunc()->mTestVariable != nullptr) {
+        r->setTestVariable(pFunc()->mTestVariable->clone());
     }
 
     return r;
@@ -203,24 +192,24 @@ bool Reset::doEquals(const EntityPtr &other) const
 {
     if (Entity::doEquals(other)) {
         auto reset = std::dynamic_pointer_cast<Reset>(other);
-        if ((reset != nullptr) && mPimpl->mOrder == reset->order()
-            && areEqual(mPimpl->mResetValue, reset->resetValue())
-            && mPimpl->mResetValueId == reset->resetValueId()
-            && areEqual(mPimpl->mTestValue, reset->testValue())
-            && mPimpl->mTestValueId == reset->testValueId()) {
-            if (mPimpl->mTestVariable != nullptr
-                && !mPimpl->mTestVariable->equals(reset->testVariable())) {
+        if ((reset != nullptr) && pFunc()->mOrder == reset->order()
+            && areEqual(pFunc()->mResetValue, reset->resetValue())
+            && pFunc()->mResetValueId == reset->resetValueId()
+            && areEqual(pFunc()->mTestValue, reset->testValue())
+            && pFunc()->mTestValueId == reset->testValueId()) {
+            if (pFunc()->mTestVariable != nullptr
+                && !pFunc()->mTestVariable->equals(reset->testVariable())) {
                 return false;
             }
-            if ((mPimpl->mTestVariable == nullptr)
+            if ((pFunc()->mTestVariable == nullptr)
                 && reset->testVariable() != nullptr) {
                 return false;
             }
-            if ((mPimpl->mVariable != nullptr)
-                && !mPimpl->mVariable->equals(reset->variable())) {
+            if ((pFunc()->mVariable != nullptr)
+                && !pFunc()->mVariable->equals(reset->variable())) {
                 return false;
             }
-            if ((mPimpl->mVariable == nullptr)
+            if ((pFunc()->mVariable == nullptr)
                 && reset->variable() != nullptr) {
                 return false;
             }

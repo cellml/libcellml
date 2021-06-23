@@ -313,11 +313,13 @@ protected:
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-    ComponentEntity(); /**< ComponentEntity Constructor. */
+    class ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
 
-private:
-    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    ComponentEntity(); /**< ComponentEntity Constructor. */
+    ComponentEntity( std::unique_ptr<ComponentEntityImpl> pImpl ); /**< Constructor for derived classes, @private. */
+
+    ComponentEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    ComponentEntityImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

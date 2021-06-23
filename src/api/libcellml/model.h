@@ -372,8 +372,10 @@ private:
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-    struct ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ModelImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    ModelImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
