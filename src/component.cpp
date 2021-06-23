@@ -208,7 +208,6 @@ bool Component::removeVariable(size_t index)
         auto variable = pFunc()->mVariables[index];
         pFunc()->mVariables.erase(pFunc()->mVariables.begin() + ptrdiff_t(index));
         variable->removeParent();
-        variable->removeAllEquivalences();
         return true;
     }
 
@@ -220,7 +219,6 @@ bool Component::removeVariable(const std::string &name)
     auto result = pFunc()->findVariable(name);
     if (result != pFunc()->mVariables.end()) {
         (*result)->removeParent();
-        (*result)->removeAllEquivalences();
         pFunc()->mVariables.erase(result);
         return true;
     }
@@ -234,7 +232,6 @@ bool Component::removeVariable(const VariablePtr &variable)
     if (result != pFunc()->mVariables.end()) {
         pFunc()->mVariables.erase(result);
         variable->removeParent();
-        variable->removeAllEquivalences();
         return true;
     }
 
@@ -245,7 +242,6 @@ void Component::removeAllVariables()
 {
     for (const auto &variable : pFunc()->mVariables) {
         variable->removeParent();
-        variable->removeAllEquivalences();
     }
     pFunc()->mVariables.clear();
 }
