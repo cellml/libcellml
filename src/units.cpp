@@ -42,10 +42,10 @@ std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std
 }
 
 inline Units::UnitsImpl *Units::pFunc()
-{ return static_cast<Units::UnitsImpl *>( Entity::pFunc() ); }
+{ return dynamic_cast<Units::UnitsImpl *>( Entity::pFunc() ); }
 
 inline Units::UnitsImpl const *Units::pFunc() const
-{ return static_cast<Units::UnitsImpl const *>( Entity::pFunc() ); }
+{ return dynamic_cast<Units::UnitsImpl const *>( Entity::pFunc() ); }
 
 Units::Units()
     : NamedEntity(std::unique_ptr<Units::UnitsImpl>( new Units::UnitsImpl() ))

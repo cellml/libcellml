@@ -46,10 +46,10 @@ public:
 };
 
 inline ImportSource::ImportSourceImpl *ImportSource::pFunc()
-{ return static_cast<ImportSource::ImportSourceImpl *>( Entity::pFunc() ); }
+{ return dynamic_cast<ImportSource::ImportSourceImpl *>( Entity::pFunc() ); }
 
 inline ImportSource::ImportSourceImpl const *ImportSource::pFunc() const
-{ return static_cast<ImportSource::ImportSourceImpl const *>( Entity::pFunc() ); }
+{ return dynamic_cast<ImportSource::ImportSourceImpl const *>( Entity::pFunc() ); }
 
 ImportSource::ImportSource()
     : Entity(std::unique_ptr<ImportSource::ImportSourceImpl>( new ImportSource::ImportSourceImpl() ))
