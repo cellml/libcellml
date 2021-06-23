@@ -24,10 +24,10 @@ limitations under the License.
 namespace libcellml {
 
 inline ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc()
-{ return static_cast<ParentedEntity::ParentedEntityImpl *>( Entity::pFunc() ); }
+{ return dynamic_cast<ParentedEntity::ParentedEntityImpl *>( Entity::pFunc() ); }
 
 inline ParentedEntity::ParentedEntityImpl const *ParentedEntity::pFunc() const
-{ return static_cast<ParentedEntity::ParentedEntityImpl const *>( Entity::pFunc() ); }
+{ return dynamic_cast<ParentedEntity::ParentedEntityImpl const *>( Entity::pFunc() ); }
 
 ParentedEntity::ParentedEntity( std::unique_ptr<ParentedEntity::ParentedEntityImpl> pImpl )
     : Entity(std::move(pImpl))

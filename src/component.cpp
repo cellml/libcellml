@@ -68,10 +68,10 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
 }
 
 inline Component::ComponentImpl *Component::pFunc()
-{ return static_cast<Component::ComponentImpl *>( Entity::pFunc() ); }
+{ return dynamic_cast<Component::ComponentImpl *>( Entity::pFunc() ); }
 
 inline Component::ComponentImpl const *Component::pFunc() const
-{ return static_cast<Component::ComponentImpl const *>( Entity::pFunc() ); }
+{ return dynamic_cast<Component::ComponentImpl const *>( Entity::pFunc() ); }
 
 Component::Component()
     : ComponentEntity(std::unique_ptr<Component::ComponentImpl>( new Component::ComponentImpl() ))

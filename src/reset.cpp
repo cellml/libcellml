@@ -27,10 +27,10 @@ limitations under the License.
 namespace libcellml {
 
 inline Reset::ResetImpl *Reset::pFunc()
-{ return static_cast<Reset::ResetImpl *>( Entity::pFunc() ); }
+{ return dynamic_cast<Reset::ResetImpl *>( Entity::pFunc() ); }
 
 inline Reset::ResetImpl const *Reset::pFunc() const
-{ return static_cast<Reset::ResetImpl const *>( Entity::pFunc() ); }
+{ return dynamic_cast<Reset::ResetImpl const *>( Entity::pFunc() ); }
 
 Reset::Reset()
     : ParentedEntity(std::unique_ptr<Reset::ResetImpl>( new Reset::ResetImpl() ))
