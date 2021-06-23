@@ -56,10 +56,6 @@ ImportSource::ImportSource()
 {
 }
 
-ImportSource::~ImportSource()
-{
-}
-
 ImportSourcePtr ImportSource::create() noexcept
 {
     return std::shared_ptr<ImportSource> {new ImportSource {}};

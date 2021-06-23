@@ -34,10 +34,6 @@ NamedEntity::NamedEntity( std::unique_ptr<NamedEntity::NamedEntityImpl> pImpl )
 {
 }
 
-NamedEntity::~NamedEntity()
-{
-}
-
 void NamedEntity::setName(const std::string &name)
 {
     pFunc()->mName = name;

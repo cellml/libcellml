@@ -94,10 +94,6 @@ ModelPtr Model::create(const std::string &name) noexcept
     return std::shared_ptr<Model> {new Model {name}};
 }
 
-Model::~Model()
-{
-}
-
 bool Model::doAddComponent(const ComponentPtr &component)
 {
     auto thisModel = shared_from_this();
