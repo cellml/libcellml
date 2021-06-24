@@ -25,12 +25,12 @@ namespace libcellml {
 
 inline NamedEntity::NamedEntityImpl *NamedEntity::pFunc()
 {
-    return dynamic_cast<NamedEntity::NamedEntityImpl *>( Entity::pFunc() );
+    return reinterpret_cast<NamedEntity::NamedEntityImpl *>( Entity::pFunc() );
 }
 
 inline NamedEntity::NamedEntityImpl const *NamedEntity::pFunc() const
 {
-    return dynamic_cast<NamedEntity::NamedEntityImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<NamedEntity::NamedEntityImpl const *>( Entity::pFunc() );
 }
 
 NamedEntity::NamedEntity(NamedEntity::NamedEntityImpl *pImpl)

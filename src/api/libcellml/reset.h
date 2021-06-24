@@ -271,15 +271,15 @@ public:
     ResetPtr clone() const;
 
 private:
-    class ResetImpl; /**< Forward declaration for pImpl idiom, @private. */
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
     Reset(); /**< Constructor, @private. */
     explicit Reset(int order); /**< Constructor with int parameter, @private. */
 
+    class ResetImpl; /**< Forward declaration for pImpl idiom, @private. */
+
     ResetImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
     ResetImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
-
-    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 };
 
 } // namespace libcellml

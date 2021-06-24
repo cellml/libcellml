@@ -25,12 +25,12 @@ namespace libcellml {
 
 inline ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc()
 {
-    return dynamic_cast<ParentedEntity::ParentedEntityImpl *>( Entity::pFunc() );
+    return reinterpret_cast<ParentedEntity::ParentedEntityImpl *>( Entity::pFunc() );
 }
 
 inline ParentedEntity::ParentedEntityImpl const *ParentedEntity::pFunc() const
 {
-    return dynamic_cast<ParentedEntity::ParentedEntityImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<ParentedEntity::ParentedEntityImpl const *>( Entity::pFunc() );
 }
 
 ParentedEntity::ParentedEntity( ParentedEntity::ParentedEntityImpl *pImpl )

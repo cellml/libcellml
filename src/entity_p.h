@@ -29,7 +29,6 @@ namespace libcellml {
 class Entity::EntityImpl
 {
 public:
-    virtual ~EntityImpl() = default;
     std::string mId; /**< String document identifier for this entity. */
 };
 
