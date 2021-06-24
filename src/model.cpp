@@ -69,12 +69,12 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
 
 inline Model::ModelImpl *Model::pFunc()
 {
-    return reinterpret_cast<Model::ModelImpl *>( Entity::pFunc() );
+    return reinterpret_cast<Model::ModelImpl *>(Entity::pFunc());
 }
 
 inline Model::ModelImpl const *Model::pFunc() const
 {
-    return reinterpret_cast<Model::ModelImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<Model::ModelImpl const *>(Entity::pFunc());
 }
 
 Model::Model()

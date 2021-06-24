@@ -27,7 +27,7 @@ namespace libcellml {
  *
  * The private implementation for the Reset class.
  */
-class Reset::ResetImpl : public ParentedEntityImpl
+class Reset::ResetImpl: public ParentedEntityImpl
 {
 public:
     int mOrder = 0; /**< The relative order of the reset.*/

@@ -69,12 +69,12 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
 
 Component::ComponentImpl *Component::pFunc()
 {
-    return reinterpret_cast<Component::ComponentImpl *>( Entity::pFunc() );
+    return reinterpret_cast<Component::ComponentImpl *>(Entity::pFunc());
 }
 
 Component::ComponentImpl const *Component::pFunc() const
 {
-    return reinterpret_cast<Component::ComponentImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<Component::ComponentImpl const *>(Entity::pFunc());
 }
 
 Component::Component()

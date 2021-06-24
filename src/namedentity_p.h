@@ -27,7 +27,7 @@ namespace libcellml {
  *
  * The private implementation for the NamedEntity class.
  */
-class NamedEntity::NamedEntityImpl : public ParentedEntityImpl
+class NamedEntity::NamedEntityImpl: public ParentedEntityImpl
 {
 public:
     std::string mName; /**< Entity name represented as a std::string. */

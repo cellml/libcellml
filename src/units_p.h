@@ -109,7 +109,7 @@ struct UnitDefinition
  *
  * The private implementation for the Units class.
  */
-class Units::UnitsImpl : public NamedEntityImpl
+class Units::UnitsImpl: public NamedEntityImpl
 {
 public:
     std::vector<UnitDefinition> mUnitDefinitions; /**< A vector of unit defined for this Units.*/

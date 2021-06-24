@@ -57,7 +57,6 @@ public:
     std::string name() const;
 
 protected:
-
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
     class NamedEntityImpl; /**< Forward declaration for pImpl idiom, @private. */

@@ -30,7 +30,7 @@ namespace libcellml {
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
-class Component::ComponentImpl : public ComponentEntityImpl
+class Component::ComponentImpl: public ComponentEntityImpl
 {
 public:
     Component *mComponent = nullptr;

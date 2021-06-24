@@ -38,7 +38,7 @@ using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>;
  *
  * The private implementation for the ImportSource class.
  */
-class ImportSource::ImportSourceImpl : public Entity::EntityImpl
+class ImportSource::ImportSourceImpl: public Entity::EntityImpl
 {
 public:
     std::string mUrl;
@@ -47,12 +47,12 @@ public:
 
 inline ImportSource::ImportSourceImpl *ImportSource::pFunc()
 {
-    return reinterpret_cast<ImportSource::ImportSourceImpl *>( Entity::pFunc() );
+    return reinterpret_cast<ImportSource::ImportSourceImpl *>(Entity::pFunc());
 }
 
 inline ImportSource::ImportSourceImpl const *ImportSource::pFunc() const
 {
-    return reinterpret_cast<ImportSource::ImportSourceImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<ImportSource::ImportSourceImpl const *>(Entity::pFunc());
 }
 
 ImportSource::ImportSource()
