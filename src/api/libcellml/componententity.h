@@ -31,7 +31,7 @@ class Component;
 class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
 public:
-    virtual ~ComponentEntity() override = 0; /**< Destructor. */
+    ~ComponentEntity() override = 0; /**< Destructor. */
     ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor. */
     ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor. */
 
