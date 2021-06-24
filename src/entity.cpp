@@ -32,9 +32,7 @@ Entity::Entity( Entity::EntityImpl *derivedPimpl )
 {
 }
 
-Entity::~Entity()
-{
-}
+Entity::~Entity() = default;
 
 void Entity::setId(const std::string &id)
 {

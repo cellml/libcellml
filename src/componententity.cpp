@@ -56,10 +56,6 @@ ComponentEntity::ComponentEntity(ComponentEntityImpl *pImpl )
 {
 }
 
-ComponentEntity::~ComponentEntity()
-{
-}
-
 bool ComponentEntity::addComponent(const ComponentPtr &component)
 {
     if (component == nullptr) {
