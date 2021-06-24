@@ -99,14 +99,10 @@ void Logger::removeAllIssues()
     mPimpl->mMessages.clear();
 }
 
-bool Logger::removeError(size_t index)
+void Logger::removeError(size_t index)
 {
-    if (index < mPimpl->mErrors.size()) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mErrors.at(index)));
-        mPimpl->mErrors.erase(mPimpl->mErrors.begin() + ptrdiff_t(index));
-        return true;
-    }
-    return false;
+    mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mErrors.at(index)));
+    mPimpl->mErrors.erase(mPimpl->mErrors.begin() + ptrdiff_t(index));
 }
 
 void Logger::addIssue(const IssuePtr &issue)

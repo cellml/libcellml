@@ -158,7 +158,7 @@ protected:
      *
      * @return @c true if the error is removed, @c false otherwise.
      */
-    bool removeError(size_t index);
+    void removeError(size_t index);
 
 private:
     struct LoggerImpl; /**< Forward declaration for pImpl idiom, @private. */
