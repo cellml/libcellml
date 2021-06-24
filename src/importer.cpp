@@ -386,16 +386,16 @@ bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSour
 bool isErrorRelatedToComponent(const IssuePtr &error, const ComponentPtr &component)
 {
     auto errorType = error->item()->type();
-    if (CellmlElementType::COMPONENT == errorType) {
+    if (errorType == CellmlElementType::COMPONENT) {
         if (component == error->item()->component()) {
             return true;
         }
-    } else if (CellmlElementType::VARIABLE == errorType) {
+    } else if (errorType == CellmlElementType::VARIABLE) {
         auto parent = owningComponent(error->item()->variable());
         if (component == parent) {
             return true;
         }
-    } else if (CellmlElementType::RESET == errorType) {
+    } else if (errorType == CellmlElementType::RESET) {
         auto parent = owningComponent(error->item()->reset());
         if (component == parent) {
             return true;
