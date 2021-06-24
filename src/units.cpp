@@ -41,14 +41,14 @@ std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std
                         [=](const UnitDefinition &u) -> bool { return u.mReference == reference; });
 }
 
-inline Units::UnitsImpl *Units::pFunc()
+Units::UnitsImpl *Units::pFunc()
 {
-    return dynamic_cast<Units::UnitsImpl *>( Entity::pFunc() );
+    return reinterpret_cast<Units::UnitsImpl *>( Entity::pFunc() );
 }
 
-inline Units::UnitsImpl const *Units::pFunc() const
+Units::UnitsImpl const *Units::pFunc() const
 {
-    return dynamic_cast<Units::UnitsImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<Units::UnitsImpl const *>( Entity::pFunc() );
 }
 
 Units::Units()

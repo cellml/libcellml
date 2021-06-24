@@ -89,10 +89,10 @@ protected:
 
     class EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
 
-    explicit Entity(EntityImpl *derivedPimpl); /**< Constructor, @private. */
+    explicit Entity(EntityImpl *derivedPimpl); /**< Constructor for derived classes, @private. */
 
-    EntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    EntityImpl const * pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    inline EntityImpl *pFunc() { return mPimpl; } /**< Getter for private implementation pointer, @private. */
+    inline EntityImpl const * pFunc() const { return mPimpl; } /**< Const getter for private implementation pointer, @private. */
 
 private:
     EntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */

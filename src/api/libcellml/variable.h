@@ -471,14 +471,13 @@ public:
 private:
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-    class VariableImpl; /**< Forward declaration for pImpl idiom, @private. */
-
     Variable(); /**< Constructor, @private. */
     explicit Variable(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
+    class VariableImpl; /**< Forward declaration for pImpl idiom, @private. */
+
     VariableImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
     VariableImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
-
 };
 
 } // namespace libcellml

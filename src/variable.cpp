@@ -42,14 +42,14 @@ std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVar
                         [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
 }
 
-inline Variable::VariableImpl *Variable::pFunc()
+Variable::VariableImpl *Variable::pFunc()
 {
-    return dynamic_cast<Variable::VariableImpl *>( Entity::pFunc() );
+    return reinterpret_cast<Variable::VariableImpl *>( Entity::pFunc() );
 }
 
-inline Variable::VariableImpl const *Variable::pFunc() const
+Variable::VariableImpl const *Variable::pFunc() const
 {
-    return dynamic_cast<Variable::VariableImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<Variable::VariableImpl const *>( Entity::pFunc() );
 }
 
 Variable::Variable()
@@ -139,19 +139,24 @@ void Variable::removeAllEquivalences()
 
 VariablePtr Variable::equivalentVariable(size_t index) const
 {
-    VariablePtr equivalentVariable = nullptr;
-    if (index < pFunc()->mEquivalentVariables.size()) {
-        VariableWeakPtr weakEquivalentVariable = pFunc()->mEquivalentVariables.at(index);
-        equivalentVariable = weakEquivalentVariable.lock();
+    size_t count = 0;
+    for (const auto &variableWeak : pFunc()->mEquivalentVariables) {
+        auto variable = variableWeak.lock();
+        if (variable != nullptr) {
+            if (count == index) {
+                return variable;
+            }
+            ++count;
+        }
     }
 
-    return equivalentVariable;
+    return nullptr;
 }
 
 size_t Variable::equivalentVariableCount() const
 {
     size_t count = 0;
-    for (auto &variableWeak : pFunc()->mEquivalentVariables) {
+    for (const auto &variableWeak : pFunc()->mEquivalentVariables) {
         auto variable = variableWeak.lock();
         if (variable != nullptr) {
             ++count;

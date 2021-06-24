@@ -67,14 +67,14 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
     return equalEntities(other, entities);
 }
 
-inline Component::ComponentImpl *Component::pFunc()
+Component::ComponentImpl *Component::pFunc()
 {
-    return dynamic_cast<Component::ComponentImpl *>( Entity::pFunc() );
+    return reinterpret_cast<Component::ComponentImpl *>( Entity::pFunc() );
 }
 
-inline Component::ComponentImpl const *Component::pFunc() const
+Component::ComponentImpl const *Component::pFunc() const
 {
-    return dynamic_cast<Component::ComponentImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<Component::ComponentImpl const *>( Entity::pFunc() );
 }
 
 Component::Component()
@@ -92,11 +92,12 @@ Component::Component(const std::string &name)
 
 Component::~Component()
 {
-    if (pFunc() != nullptr) {
-        for (const auto &variable : pFunc()->mVariables) {
-            variable->removeParent();
-        }
+    for (const auto &variable : pFunc()->mVariables) {
+        variable->removeParent();
     }
+    pFunc()->mVariables.clear();
+    pFunc()->mComponents.clear();
+    pFunc()->mResets.clear();
 }
 
 ComponentPtr Component::create() noexcept
