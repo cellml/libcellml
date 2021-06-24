@@ -645,8 +645,6 @@ TEST(Parser, emptyEncapsulation)
     p->parseModel(in);
     EXPECT_EQ_ISSUES(expectedIssues, p);
     EXPECT_EQ(libcellml::Issue::Level::WARNING, p->issue(0)->level());
-    EXPECT_TRUE(p->removeWarning(0));
-    EXPECT_FALSE(p->removeWarning(0));
 }
 
 TEST(Parser, validEncapsulation)
@@ -707,11 +705,6 @@ TEST(Parser, encapsulationWithCycleDefined)
     v->validateModel(m);
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
-
-    EXPECT_EQ(size_t(1), v->errorCount());
-    EXPECT_FALSE(v->removeError(3));
-    EXPECT_TRUE(v->removeError(0));
-    EXPECT_EQ(size_t(0), v->errorCount());
 }
 
 TEST(Parser, encapsulationWithNoComponentAttribute)
