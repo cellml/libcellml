@@ -43,12 +43,12 @@ std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std
 
 Units::UnitsImpl *Units::pFunc()
 {
-    return reinterpret_cast<Units::UnitsImpl *>( Entity::pFunc() );
+    return reinterpret_cast<Units::UnitsImpl *>(Entity::pFunc());
 }
 
 Units::UnitsImpl const *Units::pFunc() const
 {
-    return reinterpret_cast<Units::UnitsImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<Units::UnitsImpl const *>(Entity::pFunc());
 }
 
 Units::Units()

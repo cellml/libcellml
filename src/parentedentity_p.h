@@ -29,10 +29,9 @@ using ParentedEntityWeakPtr = std::weak_ptr<ParentedEntity>; /**< Type definitio
  *
  * The private implementation for the Entity class.
  */
-class ParentedEntity::ParentedEntityImpl : public EntityImpl
+class ParentedEntity::ParentedEntityImpl: public EntityImpl
 {
 public:
-
     /**
      * @brief Sets the given entity as the parent of this entity.
      *

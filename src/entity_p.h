@@ -20,7 +20,6 @@ limitations under the License.
 
 namespace libcellml {
 
-
 /**
  * @brief The Entity::EntityImpl struct.
  *

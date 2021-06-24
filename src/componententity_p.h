@@ -31,7 +31,7 @@ namespace libcellml {
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
-class ComponentEntity::ComponentEntityImpl : public NamedEntityImpl
+class ComponentEntity::ComponentEntityImpl: public NamedEntityImpl
 {
 public:
     std::vector<ComponentPtr> mComponents;

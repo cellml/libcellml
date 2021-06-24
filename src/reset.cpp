@@ -28,12 +28,12 @@ namespace libcellml {
 
 Reset::ResetImpl *Reset::pFunc()
 {
-    return reinterpret_cast<Reset::ResetImpl *>( Entity::pFunc() );
+    return reinterpret_cast<Reset::ResetImpl *>(Entity::pFunc());
 }
 
 Reset::ResetImpl const *Reset::pFunc() const
 {
-    return reinterpret_cast<Reset::ResetImpl const *>( Entity::pFunc() );
+    return reinterpret_cast<Reset::ResetImpl const *>(Entity::pFunc());
 }
 
 Reset::Reset()

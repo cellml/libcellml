@@ -90,8 +90,29 @@ protected:
 
     explicit Entity(EntityImpl *derivedPimpl); /**< Constructor for derived classes, @private. */
 
-    inline EntityImpl *pFunc() { return mPimpl; } /**< Getter for private implementation pointer, @private. */
-    inline EntityImpl const * pFunc() const { return mPimpl; } /**< Const getter for private implementation pointer, @private. */
+    /**
+     * @brief Getter for private implementation pointer.
+     *
+     * Getter for private implementation pointer, @private.
+     *
+     * @return A pointer to EntityImpl.
+     */
+    inline EntityImpl *pFunc()
+    {
+        return mPimpl;
+    }
+
+    /**
+     * @brief Const getter for private implementation pointer.
+     *
+     * Const getter for private implementation pointer, @private.
+     *
+     * @return A pointer to const EntityImpl.
+     */
+    inline EntityImpl const *pFunc() const
+    {
+        return mPimpl;
+    }
 
 private:
     EntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */

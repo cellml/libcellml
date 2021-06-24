@@ -29,7 +29,7 @@ namespace libcellml {
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
-class Model::ModelImpl : public ComponentEntityImpl
+class Model::ModelImpl: public ComponentEntityImpl
 {
 public:
     std::vector<UnitsPtr> mUnits;

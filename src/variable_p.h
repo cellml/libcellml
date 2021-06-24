@@ -31,7 +31,7 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
  *
  * The private implementation for the Variable class.
  */
-class Variable::VariableImpl : public NamedEntityImpl
+class Variable::VariableImpl: public NamedEntityImpl
 {
 public:
     Variable *mVariable = nullptr;
