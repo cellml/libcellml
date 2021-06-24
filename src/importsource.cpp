@@ -60,6 +60,10 @@ ImportSource::ImportSource()
 {
 }
 
+ImportSource::~ImportSource()
+{
+    delete pFunc();
+}
 ImportSourcePtr ImportSource::create() noexcept
 {
     return std::shared_ptr<ImportSource> {new ImportSource {}};

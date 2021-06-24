@@ -92,12 +92,7 @@ Component::Component(const std::string &name)
 
 Component::~Component()
 {
-    for (const auto &variable : pFunc()->mVariables) {
-        variable->removeParent();
-    }
-    pFunc()->mVariables.clear();
-    pFunc()->mComponents.clear();
-    pFunc()->mResets.clear();
+    delete pFunc();
 }
 
 ComponentPtr Component::create() noexcept

@@ -32,10 +32,9 @@ namespace libcellml {
 class LIBCELLML_EXPORT ParentedEntity: public Entity
 {
 public:
-    ~ParentedEntity() override = default; /**< Destructor. */
+    virtual ~ParentedEntity() = 0; /**< Destructor. */
     ParentedEntity(const ParentedEntity &rhs) = delete; /**< Copy constructor. */
     ParentedEntity(ParentedEntity &&rhs) noexcept = delete; /**< Move constructor. */
-    ParentedEntity &operator=(ParentedEntity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Returns the parent of the CellML Entity.

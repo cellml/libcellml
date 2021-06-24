@@ -65,6 +65,11 @@ Variable::Variable(const std::string &name)
     setName(name);
 }
 
+Variable::~Variable()
+{
+    delete pFunc();
+}
+
 VariablePtr Variable::create() noexcept
 {
     return std::shared_ptr<Variable> {new Variable {}};
