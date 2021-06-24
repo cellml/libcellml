@@ -40,7 +40,7 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
 #endif
 {
 public:
-    ~Model() override = default; /**< Destructor. */
+    ~Model() override; /**< Destructor. */
     Model(const Model &rhs) = delete; /**< Copy constructor. */
     Model(Model &&rhs) noexcept = delete; /**< Move constructor. */
     Model &operator=(Model rhs) = delete; /**< Assignment operator. */

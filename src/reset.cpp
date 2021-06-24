@@ -47,6 +47,11 @@ Reset::Reset(int order)
     setOrder(order);
 }
 
+Reset::~Reset()
+{
+    delete pFunc();
+}
+
 ResetPtr Reset::create() noexcept
 {
     return std::shared_ptr<Reset> {new Reset {}};

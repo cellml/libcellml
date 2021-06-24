@@ -64,6 +64,11 @@ Units::Units(const std::string &name)
     setName(name);
 }
 
+Units::~Units()
+{
+    delete pFunc();
+}
+
 bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
 {
     return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";

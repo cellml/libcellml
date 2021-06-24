@@ -88,6 +88,10 @@ Model::Model(const std::string &name)
     setName(name);
 }
 
+Model::~Model()
+{
+    delete pFunc();
+}
 ModelPtr Model::create() noexcept
 {
     return std::shared_ptr<Model> {new Model {}};
