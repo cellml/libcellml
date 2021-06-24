@@ -63,16 +63,6 @@ IssuePtr Logger::error(size_t index) const
     return issue;
 }
 
-bool Logger::removeError(size_t index)
-{
-    if (index < mPimpl->mErrors.size()) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mErrors.at(index)));
-        mPimpl->mErrors.erase(mPimpl->mErrors.begin() + ptrdiff_t(index));
-        return true;
-    }
-    return false;
-}
-
 size_t Logger::warningCount() const
 {
     return mPimpl->mWarnings.size();
@@ -85,16 +75,6 @@ IssuePtr Logger::warning(size_t index) const
         issue = mPimpl->mIssues.at(mPimpl->mWarnings.at(index));
     }
     return issue;
-}
-
-bool Logger::removeWarning(size_t index)
-{
-    if (index < mPimpl->mWarnings.size()) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mWarnings.at(index)));
-        mPimpl->mWarnings.erase(mPimpl->mWarnings.begin() + ptrdiff_t(index));
-        return true;
-    }
-    return false;
 }
 
 size_t Logger::messageCount() const
@@ -111,22 +91,22 @@ IssuePtr Logger::message(size_t index) const
     return issue;
 }
 
-bool Logger::removeMessage(size_t index)
-{
-    if (index < mPimpl->mMessages.size()) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mMessages.at(index)));
-        mPimpl->mMessages.erase(mPimpl->mMessages.begin() + ptrdiff_t(index));
-        return true;
-    }
-    return false;
-}
-
 void Logger::removeAllIssues()
 {
     mPimpl->mIssues.clear();
     mPimpl->mErrors.clear();
     mPimpl->mWarnings.clear();
     mPimpl->mMessages.clear();
+}
+
+bool Logger::removeError(size_t index)
+{
+    if (index < mPimpl->mErrors.size()) {
+        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mErrors.at(index)));
+        mPimpl->mErrors.erase(mPimpl->mErrors.begin() + ptrdiff_t(index));
+        return true;
+    }
+    return false;
 }
 
 void Logger::addIssue(const IssuePtr &issue)
@@ -160,28 +140,6 @@ IssuePtr Logger::issue(size_t index) const
         issue = mPimpl->mIssues.at(index);
     }
     return issue;
-}
-
-bool Logger::removeIssue(size_t index)
-{
-    auto issue = this->issue(index);
-    if (issue != nullptr) {
-        mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(index));
-        libcellml::Issue::Level level = issue->level();
-        switch (level) {
-        case libcellml::Issue::Level::ERROR:
-            mPimpl->mErrors.erase(std::remove_if(mPimpl->mErrors.begin(), mPimpl->mErrors.end(), [=](size_t errorIndex) -> bool { return errorIndex == index; }), mPimpl->mErrors.end());
-            break;
-        case libcellml::Issue::Level::WARNING:
-            mPimpl->mWarnings.erase(std::remove_if(mPimpl->mWarnings.begin(), mPimpl->mWarnings.end(), [=](size_t warningIndex) -> bool { return warningIndex == index; }), mPimpl->mWarnings.end());
-            break;
-        case libcellml::Issue::Level::MESSAGE:
-            mPimpl->mMessages.erase(std::remove_if(mPimpl->mMessages.begin(), mPimpl->mMessages.end(), [=](size_t messageIndex) -> bool { return messageIndex == index; }), mPimpl->mMessages.end());
-            break;
-        }
-        return true;
-    }
-    return false;
 }
 
 } // namespace libcellml

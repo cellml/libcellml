@@ -874,9 +874,6 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
                                                                    expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE),
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE"),
                                                                    analyser);
-
-    EXPECT_TRUE(analyser->removeMessage(0));
-    EXPECT_FALSE(analyser->removeMessage(0));
 }
 
 TEST(Analyser, coverage)
