@@ -43,10 +43,6 @@ void NamedEntity::setName(const std::string &name)
     pFunc()->mName = name;
 }
 
-NamedEntity::~NamedEntity()
-{
-}
-
 std::string NamedEntity::name() const
 {
     return pFunc()->mName;

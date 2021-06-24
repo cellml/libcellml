@@ -38,10 +38,6 @@ ParentedEntity::ParentedEntity( ParentedEntity::ParentedEntityImpl *pImpl )
 {
 }
 
-ParentedEntity::~ParentedEntity()
-{
-}
-
 ParentedEntityPtr ParentedEntity::parent() const
 {
     return pFunc()->mParent.lock();
