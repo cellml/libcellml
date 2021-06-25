@@ -40,10 +40,10 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
 #endif
 {
 public:
-    ~Model() override; /**< Destructor. */
-    Model(const Model &rhs) = delete; /**< Copy constructor. */
-    Model(Model &&rhs) noexcept = delete; /**< Move constructor. */
-    Model &operator=(Model rhs) = delete; /**< Assignment operator. */
+    ~Model() override; /**< Destructor, @private. */
+    Model(const Model &rhs) = delete; /**< Copy constructor, @private. */
+    Model(Model &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Model &operator=(Model rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Model object.
