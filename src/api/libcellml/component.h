@@ -42,10 +42,10 @@ class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
     friend class ComponentEntity;
 
 public:
-    ~Component() override; /**< Destructor @private*/
-    Component(const Component &rhs) = delete; /**< Copy constructor @private */
-    Component(Component &&rhs) noexcept = delete; /**< Move constructor @private*/
-    Component &operator=(Component rhs) = delete; /**< Assignment operator @private*/
+    ~Component() override; /**< Destructor, @private. */
+    Component(const Component &rhs) = delete; /**< Copy constructor, @private. */
+    Component(Component &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Component &operator=(Component rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Component object.

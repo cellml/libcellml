@@ -54,10 +54,10 @@ public:
         UNSUITABLY_CONSTRAINED
     };
 
-    ~AnalyserModel(); /**< Destructor. */
-    AnalyserModel(const AnalyserModel &rhs) = delete; /**< Copy constructor. */
-    AnalyserModel(AnalyserModel &&rhs) noexcept = delete; /**< Move constructor. */
-    AnalyserModel &operator=(AnalyserModel rhs) = delete; /**< Assignment operator. */
+    ~AnalyserModel(); /**< Destructor, @private. */
+    AnalyserModel(const AnalyserModel &rhs) = delete; /**< Copy constructor, @private. */
+    AnalyserModel(AnalyserModel &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    AnalyserModel &operator=(AnalyserModel rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Test to determine if @c AnalyserModel is a valid model.

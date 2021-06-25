@@ -42,10 +42,10 @@ class LIBCELLML_EXPORT Variable: public NamedEntity
     friend class Component;
 
 public:
-    ~Variable() override; /**< Destructor. */
-    Variable(const Variable &rhs) = delete; /**< Copy constructor. */
-    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor. */
-    Variable &operator=(Variable rhs) = delete; /**< Assignment operator. */
+    ~Variable() override; /**< Destructor, @private. */
+    Variable(const Variable &rhs) = delete; /**< Copy constructor, @private. */
+    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Variable &operator=(Variable rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Variable object.

@@ -31,10 +31,10 @@ class Component;
 class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
 public:
-    ~ComponentEntity() override = default; /**< Destructor. */
-    ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor. */
-    ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor. */
-    ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator @private*/
+    ~ComponentEntity() override = default; /**< Destructor, @private. */
+    ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor, @private. */
+    ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Add a child component to this component entity.

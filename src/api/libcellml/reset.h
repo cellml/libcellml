@@ -33,10 +33,10 @@ class LIBCELLML_EXPORT Reset: public ParentedEntity
     friend class Component;
 
 public:
-    ~Reset() override; /**< Destructor. */
-    Reset(const Reset &rhs) = delete; /**< Copy constructor. */
-    Reset(Reset &&rhs) noexcept = delete; /**< Move constructor. */
-    Reset &operator=(Reset rhs) = delete; /**< Assignment operator. */
+    ~Reset() override; /**< Destructor, @private. */
+    Reset(const Reset &rhs) = delete; /**< Copy constructor, @private. */
+    Reset(Reset &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Reset &operator=(Reset rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Reset object.

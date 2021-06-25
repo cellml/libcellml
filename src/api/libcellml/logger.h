@@ -33,10 +33,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Logger
 {
 public:
-    virtual ~Logger(); /**< Destructor. */
-    Logger(const Logger &rhs) = delete; /**< Copy constructor. */
-    Logger(Logger &&rhs) noexcept = delete; /**< Move constructor. */
-    Logger &operator=(Logger rhs) = delete; /**< Assignment operator. */
+    virtual ~Logger(); /**< Destructor, @private. */
+    Logger(const Logger &rhs) = delete; /**< Copy constructor, @private. */
+    Logger(Logger &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Logger &operator=(Logger rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Clear the issues from the logger.

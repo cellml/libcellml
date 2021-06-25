@@ -37,10 +37,10 @@ class LIBCELLML_EXPORT Issue
     friend class Validator;
 
 public:
-    virtual ~Issue(); /**< Destructor. */
-    Issue(const Issue &rhs) = delete; /**< Copy constructor. */
-    Issue(Issue &&rhs) noexcept = delete; /**< Move constructor. */
-    Issue &operator=(Issue rhs) = delete; /**< Assignment operator. */
+    virtual ~Issue(); /**< Destructor, @private. */
+    Issue(const Issue &rhs) = delete; /**< Copy constructor, @private. */
+    Issue(Issue &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Issue &operator=(Issue rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief The issue Level enum class.

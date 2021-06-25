@@ -51,10 +51,10 @@ class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
     friend class Model;
 
 public:
-    ~Units() override; /**< Destructor. */
-    Units(const Units &rhs) = delete; /**< Copy constructor. */
-    Units(Units &&rhs) noexcept = delete; /**< Move constructor. */
-    Units &operator=(Units rhs) = delete; /**< Assignment operator. */
+    ~Units() override; /**< Destructor, @private. */
+    Units(const Units &rhs) = delete; /**< Copy constructor, @private. */
+    Units(Units &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Units &operator=(Units rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @ref Units object.

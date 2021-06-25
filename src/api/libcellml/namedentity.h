@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT NamedEntity: public ParentedEntity
 {
 public:
-    ~NamedEntity() override = default; /**< Destructor. */
-    NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor. */
-    NamedEntity(NamedEntity &&rhs) noexcept = delete; /**< Move constructor. */
-    NamedEntity &operator=(NamedEntity rhs) = delete; /**< Assignment operator, @private.*/
+    ~NamedEntity() override = default; /**< Destructor, @private. */
+    NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor, @private. */
+    NamedEntity(NamedEntity &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    NamedEntity &operator=(NamedEntity rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Set the name for the Entity.
