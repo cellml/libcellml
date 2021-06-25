@@ -314,9 +314,9 @@ protected:
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
     class ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
-
     explicit ComponentEntity(ComponentEntityImpl *pImpl); /**< Constructor for derived classes, @private. */
 
+private:
     ComponentEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
     const ComponentEntityImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
