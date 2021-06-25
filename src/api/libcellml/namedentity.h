@@ -60,9 +60,9 @@ protected:
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
     class NamedEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
-
     explicit NamedEntity(NamedEntityImpl *pImpl); /**< Constructor for derived classes, @private. */
 
+private:
     NamedEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
     const NamedEntityImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
