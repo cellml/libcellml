@@ -2184,7 +2184,6 @@ TEST(Annotator, assignIdByAnyCellmlElement)
 
     annotator->setModel(model);
 
-
     auto item = annotator->item("duplicateId4", 3);
 
     EXPECT_EQ(size_t(7), annotator->itemCount("duplicateId4"));
