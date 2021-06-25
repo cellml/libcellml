@@ -575,7 +575,7 @@ private:
     class UnitsImpl; /**< Forward declaration for pImpl idiom, @private. */
 
     UnitsImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    UnitsImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    const UnitsImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

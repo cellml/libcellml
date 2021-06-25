@@ -64,7 +64,7 @@ protected:
     explicit NamedEntity(NamedEntityImpl *pImpl); /**< Constructor for derived classes, @private. */
 
     NamedEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    NamedEntityImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    const NamedEntityImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

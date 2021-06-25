@@ -318,7 +318,7 @@ protected:
     explicit ComponentEntity(ComponentEntityImpl *pImpl); /**< Constructor for derived classes, @private. */
 
     ComponentEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    ComponentEntityImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    const ComponentEntityImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

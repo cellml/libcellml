@@ -441,7 +441,7 @@ private:
     class ComponentImpl; /**< Forward declaration for pImpl idiom, @private. */
 
     ComponentImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    ComponentImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    const ComponentImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

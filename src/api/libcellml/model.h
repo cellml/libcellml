@@ -375,7 +375,7 @@ private:
     class ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
 
     ModelImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    ModelImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    const ModelImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
