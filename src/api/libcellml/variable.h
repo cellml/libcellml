@@ -477,7 +477,7 @@ private:
     class VariableImpl; /**< Forward declaration for pImpl idiom, @private. */
 
     VariableImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    VariableImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    const VariableImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

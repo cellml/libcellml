@@ -109,7 +109,7 @@ protected:
      *
      * @return A pointer to const EntityImpl.
      */
-    inline EntityImpl const *pFunc() const
+    inline const EntityImpl *pFunc() const
     {
         return mPimpl;
     }

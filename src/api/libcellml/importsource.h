@@ -133,7 +133,7 @@ private:
     class ImportSourceImpl; /**< Forward declaration for pImpl idiom, @private. */
 
     ImportSourceImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    ImportSourceImpl const *pFunc() const; /**< Const getter for private implementation pointer, @private. */
+    const ImportSourceImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
