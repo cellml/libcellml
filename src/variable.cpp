@@ -47,7 +47,7 @@ Variable::VariableImpl *Variable::pFunc()
     return reinterpret_cast<Variable::VariableImpl *>(Entity::pFunc());
 }
 
-Variable::VariableImpl const *Variable::pFunc() const
+const Variable::VariableImpl *Variable::pFunc() const
 {
     return reinterpret_cast<Variable::VariableImpl const *>(Entity::pFunc());
 }

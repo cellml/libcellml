@@ -28,7 +28,7 @@ inline ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc()
     return reinterpret_cast<ParentedEntity::ParentedEntityImpl *>(Entity::pFunc());
 }
 
-inline ParentedEntity::ParentedEntityImpl const *ParentedEntity::pFunc() const
+const ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc() const
 {
     return reinterpret_cast<ParentedEntity::ParentedEntityImpl const *>(Entity::pFunc());
 }

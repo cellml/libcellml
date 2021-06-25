@@ -28,7 +28,7 @@ inline NamedEntity::NamedEntityImpl *NamedEntity::pFunc()
     return reinterpret_cast<NamedEntity::NamedEntityImpl *>(Entity::pFunc());
 }
 
-inline NamedEntity::NamedEntityImpl const *NamedEntity::pFunc() const
+const NamedEntity::NamedEntityImpl *NamedEntity::pFunc() const
 {
     return reinterpret_cast<NamedEntity::NamedEntityImpl const *>(Entity::pFunc());
 }

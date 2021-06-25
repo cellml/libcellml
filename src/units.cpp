@@ -46,7 +46,7 @@ Units::UnitsImpl *Units::pFunc()
     return reinterpret_cast<Units::UnitsImpl *>(Entity::pFunc());
 }
 
-Units::UnitsImpl const *Units::pFunc() const
+const Units::UnitsImpl *Units::pFunc() const
 {
     return reinterpret_cast<Units::UnitsImpl const *>(Entity::pFunc());
 }
