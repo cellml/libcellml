@@ -72,7 +72,7 @@ Component::ComponentImpl *Component::pFunc()
     return reinterpret_cast<Component::ComponentImpl *>(Entity::pFunc());
 }
 
-Component::ComponentImpl const *Component::pFunc() const
+const Component::ComponentImpl *Component::pFunc() const
 {
     return reinterpret_cast<Component::ComponentImpl const *>(Entity::pFunc());
 }

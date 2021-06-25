@@ -41,12 +41,12 @@ std::vector<ComponentPtr>::const_iterator ComponentEntity::ComponentEntityImpl::
                         [=](const ComponentPtr &c) -> bool { return c->equals(component); });
 }
 
-inline ComponentEntity::ComponentEntityImpl *ComponentEntity::pFunc()
+ComponentEntity::ComponentEntityImpl *ComponentEntity::pFunc()
 {
     return reinterpret_cast<ComponentEntity::ComponentEntityImpl *>(Entity::pFunc());
 }
 
-inline ComponentEntity::ComponentEntityImpl const *ComponentEntity::pFunc() const
+const ComponentEntity::ComponentEntityImpl *ComponentEntity::pFunc() const
 {
     return reinterpret_cast<ComponentEntity::ComponentEntityImpl const *>(Entity::pFunc());
 }

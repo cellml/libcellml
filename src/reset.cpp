@@ -31,7 +31,7 @@ Reset::ResetImpl *Reset::pFunc()
     return reinterpret_cast<Reset::ResetImpl *>(Entity::pFunc());
 }
 
-Reset::ResetImpl const *Reset::pFunc() const
+const Reset::ResetImpl *Reset::pFunc() const
 {
     return reinterpret_cast<Reset::ResetImpl const *>(Entity::pFunc());
 }

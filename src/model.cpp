@@ -72,7 +72,7 @@ inline Model::ModelImpl *Model::pFunc()
     return reinterpret_cast<Model::ModelImpl *>(Entity::pFunc());
 }
 
-inline Model::ModelImpl const *Model::pFunc() const
+const Model::ModelImpl *Model::pFunc() const
 {
     return reinterpret_cast<Model::ModelImpl const *>(Entity::pFunc());
 }
