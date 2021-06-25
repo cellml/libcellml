@@ -662,10 +662,10 @@ public:
      * An identifier will not be assigned if:
      *  - no model has been stored in this annotator;
      *  - the given @p item is not a member of the stored model;
-     *  - the given @p item is not relevant to the given @p type; or
+     *  - the given @p item does not have an element that is relevant to the type; or
      *  - the given @p item is @c nullptr.
      *
-     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
+     * @see errorCount() if and/or @see error(size_t) for any issues that may have been raised.
      *
      * @param item A @ref AnyCellmlElement item to which the new identifier will be assigned.
      *
