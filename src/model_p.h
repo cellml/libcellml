@@ -23,9 +23,9 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Model::ModelImpl struct.
+ * @brief The Model::ModelImpl class.
  *
- * This struct is the private implementation struct for the Model class.  Separating
+ * This class is the private implementation struct for the Model class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
