@@ -27,7 +27,7 @@ namespace libcellml {
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
 /**
- * @brief The Variable::VariableImpl struct.
+ * @brief The Variable::VariableImpl class.
  *
  * The private implementation for the Variable class.
  */

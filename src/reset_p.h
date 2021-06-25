@@ -23,7 +23,7 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Reset::ResetImpl struct.
+ * @brief The Reset::ResetImpl class.
  *
  * The private implementation for the Reset class.
  */

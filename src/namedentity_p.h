@@ -23,7 +23,7 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The NamedEntity::NamedEntityImpl struct.
+ * @brief The NamedEntity::NamedEntityImpl class.
  *
  * The private implementation for the NamedEntity class.
  */

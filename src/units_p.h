@@ -105,7 +105,7 @@ struct UnitDefinition
 };
 
 /**
- * @brief The Units::UnitsImpl struct.
+ * @brief The Units::UnitsImpl class.
  *
  * The private implementation for the Units class.
  */

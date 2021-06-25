@@ -22,12 +22,12 @@ limitations under the License.
 
 namespace libcellml {
 
-using ParentedEntityWeakPtr = std::weak_ptr<ParentedEntity>; /**< Type definition for weak entity pointer. */
+using ParentedEntityWeakPtr = std::weak_ptr<ParentedEntity>; /**< Type definition for weak parented entity pointer. */
 
 /**
- * @brief The Entity::EntityImpl struct.
+ * @brief The ParentedEntity::ParentedEntityImpl class.
  *
- * The private implementation for the Entity class.
+ * The private implementation for the ParentedEntity class.
  */
 class ParentedEntity::ParentedEntityImpl: public EntityImpl
 {

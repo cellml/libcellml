@@ -34,7 +34,7 @@ namespace libcellml {
 using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>;
 
 /**
- * @brief The ImportSource::ImportSourceImpl struct.
+ * @brief The ImportSource::ImportSourceImpl class.
  *
  * The private implementation for the ImportSource class.
  */
