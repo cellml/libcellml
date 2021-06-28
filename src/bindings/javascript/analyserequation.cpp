@@ -16,6 +16,7 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequation)
     ;
 
     class_<libcellml::AnalyserEquation>("AnalyserEquation")
+        .smart_ptr<std::shared_ptr<libcellml::AnalyserEquation>>("AnalyserEquation")
         .function("type", &libcellml::AnalyserEquation::type)
         .function("ast", &libcellml::AnalyserEquation::ast)
         .function("dependencies", &libcellml::AnalyserEquation::dependencies)

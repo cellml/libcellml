@@ -17,6 +17,7 @@ EMSCRIPTEN_BINDINGS(libcellml_analyservariable)
     ;
 
     class_<libcellml::AnalyserVariable>("AnalyserVariable")
+        .smart_ptr<std::shared_ptr<libcellml::AnalyserVariable>>("AnalyserVariable")
         .function("type", &libcellml::AnalyserVariable::type)
         .function("index", &libcellml::AnalyserVariable::index)
         .function("initialisingVariable", &libcellml::AnalyserVariable::initialisingVariable)
