@@ -332,6 +332,20 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         buffer << file.rdbuf();
         auto parser = Parser::create();
         model = parser->parseModel(buffer.str());
+        auto errorCount = parser->errorCount();
+        if (errorCount > 0) {
+            for (size_t index = 0; index < errorCount; ++index) {
+                if (parser->error(index)->referenceRule() == Issue::ReferenceRule::XML) {
+                    auto issue = Issue::IssueImpl::create();
+                    issue->mPimpl->setDescription("The attempt to import the model at '" + url + "' failed: the file is not valid XML.");
+                    issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+                    mImporter->addIssue(issue);
+                    return false;
+                }
+                mImporter->addIssue(parser->error(index));
+            }
+        }
         mLibrary.insert(std::make_pair(url, model));
     } else {
         model = mLibrary[url];
@@ -369,6 +383,28 @@ bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSour
     return true;
 }
 
+bool isErrorRelatedToComponent(const IssuePtr &error, const ComponentPtr &component)
+{
+    auto errorType = error->item()->type();
+    if (errorType == CellmlElementType::COMPONENT) {
+        if (component == error->item()->component()) {
+            return true;
+        }
+    } else if (errorType == CellmlElementType::VARIABLE) {
+        auto parent = owningComponent(error->item()->variable());
+        if (component == parent) {
+            return true;
+        }
+    } else if (errorType == CellmlElementType::RESET) {
+        auto parent = owningComponent(error->item()->reset());
+        if (component == parent) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, History &history)
 {
     // Given the importComponent, check whether it has been resolved previously.  If so, return.
@@ -389,11 +425,37 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         return true;
     }
 
+    size_t startIndex = mImporter->errorCount();
+
     if (!fetchImportSource(importComponent->importSource(), baseFile)) {
         return false;
     }
 
+    auto sourceModel = importComponent->importSource()->model();
+    auto sourceComponent = sourceModel->component(importComponent->importReference());
+
+    size_t endIndex = mImporter->errorCount();
+    bool encounteredRelatedError = false;
+    for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
+        auto error = mImporter->error(index);
+        mImporter->removeError(index);
+
+        if (!encounteredRelatedError && isErrorRelatedToComponent(error, sourceComponent)) {
+            encounteredRelatedError = true;
+        }
+    }
+
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importComponent->importSource());
+
+    if (encounteredRelatedError) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Encountered an error when resolving component '" + importComponent->name() + "' from '" + resolvingUrl + "'.");
+        issue->mPimpl->mItem->mPimpl->setComponent(importComponent);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_ERROR_IMPORTING_UNITS);
+        mImporter->addIssue(issue);
+        return false;
+    }
+
     auto importComponentModel = owningModel(importComponent);
     auto h = createHistoryEpoch(importComponent, modelUrl(importComponentModel), resolvingUrl);
 
@@ -404,8 +466,6 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     history.push_back(h);
 
     // Check that the model instance in the library has resolved all of the required dependencies.
-    auto sourceModel = importComponent->importSource()->model();
-    auto sourceComponent = sourceModel->component(importComponent->importReference());
     if (sourceComponent != nullptr) {
         // Check whether the sourceComponent is itself an import. Note that the file path passed in
         // here must be the path to the sourceModel, rather than the path to the previous import, so that
@@ -458,11 +518,33 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         return true;
     }
 
+    size_t startIndex = mImporter->errorCount();
     if (!fetchImportSource(importUnits->importSource(), baseFile)) {
         return false;
     }
 
+    bool encounteredRelatedError = false;
+    size_t endIndex = mImporter->errorCount();
+    for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
+        auto error = mImporter->error(index);
+        auto errorUnits = error->item()->units();
+        mImporter->removeError(index);
+        if (!encounteredRelatedError && (errorUnits != nullptr) && (errorUnits->name() == importUnits->importReference())) {
+            encounteredRelatedError = true;
+        }
+    }
+
     std::string resolvingUrl = ImporterImpl::resolvingUrl(importUnits->importSource());
+
+    if (encounteredRelatedError) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Encountered an error when resolving units '" + importUnits->name() + "' from '" + resolvingUrl + "'.");
+        issue->mPimpl->mItem->mPimpl->setUnits(importUnits);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_ERROR_IMPORTING_UNITS);
+        mImporter->addIssue(issue);
+        return false;
+    }
+
     auto unitsModel = owningModel(importUnits);
     auto h = createHistoryEpoch(importUnits, modelUrl(unitsModel), resolvingUrl);
 

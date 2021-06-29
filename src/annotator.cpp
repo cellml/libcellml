@@ -1373,6 +1373,11 @@ std::string Annotator::AnnotatorImpl::setAutoId(const AnyCellmlElementPtr &item)
     return newId;
 }
 
+std::string Annotator::assignId(const AnyCellmlElementPtr &item)
+{
+    return mPimpl->setAutoId(item);
+}
+
 std::string Annotator::assignId(const ModelPtr &model, CellmlElementType type)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();

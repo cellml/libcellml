@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
@@ -40,7 +42,6 @@ TEST(Coverage, connectionComment)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
-    EXPECT_EQ(size_t(4), p->issueCount());
 }
 
 TEST(Coverage, importWithNonHrefXlink)

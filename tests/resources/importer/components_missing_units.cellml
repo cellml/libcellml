@@ -4,7 +4,7 @@
     <units units_ref="i_dont_have_a_model_anyway" name="imported_units_with_no_model"/>
   </import>
   <component name="concrete">
-    <variable name="a" cellml:units="units_that_dont_exist" />
+    <variable name="a" units="units_that_dont_exist" />
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <eq/>
