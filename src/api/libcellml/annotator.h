@@ -653,6 +653,26 @@ public:
     std::vector<std::string> duplicateIds();
 
     /**
+     * @brief Assign an automatically generated, unique identifier to the given @p item.
+     *
+     * Assign an automatically generated, unique identifier to the given @p item.
+     * This method will return the new identifier that has been assigned, or an empty string
+     * if the operation failed.
+     *
+     * An identifier will not be assigned if:
+     *  - no model has been stored in this annotator;
+     *  - the given @p item is not a member of the stored model; or
+     *  - the given @p item is @c nullptr.
+     *
+     * @see errorCount() and/or @see error(size_t) for any issues that may have been raised.
+     *
+     * @param item A @ref AnyCellmlElement item to which the new identifier will be assigned.
+     *
+     * @return the new identifier string.
+     */
+    std::string assignId(const AnyCellmlElementPtr &item);
+
+    /**
      * @brief Assign an automatically generated, unique identifier to the given @p model.
      *
      * Assign an automatically generated, unique identifier to the given @p model.
@@ -664,11 +684,8 @@ public:
      * CellmlElementType type will not assign an identifier.  @see errorCount() if and/or error(size_t) for any
      * issues that may have been raised.
      *
-     * An identifier will not be assigned if:
-     *  - no model has been stored in this annotator;
-     *  - the given @p item is not a member of the stored model;
-     *  - the given @p item is not relevant to the given @p type; or
-     *  - the given @p item is @c nullptr.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
+     * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
      *
@@ -690,7 +707,7 @@ public:
      * Only CellmlElementType::COMPONENT and CellmlElementType::COMPONENT_REF are relevant any other
      * CellmlElementType type will not assign an identifier.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -709,7 +726,7 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -733,7 +750,7 @@ public:
      * Only CellmlElementType::RESET, CellmlElementType::RESET_VALUE, and CellmlElementType::TEST_VALUE are relevant any other
      * CellmlElementType type will not assign an identifier.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -752,7 +769,7 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -770,7 +787,7 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -788,7 +805,7 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -810,7 +827,7 @@ public:
      * Only CellmlElementType::MAP_VARIABLES, and CellmlElementType::CONNECTION are relevant any other
      * CellmlElementType type will not assign an identifier.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -835,7 +852,7 @@ public:
      * Only CellmlElementType::MAP_VARIABLES, and CellmlElementType::CONNECTION are relevant any other
      * CellmlElementType type will not assign an identifier.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
@@ -857,7 +874,7 @@ public:
      * This method will return the new identifier that has been assigned, or an empty string
      * if the operation failed.
      *
-     * @see assignId(const ModelPtr &, CellmlElementType) for a list of reasons that an identifier may not be assigned.
+     * @see assignId(const AnyCellmlElementPtr &item) for a list of reasons that an identifier may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @overload
