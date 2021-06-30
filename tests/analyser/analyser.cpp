@@ -937,3 +937,32 @@ TEST(Analyser, coverage)
     ast->setVariable(libcellml::Variable::create());
     ast->setParent(libcellml::AnalyserEquationAst::create());
 }
+
+TEST(Analyser, unlinkedUnitsInModel)
+{
+    auto parser = libcellml::Parser::create();
+    auto analyser = libcellml::Analyser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    const std::string expectedIssue =
+        "Units 'millivolt' in variable 'V' is not linked to the units defined in the model.";
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    // When parsing a model all Units are automatically linked.
+    EXPECT_FALSE(model->hasUnlinkedUnits());
+
+    // When we set a Units units by name we create an unlinked Units.
+    // That is, a Units that has a reference to a Units defined in the model
+    // but it is not using the object Units defined in the model.
+    model->component("membrane")->variable("V")->setUnits("millivolt");
+
+    EXPECT_TRUE(model->hasUnlinkedUnits());
+
+    // I expect that the analyser should log an error for the unlinked Units.
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(1), analyser->errorCount());
+    EXPECT_EQ(expectedIssue, analyser->error(0)->description());
+}
+
