@@ -24,8 +24,8 @@ jobs:
         config:
         - {
             name: "Many Linux 2014 Py37", cc: "cl", cxx: "cl",
-            python_version: 3.7, python_full_version: 3.7.9, python_patch_file: "Modules/Setup.dist",
-            python_tarball: "https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz"
+            python_version: 3.7, python_full_version: 3.7.10, python_patch_file: "Modules/Setup.dist",
+            python_tarball: "https://www.python.org/ftp/python/3.7.10/Python-3.7.10.tgz"
           }
         - {
             name: "Many Linux 2014 Py38", cc: "cl", cxx: "cl",
@@ -84,7 +84,7 @@ jobs:
       shell: bash
       run: |
         cd $SRC_DIR/Python*
-        curl -L https://gist.githubusercontent.com/hsorby/6481eed3abb20cf3cfe6bdc7a9c852d9/raw/4701096ce95130eb239945bb7875fdd9ab33bfde/python-${{ matrix.config.python_full_version }}.patch > patch.txt
+        curl -L https://gist.githubusercontent.com/hsorby/6481eed3abb20cf3cfe6bdc7a9c852d9/raw/263e1bd783f0ec00cd1b64ef37f18e743c08c43b/python-${{ matrix.config.python_full_version }}.patch > patch.txt
         patch -i patch.txt ${{ matrix.config.python_patch_file }}
         ./configure --enable-shared --enable-optimizations
         make -j3 build_all
