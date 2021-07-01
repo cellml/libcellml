@@ -45,7 +45,7 @@ public:
     ModelWeakPtr mModel;
 };
 
-inline ImportSource::ImportSourceImpl *ImportSource::pFunc()
+ImportSource::ImportSourceImpl *ImportSource::pFunc()
 {
     return reinterpret_cast<ImportSource::ImportSourceImpl *>(Entity::pFunc());
 }
