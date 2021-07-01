@@ -88,11 +88,19 @@ struct Variable::VariableImpl
      * @brief Test if the given variable is directly equivalent to this one.
      *
      * The two variables are considered directly equivalent if this variable holds a valid reference to the
-     * given variable.  Returns @c true if this variable holds a reference to the given variable
+     * given variable.  The two variables are considered indirectly equivalent if there exists a
+     * variable equivalence path from this variable to the given variable.
+     *
+     * Direct equivalences are tested for by default.  To also test for indirect equivalences
+     * set @p considerIndirectEquivalences to @c true.
+     *
+     * Returns @c true if this variable holds a reference to the given variable
      * and that that reference is a valid reference to the given variable.
      *
      * @param equivalentVariable The variable to test for equivalence to this one.
-     * @return @c true if the variables are equivalent @c false otherwise.
+     * @param considerIndirectEquivalences Consider equivalences that are not direct equivalences.
+     *
+     * @return @c true if the variables are equivalent, @c false otherwise.
      */
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences = false) const;
 
