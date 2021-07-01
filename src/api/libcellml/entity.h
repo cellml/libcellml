@@ -84,7 +84,17 @@ public:
     bool equals(const EntityPtr &other) const;
 
 protected:
-    virtual bool doEquals(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
+    /**
+     * @brief Virtual equals(const EntityPtr &other) method to be implemented by derived classes.
+     *
+     * Virtual equals(const EntityPtr &other) method to allow entity classes to
+     * implement their own versions. @private.
+     *
+     * @param other The other @ref Entity to perform equality against.
+     *
+     * @return True if the entities are equal, false otherwise.
+     */
+    virtual bool doEquals(const EntityPtr &other) const;
 
     class EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
 
