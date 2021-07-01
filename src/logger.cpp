@@ -99,6 +99,12 @@ void Logger::removeAllIssues()
     mPimpl->mMessages.clear();
 }
 
+void Logger::removeError(size_t index)
+{
+    mPimpl->mIssues.erase(mPimpl->mIssues.begin() + ptrdiff_t(mPimpl->mErrors.at(index)));
+    mPimpl->mErrors.erase(mPimpl->mErrors.begin() + ptrdiff_t(index));
+}
+
 void Logger::addIssue(const IssuePtr &issue)
 {
     // When an issue is added, update the appropriate array based on its level.

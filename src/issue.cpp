@@ -169,10 +169,11 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::INVALID_ARGUMENT, {"INVALID_ARGUMENT", "", docsUrl, ""}},
 
     // Importer class issues:
-    {Issue::ReferenceRule::IMPORTER_NULL_MODEL, {"IMPORTER_NULL_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_ERROR_IMPORTING_UNITS, {"IMPORTER_ERROR_IMPORTING_UNITS", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_MISSING_FILE, {"IMPORTER_MISSING_FILE", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT, {"IMPORTER_MISSING_COMPONENT", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_MISSING_UNITS, {"IMPORTER_MISSING_UNITS", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_NULL_MODEL, {"IMPORTER_NULL_MODEL", "", docsUrl, ""}},
 
     // Analyser issues:
     {Issue::ReferenceRule::ANALYSER_UNITS, {"ANALYSER_UNITS", "", docsUrl, ""}},
