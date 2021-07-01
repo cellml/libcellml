@@ -23,7 +23,7 @@ limitations under the License.
 
 namespace libcellml {
 
-inline NamedEntity::NamedEntityImpl *NamedEntity::pFunc()
+NamedEntity::NamedEntityImpl *NamedEntity::pFunc()
 {
     return reinterpret_cast<NamedEntity::NamedEntityImpl *>(Entity::pFunc());
 }

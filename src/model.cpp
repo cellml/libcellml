@@ -67,7 +67,7 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
     return equalEntities(other, entities);
 }
 
-inline Model::ModelImpl *Model::pFunc()
+Model::ModelImpl *Model::pFunc()
 {
     return reinterpret_cast<Model::ModelImpl *>(Entity::pFunc());
 }
