@@ -98,9 +98,9 @@ class LIBCELLML_EXPORT UnitsItem
 public:
     ~UnitsItem(); /**< Destructor. */
     UnitsItem() = delete; /**< Constructor, @private. */
-    UnitsItem(const UnitsItem &rhs) = delete; /**< Copy constructor. */
-    UnitsItem(UnitsItem &&rhs) noexcept = delete; /**< Move constructor. */
-    UnitsItem &operator=(UnitsItem rhs) = delete; /**< Assignment operator. */
+    UnitsItem(const UnitsItem &rhs) = delete; /**< Copy constructor, @private. */
+    UnitsItem(UnitsItem &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    UnitsItem &operator=(UnitsItem rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a units item reference object.
@@ -162,9 +162,9 @@ class LIBCELLML_EXPORT VariablePair
 public:
     ~VariablePair(); /**< Destructor. */
     VariablePair() = delete; /**< Constructor, @private. */
-    VariablePair(const VariablePair &rhs) = delete; /**< Copy constructor. */
-    VariablePair(VariablePair &&rhs) noexcept = delete; /**< Move constructor. */
-    VariablePair &operator=(VariablePair rhs) = delete; /**< Assignment operator. */
+    VariablePair(const VariablePair &rhs) = delete; /**< Copy constructor, @private. */
+    VariablePair(VariablePair &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    VariablePair &operator=(VariablePair rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a variable pair object.
@@ -230,10 +230,10 @@ class LIBCELLML_EXPORT AnyCellmlElement
     friend class Validator;
 
 public:
-    ~AnyCellmlElement(); /**< Destructor. */
-    AnyCellmlElement(const AnyCellmlElement &rhs) = delete; /**< Copy constructor. */
-    AnyCellmlElement(AnyCellmlElement &&rhs) noexcept = delete; /**< Move constructor. */
-    AnyCellmlElement &operator=(AnyCellmlElement rhs) = delete; /**< Assignment operator. */
+    ~AnyCellmlElement(); /**< Destructor, @private. */
+    AnyCellmlElement(const AnyCellmlElement &rhs) = delete; /**< Copy constructor, @private. */
+    AnyCellmlElement(AnyCellmlElement &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    AnyCellmlElement &operator=(AnyCellmlElement rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Get the @ref CellmlElementType.

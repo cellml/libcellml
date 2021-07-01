@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT ParentedEntity: public Entity
 {
 public:
-    ~ParentedEntity() override; /**< Destructor. */
-    ParentedEntity(const ParentedEntity &rhs) = delete; /**< Copy constructor. */
-    ParentedEntity(ParentedEntity &&rhs) noexcept = delete; /**< Move constructor. */
-    ParentedEntity &operator=(ParentedEntity rhs) = delete; /**< Assignment operator. */
+    ~ParentedEntity() override = default; /**< Destructor, @private. */
+    ParentedEntity(const ParentedEntity &rhs) = delete; /**< Copy constructor, @private. */
+    ParentedEntity(ParentedEntity &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    ParentedEntity &operator=(ParentedEntity rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Returns the parent of the CellML Entity.
@@ -44,15 +44,6 @@ public:
      * otherwise it returns the null pointer.
      */
     ParentedEntityPtr parent() const;
-
-    /**
-     * @brief Sets the given entity as the parent of this entity.
-     *
-     * Set the parent of the entity to the entity given.
-     *
-     * @param parent An @c Entity.
-     */
-    void setParent(const ParentedEntityPtr &parent);
 
     /**
      * @brief Clear the pointer to the parent entity.
@@ -88,11 +79,12 @@ public:
     bool hasAncestor(const ParentedEntityPtr &entity) const;
 
 protected:
-    ParentedEntity(); /**< Constructor. */
+    class ParentedEntityImpl; /**< Forward declaration for pImpl idiom. */
+    explicit ParentedEntity(ParentedEntityImpl *pImpl); /**< Constructor for derived classes, @private. */
 
 private:
-    struct ParentedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ParentedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
+    ParentedEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const ParentedEntityImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
