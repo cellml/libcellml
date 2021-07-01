@@ -683,7 +683,7 @@ public:
      * if the operation failed.
      *
      * Only CellmlElementType::MODEL and CellmlElementType::ENCAPSULATION are relevant any other
-     * CellmlElementType type will not assign an identifier.
+     * @ref CellmlElementType type will not assign an identifier.
      *
      * @see assignId(const AnyCellmlElementPtr &item)
      *
@@ -705,7 +705,7 @@ public:
      * if the operation failed.
      *
      * Only CellmlElementType::COMPONENT and CellmlElementType::COMPONENT_REF are relevant any other
-     * CellmlElementType type will not assign an identifier.
+     * @ref CellmlElementType type will not assign an identifier.
      *
      * @see assignId(const AnyCellmlElementPtr &item)
      *
@@ -744,7 +744,7 @@ public:
      * if the operation failed.
      *
      * Only CellmlElementType::RESET, CellmlElementType::RESET_VALUE, and CellmlElementType::TEST_VALUE are relevant any other
-     * CellmlElementType type will not assign an identifier.
+     * @ref CellmlElementType type will not assign an identifier.
      *
      * @see assignId(const AnyCellmlElementPtr &item)
      *
@@ -817,7 +817,7 @@ public:
      * if the operation failed.
      *
      * Only CellmlElementType::MAP_VARIABLES, and CellmlElementType::CONNECTION are relevant any other
-     * CellmlElementType type will not assign an identifier.
+     * @ref CellmlElementType type will not assign an identifier.
      *
      * @see assignId(const AnyCellmlElementPtr &item)
      *
@@ -839,12 +839,12 @@ public:
      * The default is to assign an identifier to a MAP_VARIABLES item.
      *
      * Only CellmlElementType::MAP_VARIABLES, and CellmlElementType::CONNECTION are relevant any other
-     * CellmlElementType type will not assign an identifier.
+     * @ref CellmlElementType type will not assign an identifier.
      *
      * @see assignId(const AnyCellmlElementPtr &item)
      *
-     * @param variable1 A @ref VariablePtr item defining to the first item in a equivalence.
-     * @param variable2 A @ref VariablePtr item defining to the second item in a equivalence.
+     * @param variable1 A @ref VariablePtr defining the first variable in an equivalence.
+     * @param variable2 A @ref VariablePtr defining the second variable in an equivalence.
      * @param type A @ref CellmlElementType enumeration.
      *
      * @return the new identifier string.
