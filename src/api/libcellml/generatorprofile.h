@@ -44,10 +44,10 @@ public:
         PYTHON
     };
 
-    ~GeneratorProfile(); /**< Destructor. */
-    GeneratorProfile(const GeneratorProfile &rhs) = delete; /**< Copy constructor. */
-    GeneratorProfile(GeneratorProfile &&rhs) noexcept = delete; /**< Move constructor. */
-    GeneratorProfile &operator=(GeneratorProfile rhs) = delete; /**< Assignment operator. */
+    ~GeneratorProfile(); /**< Destructor, @private. */
+    GeneratorProfile(const GeneratorProfile &rhs) = delete; /**< Copy constructor, @private. */
+    GeneratorProfile(GeneratorProfile &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    GeneratorProfile &operator=(GeneratorProfile rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c GeneratorProfile object.

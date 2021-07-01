@@ -33,10 +33,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Parser: public Logger
 {
 public:
-    ~Parser() override; /**< Destructor. */
-    Parser(const Parser &rhs) = delete; /**< Copy constructor. */
-    Parser(Parser &&rhs) noexcept = delete; /**< Move constructor. */
-    Parser &operator=(Parser rhs) = delete; /**< Assignment operator. */
+    ~Parser() override; /**< Destructor, @private. */
+    Parser(const Parser &rhs) = delete; /**< Copy constructor, @private. */
+    Parser(Parser &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Parser &operator=(Parser rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Parser object.

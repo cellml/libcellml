@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Annotator: public Logger
 {
 public:
-    ~Annotator() override; /**< Destructor */
-    Annotator(const Annotator &rhs) = delete; /**< Copy constructor */
-    Annotator(Annotator &&rhs) noexcept = delete; /**< Move constructor */
-    Annotator &operator=(Annotator rhs) = delete; /**< Assignment operator */
+    ~Annotator() override; /**< Destructor, @private. */
+    Annotator(const Annotator &rhs) = delete; /**< Copy constructor, @private. */
+    Annotator(Annotator &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Annotator &operator=(Annotator rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @ref Annotator object.
