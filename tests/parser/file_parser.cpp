@@ -168,7 +168,6 @@ TEST(Parser, unitsAreLinkedOnParse)
     libcellml::ParserPtr p = libcellml::Parser::create();
     auto model = p->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
-    printModel(model, false);
     EXPECT_EQ(size_t(0), p->issueCount());
 
     EXPECT_FALSE(model->hasUnlinkedUnits());
