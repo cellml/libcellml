@@ -1305,9 +1305,9 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
     for (size_t index = 0; index < component->variableCount() && !unlinked; ++index) {
         auto v = component->variable(index);
         auto u = v->units();
-        if (u != nullptr) {
+        if ((u != nullptr) && !isStandardUnit(u)) {
             auto model = owningModel(u);
-            unlinked = ((model == nullptr) && !isStandardUnit(u)) || (owningModel(component) != model);
+            unlinked = (model == nullptr) || (owningModel(component) != model);
         }
     }
     return unlinked;
