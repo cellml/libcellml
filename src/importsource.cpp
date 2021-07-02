@@ -17,6 +17,7 @@ limitations under the License.
 #include "libcellml/importsource.h"
 
 #include <algorithm>
+#include <utility>
 #include <vector>
 
 #include "libcellml/component.h"
@@ -25,6 +26,7 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/units.h"
 
+#include "entity_p.h"
 #include "internaltypes.h"
 
 namespace libcellml {
@@ -32,26 +34,36 @@ namespace libcellml {
 using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>;
 
 /**
- * @brief The ImportSource::ImportSourceImpl struct.
+ * @brief The ImportSource::ImportSourceImpl class.
  *
  * The private implementation for the ImportSource class.
  */
-struct ImportSource::ImportSourceImpl
+class ImportSource::ImportSourceImpl: public Entity::EntityImpl
 {
+public:
     std::string mUrl;
     ModelWeakPtr mModel;
 };
 
+ImportSource::ImportSourceImpl *ImportSource::pFunc()
+{
+    return reinterpret_cast<ImportSource::ImportSourceImpl *>(Entity::pFunc());
+}
+
+const ImportSource::ImportSourceImpl *ImportSource::pFunc() const
+{
+    return reinterpret_cast<ImportSource::ImportSourceImpl const *>(Entity::pFunc());
+}
+
 ImportSource::ImportSource()
-    : mPimpl(new ImportSourceImpl())
+    : Entity(new ImportSource::ImportSourceImpl())
 {
 }
 
 ImportSource::~ImportSource()
 {
-    delete mPimpl;
+    delete pFunc();
 }
-
 ImportSourcePtr ImportSource::create() noexcept
 {
     return std::shared_ptr<ImportSource> {new ImportSource {}};
@@ -59,39 +71,39 @@ ImportSourcePtr ImportSource::create() noexcept
 
 std::string ImportSource::url() const
 {
-    return mPimpl->mUrl;
+    return pFunc()->mUrl;
 }
 
 void ImportSource::setUrl(const std::string &url)
 {
-    mPimpl->mUrl = url;
+    pFunc()->mUrl = url;
 }
 
 ModelPtr ImportSource::model() const
 {
-    if (mPimpl->mModel.expired()) {
+    if (pFunc()->mModel.expired()) {
         return nullptr;
     }
-    return mPimpl->mModel.lock();
+    return pFunc()->mModel.lock();
 }
 
 void ImportSource::setModel(const ModelPtr &model)
 {
     if (model == nullptr) {
-        mPimpl->mModel.reset();
+        pFunc()->mModel.reset();
     } else {
-        mPimpl->mModel = model;
+        pFunc()->mModel = model;
     }
 }
 
 void ImportSource::removeModel()
 {
-    mPimpl->mModel.reset();
+    pFunc()->mModel.reset();
 }
 
 bool ImportSource::hasModel() const
 {
-    return !mPimpl->mModel.expired();
+    return !pFunc()->mModel.expired();
 }
 
 ImportSourcePtr ImportSource::clone() const
@@ -110,7 +122,7 @@ bool ImportSource::doEquals(const EntityPtr &other) const
     if (Entity::doEquals(other)) {
         auto importSource = std::dynamic_pointer_cast<ImportSource>(other);
         if (importSource != nullptr) {
-            return mPimpl->mUrl == importSource->url();
+            return pFunc()->mUrl == importSource->url();
         }
     }
     return false;

@@ -28,33 +28,12 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "component_p.h"
+#include "reset_p.h"
 #include "utilities.h"
+#include "variable_p.h"
 
 namespace libcellml {
-
-/**
- * @brief The Component::ComponentImpl struct.
- *
- * This struct is the private implementation struct for the Component class.  Separating
- * the implementation from the definition allows for greater flexibility when
- * distributing the code.
- */
-struct Component::ComponentImpl
-{
-    Component *mComponent = nullptr;
-    std::string mMath;
-    std::vector<ResetPtr> mResets;
-    std::vector<VariablePtr> mVariables;
-
-    std::vector<ResetPtr>::const_iterator findReset(const ResetPtr &reset) const;
-    std::vector<VariablePtr>::const_iterator findVariable(const std::string &name) const;
-    std::vector<VariablePtr>::const_iterator findVariable(const VariablePtr &variable) const;
-
-    bool equalVariables(const ComponentPtr &other) const;
-    bool equalResets(const ComponentPtr &other) const;
-
-    bool isResolvedWithHistory(History &history, const ComponentConstPtr &component) const;
-};
 
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
 {
@@ -88,27 +67,32 @@ bool Component::ComponentImpl::equalResets(const ComponentPtr &other) const
     return equalEntities(other, entities);
 }
 
-Component::Component()
-    : mPimpl(new ComponentImpl())
+Component::ComponentImpl *Component::pFunc()
 {
-    mPimpl->mComponent = this;
+    return reinterpret_cast<Component::ComponentImpl *>(Entity::pFunc());
+}
+
+const Component::ComponentImpl *Component::pFunc() const
+{
+    return reinterpret_cast<Component::ComponentImpl const *>(Entity::pFunc());
+}
+
+Component::Component()
+    : ComponentEntity(new Component::ComponentImpl())
+{
+    pFunc()->mComponent = this;
 }
 
 Component::Component(const std::string &name)
-    : mPimpl(new ComponentImpl())
+    : ComponentEntity(new Component::ComponentImpl())
 {
-    mPimpl->mComponent = this;
+    pFunc()->mComponent = this;
     setName(name);
 }
 
 Component::~Component()
 {
-    if (mPimpl != nullptr) {
-        for (const auto &variable : mPimpl->mVariables) {
-            variable->removeParent();
-        }
-    }
-    delete mPimpl;
+    delete pFunc();
 }
 
 ComponentPtr Component::create() noexcept
@@ -138,14 +122,14 @@ bool Component::ComponentImpl::isResolvedWithHistory(History &history, const Com
                     resolved = false;
                 } else {
                     history.push_back(h);
-                    resolved = importedComponent->mPimpl->isResolvedWithHistory(history, importedComponent);
+                    resolved = importedComponent->pFunc()->isResolvedWithHistory(history, importedComponent);
                 }
             }
         }
     }
     for (size_t i = 0; (i < mComponent->componentCount()) && resolved; ++i) {
         auto currentComponent = mComponent->component(i);
-        resolved = currentComponent->mPimpl->isResolvedWithHistory(history, currentComponent);
+        resolved = currentComponent->pFunc()->isResolvedWithHistory(history, currentComponent);
     }
 
     return resolved;
@@ -168,7 +152,7 @@ bool Component::doAddComponent(const ComponentPtr &component)
     } else if (newParent == component) {
         return false;
     }
-    component->setParent(newParent);
+    component->pFunc()->setParent(newParent);
 
     return ComponentEntity::doAddComponent(component);
 }
@@ -181,22 +165,22 @@ void Component::setSourceComponent(ImportSourcePtr &importSource, const std::str
 
 void Component::appendMath(const std::string &math)
 {
-    mPimpl->mMath.append(math);
+    pFunc()->mMath.append(math);
 }
 
 std::string Component::math() const
 {
-    return mPimpl->mMath;
+    return pFunc()->mMath;
 }
 
 void Component::setMath(const std::string &math)
 {
-    mPimpl->mMath = math;
+    pFunc()->mMath = math;
 }
 
 void Component::removeMath()
 {
-    mPimpl->mMath.clear();
+    pFunc()->mMath.clear();
 }
 
 bool Component::addVariable(const VariablePtr &variable)
@@ -213,16 +197,16 @@ bool Component::addVariable(const VariablePtr &variable)
         otherParent->removeVariable(variable);
     }
 
-    variable->setParent(thisComponent);
-    mPimpl->mVariables.push_back(variable);
+    variable->pFunc()->setParent(thisComponent);
+    pFunc()->mVariables.push_back(variable);
     return true;
 }
 
 bool Component::removeVariable(size_t index)
 {
-    if (index < mPimpl->mVariables.size()) {
-        auto variable = mPimpl->mVariables[index];
-        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + ptrdiff_t(index));
+    if (index < pFunc()->mVariables.size()) {
+        auto variable = pFunc()->mVariables[index];
+        pFunc()->mVariables.erase(pFunc()->mVariables.begin() + ptrdiff_t(index));
         variable->removeParent();
         return true;
     }
@@ -232,10 +216,10 @@ bool Component::removeVariable(size_t index)
 
 bool Component::removeVariable(const std::string &name)
 {
-    auto result = mPimpl->findVariable(name);
-    if (result != mPimpl->mVariables.end()) {
+    auto result = pFunc()->findVariable(name);
+    if (result != pFunc()->mVariables.end()) {
         (*result)->removeParent();
-        mPimpl->mVariables.erase(result);
+        pFunc()->mVariables.erase(result);
         return true;
     }
 
@@ -244,9 +228,9 @@ bool Component::removeVariable(const std::string &name)
 
 bool Component::removeVariable(const VariablePtr &variable)
 {
-    auto result = mPimpl->findVariable(variable);
-    if (result != mPimpl->mVariables.end()) {
-        mPimpl->mVariables.erase(result);
+    auto result = pFunc()->findVariable(variable);
+    if (result != pFunc()->mVariables.end()) {
+        pFunc()->mVariables.erase(result);
         variable->removeParent();
         return true;
     }
@@ -256,16 +240,16 @@ bool Component::removeVariable(const VariablePtr &variable)
 
 void Component::removeAllVariables()
 {
-    for (const auto &variable : mPimpl->mVariables) {
+    for (const auto &variable : pFunc()->mVariables) {
         variable->removeParent();
     }
-    mPimpl->mVariables.clear();
+    pFunc()->mVariables.clear();
 }
 
 VariablePtr Component::variable(size_t index) const
 {
-    if (index < mPimpl->mVariables.size()) {
-        return mPimpl->mVariables.at(index);
+    if (index < pFunc()->mVariables.size()) {
+        return pFunc()->mVariables.at(index);
     }
 
     return nullptr;
@@ -273,8 +257,8 @@ VariablePtr Component::variable(size_t index) const
 
 VariablePtr Component::variable(const std::string &name) const
 {
-    auto result = mPimpl->findVariable(name);
-    if (result != mPimpl->mVariables.end()) {
+    auto result = pFunc()->findVariable(name);
+    if (result != pFunc()->mVariables.end()) {
         return *result;
     }
 
@@ -284,10 +268,9 @@ VariablePtr Component::variable(const std::string &name) const
 VariablePtr Component::takeVariable(size_t index)
 {
     VariablePtr variable = nullptr;
-    if (index < mPimpl->mVariables.size()) {
-        variable = mPimpl->mVariables.at(index);
+    if (index < pFunc()->mVariables.size()) {
+        variable = pFunc()->mVariables.at(index);
         removeVariable(index);
-        variable->removeParent();
     }
 
     return variable;
@@ -303,17 +286,17 @@ VariablePtr Component::takeVariable(const std::string &name)
 
 size_t Component::variableCount() const
 {
-    return mPimpl->mVariables.size();
+    return pFunc()->mVariables.size();
 }
 
 bool Component::hasVariable(const VariablePtr &variable) const
 {
-    return mPimpl->findVariable(variable) != mPimpl->mVariables.end();
+    return pFunc()->findVariable(variable) != pFunc()->mVariables.end();
 }
 
 bool Component::hasVariable(const std::string &name) const
 {
-    return mPimpl->findVariable(name) != mPimpl->mVariables.end();
+    return pFunc()->findVariable(name) != pFunc()->mVariables.end();
 }
 
 bool Component::addReset(const ResetPtr &reset)
@@ -329,16 +312,16 @@ bool Component::addReset(const ResetPtr &reset)
         auto otherParent = std::dynamic_pointer_cast<Component>(reset->parent());
         otherParent->removeReset(reset);
     }
-    reset->setParent(thisComponent);
-    mPimpl->mResets.push_back(reset);
+    reset->pFunc()->setParent(thisComponent);
+    pFunc()->mResets.push_back(reset);
     return true;
 }
 
 bool Component::removeReset(size_t index)
 {
-    if (index < mPimpl->mResets.size()) {
-        mPimpl->mResets.at(index)->removeParent();
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + ptrdiff_t(index));
+    if (index < pFunc()->mResets.size()) {
+        pFunc()->mResets.at(index)->removeParent();
+        pFunc()->mResets.erase(pFunc()->mResets.begin() + ptrdiff_t(index));
         return true;
     }
     return false;
@@ -346,10 +329,10 @@ bool Component::removeReset(size_t index)
 
 bool Component::removeReset(const ResetPtr &reset)
 {
-    auto result = mPimpl->findReset(reset);
-    if (result != mPimpl->mResets.end()) {
+    auto result = pFunc()->findReset(reset);
+    if (result != pFunc()->mResets.end()) {
         (*result)->removeParent();
-        mPimpl->mResets.erase(result);
+        pFunc()->mResets.erase(result);
         return true;
     }
     return false;
@@ -357,17 +340,17 @@ bool Component::removeReset(const ResetPtr &reset)
 
 void Component::removeAllResets()
 {
-    for (const auto &reset : mPimpl->mResets) {
+    for (const auto &reset : pFunc()->mResets) {
         reset->removeParent();
     }
-    mPimpl->mResets.clear();
+    pFunc()->mResets.clear();
 }
 
 ResetPtr Component::takeReset(size_t index)
 {
     ResetPtr reset = nullptr;
-    if (index < mPimpl->mResets.size()) {
-        reset = mPimpl->mResets.at(index);
+    if (index < pFunc()->mResets.size()) {
+        reset = pFunc()->mResets.at(index);
         removeReset(index);
         reset->removeParent();
     }
@@ -377,8 +360,8 @@ ResetPtr Component::takeReset(size_t index)
 
 ResetPtr Component::reset(size_t index) const
 {
-    if (index < mPimpl->mResets.size()) {
-        return mPimpl->mResets.at(index);
+    if (index < pFunc()->mResets.size()) {
+        return pFunc()->mResets.at(index);
     }
 
     return nullptr;
@@ -386,12 +369,12 @@ ResetPtr Component::reset(size_t index) const
 
 size_t Component::resetCount() const
 {
-    return mPimpl->mResets.size();
+    return pFunc()->mResets.size();
 }
 
 bool Component::hasReset(const ResetPtr &reset) const
 {
-    return mPimpl->findReset(reset) != mPimpl->mResets.end();
+    return pFunc()->findReset(reset) != pFunc()->mResets.end();
 }
 
 ComponentPtr Component::clone() const
@@ -458,15 +441,15 @@ bool Component::requiresImports()
 bool Component::doIsResolved() const
 {
     History history;
-    return mPimpl->isResolvedWithHistory(history, shared_from_this());
+    return pFunc()->isResolvedWithHistory(history, shared_from_this());
 }
 
 bool Component::doEquals(const EntityPtr &other) const
 {
     if (ComponentEntity::doEquals(other)) {
         auto component = std::dynamic_pointer_cast<Component>(other);
-        return (component != nullptr) && areEqual(mPimpl->mMath, component->math())
-               && mPimpl->equalResets(component) && mPimpl->equalVariables(component)
+        return (component != nullptr) && areEqual(pFunc()->mMath, component->math())
+               && pFunc()->equalResets(component) && pFunc()->equalVariables(component)
                && ImportedEntity::doEquals(component);
     }
     return false;
