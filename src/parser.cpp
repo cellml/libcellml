@@ -245,7 +245,7 @@ ParserPtr Parser::create() noexcept
 
 ModelPtr Parser::parseModel(const std::string &input)
 {
-    removeAllIssues();
+    pFunc()->removeAllIssues();
     ModelPtr model = nullptr;
     if (input.empty()) {
         auto issue = Issue::IssueImpl::create();
