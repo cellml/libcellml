@@ -65,7 +65,6 @@ private:
     class ValidatorImpl; /**< Forward declaration for pImpl idiom, @private. */
 
     ValidatorImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
-    const ValidatorImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

@@ -45,7 +45,7 @@ namespace libcellml {
  *
  * The private implementation for the Parser class.
  */
-class Parser::ParserImpl : public Logger::LoggerImpl
+class Parser::ParserImpl: public Logger::LoggerImpl
 {
 public:
     Parser *mParser = nullptr;
@@ -220,11 +220,6 @@ public:
 Parser::ParserImpl *Parser::pFunc()
 {
     return reinterpret_cast<Parser::ParserImpl *>(Logger::pFunc());
-}
-
-const Parser::ParserImpl *Parser::pFunc() const
-{
-    return reinterpret_cast<Parser::ParserImpl const *>(Logger::pFunc());
 }
 
 Parser::Parser()

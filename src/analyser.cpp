@@ -349,7 +349,7 @@ using UnitsMap = std::map<std::string, double>;
 using UnitsMaps = std::vector<UnitsMap>;
 using UnitsMultipliers = std::vector<double>;
 
-class Analyser::AnalyserImpl : public Logger::LoggerImpl
+class Analyser::AnalyserImpl: public Logger::LoggerImpl
 {
 public:
     Analyser *mAnalyser = nullptr;

@@ -277,7 +277,7 @@ bool isValidXmlName(const std::string &name)
  *
  * The private implementation for the Validator class.
  */
-class Validator::ValidatorImpl : public LoggerImpl
+class Validator::ValidatorImpl: public LoggerImpl
 {
 public:
     Validator *mValidator = nullptr;
@@ -606,11 +606,6 @@ bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
 Validator::ValidatorImpl *Validator::pFunc()
 {
     return reinterpret_cast<Validator::ValidatorImpl *>(Logger::pFunc());
-}
-
-const Validator::ValidatorImpl *Validator::pFunc() const
-{
-    return reinterpret_cast<Validator::ValidatorImpl const *>(Logger::pFunc());
 }
 
 Validator::Validator()
