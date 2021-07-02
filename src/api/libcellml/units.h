@@ -48,11 +48,13 @@ class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
                               public std::enable_shared_from_this<Units>
 #endif
 {
+    friend class Model;
+
 public:
-    ~Units() override; /**< Destructor. */
-    Units(const Units &rhs) = delete; /**< Copy constructor. */
-    Units(Units &&rhs) noexcept = delete; /**< Move constructor. */
-    Units &operator=(Units rhs) = delete; /**< Assignment operator. */
+    ~Units() override; /**< Destructor, @private. */
+    Units(const Units &rhs) = delete; /**< Copy constructor, @private. */
+    Units(Units &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Units &operator=(Units rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @ref Units object.
@@ -550,7 +552,7 @@ public:
      *
      * @return @c true if successful, @c false otherwise.
      */
-    bool setUnitId(size_t index, const std::string &id) const;
+    bool setUnitId(size_t index, const std::string &id);
 
     /**
      * @brief Return the identifier string of the unit at the given @p index.
@@ -570,8 +572,10 @@ private:
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-    struct UnitsImpl; /**< Forward declaration for pImpl idiom, @private. */
-    UnitsImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class UnitsImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    UnitsImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const UnitsImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
