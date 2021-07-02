@@ -31,10 +31,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Importer: public Logger
 {
 public:
-    ~Importer() override; /**< Destructor. */
-    Importer(const Importer &rhs) = delete; /**< Copy constructor. */
-    Importer(Importer &&rhs) noexcept = delete; /**< Move constructor. */
-    Importer &operator=(Importer rhs) = delete; /**< Assignment operator. */
+    ~Importer() override; /**< Destructor, @private. */
+    Importer(const Importer &rhs) = delete; /**< Copy constructor, @private. */
+    Importer(Importer &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Importer &operator=(Importer rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create an @c Importer object.

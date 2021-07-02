@@ -31,10 +31,10 @@ class Component;
 class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
 public:
-    ~ComponentEntity() override; /**< Destructor. */
-    ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor. */
-    ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor. */
-    ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator. */
+    ~ComponentEntity() override = default; /**< Destructor, @private. */
+    ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor, @private. */
+    ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Add a child component to this component entity.
@@ -313,11 +313,12 @@ protected:
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-    ComponentEntity(); /**< ComponentEntity Constructor. */
+    class ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+    explicit ComponentEntity(ComponentEntityImpl *pImpl); /**< Constructor for derived classes, @private. */
 
 private:
-    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    ComponentEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const ComponentEntityImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

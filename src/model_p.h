@@ -18,17 +18,20 @@ limitations under the License.
 
 #include "libcellml/model.h"
 
+#include "componententity_p.h"
+
 namespace libcellml {
 
 /**
- * @brief The Model::ModelImpl struct.
+ * @brief The Model::ModelImpl class.
  *
- * This struct is the private implementation struct for the Model class.  Separating
+ * This class is the private implementation struct for the Model class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
-struct Model::ModelImpl
+class Model::ModelImpl: public ComponentEntityImpl
 {
+public:
     std::vector<UnitsPtr> mUnits;
 
     std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
