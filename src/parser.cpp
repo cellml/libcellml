@@ -222,11 +222,6 @@ Parser::ParserImpl *Parser::pFunc()
     return reinterpret_cast<Parser::ParserImpl *>(Logger::pFunc());
 }
 
-const Parser::ParserImpl *Parser::pFunc() const
-{
-    return reinterpret_cast<Parser::ParserImpl const *>(Logger::pFunc());
-}
-
 Parser::Parser()
     : Logger(new ParserImpl())
 {

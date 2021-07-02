@@ -608,11 +608,6 @@ Validator::ValidatorImpl *Validator::pFunc()
     return reinterpret_cast<Validator::ValidatorImpl *>(Logger::pFunc());
 }
 
-const Validator::ValidatorImpl *Validator::pFunc() const
-{
-    return reinterpret_cast<Validator::ValidatorImpl const *>(Logger::pFunc());
-}
-
 Validator::Validator()
     : Logger(new ValidatorImpl())
 {
