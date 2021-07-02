@@ -93,27 +93,27 @@ void Logger::removeAllIssues()
     pFunc()->mMessages.clear();
 }
 
-void Logger::removeError(size_t index)
+void Logger::LoggerImpl::removeError(size_t index)
 {
-    pFunc()->mIssues.erase(pFunc()->mIssues.begin() + ptrdiff_t(pFunc()->mErrors.at(index)));
-    pFunc()->mErrors.erase(pFunc()->mErrors.begin() + ptrdiff_t(index));
+    mIssues.erase(mIssues.begin() + ptrdiff_t(mErrors.at(index)));
+    mErrors.erase(mErrors.begin() + ptrdiff_t(index));
 }
 
-void Logger::addIssue(const IssuePtr &issue)
+void Logger::LoggerImpl::addIssue(const IssuePtr &issue)
 {
     // When an issue is added, update the appropriate array based on its level.
-    size_t index = pFunc()->mIssues.size();
-    pFunc()->mIssues.push_back(issue);
+    size_t index = mIssues.size();
+    mIssues.push_back(issue);
     libcellml::Issue::Level level = issue->level();
     switch (level) {
     case libcellml::Issue::Level::ERROR:
-        pFunc()->mErrors.push_back(index);
+        mErrors.push_back(index);
         break;
     case libcellml::Issue::Level::WARNING:
-        pFunc()->mWarnings.push_back(index);
+        mWarnings.push_back(index);
         break;
     case libcellml::Issue::Level::MESSAGE:
-        pFunc()->mMessages.push_back(index);
+        mMessages.push_back(index);
         break;
     }
 }
