@@ -33,6 +33,7 @@ limitations under the License.
 #include "anycellmlelement_p.h"
 #include "internaltypes.h"
 #include "issue_p.h"
+#include "logger_p.h"
 #include "namespaces.h"
 #include "utilities.h"
 
@@ -56,8 +57,16 @@ static const std::map<CellmlElementType, std::string> typeToString = {
     {CellmlElementType::UNITS, "units"},
     {CellmlElementType::VARIABLE, "variable"}};
 
-struct Annotator::AnnotatorImpl
+/**
+ * @brief The Annotator::AnnotatorImpl class.
+ *
+ * This class is the private implementation class for the Annotator class.  Separating
+ * the implementation from the definition allows for greater flexibility when
+ * distributing the code.
+ */
+class Annotator::AnnotatorImpl : public Logger::LoggerImpl
 {
+public:
     Annotator *mAnnotator = nullptr;
     ItemList mIdList;
     ModelWeakPtr mModel;
@@ -127,16 +136,26 @@ struct Annotator::AnnotatorImpl
     void addIssueNonUnique(const std::string &id) const;
 };
 
-Annotator::Annotator()
-    : mPimpl(new AnnotatorImpl())
+Annotator::AnnotatorImpl *Annotator::pFunc()
 {
-    mPimpl->mAnnotator = this;
-    mPimpl->mIdList = std::multimap<std::string, AnyCellmlElementPtr>();
+    return reinterpret_cast<Annotator::AnnotatorImpl *>(Logger::pFunc());
+}
+
+const Annotator::AnnotatorImpl *Annotator::pFunc() const
+{
+    return reinterpret_cast<Annotator::AnnotatorImpl const *>(Logger::pFunc());
+}
+
+Annotator::Annotator()
+    : Logger(new Annotator::AnnotatorImpl())
+{
+    pFunc()->mAnnotator = this;
+    pFunc()->mIdList = std::multimap<std::string, AnyCellmlElementPtr>();
 }
 
 Annotator::~Annotator()
 {
-    delete mPimpl;
+    delete pFunc();
 }
 
 AnnotatorPtr Annotator::create() noexcept
@@ -466,9 +485,9 @@ void Annotator::AnnotatorImpl::update()
 
 void Annotator::setModel(const ModelPtr &model)
 {
-    mPimpl->mModel = model;
-    mPimpl->mHash = 0;
-    mPimpl->update();
+    pFunc()->mModel = model;
+    pFunc()->mHash = 0;
+    pFunc()->update();
 }
 
 void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
@@ -531,38 +550,38 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index, bool 
 
 AnyCellmlElementPtr Annotator::item(const std::string &id)
 {
-    mPimpl->update();
-    return mPimpl->exists(id, 0, true) ? std::move(items(id)[0]) : AnyCellmlElement::AnyCellmlElementImpl::create();
+    pFunc()->update();
+    return pFunc()->exists(id, 0, true) ? std::move(items(id)[0]) : AnyCellmlElement::AnyCellmlElementImpl::create();
 }
 
 AnyCellmlElementPtr Annotator::item(const std::string &id, size_t index)
 {
-    mPimpl->update();
-    return mPimpl->exists(id, index) ? std::move(items(id)[index]) : AnyCellmlElement::AnyCellmlElementImpl::create();
+    pFunc()->update();
+    return pFunc()->exists(id, index) ? std::move(items(id)[index]) : AnyCellmlElement::AnyCellmlElementImpl::create();
 }
 
 bool Annotator::isUnique(const std::string &id)
 {
-    mPimpl->update();
-    return mPimpl->mIdList.count(id) == 1;
+    pFunc()->update();
+    return pFunc()->mIdList.count(id) == 1;
 }
 
 std::vector<AnyCellmlElementPtr> Annotator::items(const std::string &id)
 {
-    mPimpl->update();
+    pFunc()->update();
     std::vector<AnyCellmlElementPtr> items;
-    auto range = mPimpl->mIdList.equal_range(id);
+    auto range = pFunc()->mIdList.equal_range(id);
     for (auto it = range.first; it != range.second; ++it) {
-        items.push_back(mPimpl->convertToShared(it->second));
+        items.push_back(pFunc()->convertToShared(it->second));
     }
     return items;
 }
 
 std::vector<std::string> Annotator::duplicateIds()
 {
-    mPimpl->update();
+    pFunc()->update();
     std::vector<std::string> ids;
-    for (auto i = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); i != end; i = mPimpl->mIdList.upper_bound(i->first)) {
+    for (auto i = pFunc()->mIdList.begin(), end = pFunc()->mIdList.end(); i != end; i = pFunc()->mIdList.upper_bound(i->first)) {
         auto next = i;
         ++next;
         if ((next != end) && (next->first == i->first) && !i->first.empty()) {
@@ -574,9 +593,9 @@ std::vector<std::string> Annotator::duplicateIds()
 
 std::vector<std::string> Annotator::ids()
 {
-    mPimpl->update();
+    pFunc()->update();
     std::vector<std::string> ids;
-    for (auto i = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); i != end; i = mPimpl->mIdList.upper_bound(i->first)) {
+    for (auto i = pFunc()->mIdList.begin(), end = pFunc()->mIdList.end(); i != end; i = pFunc()->mIdList.upper_bound(i->first)) {
         if (!i->first.empty()) {
             ids.push_back(i->first);
         }
@@ -716,9 +735,9 @@ VariablePtr Annotator::variable(const std::string &id)
 
 void Annotator::clearAllIds()
 {
-    auto model = mPimpl->mModel.lock();
+    auto model = pFunc()->mModel.lock();
     if (model != nullptr) {
-        mPimpl->update();
+        pFunc()->update();
         model->removeId();
         for (size_t i = 0; i < model->unitsCount(); ++i) {
             auto units = model->units(i);
@@ -731,20 +750,20 @@ void Annotator::clearAllIds()
             }
         }
         for (size_t i = 0; i < model->componentCount(); ++i) {
-            mPimpl->doClearComponentIds(model->component(i));
+            pFunc()->doClearComponentIds(model->component(i));
         }
         model->removeEncapsulationId();
 
-        mPimpl->mIdList.clear();
-        mPimpl->mHash = 0;
+        pFunc()->mIdList.clear();
+        pFunc()->mHash = 0;
     } else {
-        mPimpl->addIssueNoModel();
+        pFunc()->addIssueNoModel();
     }
 }
 
 void Annotator::clearAllIds(ModelPtr &model)
 {
-    mPimpl->mModel = model;
+    pFunc()->mModel = model;
     clearAllIds();
 }
 
@@ -776,12 +795,12 @@ void Annotator::AnnotatorImpl::doClearComponentIds(const ComponentPtr &component
 
 bool Annotator::assignAllIds()
 {
-    auto model = mPimpl->mModel.lock();
+    auto model = pFunc()->mModel.lock();
     if (model != nullptr) {
-        mPimpl->doSetAllAutomaticIds();
+        pFunc()->doSetAllAutomaticIds();
         return true;
     }
-    mPimpl->addIssueNoModel();
+    pFunc()->addIssueNoModel();
     return false;
 }
 
@@ -799,64 +818,64 @@ bool Annotator::assignAllIds(ModelPtr &model)
 
 bool Annotator::assignIds(CellmlElementType type)
 {
-    auto model = mPimpl->mModel.lock();
+    auto model = pFunc()->mModel.lock();
     bool changed = false;
     if (model != nullptr) {
         changed = true;
         switch (type) {
         case CellmlElementType::COMPONENT:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetComponentIds(model->component(index));
+                pFunc()->doSetComponentIds(model->component(index));
             }
             break;
         case CellmlElementType::COMPONENT_REF:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetComponentEncapsulationIds(model->component(index));
+                pFunc()->doSetComponentEncapsulationIds(model->component(index));
             }
             break;
         case CellmlElementType::CONNECTION:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetConnectionIds(model->component(index));
+                pFunc()->doSetConnectionIds(model->component(index));
             }
             break;
         case CellmlElementType::ENCAPSULATION:
-            mPimpl->doSetEncapsulationIds();
+            pFunc()->doSetEncapsulationIds();
             break;
         case CellmlElementType::IMPORT:
-            mPimpl->doSetImportSourceIds();
+            pFunc()->doSetImportSourceIds();
             break;
         case CellmlElementType::MAP_VARIABLES:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetMapVariablesIds(model->component(index));
+                pFunc()->doSetMapVariablesIds(model->component(index));
             }
             break;
         case CellmlElementType::MODEL:
-            mPimpl->doSetModelIds();
+            pFunc()->doSetModelIds();
             break;
         case CellmlElementType::RESET:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetResetIds(model->component(index));
+                pFunc()->doSetResetIds(model->component(index));
             }
             break;
         case CellmlElementType::RESET_VALUE:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetResetValueIds(model->component(index));
+                pFunc()->doSetResetValueIds(model->component(index));
             }
             break;
         case CellmlElementType::TEST_VALUE:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetTestValueIds(model->component(index));
+                pFunc()->doSetTestValueIds(model->component(index));
             }
             break;
         case CellmlElementType::UNIT:
-            mPimpl->doSetUnitsItemIds();
+            pFunc()->doSetUnitsItemIds();
             break;
         case CellmlElementType::UNITS:
-            mPimpl->doSetUnitsIds();
+            pFunc()->doSetUnitsIds();
             break;
         case CellmlElementType::VARIABLE:
             for (size_t index = 0; index < model->componentCount(); ++index) {
-                mPimpl->doSetVariableIds(model->component(index));
+                pFunc()->doSetVariableIds(model->component(index));
             }
             break;
         case CellmlElementType::MATH:
@@ -866,7 +885,7 @@ bool Annotator::assignIds(CellmlElementType type)
         }
         setModel(model);
     } else {
-        mPimpl->addIssueNoModel();
+        pFunc()->addIssueNoModel();
     }
     return changed;
 }
@@ -1375,83 +1394,83 @@ std::string Annotator::AnnotatorImpl::setAutoId(const AnyCellmlElementPtr &item)
 
 std::string Annotator::assignId(const AnyCellmlElementPtr &item)
 {
-    return mPimpl->setAutoId(item);
+    return pFunc()->setAutoId(item);
 }
 
 std::string Annotator::assignId(const ModelPtr &model, CellmlElementType type)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setModel(model, type);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const ComponentPtr &component, CellmlElementType type)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setComponent(component, type);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const ResetPtr &reset, CellmlElementType type)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setReset(reset, type);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const ImportSourcePtr &importSource)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setImportSource(importSource);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const UnitsPtr &units)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setUnits(units);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const UnitsPtr &units, size_t index)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setUnitsItem(UnitsItem::create(units, index));
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const UnitsItemPtr &unitsItem)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setUnitsItem(unitsItem);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const VariablePtr &variable)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setVariable(variable);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const VariablePairPtr &pair, CellmlElementType type)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setVariablePair(pair, type);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 std::string Annotator::assignId(const VariablePtr &variable1, const VariablePtr &variable2, CellmlElementType type)
 {
     auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
     entry->mPimpl->setVariablePair(variable1, variable2, type);
-    return mPimpl->setAutoId(entry);
+    return pFunc()->setAutoId(entry);
 }
 
 size_t Annotator::itemCount(const std::string &id)
 {
-    mPimpl->update();
-    return mPimpl->mIdList.count(id);
+    pFunc()->update();
+    return pFunc()->mIdList.count(id);
 }
 
 void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &component, std::string &idsString)
@@ -1512,12 +1531,12 @@ size_t Annotator::AnnotatorImpl::generateHash()
 
 bool Annotator::hasModel() const
 {
-    return !mPimpl->mModel.expired();
+    return !pFunc()->mModel.expired();
 }
 
 ModelPtr Annotator::model() const
 {
-    return mPimpl->mModel.lock();
+    return pFunc()->mModel.lock();
 }
 
 } // namespace libcellml

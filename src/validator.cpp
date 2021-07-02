@@ -34,6 +34,7 @@ limitations under the License.
 
 #include "anycellmlelement_p.h"
 #include "issue_p.h"
+#include "logger_p.h"
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
@@ -272,12 +273,13 @@ bool isValidXmlName(const std::string &name)
 }
 
 /**
- * @brief The Validator::ValidatorImpl struct.
+ * @brief The Validator::ValidatorImpl class.
  *
  * The private implementation for the Validator class.
  */
-struct Validator::ValidatorImpl
+class Validator::ValidatorImpl : public LoggerImpl
 {
+public:
     Validator *mValidator = nullptr;
 
     /**
@@ -601,15 +603,25 @@ bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
            != history.end();
 }
 
-Validator::Validator()
-    : mPimpl(new ValidatorImpl())
+Validator::ValidatorImpl *Validator::pFunc()
 {
-    mPimpl->mValidator = this;
+    return reinterpret_cast<Validator::ValidatorImpl *>(Logger::pFunc());
+}
+
+const Validator::ValidatorImpl *Validator::pFunc() const
+{
+    return reinterpret_cast<Validator::ValidatorImpl const *>(Logger::pFunc());
+}
+
+Validator::Validator()
+    : Logger(new ValidatorImpl())
+{
+    pFunc()->mValidator = this;
 }
 
 Validator::~Validator()
 {
-    delete mPimpl;
+    delete pFunc();
 }
 
 ValidatorPtr Validator::create() noexcept
@@ -630,7 +642,7 @@ void Validator::validateModel(const ModelPtr &model)
     } else {
         // Check for a valid name attribute.
         if (!isCellmlIdentifier(model->name())) {
-            auto issue = mPimpl->makeIssueIllegalIdentifier(model->name());
+            auto issue = pFunc()->makeIssueIllegalIdentifier(model->name());
             issue->mPimpl->mItem->mPimpl->setModel(model);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
             issue->mPimpl->setDescription("Model '" + model->name() + "' does not have a valid name attribute. " + issue->description());
@@ -652,7 +664,7 @@ void Validator::validateModel(const ModelPtr &model)
             for (size_t i = 0; i < model->componentCount(); ++i) {
                 history.clear();
                 ComponentPtr component = model->component(i);
-                mPimpl->validateComponentTree(model, component, componentNames, history, modelsVisited);
+                pFunc()->validateComponentTree(model, component, componentNames, history, modelsVisited);
             }
         }
         // Check for units in this model.
@@ -661,15 +673,15 @@ void Validator::validateModel(const ModelPtr &model)
             for (size_t i = 0; i < model->unitsCount(); ++i) {
                 history.clear();
                 UnitsPtr units = model->units(i);
-                mPimpl->validateUnits(units, history, modelsVisited);
+                pFunc()->validateUnits(units, history, modelsVisited);
             }
         }
 
         // Validate any connections / variable equivalence networks in the model.
-        mPimpl->validateConnections(model);
+        pFunc()->validateConnections(model);
 
         // Check identifiers across the model are unique.
-        mPimpl->checkUniqueIds(model);
+        pFunc()->checkUniqueIds(model);
     }
 }
 
