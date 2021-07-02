@@ -125,15 +125,15 @@ public:
      *
      * @return @c true if the @p id exists at @p index, @c false otherwise.
      */
-    bool exists(const std::string &id, size_t index, bool unique = false) const;
+    bool exists(const std::string &id, size_t index, bool unique = false);
 
     size_t generateHash();
     void doUpdateComponentHash(const ComponentPtr &component, std::string &idsString);
 
-    void addIssueNoModel() const;
-    void addIssueInvalidArgument(CellmlElementType type) const;
-    void addIssueNotFound(const std::string &id) const;
-    void addIssueNonUnique(const std::string &id) const;
+    void addIssueNoModel();
+    void addIssueInvalidArgument(CellmlElementType type);
+    void addIssueNotFound(const std::string &id);
+    void addIssueNonUnique(const std::string &id);
 };
 
 Annotator::AnnotatorImpl *Annotator::pFunc()
@@ -490,42 +490,42 @@ void Annotator::setModel(const ModelPtr &model)
     pFunc()->update();
 }
 
-void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
+void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id)
 {
     auto issue = Issue::IssueImpl::create();
     issue->mPimpl->setDescription("Could not find an item with an identifier of '" + id + "' in the model.");
     issue->mPimpl->setLevel(Issue::Level::WARNING);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_FOUND);
-    mAnnotator->addIssue(issue);
+    addIssue(issue);
 }
 
-void Annotator::AnnotatorImpl::addIssueNoModel() const
+void Annotator::AnnotatorImpl::addIssueNoModel()
 {
     auto issue = Issue::IssueImpl::create();
     issue->mPimpl->setDescription("This Annotator object does not have a model to work with.");
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NO_MODEL);
-    mAnnotator->addIssue(issue);
+    addIssue(issue);
 }
 
-void Annotator::AnnotatorImpl::addIssueInvalidArgument(CellmlElementType type) const
+void Annotator::AnnotatorImpl::addIssueInvalidArgument(CellmlElementType type)
 {
     auto issue = Issue::IssueImpl::create();
     auto description = "The item is internally inconsistent: the enum type '" + cellmlElementTypeAsString(type) + "' cannot be used with the stored item.";
     issue->mPimpl->setDescription(description);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE);
-    mAnnotator->addIssue(issue);
+    addIssue(issue);
 }
 
-void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id) const
+void Annotator::AnnotatorImpl::addIssueNonUnique(const std::string &id)
 {
     auto issue = Issue::IssueImpl::create();
     issue->mPimpl->setDescription("The identifier '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
     issue->mPimpl->setLevel(Issue::Level::WARNING);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_ID_NOT_UNIQUE);
-    mAnnotator->addIssue(issue);
+    addIssue(issue);
 }
 
-bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index, bool unique) const
+bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index, bool unique)
 {
     if (!mAnnotator->hasModel()) {
         addIssueNoModel();

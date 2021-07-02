@@ -37,6 +37,29 @@ public:
     std::vector<size_t> mWarnings;
     std::vector<size_t> mMessages;
     std::vector<IssuePtr> mIssues;
+
+    /**
+     * @brief Add an issue to the logger.
+     *
+     * Adds the argument @p issue to this logger.
+     *
+     * @param issue The @c IssuePtr to add.
+     */
+    void addIssue(const IssuePtr &issue);
+
+    /**
+     * @brief Remove issue of level ERROR at the specified @p index.
+     *
+     * Removes an error at @p index.  If @c true is returned
+     * then the error at @p index was successfully removed.
+     * If @p index is within the range [0, \#errors)
+     * then @c true is returned, otherwise @c false is returned.
+     *
+     * @param index The index of the error to remove.
+     *
+     * @return @c true if the error is removed, @c false otherwise.
+     */
+    void removeError(size_t index);
 };
 
 } // namespace libcellml

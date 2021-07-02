@@ -1083,7 +1083,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE);
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
 
         if (!internalVariable->mVariable->initialValue().empty()
@@ -1110,7 +1110,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
     }
@@ -1201,7 +1201,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_INITIALISED);
                             issue->mPimpl->mItem->mPimpl->setVariable(voiEquivalentVariable);
 
-                            mAnalyser->addIssue(issue);
+                            addIssue(issue);
 
                             isVoiInitialised = true;
                         }
@@ -1228,7 +1228,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
     }
 
@@ -1251,7 +1251,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             issue->mPimpl->mItem->mPimpl->setMath(owningComponent(variable));
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
     }
 
@@ -2266,7 +2266,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 issue->mPimpl->setLevel(Issue::Level::WARNING);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
     }
@@ -2330,7 +2330,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 issue->mPimpl->setReferenceRule(referenceRule);
                 issue->mPimpl->mItem->mPimpl->setVariable(realVariable);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
 
@@ -2404,7 +2404,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
                         issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-                        mAnalyser->addIssue(issue);
+                        addIssue(issue);
                     } else {
                         auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
 
@@ -2496,7 +2496,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     issue->mPimpl->setReferenceRule(referenceRule);
                     issue->mPimpl->mItem->mPimpl->setVariable(primaryExternalVariable.first);
 
-                    mAnalyser->addIssue(issue);
+                    addIssue(issue);
                 }
             }
         }
@@ -2728,7 +2728,7 @@ void Analyser::analyseModel(const ModelPtr &model)
         // them our own.
 
         for (size_t i = 0; i < validator->issueCount(); ++i) {
-            addIssue(validator->issue(i));
+            pFunc()->addIssue(validator->issue(i));
         }
 
         pFunc()->mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
