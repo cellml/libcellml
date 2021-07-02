@@ -19,50 +19,39 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
 
+#include "parentedentity_p.h"
+
 namespace libcellml {
 
-using ParentedEntityWeakPtr = std::weak_ptr<ParentedEntity>; /**< Type definition for weak entity pointer. */
-
-/**
- * @brief The Entity::EntityImpl struct.
- *
- * The private implementation for the Entity class.
- */
-struct ParentedEntity::ParentedEntityImpl
+ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc()
 {
-    ParentedEntityWeakPtr mParent; /**< Pointer to parent. */
-};
-
-ParentedEntity::ParentedEntity()
-    : mPimpl(new ParentedEntityImpl())
-{
-    mPimpl->mParent = {};
+    return reinterpret_cast<ParentedEntity::ParentedEntityImpl *>(Entity::pFunc());
 }
 
-ParentedEntity::~ParentedEntity()
+const ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc() const
 {
-    delete mPimpl;
+    return reinterpret_cast<ParentedEntity::ParentedEntityImpl const *>(Entity::pFunc());
+}
+
+ParentedEntity::ParentedEntity(ParentedEntity::ParentedEntityImpl *pImpl)
+    : Entity(pImpl)
+{
 }
 
 ParentedEntityPtr ParentedEntity::parent() const
 {
-    return mPimpl->mParent.lock();
-}
-
-void ParentedEntity::setParent(const ParentedEntityPtr &parent)
-{
-    mPimpl->mParent = parent;
+    return pFunc()->mParent.lock();
 }
 
 void ParentedEntity::removeParent()
 {
-    mPimpl->mParent = {};
+    pFunc()->mParent = {};
 }
 
 bool ParentedEntity::hasParent() const
 {
     bool hasParent = false;
-    EntityPtr parent = mPimpl->mParent.lock();
+    EntityPtr parent = pFunc()->mParent.lock();
     if (parent) {
         hasParent = true;
     }
@@ -73,7 +62,7 @@ bool ParentedEntity::hasParent() const
 bool ParentedEntity::hasAncestor(const ParentedEntityPtr &entity) const
 {
     bool hasAncestor = false;
-    ParentedEntityPtr parent = mPimpl->mParent.lock();
+    ParentedEntityPtr parent = pFunc()->mParent.lock();
     if (parent == entity) {
         hasAncestor = true;
     } else if (parent) {
@@ -81,6 +70,11 @@ bool ParentedEntity::hasAncestor(const ParentedEntityPtr &entity) const
     }
 
     return hasAncestor;
+}
+
+void ParentedEntity::ParentedEntityImpl::setParent(const ParentedEntityPtr &parent)
+{
+    mParent = parent;
 }
 
 } // namespace libcellml
