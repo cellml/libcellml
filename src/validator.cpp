@@ -277,7 +277,7 @@ bool isValidXmlName(const std::string &name)
  *
  * The private implementation for the Validator class.
  */
-class Validator::ValidatorImpl : public LoggerImpl
+class Validator::ValidatorImpl: public LoggerImpl
 {
 public:
     Validator *mValidator = nullptr;
