@@ -31,6 +31,7 @@ limitations under the License.
 
 #include "anycellmlelement_p.h"
 #include "issue_p.h"
+#include "logger_p.h"
 #include "model_p.h"
 #include "namespaces.h"
 #include "utilities.h"
@@ -40,12 +41,13 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Parser::ParserImpl struct.
+ * @brief The Parser::ParserImpl class.
  *
  * The private implementation for the Parser class.
  */
-struct Parser::ParserImpl
+class Parser::ParserImpl : public Logger::LoggerImpl
 {
+public:
     Parser *mParser = nullptr;
 
     /**
@@ -215,15 +217,25 @@ struct Parser::ParserImpl
     void checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component) const;
 };
 
-Parser::Parser()
-    : mPimpl(new ParserImpl())
+Parser::ParserImpl *Parser::pFunc()
 {
-    mPimpl->mParser = this;
+    return reinterpret_cast<Parser::ParserImpl *>(Logger::pFunc());
+}
+
+const Parser::ParserImpl *Parser::pFunc() const
+{
+    return reinterpret_cast<Parser::ParserImpl const *>(Logger::pFunc());
+}
+
+Parser::Parser()
+    : Logger(new ParserImpl())
+{
+    pFunc()->mParser = this;
 }
 
 Parser::~Parser()
 {
-    delete mPimpl;
+    delete pFunc();
 }
 
 ParserPtr Parser::create() noexcept
@@ -242,7 +254,7 @@ ModelPtr Parser::parseModel(const std::string &input)
         addIssue(issue);
     } else {
         model = Model::create();
-        mPimpl->updateModel(model, input);
+        pFunc()->updateModel(model, input);
     }
     return model;
 }
