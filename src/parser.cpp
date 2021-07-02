@@ -45,7 +45,7 @@ namespace libcellml {
  *
  * The private implementation for the Parser class.
  */
-class Parser::ParserImpl : public Logger::LoggerImpl
+class Parser::ParserImpl: public Logger::LoggerImpl
 {
 public:
     Parser *mParser = nullptr;

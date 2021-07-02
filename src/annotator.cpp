@@ -64,7 +64,7 @@ static const std::map<CellmlElementType, std::string> typeToString = {
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
-class Annotator::AnnotatorImpl : public Logger::LoggerImpl
+class Annotator::AnnotatorImpl: public Logger::LoggerImpl
 {
 public:
     Annotator *mAnnotator = nullptr;
