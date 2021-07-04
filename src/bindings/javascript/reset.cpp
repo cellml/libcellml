@@ -12,7 +12,7 @@ EMSCRIPTEN_BINDINGS(libcellml_reset) {
         .smart_ptr_constructor("Reset", select_overload<libcellml::ResetPtr()>(&libcellml::Reset::create))
         .function("setOrder", &libcellml::Reset::setOrder)
         .function("order", &libcellml::Reset::order)
-        .function("unsetOrder", &libcellml::Reset::unsetOrder)
+        .function("removeOrder", &libcellml::Reset::removeOrder)
         .function("isOrderSet", &libcellml::Reset::isOrderSet)
         .function("setVariable", &libcellml::Reset::setVariable)
         .function("variable", &libcellml::Reset::variable)
