@@ -41,7 +41,8 @@ TEST(Reset, order)
     EXPECT_EQ(1, r->order());
     EXPECT_TRUE(r->isOrderSet());
 
-    r->unsetOrder();
+    r->removeOrder();
+    EXPECT_EQ(0, r->order());
     EXPECT_FALSE(r->isOrderSet());
 }
 
