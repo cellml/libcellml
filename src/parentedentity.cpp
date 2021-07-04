@@ -43,9 +43,9 @@ ParentedEntityPtr ParentedEntity::parent() const
     return pFunc()->mParent.lock();
 }
 
-void ParentedEntity::removeParent()
+void ParentedEntity::ParentedEntityImpl::removeParent()
 {
-    pFunc()->mParent = {};
+    mParent = {};
 }
 
 bool ParentedEntity::hasParent() const

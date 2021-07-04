@@ -46,13 +46,6 @@ public:
     ParentedEntityPtr parent() const;
 
     /**
-     * @brief Clear the pointer to the parent entity.
-     *
-     * Clears the pointer to the parent entity.
-     */
-    void removeParent();
-
-    /**
      * @brief Test to see if the given entity has a parent.
      *
      * Tests the given entity to determine if the entity has a parent.
