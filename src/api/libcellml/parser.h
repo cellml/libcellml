@@ -65,8 +65,9 @@ public:
 private:
     Parser(); /**< Constructor, @private. */
 
-    struct ParserImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ParserImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ParserImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ParserImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
