@@ -237,8 +237,10 @@ public:
 private:
     Analyser(); /**< Constructor, @private. */
 
-    struct AnalyserImpl;
-    AnalyserImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class AnalyserImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    AnalyserImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const AnalyserImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

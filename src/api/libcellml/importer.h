@@ -248,8 +248,10 @@ private:
     Importer(); /**< Constructor, @private. */
     explicit Importer(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
-    struct ImporterImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ImporterImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ImporterImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ImporterImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const ImporterImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
