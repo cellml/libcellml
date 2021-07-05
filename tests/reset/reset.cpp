@@ -42,7 +42,7 @@ TEST(Reset, order)
     EXPECT_TRUE(r->isOrderSet());
 
     r->removeOrder();
-    EXPECT_EQ(0, r->order());
+    EXPECT_EQ(int(0), r->order());
     EXPECT_FALSE(r->isOrderSet());
 }
 
