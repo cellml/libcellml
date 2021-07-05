@@ -76,7 +76,6 @@ protected:
     explicit ParentedEntity(ParentedEntityImpl *pImpl); /**< Constructor for derived classes, @private. */
 
 private:
-    ParentedEntityImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
     const ParentedEntityImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
