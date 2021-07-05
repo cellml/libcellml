@@ -55,6 +55,8 @@ public:
      * Validate the given @p model and its encapsulated entities using the
      * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
      *
+     * All existing issues will be removed before the model is validated.
+     *
      * @param model The model to validate.
      */
     void validateModel(const ModelPtr &model);

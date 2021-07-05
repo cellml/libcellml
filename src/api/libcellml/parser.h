@@ -56,6 +56,8 @@ public:
      * Creates and populates a new model pointer by parsing CellML
      * entities and attributes from the @p input @c std::string.
      *
+     * All existing issues will be removed before the input is parsed.
+     *
      * @param input The string to parse into a model.
      *
      * @return The new @c ModelPtr deserialised from the input string.
