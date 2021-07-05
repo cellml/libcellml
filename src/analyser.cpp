@@ -36,6 +36,7 @@ limitations under the License.
 #include "anycellmlelement_p.h"
 #include "generator_p.h"
 #include "issue_p.h"
+#include "logger_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
@@ -340,7 +341,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 }
 
 /**
- * @brief The Analyser::AnalyserImpl struct.
+ * @brief The Analyser::AnalyserImpl class.
  *
  * The private implementation for the Analyser class.
  */
@@ -348,8 +349,9 @@ using UnitsMap = std::map<std::string, double>;
 using UnitsMaps = std::vector<UnitsMap>;
 using UnitsMultipliers = std::vector<double>;
 
-struct Analyser::AnalyserImpl
+class Analyser::AnalyserImpl: public Logger::LoggerImpl
 {
+public:
     Analyser *mAnalyser = nullptr;
 
     AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
@@ -363,7 +365,7 @@ struct Analyser::AnalyserImpl
     std::map<std::string, UnitsPtr> mStandardUnits;
     std::map<AnalyserEquationAstPtr, UnitsWeakPtr> mCiCnUnits;
 
-    explicit AnalyserImpl(Analyser *analyser);
+    AnalyserImpl();
     ~AnalyserImpl();
 
     static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
@@ -464,14 +466,13 @@ struct Analyser::AnalyserImpl
 
     void analyseModel(const ModelPtr &model);
 
-    std::vector<AnalyserExternalVariablePtr>::iterator findExternalVariable(const ModelPtr &model,
-                                                                            const std::string &componentName,
-                                                                            const std::string &variableName);
-    std::vector<AnalyserExternalVariablePtr>::iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable);
+    std::vector<AnalyserExternalVariablePtr>::const_iterator findExternalVariable(const ModelPtr &model,
+                                                                                  const std::string &componentName,
+                                                                                  const std::string &variableName) const;
+    std::vector<AnalyserExternalVariablePtr>::const_iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const;
 };
 
-Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
-    : mAnalyser(analyser)
+Analyser::AnalyserImpl::AnalyserImpl()
 {
     // Customise our generator's profile.
 
@@ -1082,7 +1083,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE);
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
 
         if (!internalVariable->mVariable->initialValue().empty()
@@ -1109,7 +1110,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
     }
@@ -1200,7 +1201,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_INITIALISED);
                             issue->mPimpl->mItem->mPimpl->setVariable(voiEquivalentVariable);
 
-                            mAnalyser->addIssue(issue);
+                            addIssue(issue);
 
                             isVoiInitialised = true;
                         }
@@ -1227,7 +1228,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
     }
 
@@ -1250,7 +1251,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             issue->mPimpl->mItem->mPimpl->setMath(owningComponent(variable));
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
     }
 
@@ -2265,7 +2266,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 issue->mPimpl->setLevel(Issue::Level::WARNING);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
     }
@@ -2329,7 +2330,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 issue->mPimpl->setReferenceRule(referenceRule);
                 issue->mPimpl->mItem->mPimpl->setVariable(realVariable);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
 
@@ -2403,7 +2404,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
                         issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-                        mAnalyser->addIssue(issue);
+                        addIssue(issue);
                     } else {
                         auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
 
@@ -2495,7 +2496,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     issue->mPimpl->setReferenceRule(referenceRule);
                     issue->mPimpl->mItem->mPimpl->setVariable(primaryExternalVariable.first);
 
-                    mAnalyser->addIssue(issue);
+                    addIssue(issue);
                 }
             }
         }
@@ -2663,9 +2664,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 }
 
-std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
-                                                                                                const std::string &componentName,
-                                                                                                const std::string &variableName)
+std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
+                                                                                                      const std::string &componentName,
+                                                                                                      const std::string &variableName) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
         auto v = ev->variable();
@@ -2677,21 +2678,32 @@ std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findE
     });
 }
 
-std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
+std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl::findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
         return ev == externalVariable;
     });
 }
 
-Analyser::Analyser()
-    : mPimpl(new AnalyserImpl {this})
+Analyser::AnalyserImpl *Analyser::pFunc()
 {
+    return reinterpret_cast<Analyser::AnalyserImpl *>(Logger::pFunc());
+}
+
+const Analyser::AnalyserImpl *Analyser::pFunc() const
+{
+    return reinterpret_cast<Analyser::AnalyserImpl const *>(Logger::pFunc());
+}
+
+Analyser::Analyser()
+    : Logger(new Analyser::AnalyserImpl())
+{
+    pFunc()->mAnalyser = this;
 }
 
 Analyser::~Analyser()
 {
-    delete mPimpl;
+    delete pFunc();
 }
 
 AnalyserPtr Analyser::create() noexcept
@@ -2716,23 +2728,23 @@ void Analyser::analyseModel(const ModelPtr &model)
         // them our own.
 
         for (size_t i = 0; i < validator->issueCount(); ++i) {
-            addIssue(validator->issue(i));
+            pFunc()->addIssue(validator->issue(i));
         }
 
-        mPimpl->mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
+        pFunc()->mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
 
         return;
     }
 
     // Analyse the model.
 
-    mPimpl->analyseModel(model);
+    pFunc()->analyseModel(model);
 }
 
 bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
-    if (std::find(mPimpl->mExternalVariables.begin(), mPimpl->mExternalVariables.end(), externalVariable) == mPimpl->mExternalVariables.end()) {
-        mPimpl->mExternalVariables.push_back(externalVariable);
+    if (std::find(pFunc()->mExternalVariables.begin(), pFunc()->mExternalVariables.end(), externalVariable) == pFunc()->mExternalVariables.end()) {
+        pFunc()->mExternalVariables.push_back(externalVariable);
 
         return true;
     }
@@ -2742,8 +2754,8 @@ bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVa
 
 bool Analyser::removeExternalVariable(size_t index)
 {
-    if (index < mPimpl->mExternalVariables.size()) {
-        mPimpl->mExternalVariables.erase(mPimpl->mExternalVariables.begin() + ptrdiff_t(index));
+    if (index < pFunc()->mExternalVariables.size()) {
+        pFunc()->mExternalVariables.erase(pFunc()->mExternalVariables.begin() + ptrdiff_t(index));
 
         return true;
     }
@@ -2755,10 +2767,10 @@ bool Analyser::removeExternalVariable(const ModelPtr &model,
                                       const std::string &componentName,
                                       const std::string &variableName)
 {
-    auto result = mPimpl->findExternalVariable(model, componentName, variableName);
+    auto result = pFunc()->findExternalVariable(model, componentName, variableName);
 
-    if (result != mPimpl->mExternalVariables.end()) {
-        mPimpl->mExternalVariables.erase(result);
+    if (result != pFunc()->mExternalVariables.end()) {
+        pFunc()->mExternalVariables.erase(result);
 
         return true;
     }
@@ -2768,10 +2780,10 @@ bool Analyser::removeExternalVariable(const ModelPtr &model,
 
 bool Analyser::removeExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
-    auto result = mPimpl->findExternalVariable(externalVariable);
+    auto result = pFunc()->findExternalVariable(externalVariable);
 
-    if (result != mPimpl->mExternalVariables.end()) {
-        mPimpl->mExternalVariables.erase(result);
+    if (result != pFunc()->mExternalVariables.end()) {
+        pFunc()->mExternalVariables.erase(result);
 
         return true;
     }
@@ -2781,25 +2793,25 @@ bool Analyser::removeExternalVariable(const AnalyserExternalVariablePtr &externa
 
 void Analyser::removeAllExternalVariables()
 {
-    mPimpl->mExternalVariables.clear();
+    pFunc()->mExternalVariables.clear();
 }
 
 bool Analyser::containsExternalVariable(const ModelPtr &model,
                                         const std::string &componentName,
                                         const std::string &variableName) const
 {
-    return mPimpl->findExternalVariable(model, componentName, variableName) != mPimpl->mExternalVariables.end();
+    return pFunc()->findExternalVariable(model, componentName, variableName) != pFunc()->mExternalVariables.end();
 }
 
 bool Analyser::containsExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
 {
-    return mPimpl->findExternalVariable(externalVariable) != mPimpl->mExternalVariables.end();
+    return pFunc()->findExternalVariable(externalVariable) != pFunc()->mExternalVariables.end();
 }
 
 AnalyserExternalVariablePtr Analyser::externalVariable(size_t index) const
 {
-    if (index < mPimpl->mExternalVariables.size()) {
-        return mPimpl->mExternalVariables[index];
+    if (index < pFunc()->mExternalVariables.size()) {
+        return pFunc()->mExternalVariables[index];
     }
 
     return nullptr;
@@ -2809,9 +2821,9 @@ AnalyserExternalVariablePtr Analyser::externalVariable(const ModelPtr &model,
                                                        const std::string &componentName,
                                                        const std::string &variableName) const
 {
-    auto result = mPimpl->findExternalVariable(model, componentName, variableName);
+    auto result = pFunc()->findExternalVariable(model, componentName, variableName);
 
-    if (result != mPimpl->mExternalVariables.end()) {
+    if (result != pFunc()->mExternalVariables.end()) {
         return *result;
     }
 
@@ -2820,12 +2832,12 @@ AnalyserExternalVariablePtr Analyser::externalVariable(const ModelPtr &model,
 
 size_t Analyser::externalVariableCount() const
 {
-    return mPimpl->mExternalVariables.size();
+    return pFunc()->mExternalVariables.size();
 }
 
 AnalyserModelPtr Analyser::model() const
 {
-    return mPimpl->mModel;
+    return pFunc()->mModel;
 }
 
 } // namespace libcellml

@@ -894,8 +894,10 @@ public:
 private:
     Annotator(); /**< Constructor */
 
-    struct AnnotatorImpl; /**< Forward declaration for pImpl idiom, @private. */
-    AnnotatorImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class AnnotatorImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    AnnotatorImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const AnnotatorImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
