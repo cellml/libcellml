@@ -7,9 +7,6 @@
 %import "entity.i"
 %import "types.i"
 
-%feature("docstring") libcellml::Entity::removeParent
-"Removes the parent set for this entity.";
-
 %feature("docstring") libcellml::Entity::parent
 "Returns the parent of the CellML Entity (or `None` if not set).";
 

@@ -41,6 +41,13 @@ public:
      */
     void setParent(const ParentedEntityPtr &parent);
 
+    /**
+     * @brief Clear the pointer to the parent entity.
+     *
+     * Clears the pointer to the parent entity.
+     */
+    void removeParent();
+
     ParentedEntityWeakPtr mParent; /**< Pointer to parent. */
 };
 
