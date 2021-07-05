@@ -38,16 +38,6 @@ class EntityTestCase(unittest.TestCase):
         self.assertEqual("model", c.parent().name())
         self.assertEqual(1, x.componentCount())
 
-    def test_remove_parent(self):
-        from libcellml import Model, Component
-
-        m = Model()
-        c = Component()
-        m.addComponent(c)
-        self.assertIsNotNone(c.parent())
-        c.removeParent()
-        self.assertIsNone(c.parent())
-
     def test_has_parent(self):
         from libcellml import Component
 
@@ -57,8 +47,7 @@ class EntityTestCase(unittest.TestCase):
         self.assertFalse(x.hasParent())
         c1.addComponent(x)
         self.assertTrue(x.hasParent())
-        x.removeParent()
-        self.assertFalse(x.hasParent())
+
         c2 = Component()
         c1.addComponent(c2)
         c2.addComponent(x)
