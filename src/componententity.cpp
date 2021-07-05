@@ -76,7 +76,7 @@ bool ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
     bool status = false;
     auto result = pFunc()->findComponent(name);
     if (result != pFunc()->mComponents.end()) {
-        (*result)->removeParent();
+        (*result)->pFunc()->removeParent();
         pFunc()->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
@@ -94,7 +94,7 @@ bool ComponentEntity::removeComponent(size_t index)
     if (index < pFunc()->mComponents.size()) {
         auto component = pFunc()->mComponents[index];
         pFunc()->mComponents.erase(pFunc()->mComponents.begin() + ptrdiff_t(index));
-        component->removeParent();
+        component->pFunc()->removeParent();
         status = true;
     }
 
@@ -106,7 +106,7 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     bool status = false;
     auto result = pFunc()->findComponent(component);
     if (result != pFunc()->mComponents.end()) {
-        component->removeParent();
+        component->pFunc()->removeParent();
         pFunc()->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
@@ -121,7 +121,7 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
 void ComponentEntity::removeAllComponents()
 {
     for (auto &component : pFunc()->mComponents) {
-        component->removeParent();
+        component->pFunc()->removeParent();
     }
     pFunc()->mComponents.clear();
 }
@@ -192,7 +192,7 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     if (index < pFunc()->mComponents.size()) {
         component = pFunc()->mComponents.at(index);
         pFunc()->mComponents.erase(pFunc()->mComponents.begin() + ptrdiff_t(index));
-        component->removeParent();
+        component->pFunc()->removeParent();
     }
 
     return component;
@@ -205,7 +205,7 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     if (result != pFunc()->mComponents.end()) {
         foundComponent = *result;
         pFunc()->mComponents.erase(result);
-        foundComponent->removeParent();
+        foundComponent->pFunc()->removeParent();
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
             foundComponent = component(i)->takeComponent(name, searchEncapsulated);
