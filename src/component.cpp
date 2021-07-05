@@ -207,7 +207,7 @@ bool Component::removeVariable(size_t index)
     if (index < pFunc()->mVariables.size()) {
         auto variable = pFunc()->mVariables[index];
         pFunc()->mVariables.erase(pFunc()->mVariables.begin() + ptrdiff_t(index));
-        variable->removeParent();
+        variable->pFunc()->removeParent();
         return true;
     }
 
@@ -218,7 +218,7 @@ bool Component::removeVariable(const std::string &name)
 {
     auto result = pFunc()->findVariable(name);
     if (result != pFunc()->mVariables.end()) {
-        (*result)->removeParent();
+        (*result)->pFunc()->removeParent();
         pFunc()->mVariables.erase(result);
         return true;
     }
@@ -231,7 +231,7 @@ bool Component::removeVariable(const VariablePtr &variable)
     auto result = pFunc()->findVariable(variable);
     if (result != pFunc()->mVariables.end()) {
         pFunc()->mVariables.erase(result);
-        variable->removeParent();
+        variable->pFunc()->removeParent();
         return true;
     }
 
@@ -241,7 +241,7 @@ bool Component::removeVariable(const VariablePtr &variable)
 void Component::removeAllVariables()
 {
     for (const auto &variable : pFunc()->mVariables) {
-        variable->removeParent();
+        variable->pFunc()->removeParent();
     }
     pFunc()->mVariables.clear();
 }
@@ -320,7 +320,7 @@ bool Component::addReset(const ResetPtr &reset)
 bool Component::removeReset(size_t index)
 {
     if (index < pFunc()->mResets.size()) {
-        pFunc()->mResets.at(index)->removeParent();
+        pFunc()->mResets.at(index)->pFunc()->removeParent();
         pFunc()->mResets.erase(pFunc()->mResets.begin() + ptrdiff_t(index));
         return true;
     }
@@ -331,7 +331,7 @@ bool Component::removeReset(const ResetPtr &reset)
 {
     auto result = pFunc()->findReset(reset);
     if (result != pFunc()->mResets.end()) {
-        (*result)->removeParent();
+        (*result)->pFunc()->removeParent();
         pFunc()->mResets.erase(result);
         return true;
     }
@@ -341,7 +341,7 @@ bool Component::removeReset(const ResetPtr &reset)
 void Component::removeAllResets()
 {
     for (const auto &reset : pFunc()->mResets) {
-        reset->removeParent();
+        reset->pFunc()->removeParent();
     }
     pFunc()->mResets.clear();
 }
@@ -352,7 +352,7 @@ ResetPtr Component::takeReset(size_t index)
     if (index < pFunc()->mResets.size()) {
         reset = pFunc()->mResets.at(index);
         removeReset(index);
-        reset->removeParent();
+        reset->pFunc()->removeParent();
     }
 
     return reset;
