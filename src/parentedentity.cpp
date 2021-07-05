@@ -23,11 +23,6 @@ limitations under the License.
 
 namespace libcellml {
 
-ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc()
-{
-    return reinterpret_cast<ParentedEntity::ParentedEntityImpl *>(Entity::pFunc());
-}
-
 const ParentedEntity::ParentedEntityImpl *ParentedEntity::pFunc() const
 {
     return reinterpret_cast<ParentedEntity::ParentedEntityImpl const *>(Entity::pFunc());
