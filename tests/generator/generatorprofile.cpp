@@ -332,9 +332,11 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
-    EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString());
+    EXPECT_EQ("typedef double (* ExternalVariable)(double *variables, size_t index);\n", generatorProfile->externalVariableInAlgebraicModelMethodTypeDefinitionString());
+    EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n", generatorProfile->externalVariableInDifferentialModelMethodTypeDefinitionString());
     EXPECT_EQ(", ExternalVariable externalVariable", generatorProfile->externalVariableMethodParameterString());
-    EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableMethodCallString());
+    EXPECT_EQ("externalVariable(variables, [INDEX])", generatorProfile->externalVariableInAlgebraicModelMethodCallString());
+    EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableInDifferentialModelMethodCallString());
 
     EXPECT_EQ("double * createStatesArray();\n",
               generatorProfile->interfaceCreateStatesArrayMethodString());
@@ -360,6 +362,14 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationDeleteArrayMethodString());
 
+    EXPECT_EQ("void initialiseConstants(double *variables);\n",
+              generatorProfile->interfaceInitialiseConstantsMethodString());
+    EXPECT_EQ("void initialiseConstants(double *variables)\n"
+              "{\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->implementationInitialiseConstantsMethodString());
+
     EXPECT_EQ("void initialiseStatesAndConstants(double *states, double *variables);\n",
               generatorProfile->interfaceInitialiseStatesAndConstantsMethodString());
     EXPECT_EQ("void initialiseStatesAndConstants(double *states, double *variables)\n"
@@ -384,13 +394,21 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationComputeRatesMethodString());
 
+    EXPECT_EQ("void computeVariables(double *variables[OPTIONAL_PARAMETER]);\n",
+              generatorProfile->interfaceComputeVariablesInAlgebraicModelMethodString());
+    EXPECT_EQ("void computeVariables(double *variables[OPTIONAL_PARAMETER])\n"
+              "{\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->implementationComputeVariablesInAlgebraicModelMethodString());
+
     EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n",
-              generatorProfile->interfaceComputeVariablesMethodString());
+              generatorProfile->interfaceComputeVariablesInDifferentialModelMethodString());
     EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n"
               "{\n"
               "[CODE]"
               "}\n",
-              generatorProfile->implementationComputeVariablesMethodString());
+              generatorProfile->implementationComputeVariablesInDifferentialModelMethodString());
 
     EXPECT_EQ("", generatorProfile->emptyMethodString());
 
@@ -747,9 +765,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
 
-    generatorProfile->setExternalVariableMethodTypeDefinitionString(value);
+    generatorProfile->setExternalVariableInAlgebraicModelMethodTypeDefinitionString(value);
+    generatorProfile->setExternalVariableInDifferentialModelMethodTypeDefinitionString(value);
     generatorProfile->setExternalVariableMethodParameterString(value);
-    generatorProfile->setExternalVariableMethodCallString(value);
+    generatorProfile->setExternalVariableInAlgebraicModelMethodCallString(value);
+    generatorProfile->setExternalVariableInDifferentialModelMethodCallString(value);
 
     generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
     generatorProfile->setImplementationCreateStatesArrayMethodString(value);
@@ -760,6 +780,9 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceDeleteArrayMethodString(value);
     generatorProfile->setImplementationDeleteArrayMethodString(value);
 
+    generatorProfile->setInterfaceInitialiseConstantsMethodString(value);
+    generatorProfile->setImplementationInitialiseConstantsMethodString(value);
+
     generatorProfile->setInterfaceInitialiseStatesAndConstantsMethodString(value);
     generatorProfile->setImplementationInitialiseStatesAndConstantsMethodString(value);
 
@@ -769,8 +792,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceComputeRatesMethodString(value);
     generatorProfile->setImplementationComputeRatesMethodString(value);
 
-    generatorProfile->setInterfaceComputeVariablesMethodString(value);
-    generatorProfile->setImplementationComputeVariablesMethodString(value);
+    generatorProfile->setInterfaceComputeVariablesInAlgebraicModelMethodString(value);
+    generatorProfile->setImplementationComputeVariablesInAlgebraicModelMethodString(value);
+
+    generatorProfile->setInterfaceComputeVariablesInDifferentialModelMethodString(value);
+    generatorProfile->setImplementationComputeVariablesInDifferentialModelMethodString(value);
 
     generatorProfile->setEmptyMethodString(value);
 
@@ -837,9 +863,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
 
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionString());
+    EXPECT_EQ(value, generatorProfile->externalVariableInAlgebraicModelMethodTypeDefinitionString());
+    EXPECT_EQ(value, generatorProfile->externalVariableInDifferentialModelMethodTypeDefinitionString());
     EXPECT_EQ(value, generatorProfile->externalVariableMethodParameterString());
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodCallString());
+    EXPECT_EQ(value, generatorProfile->externalVariableInAlgebraicModelMethodCallString());
+    EXPECT_EQ(value, generatorProfile->externalVariableInDifferentialModelMethodCallString());
 
     EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
@@ -850,6 +878,9 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceDeleteArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationDeleteArrayMethodString());
 
+    EXPECT_EQ(value, generatorProfile->interfaceInitialiseConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationInitialiseConstantsMethodString());
+
     EXPECT_EQ(value, generatorProfile->interfaceInitialiseStatesAndConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->implementationInitialiseStatesAndConstantsMethodString());
 
@@ -859,8 +890,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceComputeRatesMethodString());
     EXPECT_EQ(value, generatorProfile->implementationComputeRatesMethodString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceComputeVariablesMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationComputeVariablesMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceComputeVariablesInAlgebraicModelMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationComputeVariablesInAlgebraicModelMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceComputeVariablesInDifferentialModelMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationComputeVariablesInDifferentialModelMethodString());
 
     EXPECT_EQ(value, generatorProfile->emptyMethodString());
 
