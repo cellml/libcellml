@@ -32,13 +32,6 @@ class BinaryDistribution(Distribution):
         return True
 
 
-class InstallCommand(install):
-    def initialize_options(self):
-        super().initialize_options()
-        if os.name != 'nt':
-            self.install_lib = ""
-
-
 setup(
     name='@PYPI_PACKAGE_NAME@',
     version='@PYPI_PACKAGE_VERSION@@PYPI_PACKAGE_DEVELOPER_VERSION@',
@@ -53,9 +46,6 @@ setup(
     long_description=open('README.rst').read(),
     long_description_content_type='text/x-rst',
     distclass=BinaryDistribution,
-    cmdclass={
-        'install': InstallCommand,
-    },
     include_package_data=True,
     zip_safe=False,
 )
