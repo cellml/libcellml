@@ -38,13 +38,6 @@ public:
     Logger(Logger &&rhs) noexcept = delete; /**< Move constructor, @private. */
 
     /**
-     * @brief Clear the issues from the logger.
-     *
-     * Clear the issues from the logger.
-     */
-    void removeAllIssues();
-
-    /**
      * @brief Get the number of issues.
      *
      * Return the number of issues of any level currently stored in the logger.

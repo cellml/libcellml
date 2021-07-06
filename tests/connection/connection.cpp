@@ -1218,8 +1218,6 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     EXPECT_EQ(size_t(1), parser->issueCount());
 
     EXPECT_EQ(expectIssue, parser->issue(0)->description());
-    parser->removeAllIssues();
-    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(model);
