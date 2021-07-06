@@ -621,6 +621,7 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &basePath)
     bool status = true;
     History history;
 
+    pFunc()->removeAllIssues();
     clearImports(model);
     auto normalisedBasePath = normalisePath(basePath);
 
@@ -777,6 +778,7 @@ void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &compon
 
 ModelPtr Importer::flattenModel(const ModelPtr &model)
 {
+    pFunc()->removeAllIssues();
     ModelPtr flatModel;
     if (model == nullptr) {
         auto issue = Issue::IssueImpl::create();
