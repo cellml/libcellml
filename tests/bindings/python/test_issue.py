@@ -131,11 +131,8 @@ class IssueTestCase(unittest.TestCase):
             "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specA02.html?issue=XML",
             i.url())
 
-        p.removeAllIssues()
-
-        self.assertEqual(0, p.issueCount())
-        self.assertEqual(0, p.errorCount())
-        self.assertEqual(None, p.error(0))
+        self.assertEqual(2, p.errorCount())
+        self.assertEqual(None, p.error(4))
         self.assertEqual(0, p.warningCount())
         self.assertEqual(None, p.warning(0))
         self.assertEqual(0, p.messageCount())

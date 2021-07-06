@@ -865,7 +865,6 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
     EXPECT_EQ(resolveError, importer->issue(0)->description());
 
     // Create a flattened version to demonstrate the diagnostics.
-    importer->removeAllIssues();
     auto flatModel = importer->flattenModel(originalModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(flattenError, importer->issue(0)->description());
@@ -898,7 +897,6 @@ TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
     EXPECT_EQ(resolveError, importer->issue(0)->description());
 
     // Create a flattened version to demonstrate the diagnostics.
-    importer->removeAllIssues();
     auto flatModel = importer->flattenModel(originalModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(flattenError, importer->issue(0)->description());

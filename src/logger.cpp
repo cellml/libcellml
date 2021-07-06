@@ -85,12 +85,12 @@ IssuePtr Logger::message(size_t index) const
     return issue;
 }
 
-void Logger::removeAllIssues()
+void Logger::LoggerImpl::removeAllIssues()
 {
-    pFunc()->mIssues.clear();
-    pFunc()->mErrors.clear();
-    pFunc()->mWarnings.clear();
-    pFunc()->mMessages.clear();
+    mIssues.clear();
+    mErrors.clear();
+    mWarnings.clear();
+    mMessages.clear();
 }
 
 void Logger::LoggerImpl::removeError(size_t index)
