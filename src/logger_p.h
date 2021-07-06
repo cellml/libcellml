@@ -60,6 +60,13 @@ public:
      * @return @c true if the error is removed, @c false otherwise.
      */
     void removeError(size_t index);
+
+    /**
+     * @brief Clear the issues from the logger.
+     *
+     * Clear the issues from the logger.
+     */
+    void removeAllIssues();
 };
 
 } // namespace libcellml

@@ -627,7 +627,7 @@ ValidatorPtr Validator::create() noexcept
 void Validator::validateModel(const ModelPtr &model)
 {
     // Clear any pre-existing issues in ths validator instance.
-    removeAllIssues();
+    pFunc()->removeAllIssues();
 
     if (model == nullptr) {
         auto issue = Issue::IssueImpl::create();

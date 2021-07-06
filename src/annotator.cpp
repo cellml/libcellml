@@ -475,7 +475,7 @@ void Annotator::AnnotatorImpl::buildIdList()
 
 void Annotator::AnnotatorImpl::update()
 {
-    mAnnotator->removeAllIssues();
+    removeAllIssues();
     size_t hash = generateHash();
     if (mHash != hash) {
         buildIdList();

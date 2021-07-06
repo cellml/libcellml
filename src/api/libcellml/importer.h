@@ -55,6 +55,8 @@ public:
      * The result is a self-contained model requiring no external
      * resources and having no imports.
      *
+     * All existing issues will be removed before the model is flattened.
+     *
      * @sa clone
      *
      * @param model A @c ModelPtr whose imports will be resolved.
@@ -69,6 +71,8 @@ public:
      * Resolve all @c Component and @c Units imports by loading the models
      * from local disk through relative URLs.  The @p basePath defines
      * the full path to the directory that import URLs are relative to.
+     *
+     * All existing issues will be removed before any imports are resolved.
      *
      * @param model The @c Model whose imports need resolution.
      * @param basePath The full path used to resolve relative import URLs.
