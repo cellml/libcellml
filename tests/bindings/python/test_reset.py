@@ -59,12 +59,14 @@ class ResetTestCase(unittest.TestCase):
     def test_unset_order(self):
         from libcellml import Reset
 
-        # unsetOrder()
+        # removeOrder()
         x = Reset()
         x.setOrder(-4)
         self.assertTrue(x.isOrderSet())
-        x.unsetOrder()
+        x.removeOrder()
+
         self.assertFalse(x.isOrderSet())
+        self.assertEqual(0, x.order())
 
     def test_test_value(self):
         from libcellml import Reset
