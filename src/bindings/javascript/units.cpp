@@ -1,7 +1,6 @@
 
 #include <emscripten/bind.h>
 
-#include "libcellml/exportdefinitions.h"
 #include "libcellml/units.h"
 
 using namespace emscripten;
@@ -11,7 +10,7 @@ namespace libcellml {
 class UnitsImportedEntity; /**< Forward declaration of Units class. */
 using UnitsImportedEntityPtr = std::shared_ptr<UnitsImportedEntity>; /**< Type definition for shared units pointer. */
 
-class LIBCELLML_EXPORT UnitsImportedEntity: public Units
+class UnitsImportedEntity: public Units
 {
 public:
   static UnitsImportedEntityPtr create() noexcept
