@@ -7,9 +7,11 @@ using namespace emscripten;
 
 namespace libcellml {
 
-class UnitsImportedEntity; /**< Forward declaration of Units class. */
-using UnitsImportedEntityPtr = std::shared_ptr<UnitsImportedEntity>; /**< Type definition for shared units pointer. */
+class UnitsImportedEntity;
+using UnitsImportedEntityPtr = std::shared_ptr<UnitsImportedEntity>;
 
+// To work around multiple inheritance we have to create a combined Units
+// and ImportedEntity class that we can bind with Emscripten.
 class UnitsImportedEntity: public Units
 {
 public:
