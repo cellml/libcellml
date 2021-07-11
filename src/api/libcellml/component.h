@@ -426,12 +426,27 @@ public:
      *
      * @return @c true when imports are required, @c false otherwise.
      */
-    bool requiresImports();
+    bool requiresImports() const;
 
-private:
+#ifdef DAMN_YOU_EMSCRIPTEN
+    bool isImport() const;
+
+    ImportSourcePtr importSource() const;
+
+    void setImportSource(const ImportSourcePtr &importSource);
+
+    std::string importReference() const;
+
+    void setImportReference(const std::string &reference);
+
+    bool isResolved() const;
+#endif
+
+protected:
     Component(); /**< Constructor @private*/
     explicit Component(const std::string &name); /**< Constructor named, @private. */
 
+private:
     bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private. */
 
     bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
