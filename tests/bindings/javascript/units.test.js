@@ -233,10 +233,6 @@ describe("Units tests", () => {
         let iS = new libcellml.ImportSource()
         iS.setUrl("someplace")
 
-        console.log(u.isImport)
-        console.log(u.importReference)
-        console.log(u.importSource)
-        console.log(u.setImportSource)
         expect(u.isImport()).toBe(false)
 
         u.setImportSource(iS)
