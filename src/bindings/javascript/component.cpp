@@ -1,6 +1,7 @@
 
 #include <emscripten/bind.h>
 
+#define DAMN_YOU_EMSCRIPTEN
 #include "libcellml/component.h"
 
 using namespace emscripten;
@@ -9,7 +10,9 @@ using namespace emscripten;
 EMSCRIPTEN_BINDINGS(libcellml_component) {
 
     class_<libcellml::Component, base<libcellml::ComponentEntity>>("Component")
-        .smart_ptr_constructor("Component", select_overload<libcellml::ComponentPtr()>(&libcellml::Component::create))
+        .smart_ptr<std::shared_ptr<libcellml::Component>>("ComponentPtr")
+        .constructor(select_overload<libcellml::ComponentPtr()>(&libcellml::Component::create))
+        .constructor(select_overload<libcellml::ComponentPtr(const std::string &)>(&libcellml::Component::create))
         .function("setSourceComponent", &libcellml::Component::setSourceComponent)
         .function("appendMath", &libcellml::Component::appendMath)
         .function("math", &libcellml::Component::math)
@@ -37,11 +40,11 @@ EMSCRIPTEN_BINDINGS(libcellml_component) {
         .function("hasReset", &libcellml::Component::hasReset)
         .function("clone", &libcellml::Component::clone)
         .function("requiresImports", &libcellml::Component::requiresImports)
-        .function("isImport", &libcellml::ImportedEntity::isImport)
-        .function("importSource", &libcellml::ImportedEntity::importSource)
-        .function("setImportSource", &libcellml::ImportedEntity::setImportSource)
-        .function("importReference", &libcellml::ImportedEntity::importReference)
-        .function("setImportReference", &libcellml::ImportedEntity::setImportReference)
-        .function("isResolved", &libcellml::ImportedEntity::isResolved)
+        .function("isImport", &libcellml::Component::isImport)
+        .function("importSource", &libcellml::Component::importSource)
+        .function("setImportSource", &libcellml::Component::setImportSource)
+        .function("importReference", &libcellml::Component::importReference)
+        .function("setImportReference", &libcellml::Component::setImportReference)
+        .function("isResolved", &libcellml::Component::isResolved)
     ;
 }

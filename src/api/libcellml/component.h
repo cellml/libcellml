@@ -426,7 +426,11 @@ public:
      *
      * @return @c true when imports are required, @c false otherwise.
      */
-    bool requiresImports();
+    bool requiresImports() const;
+
+#ifdef DAMN_YOU_EMSCRIPTEN
+#  include "importedentity.impl"
+#endif
 
 private:
     Component(); /**< Constructor @private*/
