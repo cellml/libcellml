@@ -34,7 +34,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByReferenceStringPrefix("name", "milli", 1.0, 5)
+        u.addUnitByReferenceStringPrefix("name", "milli", 1.0, 5, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by reference enum prefix.', () => {
@@ -42,7 +42,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByReferenceEnumPrefix("name", libcellml.Prefix.TERA, 7, 9)
+        u.addUnitByReferenceEnumPrefix("name", libcellml.Prefix.TERA, 7, 9, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by reference int prefix.', () => {
@@ -50,7 +50,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByReferenceIntPrefix("name", -2, 1.0, 5)
+        u.addUnitByReferenceIntPrefix("name", -2, 1.0, 5, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by reference exponent.', () => {
@@ -58,7 +58,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByReferenceExponent("name", -4.0)
+        u.addUnitByReferenceExponent("name", -4.0, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by reference.', () => {
@@ -74,7 +74,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5)
+        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by standard unit enum prefix.', () => {
@@ -82,7 +82,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitEnumPrefix(libcellml.StandardUnit.TESLA, libcellml.Prefix.TERA, 7, 9)
+        u.addUnitByStandardUnitEnumPrefix(libcellml.StandardUnit.TESLA, libcellml.Prefix.TERA, 7, 9, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by standard unit int prefix.', () => {
@@ -90,7 +90,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitIntPrefix(libcellml.StandardUnit.TESLA, -2, 1.0, 5)
+        u.addUnitByStandardUnitIntPrefix(libcellml.StandardUnit.TESLA, -2, 1.0, 5, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by standard unit exponent.', () => {
@@ -98,7 +98,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitExponent(libcellml.StandardUnit.TESLA, -4.0)
+        u.addUnitByStandardUnitExponent(libcellml.StandardUnit.TESLA, -4.0, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by standard unit.', () => {
@@ -124,7 +124,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByReferenceEnumPrefix("name", libcellml.Prefix.TERA, 7, 9)
+        u.addUnitByReferenceEnumPrefix("name", libcellml.Prefix.TERA, 7, 9, "")
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributePrefix(0)).toBe("tera")
@@ -134,7 +134,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitExponent(libcellml.StandardUnit.TESLA, -4.0)
+        u.addUnitByStandardUnitExponent(libcellml.StandardUnit.TESLA, -4.0, "")
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributeExponent(0)).toBe(-4.0)
@@ -144,7 +144,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", -2.0, 5)
+        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", -2.0, 5, "")
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributeMultiplier(0)).toBe(5.0)
@@ -213,7 +213,7 @@ describe("Units tests", () => {
     test('Checking Units clone.', () => {
         const u = new libcellml.Units("mine")
 
-        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5)
+        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5, "")
 
         const uClone = u.clone()
         expect(uClone.name()).toBe("mine")
@@ -222,7 +222,7 @@ describe("Units tests", () => {
     test('Checking Units unit id.', () => {
         const u = new libcellml.Units()
 
-        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5)
+        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5, "")
         expect(u.unitId(0)).toBe("")
 
         u.setUnitId(0, "bob")
@@ -233,6 +233,10 @@ describe("Units tests", () => {
         let iS = new libcellml.ImportSource()
         iS.setUrl("someplace")
 
+        console.log(u.isImport)
+        console.log(u.importReference)
+        console.log(u.importSource)
+        console.log(u.setImportSource)
         expect(u.isImport()).toBe(false)
 
         u.setImportSource(iS)
@@ -262,21 +266,21 @@ describe("Units tests", () => {
     test('Checking Units scaling factor.', () => {
         const u1 = new libcellml.Units("second")
         let u2 = new libcellml.Units("millisecond")
-        u2.addUnitByReferenceStringPrefix("second", "milli", 1.0, 1.0)
+        u2.addUnitByReferenceStringPrefix("second", "milli", 1.0, 1.0, "")
 
         expect(libcellml.Units.scalingFactor(u1, u2, true)).toBe(0.001)
     })
     test('Checking Units compatible.', () => {
         const u1 = new libcellml.Units("second")
         let u2 = new libcellml.Units("millisecond")
-        u2.addUnitByReferenceStringPrefix("second", "milli", 1.0, 1.0)
+        u2.addUnitByReferenceStringPrefix("second", "milli", 1.0, 1.0, "")
 
         expect(libcellml.Units.compatible(u1, u2)).toBe(true)
     })
     test('Checking Units equivalent.', () => {
         const u1 = new libcellml.Units("second")
         let u2 = new libcellml.Units("millisecond")
-        u2.addUnitByReferenceStringPrefix("second", "milli", 1.0, 1.0)
+        u2.addUnitByReferenceStringPrefix("second", "milli", 1.0, 1.0, "")
 
         expect(libcellml.Units.equivalent(u1, u2)).toBe(false)
     })

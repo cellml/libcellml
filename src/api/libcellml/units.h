@@ -564,7 +564,11 @@ public:
      */
     std::string unitId(size_t index) const;
 
-protected:
+#ifdef DAMN_YOU_EMSCRIPTEN
+#  include "importedentity.impl"
+#endif
+
+private:
     Units(); /**< Constructor, @private. */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
