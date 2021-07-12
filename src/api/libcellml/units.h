@@ -565,7 +565,7 @@ public:
     std::string unitId(size_t index) const;
 
 #ifdef DAMN_YOU_EMSCRIPTEN
-#  include "importedentity.impl"
+#    include "importedentity.impl"
 #endif
 
 private:
