@@ -31,6 +31,7 @@ set(SOURCE_FILES
 )
 
 add_library(javascript-bindings OBJECT ${SOURCE_FILES})
+target_include_directories(javascript-bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(javascript-bindings PUBLIC cellml)
 
