@@ -58,6 +58,6 @@ describe("Parser tests", () => {
         const m = p.parseModel(componentImportModel)
 
         expect(m.componentCount()).toBe(1)
-        console.log(m.componentByIndex(0).isImport)
+        expect(m.componentByIndex(0).isImport()).toBe(true)
     })
 })
