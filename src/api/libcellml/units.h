@@ -564,11 +564,14 @@ public:
      */
     std::string unitId(size_t index) const;
 
-protected:
+#ifdef DAMN_YOU_EMSCRIPTEN
+#  include "importedentity.impl"
+#endif
+
+private:
     Units(); /**< Constructor, @private. */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
-private:
     bool doIsResolved() const override; /**< Virtual method for implementing isResolved, @private. */
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
