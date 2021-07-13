@@ -3,7 +3,7 @@
 
 // To work around multiple inheritance we have to create a combined Units
 // and ImportedEntity class that we can bind with Emscripten.
-#define DAMN_YOU_EMSCRIPTEN
+#define EMSCRIPTEN_JAVASCRIPT_BINDINGS
 #include "libcellml/units.h"
 
 using namespace emscripten;
