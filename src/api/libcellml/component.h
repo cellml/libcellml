@@ -429,7 +429,7 @@ public:
     bool requiresImports() const;
 
 #ifdef DAMN_YOU_EMSCRIPTEN
-#  include "importedentity.impl"
+#    include "importedentity.impl"
 #endif
 
 private:
