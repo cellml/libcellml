@@ -28,6 +28,7 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/generatorprofile.h"
 #include "libcellml/importsource.h"
 #include "libcellml/issue.h"
 #include "libcellml/logger.h"
@@ -578,6 +579,269 @@ std::string sha1(const std::string &string)
     }
 
     return result.str();
+}
+
+std::string sha1(const GeneratorProfilePtr &generatorProfile)
+{
+    // Return the SHA-1 value of the given generator profile.
+
+    static const std::string TRUE_VALUE = "true";
+    static const std::string FALSE_VALUE = "false";
+
+    auto profileContents = generatorProfile->hasInterface() ?
+                               TRUE_VALUE :
+                               FALSE_VALUE;
+
+    // Assignment.
+
+    profileContents += generatorProfile->assignmentString();
+
+    // Relational and logical operators.
+
+    profileContents += generatorProfile->eqString()
+                       + generatorProfile->neqString()
+                       + generatorProfile->ltString()
+                       + generatorProfile->leqString()
+                       + generatorProfile->gtString()
+                       + generatorProfile->geqString()
+                       + generatorProfile->andString()
+                       + generatorProfile->orString()
+                       + generatorProfile->xorString()
+                       + generatorProfile->notString();
+
+    profileContents += (generatorProfile->hasEqOperator() ?
+                            TRUE_VALUE :
+                            FALSE_VALUE)
+                       + (generatorProfile->hasNeqOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE)
+                       + (generatorProfile->hasLtOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE)
+                       + (generatorProfile->hasLeqOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE)
+                       + (generatorProfile->hasGtOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE)
+                       + (generatorProfile->hasGeqOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE)
+                       + (generatorProfile->hasAndOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE)
+                       + (generatorProfile->hasOrOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE)
+                       + (generatorProfile->hasXorOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE)
+                       + (generatorProfile->hasNotOperator() ?
+                              TRUE_VALUE :
+                              FALSE_VALUE);
+
+    // Arithmetic operators.
+
+    profileContents += generatorProfile->plusString()
+                       + generatorProfile->minusString()
+                       + generatorProfile->timesString()
+                       + generatorProfile->divideString()
+                       + generatorProfile->powerString()
+                       + generatorProfile->squareRootString()
+                       + generatorProfile->squareString()
+                       + generatorProfile->absoluteValueString()
+                       + generatorProfile->exponentialString()
+                       + generatorProfile->naturalLogarithmString()
+                       + generatorProfile->commonLogarithmString()
+                       + generatorProfile->ceilingString()
+                       + generatorProfile->floorString()
+                       + generatorProfile->minString()
+                       + generatorProfile->maxString()
+                       + generatorProfile->remString();
+
+    profileContents += generatorProfile->hasPowerOperator() ?
+                           TRUE_VALUE :
+                           FALSE_VALUE;
+
+    // Trigonometric operators.
+
+    profileContents += generatorProfile->sinString()
+                       + generatorProfile->cosString()
+                       + generatorProfile->tanString()
+                       + generatorProfile->secString()
+                       + generatorProfile->cscString()
+                       + generatorProfile->cotString()
+                       + generatorProfile->sinhString()
+                       + generatorProfile->coshString()
+                       + generatorProfile->tanhString()
+                       + generatorProfile->sechString()
+                       + generatorProfile->cschString()
+                       + generatorProfile->cothString()
+                       + generatorProfile->asinString()
+                       + generatorProfile->acosString()
+                       + generatorProfile->atanString()
+                       + generatorProfile->asecString()
+                       + generatorProfile->acscString()
+                       + generatorProfile->acotString()
+                       + generatorProfile->asinhString()
+                       + generatorProfile->acoshString()
+                       + generatorProfile->atanhString()
+                       + generatorProfile->asechString()
+                       + generatorProfile->acschString()
+                       + generatorProfile->acothString();
+
+    // Piecewise statement.
+
+    profileContents += generatorProfile->conditionalOperatorIfString()
+                       + generatorProfile->conditionalOperatorElseString()
+                       + generatorProfile->piecewiseIfString()
+                       + generatorProfile->piecewiseElseString();
+
+    profileContents += generatorProfile->hasConditionalOperator() ?
+                           TRUE_VALUE :
+                           FALSE_VALUE;
+
+    // Constants.
+
+    profileContents += generatorProfile->trueString()
+                       + generatorProfile->falseString()
+                       + generatorProfile->eString()
+                       + generatorProfile->piString()
+                       + generatorProfile->infString()
+                       + generatorProfile->nanString();
+
+    // Arithmetic functions.
+
+    profileContents += generatorProfile->eqFunctionString()
+                       + generatorProfile->neqFunctionString()
+                       + generatorProfile->ltFunctionString()
+                       + generatorProfile->leqFunctionString()
+                       + generatorProfile->gtFunctionString()
+                       + generatorProfile->geqFunctionString()
+                       + generatorProfile->andFunctionString()
+                       + generatorProfile->orFunctionString()
+                       + generatorProfile->xorFunctionString()
+                       + generatorProfile->notFunctionString()
+                       + generatorProfile->minFunctionString()
+                       + generatorProfile->maxFunctionString();
+
+    // Trigonometric functions.
+
+    profileContents += generatorProfile->secFunctionString()
+                       + generatorProfile->cscFunctionString()
+                       + generatorProfile->cotFunctionString()
+                       + generatorProfile->sechFunctionString()
+                       + generatorProfile->cschFunctionString()
+                       + generatorProfile->cothFunctionString()
+                       + generatorProfile->asecFunctionString()
+                       + generatorProfile->acscFunctionString()
+                       + generatorProfile->acotFunctionString()
+                       + generatorProfile->asechFunctionString()
+                       + generatorProfile->acschFunctionString()
+                       + generatorProfile->acothFunctionString();
+
+    // Miscellaneous.
+    // Note: we do NOT include interfaceFileNameString() since it may be the
+    //       only thing that someone might change, so that the generated file
+    //       works with the file name it is to be given.
+
+    profileContents += generatorProfile->commentString()
+                       + generatorProfile->originCommentString();
+
+    profileContents += generatorProfile->interfaceHeaderString()
+                       + generatorProfile->implementationHeaderString();
+
+    profileContents += generatorProfile->interfaceVersionString()
+                       + generatorProfile->implementationVersionString();
+
+    profileContents += generatorProfile->interfaceLibcellmlVersionString()
+                       + generatorProfile->implementationLibcellmlVersionString();
+
+    profileContents += generatorProfile->interfaceStateCountString()
+                       + generatorProfile->implementationStateCountString();
+
+    profileContents += generatorProfile->interfaceVariableCountString()
+                       + generatorProfile->implementationVariableCountString();
+
+    profileContents += generatorProfile->variableTypeObjectString();
+    profileContents += generatorProfile->variableTypeObjectExternalTypeString();
+
+    profileContents += generatorProfile->constantVariableTypeString()
+                       + generatorProfile->computedConstantVariableTypeString()
+                       + generatorProfile->algebraicVariableTypeString()
+                       + generatorProfile->externalVariableTypeString();
+
+    profileContents += generatorProfile->variableInfoObjectString()
+                       + generatorProfile->variableInfoWithTypeObjectString();
+
+    profileContents += generatorProfile->interfaceVoiInfoString()
+                       + generatorProfile->implementationVoiInfoString();
+
+    profileContents += generatorProfile->interfaceStateInfoString()
+                       + generatorProfile->implementationStateInfoString();
+
+    profileContents += generatorProfile->interfaceVariableInfoString()
+                       + generatorProfile->implementationVariableInfoString();
+
+    profileContents += generatorProfile->variableInfoEntryString()
+                       + generatorProfile->variableInfoWithTypeEntryString();
+
+    profileContents += generatorProfile->voiString();
+
+    profileContents += generatorProfile->statesArrayString()
+                       + generatorProfile->ratesArrayString()
+                       + generatorProfile->variablesArrayString();
+
+    profileContents += generatorProfile->externalVariableInAlgebraicModelMethodTypeDefinitionString()
+                       + generatorProfile->externalVariableInDifferentialModelMethodTypeDefinitionString()
+                       + generatorProfile->externalVariableMethodParameterString()
+                       + generatorProfile->externalVariableInAlgebraicModelMethodCallString()
+                       + generatorProfile->externalVariableInDifferentialModelMethodCallString();
+
+    profileContents += generatorProfile->interfaceCreateStatesArrayMethodString()
+                       + generatorProfile->implementationCreateStatesArrayMethodString();
+
+    profileContents += generatorProfile->interfaceCreateVariablesArrayMethodString()
+                       + generatorProfile->implementationCreateVariablesArrayMethodString();
+
+    profileContents += generatorProfile->interfaceDeleteArrayMethodString()
+                       + generatorProfile->implementationDeleteArrayMethodString();
+
+    profileContents += generatorProfile->interfaceInitialiseConstantsMethodString()
+                       + generatorProfile->implementationInitialiseConstantsMethodString();
+
+    profileContents += generatorProfile->interfaceInitialiseStatesAndConstantsMethodString()
+                       + generatorProfile->implementationInitialiseStatesAndConstantsMethodString();
+
+    profileContents += generatorProfile->interfaceComputeComputedConstantsMethodString()
+                       + generatorProfile->implementationComputeComputedConstantsMethodString();
+
+    profileContents += generatorProfile->interfaceComputeRatesMethodString()
+                       + generatorProfile->implementationComputeRatesMethodString();
+
+    profileContents += generatorProfile->interfaceComputeVariablesInAlgebraicModelMethodString()
+                       + generatorProfile->implementationComputeVariablesInAlgebraicModelMethodString();
+
+    profileContents += generatorProfile->interfaceComputeVariablesInDifferentialModelMethodString()
+                       + generatorProfile->implementationComputeVariablesInDifferentialModelMethodString();
+
+    profileContents += generatorProfile->emptyMethodString();
+
+    profileContents += generatorProfile->indentString();
+
+    profileContents += generatorProfile->openArrayInitialiserString()
+                       + generatorProfile->closeArrayInitialiserString();
+
+    profileContents += generatorProfile->openArrayString()
+                       + generatorProfile->closeArrayString();
+
+    profileContents += generatorProfile->arrayElementSeparatorString();
+
+    profileContents += generatorProfile->stringDelimiterString();
+
+    profileContents += generatorProfile->commandSeparatorString();
+
+    return sha1(profileContents);
 }
 
 bool isStandardUnitName(const std::string &name)
