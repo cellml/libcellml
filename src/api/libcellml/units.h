@@ -564,7 +564,7 @@ public:
      */
     std::string unitId(size_t index) const;
 
-#ifdef EMSCRIPTEN_JAVASCRIPT_BINDINGS
+#ifdef JAVASCRIPT_BINDINGS
 #    include "importedentity.impl"
 #endif
 
