@@ -1,7 +1,7 @@
 
 #include <emscripten/bind.h>
 
-#define DAMN_YOU_EMSCRIPTEN
+#define EMSCRIPTEN_JAVASCRIPT_BINDINGS
 #include "libcellml/component.h"
 
 using namespace emscripten;
