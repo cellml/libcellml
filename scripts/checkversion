@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ $# -ne 1 ]; then
+    exit 1
+else
+    MAJOR=$(awk -F. '{print $1}' <<< $1)
+    MINOR=$(awk -F. '{print $2}' <<< $1)
+    PATCH=$(awk -F. '{print $3}' <<< $1)
+
+    if [ -z "$MAJOR" -o -z "$MINOR" -o -z "$PATCH" ]; then
+        exit 1
+    fi
+fi

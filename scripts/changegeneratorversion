@@ -1,0 +1,39 @@
+#!/bin/sh
+
+usage() {
+    echo "Usage: `basename $0` oldver newver"
+    echo "       with oldver/newver of the form x.y.z"
+
+    exit 1
+}
+
+if [ $# -ne 2 ]; then
+    usage
+else
+    ROOT_PATH=$(realpath -s $(dirname $(realpath $0))/..)
+
+    $ROOT_PATH/scripts/checkversion $1
+
+    if [ $? -ne 0 ]; then
+        usage
+    fi
+
+    $ROOT_PATH/scripts/checkversion $2
+
+    if [ $? -ne 0 ]; then
+        usage
+    fi
+
+    find $ROOT_PATH -type f -name "*.cpp" \
+                    -exec sed -i "" -e s/char\ VERSION\\\[\\\]\ =\ \\\\\"$1/char\ VERSION\\\[\\\]\ =\ \\\\\"$2/ \
+                    -e s/__version__\ =\ \\\\\"$1/__version__\ =\ \\\\\"$2/ {} +
+
+    find $ROOT_PATH -type f \( -name "*.c" -o -name "*.py" \) \
+                    -exec sed -i "" s/char\ VERSION\\\[\\\]\ =\ \"$1/char\ VERSION\\\[\\\]\ =\ \"$2/ {} +
+    find $ROOT_PATH -type f -name "*.py" \
+                    -exec sed -i "" s/__version__\ =\ \"$1/__version__\ =\ \"$2/ {} +
+
+    echo "The version of the code generator has been changed from $1 to $2."
+    echo "However, you still need to update by hand the SHA-1 values at the end of"
+    echo "Generator::GeneratorImpl::modifiedProfile()."
+fi
