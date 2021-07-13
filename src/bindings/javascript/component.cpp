@@ -6,7 +6,6 @@
 
 using namespace emscripten;
 
-
 EMSCRIPTEN_BINDINGS(libcellml_component) {
 
     class_<libcellml::Component, base<libcellml::ComponentEntity>>("Component")
