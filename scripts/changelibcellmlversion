@@ -1,0 +1,63 @@
+#!/bin/sh
+
+usage() {
+    echo "Usage: `basename $0` oldver newver"
+    echo "       with oldver/newver of the form x.y.z"
+
+    exit 1
+}
+
+pad() {
+    if [ $1 -lt 10 ]; then
+        RES=0
+    fi
+
+    echo "$RES$1"
+}
+
+version() {
+    MAJOR=$(awk -F. '{print $1}' <<< $1)
+    MINOR=$(awk -F. '{print $2}' <<< $1)
+    PATCH=$(awk -F. '{print $3}' <<< $1)
+
+    echo "0x$(pad $MAJOR)$(pad $MINOR)$(pad $PATCH)U"
+}
+
+if [ $# -ne 2 ]; then
+    usage
+else
+    ROOT_PATH=$(realpath -s $(dirname $(realpath $0))/..)
+
+    $ROOT_PATH/scripts/checkversion $1
+
+    if [ $? -ne 0 ]; then
+        usage
+    fi
+
+    $ROOT_PATH/scripts/checkversion $2
+
+    if [ $? -ne 0 ]; then
+        usage
+    fi
+
+    OLD_VERSION=$(version $1)
+    NEW_VERSION=$(version $2)
+
+    sed -i "" s/_PROJECT_VERSION\ $1/_PROJECT_VERSION\ $2/ $ROOT_PATH/CMakeLists.txt
+    sed -i "" s/Version\ of\ libCellML:\ $1/Version\ of\ libCellML:\ $2/ $ROOT_PATH/src/bindings/javascript/README.md
+    sed -i "" s/$OLD_VERSION,\ version/$NEW_VERSION,\ version/ $ROOT_PATH/tests/version/version.cpp
+    sed -i "" s/$1\",\ versionString/$2\",\ versionString/ $ROOT_PATH/tests/version/version.cpp
+    sed -i "" s/versionString\(\)\)\.toBe\(\'$1/versionString\(\)\)\.toBe\(\'$2/ $ROOT_PATH/tests/bindings/javascript/version.test.js
+
+    find $ROOT_PATH -type f -name "*.cpp" \
+                    -exec sed -i "" -e s/char\ LIBCELLML_VERSION\\\[\\\]\ =\ \\\\\"$1/char\ LIBCELLML_VERSION\\\[\\\]\ =\ \\\\\"$2/ \
+                    -e s/LIBCELLML_VERSION\ =\ \\\\\"$1/LIBCELLML_VERSION\ =\ \\\\\"$2/ {} +
+
+    find $ROOT_PATH -type f \( -name "*.c" -o -name "*.py" \) \
+                    -exec sed -i "" s/char\ LIBCELLML_VERSION\\\[\\\]\ =\ \"$1/char\ LIBCELLML_VERSION\\\[\\\]\ =\ \"$2/ {} +
+    find $ROOT_PATH -type f -name "*.py" \
+                    -exec sed -i "" s/LIBCELLML_VERSION\ =\ \"$1/LIBCELLML_VERSION\ =\ \"$2/ {} +
+
+    find $ROOT_PATH -type f \( -name "*.c" -o -name "*.h" -o -name "*.out" -o -name "*.py" \) \
+                    -exec sed -i "" s/profile\ of\ libCellML\ $1/profile\ of\ libCellML\ $2/ {} +
+fi
