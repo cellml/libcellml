@@ -450,8 +450,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     // Compute and check the hash of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "a7de365276814b59f30c161e9d9176632b49ba62" :
-               sha1(profileContents) != "93420fe4140587aa80ea256eae0ba42db234112a";
+               sha1(profileContents) != "993ba3db2aeff4900984282359e314faf9834359" :
+               sha1(profileContents) != "17386055602561d9ce24ca5fb669630f633dce10";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
