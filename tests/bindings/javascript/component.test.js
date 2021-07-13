@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 const libCellMLModule = require('libcellml.js/libcellml.common')
 let libcellml = null
 

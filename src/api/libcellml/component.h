@@ -428,7 +428,7 @@ public:
      */
     bool requiresImports() const;
 
-#ifdef EMSCRIPTEN_JAVASCRIPT_BINDINGS
+#ifdef JAVASCRIPT_BINDINGS
 #    include "importedentity.impl"
 #endif
 
