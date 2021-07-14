@@ -33,7 +33,6 @@ else
     find $ROOT_PATH -type f -name "*.py" \
                     -exec sed -i "" s/__version__\ =\ \"$1/__version__\ =\ \"$2/ {} +
 
-    echo "The version of the code generator has been changed from $1 to $2."
-    echo "However, you still need to update by hand the SHA-1 values at the end of"
-    echo "Generator::GeneratorImpl::modifiedProfile()."
+    echo "The version of the code generator has been changed from version $1 to version $2."
+    echo "Now, you need to (re)build libCellML and run the updategeneratorprofilesha1values script."
 fi
