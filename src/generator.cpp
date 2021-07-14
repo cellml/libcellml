@@ -189,7 +189,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
 
 bool Generator::GeneratorImpl::modifiedProfile() const
 {
-    // Whether the profile requires an interface to be generated.
+    // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
                sha1(mLockedProfile) != "993ba3db2aeff4900984282359e314faf9834359" :
