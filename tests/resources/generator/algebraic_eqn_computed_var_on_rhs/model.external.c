@@ -12,7 +12,7 @@ const size_t VARIABLE_COUNT = 2;
 
 const VariableInfoWithType VARIABLE_INFO[] = {
     {"a", "dimensionless", "my_algebraic_eqn", EXTERNAL},
-    {"x", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT}
+    {"x", "dimensionless", "my_algebraic_eqn", ALGEBRAIC}
 };
 
 double * createVariablesArray()
