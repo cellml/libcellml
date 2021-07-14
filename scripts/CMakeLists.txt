@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-add_executable(generatorprofilesha1values generatorprofilesha1values.cpp)
-target_link_libraries(generatorprofilesha1values cellml)
+add_executable(generatorprofilesha1value generatorprofilesha1value.cpp)
+target_link_libraries(generatorprofilesha1value cellml)
 
 if(LIBCELLML_CLANG_TIDY)
-  configure_clang_and_clang_tidy_settings(generatorprofilesha1values)
+  configure_clang_and_clang_tidy_settings(generatorprofilesha1value)
 endif()
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
-  target_warnings_as_errors(generatorprofilesha1values)
+  target_warnings_as_errors(generatorprofilesha1value)
 endif()
