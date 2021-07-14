@@ -51,7 +51,7 @@ else
 
     find $ROOT_PATH -type f -name "*.cpp" \
                     -exec sed -i "" -e s/char\ LIBCELLML_VERSION\\\[\\\]\ =\ \\\\\"$1/char\ LIBCELLML_VERSION\\\[\\\]\ =\ \\\\\"$2/ \
-                    -e s/LIBCELLML_VERSION\ =\ \\\\\"$1/LIBCELLML_VERSION\ =\ \\\\\"$2/ {} +
+                                    -e s/LIBCELLML_VERSION\ =\ \\\\\"$1/LIBCELLML_VERSION\ =\ \\\\\"$2/ {} +
 
     find $ROOT_PATH -type f \( -name "*.c" -o -name "*.py" \) \
                     -exec sed -i "" s/char\ LIBCELLML_VERSION\\\[\\\]\ =\ \"$1/char\ LIBCELLML_VERSION\\\[\\\]\ =\ \"$2/ {} +
