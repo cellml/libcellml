@@ -1,0 +1,30 @@
+#!/bin/sh
+
+usage() {
+    echo "Usage: $(basename $0)"
+
+    exit 1
+}
+
+if [ $# -ne 0 ]; then
+    usage
+else
+    ROOT_PATH=$(realpath -s $(dirname $(realpath $0))/..)
+    SCRIPT_NAME=generatorprofilesha1value
+    SCRIPT_PATH=$(find $ROOT_PATH -type f -name $SCRIPT_NAME)
+
+    if [ -z "$SCRIPT_PATH" ]; then
+        echo "Error: the $SCRIPT_NAME scripts could not be found."
+
+        exit 1
+    fi
+
+
+    LINE_NUMBER=$(awk '/sha1\(mLockedProfile\)/{ print NR; exit }' $ROOT_PATH/src/generator.cpp)
+    NEXT_LINE_NUMBER=$((LINE_NUMBER+1))
+    C_PROFILE_SHA1=$($SCRIPT_PATH C)
+    PYTHON_PROFILE_SHA1=$($SCRIPT_PATH Python)
+
+    sed -i "" ${LINE_NUMBER}s/\".*\"/\"$C_PROFILE_SHA1\"/ $ROOT_PATH/src/generator.cpp
+    sed -i "" ${NEXT_LINE_NUMBER}s/\".*\"/\"$PYTHON_PROFILE_SHA1\"/ $ROOT_PATH/src/generator.cpp
+fi
