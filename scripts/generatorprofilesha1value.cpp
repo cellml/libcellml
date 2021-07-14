@@ -11,7 +11,7 @@ int usage(char *argv0)
 {
     auto exec = std::string(argv0);
 
-    std::cerr << "Usage: " << exec.substr(exec.find_last_of("/") + 1) << " C|Python" << std::endl;
+    std::cerr << "Usage: " << exec.substr(exec.find_last_of('/') + 1) << " C|Python" << std::endl;
 
     return 1;
 }
@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
 
     int profileType = 0;
 
-    if (!strcmp(argv[1], "C")) {
+    if (strcmp(argv[1], "C") == 0) {
         profileType = 1;
-    } else if (!strcmp(argv[1], "Python")) {
+    } else if (strcmp(argv[1], "Python") == 0) {
         profileType = 2;
     }
 
