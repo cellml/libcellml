@@ -274,8 +274,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), isKnownVariable), mVariables.end());
     mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), isKnownOdeVariable), mOdeVariables.end());
 
-    // If there is no (ODE) variable left then it means that the equation is an
-    // overconstraint).
+    // If there is no (ODE) variable left then it means that the equation is
+    // overconstrained).
 
     auto unknownVariablesOrOdeVariablesLeft = mVariables.size() + mOdeVariables.size();
 
@@ -355,6 +355,7 @@ public:
     Analyser *mAnalyser = nullptr;
 
     AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
+
     std::vector<AnalyserExternalVariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
@@ -2588,7 +2589,19 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
                     type = AnalyserEquation::Type::TRUE_CONSTANT;
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+                    // An equation for a variable-based constant may now rely on
+                    // external variables. If this is the case then we need to
+                    // requalify it as an algebraic equation.
+
                     type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+
+                    for (const auto &variable : internalEquation->mAllVariables) {
+                        if (externalVariables.count(variable) == 1) {
+                            type = AnalyserEquation::Type::ALGEBRAIC;
+
+                            break;
+                        }
+                    }
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
                     type = AnalyserEquation::Type::RATE;
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
