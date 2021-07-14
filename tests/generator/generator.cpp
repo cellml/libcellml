@@ -1640,7 +1640,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsExternalVariable)
 {
-    // Generate some code for the HH52 model with leakage_current.E_L as an
+    // Generate some code for the HH52 model with leakage_current.E_R as an
     // external variable which has a dependency on potassium_channel.E_K,
     // another computed constant marked as an external variable.
 
@@ -1651,12 +1651,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsEx
 
     auto analyser = libcellml::Analyser::create();
     auto potassium_channel_E_K = model->component("potassium_channel")->variable("E_K");
-    auto external_leakage_current_E_L = libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("E_L"));
+    auto external_leakage_current_E_R = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("E_R"));
 
-    external_leakage_current_E_L->addDependency(potassium_channel_E_K);
+    external_leakage_current_E_R->addDependency(potassium_channel_E_K);
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_E_K));
-    analyser->addExternalVariable(external_leakage_current_E_L);
+    analyser->addExternalVariable(external_leakage_current_E_R);
 
     analyser->analyseModel(model);
 
@@ -1668,7 +1668,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsEx
 
     EXPECT_EQ(size_t(4), analyserModel->stateCount());
     EXPECT_EQ(size_t(18), analyserModel->variableCount());
-    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+    EXPECT_EQ(size_t(18), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_NE(nullptr, analyserModel->state(0));
