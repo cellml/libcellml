@@ -31,10 +31,10 @@ void initialiseConstants(double *variables)
 
 void computeComputedConstants(double *variables)
 {
-    variables[1] = variables[0];
 }
 
 void computeVariables(double *variables, ExternalVariable externalVariable)
 {
     variables[0] = externalVariable(variables, 0);
+    variables[1] = variables[0];
 }

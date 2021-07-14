@@ -32,8 +32,9 @@ def initialise_constants(variables):
 
 
 def compute_computed_constants(variables):
-    variables[1] = variables[0]
+    pass
 
 
 def compute_variables(variables, external_variable):
     variables[0] = external_variable(variables, 0)
+    variables[1] = variables[0]
