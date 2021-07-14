@@ -2599,6 +2599,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         if (externalVariables.count(variable) == 1) {
                             type = AnalyserEquation::Type::ALGEBRAIC;
 
+                            stateOrVariable->mPimpl->mType = AnalyserVariable::Type::ALGEBRAIC;
+
                             break;
                         }
                     }
