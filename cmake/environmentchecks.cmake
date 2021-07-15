@@ -71,6 +71,7 @@ else ()
   set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
   mark_as_advanced(
+    CCACHE_EXE
     CLANG_TIDY_EXE
     CLANG_FORMAT_EXE
     FIND_EXE
