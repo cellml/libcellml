@@ -164,7 +164,7 @@ bool Model::removeUnits(const UnitsPtr &units)
     if (result != pFunc()->mUnits.end()) {
         units->pFunc()->removeParent();
         pFunc()->mUnits.erase(result);
-        status = true;
+        status = 1;
     }
 
     return status;
