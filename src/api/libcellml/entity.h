@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "libcellml/exportdefinitions.h"
@@ -31,10 +32,9 @@ namespace libcellml {
 class LIBCELLML_EXPORT Entity
 {
 public:
-    virtual ~Entity(); /**< Destructor. */
+    virtual ~Entity() = 0; /**< Destructor. */
     Entity(const Entity &rhs) = delete; /**< Copy constructor. */
     Entity(Entity &&rhs) noexcept = delete; /**< Move constructor. */
-    Entity &operator=(Entity rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Set the @p id document identifier for this entity.
@@ -84,11 +84,47 @@ public:
     bool equals(const EntityPtr &other) const;
 
 protected:
-    Entity(); /**< Constructor, @private. */
-    virtual bool doEquals(const EntityPtr &other) const; /**< Virtual implementation method for equals, @private. */
+    /**
+     * @brief Virtual equals(const EntityPtr &other) method to be implemented by derived classes.
+     *
+     * Virtual equals(const EntityPtr &other) method to allow entity classes to
+     * implement their own versions. @private.
+     *
+     * @param other The other @ref Entity to perform equality against.
+     *
+     * @return True if the entities are equal, false otherwise.
+     */
+    virtual bool doEquals(const EntityPtr &other) const;
+
+    class EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    explicit Entity(EntityImpl *derivedPimpl); /**< Constructor for derived classes, @private. */
+
+    /**
+     * @brief Getter for private implementation pointer.
+     *
+     * Getter for private implementation pointer, @private.
+     *
+     * @return A pointer to EntityImpl.
+     */
+    EntityImpl *pFunc()
+    {
+        return mPimpl;
+    }
+
+    /**
+     * @brief Const getter for private implementation pointer.
+     *
+     * Const getter for private implementation pointer, @private.
+     *
+     * @return A pointer to const EntityImpl.
+     */
+    const EntityImpl *pFunc() const
+    {
+        return mPimpl;
+    }
 
 private:
-    struct EntityImpl; /**< Forward declaration for pImpl idiom, @private. */
     EntityImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 

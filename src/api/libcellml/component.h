@@ -38,11 +38,14 @@ class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
                                   public std::enable_shared_from_this<Component>
 #endif
 {
+    friend class Model;
+    friend class ComponentEntity;
+
 public:
-    ~Component() override; /**< Destructor @private*/
-    Component(const Component &rhs) = delete; /**< Copy constructor @private */
-    Component(Component &&rhs) noexcept = delete; /**< Move constructor @private*/
-    Component &operator=(Component rhs) = delete; /**< Assignment operator @private*/
+    ~Component() override; /**< Destructor, @private. */
+    Component(const Component &rhs) = delete; /**< Copy constructor, @private. */
+    Component(Component &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Component &operator=(Component rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Component object.
@@ -435,8 +438,10 @@ private:
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-    struct ComponentImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ComponentImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ComponentImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ComponentImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const ComponentImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

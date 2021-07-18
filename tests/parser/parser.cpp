@@ -216,7 +216,6 @@ TEST(Parser, modelWithInvalidElement)
     p->parseModel(in1);
     EXPECT_EQ_ISSUES(expectedIssues1, p);
 
-    p->removeAllIssues();
     p->parseModel(in2);
     EXPECT_EQ_ISSUES(expectedIssues2, p);
 }
@@ -337,7 +336,6 @@ TEST(Parser, unitsElementIssues)
     p->parseModel(in1);
     EXPECT_EQ_ISSUES(expectedIssues1, p);
 
-    p->removeAllIssues();
     p->parseModel(in2);
     EXPECT_EQ_ISSUES(expectedIssues2, p);
 }
@@ -432,11 +430,9 @@ TEST(Parser, componentAttributeIssues)
     p->parseModel(in1);
     EXPECT_EQ_ISSUES(expectedIssues1, p);
 
-    p->removeAllIssues();
     p->parseModel(in2);
     EXPECT_EQ_ISSUES(expectedIssues2, p);
 
-    p->removeAllIssues();
     p->parseModel(in3);
     EXPECT_EQ_ISSUES(expectedIssues3, p);
 }
@@ -465,7 +461,6 @@ TEST(Parser, componentElementIssues)
     EXPECT_EQ(size_t(1), p->issueCount());
     EXPECT_EQ(expectError1, p->issue(0)->description());
 
-    p->removeAllIssues();
     p->parseModel(in2);
     EXPECT_EQ(size_t(1), p->issueCount());
     EXPECT_EQ(expectError2, p->issue(0)->description());
@@ -971,7 +966,6 @@ TEST(Parser, variableAttributeAndChildIssues)
     EXPECT_EQ(expectWarning1, p->warning(0)->description());
     EXPECT_EQ(nullptr, p->message(0));
 
-    p->removeAllIssues();
     p->parseModel(in2);
     EXPECT_EQ(size_t(2), p->errorCount());
     EXPECT_EQ(expectError2, p->error(0)->description());
