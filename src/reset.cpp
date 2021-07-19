@@ -73,9 +73,10 @@ int Reset::order() const
     return pFunc()->mOrder;
 }
 
-void Reset::unsetOrder()
+void Reset::removeOrder()
 {
     pFunc()->mOrderSet = false;
+    pFunc()->mOrder = 0;
 }
 
 bool Reset::isOrderSet()

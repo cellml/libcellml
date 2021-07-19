@@ -80,9 +80,10 @@ public:
     /**
      * @brief Mark the order as unset.
      *
-     * Marks the order value as unset .
+     * Marks the order value as unset and resets
+     * the order to its default value.
      */
-    void unsetOrder();
+    void removeOrder();
 
     /**
      * @brief Test to determine whether the order is set or unset.
