@@ -33,6 +33,7 @@ limitations under the License.
 
 #include "anycellmlelement_p.h"
 #include "issue_p.h"
+#include "logger_p.h"
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
@@ -41,14 +42,15 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Importer::ImporterImpl struct.
+ * @brief The Importer::ImporterImpl class.
  *
- * This struct is the private implementation struct for the Importer class.  Separating
+ * This class is the private implementation class for the Importer class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
-struct Importer::ImporterImpl
+class Importer::ImporterImpl: public Logger::LoggerImpl
 {
+public:
     enum class Type
     {
         UNITS,
@@ -70,17 +72,27 @@ struct Importer::ImporterImpl
     bool fetchImportSource(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, History &history);
 
-    bool checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action) const;
-    bool checkUnitsForCycles(const UnitsPtr &units, History &history) const;
+    bool checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action);
+    bool checkUnitsForCycles(const UnitsPtr &units, History &history);
     bool checkComponentForCycles(const ComponentPtr &component, History &history);
 
     bool hasImportCycles(const ModelPtr &model);
 };
 
-Importer::Importer()
-    : mPimpl(new ImporterImpl())
+Importer::ImporterImpl *Importer::pFunc()
 {
-    mPimpl->mImporter = this;
+    return reinterpret_cast<Importer::ImporterImpl *>(Logger::pFunc());
+}
+
+const Importer::ImporterImpl *Importer::pFunc() const
+{
+    return reinterpret_cast<Importer::ImporterImpl const *>(Logger::pFunc());
+}
+
+Importer::Importer()
+    : Logger(new Importer::ImporterImpl())
+{
+    pFunc()->mImporter = this;
 }
 
 ImporterPtr Importer::create() noexcept
@@ -90,7 +102,7 @@ ImporterPtr Importer::create() noexcept
 
 Importer::~Importer()
 {
-    delete mPimpl;
+    delete pFunc();
 }
 
 std::vector<ImportSourcePtr>::const_iterator Importer::ImporterImpl::findImportSource(const ImportSourcePtr &importSource) const
@@ -120,7 +132,7 @@ std::string Importer::ImporterImpl::resolvingUrl(const ImportSourcePtr &importSo
     return modelUrl(model);
 }
 
-bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History &history) const
+bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History &history)
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
@@ -161,7 +173,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
         issue->mPimpl->setDescription("Units '" + units->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
         issue->mPimpl->mItem->mPimpl->setImportSource(units->importSource());
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
-        mImporter->addIssue(issue);
+        addIssue(issue);
         return true;
     }
     auto importedUnits = model->units(units->importReference());
@@ -170,7 +182,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
         issue->mPimpl->setDescription("Units '" + units->name() + "' imports units named '" + units->importReference() + "' from the model imported from '" + resolvingUrl + "'. The units could not be found.");
         issue->mPimpl->mItem->mPimpl->setImportSource(units->importSource());
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
-        mImporter->addIssue(issue);
+        addIssue(issue);
         return true;
     }
 
@@ -197,7 +209,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
             issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
             issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
-            mImporter->addIssue(issue);
+            addIssue(issue);
             return true;
         }
         auto importedComponent = model->component(component->importReference(), true);
@@ -206,7 +218,7 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
             issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
             issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
-            mImporter->addIssue(issue);
+            addIssue(issue);
             return true;
         }
 
@@ -325,7 +337,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
             issue->mPimpl->setDescription("The attempt to resolve imports with the model at '" + url + "' failed: the file could not be opened.");
             issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_FILE);
-            mImporter->addIssue(issue);
+            addIssue(issue);
             return false;
         }
         std::stringstream buffer;
@@ -340,10 +352,10 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
                     issue->mPimpl->setDescription("The attempt to import the model at '" + url + "' failed: the file is not valid XML.");
                     issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
                     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
-                    mImporter->addIssue(issue);
+                    addIssue(issue);
                     return false;
                 }
-                mImporter->addIssue(parser->error(index));
+                addIssue(parser->error(index));
             }
         }
         mLibrary.insert(std::make_pair(url, model));
@@ -354,7 +366,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
     return true;
 }
 
-bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action) const
+bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importSource, const History &history, const HistoryEpochPtr &h, const std::string &action)
 {
     if (libcellml::checkForImportCycles(history, h)) {
         auto cyclicHistory = history;
@@ -364,7 +376,7 @@ bool Importer::ImporterImpl::checkForImportCycles(const ImportSourcePtr &importS
         issue->mPimpl->setDescription(description);
         issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
-        mImporter->addIssue(issue);
+        addIssue(issue);
         return true;
     }
 
@@ -438,7 +450,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     bool encounteredRelatedError = false;
     for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
         auto error = mImporter->error(index);
-        mImporter->removeError(index);
+        removeError(index);
 
         if (!encounteredRelatedError && isErrorRelatedToComponent(error, sourceComponent)) {
             encounteredRelatedError = true;
@@ -452,7 +464,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         issue->mPimpl->setDescription("Encountered an error when resolving component '" + importComponent->name() + "' from '" + resolvingUrl + "'.");
         issue->mPimpl->mItem->mPimpl->setComponent(importComponent);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_ERROR_IMPORTING_UNITS);
-        mImporter->addIssue(issue);
+        addIssue(issue);
         return false;
     }
 
@@ -492,7 +504,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
                 issue->mPimpl->setDescription("Import of component '" + importComponent->name() + "' from '" + resolvingUrl + "' requires units named '" + unitName + "' which cannot be found.");
                 issue->mPimpl->mItem->mPimpl->setComponent(importComponent);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
-                mImporter->addIssue(issue);
+                addIssue(issue);
                 return false;
             }
             if (!fetchUnits(units, newBase, history)) {
@@ -504,7 +516,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         issue->mPimpl->setDescription("Import of component '" + importComponent->name() + "' from '" + resolvingUrl + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
         issue->mPimpl->mItem->mPimpl->setComponent(importComponent);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
-        mImporter->addIssue(issue);
+        addIssue(issue);
         return false;
     }
 
@@ -528,7 +540,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
         auto error = mImporter->error(index);
         auto errorUnits = error->item()->units();
-        mImporter->removeError(index);
+        removeError(index);
         if (!encounteredRelatedError && (errorUnits != nullptr) && (errorUnits->name() == importUnits->importReference())) {
             encounteredRelatedError = true;
         }
@@ -541,7 +553,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         issue->mPimpl->setDescription("Encountered an error when resolving units '" + importUnits->name() + "' from '" + resolvingUrl + "'.");
         issue->mPimpl->mItem->mPimpl->setUnits(importUnits);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_ERROR_IMPORTING_UNITS);
-        mImporter->addIssue(issue);
+        addIssue(issue);
         return false;
     }
 
@@ -582,7 +594,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
                 issue->mPimpl->setDescription("Import of units '" + importUnits->name() + "' from '" + resolvingUrl + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
                 issue->mPimpl->mItem->mPimpl->setUnits(sourceUnits);
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
-                mImporter->addIssue(issue);
+                addIssue(issue);
                 return false;
             }
             if (sourceUnit->isImport() && !sourceUnit->isResolved()) {
@@ -596,7 +608,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         issue->mPimpl->setDescription("Import of units '" + importUnits->name() + "' from '" + resolvingUrl + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
         issue->mPimpl->mItem->mPimpl->setUnits(importUnits);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_UNITS);
-        mImporter->addIssue(issue);
+        addIssue(issue);
         return false;
     }
 
@@ -609,12 +621,13 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &basePath)
     bool status = true;
     History history;
 
+    pFunc()->removeAllIssues();
     clearImports(model);
     auto normalisedBasePath = normalisePath(basePath);
 
     for (const UnitsPtr &units : getImportedUnits(model)) {
         history.clear();
-        if (!mPimpl->fetchUnits(units, normalisedBasePath, history)) {
+        if (!pFunc()->fetchUnits(units, normalisedBasePath, history)) {
             // Get the last issue recorded and change its object to be the top-level importing item.
             issue(issueCount() - 1)->mPimpl->mItem->mPimpl->setUnits(units);
             status = false;
@@ -623,7 +636,7 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &basePath)
 
     for (const ComponentPtr &component : getImportedComponents(model)) {
         history.clear();
-        if (!mPimpl->fetchComponent(component, normalisedBasePath, history)) {
+        if (!pFunc()->fetchComponent(component, normalisedBasePath, history)) {
             issue(issueCount() - 1)->mPimpl->mItem->mPimpl->setComponent(component);
             status = false;
         }
@@ -765,17 +778,18 @@ void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &compon
 
 ModelPtr Importer::flattenModel(const ModelPtr &model)
 {
+    pFunc()->removeAllIssues();
     ModelPtr flatModel;
     if (model == nullptr) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
         issue->mPimpl->setDescription("The model is null.");
-        addIssue(issue);
+        pFunc()->addIssue(issue);
 
         return flatModel;
     }
 
-    if (mPimpl->hasImportCycles(model)) {
+    if (pFunc()->hasImportCycles(model)) {
         return flatModel;
     }
 
@@ -808,24 +822,24 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
 
 size_t Importer::libraryCount()
 {
-    return mPimpl->mLibrary.size();
+    return pFunc()->mLibrary.size();
 }
 
 ModelPtr Importer::library(const std::string &key)
 {
     auto normalisedKey = normaliseDirectorySeparator(key);
-    if (mPimpl->mLibrary.count(normalisedKey) != 0) {
-        return mPimpl->mLibrary[normalisedKey];
+    if (pFunc()->mLibrary.count(normalisedKey) != 0) {
+        return pFunc()->mLibrary[normalisedKey];
     }
     return nullptr;
 }
 
 ModelPtr Importer::library(const size_t &index)
 {
-    if (index >= mPimpl->mLibrary.size()) {
+    if (index >= pFunc()->mLibrary.size()) {
         return nullptr;
     }
-    auto it = mPimpl->mLibrary.begin();
+    auto it = pFunc()->mLibrary.begin();
     size_t i = 0;
     while (i < index) {
         ++it;
@@ -837,31 +851,31 @@ ModelPtr Importer::library(const size_t &index)
 bool Importer::addModel(const ModelPtr &model, const std::string &key)
 {
     auto normalisedKey = normaliseDirectorySeparator(key);
-    if (mPimpl->mLibrary.count(normalisedKey) != 0) {
+    if (pFunc()->mLibrary.count(normalisedKey) != 0) {
         // If the key already exists in the library, do nothing.
         return false;
     }
-    mPimpl->mLibrary.insert(std::make_pair(normalisedKey, model));
+    pFunc()->mLibrary.insert(std::make_pair(normalisedKey, model));
     return true;
 }
 
 bool Importer::replaceModel(const ModelPtr &model, const std::string &key)
 {
     auto normalisedKey = normaliseDirectorySeparator(key);
-    if (mPimpl->mLibrary.count(normalisedKey) == 0) {
+    if (pFunc()->mLibrary.count(normalisedKey) == 0) {
         // If the key is not found, do nothing.
         return false;
     }
-    mPimpl->mLibrary[normalisedKey] = model;
+    pFunc()->mLibrary[normalisedKey] = model;
     return true;
 }
 
 std::string Importer::key(const size_t &index)
 {
-    if (index >= mPimpl->mLibrary.size()) {
+    if (index >= pFunc()->mLibrary.size()) {
         return "";
     }
-    auto it = mPimpl->mLibrary.begin();
+    auto it = pFunc()->mLibrary.begin();
     size_t i = 0;
     while (i < index) {
         ++it;
@@ -872,12 +886,12 @@ std::string Importer::key(const size_t &index)
 
 void Importer::removeAllModels()
 {
-    mPimpl->mLibrary.clear();
+    pFunc()->mLibrary.clear();
 }
 
 bool Importer::hasImportSource(const ImportSourcePtr &importSource) const
 {
-    return mPimpl->findImportSource(importSource) != mPimpl->mImports.end();
+    return pFunc()->findImportSource(importSource) != pFunc()->mImports.end();
 }
 
 bool Importer::addImportSource(const ImportSourcePtr &importSource)
@@ -887,26 +901,26 @@ bool Importer::addImportSource(const ImportSourcePtr &importSource)
     }
 
     // Prevent adding the same import source.
-    if (std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(),
+    if (std::find_if(pFunc()->mImports.begin(), pFunc()->mImports.end(),
                      [=](const ImportSourcePtr &importSrc) -> bool { return importSource == importSrc; })
-        != mPimpl->mImports.end()) {
+        != pFunc()->mImports.end()) {
         return false;
     }
 
-    mPimpl->mImports.push_back(importSource);
+    pFunc()->mImports.push_back(importSource);
     return true;
 }
 
 size_t Importer::importSourceCount() const
 {
-    return mPimpl->mImports.size();
+    return pFunc()->mImports.size();
 }
 
 ImportSourcePtr Importer::importSource(size_t index) const
 {
     ImportSourcePtr importSrc = nullptr;
-    if (index < mPimpl->mImports.size()) {
-        importSrc = mPimpl->mImports.at(index);
+    if (index < pFunc()->mImports.size()) {
+        importSrc = pFunc()->mImports.at(index);
     }
 
     return importSrc;
@@ -921,9 +935,9 @@ bool Importer::removeImportSource(size_t index)
 bool Importer::removeImportSource(const ImportSourcePtr &importSource)
 {
     bool status = false;
-    auto result = mPimpl->findImportSource(importSource);
-    if (result != mPimpl->mImports.end()) {
-        mPimpl->mImports.erase(result);
+    auto result = pFunc()->findImportSource(importSource);
+    if (result != pFunc()->mImports.end()) {
+        pFunc()->mImports.erase(result);
         status = true;
     }
     return status;
@@ -931,7 +945,7 @@ bool Importer::removeImportSource(const ImportSourcePtr &importSource)
 
 bool Importer::removeAllImportSources()
 {
-    mPimpl->mImports.clear();
+    pFunc()->mImports.clear();
     return true;
 }
 
