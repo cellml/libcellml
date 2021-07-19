@@ -15,7 +15,7 @@
 %feature("docstring") libcellml::Reset::setOrder
 "Set the order for this reset.  The order value must be an integer.";
 
-%feature("docstring") libcellml::Reset::unsetOrder
+%feature("docstring") libcellml::Reset::removeOrder
 "Sets the state of the order to unset.";
 
 %feature("docstring") libcellml::Reset::isOrderSet
