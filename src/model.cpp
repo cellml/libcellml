@@ -136,7 +136,7 @@ bool Model::removeUnits(size_t index)
     bool status = false;
     if (index < pFunc()->mUnits.size()) {
         auto result = pFunc()->mUnits.begin() + ptrdiff_t(index);
-        (*result)->removeParent();
+        (*result)->pFunc()->removeParent();
         pFunc()->mUnits.erase(result);
         status = true;
     }
@@ -149,7 +149,7 @@ bool Model::removeUnits(const std::string &name)
     bool status = false;
     auto result = pFunc()->findUnits(name);
     if (result != pFunc()->mUnits.end()) {
-        (*result)->removeParent();
+        (*result)->pFunc()->removeParent();
         pFunc()->mUnits.erase(result);
         status = true;
     }
@@ -162,7 +162,7 @@ bool Model::removeUnits(const UnitsPtr &units)
     bool status = false;
     auto result = pFunc()->findUnits(units);
     if (result != pFunc()->mUnits.end()) {
-        units->removeParent();
+        units->pFunc()->removeParent();
         pFunc()->mUnits.erase(result);
         status = true;
     }
@@ -173,7 +173,7 @@ bool Model::removeUnits(const UnitsPtr &units)
 void Model::removeAllUnits()
 {
     for (const auto &u : pFunc()->mUnits) {
-        u->removeParent();
+        u->pFunc()->removeParent();
     }
     pFunc()->mUnits.clear();
 }
@@ -215,7 +215,7 @@ UnitsPtr Model::takeUnits(size_t index)
     if (index < pFunc()->mUnits.size()) {
         units = pFunc()->mUnits.at(index);
         removeUnits(index);
-        units->removeParent();
+        units->pFunc()->removeParent();
     }
 
     return units;
