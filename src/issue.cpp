@@ -177,6 +177,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 
     // Analyser issues:
     {Issue::ReferenceRule::ANALYSER_UNITS, {"ANALYSER_UNITS", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS, {"ANALYSER_UNLINKED_UNITS", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE, {"ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION, {"ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VOI_INITIALISED, {"ANALYSER_VOI_INITIALISED", "", docsUrl, ""}},

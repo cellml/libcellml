@@ -882,7 +882,7 @@ TEST(Analyser, coverage)
 
     analyser->analyseModel(nullptr);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(1), analyser->issueCount());
 
     auto analyserModel = analyser->model();
 
@@ -945,7 +945,7 @@ TEST(Analyser, unlinkedUnitsInModel)
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
     const std::string expectedIssue =
-        "Units 'millivolt' in variable 'V' is not linked to the units defined in the model.";
+        "The model has units which are not linked together. See Model::linkUnits()";
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -964,4 +964,5 @@ TEST(Analyser, unlinkedUnitsInModel)
 
     EXPECT_EQ(size_t(1), analyser->errorCount());
     EXPECT_EQ(expectedIssue, analyser->error(0)->description());
+    EXPECT_EQ(libcellml::Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS, analyser->error(0)->referenceRule());
 }
