@@ -2732,9 +2732,12 @@ void Analyser::analyseModel(const ModelPtr &model)
 
     if (model == nullptr) {
         auto issue = Issue::IssueImpl::create();
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
+
         issue->mPimpl->setDescription("The model is null.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
+
         pFunc()->addIssue(issue);
+
         return;
     }
 
@@ -2753,23 +2756,23 @@ void Analyser::analyseModel(const ModelPtr &model)
         pFunc()->mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
     }
 
-    // Check for non-validation errors that will render the given model
-    // invalid for analysing.
+    // Check for non-validation errors that will render the given model invalid
+    // for analysis.
 
     if (model->hasUnlinkedUnits()) {
         auto issue = Issue::IssueImpl::create();
+
+        issue->mPimpl->setDescription("The model has units which are not linked together.");
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS);
-        issue->mPimpl->setDescription("The model has units which are not linked together. See Model::linkUnits()");
+
         pFunc()->addIssue(issue);
     }
 
-    if (issueCount() > 0) {
-        return;
+    // Analyse the model, but only if we didn't come across any issues.
+
+    if (issueCount() == 0) {
+        pFunc()->analyseModel(model);
     }
-
-    // Analyse the model.
-
-    pFunc()->analyseModel(model);
 }
 
 bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
