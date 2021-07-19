@@ -965,4 +965,3 @@ TEST(Analyser, unlinkedUnitsInModel)
     EXPECT_EQ(size_t(1), analyser->errorCount());
     EXPECT_EQ(expectedIssue, analyser->error(0)->description());
 }
-
