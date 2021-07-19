@@ -12,7 +12,8 @@ extern const size_t VARIABLE_COUNT;
 typedef enum {
     CONSTANT,
     COMPUTED_CONSTANT,
-    ALGEBRAIC
+    ALGEBRAIC,
+    EXTERNAL
 } VariableType;
 
 typedef struct {
@@ -33,6 +34,8 @@ extern const VariableInfoWithType VARIABLE_INFO[];
 double * createVariablesArray();
 void deleteArray(double *array);
 
+typedef double (* ExternalVariable)(double *variables, size_t index);
+
 void initialiseConstants(double *variables);
 void computeComputedConstants(double *variables);
-void computeVariables(double *variables);
+void computeVariables(double *variables, ExternalVariable externalVariable);
