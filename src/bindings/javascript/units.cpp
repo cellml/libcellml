@@ -1,11 +1,37 @@
 
 #include <emscripten/bind.h>
 
+// To work around multiple inheritance we have to create a combined Units
+// and ImportedEntity class that we can bind with Emscripten.
+#define JAVASCRIPT_BINDINGS
 #include "libcellml/units.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_units) {
+
+    enum_<libcellml::Units::Prefix>("Prefix")
+        .value("YOTTA", libcellml::Units::Prefix::YOTTA)
+        .value("ZETTA", libcellml::Units::Prefix::ZETTA)
+        .value("EXA", libcellml::Units::Prefix::EXA)
+        .value("PETA", libcellml::Units::Prefix::PETA)
+        .value("TERA", libcellml::Units::Prefix::TERA)
+        .value("GIGA", libcellml::Units::Prefix::GIGA)
+        .value("MEGA", libcellml::Units::Prefix::MEGA)
+        .value("KILO", libcellml::Units::Prefix::KILO)
+        .value("HECTO", libcellml::Units::Prefix::HECTO)
+        .value("DECA", libcellml::Units::Prefix::DECA)
+        .value("DECI", libcellml::Units::Prefix::DECI)
+        .value("CENTI", libcellml::Units::Prefix::CENTI)
+        .value("MILLI", libcellml::Units::Prefix::MILLI)
+        .value("MICRO", libcellml::Units::Prefix::MICRO)
+        .value("NANO", libcellml::Units::Prefix::NANO)
+        .value("PICO", libcellml::Units::Prefix::PICO)
+        .value("FEMTO", libcellml::Units::Prefix::FEMTO)
+        .value("ATTO", libcellml::Units::Prefix::ATTO)
+        .value("ZEPTO", libcellml::Units::Prefix::ZEPTO)
+        .value("YOCTO", libcellml::Units::Prefix::YOCTO)
+    ;
 
     enum_<libcellml::Units::StandardUnit>("StandardUnit")
         .value("AMPERE", libcellml::Units::StandardUnit::AMPERE)
@@ -42,7 +68,9 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
     ;
 
     class_<libcellml::Units, base<libcellml::NamedEntity>>("Units")
-        .smart_ptr_constructor("Units", select_overload<libcellml::UnitsPtr()>(&libcellml::Units::create))
+        .smart_ptr<std::shared_ptr<libcellml::Units>>("UnitsPtr")
+        .constructor(select_overload<libcellml::UnitsPtr()>(&libcellml::Units::create))
+        .constructor(select_overload<libcellml::UnitsPtr(const std::string &)>(&libcellml::Units::create))
         .function("isBaseUnit", &libcellml::Units::isBaseUnit)
         .function("addUnitByReferenceStringPrefix", select_overload<void(const std::string &, const std::string &, double, double, const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByReferenceEnumPrefix", select_overload<void(const std::string &, libcellml::Units::Prefix, double, double, const std::string &)>(&libcellml::Units::addUnit))
@@ -68,12 +96,15 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .function("clone", &libcellml::Units::clone)
         .function("setUnitId", &libcellml::Units::setUnitId)
         .function("unitId", &libcellml::Units::unitId)
-        .function("isImport", &libcellml::ImportedEntity::isImport)
-        .function("importSource", &libcellml::ImportedEntity::importSource)
-        .function("setImportSource", &libcellml::ImportedEntity::setImportSource)
-        .function("importReference", &libcellml::ImportedEntity::importReference)
-        .function("setImportReference", &libcellml::ImportedEntity::setImportReference)
-        .function("isResolved", &libcellml::ImportedEntity::isResolved)
+        .function("isImport", &libcellml::Units::isImport)
+        .function("importSource", &libcellml::Units::importSource)
+        .function("setImportSource", &libcellml::Units::setImportSource)
+        .function("importReference", &libcellml::Units::importReference)
+        .function("setImportReference", &libcellml::Units::setImportReference)
+        .function("isResolved", &libcellml::Units::isResolved)
+        .class_function("scalingFactor", &libcellml::Units::scalingFactor)
+        .class_function("compatible", &libcellml::Units::compatible)
+        .class_function("equivalent", &libcellml::Units::equivalent)
     ;
 
 }
