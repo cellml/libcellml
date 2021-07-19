@@ -9,7 +9,6 @@ using namespace emscripten;
 EMSCRIPTEN_BINDINGS(libcellml_logger)
 {
     class_<libcellml::Logger>("Logger")
-        .function("removeAllIssues", &libcellml::Logger::removeAllIssues)
         .function("issueCount", &libcellml::Logger::issueCount)
         .function("issue", &libcellml::Logger::issue)
         .function("errorCount", &libcellml::Logger::errorCount)

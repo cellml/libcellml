@@ -102,6 +102,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -Wno-missing-prototypes
       -Wno-padded
       -Wno-undefined-func-template
+      -Wno-weak-vtables # Applying this because NamedEntity.h doesn't define any virtual methods other than the destructor.
     )
 
     if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)

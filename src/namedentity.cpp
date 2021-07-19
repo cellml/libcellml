@@ -19,36 +19,33 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
 
+#include "namedentity_p.h"
+
 namespace libcellml {
 
-/**
- * @brief The NamedEntity::NamedEntityImpl struct.
- *
- * The private implementation for the NamedEntity class.
- */
-struct NamedEntity::NamedEntityImpl
+NamedEntity::NamedEntityImpl *NamedEntity::pFunc()
 {
-    std::string mName; /**< Entity name represented as a std::string. */
-};
-
-NamedEntity::NamedEntity()
-    : mPimpl(new NamedEntityImpl())
-{
+    return reinterpret_cast<NamedEntity::NamedEntityImpl *>(Entity::pFunc());
 }
 
-NamedEntity::~NamedEntity()
+const NamedEntity::NamedEntityImpl *NamedEntity::pFunc() const
 {
-    delete mPimpl;
+    return reinterpret_cast<NamedEntity::NamedEntityImpl const *>(Entity::pFunc());
+}
+
+NamedEntity::NamedEntity(NamedEntity::NamedEntityImpl *pImpl)
+    : ParentedEntity(pImpl)
+{
 }
 
 void NamedEntity::setName(const std::string &name)
 {
-    mPimpl->mName = name;
+    pFunc()->mName = name;
 }
 
 std::string NamedEntity::name() const
 {
-    return mPimpl->mName;
+    return pFunc()->mName;
 }
 
 bool NamedEntity::doEquals(const EntityPtr &other) const
@@ -56,7 +53,7 @@ bool NamedEntity::doEquals(const EntityPtr &other) const
     if (Entity::doEquals(other)) {
         auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(other);
         if (namedEntity != nullptr) {
-            return mPimpl->mName == namedEntity->name();
+            return pFunc()->mName == namedEntity->name();
         }
     }
     return false;
