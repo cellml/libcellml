@@ -35,12 +35,12 @@ class Variable::VariableImpl: public NamedEntityImpl
 {
 public:
     Variable *mVariable = nullptr;
-    std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping identifier map for equivalent variable.*/
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection identifier map for equivalent variable.*/
-    std::string mInitialValue; /**< Initial value for this Variable.*/
-    std::string mInterfaceType; /**< Interface type for this Variable.*/
-    UnitsPtr mUnits = nullptr; /**< The Units defined for this Variable.*/
+    std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable. */
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping identifier map for equivalent variable. */
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection identifier map for equivalent variable. */
+    std::string mInitialValue; /**< Initial value for this Variable. */
+    std::string mInterfaceType; /**< Interface type for this Variable. */
+    UnitsPtr mUnits = nullptr; /**< The Units defined for this Variable. */
 
     /**
      * @brief Clean expired equivalent variables.
@@ -66,7 +66,7 @@ public:
     bool setEquivalentTo(const VariablePtr &equivalentVariable);
 
     /**
-     * @brief Private function to remove an equivalent variable from the set for this variable.
+     * @brief Private method to remove an equivalent variable from the set for this variable.
      *
      * Remove the @p equivalentVariable from the set of equivalent variables for this
      * variable if it is present.
@@ -84,11 +84,19 @@ public:
      * @brief Test if the given variable is directly equivalent to this one.
      *
      * The two variables are considered directly equivalent if this variable holds a valid reference to the
-     * given variable.  Returns @c true if this variable holds a reference to the given variable
+     * given variable.  The two variables are considered indirectly equivalent if there exists a
+     * variable equivalence path from this variable to the given variable.
+     *
+     * Direct equivalences are tested for by default.  To also test for indirect equivalences
+     * set @p considerIndirectEquivalences to @c true.
+     *
+     * Returns @c true if this variable holds a reference to the given variable
      * and that that reference is a valid reference to the given variable.
      *
      * @param equivalentVariable The variable to test for equivalence to this one.
-     * @return @c true if the variables are equivalent @c false otherwise.
+     * @param considerIndirectEquivalences Consider equivalences that are not direct equivalences.
+     *
+     * @return @c true if the variables are equivalent, @c false otherwise.
      */
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences = false) const;
 
