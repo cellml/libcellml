@@ -33,17 +33,9 @@ namespace libcellml {
 class LIBCELLML_EXPORT Logger
 {
 public:
-    virtual ~Logger(); /**< Destructor. */
-    Logger(const Logger &rhs) = delete; /**< Copy constructor. */
-    Logger(Logger &&rhs) noexcept = delete; /**< Move constructor. */
-    Logger &operator=(Logger rhs) = delete; /**< Assignment operator. */
-
-    /**
-     * @brief Clear the issues from the logger.
-     *
-     * Clear the issues from the logger.
-     */
-    void removeAllIssues();
+    virtual ~Logger() = 0; /**< Destructor, @private. */
+    Logger(const Logger &rhs) = delete; /**< Copy constructor, @private. */
+    Logger(Logger &&rhs) noexcept = delete; /**< Move constructor, @private. */
 
     /**
      * @brief Get the number of issues.
@@ -135,33 +127,29 @@ public:
     IssuePtr message(size_t index) const;
 
 protected:
-    Logger(); /**< Constructor, @private. */
+    class LoggerImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    explicit Logger(LoggerImpl *derivedPimpl); /**< Constructor, @private. */
 
     /**
-     * @brief Add an issue to the logger.
+     * @brief Getter for private implementation pointer.
      *
-     * Adds the argument @p issue to this logger.
+     * Getter for private implementation pointer, @private.
      *
-     * @param issue The @c IssuePtr to add.
+     * @return A pointer to EntityImpl.
      */
-    void addIssue(const IssuePtr &issue);
+    LoggerImpl *pFunc();
 
     /**
-     * @brief Remove issue of level ERROR at the specified @p index.
+     * @brief Const getter for private implementation pointer.
      *
-     * Removes an error at @p index.  If @c true is returned
-     * then the error at @p index was successfully removed.
-     * If @p index is within the range [0, \#errors)
-     * then @c true is returned, otherwise @c false is returned.
+     * Const getter for private implementation pointer, @private.
      *
-     * @param index The index of the error to remove.
-     *
-     * @return @c true if the error is removed, @c false otherwise.
+     * @return A pointer to const EntityImpl.
      */
-    void removeError(size_t index);
+    const LoggerImpl *pFunc() const;
 
 private:
-    struct LoggerImpl; /**< Forward declaration for pImpl idiom, @private. */
     LoggerImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 

@@ -34,10 +34,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT AnalyserExternalVariable
 {
 public:
-    ~AnalyserExternalVariable(); /**< Destructor */
-    AnalyserExternalVariable(const AnalyserExternalVariable &rhs) = delete; /**< Copy constructor */
-    AnalyserExternalVariable(AnalyserExternalVariable &&rhs) noexcept = delete; /**< Move constructor */
-    AnalyserExternalVariable &operator=(AnalyserExternalVariable rhs) = delete; /**< Assignment operator */
+    ~AnalyserExternalVariable(); /**< Destructor, @private. */
+    AnalyserExternalVariable(const AnalyserExternalVariable &rhs) = delete; /**< Copy constructor, @private. */
+    AnalyserExternalVariable(AnalyserExternalVariable &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    AnalyserExternalVariable &operator=(AnalyserExternalVariable rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create an @c AnalyserExternalVariable object.

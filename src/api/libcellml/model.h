@@ -40,10 +40,10 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
 #endif
 {
 public:
-    ~Model() override; /**< Destructor. */
-    Model(const Model &rhs) = delete; /**< Copy constructor. */
-    Model(Model &&rhs) noexcept = delete; /**< Move constructor. */
-    Model &operator=(Model rhs) = delete; /**< Assignment operator. */
+    ~Model() override; /**< Destructor, @private. */
+    Model(const Model &rhs) = delete; /**< Copy constructor, @private. */
+    Model(Model &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Model &operator=(Model rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Model object.
@@ -372,8 +372,10 @@ private:
 
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
-    struct ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ModelImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ModelImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const ModelImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
