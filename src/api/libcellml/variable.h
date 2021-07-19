@@ -39,11 +39,13 @@ class LIBCELLML_EXPORT Variable: public NamedEntity
                                  public std::enable_shared_from_this<Variable>
 #endif
 {
+    friend class Component;
+
 public:
-    ~Variable() override; /**< Destructor. */
-    Variable(const Variable &rhs) = delete; /**< Copy constructor. */
-    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor. */
-    Variable &operator=(Variable rhs) = delete; /**< Assignment operator. */
+    ~Variable() override; /**< Destructor, @private. */
+    Variable(const Variable &rhs) = delete; /**< Copy constructor, @private. */
+    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Variable &operator=(Variable rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Variable object.
@@ -467,13 +469,15 @@ public:
     VariablePtr clone() const;
 
 private:
+    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+
     Variable(); /**< Constructor, @private. */
     explicit Variable(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
-    bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
+    class VariableImpl; /**< Forward declaration for pImpl idiom, @private. */
 
-    struct VariableImpl; /**< Forward declaration for pImpl idiom, @private. */
-    VariableImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    VariableImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const VariableImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

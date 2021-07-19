@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Validator: public Logger
 {
 public:
-    ~Validator() override; /**< Destructor. */
-    Validator(const Validator &rhs) = delete; /**< Copy constructor. */
-    Validator(Validator &&rhs) noexcept = delete; /**< Move constructor. */
-    Validator &operator=(Validator rhs) = delete; /**< Assignment operator. */
+    ~Validator() override; /**< Destructor, @private. */
+    Validator(const Validator &rhs) = delete; /**< Copy constructor, @private. */
+    Validator(Validator &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Validator &operator=(Validator rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Validator object.
@@ -55,6 +55,8 @@ public:
      * Validate the given @p model and its encapsulated entities using the
      * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
      *
+     * All existing issues will be removed before the model is validated.
+     *
      * @param model The model to validate.
      */
     void validateModel(const ModelPtr &model);
@@ -62,8 +64,9 @@ public:
 private:
     Validator(); /**< Constructor, @private. */
 
-    struct ValidatorImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ValidatorImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ValidatorImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ValidatorImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
