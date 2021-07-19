@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.2.0. */
 
-#include "model.h"
+#include "model.external.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -8,10 +8,11 @@
 const char VERSION[] = "0.3.0";
 const char LIBCELLML_VERSION[] = "0.2.0";
 
-const size_t VARIABLE_COUNT = 1;
+const size_t VARIABLE_COUNT = 2;
 
 const VariableInfoWithType VARIABLE_INFO[] = {
-    {"x", "dimensionless", "my_component", COMPUTED_CONSTANT}
+    {"a", "dimensionless", "my_algebraic_eqn", EXTERNAL},
+    {"x", "dimensionless", "my_algebraic_eqn", ALGEBRAIC}
 };
 
 double * createVariablesArray()
@@ -26,13 +27,14 @@ void deleteArray(double *array)
 
 void initialiseConstants(double *variables)
 {
-    variables[0] = 1.0;
 }
 
 void computeComputedConstants(double *variables)
 {
 }
 
-void computeVariables(double *variables)
+void computeVariables(double *variables, ExternalVariable externalVariable)
 {
+    variables[0] = externalVariable(variables, 0);
+    variables[1] = variables[0];
 }
