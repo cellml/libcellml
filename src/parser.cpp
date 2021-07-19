@@ -118,7 +118,8 @@ public:
      * root component of the hierarchy to the calling method.
      *
      * @param model The @c ModelPtr to update.
-     * @param nodee The @c XmlNodePtr to parse and update the model with.
+     * @param node The @c XmlNodePtr to parse and update the model with.
+     *
      * @return A @c ComponentPtr which is the root of the component hierarchy.
      */
     ComponentPtr loadComponentRef(const ModelPtr &model, const XmlNodePtr &node);

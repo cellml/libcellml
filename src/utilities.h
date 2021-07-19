@@ -247,9 +247,9 @@ std::string convertToString(size_t value);
 /**
  * @brief Convert a @c double to @c std::string format.
  *
- * Convert the @p value to @c std::string representation.
+ * @overload
  *
- * @overload std::string convertToString(int value)
+ * Convert the @p value to @c std::string representation.
  *
  * @param value The @c double value number to convert.
  * @param fullPrecision Whether the @p value is converted using full precision.
@@ -404,7 +404,7 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
  * @brief Check if the provided @p name is a standard unit.
  *
  * Checks if the provided @p name is one of the standard units in the
- * @ref Units::StandardUnit @c enum. Returns @c true if @p name is a standard unit
+ * @ref libcellml::Units::StandardUnit @c enum. Returns @c true if @p name is a standard unit
  * and @c false otherwise.
  *
  * @param name The @c std::string name to check against the list of standard units.
@@ -435,7 +435,7 @@ bool isStandardUnit(const UnitsPtr &units);
  *
  * @param name The @c std::string name to check against the list of standard prefixes.
  *
- * @return @c true if @name is a standard prefix and @c false otherwise.
+ * @return @c true if @p name is a standard prefix and @c false otherwise.
  */
 bool isStandardPrefixName(const std::string &name);
 
