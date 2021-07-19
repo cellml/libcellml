@@ -872,7 +872,6 @@ TEST(Importer, clearModelImportsBeforeResolving)
     model->component("controller")->importSource()->setUrl("NotCircularReference.cellml");
 
     // Resolve imports again after clearing the issues.
-    importer->removeAllIssues();
     importer->resolveImports(model, resourcePath("importer/"));
 
     EXPECT_EQ(size_t(0), importer->issueCount());
