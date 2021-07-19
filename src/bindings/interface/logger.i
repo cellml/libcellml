@@ -10,9 +10,6 @@
 %feature("docstring") libcellml::Logger
 "Base class for all serialisable libCellML classes.";
 
-%feature("docstring") libcellml::Logger::removeAllIssues
-"Clears all issues from this logger.";
-
 %feature("docstring") libcellml::Logger::addIssue
 "Adds an issue to this logger.";
 
