@@ -18,6 +18,3 @@ CMakeLists.txt.user
 
 # VS Code system files
 .vscode/
-
-# File generated when calling scripts/updategeneratorprofilesha1values
-default.profraw
