@@ -20,6 +20,44 @@ limitations under the License.
 
 #include <libcellml>
 
+TEST(Analyser, unlinkedUnitsInModel)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    // When parsing a model all Units are automatically linked.
+
+    EXPECT_FALSE(model->hasUnlinkedUnits());
+
+    // When we set a Units units by name we create an unlinked Units. That is,
+    // a Units that has a reference to a Units defined in the model but it is
+    // not using the object Units defined in the model.
+
+    model->component("membrane")->variable("V")->setUnits("millivolt");
+
+    EXPECT_TRUE(model->hasUnlinkedUnits());
+
+    // As a result of the aforementioned unlinked Units, the analyser should log
+    // an error for it.
+
+    const std::vector<std::string> expectedIssues = {
+        "The model has units which are not linked together.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::UNDEFINED),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_UNLINKED_UNITS"),
+                                                                   analyser);
+}
+
 TEST(Analyser, initialisedVariableOfIntegration)
 {
     auto parser = libcellml::Parser::create();
@@ -882,7 +920,7 @@ TEST(Analyser, coverage)
 
     analyser->analyseModel(nullptr);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(1), analyser->issueCount());
 
     auto analyserModel = analyser->model();
 

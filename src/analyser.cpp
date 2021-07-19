@@ -2218,8 +2218,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Reset a few things in case this analyser was to be used to analyse more
     // than one model.
 
-    removeAllIssues();
-
     mModel = AnalyserModel::AnalyserModelImpl::create();
 
     mInternalVariables.clear();
@@ -2730,7 +2728,16 @@ void Analyser::analyseModel(const ModelPtr &model)
 {
     // Make sure that we have a model and that it is valid before analysing it.
 
+    pFunc()->removeAllIssues();
+
     if (model == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+
+        issue->mPimpl->setDescription("The model is null.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
+
+        pFunc()->addIssue(issue);
+
         return;
     }
 
@@ -2747,13 +2754,25 @@ void Analyser::analyseModel(const ModelPtr &model)
         }
 
         pFunc()->mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
-
-        return;
     }
 
-    // Analyse the model.
+    // Check for non-validation errors that will render the given model invalid
+    // for analysis.
 
-    pFunc()->analyseModel(model);
+    if (model->hasUnlinkedUnits()) {
+        auto issue = Issue::IssueImpl::create();
+
+        issue->mPimpl->setDescription("The model has units which are not linked together.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS);
+
+        pFunc()->addIssue(issue);
+    }
+
+    // Analyse the model, but only if we didn't come across any issues.
+
+    if (issueCount() == 0) {
+        pFunc()->analyseModel(model);
+    }
 }
 
 bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
