@@ -70,8 +70,13 @@ else ()
 
   set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
+  if(WIN32)
+    mark_as_advanced(CLCACHE_EXE)
+  else()
+    mark_as_advanced(CCACHE_EXE)
+  endif()
+
   mark_as_advanced(
-    CCACHE_EXE
     CLANG_TIDY_EXE
     CLANG_FORMAT_EXE
     FIND_EXE
