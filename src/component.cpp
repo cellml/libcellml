@@ -420,7 +420,7 @@ ComponentPtr Component::clone() const
     return c;
 }
 
-bool doRequiresImport(const ComponentPtr &thisComponent)
+bool doRequiresImport(const ComponentConstPtr &thisComponent)
 {
     if (thisComponent->isImport()) {
         return true;
@@ -433,7 +433,7 @@ bool doRequiresImport(const ComponentPtr &thisComponent)
     return false;
 }
 
-bool Component::requiresImports()
+bool Component::requiresImports() const
 {
     return doRequiresImport(shared_from_this());
 }
