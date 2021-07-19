@@ -564,6 +564,10 @@ public:
      */
     std::string unitId(size_t index) const;
 
+#ifdef JAVASCRIPT_BINDINGS
+#    include "importedentity.impl"
+#endif
+
 private:
     Units(); /**< Constructor, @private. */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter, @private. */
