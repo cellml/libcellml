@@ -387,17 +387,6 @@ std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model);
 std::string sha1(const std::string &string);
 
 /**
- * @brief Compute the SHA-1 value of the @c GeneratorProfile.
- *
- * Compute and return the SHA-1 value of the @c GeneratorProfile.
- *
- * @param generatorProfile The @c GeneratorProfile for which we want the SHA-1 value.
- *
- * @return The @c std::string SHA-1 value.
- */
-std::string sha1(const GeneratorProfilePtr &generatorProfile);
-
-/**
  * @brief Remove the given component from the given entity.
  *
  * The entity given can be either a @c Model or @c Component and as such is
