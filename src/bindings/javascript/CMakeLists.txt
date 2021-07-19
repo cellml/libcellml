@@ -31,6 +31,7 @@ set(SOURCE_FILES
 )
 
 add_library(javascript-bindings OBJECT ${SOURCE_FILES})
+target_include_directories(javascript-bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(javascript-bindings PUBLIC cellml)
 
@@ -40,7 +41,7 @@ set_target_properties(javascript-bindings PROPERTIES
   CXX_STANDARD 11
   CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN 1
+  VISIBILITY_INLINES_HIDDEN 0
   COMPILE_FLAGS "-s ASSERTIONS=1"
 )
 
