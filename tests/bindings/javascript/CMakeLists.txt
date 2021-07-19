@@ -16,6 +16,7 @@ set(TEST_SRCS
   analyser.test.js
   generatorprofile.test.js
   model.test.js
+  reset.test.js
   validator.test.js
   version.test.js
 )
