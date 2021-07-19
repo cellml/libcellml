@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.2.0";
+const char VERSION[] = "0.3.0";
 const char LIBCELLML_VERSION[] = "0.2.0";
 
 const size_t STATE_COUNT = 4;
@@ -23,13 +23,13 @@ const VariableInfo STATE_INFO[] = {
 const VariableInfoWithType VARIABLE_INFO[] = {
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
-    {"E_R", "millivolt", "membrane", CONSTANT},
+    {"E_R", "millivolt", "membrane", EXTERNAL},
     {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
     {"g_Na", "milliS_per_cm2", "sodium_channel", CONSTANT},
     {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
-    {"E_L", "millivolt", "leakage_current", EXTERNAL},
+    {"E_L", "millivolt", "leakage_current", ALGEBRAIC},
     {"i_L", "microA_per_cm2", "leakage_current", ALGEBRAIC},
-    {"E_Na", "millivolt", "sodium_channel", COMPUTED_CONSTANT},
+    {"E_Na", "millivolt", "sodium_channel", ALGEBRAIC},
     {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
     {"alpha_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"beta_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
@@ -60,7 +60,6 @@ void initialiseStatesAndConstants(double *states, double *variables)
 {
     variables[0] = 0.3;
     variables[1] = 1.0;
-    variables[2] = 0.0;
     variables[3] = 36.0;
     variables[4] = 120.0;
     states[0] = 0.05;
@@ -71,7 +70,6 @@ void initialiseStatesAndConstants(double *states, double *variables)
 
 void computeComputedConstants(double *variables)
 {
-    variables[8] = variables[2]-115.0;
 }
 
 void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
@@ -87,9 +85,11 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
     rates[2] = variables[16]*(1.0-states[2])-variables[17]*states[2];
     variables[5] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
     variables[14] = externalVariable(voi, states, rates, variables, 14);
-    variables[6] = externalVariable(voi, states, rates, variables, 6);
+    variables[2] = externalVariable(voi, states, rates, variables, 2);
+    variables[6] = variables[2]-10.613;
     variables[7] = variables[0]*(states[3]-variables[6]);
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14]);
+    variables[8] = variables[2]-115.0;
     variables[9] = variables[4]*pow(states[0], 3.0)*states[1]*(states[3]-variables[8]);
     rates[3] = -(-variables[5]+variables[9]+variables[15]+variables[7])/variables[1];
 }
