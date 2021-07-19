@@ -83,6 +83,55 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode());
 }
 
+TEST(Generator, algebraicEqnComputedVarOnRhsWithExternalVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("a")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
+
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.external.h");
+
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.external.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.external.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.external.py"), generator->implementationCode());
+}
+
 TEST(Generator, algebraicEqnConstVarOnRhs)
 {
     auto parser = libcellml::Parser::create();
@@ -1591,7 +1640,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsExternalVariable)
 {
-    // Generate some code for the HH52 model with leakage_current.E_L as an
+    // Generate some code for the HH52 model with leakage_current.E_R as an
     // external variable which has a dependency on potassium_channel.E_K,
     // another computed constant marked as an external variable.
 
@@ -1602,12 +1651,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsEx
 
     auto analyser = libcellml::Analyser::create();
     auto potassium_channel_E_K = model->component("potassium_channel")->variable("E_K");
-    auto external_leakage_current_E_L = libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("E_L"));
+    auto external_leakage_current_E_R = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("E_R"));
 
-    external_leakage_current_E_L->addDependency(potassium_channel_E_K);
+    external_leakage_current_E_R->addDependency(potassium_channel_E_K);
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_E_K));
-    analyser->addExternalVariable(external_leakage_current_E_L);
+    analyser->addExternalVariable(external_leakage_current_E_R);
 
     analyser->analyseModel(model);
 
@@ -1619,7 +1668,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsEx
 
     EXPECT_EQ(size_t(4), analyserModel->stateCount());
     EXPECT_EQ(size_t(18), analyserModel->variableCount());
-    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+    EXPECT_EQ(size_t(18), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_NE(nullptr, analyserModel->state(0));
@@ -2071,8 +2120,9 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesMethodString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
-                                                           "// xxxxxxxxxxxxxxxxxxxxxxx\n");
+    profile->setImplementationComputeVariablesInAlgebraicModelMethodString("");
+    profile->setImplementationComputeVariablesInDifferentialModelMethodString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
+                                                                              "// xxxxxxxxxxxxxxxxxxxxxxx\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode());
