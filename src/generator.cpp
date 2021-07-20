@@ -603,7 +603,8 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
 
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
 {
-    if (!mLockedProfile->variableInfoObjectString().empty()) {
+    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+        && !mLockedProfile->variableInfoObjectString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
