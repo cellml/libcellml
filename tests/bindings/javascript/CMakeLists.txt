@@ -15,6 +15,7 @@
 set(TEST_SRCS
   analyser.test.js
   component.test.js
+  entity.test.js
   generatorprofile.test.js
   model.test.js
   parser.test.js
