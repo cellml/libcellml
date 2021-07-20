@@ -246,17 +246,6 @@ describe("Component tests", () => {
         expect(cClone.math()).toBe("some_math")
         expect(cClone.importSource().url()).toBe("someplace")
     })
-    test('Checking Component encapsulation id.', () => {
-        const c = new libcellml.Component()
-
-        expect(c.encapsulationId()).toBe("")
-
-        c.setEncapsulationId("bob")
-        expect(c.encapsulationId()).toBe("bob")
-
-        c.removeEncapsulationId()
-        expect(c.encapsulationId()).toBe("")
-    })
     test('Checking Component import source.', () => {
         const c = new libcellml.Component()
         let iS = new libcellml.ImportSource()
