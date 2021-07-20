@@ -18,6 +18,7 @@ set(TEST_SRCS
   entity.test.js
   generatorprofile.test.js
   model.test.js
+  namedentity.test.js
   parentedentity.test.js
   parser.test.js
   reset.test.js
