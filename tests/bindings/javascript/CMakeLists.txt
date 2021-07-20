@@ -17,6 +17,7 @@ set(TEST_SRCS
   component.test.js
   generatorprofile.test.js
   model.test.js
+  parser.test.js
   reset.test.js
   units.test.js
   validator.test.js
