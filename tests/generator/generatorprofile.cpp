@@ -342,7 +342,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ("double * createStatesArray()\n"
               "{\n"
-              "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
+              "    return malloc(STATE_COUNT*sizeof(double));\n"
               "}\n",
               generatorProfile->implementationCreateStatesArrayMethodString());
 
@@ -350,7 +350,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->interfaceCreateVariablesArrayMethodString());
     EXPECT_EQ("double * createVariablesArray()\n"
               "{\n"
-              "    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+              "    return malloc(VARIABLE_COUNT*sizeof(double));\n"
               "}\n",
               generatorProfile->implementationCreateVariablesArrayMethodString());
 
