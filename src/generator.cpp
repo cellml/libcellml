@@ -450,7 +450,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "993ba3db2aeff4900984282359e314faf9834359" :
+               sha1(profileContents) != "2fe8e8118c76225ea8a31d6a9c4549efd538580c" :
                sha1(profileContents) != "17386055602561d9ce24ca5fb669630f633dce10";
 }
 
@@ -603,7 +603,8 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
 
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
 {
-    if (!mLockedProfile->variableInfoObjectString().empty()) {
+    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+        && !mLockedProfile->variableInfoObjectString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
