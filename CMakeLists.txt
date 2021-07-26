@@ -254,7 +254,7 @@ endif()
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
 
 # Format our code
-if(CLANG_FORMAT_EXE)
+if(CLANG_FORMAT_AVAILABLE)
   set(FILES_TO_FORMAT
     ${API_HEADER_FILES}
     ${MODULE_HEADER_FILES}
