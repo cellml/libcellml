@@ -16,6 +16,8 @@ limitations under the License.
 
 #include <emscripten/bind.h>
 
+// To work around multiple inheritance we have to create a combined Units
+// and ImportedEntity class that we can bind with Emscripten.
 #define JAVASCRIPT_BINDINGS
 #include "libcellml/component.h"
 
@@ -49,6 +51,7 @@ EMSCRIPTEN_BINDINGS(libcellml_component) {
         .function("removeResetByIndex", select_overload<bool(size_t)>(&libcellml::Component::removeReset))
         .function("removeResetByReset", select_overload<bool(const libcellml::ResetPtr &)>(&libcellml::Component::removeReset))
         .function("removeAllResets", &libcellml::Component::removeAllResets)
+        .function("requiresImports", &libcellml::Component::requiresImports)
         .function("reset", &libcellml::Component::reset)
         .function("resetCount", &libcellml::Component::resetCount)
         .function("hasReset", &libcellml::Component::hasReset)
@@ -61,4 +64,5 @@ EMSCRIPTEN_BINDINGS(libcellml_component) {
         .function("setImportReference", &libcellml::Component::setImportReference)
         .function("isResolved", &libcellml::Component::isResolved)
     ;
+
 }
