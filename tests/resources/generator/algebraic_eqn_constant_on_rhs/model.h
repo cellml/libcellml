@@ -19,12 +19,6 @@ typedef struct {
     char name[2];
     char units[14];
     char component[13];
-} VariableInfo;
-
-typedef struct {
-    char name[2];
-    char units[14];
-    char component[13];
     VariableType type;
 } VariableInfoWithType;
 
