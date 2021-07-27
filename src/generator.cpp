@@ -739,11 +739,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 
             std::string variableType;
 
-            if (variable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
-                variableType = mLockedProfile->variableOfIntegrationVariableTypeString();
-            } else if (variable->type() == AnalyserVariable::Type::STATE) {
-                variableType = mLockedProfile->stateVariableTypeString();
-            } else if (variable->type() == AnalyserVariable::Type::CONSTANT) {
+            if (variable->type() == AnalyserVariable::Type::CONSTANT) {
                 variableType = mLockedProfile->constantVariableTypeString();
             } else if (variable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
                 variableType = mLockedProfile->computedConstantVariableTypeString();
