@@ -2972,53 +2972,53 @@ public:
 
     /**
      * @brief Get the @c std::string for the type definition of an external
-     * variable in an algebraic model method.
+     * variable method in an algebraic model.
      *
      * Return the @c std::string for the type definition of an external variable
-     * in an algebraic model method.
+     * method in an algebraic model.
      *
      * @return The @c std::string for the type definition of an external
-     * variable in an algebraic model method.
+     * variable method in an algebraic model.
      */
-    std::string externalVariableInAlgebraicModelMethodTypeDefinitionString() const;
+    std::string externalVariableMethodTypeDefinitionInAlgebraicModelString() const;
 
     /**
      * @brief Set the @c std::string for the type definition of an external
-     * variable in an algebraic model method.
+     * variable method in an algebraic model.
      *
      * Set this @c std::string for the type definition of an external variable
-     * in an algebraic model method.
+     * method in an algebraic model.
      *
-     * @param externalVariableInAlgebraicModelMethodTypeDefinitionString The
-     * @c std::string to use for the type definition of an external variable in
-     * an algebraic model method.
+     * @param externalVariableMethodTypeDefinitionInAlgebraicModelString The
+     * @c std::string to use for the type definition of an external variable
+     * method in an algebraic model.
      */
-    void setExternalVariableInAlgebraicModelMethodTypeDefinitionString(const std::string &externalVariableInAlgebraicModelMethodTypeDefinitionString);
+    void setExternalVariableMethodTypeDefinitionInAlgebraicModelString(const std::string &externalVariableMethodTypeDefinitionInAlgebraicModelString);
 
     /**
      * @brief Get the @c std::string for the type definition of an external
-     * variable in a differential model method.
+     * variable method in a differential model.
      *
      * Return the @c std::string for the type definition of an external variable
-     * in a differential model method.
+     * method in a differential model.
      *
      * @return The @c std::string for the type definition of an external
-     * variable in a differential model method.
+     * variable method in a differential model.
      */
-    std::string externalVariableInDifferentialModelMethodTypeDefinitionString() const;
+    std::string externalVariableMethodTypeDefinitionInDifferentialModelString() const;
 
     /**
      * @brief Set the @c std::string for the type definition of an external
-     * variable in a differential model method.
+     * variable method in a differential model.
      *
      * Set this @c std::string for the type definition of an external variable
-     * in a differential model method.
+     * method in a differential model.
      *
-     * @param externalVariableInDifferentialModelMethodTypeDefinitionString The
-     * @c std::string to use for the type definition of an external variable in
-     * a differential model method.
+     * @param externalVariableMethodTypeDefinitionInDifferentialModelString The
+     * @c std::string to use for the type definition of an external variable
+     * method in a differential model.
      */
-    void setExternalVariableInDifferentialModelMethodTypeDefinitionString(const std::string &externalVariableInDifferentialModelMethodTypeDefinitionString);
+    void setExternalVariableMethodTypeDefinitionInDifferentialModelString(const std::string &externalVariableMethodTypeDefinitionInDifferentialModelString);
 
     /**
      * @brief Get the @c std::string for the external variable method parameter.
@@ -3027,10 +3027,10 @@ public:
      *
      * @sa setInterfaceComputeRatesMethodString,
      * setImplementationComputeRatesMethodString,
-     * setInterfaceComputeVariablesInAlgebraicModelMethodString,
-     * setImplementationComputeVariablesInAlgebraicModelMethodString
-     * setInterfaceComputeVariablesInDifferentialModelMethodString,
-     * setImplementationComputeVariablesInDifferentialModelMethodString
+     * setInterfaceComputeVariablesMethodInAlgebraicModelString,
+     * setImplementationComputeVariablesMethodInAlgebraicModelString
+     * setInterfaceComputeVariablesMethodInDifferentialModelString,
+     * setImplementationComputeVariablesMethodInDifferentialModelString
      *
      * @return The @c std::string for the external variable method parameter.
      */
@@ -3047,58 +3047,57 @@ public:
     void setExternalVariableMethodParameterString(const std::string &externalVariableMethodParameterString);
 
     /**
-     * @brief Get the @c std::string for the call to the external variable in an
-     * algebraic model method.
+     * @brief Get the @c std::string for the call to the external variable
+     * method in an algebraic model.
      *
-     * Return the @c std::string for the call to the external variable in an
-     * algebraic model method.
+     * Return the @c std::string for the call to the external variable method in
+     * an algebraic model method.
      *
-     * @return The @c std::string for the call to the external variable in an
-     * algebraic model method.
+     * @return The @c std::string for the call to the external variable method
+     * in an algebraic model.
      */
-    std::string externalVariableInAlgebraicModelMethodCallString() const;
+    std::string externalVariableMethodCallInAlgebraicModelString() const;
 
     /**
-     * @brief Set the @c std::string for the call to the external variable in an
-     * algebraic model method.
+     * @brief Set the @c std::string for the call to the external variable
+     * method in an algebraic model.
      *
-     * Set this @c std::string for the call to the external variable in an
-     * algebraic model method. To be useful, the string should contain the
+     * Set this @c std::string for the call to the external variable method in
+     * an algebraic model method. To be useful, the string should contain the
      * [INDEX] tag, which will be replaced with the index of the external
      * variable.
      *
-     * @param externalVariableInAlgebraicModelMethodCallString The
-     * @c std::string to use for the call to the external variable in an
-     * algebraic model method.
+     * @param externalVariableMethodCallInAlgebraicModelString The
+     * @c std::string to use for the call to the external variable method in an
+     * algebraic model.
      */
-    void setExternalVariableInAlgebraicModelMethodCallString(const std::string &externalVariableInAlgebraicModelMethodCallString);
+    void setExternalVariableMethodCallInAlgebraicModelString(const std::string &externalVariableMethodCallInAlgebraicModelString);
 
     /**
-     * @brief Get the @c std::string for the call to the external variable in a
-     * differential model method.
+     * @brief Get the @c std::string for the call to the external variable
+     * method in a differential model.
      *
-     * Return the @c std::string for the call to the external variable in a
-     * differential model method.
+     * Return the @c std::string for the call to the external variable method in
+     * a differential model.
      *
-     * @return The @c std::string for the call to the external variable in a
-     * differential model method.
+     * @return The @c std::string for the call to the external variable method
+     * in a differential model.
      */
-    std::string externalVariableInDifferentialModelMethodCallString() const;
+    std::string externalVariableMethodCallInDifferentialModelString() const;
 
     /**
-     * @brief Set the @c std::string for the call to the external variable in a
-     * differential model method.
+     * @brief Set the @c std::string for the call to the external variable
+     * method in a differential model.
      *
-     * Set this @c std::string for the call to the external variable in a
-     * differential model method. To be useful, the string should contain the
-     * [INDEX] tag, which will be replaced with the index of the external
-     * variable.
+     * Set this @c std::string for the call to the external variable method in
+     * a differential model. To be useful, the string should contain the [INDEX]
+     * tag, which will be replaced with the index of the external variable.
      *
-     * @param externalVariableInDifferentialModelMethodCallString The
-     * @c std::string to use for the call to the external variable in a
-     * differential model method.
+     * @param externalVariableMethodCallInDifferentialModelString The
+     * @c std::string to use for the call to the external variable method in a
+     * differential model.
      */
-    void setExternalVariableInDifferentialModelMethodCallString(const std::string &externalVariableInDifferentialModelMethodCallString);
+    void setExternalVariableMethodCallInDifferentialModelString(const std::string &externalVariableMethodCallInDifferentialModelString);
 
     /**
      * @brief Get the @c std::string for the interface to create the states
@@ -3427,9 +3426,9 @@ public:
      * algebraic model.
      *
      * @return The @c std::string for the interface to compute variables in an
-     * algebraic.
+     * algebraic model.
      */
-    std::string interfaceComputeVariablesInAlgebraicModelMethodString() const;
+    std::string interfaceComputeVariablesMethodInAlgebraicModelString() const;
 
     /**
      * @brief Set the @c std::string for the interface to compute variables in
@@ -3442,11 +3441,11 @@ public:
      *
      * @sa externalVariableMethodParameterString
      *
-     * @param interfaceComputeVariablesInAlgebraicModelMethodString The
+     * @param interfaceComputeVariablesMethodInAlgebraicModelString The
      * @c std::string to use for the interface to compute variables in an
      * algebraic model.
      */
-    void setInterfaceComputeVariablesInAlgebraicModelMethodString(const std::string &interfaceComputeVariablesInAlgebraicModelMethodString);
+    void setInterfaceComputeVariablesMethodInAlgebraicModelString(const std::string &interfaceComputeVariablesMethodInAlgebraicModelString);
 
     /**
      * @brief Get the @c std::string for the implementation to compute
@@ -3458,7 +3457,7 @@ public:
      * @return The @c std::string for the implementation to compute variables in
      * an algebraic model.
      */
-    std::string implementationComputeVariablesInAlgebraicModelMethodString() const;
+    std::string implementationComputeVariablesMethodInAlgebraicModelString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute
@@ -3472,11 +3471,11 @@ public:
      *
      * @sa externalVariableMethodParameterString
      *
-     * @param implementationComputeVariablesInAlgebraicModelMethodString The
+     * @param implementationComputeVariablesMethodInAlgebraicModelString The
      * @c std::string to use for the implementation to compute variables in an
      * algebraic model.
      */
-    void setImplementationComputeVariablesInAlgebraicModelMethodString(const std::string &implementationComputeVariablesInAlgebraicModelMethodString);
+    void setImplementationComputeVariablesMethodInAlgebraicModelString(const std::string &implementationComputeVariablesMethodInAlgebraicModelString);
 
     /**
      * @brief Get the @c std::string for the interface to compute variables in a
@@ -3488,7 +3487,7 @@ public:
      * @return The @c std::string for the interface to compute variables in a
      * differential model.
      */
-    std::string interfaceComputeVariablesInDifferentialModelMethodString() const;
+    std::string interfaceComputeVariablesMethodInDifferentialModelString() const;
 
     /**
      * @brief Set the @c std::string for the interface to compute variables in a
@@ -3501,11 +3500,11 @@ public:
      *
      * @sa externalVariableMethodParameterString
      *
-     * @param interfaceComputeVariablesInDifferentialModelMethodString The
+     * @param interfaceComputeVariablesMethodInDifferentialModelString The
      * @c std::string to use for the interface to compute variables in a
      * differential model.
      */
-    void setInterfaceComputeVariablesInDifferentialModelMethodString(const std::string &interfaceComputeVariablesInDifferentialModelMethodString);
+    void setInterfaceComputeVariablesMethodInDifferentialModelString(const std::string &interfaceComputeVariablesMethodInDifferentialModelString);
 
     /**
      * @brief Get the @c std::string for the implementation to compute
@@ -3517,7 +3516,7 @@ public:
      * @return The @c std::string for the implementation to compute variables in
      * a differential model.
      */
-    std::string implementationComputeVariablesInDifferentialModelMethodString() const;
+    std::string implementationComputeVariablesMethodInDifferentialModelString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute
@@ -3531,11 +3530,11 @@ public:
      *
      * @sa externalVariableMethodParameterString
      *
-     * @param implementationComputeVariablesInDifferentialModelMethodString The
+     * @param implementationComputeVariablesMethodInDifferentialModelString The
      * @c std::string to use for the implementation to compute variables in a
      * differential model.
      */
-    void setImplementationComputeVariablesInDifferentialModelMethodString(const std::string &implementationComputeVariablesInDifferentialModelMethodString);
+    void setImplementationComputeVariablesMethodInDifferentialModelString(const std::string &implementationComputeVariablesMethodInDifferentialModelString);
 
     /**
      * @brief Get the @c std::string for an empty method.
