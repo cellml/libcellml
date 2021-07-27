@@ -20,9 +20,9 @@ typedef struct {
     char units[3];
     char component[10];
     VariableType type;
-} VariableInfoWithType;
+} VariableInfo;
 
-extern const VariableInfoWithType VARIABLE_INFO[];
+extern const VariableInfo VARIABLE_INFO[];
 
 double * createVariablesArray();
 void deleteArray(double *array);

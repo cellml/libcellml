@@ -369,16 +369,19 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->interfaceVariableCountString()
                        + mLockedProfile->implementationVariableCountString();
 
-    profileContents += mLockedProfile->variableTypeObjectString();
-    profileContents += mLockedProfile->variableTypeObjectExternalTypeString();
+    profileContents += mLockedProfile->variableTypeObjectInAlgebraicModelString();
+    profileContents += mLockedProfile->variableTypeObjectExternalTypeInAlgebraicModelString();
+    profileContents += mLockedProfile->variableTypeObjectInDifferentialModelString();
+    profileContents += mLockedProfile->variableTypeObjectExternalTypeInDifferentialModelString();
 
-    profileContents += mLockedProfile->constantVariableTypeString()
+    profileContents += mLockedProfile->variableOfIntegrationVariableTypeString()
+                       + mLockedProfile->stateVariableTypeString()
+                       + mLockedProfile->constantVariableTypeString()
                        + mLockedProfile->computedConstantVariableTypeString()
                        + mLockedProfile->algebraicVariableTypeString()
                        + mLockedProfile->externalVariableTypeString();
 
-    profileContents += mLockedProfile->variableInfoObjectString()
-                       + mLockedProfile->variableInfoWithTypeObjectString();
+    profileContents += mLockedProfile->variableInfoObjectString();
 
     profileContents += mLockedProfile->interfaceVoiInfoString()
                        + mLockedProfile->implementationVoiInfoString();
@@ -389,8 +392,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->interfaceVariableInfoString()
                        + mLockedProfile->implementationVariableInfoString();
 
-    profileContents += mLockedProfile->variableInfoEntryString()
-                       + mLockedProfile->variableInfoWithTypeEntryString();
+    profileContents += mLockedProfile->variableInfoEntryString();
 
     profileContents += mLockedProfile->voiString();
 
@@ -450,8 +452,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "2fe8e8118c76225ea8a31d6a9c4549efd538580c" :
-               sha1(profileContents) != "17386055602561d9ce24ca5fb669630f633dce10";
+               sha1(profileContents) != "f5ea88b858589944f8ec0efa0d0d2d95858362c7" :
+               sha1(profileContents) != "c5d72615c86e26c21a45ebf4d13261c3c68d7332";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -565,15 +567,24 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 
 void Generator::GeneratorImpl::addVariableTypeObjectCode()
 {
-    if (!mLockedProfile->variableTypeObjectString().empty()
-        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->variableTypeObjectExternalTypeString().empty())
+    if ((((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
+          && !mLockedProfile->variableTypeObjectInAlgebraicModelString().empty())
+         || ((mLockedModel->type() == AnalyserModel::Type::ODE)
+             && !mLockedProfile->variableTypeObjectInDifferentialModelString().empty()))
+        && ((mLockedModel->hasExternalVariables()
+             && (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
+                  && !mLockedProfile->variableTypeObjectExternalTypeInAlgebraicModelString().empty())
+                 || ((mLockedModel->type() == AnalyserModel::Type::ODE)
+                     && !mLockedProfile->variableTypeObjectExternalTypeInDifferentialModelString().empty())))
             || !mLockedModel->hasExternalVariables())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
 
-        mCode += replace(mLockedProfile->variableTypeObjectString(),
-                         "[OPTIONAL_TYPE]", mLockedModel->hasExternalVariables() ? mLockedProfile->variableTypeObjectExternalTypeString() : "");
+        mCode += replace((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
+                             mLockedProfile->variableTypeObjectInAlgebraicModelString() :
+                             mLockedProfile->variableTypeObjectInDifferentialModelString(),
+                         "[OPTIONAL_TYPE]", mLockedModel->hasExternalVariables() ? (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ? mLockedProfile->variableTypeObjectExternalTypeInAlgebraicModelString() : mLockedProfile->variableTypeObjectExternalTypeInDifferentialModelString() : "");
     }
 }
 
@@ -603,8 +614,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
 
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->variableInfoObjectString().empty()) {
+    if (!mLockedProfile->variableInfoObjectString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -613,25 +623,16 @@ void Generator::GeneratorImpl::addVariableInfoObjectCode()
     }
 }
 
-void Generator::GeneratorImpl::addVariableInfoWithTypeObjectCode()
-{
-    if (!mLockedProfile->variableInfoWithTypeObjectString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += generateVariableInfoObjectCode(mLockedProfile->variableInfoWithTypeObjectString());
-    }
-}
-
 std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &name,
                                                                     const std::string &units,
-                                                                    const std::string &component) const
+                                                                    const std::string &component,
+                                                                    const std::string &type) const
 {
-    return replace(replace(replace(mLockedProfile->variableInfoEntryString(),
-                                   "[NAME]", name),
-                           "[UNITS]", units),
-                   "[COMPONENT]", component);
+    return replace(replace(replace(replace(mLockedProfile->variableInfoEntryString(),
+                                           "[NAME]", name),
+                                   "[UNITS]", units),
+                           "[COMPONENT]", component),
+                   "[TYPE]", type);
 }
 
 void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
@@ -663,7 +664,8 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode()
 {
     if ((mLockedModel->type() == AnalyserModel::Type::ODE)
         && !mLockedProfile->implementationVoiInfoString().empty()
-        && !mLockedProfile->variableInfoEntryString().empty()) {
+        && !mLockedProfile->variableInfoEntryString().empty()
+        && !mLockedProfile->variableOfIntegrationVariableTypeString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -671,9 +673,10 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode()
         auto name = mLockedModel->voi()->variable()->name();
         auto units = mLockedModel->voi()->variable()->units()->name();
         auto component = owningComponent(mLockedModel->voi()->variable())->name();
+        auto type = mLockedProfile->variableOfIntegrationVariableTypeString();
 
         mCode += replace(mLockedProfile->implementationVoiInfoString(),
-                         "[CODE]", generateVariableInfoEntryCode(name, units, component));
+                         "[CODE]", generateVariableInfoEntryCode(name, units, component, type));
     }
 }
 
@@ -682,12 +685,14 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
     if ((mLockedModel->type() == AnalyserModel::Type::ODE)
         && !mLockedProfile->implementationStateInfoString().empty()
         && !mLockedProfile->variableInfoEntryString().empty()
+        && !mLockedProfile->stateVariableTypeString().empty()
         && !mLockedProfile->arrayElementSeparatorString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
 
         std::string infoElementsCode;
+        auto type = mLockedProfile->stateVariableTypeString();
 
         for (const auto &state : mLockedModel->states()) {
             if (!infoElementsCode.empty()) {
@@ -697,7 +702,8 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
             infoElementsCode += mLockedProfile->indentString()
                                 + generateVariableInfoEntryCode(state->variable()->name(),
                                                                 state->variable()->units()->name(),
-                                                                owningComponent(state->variable())->name());
+                                                                owningComponent(state->variable())->name(),
+                                                                type);
         }
 
         if (!infoElementsCode.empty()) {
@@ -712,8 +718,10 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
 void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 {
     if (!mLockedProfile->implementationVariableInfoString().empty()
-        && !mLockedProfile->variableInfoWithTypeEntryString().empty()
+        && !mLockedProfile->variableInfoEntryString().empty()
         && !mLockedProfile->arrayElementSeparatorString().empty()
+        && !mLockedProfile->variableOfIntegrationVariableTypeString().empty()
+        && !mLockedProfile->stateVariableTypeString().empty()
         && !mLockedProfile->constantVariableTypeString().empty()
         && !mLockedProfile->computedConstantVariableTypeString().empty()
         && !mLockedProfile->algebraicVariableTypeString().empty()
@@ -731,7 +739,11 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 
             std::string variableType;
 
-            if (variable->type() == AnalyserVariable::Type::CONSTANT) {
+            if (variable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
+                variableType = mLockedProfile->variableOfIntegrationVariableTypeString();
+            } else if (variable->type() == AnalyserVariable::Type::STATE) {
+                variableType = mLockedProfile->stateVariableTypeString();
+            } else if (variable->type() == AnalyserVariable::Type::CONSTANT) {
                 variableType = mLockedProfile->constantVariableTypeString();
             } else if (variable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
                 variableType = mLockedProfile->computedConstantVariableTypeString();
@@ -742,7 +754,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
             }
 
             infoElementsCode += mLockedProfile->indentString()
-                                + replace(replace(replace(replace(mLockedProfile->variableInfoWithTypeEntryString(),
+                                + replace(replace(replace(replace(mLockedProfile->variableInfoEntryString(),
                                                                   "[NAME]", variable->variable()->name()),
                                                           "[UNITS]", variable->variable()->units()->name()),
                                                   "[COMPONENT]", owningComponent(variable->variable())->name()),
@@ -2141,7 +2153,6 @@ std::string Generator::interfaceCode() const
 
     mPimpl->addVariableTypeObjectCode();
     mPimpl->addVariableInfoObjectCode();
-    mPimpl->addVariableInfoWithTypeObjectCode();
 
     // Add code for the interface of the information about the variable of
     // integration, states and (other) variables.
@@ -2198,7 +2209,6 @@ std::string Generator::implementationCode() const
     if (!mPimpl->mLockedProfile->hasInterface()) {
         mPimpl->addVariableTypeObjectCode();
         mPimpl->addVariableInfoObjectCode();
-        mPimpl->addVariableInfoWithTypeObjectCode();
     }
 
     // Add code for the implementation of the information about the variable of

@@ -2065,16 +2065,19 @@ TEST(Generator, coverage)
 
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectString("");
-    profile->setVariableTypeObjectExternalTypeString("");
+    profile->setVariableTypeObjectInAlgebraicModelString("");
+    profile->setVariableTypeObjectExternalTypeInAlgebraicModelString("");
+    profile->setVariableTypeObjectInDifferentialModelString("");
+    profile->setVariableTypeObjectExternalTypeInDifferentialModelString("");
 
+    profile->setVariableOfIntegrationVariableTypeString("");
+    profile->setStateVariableTypeString("");
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
     profile->setAlgebraicVariableTypeString("");
     profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
-    profile->setVariableInfoWithTypeObjectString("");
 
     profile->setImplementationVoiInfoString("");
 
@@ -2083,7 +2086,6 @@ TEST(Generator, coverage)
     profile->setImplementationVariableInfoString("");
 
     profile->setVariableInfoEntryString("");
-    profile->setVariableInfoWithTypeEntryString("");
 
     profile->setImplementationCreateStatesArrayMethodString("");
 
@@ -2138,16 +2140,19 @@ TEST(Generator, coverage)
     profile->setInterfaceVariableCountString("");
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectString("");
-    profile->setVariableTypeObjectExternalTypeString("");
+    profile->setVariableTypeObjectInAlgebraicModelString("");
+    profile->setVariableTypeObjectExternalTypeInAlgebraicModelString("");
+    profile->setVariableTypeObjectInDifferentialModelString("");
+    profile->setVariableTypeObjectExternalTypeInDifferentialModelString("");
 
+    profile->setVariableOfIntegrationVariableTypeString("");
+    profile->setStateVariableTypeString("");
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
     profile->setAlgebraicVariableTypeString("");
     profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
-    profile->setVariableInfoWithTypeObjectString("");
 
     profile->setInterfaceVoiInfoString("");
     profile->setImplementationVoiInfoString("");
@@ -2159,7 +2164,6 @@ TEST(Generator, coverage)
     profile->setImplementationVariableInfoString("");
 
     profile->setVariableInfoEntryString("");
-    profile->setVariableInfoWithTypeEntryString("");
 
     EXPECT_EQ(fileContents("generator/coverage/model.interface.out"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.implementation.out"), generator->implementationCode());

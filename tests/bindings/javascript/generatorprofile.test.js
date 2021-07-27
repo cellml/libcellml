@@ -693,17 +693,41 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationVariableCountString("something")
     expect(x.implementationVariableCountString()).toBe("something")
   });
-  test("Checking GeneratorProfile.variableTypeObjectString.", () => {
+  test("Checking GeneratorProfile.variableTypeObjectInAlgebraicModelString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
-    x.setVariableTypeObjectString("something")
-    expect(x.variableTypeObjectString()).toBe("something")
+    x.setVariableTypeObjectInAlgebraicModelString("something")
+    expect(x.variableTypeObjectInAlgebraicModelString()).toBe("something")
   });
-  test("Checking GeneratorProfile.variableTypeObjectExternalTypeString.", () => {
+  test("Checking GeneratorProfile.variableTypeObjectExternalTypeInAlgebraicModelString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
-    x.setVariableTypeObjectExternalTypeString("something")
-    expect(x.variableTypeObjectExternalTypeString()).toBe("something")
+    x.setVariableTypeObjectExternalTypeInAlgebraicModelString("something")
+    expect(x.variableTypeObjectExternalTypeInAlgebraicModelString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.variableTypeObjectInDifferentialModelString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
+
+    x.setVariableTypeObjectInDifferentialModelString("something")
+    expect(x.variableTypeObjectInDifferentialModelString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.variableTypeObjectExternalTypeInDifferentialModelString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
+
+    x.setVariableTypeObjectExternalTypeInDifferentialModelString("something")
+    expect(x.variableTypeObjectExternalTypeInDifferentialModelString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.variableOfIntegrationVariableTypeString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
+
+    x.setVariableOfIntegrationVariableTypeString("something")
+    expect(x.variableOfIntegrationVariableTypeString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.stateVariableTypeString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
+
+    x.setStateVariableTypeString("something")
+    expect(x.stateVariableTypeString()).toBe("something")
   });
   test("Checking GeneratorProfile.constantVariableTypeString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
@@ -734,12 +758,6 @@ describe("GeneratorProfile tests", () => {
 
     x.setVariableInfoObjectString("something")
     expect(x.variableInfoObjectString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.variableInfoWithTypeObjectString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setVariableInfoWithTypeObjectString("something")
-    expect(x.variableInfoWithTypeObjectString()).toBe("something")
   });
   test("Checking GeneratorProfile.interfaceVoiInfoString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
@@ -782,12 +800,6 @@ describe("GeneratorProfile tests", () => {
 
     x.setVariableInfoEntryString("something")
     expect(x.variableInfoEntryString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.variableInfoWithTypeEntryString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setVariableInfoWithTypeEntryString("something")
-    expect(x.variableInfoWithTypeEntryString()).toBe("something")
   });
   test("Checking GeneratorProfile.voiString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
