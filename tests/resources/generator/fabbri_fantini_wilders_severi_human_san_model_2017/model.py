@@ -12,47 +12,49 @@ VARIABLE_COUNT = 217
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    VARIABLE_OF_INTEGRATION = 1
+    STATE = 2
+    CONSTANT = 3
+    COMPUTED_CONSTANT = 4
+    ALGEBRAIC = 5
 
 
-VOI_INFO = {"name": "time", "units": "second", "component": "environment"}
+VOI_INFO = {"name": "time", "units": "second", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "R", "units": "dimensionless", "component": "Ca_SR_release"},
-    {"name": "O", "units": "dimensionless", "component": "Ca_SR_release"},
-    {"name": "I", "units": "dimensionless", "component": "Ca_SR_release"},
-    {"name": "RI", "units": "dimensionless", "component": "Ca_SR_release"},
-    {"name": "Ca_jsr", "units": "millimolar", "component": "Ca_dynamics"},
-    {"name": "fCa", "units": "dimensionless", "component": "i_CaL_fCa_gate"},
-    {"name": "fTC", "units": "dimensionless", "component": "Ca_buffering"},
-    {"name": "fTMC", "units": "dimensionless", "component": "Ca_buffering"},
-    {"name": "fTMM", "units": "dimensionless", "component": "Ca_buffering"},
-    {"name": "fCMi", "units": "dimensionless", "component": "Ca_buffering"},
-    {"name": "fCMs", "units": "dimensionless", "component": "Ca_buffering"},
-    {"name": "fCQ", "units": "dimensionless", "component": "Ca_buffering"},
-    {"name": "Cai", "units": "millimolar", "component": "Ca_dynamics"},
-    {"name": "Ca_nsr", "units": "millimolar", "component": "Ca_dynamics"},
-    {"name": "y", "units": "dimensionless", "component": "i_f_y_gate"},
-    {"name": "m", "units": "dimensionless", "component": "i_Na_m_gate"},
-    {"name": "h", "units": "dimensionless", "component": "i_Na_h_gate"},
-    {"name": "fL", "units": "dimensionless", "component": "i_CaL_fL_gate"},
-    {"name": "dT", "units": "dimensionless", "component": "i_CaT_dT_gate"},
-    {"name": "fT", "units": "dimensionless", "component": "i_CaT_fT_gate"},
-    {"name": "q", "units": "dimensionless", "component": "i_to_q_gate"},
-    {"name": "r", "units": "dimensionless", "component": "i_to_r_gate"},
-    {"name": "paS", "units": "dimensionless", "component": "i_Kr_pa_gate"},
-    {"name": "paF", "units": "dimensionless", "component": "i_Kr_pa_gate"},
-    {"name": "piy", "units": "dimensionless", "component": "i_Kr_pi_gate"},
-    {"name": "a", "units": "dimensionless", "component": "i_KACh_a_gate"},
-    {"name": "r_Kur", "units": "dimensionless", "component": "i_Kur_rKur_gate"},
-    {"name": "s_Kur", "units": "dimensionless", "component": "i_Kur_sKur_gate"},
-    {"name": "n", "units": "dimensionless", "component": "i_Ks_n_gate"},
-    {"name": "dL", "units": "dimensionless", "component": "i_CaL_dL_gate"},
-    {"name": "Ca_sub", "units": "millimolar", "component": "Ca_dynamics"},
-    {"name": "V_ode", "units": "millivolt", "component": "Membrane"},
-    {"name": "Nai_", "units": "millimolar", "component": "Nai_concentration"}
+    {"name": "R", "units": "dimensionless", "component": "Ca_SR_release", "type": VariableType.STATE},
+    {"name": "O", "units": "dimensionless", "component": "Ca_SR_release", "type": VariableType.STATE},
+    {"name": "I", "units": "dimensionless", "component": "Ca_SR_release", "type": VariableType.STATE},
+    {"name": "RI", "units": "dimensionless", "component": "Ca_SR_release", "type": VariableType.STATE},
+    {"name": "Ca_jsr", "units": "millimolar", "component": "Ca_dynamics", "type": VariableType.STATE},
+    {"name": "fCa", "units": "dimensionless", "component": "i_CaL_fCa_gate", "type": VariableType.STATE},
+    {"name": "fTC", "units": "dimensionless", "component": "Ca_buffering", "type": VariableType.STATE},
+    {"name": "fTMC", "units": "dimensionless", "component": "Ca_buffering", "type": VariableType.STATE},
+    {"name": "fTMM", "units": "dimensionless", "component": "Ca_buffering", "type": VariableType.STATE},
+    {"name": "fCMi", "units": "dimensionless", "component": "Ca_buffering", "type": VariableType.STATE},
+    {"name": "fCMs", "units": "dimensionless", "component": "Ca_buffering", "type": VariableType.STATE},
+    {"name": "fCQ", "units": "dimensionless", "component": "Ca_buffering", "type": VariableType.STATE},
+    {"name": "Cai", "units": "millimolar", "component": "Ca_dynamics", "type": VariableType.STATE},
+    {"name": "Ca_nsr", "units": "millimolar", "component": "Ca_dynamics", "type": VariableType.STATE},
+    {"name": "y", "units": "dimensionless", "component": "i_f_y_gate", "type": VariableType.STATE},
+    {"name": "m", "units": "dimensionless", "component": "i_Na_m_gate", "type": VariableType.STATE},
+    {"name": "h", "units": "dimensionless", "component": "i_Na_h_gate", "type": VariableType.STATE},
+    {"name": "fL", "units": "dimensionless", "component": "i_CaL_fL_gate", "type": VariableType.STATE},
+    {"name": "dT", "units": "dimensionless", "component": "i_CaT_dT_gate", "type": VariableType.STATE},
+    {"name": "fT", "units": "dimensionless", "component": "i_CaT_fT_gate", "type": VariableType.STATE},
+    {"name": "q", "units": "dimensionless", "component": "i_to_q_gate", "type": VariableType.STATE},
+    {"name": "r", "units": "dimensionless", "component": "i_to_r_gate", "type": VariableType.STATE},
+    {"name": "paS", "units": "dimensionless", "component": "i_Kr_pa_gate", "type": VariableType.STATE},
+    {"name": "paF", "units": "dimensionless", "component": "i_Kr_pa_gate", "type": VariableType.STATE},
+    {"name": "piy", "units": "dimensionless", "component": "i_Kr_pi_gate", "type": VariableType.STATE},
+    {"name": "a", "units": "dimensionless", "component": "i_KACh_a_gate", "type": VariableType.STATE},
+    {"name": "r_Kur", "units": "dimensionless", "component": "i_Kur_rKur_gate", "type": VariableType.STATE},
+    {"name": "s_Kur", "units": "dimensionless", "component": "i_Kur_sKur_gate", "type": VariableType.STATE},
+    {"name": "n", "units": "dimensionless", "component": "i_Ks_n_gate", "type": VariableType.STATE},
+    {"name": "dL", "units": "dimensionless", "component": "i_CaL_dL_gate", "type": VariableType.STATE},
+    {"name": "Ca_sub", "units": "millimolar", "component": "Ca_dynamics", "type": VariableType.STATE},
+    {"name": "V_ode", "units": "millivolt", "component": "Membrane", "type": VariableType.STATE},
+    {"name": "Nai_", "units": "millimolar", "component": "Nai_concentration", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
