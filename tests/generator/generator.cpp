@@ -2091,8 +2091,8 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesInAlgebraicModelMethodString("");
-    profile->setImplementationComputeVariablesInDifferentialModelMethodString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
+    profile->setImplementationComputeVariablesMethodInAlgebraicModelString("");
+    profile->setImplementationComputeVariablesMethodInDifferentialModelString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
                                                                               "// xxxxxxxxxxxxxxxxxxxxxxx\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
