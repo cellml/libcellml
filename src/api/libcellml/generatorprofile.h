@@ -3051,7 +3051,7 @@ public:
      * method in an algebraic model.
      *
      * Return the @c std::string for the call to the external variable method in
-     * an algebraic model method.
+     * an algebraic model.
      *
      * @return The @c std::string for the call to the external variable method
      * in an algebraic model.
