@@ -3063,7 +3063,7 @@ public:
      * method in an algebraic model.
      *
      * Set this @c std::string for the call to the external variable method in
-     * an algebraic model method. To be useful, the string should contain the
+     * an algebraic model. To be useful, the string should contain the
      * [INDEX] tag, which will be replaced with the index of the external
      * variable.
      *
