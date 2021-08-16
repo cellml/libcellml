@@ -2615,7 +2615,7 @@ public:
      * variable type.
      *
      * Return the @c std::string for the name of the variable of integration
-     * variable type.
+     * variable type that is used in a differential model.
      *
      * @return The @c std::string for the name of the variable of integration
      * variable type.
@@ -2627,7 +2627,7 @@ public:
      * variable type.
      *
      * Set the @c std::string for the name of the variable of integration
-     * variable type.
+     * variable type that is used in a differential model.
      *
      * @param variableOfIntegrationVariableTypeString The @c std::string to use
      * for the name of the variable of integration variable type.
@@ -2637,7 +2637,8 @@ public:
     /**
      * @brief Get the @c std::string for the name of the state variable type.
      *
-     * Return the @c std::string for the name of the state variable type.
+     * Return the @c std::string for the name of the state variable type that is
+     * used in a differential model.
      *
      * @return The @c std::string for the name of the state variable type.
      */
@@ -2646,7 +2647,8 @@ public:
     /**
      * @brief Set the @c std::string for the name of the state variable type.
      *
-     * Set the @c std::string for the name of the state variable type.
+     * Set the @c std::string for the name of the state variable type that is
+     * used in a differential model.
      *
      * @param stateTypeString The @c std::string to use for the name of the
      * state variable type.
