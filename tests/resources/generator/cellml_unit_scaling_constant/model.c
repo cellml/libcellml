@@ -10,7 +10,7 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 
 const size_t VARIABLE_COUNT = 3;
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"k", "mM", "constants", CONSTANT},
     {"x", "mM", "main", COMPUTED_CONSTANT},
     {"y", "M", "main", COMPUTED_CONSTANT}

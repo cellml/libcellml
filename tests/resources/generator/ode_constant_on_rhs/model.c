@@ -11,13 +11,13 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 1;
 const size_t VARIABLE_COUNT = 0;
 
-const VariableInfo VOI_INFO = {"t", "second", "environment"};
+const VariableInfo VOI_INFO = {"t", "second", "environment", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "dimensionless", "my_ode"}
+    {"x", "dimensionless", "my_ode", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
 };
 
 double * createStatesArray()

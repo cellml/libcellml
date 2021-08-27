@@ -687,17 +687,41 @@ used respectively.";
 "Sets the string for the implementation of the variable count constant. To be useful, the string should contain
 the <VARIABLE_COUNT> tag, which will be replaced with the number of states in the model.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectString
-"Returns the string for the data structure for the variable type object.";
+%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectInAlgebraicModelString
+"Returns the string for the data structure for the variable type object in an algebraic model.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectString
-"Sets the string for the data structure for the variable type object.";
+%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectInAlgebraicModelString
+"Sets the string for the data structure for the variable type object in an algebraic model.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectExternalTypeString
-"Returns the string for the external type for the data structure for the variable type object.";
+%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectExternalTypeInAlgebraicModelString
+"Returns the string for the external type for the data structure for the variable type object in an algebraic model.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeString
-"Sets the string for the external type for the data structure for the variable type object.";
+%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeInAlgebraicModelString
+"Sets the string for the external type for the data structure for the variable type object in an algebraic model.";
+
+%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectInDifferentialModelString
+"Returns the string for the data structure for the variable type object in a differential model.";
+
+%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectInDifferentialModelString
+"Sets the string for the data structure for the variable type object in a differential model.";
+
+%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectExternalTypeInDifferentialModelString
+"Returns the string for the external type for the data structure for the variable type object in a differential model.";
+
+%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeInDifferentialModelString
+"Sets the string for the external type for the data structure for the variable type object in a differential model.";
+
+%feature("docstring") libcellml::GeneratorProfile::variableOfIntegrationVariableTypeString
+"Returns the string for the name of the variable of integration variable type.";
+
+%feature("docstring") libcellml::GeneratorProfile::setVariableOfIntegrationVariableTypeString
+"Sets the string for the name of the variable of integration variable type.";
+
+%feature("docstring") libcellml::GeneratorProfile::stateVariableTypeString
+"Returns the string for the name of the state variable type.";
+
+%feature("docstring") libcellml::GeneratorProfile::setStateVariableTypeString
+"Sets the string for the name of the state variable type.";
 
 %feature("docstring") libcellml::GeneratorProfile::constantVariableTypeString
 "Returns the string for the name of the constant variable type.";
@@ -730,14 +754,6 @@ the <VARIABLE_COUNT> tag, which will be replaced with the number of states in th
 "Sets the string for the data structure for the variable information object. To be useful, the string should
 contain the <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which will be replaced with the maximum size of
 a string for holding the name of a component, variable and units, respectively.";
-
-%feature("docstring") libcellml::GeneratorProfile::variableInfoWithTypeObjectString
-"Returns the string for the data structure for the variable information (incl. its type) object.";
-
-%feature("docstring") libcellml::GeneratorProfile::setVariableInfoWithTypeObjectString
-"Sets the string for the data structure for the variable information (incl. its type) object. To be useful, the
-string should contain the <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which will be replaced with the
-maximum size of a string for holding the name of a component, variable and units, respectively.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceVoiInfoString
 "Returns the string for the interface of some information about the variable of integration.";
@@ -787,14 +803,6 @@ variables.";
 "Sets the string for an entry in an array for some information about a variable. To be useful, the string should
 contain the <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced with the name of the component, name
 and units of a variable respectively.";
-
-%feature("docstring") libcellml::GeneratorProfile::variableInfoWithTypeEntryString
-"Returns the string for an entry in an array for some information about a variable (incl. its type).";
-
-%feature("docstring") libcellml::GeneratorProfile::setVariableInfoWithTypeEntryString
-"Sets the string for an entry in an array for some information about a variable (incl. its type). To be useful,
-the string should contain the <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced with the name of the
-component, name and units of a variable.";
 
 %feature("docstring") libcellml::GeneratorProfile::voiString
 "Returns the string for the name of the variable of integration.";

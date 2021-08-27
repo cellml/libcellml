@@ -286,9 +286,20 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "    COMPUTED_CONSTANT,\n"
               "    ALGEBRAIC[OPTIONAL_TYPE]\n"
               "} VariableType;\n",
-              generatorProfile->variableTypeObjectString());
-    EXPECT_EQ(",\n    EXTERNAL", generatorProfile->variableTypeObjectExternalTypeString());
+              generatorProfile->variableTypeObjectInAlgebraicModelString());
+    EXPECT_EQ(",\n    EXTERNAL", generatorProfile->variableTypeObjectExternalTypeInAlgebraicModelString());
+    EXPECT_EQ("typedef enum {\n"
+              "    VARIABLE_OF_INTEGRATION,\n"
+              "    STATE,\n"
+              "    CONSTANT,\n"
+              "    COMPUTED_CONSTANT,\n"
+              "    ALGEBRAIC[OPTIONAL_TYPE]\n"
+              "} VariableType;\n",
+              generatorProfile->variableTypeObjectInDifferentialModelString());
+    EXPECT_EQ(",\n    EXTERNAL", generatorProfile->variableTypeObjectExternalTypeInDifferentialModelString());
 
+    EXPECT_EQ("VARIABLE_OF_INTEGRATION", generatorProfile->variableOfIntegrationVariableTypeString());
+    EXPECT_EQ("STATE", generatorProfile->stateVariableTypeString());
     EXPECT_EQ("CONSTANT", generatorProfile->constantVariableTypeString());
     EXPECT_EQ("COMPUTED_CONSTANT", generatorProfile->computedConstantVariableTypeString());
     EXPECT_EQ("ALGEBRAIC", generatorProfile->algebraicVariableTypeString());
@@ -298,15 +309,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "    char name[[NAME_SIZE]];\n"
               "    char units[[UNITS_SIZE]];\n"
               "    char component[[COMPONENT_SIZE]];\n"
+              "    VariableType type;\n"
               "} VariableInfo;\n",
               generatorProfile->variableInfoObjectString());
-    EXPECT_EQ("typedef struct {\n"
-              "    char name[[NAME_SIZE]];\n"
-              "    char units[[UNITS_SIZE]];\n"
-              "    char component[[COMPONENT_SIZE]];\n"
-              "    VariableType type;\n"
-              "} VariableInfoWithType;\n",
-              generatorProfile->variableInfoWithTypeObjectString());
 
     EXPECT_EQ("extern const VariableInfo VOI_INFO;\n", generatorProfile->interfaceVoiInfoString());
     EXPECT_EQ("const VariableInfo VOI_INFO = [CODE];\n", generatorProfile->implementationVoiInfoString());
@@ -317,14 +322,13 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "};\n",
               generatorProfile->implementationStateInfoString());
 
-    EXPECT_EQ("extern const VariableInfoWithType VARIABLE_INFO[];\n", generatorProfile->interfaceVariableInfoString());
-    EXPECT_EQ("const VariableInfoWithType VARIABLE_INFO[] = {\n"
+    EXPECT_EQ("extern const VariableInfo VARIABLE_INFO[];\n", generatorProfile->interfaceVariableInfoString());
+    EXPECT_EQ("const VariableInfo VARIABLE_INFO[] = {\n"
               "[CODE]"
               "};\n",
               generatorProfile->implementationVariableInfoString());
 
-    EXPECT_EQ("{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\"}", generatorProfile->variableInfoEntryString());
-    EXPECT_EQ("{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\", [TYPE]}", generatorProfile->variableInfoWithTypeEntryString());
+    EXPECT_EQ("{\"[NAME]\", \"[UNITS]\", \"[COMPONENT]\", [TYPE]}", generatorProfile->variableInfoEntryString());
 
     EXPECT_EQ("voi", generatorProfile->voiString());
 
@@ -736,16 +740,19 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceVariableCountString(value);
     generatorProfile->setImplementationVariableCountString(value);
 
-    generatorProfile->setVariableTypeObjectString(value);
-    generatorProfile->setVariableTypeObjectExternalTypeString(value);
+    generatorProfile->setVariableTypeObjectInAlgebraicModelString(value);
+    generatorProfile->setVariableTypeObjectExternalTypeInAlgebraicModelString(value);
+    generatorProfile->setVariableTypeObjectInDifferentialModelString(value);
+    generatorProfile->setVariableTypeObjectExternalTypeInDifferentialModelString(value);
 
+    generatorProfile->setVariableOfIntegrationVariableTypeString(value);
+    generatorProfile->setStateVariableTypeString(value);
     generatorProfile->setConstantVariableTypeString(value);
     generatorProfile->setComputedConstantVariableTypeString(value);
     generatorProfile->setAlgebraicVariableTypeString(value);
     generatorProfile->setExternalVariableTypeString(value);
 
     generatorProfile->setVariableInfoObjectString(value);
-    generatorProfile->setVariableInfoWithTypeObjectString(value);
 
     generatorProfile->setInterfaceVoiInfoString(value);
     generatorProfile->setImplementationVoiInfoString(value);
@@ -757,7 +764,6 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setImplementationVariableInfoString(value);
 
     generatorProfile->setVariableInfoEntryString(value);
-    generatorProfile->setVariableInfoWithTypeEntryString(value);
 
     generatorProfile->setVoiString(value);
 
@@ -834,16 +840,19 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceVariableCountString());
     EXPECT_EQ(value, generatorProfile->implementationVariableCountString());
 
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectString());
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectExternalTypeString());
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectInAlgebraicModelString());
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectExternalTypeInAlgebraicModelString());
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectInDifferentialModelString());
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectExternalTypeInDifferentialModelString());
 
+    EXPECT_EQ(value, generatorProfile->variableOfIntegrationVariableTypeString());
+    EXPECT_EQ(value, generatorProfile->stateVariableTypeString());
     EXPECT_EQ(value, generatorProfile->constantVariableTypeString());
     EXPECT_EQ(value, generatorProfile->computedConstantVariableTypeString());
     EXPECT_EQ(value, generatorProfile->algebraicVariableTypeString());
     EXPECT_EQ(value, generatorProfile->externalVariableTypeString());
 
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
-    EXPECT_EQ(value, generatorProfile->variableInfoWithTypeObjectString());
 
     EXPECT_EQ(value, generatorProfile->interfaceVoiInfoString());
     EXPECT_EQ(value, generatorProfile->implementationVoiInfoString());
@@ -855,7 +864,6 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->implementationVariableInfoString());
 
     EXPECT_EQ(value, generatorProfile->variableInfoEntryString());
-    EXPECT_EQ(value, generatorProfile->variableInfoWithTypeEntryString());
 
     EXPECT_EQ(value, generatorProfile->voiString());
 

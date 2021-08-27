@@ -11,13 +11,13 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 1;
 const size_t VARIABLE_COUNT = 2;
 
-const VariableInfo VOI_INFO = {"time", "second", "my_component"};
+const VariableInfo VOI_INFO = {"time", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "dimensionless", "my_component"}
+    {"x", "dimensionless", "my_component", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"b", "second", "my_component", ALGEBRAIC},
     {"a", "second", "my_component", ALGEBRAIC}
 };
