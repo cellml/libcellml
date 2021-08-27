@@ -10,7 +10,7 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 
 const size_t VARIABLE_COUNT = 2;
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"a", "dimensionless", "my_algebraic_eqn", CONSTANT},
     {"x", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT}
 };

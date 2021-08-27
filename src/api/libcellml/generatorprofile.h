@@ -2501,57 +2501,159 @@ public:
 
     /**
      * @brief Get the @c std::string for the data structure for the variable
-     * type object.
+     * type object in an algebraic model.
      *
      * Return the @c std::string for the data structure for the variable type
-     * object.
+     * object in an algebraic model.
      *
      * @return The @c std::string for the data structure for the variable type
-     * object.
+     * object in an algebraic model.
      */
-    std::string variableTypeObjectString() const;
+    std::string variableTypeObjectInAlgebraicModelString() const;
 
     /**
      * @brief Set the @c std::string for the data structure for the variable
-     * type object.
+     * type object in an algebraic model.
      *
      * Set the @c std::string for the data structure for the variable
-     * type object. To be useful, the string should contain the [OPTIONAL_TYPE]
-     * tag, which will be replaced with a type for the external variable type,
-     * if needed.
+     * type object in an algebraic model. To be useful, the string should
+     * contain the [OPTIONAL_TYPE] tag, which will be replaced with a type for
+     * the external variable type, if needed.
      *
-     * @sa variableTypeObjectExternalTypeString
+     * @sa variableTypeObjectInAlgebraicModelString
      *
-     * @param variableTypeObjectString The @c std::string to use for the data
-     * structure for the variable type object.
+     * @param variableTypeObjectInAlgebraicModelString The @c std::string to use
+     * for the data structure for the variable type object in an algebraic model.
      */
-    void setVariableTypeObjectString(const std::string &variableTypeObjectString);
+    void setVariableTypeObjectInAlgebraicModelString(const std::string &variableTypeObjectInAlgebraicModelString);
 
     /**
      * @brief Get the @c std::string for the external type for the data
-     * structure for the variable type object.
+     * structure for the variable type object in an algebraic model.
      *
      * Return the @c std::string for the external type for the data structure
-     * for the variable type object.
+     * for the variable type object in an algebraic model.
      *
-     * @sa setVariableTypeObjectString
+     * @sa setVariableTypeObjectInAlgebraicModelString
      *
      * @return The @c std::string for the external type for the data structure
-     * for the variable type object.
+     * for the variable type object in an algebraic model.
      */
-    std::string variableTypeObjectExternalTypeString() const;
+    std::string variableTypeObjectExternalTypeInAlgebraicModelString() const;
 
     /**
      * @brief Set the @c std::string for the external type for the data
-     * structure for the variable type object.
+     * structure for the variable type object in an algebraic model.
      *
      * Set this @c std::string for the external type for the data structure for
-     * the variable type object.
+     * the variable type object in an algebraic model.
      *
-     * @param variableTypeObjectExternalTypeString The @c std::string to use for
-     * the external type for the data structure for the variable type object.
+     * @param variableTypeObjectExternalTypeInAlgebraicModelString The
+     * @c std::string to use for the external type for the data structure for
+     * the variable type object in an algebraic model.
      */
-    void setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString);
+    void setVariableTypeObjectExternalTypeInAlgebraicModelString(const std::string &variableTypeObjectExternalTypeInAlgebraicModelString);
+
+    /**
+     * @brief Get the @c std::string for the data structure for the variable
+     * type object in a differential model.
+     *
+     * Return the @c std::string for the data structure for the variable type
+     * object in a differential model.
+     *
+     * @return The @c std::string for the data structure for the variable type
+     * object in a differential model.
+     */
+    std::string variableTypeObjectInDifferentialModelString() const;
+
+    /**
+     * @brief Set the @c std::string for the data structure for the variable
+     * type object in a differential model.
+     *
+     * Set the @c std::string for the data structure for the variable
+     * type object in a differential model. To be useful, the string should
+     * contain the [OPTIONAL_TYPE] tag, which will be replaced with a type for
+     * the external variable type, if needed.
+     *
+     * @sa variableTypeObjectInDifferentialModelString
+     *
+     * @param variableTypeObjectInDifferentialModelString The @c std::string to
+     * use for the data structure for the variable type object in a differential
+     * model.
+     */
+    void setVariableTypeObjectInDifferentialModelString(const std::string &variableTypeObjectInDifferentialModelString);
+
+    /**
+     * @brief Get the @c std::string for the external type for the data
+     * structure for the variable type object in a differential model.
+     *
+     * Return the @c std::string for the external type for the data structure
+     * for the variable type object in a differential model.
+     *
+     * @sa setVariableTypeObjectInDifferentialModelString
+     *
+     * @return The @c std::string for the external type for the data structure
+     * for the variable type object in a differential model.
+     */
+    std::string variableTypeObjectExternalTypeInDifferentialModelString() const;
+
+    /**
+     * @brief Set the @c std::string for the external type for the data
+     * structure for the variable type object in a differential model.
+     *
+     * Set this @c std::string for the external type for the data structure for
+     * the variable type object in a differential model.
+     *
+     * @param variableTypeObjectExternalTypeInDifferentialModelString The
+     * @c std::string to use for the external type for the data structure for
+     * the variable type object in a differential model.
+     */
+    void setVariableTypeObjectExternalTypeInDifferentialModelString(const std::string &variableTypeObjectExternalTypeInDifferentialModelString);
+
+    /**
+     * @brief Get the @c std::string for the name of the variable of integration
+     * variable type.
+     *
+     * Return the @c std::string for the name of the variable of integration
+     * variable type that is used in a differential model.
+     *
+     * @return The @c std::string for the name of the variable of integration
+     * variable type.
+     */
+    std::string variableOfIntegrationVariableTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the variable of integration
+     * variable type.
+     *
+     * Set the @c std::string for the name of the variable of integration
+     * variable type that is used in a differential model.
+     *
+     * @param variableOfIntegrationVariableTypeString The @c std::string to use
+     * for the name of the variable of integration variable type.
+     */
+    void setVariableOfIntegrationVariableTypeString(const std::string &variableOfIntegrationVariableTypeString);
+
+    /**
+     * @brief Get the @c std::string for the name of the state variable type.
+     *
+     * Return the @c std::string for the name of the state variable type that is
+     * used in a differential model.
+     *
+     * @return The @c std::string for the name of the state variable type.
+     */
+    std::string stateVariableTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the state variable type.
+     *
+     * Set the @c std::string for the name of the state variable type that is
+     * used in a differential model.
+     *
+     * @param stateTypeString The @c std::string to use for the name of the
+     * state variable type.
+     */
+    void setStateVariableTypeString(const std::string &stateVariableTypeString);
 
     /**
      * @brief Get the @c std::string for the name of the constant variable type.
@@ -2662,33 +2764,6 @@ public:
      * structure for the variable information object.
      */
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
-
-    /**
-     * @brief Get the @c std::string for the data structure for the variable
-     * information (incl. its type) object.
-     *
-     * Return the @c std::string for the data structure for the variable
-     * information (incl. its type) object.
-     *
-     * @return The @c std::string for the data structure for the variable
-     * information (incl. its type) object.
-     */
-    std::string variableInfoWithTypeObjectString() const;
-
-    /**
-     * @brief Set the @c std::string for the data structure for the variable
-     * information (incl. its type) object.
-     *
-     * Set the @c std::string for the data structure for the variable
-     * information (incl. its type) object. To be useful, the string should
-     * contain the [NAME_SIZE], [UNITS_SIZE] and [COMPONENT_SIZE] tags, which
-     * will be replaced with the maximum size of a string for holding the name
-     * of a component, variable and units, respectively.
-     *
-     * @param variableInfoWithTypeObjectString The @c std::string to use for the
-     * data structure for the variable information (incl. its type) object.
-     */
-    void setVariableInfoWithTypeObjectString(const std::string &variableInfoWithTypeObjectString);
 
     /**
      * @brief Get the @c std::string for the interface of some information about
@@ -2865,32 +2940,6 @@ public:
      * an array for some information about a variable.
      */
     void setVariableInfoEntryString(const std::string &variableInfoEntryString);
-
-    /**
-     * @brief Get the @c std::string for an entry in an array for some
-     * information about a variable (incl. its type).
-     *
-     * Return the @c std::string for an entry in an array for some information
-     * about a variable (incl. its type).
-     *
-     * @return The @c std::string for an entry in an array for some information
-     * about a variable (incl. its type).
-     */
-    std::string variableInfoWithTypeEntryString() const;
-
-    /**
-     * @brief Set the @c std::string for an entry in an array for some
-     * information about a variable (incl. its type).
-     *
-     * Set the @c std::string for an entry in an array for some information
-     * about a variable (incl. its type). To be useful, the string should
-     * contain the [COMPONENT], [NAME] and [UNITS] tags, which will be replaced
-     * with the name of the component, name and units of a variable.
-     *
-     * @param variableInfoWithTypeEntryString The @c std::string to use for an
-     * entry in an array for some information about a variable (incl. its type).
-     */
-    void setVariableInfoWithTypeEntryString(const std::string &variableInfoWithTypeEntryString);
 
     /**
      * @brief Get the @c std::string for the name of the variable of

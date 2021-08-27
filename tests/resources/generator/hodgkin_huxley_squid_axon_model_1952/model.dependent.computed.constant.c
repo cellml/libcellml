@@ -11,16 +11,16 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 4;
 const size_t VARIABLE_COUNT = 18;
 
-const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
+const VariableInfo VOI_INFO = {"time", "millisecond", "environment", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"m", "dimensionless", "sodium_channel_m_gate"},
-    {"h", "dimensionless", "sodium_channel_h_gate"},
-    {"n", "dimensionless", "potassium_channel_n_gate"},
-    {"V", "millivolt", "membrane"}
+    {"m", "dimensionless", "sodium_channel_m_gate", STATE},
+    {"h", "dimensionless", "sodium_channel_h_gate", STATE},
+    {"n", "dimensionless", "potassium_channel_n_gate", STATE},
+    {"V", "millivolt", "membrane", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
     {"E_R", "millivolt", "membrane", EXTERNAL},
