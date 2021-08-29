@@ -25,6 +25,7 @@ if (EMSCRIPTEN)
 else ()
   find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
+  find_program(BUILDCACHE_EXE buildcache)
   if(WIN32)
     find_program(CLCACHE_EXE clcache)
   else()
@@ -77,6 +78,7 @@ else ()
   endif()
 
   mark_as_advanced(
+    BUILDCACHE_EXE
     CLANG_TIDY_EXE
     CLANG_FORMAT_EXE
     FIND_EXE
@@ -126,6 +128,10 @@ else()
     # Clear out GUI variable created in config search mode.
     unset(LibXml2_DIR CACHE)
   endif()
+endif()
+
+if(BUILDCACHE_EXE)
+  set(BUILDCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
 endif()
 
 if(WIN32)
