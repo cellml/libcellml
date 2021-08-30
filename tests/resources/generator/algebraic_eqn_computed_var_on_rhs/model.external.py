@@ -27,8 +27,8 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_constants(variables):
-    pass
+def initialise_variables(variables, external_variable):
+    variables[0] = external_variable(variables, 0)
 
 
 def compute_computed_constants(variables):

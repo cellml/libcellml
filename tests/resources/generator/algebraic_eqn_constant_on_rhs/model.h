@@ -27,6 +27,6 @@ extern const VariableInfo VARIABLE_INFO[];
 double * createVariablesArray();
 void deleteArray(double *array);
 
-void initialiseConstants(double *variables);
+void initialiseVariables(double *variables);
 void computeComputedConstants(double *variables);
 void computeVariables(double *variables);
