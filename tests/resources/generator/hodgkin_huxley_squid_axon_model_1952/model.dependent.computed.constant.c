@@ -56,7 +56,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseStatesAndConstants(double *states, double *variables)
+void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)
 {
     variables[0] = 0.3;
     variables[1] = 1.0;
@@ -66,6 +66,8 @@ void initialiseStatesAndConstants(double *states, double *variables)
     states[1] = 0.6;
     states[2] = 0.325;
     states[3] = 0.0;
+    variables[14] = externalVariable(states, variables, 14);
+    variables[2] = externalVariable(states, variables, 2);
 }
 
 void computeComputedConstants(double *variables)
@@ -84,8 +86,8 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
     variables[17] = 0.125*exp(states[3]/80.0);
     rates[2] = variables[16]*(1.0-states[2])-variables[17]*states[2];
     variables[5] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    variables[14] = externalVariable(voi, states, rates, variables, 14);
-    variables[2] = externalVariable(voi, states, rates, variables, 2);
+    variables[14] = externalVariable(voi, states, variables, 14);
+    variables[2] = externalVariable(voi, states, variables, 2);
     variables[6] = variables[2]-10.613;
     variables[7] = variables[0]*(states[3]-variables[6]);
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14]);
