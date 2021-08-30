@@ -25,8 +25,9 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseConstants(double *variables)
+void initialiseVariables(double *variables, ExternalVariable externalVariable)
 {
+    variables[0] = externalVariable(variables, 0);
 }
 
 void computeComputedConstants(double *variables)
