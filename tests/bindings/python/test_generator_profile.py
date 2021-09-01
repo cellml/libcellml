@@ -831,9 +831,24 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual('void initialiseVariables(double *variables)\n{\n[CODE]}\n',
-                         g.implementationInitialiseVariablesMethodString())
-        g.setImplementationInitialiseVariablesMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString())
+                         g.implementationInitialiseVariablesMethodString(False, False))
+        g.setImplementationInitialiseVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(False, False))
+
+        self.assertEqual('void initialiseVariables(double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+                         g.implementationInitialiseVariablesMethodString(False, True))
+        g.setImplementationInitialiseVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(False, True))
+
+        self.assertEqual('void initialiseVariables(double *states, double *variables)\n{\n[CODE]}\n',
+                         g.implementationInitialiseVariablesMethodString(True, False))
+        g.setImplementationInitialiseVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True, False))
+
+        self.assertEqual('void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+                         g.implementationInitialiseVariablesMethodString(True, True))
+        g.setImplementationInitialiseVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True, True))
 
     def test_implementation_libcellml_version_string(self):
         from libcellml import GeneratorProfile
@@ -1001,9 +1016,24 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual('void initialiseVariables(double *variables);\n',
-                         g.interfaceInitialiseVariablesMethodString())
-        g.setInterfaceInitialiseVariablesMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString())
+                         g.interfaceInitialiseVariablesMethodString(False, False))
+        g.setInterfaceInitialiseVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(False, False))
+
+        self.assertEqual('void initialiseVariables(double *variables, ExternalVariable externalVariable);\n',
+                         g.interfaceInitialiseVariablesMethodString(False, True))
+        g.setInterfaceInitialiseVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(False, True))
+
+        self.assertEqual('void initialiseVariables(double *states, double *variables);\n',
+                         g.interfaceInitialiseVariablesMethodString(True, False))
+        g.setInterfaceInitialiseVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True, False))
+
+        self.assertEqual('void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable);\n',
+                         g.interfaceInitialiseVariablesMethodString(True, True))
+        g.setInterfaceInitialiseVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True, True))
 
     def test_interface_libcellml_version_string(self):
         from libcellml import GeneratorProfile
