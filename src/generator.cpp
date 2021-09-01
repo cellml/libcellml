@@ -1941,7 +1941,7 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
     mCode += interfaceComputeModelMethodsCode;
 }
 
-void Generator::GeneratorImpl::addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     auto implementationInitialiseVariablesMethodString = mLockedProfile->implementationInitialiseVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
                                                                                                                        mLockedModel->hasExternalVariables());
@@ -2193,12 +2193,12 @@ std::string Generator::implementationCode() const
     mPimpl->addImplementationCreateVariablesArrayMethodCode();
     mPimpl->addImplementationDeleteArrayMethodCode();
 
-    // Add code for the implementation to initialise our states and constants.
+    // Add code for the implementation to initialise our variables.
 
     auto equations = mPimpl->mLockedModel->equations();
     std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
 
-    mPimpl->addImplementationInitialiseStatesAndConstantsMethodCode(remainingEquations);
+    mPimpl->addImplementationInitialiseVariablesMethodCode(remainingEquations);
 
     // Add code for the implementation to compute our computed constants.
 

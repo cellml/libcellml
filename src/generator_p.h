@@ -128,7 +128,7 @@ struct Generator::GeneratorImpl
                                      bool onlyStateRateBasedEquations = false) const;
 
     void addInterfaceComputeModelMethodsCode();
-    void addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
