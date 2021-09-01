@@ -705,18 +705,6 @@ describe("GeneratorProfile tests", () => {
     x.setVariableTypeObjectExternalTypeInAlgebraicModelString("something")
     expect(x.variableTypeObjectExternalTypeInAlgebraicModelString()).toBe("something")
   });
-  test("Checking GeneratorProfile.variableTypeObjectInDifferentialModelString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setVariableTypeObjectInDifferentialModelString("something")
-    expect(x.variableTypeObjectInDifferentialModelString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.variableTypeObjectExternalTypeInDifferentialModelString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setVariableTypeObjectExternalTypeInDifferentialModelString("something")
-    expect(x.variableTypeObjectExternalTypeInDifferentialModelString()).toBe("something")
-  });
   test("Checking GeneratorProfile.variableOfIntegrationVariableTypeString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
@@ -831,23 +819,11 @@ describe("GeneratorProfile tests", () => {
     x.setExternalVariableMethodTypeDefinitionInAlgebraicModelString("something")
     expect(x.externalVariableMethodTypeDefinitionInAlgebraicModelString()).toBe("something")
   });
-  test("Checking GeneratorProfile.externalVariableMethodTypeDefinitionInDifferentialModelString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setExternalVariableMethodTypeDefinitionInDifferentialModelString("something")
-    expect(x.externalVariableMethodTypeDefinitionInDifferentialModelString()).toBe("something")
-  });
   test("Checking GeneratorProfile.externalVariableMethodCallInAlgebraicModelString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
     x.setExternalVariableMethodCallInAlgebraicModelString("something")
     expect(x.externalVariableMethodCallInAlgebraicModelString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.externalVariableMethodCallInDifferentialModelString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setExternalVariableMethodCallInDifferentialModelString("something")
-    expect(x.externalVariableMethodCallInDifferentialModelString()).toBe("something")
   });
   test("Checking GeneratorProfile.interfaceCreateStatesArrayMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
@@ -932,18 +908,6 @@ describe("GeneratorProfile tests", () => {
 
     x.setImplementationComputeVariablesMethodInAlgebraicModelString("something")
     expect(x.implementationComputeVariablesMethodInAlgebraicModelString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.interfaceComputeVariablesMethodInDifferentialModelString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setInterfaceComputeVariablesMethodInDifferentialModelString("something")
-    expect(x.interfaceComputeVariablesMethodInDifferentialModelString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.implementationComputeVariablesMethodInDifferentialModelString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setImplementationComputeVariablesMethodInDifferentialModelString("something")
-    expect(x.implementationComputeVariablesMethodInDifferentialModelString()).toBe("something")
   });
   test("Checking GeneratorProfile.emptyMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
