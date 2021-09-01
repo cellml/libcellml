@@ -915,8 +915,11 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.implementationComputeRatesMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
-    x.setImplementationComputeRatesMethodString("something")
-    expect(x.implementationComputeRatesMethodString()).toBe("something")
+    x.setImplementationComputeRatesMethodString(false, "something")
+    expect(x.implementationComputeRatesMethodString(false)).toBe("something")
+
+    x.setImplementationComputeRatesMethodString(true, "something")
+    expect(x.implementationComputeRatesMethodString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.interfaceComputeVariablesMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
@@ -936,8 +939,17 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.implementationComputeVariablesMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
-    x.setImplementationComputeVariablesMethodString("something")
-    expect(x.implementationComputeVariablesMethodString()).toBe("something")
+    x.setImplementationComputeVariablesMethodString(false, false, "something")
+    expect(x.implementationComputeVariablesMethodString(false, false)).toBe("something")
+
+    x.setImplementationComputeVariablesMethodString(false, true, "something")
+    expect(x.implementationComputeVariablesMethodString(false, true)).toBe("something")
+
+    x.setImplementationComputeVariablesMethodString(true, false, "something")
+    expect(x.implementationComputeVariablesMethodString(true, false)).toBe("something")
+
+    x.setImplementationComputeVariablesMethodString(true, true, "something")
+    expect(x.implementationComputeVariablesMethodString(true, true)).toBe("something")
   });
   test("Checking GeneratorProfile.emptyMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
