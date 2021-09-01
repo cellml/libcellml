@@ -2953,10 +2953,14 @@ public:
      * Return the @c std::string for the type definition of an external variable
      * method.
      *
+     * @param forDifferentialModel Whether the type definition of an external
+     * variable method is for a differential model, as opposed to an algebraic
+     * model.
+     *
      * @return The @c std::string for the type definition of an external
      * variable method.
      */
-    std::string externalVariableMethodTypeDefinitionString() const;
+    std::string externalVariableMethodTypeDefinitionString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the type definition of an external
@@ -2965,10 +2969,14 @@ public:
      * Set this @c std::string for the type definition of an external variable
      * method.
      *
+     * @param forDifferentialModel Whether the type definition of an external
+     * variable method is for a differential model, as opposed to an algebraic
+     * model.
      * @param externalVariableMethodTypeDefinitionString The @c std::string to
      * use for the type definition of an external variable method.
      */
-    void setExternalVariableMethodTypeDefinitionString(const std::string &externalVariableMethodTypeDefinitionString);
+    void setExternalVariableMethodTypeDefinitionString(bool forDifferentialModel,
+                                                       const std::string &externalVariableMethodTypeDefinitionString);
 
     /**
      * @brief Get the @c std::string for the call to the external variable
