@@ -221,7 +221,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mExternalVariableMethodTypeDefinitionFamString;
     std::string mExternalVariableMethodTypeDefinitionFdmString;
 
-    std::string mExternalVariableMethodCallString;
+    std::string mExternalVariableMethodCallFamString;
+    std::string mExternalVariableMethodCallFdmString;
 
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
@@ -558,7 +559,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
         mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *variables, size_t index);\n";
 
-        mExternalVariableMethodCallString = "externalVariable(variables, [INDEX])";
+        mExternalVariableMethodCallFamString = "externalVariable(variables, [INDEX])";
+        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
@@ -926,7 +928,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodTypeDefinitionFamString = "";
         mExternalVariableMethodTypeDefinitionFdmString = "";
 
-        mExternalVariableMethodCallString = "external_variable(variables, [INDEX])";
+        mExternalVariableMethodCallFamString = "external_variable(variables, [INDEX])";
+        mExternalVariableMethodCallFdmString = "external_variable(voi, states, variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
@@ -2386,14 +2389,23 @@ void GeneratorProfile::setExternalVariableMethodTypeDefinitionString(bool forDif
     }
 }
 
-std::string GeneratorProfile::externalVariableMethodCallString() const
+std::string GeneratorProfile::externalVariableMethodCallString(bool forDifferentialModel) const
 {
-    return mPimpl->mExternalVariableMethodCallString;
+    if (forDifferentialModel) {
+        return mPimpl->mExternalVariableMethodCallFdmString;
+    }
+
+    return mPimpl->mExternalVariableMethodCallFamString;
 }
 
-void GeneratorProfile::setExternalVariableMethodCallString(const std::string &externalVariableMethodCallString)
+void GeneratorProfile::setExternalVariableMethodCallString(bool forDifferentialModel,
+                                                           const std::string &externalVariableMethodCallString)
 {
-    mPimpl->mExternalVariableMethodCallString = externalVariableMethodCallString;
+    if (forDifferentialModel) {
+        mPimpl->mExternalVariableMethodCallFdmString = externalVariableMethodCallString;
+    } else {
+        mPimpl->mExternalVariableMethodCallFamString = externalVariableMethodCallString;
+    }
 }
 
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const

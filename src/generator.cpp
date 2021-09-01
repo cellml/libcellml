@@ -403,7 +403,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->externalVariableMethodTypeDefinitionString(false)
                        + mLockedProfile->externalVariableMethodTypeDefinitionString(true);
 
-    profileContents += mLockedProfile->externalVariableMethodCallString();
+    profileContents += mLockedProfile->externalVariableMethodCallString(false)
+                       + mLockedProfile->externalVariableMethodCallString(true);
 
     profileContents += mLockedProfile->interfaceCreateStatesArrayMethodString()
                        + mLockedProfile->implementationCreateStatesArrayMethodString();
@@ -466,8 +467,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "71f0b5f859dd866c1678c6bfceba74d4fa9bc36f" :
-               sha1(profileContents) != "54428bbd08ed72a979f60c68cab5b3c173e2b521";
+               sha1(profileContents) != "686eae8d3255407e3664588134f11598e32ef610" :
+               sha1(profileContents) != "e88e0ea3c681e8d55fa8b3711ee7900b5648a9c5";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -1892,9 +1893,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             index << equation->variable()->index();
 
             res += mLockedProfile->indentString() + generateVariableNameCode(equation->variable()->variable()) + " = "
-                   + replace((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                                 mLockedProfile->externalVariableMethodCallString() :
-                                 mLockedProfile->externalVariableMethodCallString(),
+                   + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
                              "[INDEX]", index.str())
                    + mLockedProfile->commandSeparatorString() + "\n";
         } else {

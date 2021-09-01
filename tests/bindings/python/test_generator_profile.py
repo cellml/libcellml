@@ -1598,9 +1598,14 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual('externalVariable(variables, [INDEX])',
-                         g.externalVariableMethodCallString())
-        g.setExternalVariableMethodCallString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString())
+                         g.externalVariableMethodCallString(False))
+        g.setExternalVariableMethodCallString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(False))
+
+        self.assertEqual('externalVariable(voi, states, variables, [INDEX])',
+                         g.externalVariableMethodCallString(True))
+        g.setExternalVariableMethodCallString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(True))
 
     def test_voi_string(self):
         from libcellml import GeneratorProfile

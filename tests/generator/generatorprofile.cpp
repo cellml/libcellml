@@ -353,7 +353,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("typedef double (* ExternalVariable)(double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(false));
     EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionString(true));
 
-    EXPECT_EQ("externalVariable(variables, [INDEX])", generatorProfile->externalVariableMethodCallString());
+    EXPECT_EQ("externalVariable(variables, [INDEX])", generatorProfile->externalVariableMethodCallString(false));
+    EXPECT_EQ("externalVariable(voi, states, variables, [INDEX])", generatorProfile->externalVariableMethodCallString(true));
 
     EXPECT_EQ("double * createStatesArray();\n",
               generatorProfile->interfaceCreateStatesArrayMethodString());
@@ -827,7 +828,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setExternalVariableMethodTypeDefinitionString(false, value);
     generatorProfile->setExternalVariableMethodTypeDefinitionString(true, value);
 
-    generatorProfile->setExternalVariableMethodCallString(value);
+    generatorProfile->setExternalVariableMethodCallString(false, value);
+    generatorProfile->setExternalVariableMethodCallString(true, value);
 
     generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
     generatorProfile->setImplementationCreateStatesArrayMethodString(value);
@@ -941,7 +943,8 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionString(false));
     EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionString(true));
 
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodCallString());
+    EXPECT_EQ(value, generatorProfile->externalVariableMethodCallString(false));
+    EXPECT_EQ(value, generatorProfile->externalVariableMethodCallString(true));
 
     EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
