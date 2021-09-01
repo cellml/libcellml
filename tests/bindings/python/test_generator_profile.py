@@ -768,9 +768,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         self.assertEqual(
             'void computeRates(double voi, double *states, double *rates, double *variables)\n{\n[CODE]}\n',
-            g.implementationComputeRatesMethodString())
-        g.setImplementationComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString())
+            g.implementationComputeRatesMethodString(False))
+        g.setImplementationComputeRatesMethodString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString(False))
+
+        self.assertEqual(
+            'void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            g.implementationComputeRatesMethodString(True))
+        g.setImplementationComputeRatesMethodString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString(True))
 
     def test_implementation_compute_variables_method_string(self):
         from libcellml import GeneratorProfile
@@ -779,9 +785,27 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         self.assertEqual(
             'void computeVariables(double *variables)\n{\n[CODE]}\n',
-            g.implementationComputeVariablesMethodString())
-        g.setImplementationComputeVariablesMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString())
+            g.implementationComputeVariablesMethodString(False, False))
+        g.setImplementationComputeVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(False, False))
+
+        self.assertEqual(
+            'void computeVariables(double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            g.implementationComputeVariablesMethodString(False, True))
+        g.setImplementationComputeVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(False, True))
+
+        self.assertEqual(
+            'void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n[CODE]}\n',
+            g.implementationComputeVariablesMethodString(True, False))
+        g.setImplementationComputeVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(True, False))
+
+        self.assertEqual(
+            'void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            g.implementationComputeVariablesMethodString(True, True))
+        g.setImplementationComputeVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(True, True))
 
     def test_implementation_create_states_array_method_string(self):
         from libcellml import GeneratorProfile
@@ -955,7 +979,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString(False))
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *variables);\n',
+            'void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n',
             g.interfaceComputeRatesMethodString(True))
         g.setInterfaceComputeRatesMethodString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString(True))
