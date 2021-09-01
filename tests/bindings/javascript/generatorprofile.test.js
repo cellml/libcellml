@@ -696,8 +696,14 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.variableTypeObjectString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
-    x.setVariableTypeObjectString("something")
-    expect(x.variableTypeObjectString()).toBe("something")
+    x.setVariableTypeObjectString(false, false, "something")
+    expect(x.variableTypeObjectString(false, false)).toBe("something")
+    x.setVariableTypeObjectString(false, true, "something")
+    expect(x.variableTypeObjectString(false, true)).toBe("something")
+    x.setVariableTypeObjectString(true, false, "something")
+    expect(x.variableTypeObjectString(true, false)).toBe("something")
+    x.setVariableTypeObjectString(true, true, "something")
+    expect(x.variableTypeObjectString(true, true)).toBe("something")
   });
   test("Checking GeneratorProfile.variableOfIntegrationVariableTypeString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)

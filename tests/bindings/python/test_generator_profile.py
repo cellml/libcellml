@@ -1466,9 +1466,27 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         self.assertEqual(
             'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n',
-            g.variableTypeObjectString())
-        g.setVariableTypeObjectString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString())
+            g.variableTypeObjectString(False, False))
+        g.setVariableTypeObjectString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(False, False))
+
+        self.assertEqual(
+            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC,\n    EXTERNAL\n} VariableType;\n',
+            g.variableTypeObjectString(False, True))
+        g.setVariableTypeObjectString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(False, True))
+
+        self.assertEqual(
+            'typedef enum {\n    VARIABLE_OF_INTEGRATION,\n    STATE,\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n',
+            g.variableTypeObjectString(True, False))
+        g.setVariableTypeObjectString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(True, False))
+
+        self.assertEqual(
+            'typedef enum {\n    VARIABLE_OF_INTEGRATION,\n    STATE,\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC,\n    EXTERNAL\n} VariableType;\n',
+            g.variableTypeObjectString(True, True))
+        g.setVariableTypeObjectString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(True, True))
 
     def test_variables_array_string(self):
         from libcellml import GeneratorProfile
