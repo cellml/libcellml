@@ -287,7 +287,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "    ALGEBRAIC[OPTIONAL_TYPE]\n"
               "} VariableType;\n",
               generatorProfile->variableTypeObjectString());
-    EXPECT_EQ(",\n    EXTERNAL", generatorProfile->variableTypeObjectExternalTypeString());
 
     EXPECT_EQ("VARIABLE_OF_INTEGRATION", generatorProfile->variableOfIntegrationVariableTypeString());
     EXPECT_EQ("STATE", generatorProfile->stateVariableTypeString());
@@ -713,7 +712,6 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setImplementationVariableCountString(value);
 
     generatorProfile->setVariableTypeObjectString(value);
-    generatorProfile->setVariableTypeObjectExternalTypeString(value);
 
     generatorProfile->setVariableOfIntegrationVariableTypeString(value);
     generatorProfile->setStateVariableTypeString(value);
@@ -802,7 +800,6 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->implementationVariableCountString());
 
     EXPECT_EQ(value, generatorProfile->variableTypeObjectString());
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectExternalTypeString());
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationVariableTypeString());
     EXPECT_EQ(value, generatorProfile->stateVariableTypeString());

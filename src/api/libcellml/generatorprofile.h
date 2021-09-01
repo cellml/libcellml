@@ -2526,32 +2526,6 @@ public:
     void setVariableTypeObjectString(const std::string &variableTypeObjectString);
 
     /**
-     * @brief Get the @c std::string for the external type for the data
-     * structure for the variable type object.
-     *
-     * Return the @c std::string for the external type for the data structure
-     * for the variable type object.
-     *
-     * @sa setVariableTypeObjectString
-     *
-     * @return The @c std::string for the external type for the data structure
-     * for the variable type object.
-     */
-    std::string variableTypeObjectExternalTypeString() const;
-
-    /**
-     * @brief Set the @c std::string for the external type for the data
-     * structure for the variable type object.
-     *
-     * Set this @c std::string for the external type for the data structure for
-     * the variable type object.
-     *
-     * @param variableTypeObjectExternalTypeString The @c std::string to use for
-     * the external type for the data structure for the variable type object.
-     */
-    void setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString);
-
-    /**
      * @brief Get the @c std::string for the name of the variable of integration
      * variable type.
      *

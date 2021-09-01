@@ -699,12 +699,6 @@ describe("GeneratorProfile tests", () => {
     x.setVariableTypeObjectString("something")
     expect(x.variableTypeObjectString()).toBe("something")
   });
-  test("Checking GeneratorProfile.variableTypeObjectExternalTypeString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setVariableTypeObjectExternalTypeString("something")
-    expect(x.variableTypeObjectExternalTypeString()).toBe("something")
-  });
   test("Checking GeneratorProfile.variableOfIntegrationVariableTypeString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 

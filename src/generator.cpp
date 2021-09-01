@@ -370,7 +370,6 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mLockedProfile->implementationVariableCountString();
 
     profileContents += mLockedProfile->variableTypeObjectString();
-    profileContents += mLockedProfile->variableTypeObjectExternalTypeString();
 
     profileContents += mLockedProfile->variableOfIntegrationVariableTypeString()
                        + mLockedProfile->stateVariableTypeString()
@@ -560,20 +559,15 @@ void Generator::GeneratorImpl::addVariableTypeObjectCode()
           && !mLockedProfile->variableTypeObjectString().empty())
          || ((mLockedModel->type() == AnalyserModel::Type::ODE)
              && !mLockedProfile->variableTypeObjectString().empty()))
-        && ((mLockedModel->hasExternalVariables()
-             && (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-                  && !mLockedProfile->variableTypeObjectExternalTypeString().empty())
-                 || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-                     && !mLockedProfile->variableTypeObjectExternalTypeString().empty())))
+        && (mLockedModel->hasExternalVariables()
             || !mLockedModel->hasExternalVariables())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
 
-        mCode += replace((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                             mLockedProfile->variableTypeObjectString() :
-                             mLockedProfile->variableTypeObjectString(),
-                         "[OPTIONAL_TYPE]", mLockedModel->hasExternalVariables() ? (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ? mLockedProfile->variableTypeObjectExternalTypeString() : mLockedProfile->variableTypeObjectExternalTypeString() : "");
+        mCode += (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
+                     mLockedProfile->variableTypeObjectString() :
+                     mLockedProfile->variableTypeObjectString();
     }
 }
 

@@ -2066,7 +2066,6 @@ TEST(Generator, coverage)
     profile->setImplementationVariableCountString("");
 
     profile->setVariableTypeObjectString("");
-    profile->setVariableTypeObjectExternalTypeString("");
 
     profile->setVariableOfIntegrationVariableTypeString("");
     profile->setStateVariableTypeString("");
@@ -2138,7 +2137,6 @@ TEST(Generator, coverage)
     profile->setImplementationVariableCountString("");
 
     profile->setVariableTypeObjectString("");
-    profile->setVariableTypeObjectExternalTypeString("");
 
     profile->setVariableOfIntegrationVariableTypeString("");
     profile->setStateVariableTypeString("");
