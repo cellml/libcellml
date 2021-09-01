@@ -767,7 +767,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n{\n[CODE]}\n',
+            'void computeRates(double voi, double *states, double *rates, double *variables)\n{\n[CODE]}\n',
             g.implementationComputeRatesMethodString())
         g.setImplementationComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString())
@@ -778,7 +778,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeVariables(double *variables[OPTIONAL_PARAMETER])\n{\n[CODE]}\n',
+            'void computeVariables(double *variables)\n{\n[CODE]}\n',
             g.implementationComputeVariablesMethodString())
         g.setImplementationComputeVariablesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString())
@@ -934,7 +934,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n',
+            'void computeRates(double voi, double *states, double *rates, double *variables);\n',
             g.interfaceComputeRatesMethodString())
         g.setInterfaceComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString())
@@ -945,7 +945,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeVariables(double *variables[OPTIONAL_PARAMETER]);\n',
+            'void computeVariables(double *variables);\n',
             g.interfaceComputeVariablesMethodString())
         g.setInterfaceComputeVariablesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString())

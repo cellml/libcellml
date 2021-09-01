@@ -370,17 +370,17 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationComputeComputedConstantsMethodString());
 
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n",
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables);\n",
               generatorProfile->interfaceComputeRatesMethodString());
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n"
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeRatesMethodString());
 
-    EXPECT_EQ("void computeVariables(double *variables[OPTIONAL_PARAMETER]);\n",
+    EXPECT_EQ("void computeVariables(double *variables);\n",
               generatorProfile->interfaceComputeVariablesMethodString());
-    EXPECT_EQ("void computeVariables(double *variables[OPTIONAL_PARAMETER])\n"
+    EXPECT_EQ("void computeVariables(double *variables)\n"
               "{\n"
               "[CODE]"
               "}\n",

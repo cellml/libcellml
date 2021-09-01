@@ -543,13 +543,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                               "[CODE]"
                                                               "}\n";
 
-        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n";
-        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n{\n"
+        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables);\n";
+        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
                                                   "[CODE]"
                                                   "}\n";
 
-        mInterfaceComputeVariablesMethodString = "void computeVariables(double *variables[OPTIONAL_PARAMETER]);\n";
-        mImplementationComputeVariablesMethodString = "void computeVariables(double *variables[OPTIONAL_PARAMETER])\n"
+        mInterfaceComputeVariablesMethodString = "void computeVariables(double *variables);\n";
+        mImplementationComputeVariablesMethodString = "void computeVariables(double *variables)\n"
                                                       "{\n"
                                                       "[CODE]"
                                                       "}\n";
@@ -840,12 +840,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeRatesMethodString = "";
         mImplementationComputeRatesMethodString = "\n"
-                                                  "def compute_rates(voi, states, rates, variables[OPTIONAL_PARAMETER]):\n"
+                                                  "def compute_rates(voi, states, rates, variables):\n"
                                                   "[CODE]";
 
         mInterfaceComputeVariablesMethodString = "";
         mImplementationComputeVariablesMethodString = "\n"
-                                                      "def compute_variables(variables[OPTIONAL_PARAMETER]):\n"
+                                                      "def compute_variables(variables):\n"
                                                       "[CODE]";
 
         mEmptyMethodString = "pass\n";
