@@ -3318,57 +3318,6 @@ public:
     void setImplementationInitialiseConstantsMethodString(const std::string &implementationInitialiseConstantsMethodString);
 
     /**
-     * @brief Get the @c std::string for the interface to initialise states and
-     * constants.
-     *
-     * Return the @c std::string for the interface to initialise states and
-     * constants.
-     *
-     * @return The @c std::string for the interface to initialise states and
-     * constants.
-     */
-    std::string interfaceInitialiseStatesAndConstantsMethodString() const;
-
-    /**
-     * @brief Set the @c std::string for the interface to initialise states and
-     * constants.
-     *
-     * Set the @c std::string for the interface to initialise states and
-     * constants.
-     *
-     * @param interfaceInitialiseStatesAndConstantsMethodString The
-     * @c std::string to use for the interface to initialise states and
-     * constants.
-     */
-    void setInterfaceInitialiseStatesAndConstantsMethodString(const std::string &interfaceInitialiseStatesAndConstantsMethodString);
-
-    /**
-     * @brief Get the @c std::string for the implementation to initialise states
-     * and constants.
-     *
-     * Return the @c std::string for the implementation to initialise states and
-     * constants.
-     *
-     * @return The @c std::string for the implementation to initialise states
-     * and constants.
-     */
-    std::string implementationInitialiseStatesAndConstantsMethodString() const;
-
-    /**
-     * @brief Set the @c std::string for the implementation to initialise states
-     * and constants.
-     *
-     * Set the @c std::string for the implementation to initialise states and
-     * constants. To be useful, the string should contain the [CODE] tag, which
-     * will be replaced with some code to initialise states and constants.
-     *
-     * @param implementationInitialiseStatesAndConstantsMethodString The
-     * @c std::string to use for the implementation to initialise states and
-     * constants.
-     */
-    void setImplementationInitialiseStatesAndConstantsMethodString(const std::string &implementationInitialiseStatesAndConstantsMethodString);
-
-    /**
      * @brief Get the @c std::string for the interface to compute computed
      * constants.
      *

@@ -903,18 +903,6 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationInitialiseConstantsMethodString("something")
     expect(x.implementationInitialiseConstantsMethodString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceInitialiseStatesAndConstantsMethodString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setInterfaceInitialiseStatesAndConstantsMethodString("something")
-    expect(x.interfaceInitialiseStatesAndConstantsMethodString()).toBe("something")
-  });
-  test("Checking GeneratorProfile.implementationInitialiseStatesAndConstantsMethodString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setImplementationInitialiseStatesAndConstantsMethodString("something")
-    expect(x.implementationInitialiseStatesAndConstantsMethodString()).toBe("something")
-  });
   test("Checking GeneratorProfile.interfaceComputeComputedConstantsMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 

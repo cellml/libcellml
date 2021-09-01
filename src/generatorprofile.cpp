@@ -236,9 +236,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceInitialiseConstantsMethodString;
     std::string mImplementationInitialiseConstantsMethodString;
 
-    std::string mInterfaceInitialiseStatesAndConstantsMethodString;
-    std::string mImplementationInitialiseStatesAndConstantsMethodString;
-
     std::string mInterfaceComputeComputedConstantsMethodString;
     std::string mImplementationComputeComputedConstantsMethodString;
 
@@ -559,12 +556,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                          "[CODE]"
                                                          "}\n";
 
-        mInterfaceInitialiseStatesAndConstantsMethodString = "void initialiseStatesAndConstants(double *states, double *variables);\n";
-        mImplementationInitialiseStatesAndConstantsMethodString = "void initialiseStatesAndConstants(double *states, double *variables)\n"
-                                                                  "{\n"
-                                                                  "[CODE]"
-                                                                  "}\n";
-
         mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables);\n";
         mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n"
                                                               "{\n"
@@ -878,11 +869,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mImplementationInitialiseConstantsMethodString = "\n"
                                                          "def initialise_constants(variables):\n"
                                                          "[CODE]";
-
-        mInterfaceInitialiseStatesAndConstantsMethodString = "";
-        mImplementationInitialiseStatesAndConstantsMethodString = "\n"
-                                                                  "def initialise_states_and_constants(states, variables):\n"
-                                                                  "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
         mImplementationComputeComputedConstantsMethodString = "\n"
@@ -2406,26 +2392,6 @@ std::string GeneratorProfile::implementationInitialiseConstantsMethodString() co
 void GeneratorProfile::setImplementationInitialiseConstantsMethodString(const std::string &implementationInitialiseConstantsMethodString)
 {
     mPimpl->mImplementationInitialiseConstantsMethodString = implementationInitialiseConstantsMethodString;
-}
-
-std::string GeneratorProfile::interfaceInitialiseStatesAndConstantsMethodString() const
-{
-    return mPimpl->mInterfaceInitialiseStatesAndConstantsMethodString;
-}
-
-void GeneratorProfile::setInterfaceInitialiseStatesAndConstantsMethodString(const std::string &interfaceInitialiseStatesAndConstantsMethodString)
-{
-    mPimpl->mInterfaceInitialiseStatesAndConstantsMethodString = interfaceInitialiseStatesAndConstantsMethodString;
-}
-
-std::string GeneratorProfile::implementationInitialiseStatesAndConstantsMethodString() const
-{
-    return mPimpl->mImplementationInitialiseStatesAndConstantsMethodString;
-}
-
-void GeneratorProfile::setImplementationInitialiseStatesAndConstantsMethodString(const std::string &implementationInitialiseStatesAndConstantsMethodString)
-{
-    mPimpl->mImplementationInitialiseStatesAndConstantsMethodString = implementationInitialiseStatesAndConstantsMethodString;
 }
 
 std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString() const

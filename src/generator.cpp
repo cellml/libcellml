@@ -418,9 +418,6 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->interfaceInitialiseConstantsMethodString()
                        + mLockedProfile->implementationInitialiseConstantsMethodString();
 
-    profileContents += mLockedProfile->interfaceInitialiseStatesAndConstantsMethodString()
-                       + mLockedProfile->implementationInitialiseStatesAndConstantsMethodString();
-
     profileContents += mLockedProfile->interfaceComputeComputedConstantsMethodString()
                        + mLockedProfile->implementationComputeComputedConstantsMethodString();
 
