@@ -286,7 +286,31 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "    COMPUTED_CONSTANT,\n"
               "    ALGEBRAIC\n"
               "} VariableType;\n",
-              generatorProfile->variableTypeObjectString());
+              generatorProfile->variableTypeObjectString(false, false));
+    EXPECT_EQ("typedef enum {\n"
+              "    CONSTANT,\n"
+              "    COMPUTED_CONSTANT,\n"
+              "    ALGEBRAIC,\n"
+              "    EXTERNAL\n"
+              "} VariableType;\n",
+              generatorProfile->variableTypeObjectString(false, true));
+    EXPECT_EQ("typedef enum {\n"
+              "    VARIABLE_OF_INTEGRATION,\n"
+              "    STATE,\n"
+              "    CONSTANT,\n"
+              "    COMPUTED_CONSTANT,\n"
+              "    ALGEBRAIC\n"
+              "} VariableType;\n",
+              generatorProfile->variableTypeObjectString(true, false));
+    EXPECT_EQ("typedef enum {\n"
+              "    VARIABLE_OF_INTEGRATION,\n"
+              "    STATE,\n"
+              "    CONSTANT,\n"
+              "    COMPUTED_CONSTANT,\n"
+              "    ALGEBRAIC,\n"
+              "    EXTERNAL\n"
+              "} VariableType;\n",
+              generatorProfile->variableTypeObjectString(true, true));
 
     EXPECT_EQ("VARIABLE_OF_INTEGRATION", generatorProfile->variableOfIntegrationVariableTypeString());
     EXPECT_EQ("STATE", generatorProfile->stateVariableTypeString());
@@ -711,7 +735,10 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceVariableCountString(value);
     generatorProfile->setImplementationVariableCountString(value);
 
-    generatorProfile->setVariableTypeObjectString(value);
+    generatorProfile->setVariableTypeObjectString(false, false, value);
+    generatorProfile->setVariableTypeObjectString(false, true, value);
+    generatorProfile->setVariableTypeObjectString(true, false, value);
+    generatorProfile->setVariableTypeObjectString(true, true, value);
 
     generatorProfile->setVariableOfIntegrationVariableTypeString(value);
     generatorProfile->setStateVariableTypeString(value);
@@ -799,7 +826,10 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceVariableCountString());
     EXPECT_EQ(value, generatorProfile->implementationVariableCountString());
 
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectString());
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectString(false, false));
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectString(false, true));
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectString(true, false));
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectString(true, true));
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationVariableTypeString());
     EXPECT_EQ(value, generatorProfile->stateVariableTypeString());
