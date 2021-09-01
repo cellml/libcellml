@@ -122,7 +122,7 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value) const;
     std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
-    std::string generateInitializationCode(const AnalyserVariablePtr &variable) const;
+    std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false) const;
