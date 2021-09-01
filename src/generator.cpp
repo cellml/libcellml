@@ -412,8 +412,17 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->interfaceDeleteArrayMethodString()
                        + mLockedProfile->implementationDeleteArrayMethodString();
 
-    profileContents += mLockedProfile->interfaceInitialiseVariablesMethodString()
-                       + mLockedProfile->implementationInitialiseVariablesMethodString();
+    profileContents += mLockedProfile->interfaceInitialiseVariablesMethodString(false, false)
+                       + mLockedProfile->implementationInitialiseVariablesMethodString(false, false);
+
+    profileContents += mLockedProfile->interfaceInitialiseVariablesMethodString(false, true)
+                       + mLockedProfile->implementationInitialiseVariablesMethodString(false, true);
+
+    profileContents += mLockedProfile->interfaceInitialiseVariablesMethodString(true, false)
+                       + mLockedProfile->implementationInitialiseVariablesMethodString(true, false);
+
+    profileContents += mLockedProfile->interfaceInitialiseVariablesMethodString(true, true)
+                       + mLockedProfile->implementationInitialiseVariablesMethodString(true, true);
 
     profileContents += mLockedProfile->interfaceComputeComputedConstantsMethodString()
                        + mLockedProfile->implementationComputeComputedConstantsMethodString();
@@ -443,8 +452,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "dbea040a1a99a58633760faf5fadefc7fa9dc28c" :
-               sha1(profileContents) != "a0fca51eab62c61d4a03920f59c11e3e791ddc70";
+               sha1(profileContents) != "341bd190957b2c9474a5e632184278e8534ceb47" :
+               sha1(profileContents) != "c2171d17b2588a4ffcbe140b9f84bd8a43314edf";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -1896,15 +1905,12 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
+    auto interfaceInitialiseVariablesMethodString = mLockedProfile->interfaceInitialiseVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
+                                                                                                             mLockedModel->hasExternalVariables());
     std::string interfaceComputeModelMethodsCode;
 
-    if (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-         && !mLockedProfile->interfaceInitialiseVariablesMethodString().empty())
-        || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-            && !mLockedProfile->interfaceInitialiseVariablesMethodString().empty())) {
-        interfaceComputeModelMethodsCode += (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                                                mLockedProfile->interfaceInitialiseVariablesMethodString() :
-                                                mLockedProfile->interfaceInitialiseVariablesMethodString();
+    if (!interfaceInitialiseVariablesMethodString.empty()) {
+        interfaceComputeModelMethodsCode += interfaceInitialiseVariablesMethodString;
     }
 
     if (!mLockedProfile->interfaceComputeComputedConstantsMethodString().empty()) {
@@ -1934,10 +1940,10 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 
 void Generator::GeneratorImpl::addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    if (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-         && !mLockedProfile->implementationInitialiseVariablesMethodString().empty())
-        || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-            && !mLockedProfile->implementationInitialiseVariablesMethodString().empty())) {
+    auto implementationInitialiseVariablesMethodString = mLockedProfile->implementationInitialiseVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
+                                                                                                                       mLockedModel->hasExternalVariables());
+
+    if (!implementationInitialiseVariablesMethodString.empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -1960,11 +1966,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseStatesAndConstantsMeth
             methodBody += generateInitializationCode(state);
         }
 
-        std::string interfaceMethodString = (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                                                mLockedProfile->implementationInitialiseVariablesMethodString() :
-                                                mLockedProfile->implementationInitialiseVariablesMethodString();
-
-        mCode += replace(interfaceMethodString, "[CODE]", generateMethodBodyCode(methodBody));
+        mCode += replace(implementationInitialiseVariablesMethodString, "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
