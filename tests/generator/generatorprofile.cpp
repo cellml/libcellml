@@ -284,7 +284,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("typedef enum {\n"
               "    CONSTANT,\n"
               "    COMPUTED_CONSTANT,\n"
-              "    ALGEBRAIC[OPTIONAL_TYPE]\n"
+              "    ALGEBRAIC\n"
               "} VariableType;\n",
               generatorProfile->variableTypeObjectString());
 

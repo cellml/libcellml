@@ -1465,7 +1465,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC[OPTIONAL_TYPE]\n} VariableType;\n',
+            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n',
             g.variableTypeObjectString())
         g.setVariableTypeObjectString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString())
