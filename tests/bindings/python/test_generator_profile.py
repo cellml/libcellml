@@ -1582,9 +1582,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         self.assertEqual(
             'typedef double (* ExternalVariable)(double *variables, size_t index);\n',
-            g.externalVariableMethodTypeDefinitionString())
-        g.setExternalVariableMethodTypeDefinitionString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString())
+            g.externalVariableMethodTypeDefinitionString(False))
+        g.setExternalVariableMethodTypeDefinitionString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(False))
+
+        self.assertEqual(
+            'typedef double (* ExternalVariable)(double voi, double *states, double *variables, size_t index);\n',
+            g.externalVariableMethodTypeDefinitionString(True))
+        g.setExternalVariableMethodTypeDefinitionString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(True))
 
     def test_external_variable_method_call_string(self):
         from libcellml import GeneratorProfile

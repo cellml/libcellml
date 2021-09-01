@@ -218,7 +218,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
-    std::string mExternalVariableMethodTypeDefinitionString;
+    std::string mExternalVariableMethodTypeDefinitionFamString;
+    std::string mExternalVariableMethodTypeDefinitionFdmString;
+
     std::string mExternalVariableMethodCallString;
 
     std::string mInterfaceCreateStatesArrayMethodString;
@@ -553,7 +555,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mExternalVariableMethodTypeDefinitionString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *variables, size_t index);\n";
+
         mExternalVariableMethodCallString = "externalVariable(variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
@@ -919,7 +923,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mExternalVariableMethodTypeDefinitionString = "";
+        mExternalVariableMethodTypeDefinitionFamString = "";
+        mExternalVariableMethodTypeDefinitionFdmString = "";
+
         mExternalVariableMethodCallString = "external_variable(variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "";
@@ -977,7 +983,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeVariablesMethodFamWevString = "";
         mImplementationComputeVariablesMethodFamWevString = "\n"
-                                                            "def compute_variables(variables, externalVariable):\n"
+                                                            "def compute_variables(variables, external_variable):\n"
                                                             "[CODE]";
 
         mInterfaceComputeVariablesMethodFdmWoevString = "";
@@ -2361,14 +2367,23 @@ void GeneratorProfile::setVariablesArrayString(const std::string &variablesArray
     mPimpl->mVariablesArrayString = variablesArrayString;
 }
 
-std::string GeneratorProfile::externalVariableMethodTypeDefinitionString() const
+std::string GeneratorProfile::externalVariableMethodTypeDefinitionString(bool forDifferentialModel) const
 {
-    return mPimpl->mExternalVariableMethodTypeDefinitionString;
+    if (forDifferentialModel) {
+        return mPimpl->mExternalVariableMethodTypeDefinitionFdmString;
+    }
+
+    return mPimpl->mExternalVariableMethodTypeDefinitionFamString;
 }
 
-void GeneratorProfile::setExternalVariableMethodTypeDefinitionString(const std::string &externalVariableMethodTypeDefinitionString)
+void GeneratorProfile::setExternalVariableMethodTypeDefinitionString(bool forDifferentialModel,
+                                                                     const std::string &externalVariableMethodTypeDefinitionString)
 {
-    mPimpl->mExternalVariableMethodTypeDefinitionString = externalVariableMethodTypeDefinitionString;
+    if (forDifferentialModel) {
+        mPimpl->mExternalVariableMethodTypeDefinitionFdmString = externalVariableMethodTypeDefinitionString;
+    } else {
+        mPimpl->mExternalVariableMethodTypeDefinitionFamString = externalVariableMethodTypeDefinitionString;
+    }
 }
 
 std::string GeneratorProfile::externalVariableMethodCallString() const

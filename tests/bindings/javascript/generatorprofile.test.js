@@ -816,8 +816,11 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.externalVariableMethodTypeDefinitionString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
-    x.setExternalVariableMethodTypeDefinitionString("something")
-    expect(x.externalVariableMethodTypeDefinitionString()).toBe("something")
+    x.setExternalVariableMethodTypeDefinitionString(false, "something")
+    expect(x.externalVariableMethodTypeDefinitionString(false)).toBe("something")
+
+    x.setExternalVariableMethodTypeDefinitionString(true, "something")
+    expect(x.externalVariableMethodTypeDefinitionString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.externalVariableMethodCallString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)

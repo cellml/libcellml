@@ -400,8 +400,10 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mLockedProfile->ratesArrayString()
                        + mLockedProfile->variablesArrayString();
 
-    profileContents += mLockedProfile->externalVariableMethodTypeDefinitionString()
-                       + mLockedProfile->externalVariableMethodCallString();
+    profileContents += mLockedProfile->externalVariableMethodTypeDefinitionString(false)
+                       + mLockedProfile->externalVariableMethodTypeDefinitionString(true);
+
+    profileContents += mLockedProfile->externalVariableMethodCallString();
 
     profileContents += mLockedProfile->interfaceCreateStatesArrayMethodString()
                        + mLockedProfile->implementationCreateStatesArrayMethodString();
@@ -464,8 +466,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "dc4427510b4e3d1e172d085d1cab5f91f5c05dc9" :
-               sha1(profileContents) != "3349306f6eb581d2d26f1b9fbc13284843d160e4";
+               sha1(profileContents) != "71f0b5f859dd866c1678c6bfceba74d4fa9bc36f" :
+               sha1(profileContents) != "54428bbd08ed72a979f60c68cab5b3c173e2b521";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -1018,22 +1020,12 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
 void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
 {
     if (mLockedModel->hasExternalVariables()) {
-        std::string externalVariableMethodTypeDefinitionCode;
+        auto externalVariableMethodTypeDefinitionString = mLockedProfile->externalVariableMethodTypeDefinitionString(mLockedModel->type() == AnalyserModel::Type::ODE);
 
-        if (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-             && !mLockedProfile->externalVariableMethodTypeDefinitionString().empty())
-            || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-                && !mLockedProfile->externalVariableMethodTypeDefinitionString().empty())) {
-            externalVariableMethodTypeDefinitionCode += (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                                                            mLockedProfile->externalVariableMethodTypeDefinitionString() :
-                                                            mLockedProfile->externalVariableMethodTypeDefinitionString();
-        }
-
-        if (!externalVariableMethodTypeDefinitionCode.empty()) {
+        if (!externalVariableMethodTypeDefinitionString.empty()) {
             mCode += "\n";
+            mCode += externalVariableMethodTypeDefinitionString;
         }
-
-        mCode += externalVariableMethodTypeDefinitionCode;
     }
 }
 
