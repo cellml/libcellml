@@ -1852,7 +1852,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     return code;
 }
 
-std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserVariablePtr &variable) const
+std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
 {
     std::string scalingFactorCode;
     auto scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
@@ -1955,7 +1955,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
 
         for (const auto &variable : mLockedModel->variables()) {
             if (variable->type() == AnalyserVariable::Type::CONSTANT) {
-                methodBody += generateInitializationCode(variable);
+                methodBody += generateInitialisationCode(variable);
             }
         }
 
@@ -1966,7 +1966,7 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         }
 
         for (const auto &state : mLockedModel->states()) {
-            methodBody += generateInitializationCode(state);
+            methodBody += generateInitialisationCode(state);
         }
 
         mCode += replace(implementationInitialiseVariablesMethodString, "[CODE]", generateMethodBodyCode(methodBody));
