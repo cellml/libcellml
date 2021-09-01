@@ -950,9 +950,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         self.assertEqual(
             'void computeRates(double voi, double *states, double *rates, double *variables);\n',
-            g.interfaceComputeRatesMethodString())
-        g.setInterfaceComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString())
+            g.interfaceComputeRatesMethodString(False))
+        g.setInterfaceComputeRatesMethodString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString(False))
+
+        self.assertEqual(
+            'void computeRates(double voi, double *states, double *rates, double *variables);\n',
+            g.interfaceComputeRatesMethodString(True))
+        g.setInterfaceComputeRatesMethodString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString(True))
 
     def test_interface_compute_variables_method_string(self):
         from libcellml import GeneratorProfile

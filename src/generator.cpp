@@ -427,8 +427,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->interfaceComputeComputedConstantsMethodString()
                        + mLockedProfile->implementationComputeComputedConstantsMethodString();
 
-    profileContents += mLockedProfile->interfaceComputeRatesMethodString()
-                       + mLockedProfile->implementationComputeRatesMethodString();
+    profileContents += mLockedProfile->interfaceComputeRatesMethodString(false)
+                       + mLockedProfile->implementationComputeRatesMethodString(false);
+
+    profileContents += mLockedProfile->interfaceComputeRatesMethodString(true)
+                       + mLockedProfile->implementationComputeRatesMethodString(true);
 
     profileContents += mLockedProfile->interfaceComputeVariablesMethodString()
                        + mLockedProfile->implementationComputeVariablesMethodString();
@@ -452,8 +455,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "341bd190957b2c9474a5e632184278e8534ceb47" :
-               sha1(profileContents) != "c2171d17b2588a4ffcbe140b9f84bd8a43314edf";
+               sha1(profileContents) != "0ed23aee06e9e109def78ac360bae5e12991d10c" :
+               sha1(profileContents) != "2ec8404cf80af8285cd34b6809a9b800216dc789";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -1917,9 +1920,11 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
         interfaceComputeModelMethodsCode += mLockedProfile->interfaceComputeComputedConstantsMethodString();
     }
 
+    auto interfaceComputeRatesMethodString = mLockedProfile->interfaceComputeRatesMethodString(mLockedModel->hasExternalVariables());
+
     if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->interfaceComputeRatesMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mLockedProfile->interfaceComputeRatesMethodString();
+        && !interfaceComputeRatesMethodString.empty()) {
+        interfaceComputeModelMethodsCode += interfaceComputeRatesMethodString;
     }
 
     if (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
@@ -1992,8 +1997,10 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 
 void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
+    auto implementationComputeRatesMethodString = mLockedProfile->implementationComputeRatesMethodString(mLockedModel->hasExternalVariables());
+
     if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->implementationComputeRatesMethodString().empty()) {
+        && !implementationComputeRatesMethodString.empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -2006,7 +2013,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             }
         }
 
-        mCode += replace(mLockedProfile->implementationComputeRatesMethodString(),
+        mCode += replace(implementationComputeRatesMethodString,
                          "[CODE]", generateMethodBodyCode(methodBody));
     }
 }

@@ -906,8 +906,11 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.interfaceComputeRatesMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
-    x.setInterfaceComputeRatesMethodString("something")
-    expect(x.interfaceComputeRatesMethodString()).toBe("something")
+    x.setInterfaceComputeRatesMethodString(false, "something")
+    expect(x.interfaceComputeRatesMethodString(false)).toBe("something")
+
+    x.setInterfaceComputeRatesMethodString(true, "something")
+    expect(x.interfaceComputeRatesMethodString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.implementationComputeRatesMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
