@@ -415,8 +415,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->interfaceDeleteArrayMethodString()
                        + mLockedProfile->implementationDeleteArrayMethodString();
 
-    profileContents += mLockedProfile->interfaceInitialiseConstantsMethodString()
-                       + mLockedProfile->implementationInitialiseConstantsMethodString();
+    profileContents += mLockedProfile->interfaceInitialiseVariablesMethodString()
+                       + mLockedProfile->implementationInitialiseVariablesMethodString();
 
     profileContents += mLockedProfile->interfaceComputeComputedConstantsMethodString()
                        + mLockedProfile->implementationComputeComputedConstantsMethodString();
@@ -1914,12 +1914,12 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
     std::string interfaceComputeModelMethodsCode;
 
     if (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-         && !mLockedProfile->interfaceInitialiseConstantsMethodString().empty())
+         && !mLockedProfile->interfaceInitialiseVariablesMethodString().empty())
         || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-            && !mLockedProfile->interfaceInitialiseStatesAndConstantsMethodString().empty())) {
+            && !mLockedProfile->interfaceInitialiseVariablesMethodString().empty())) {
         interfaceComputeModelMethodsCode += (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                                                mLockedProfile->interfaceInitialiseConstantsMethodString() :
-                                                mLockedProfile->interfaceInitialiseStatesAndConstantsMethodString();
+                                                mLockedProfile->interfaceInitialiseVariablesMethodString() :
+                                                mLockedProfile->interfaceInitialiseVariablesMethodString();
     }
 
     if (!mLockedProfile->interfaceComputeComputedConstantsMethodString().empty()) {
@@ -1961,9 +1961,9 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 void Generator::GeneratorImpl::addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     if (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-         && !mLockedProfile->implementationInitialiseConstantsMethodString().empty())
+         && !mLockedProfile->implementationInitialiseVariablesMethodString().empty())
         || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-            && !mLockedProfile->implementationInitialiseStatesAndConstantsMethodString().empty())) {
+            && !mLockedProfile->implementationInitialiseVariablesMethodString().empty())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }

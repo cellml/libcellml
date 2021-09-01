@@ -3275,47 +3275,47 @@ public:
     void setImplementationDeleteArrayMethodString(const std::string &implementationDeleteArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the interface to initialise constants.
+     * @brief Get the @c std::string for the interface to initialise variables.
      *
-     * Return the @c std::string for the interface to initialise constants.
+     * Return the @c std::string for the interface to initialise variables.
      *
-     * @return The @c std::string for the interface to initialise constants.
+     * @return The @c std::string for the interface to initialise variables.
      */
-    std::string interfaceInitialiseConstantsMethodString() const;
+    std::string interfaceInitialiseVariablesMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the interface to initialise constants.
+     * @brief Set the @c std::string for the interface to initialise variables.
      *
-     * Set the @c std::string for the interface to initialise constants.
+     * Set the @c std::string for the interface to initialise variables.
      *
-     * @param interfaceInitialiseConstantsMethodString The @c std::string to use
-     * for the interface to initialise constants.
+     * @param interfaceInitialiseVariablesMethodString The @c std::string to use
+     * for the interface to initialise variables.
      */
-    void setInterfaceInitialiseConstantsMethodString(const std::string &interfaceInitialiseConstantsMethodString);
+    void setInterfaceInitialiseVariablesMethodString(const std::string &interfaceInitialiseVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for the implementation to initialise
-     * constants.
+     * variables.
      *
-     * Return the @c std::string for the implementation to initialise constants.
+     * Return the @c std::string for the implementation to initialise variables.
      *
      * @return The @c std::string for the implementation to initialise
-     * constants.
+     * variables.
      */
-    std::string implementationInitialiseConstantsMethodString() const;
+    std::string implementationInitialiseVariablesMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to initialise
-     * constants.
+     * variables.
      *
-     * Set the @c std::string for the implementation to initialise constants. To
+     * Set the @c std::string for the implementation to initialise variables. To
      * be useful, the string should contain the [CODE] tag, which will be
-     * replaced with some code to initialise constants.
+     * replaced with some code to initialise variables.
      *
-     * @param implementationInitialiseConstantsMethodString The @c std::string
-     * to use for the implementation to initialise constants.
+     * @param implementationInitialiseVariablesMethodString The @c std::string
+     * to use for the implementation to initialise variables.
      */
-    void setImplementationInitialiseConstantsMethodString(const std::string &implementationInitialiseConstantsMethodString);
+    void setImplementationInitialiseVariablesMethodString(const std::string &implementationInitialiseVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for the interface to compute computed
