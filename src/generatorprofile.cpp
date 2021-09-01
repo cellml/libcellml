@@ -187,8 +187,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceVariableCountString;
     std::string mImplementationVariableCountString;
 
-    std::string mVariableTypeObjectInAlgebraicModelString;
-    std::string mVariableTypeObjectExternalTypeInAlgebraicModelString;
+    std::string mVariableTypeObjectString;
+    std::string mVariableTypeObjectExternalTypeString;
 
     std::string mVariableOfIntegrationVariableTypeString;
     std::string mStateVariableTypeString;
@@ -216,8 +216,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
-    std::string mExternalVariableMethodTypeDefinitionInAlgebraicModelString;
-    std::string mExternalVariableMethodCallInAlgebraicModelString;
+    std::string mExternalVariableMethodTypeDefinitionString;
+    std::string mExternalVariableMethodCallString;
 
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
@@ -237,8 +237,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceComputeRatesMethodString;
     std::string mImplementationComputeRatesMethodString;
 
-    std::string mInterfaceComputeVariablesMethodInAlgebraicModelString;
-    std::string mImplementationComputeVariablesMethodInAlgebraicModelString;
+    std::string mInterfaceComputeVariablesMethodString;
+    std::string mImplementationComputeVariablesMethodString;
 
     std::string mEmptyMethodString;
 
@@ -468,12 +468,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceVariableCountString = "extern const size_t VARIABLE_COUNT;\n";
         mImplementationVariableCountString = "const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n";
 
-        mVariableTypeObjectInAlgebraicModelString = "typedef enum {\n"
-                                                    "    CONSTANT,\n"
-                                                    "    COMPUTED_CONSTANT,\n"
-                                                    "    ALGEBRAIC[OPTIONAL_TYPE]\n"
-                                                    "} VariableType;\n";
-        mVariableTypeObjectExternalTypeInAlgebraicModelString = ",\n    EXTERNAL";
+        mVariableTypeObjectString = "typedef enum {\n"
+                                    "    CONSTANT,\n"
+                                    "    COMPUTED_CONSTANT,\n"
+                                    "    ALGEBRAIC[OPTIONAL_TYPE]\n"
+                                    "} VariableType;\n";
+        mVariableTypeObjectExternalTypeString = ",\n    EXTERNAL";
 
         mVariableOfIntegrationVariableTypeString = "VARIABLE_OF_INTEGRATION";
         mStateVariableTypeString = "STATE";
@@ -510,8 +510,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mExternalVariableMethodTypeDefinitionInAlgebraicModelString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
-        mExternalVariableMethodCallInAlgebraicModelString = "externalVariable(variables, [INDEX])";
+        mExternalVariableMethodTypeDefinitionString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
+        mExternalVariableMethodCallString = "externalVariable(variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
@@ -548,11 +548,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                   "[CODE]"
                                                   "}\n";
 
-        mInterfaceComputeVariablesMethodInAlgebraicModelString = "void computeVariables(double *variables[OPTIONAL_PARAMETER]);\n";
-        mImplementationComputeVariablesMethodInAlgebraicModelString = "void computeVariables(double *variables[OPTIONAL_PARAMETER])\n"
-                                                                      "{\n"
-                                                                      "[CODE]"
-                                                                      "}\n";
+        mInterfaceComputeVariablesMethodString = "void computeVariables(double *variables[OPTIONAL_PARAMETER]);\n";
+        mImplementationComputeVariablesMethodString = "void computeVariables(double *variables[OPTIONAL_PARAMETER])\n"
+                                                      "{\n"
+                                                      "[CODE]"
+                                                      "}\n";
 
         mEmptyMethodString = "";
 
@@ -774,13 +774,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceVariableCountString = "";
         mImplementationVariableCountString = "VARIABLE_COUNT = [VARIABLE_COUNT]\n";
 
-        mVariableTypeObjectInAlgebraicModelString = "\n"
-                                                    "class VariableType(Enum):\n"
-                                                    "    CONSTANT = 1\n"
-                                                    "    COMPUTED_CONSTANT = 2\n"
-                                                    "    ALGEBRAIC = 3[OPTIONAL_TYPE]\n"
-                                                    "\n";
-        mVariableTypeObjectExternalTypeInAlgebraicModelString = "\n    EXTERNAL = 4";
+        mVariableTypeObjectString = "\n"
+                                    "class VariableType(Enum):\n"
+                                    "    CONSTANT = 1\n"
+                                    "    COMPUTED_CONSTANT = 2\n"
+                                    "    ALGEBRAIC = 3[OPTIONAL_TYPE]\n"
+                                    "\n";
+        mVariableTypeObjectExternalTypeString = "\n    EXTERNAL = 4";
 
         mVariableOfIntegrationVariableTypeString = "VariableType.VARIABLE_OF_INTEGRATION";
         mStateVariableTypeString = "VariableType.STATE";
@@ -812,8 +812,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mExternalVariableMethodTypeDefinitionInAlgebraicModelString = "";
-        mExternalVariableMethodCallInAlgebraicModelString = "external_variable(variables, [INDEX])";
+        mExternalVariableMethodTypeDefinitionString = "";
+        mExternalVariableMethodCallString = "external_variable(variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
@@ -843,10 +843,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                   "def compute_rates(voi, states, rates, variables[OPTIONAL_PARAMETER]):\n"
                                                   "[CODE]";
 
-        mInterfaceComputeVariablesMethodInAlgebraicModelString = "";
-        mImplementationComputeVariablesMethodInAlgebraicModelString = "\n"
-                                                                      "def compute_variables(variables[OPTIONAL_PARAMETER]):\n"
-                                                                      "[CODE]";
+        mInterfaceComputeVariablesMethodString = "";
+        mImplementationComputeVariablesMethodString = "\n"
+                                                      "def compute_variables(variables[OPTIONAL_PARAMETER]):\n"
+                                                      "[CODE]";
 
         mEmptyMethodString = "pass\n";
 
@@ -2002,24 +2002,24 @@ void GeneratorProfile::setImplementationVariableCountString(const std::string &i
     mPimpl->mImplementationVariableCountString = implementationVariableCountString;
 }
 
-std::string GeneratorProfile::variableTypeObjectInAlgebraicModelString() const
+std::string GeneratorProfile::variableTypeObjectString() const
 {
-    return mPimpl->mVariableTypeObjectInAlgebraicModelString;
+    return mPimpl->mVariableTypeObjectString;
 }
 
-void GeneratorProfile::setVariableTypeObjectInAlgebraicModelString(const std::string &variableTypeObjectInAlgebraicModelString)
+void GeneratorProfile::setVariableTypeObjectString(const std::string &variableTypeObjectString)
 {
-    mPimpl->mVariableTypeObjectInAlgebraicModelString = variableTypeObjectInAlgebraicModelString;
+    mPimpl->mVariableTypeObjectString = variableTypeObjectString;
 }
 
-std::string GeneratorProfile::variableTypeObjectExternalTypeInAlgebraicModelString() const
+std::string GeneratorProfile::variableTypeObjectExternalTypeString() const
 {
-    return mPimpl->mVariableTypeObjectExternalTypeInAlgebraicModelString;
+    return mPimpl->mVariableTypeObjectExternalTypeString;
 }
 
-void GeneratorProfile::setVariableTypeObjectExternalTypeInAlgebraicModelString(const std::string &variableTypeObjectExternalTypeInAlgebraicModelString)
+void GeneratorProfile::setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString)
 {
-    mPimpl->mVariableTypeObjectExternalTypeInAlgebraicModelString = variableTypeObjectExternalTypeInAlgebraicModelString;
+    mPimpl->mVariableTypeObjectExternalTypeString = variableTypeObjectExternalTypeString;
 }
 
 std::string GeneratorProfile::variableOfIntegrationVariableTypeString() const
@@ -2202,24 +2202,24 @@ void GeneratorProfile::setVariablesArrayString(const std::string &variablesArray
     mPimpl->mVariablesArrayString = variablesArrayString;
 }
 
-std::string GeneratorProfile::externalVariableMethodTypeDefinitionInAlgebraicModelString() const
+std::string GeneratorProfile::externalVariableMethodTypeDefinitionString() const
 {
-    return mPimpl->mExternalVariableMethodTypeDefinitionInAlgebraicModelString;
+    return mPimpl->mExternalVariableMethodTypeDefinitionString;
 }
 
-void GeneratorProfile::setExternalVariableMethodTypeDefinitionInAlgebraicModelString(const std::string &externalVariableMethodTypeDefinitionInAlgebraicModelString)
+void GeneratorProfile::setExternalVariableMethodTypeDefinitionString(const std::string &externalVariableMethodTypeDefinitionString)
 {
-    mPimpl->mExternalVariableMethodTypeDefinitionInAlgebraicModelString = externalVariableMethodTypeDefinitionInAlgebraicModelString;
+    mPimpl->mExternalVariableMethodTypeDefinitionString = externalVariableMethodTypeDefinitionString;
 }
 
-std::string GeneratorProfile::externalVariableMethodCallInAlgebraicModelString() const
+std::string GeneratorProfile::externalVariableMethodCallString() const
 {
-    return mPimpl->mExternalVariableMethodCallInAlgebraicModelString;
+    return mPimpl->mExternalVariableMethodCallString;
 }
 
-void GeneratorProfile::setExternalVariableMethodCallInAlgebraicModelString(const std::string &externalVariableMethodCallInAlgebraicModelString)
+void GeneratorProfile::setExternalVariableMethodCallString(const std::string &externalVariableMethodCallString)
 {
-    mPimpl->mExternalVariableMethodCallInAlgebraicModelString = externalVariableMethodCallInAlgebraicModelString;
+    mPimpl->mExternalVariableMethodCallString = externalVariableMethodCallString;
 }
 
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
@@ -2342,24 +2342,24 @@ void GeneratorProfile::setImplementationComputeRatesMethodString(const std::stri
     mPimpl->mImplementationComputeRatesMethodString = implementationComputeRatesMethodString;
 }
 
-std::string GeneratorProfile::interfaceComputeVariablesMethodInAlgebraicModelString() const
+std::string GeneratorProfile::interfaceComputeVariablesMethodString() const
 {
-    return mPimpl->mInterfaceComputeVariablesMethodInAlgebraicModelString;
+    return mPimpl->mInterfaceComputeVariablesMethodString;
 }
 
-void GeneratorProfile::setInterfaceComputeVariablesMethodInAlgebraicModelString(const std::string &interfaceComputeVariablesMethodInAlgebraicModelString)
+void GeneratorProfile::setInterfaceComputeVariablesMethodString(const std::string &interfaceComputeVariablesMethodString)
 {
-    mPimpl->mInterfaceComputeVariablesMethodInAlgebraicModelString = interfaceComputeVariablesMethodInAlgebraicModelString;
+    mPimpl->mInterfaceComputeVariablesMethodString = interfaceComputeVariablesMethodString;
 }
 
-std::string GeneratorProfile::implementationComputeVariablesMethodInAlgebraicModelString() const
+std::string GeneratorProfile::implementationComputeVariablesMethodString() const
 {
-    return mPimpl->mImplementationComputeVariablesMethodInAlgebraicModelString;
+    return mPimpl->mImplementationComputeVariablesMethodString;
 }
 
-void GeneratorProfile::setImplementationComputeVariablesMethodInAlgebraicModelString(const std::string &implementationComputeVariablesMethodInAlgebraicModelString)
+void GeneratorProfile::setImplementationComputeVariablesMethodString(const std::string &implementationComputeVariablesMethodString)
 {
-    mPimpl->mImplementationComputeVariablesMethodInAlgebraicModelString = implementationComputeVariablesMethodInAlgebraicModelString;
+    mPimpl->mImplementationComputeVariablesMethodString = implementationComputeVariablesMethodString;
 }
 
 std::string GeneratorProfile::emptyMethodString() const
