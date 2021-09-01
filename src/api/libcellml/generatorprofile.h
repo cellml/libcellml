@@ -2506,10 +2506,16 @@ public:
      * Return the @c std::string for the data structure for the variable type
      * object.
      *
+     * @param forDifferentialModel Whether the data structure is for a
+     * differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the data structure is for a model
+     * with external variables.
+     *
      * @return The @c std::string for the data structure for the variable type
      * object.
      */
-    std::string variableTypeObjectString() const;
+    std::string variableTypeObjectString(bool forDifferentialModel,
+                                         bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the data structure for the variable
@@ -2520,10 +2526,16 @@ public:
      *
      * @sa variableTypeObjectString
      *
+     * @param forDifferentialModel Whether the data structure is for a
+     * differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the data structure is for a model
+     * with external variables.
      * @param variableTypeObjectString The @c std::string to use for the data
      * structure for the variable type object.
      */
-    void setVariableTypeObjectString(const std::string &variableTypeObjectString);
+    void setVariableTypeObjectString(bool forDifferentialModel,
+                                     bool withExternalVariables,
+                                     const std::string &variableTypeObjectString);
 
     /**
      * @brief Get the @c std::string for the name of the variable of integration

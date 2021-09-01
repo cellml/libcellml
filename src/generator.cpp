@@ -369,7 +369,10 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mLockedProfile->interfaceVariableCountString()
                        + mLockedProfile->implementationVariableCountString();
 
-    profileContents += mLockedProfile->variableTypeObjectString();
+    profileContents += mLockedProfile->variableTypeObjectString(false, false);
+    profileContents += mLockedProfile->variableTypeObjectString(false, true);
+    profileContents += mLockedProfile->variableTypeObjectString(true, false);
+    profileContents += mLockedProfile->variableTypeObjectString(true, true);
 
     profileContents += mLockedProfile->variableOfIntegrationVariableTypeString()
                        + mLockedProfile->stateVariableTypeString()
@@ -440,8 +443,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "f5ea88b858589944f8ec0efa0d0d2d95858362c7" :
-               sha1(profileContents) != "c5d72615c86e26c21a45ebf4d13261c3c68d7332";
+               sha1(profileContents) != "dbea040a1a99a58633760faf5fadefc7fa9dc28c" :
+               sha1(profileContents) != "a0fca51eab62c61d4a03920f59c11e3e791ddc70";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
@@ -555,19 +558,15 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 
 void Generator::GeneratorImpl::addVariableTypeObjectCode()
 {
-    if ((((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-          && !mLockedProfile->variableTypeObjectString().empty())
-         || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-             && !mLockedProfile->variableTypeObjectString().empty()))
-        && (mLockedModel->hasExternalVariables()
-            || !mLockedModel->hasExternalVariables())) {
+    auto variableTypeObjectString = mLockedProfile->variableTypeObjectString(mLockedModel->type() == AnalyserModel::Type::ODE,
+                                                                             mLockedModel->hasExternalVariables());
+
+    if (!variableTypeObjectString.empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
 
-        mCode += (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                     mLockedProfile->variableTypeObjectString() :
-                     mLockedProfile->variableTypeObjectString();
+        mCode += variableTypeObjectString;
     }
 }
 

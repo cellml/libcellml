@@ -2065,7 +2065,10 @@ TEST(Generator, coverage)
 
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectString("");
+    profile->setVariableTypeObjectString(false, false, "");
+    profile->setVariableTypeObjectString(false, true, "");
+    profile->setVariableTypeObjectString(true, false, "");
+    profile->setVariableTypeObjectString(true, true, "");
 
     profile->setVariableOfIntegrationVariableTypeString("");
     profile->setStateVariableTypeString("");
@@ -2136,7 +2139,10 @@ TEST(Generator, coverage)
     profile->setInterfaceVariableCountString("");
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectString("");
+    profile->setVariableTypeObjectString(false, false, "");
+    profile->setVariableTypeObjectString(false, true, "");
+    profile->setVariableTypeObjectString(true, false, "");
+    profile->setVariableTypeObjectString(true, true, "");
 
     profile->setVariableOfIntegrationVariableTypeString("");
     profile->setStateVariableTypeString("");
