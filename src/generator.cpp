@@ -1969,6 +1969,21 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             methodBody += generateInitialisationCode(state);
         }
 
+        if (mLockedModel->hasExternalVariables()) {
+            auto equations = mLockedModel->equations();
+            std::vector<AnalyserEquationPtr> remainingExternalEquations;
+
+            std::copy_if(equations.begin(), equations.end(),
+                         std::back_inserter(remainingExternalEquations),
+                         [](const AnalyserEquationPtr &equation) { return equation->type() == AnalyserEquation::Type::EXTERNAL; });
+
+            for (const auto &equation : mLockedModel->equations()) {
+                if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
+                    methodBody += generateEquationCode(equation, remainingExternalEquations);
+                }
+            }
+        }
+
         mCode += replace(implementationInitialiseVariablesMethodString, "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
