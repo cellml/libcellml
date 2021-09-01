@@ -3293,19 +3293,31 @@ public:
      *
      * Return the @c std::string for the interface to compute variables.
      *
+     * @param forDifferentialModel Whether the interface to compute variables is
+     * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the interface to compute variables
+     * is for a model with external variables.
+     *
      * @return The @c std::string for the interface to compute variables.
      */
-    std::string interfaceComputeVariablesMethodString() const;
+    std::string interfaceComputeVariablesMethodString(bool forDifferentialModel,
+                                                      bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the interface to compute variables.
      *
      * Set the @c std::string for the interface to compute variables.
      *
+     * @param forDifferentialModel Whether the interface to compute variables is
+     * for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the interface to compute variables
+     * is for a model with external variables.
      * @param interfaceComputeVariablesMethodString The @c std::string to use
      * for the interface to compute variables.
      */
-    void setInterfaceComputeVariablesMethodString(const std::string &interfaceComputeVariablesMethodString);
+    void setInterfaceComputeVariablesMethodString(bool forDifferentialModel,
+                                                  bool withExternalVariables,
+                                                  const std::string &interfaceComputeVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for the implementation to compute
@@ -3313,9 +3325,15 @@ public:
      *
      * Return the @c std::string for the implementation to compute variables.
      *
+     * @param forDifferentialModel Whether the implementation to compute
+     * variables is for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the implementation to compute
+     * variables is for a model with external variables.
+     *
      * @return The @c std::string for the implementation to compute variables.
      */
-    std::string implementationComputeVariablesMethodString() const;
+    std::string implementationComputeVariablesMethodString(bool forDifferentialModel,
+                                                           bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute
@@ -3325,10 +3343,16 @@ public:
      * useful, the string should contain the [CODE] tag, which will be replaced
      * with some code to compute rates.
      *
+     * @param forDifferentialModel Whether the implementation to compute
+     * variables is for a differential model, as opposed to an algebraic model.
+     * @param withExternalVariables Whether the implementation to compute
+     * variables is for a model with external variables.
      * @param implementationComputeVariablesMethodString The @c std::string to
      * use for the implementation to compute variables.
      */
-    void setImplementationComputeVariablesMethodString(const std::string &implementationComputeVariablesMethodString);
+    void setImplementationComputeVariablesMethodString(bool forDifferentialModel,
+                                                       bool withExternalVariables,
+                                                       const std::string &implementationComputeVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for an empty method.

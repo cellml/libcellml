@@ -2093,8 +2093,11 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesMethodString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
-                                                           "// xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
+    profile->setImplementationComputeVariablesMethodString(false, false, "");
+    profile->setImplementationComputeVariablesMethodString(false, true, "");
+    profile->setImplementationComputeVariablesMethodString(true, false, "");
+    profile->setImplementationComputeVariablesMethodString(true, true, "// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
+                                                                       "// xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode());
