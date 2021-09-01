@@ -914,18 +914,6 @@ tag, which will be replaced with some code to create the variables array.";
 %feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseConstantsMethodString
 "Sets the string for the implementation to initialise constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseStatesAndConstantsMethodString
-"Returns the string for the interface to initialise states and constants.";
-
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseStatesAndConstantsMethodString
-"Sets the string for the interface to initialise states and constants.";
-
-%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseStatesAndConstantsMethodString
-"Returns the string for the implementation to initialise states and constants.";
-
-%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseStatesAndConstantsMethodString
-"Sets the string for the implementation to initialise states and constants.";
-
 %feature("docstring") libcellml::GeneratorProfile::interfaceComputeComputedConstantsMethodString
 "Returns the string for the interface to compute computed constants.";
 

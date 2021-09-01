@@ -374,14 +374,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationInitialiseConstantsMethodString());
 
-    EXPECT_EQ("void initialiseStatesAndConstants(double *states, double *variables);\n",
-              generatorProfile->interfaceInitialiseStatesAndConstantsMethodString());
-    EXPECT_EQ("void initialiseStatesAndConstants(double *states, double *variables)\n"
-              "{\n"
-              "[CODE]"
-              "}\n",
-              generatorProfile->implementationInitialiseStatesAndConstantsMethodString());
-
     EXPECT_EQ("void computeComputedConstants(double *variables);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString());
     EXPECT_EQ("void computeComputedConstants(double *variables)\n"
@@ -789,9 +781,6 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceInitialiseConstantsMethodString(value);
     generatorProfile->setImplementationInitialiseConstantsMethodString(value);
 
-    generatorProfile->setInterfaceInitialiseStatesAndConstantsMethodString(value);
-    generatorProfile->setImplementationInitialiseStatesAndConstantsMethodString(value);
-
     generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
     generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
 
@@ -888,9 +877,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->interfaceInitialiseConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->implementationInitialiseConstantsMethodString());
-
-    EXPECT_EQ(value, generatorProfile->interfaceInitialiseStatesAndConstantsMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationInitialiseStatesAndConstantsMethodString());
 
     EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString());
