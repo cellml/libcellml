@@ -921,8 +921,17 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.interfaceComputeVariablesMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
-    x.setInterfaceComputeVariablesMethodString("something")
-    expect(x.interfaceComputeVariablesMethodString()).toBe("something")
+    x.setInterfaceComputeVariablesMethodString(false, false, "something")
+    expect(x.interfaceComputeVariablesMethodString(false, false)).toBe("something")
+
+    x.setInterfaceComputeVariablesMethodString(false, true, "something")
+    expect(x.interfaceComputeVariablesMethodString(false, true)).toBe("something")
+
+    x.setInterfaceComputeVariablesMethodString(true, false, "something")
+    expect(x.interfaceComputeVariablesMethodString(true, false)).toBe("something")
+
+    x.setInterfaceComputeVariablesMethodString(true, true, "something")
+    expect(x.interfaceComputeVariablesMethodString(true, true)).toBe("something")
   });
   test("Checking GeneratorProfile.implementationComputeVariablesMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)

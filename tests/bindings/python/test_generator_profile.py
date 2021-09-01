@@ -967,9 +967,27 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         self.assertEqual(
             'void computeVariables(double *variables);\n',
-            g.interfaceComputeVariablesMethodString())
-        g.setInterfaceComputeVariablesMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString())
+            g.interfaceComputeVariablesMethodString(False, False))
+        g.setInterfaceComputeVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(False, False))
+
+        self.assertEqual(
+            'void computeVariables(double *variables, ExternalVariable externalVariable);\n',
+            g.interfaceComputeVariablesMethodString(False, True))
+        g.setInterfaceComputeVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(False, True))
+
+        self.assertEqual(
+            'void computeVariables(double voi, double *states, double *rates, double *variables);\n',
+            g.interfaceComputeVariablesMethodString(True, False))
+        g.setInterfaceComputeVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(True, False))
+
+        self.assertEqual(
+            'void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n',
+            g.interfaceComputeVariablesMethodString(True, True))
+        g.setInterfaceComputeVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(True, True))
 
     def test_interface_create_states_array_method_string(self):
         from libcellml import GeneratorProfile
