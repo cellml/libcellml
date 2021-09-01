@@ -2984,9 +2984,12 @@ public:
      *
      * Return the @c std::string for the call to the external variable method.
      *
+     * @param forDifferentialModel Whether the call to the external variable
+     * method is for a differential model, as opposed to an algebraic model.
+     *
      * @return The @c std::string for the call to the external variable method.
      */
-    std::string externalVariableMethodCallString() const;
+    std::string externalVariableMethodCallString(bool forDifferentialModel) const;
 
     /**
      * @brief Set the @c std::string for the call to the external variable
@@ -2996,10 +2999,13 @@ public:
      * be useful, the string should contain the [INDEX] tag, which will be
      * replaced with the index of the external variable.
      *
+     * @param forDifferentialModel Whether the call to the external variable
+     * method is for a differential model, as opposed to an algebraic model.
      * @param externalVariableMethodCallString The @c std::string to use for the
      * call to the external variable method.
      */
-    void setExternalVariableMethodCallString(const std::string &externalVariableMethodCallString);
+    void setExternalVariableMethodCallString(bool forDifferentialModel,
+                                             const std::string &externalVariableMethodCallString);
 
     /**
      * @brief Get the @c std::string for the interface to create the states
