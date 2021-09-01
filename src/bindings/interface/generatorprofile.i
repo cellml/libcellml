@@ -840,12 +840,6 @@ and units of a variable respectively.";
 %feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodTypeDefinitionInDifferentialModelString
 "Sets the string for the type definition of an external variable method in a differential model.";
 
-%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodParameterString
-"Returns the string for the external variable method parameter.";
-
-%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodParameterString
-"Sets the string for the external variable method parameter.";
-
 %feature("docstring") libcellml::GeneratorProfile::externalVariableMethodCallInAlgebraicModelString
 "Returns the string for the call to the external variable method in an algebraic model.";
 

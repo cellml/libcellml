@@ -402,7 +402,6 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     profileContents += mLockedProfile->externalVariableMethodTypeDefinitionInAlgebraicModelString()
                        + mLockedProfile->externalVariableMethodTypeDefinitionInDifferentialModelString()
-                       + mLockedProfile->externalVariableMethodParameterString()
                        + mLockedProfile->externalVariableMethodCallInAlgebraicModelString()
                        + mLockedProfile->externalVariableMethodCallInDifferentialModelString();
 
@@ -1927,28 +1926,17 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
     }
 
     if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->interfaceComputeRatesMethodString().empty()
-        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
-            || !mLockedModel->hasExternalVariables())) {
-        interfaceComputeModelMethodsCode += replace(mLockedProfile->interfaceComputeRatesMethodString(),
-                                                    "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : "");
+        && !mLockedProfile->interfaceComputeRatesMethodString().empty()) {
+        interfaceComputeModelMethodsCode += mLockedProfile->interfaceComputeRatesMethodString();
     }
 
-    if ((((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-          && !mLockedProfile->interfaceComputeVariablesMethodInAlgebraicModelString().empty())
-         || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-             && !mLockedProfile->interfaceComputeVariablesMethodInDifferentialModelString().empty()))
-        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
-            || !mLockedModel->hasExternalVariables())) {
-        std::string interfaceMethodString = (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
+    if (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
+         && !mLockedProfile->interfaceComputeVariablesMethodInAlgebraicModelString().empty())
+        || ((mLockedModel->type() == AnalyserModel::Type::ODE)
+            && !mLockedProfile->interfaceComputeVariablesMethodInDifferentialModelString().empty())) {
+        interfaceComputeModelMethodsCode += (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
                                                 mLockedProfile->interfaceComputeVariablesMethodInAlgebraicModelString() :
                                                 mLockedProfile->interfaceComputeVariablesMethodInDifferentialModelString();
-
-        interfaceComputeModelMethodsCode += replace(interfaceMethodString,
-                                                    "[OPTIONAL_PARAMETER]",
-                                                    mLockedModel->hasExternalVariables() ?
-                                                        mLockedProfile->externalVariableMethodParameterString() :
-                                                        "");
     }
 
     if (!interfaceComputeModelMethodsCode.empty()) {
@@ -2017,9 +2005,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->implementationComputeRatesMethodString().empty()
-        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
-            || !mLockedModel->hasExternalVariables())) {
+        && !mLockedProfile->implementationComputeRatesMethodString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -2032,20 +2018,17 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             }
         }
 
-        mCode += replace(replace(mLockedProfile->implementationComputeRatesMethodString(),
-                                 "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
+        mCode += replace(mLockedProfile->implementationComputeRatesMethodString(),
                          "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
 void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    if ((((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
-          && !mLockedProfile->implementationComputeVariablesMethodInAlgebraicModelString().empty())
-         || ((mLockedModel->type() == AnalyserModel::Type::ODE)
-             && !mLockedProfile->implementationComputeVariablesMethodInDifferentialModelString().empty()))
-        && ((mLockedModel->hasExternalVariables() && !mLockedProfile->externalVariableMethodParameterString().empty())
-            || !mLockedModel->hasExternalVariables())) {
+    if (((mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC)
+         && !mLockedProfile->implementationComputeVariablesMethodInAlgebraicModelString().empty())
+        || ((mLockedModel->type() == AnalyserModel::Type::ODE)
+            && !mLockedProfile->implementationComputeVariablesMethodInDifferentialModelString().empty())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -2064,11 +2047,9 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
         }
 
         mCode += (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                     replace(replace(mLockedProfile->implementationComputeVariablesMethodInAlgebraicModelString(),
-                                     "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
+                     replace(mLockedProfile->implementationComputeVariablesMethodInAlgebraicModelString(),
                              "[CODE]", generateMethodBodyCode(methodBody)) :
-                     replace(replace(mLockedProfile->implementationComputeVariablesMethodInDifferentialModelString(),
-                                     "[OPTIONAL_PARAMETER]", mLockedModel->hasExternalVariables() ? mLockedProfile->externalVariableMethodParameterString() : ""),
+                     replace(mLockedProfile->implementationComputeVariablesMethodInDifferentialModelString(),
                              "[CODE]", generateMethodBodyCode(methodBody));
     }
 }

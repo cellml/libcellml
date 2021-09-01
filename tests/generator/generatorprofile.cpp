@@ -338,7 +338,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("typedef double (* ExternalVariable)(double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionInAlgebraicModelString());
     EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionInDifferentialModelString());
-    EXPECT_EQ(", ExternalVariable externalVariable", generatorProfile->externalVariableMethodParameterString());
     EXPECT_EQ("externalVariable(variables, [INDEX])", generatorProfile->externalVariableMethodCallInAlgebraicModelString());
     EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableMethodCallInDifferentialModelString());
 
@@ -765,7 +764,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setExternalVariableMethodTypeDefinitionInAlgebraicModelString(value);
     generatorProfile->setExternalVariableMethodTypeDefinitionInDifferentialModelString(value);
-    generatorProfile->setExternalVariableMethodParameterString(value);
     generatorProfile->setExternalVariableMethodCallInAlgebraicModelString(value);
     generatorProfile->setExternalVariableMethodCallInDifferentialModelString(value);
 
@@ -862,7 +860,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionInAlgebraicModelString());
     EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionInDifferentialModelString());
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodParameterString());
     EXPECT_EQ(value, generatorProfile->externalVariableMethodCallInAlgebraicModelString());
     EXPECT_EQ(value, generatorProfile->externalVariableMethodCallInDifferentialModelString());
 

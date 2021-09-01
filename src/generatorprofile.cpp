@@ -220,7 +220,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mExternalVariableMethodTypeDefinitionInAlgebraicModelString;
     std::string mExternalVariableMethodTypeDefinitionInDifferentialModelString;
-    std::string mExternalVariableMethodParameterString;
     std::string mExternalVariableMethodCallInAlgebraicModelString;
     std::string mExternalVariableMethodCallInDifferentialModelString;
 
@@ -528,7 +527,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mExternalVariableMethodTypeDefinitionInAlgebraicModelString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
         mExternalVariableMethodTypeDefinitionInDifferentialModelString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
-        mExternalVariableMethodParameterString = ", ExternalVariable externalVariable";
         mExternalVariableMethodCallInAlgebraicModelString = "externalVariable(variables, [INDEX])";
         mExternalVariableMethodCallInDifferentialModelString = "externalVariable(voi, states, rates, variables, [INDEX])";
 
@@ -848,7 +846,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mExternalVariableMethodTypeDefinitionInAlgebraicModelString = "";
         mExternalVariableMethodTypeDefinitionInDifferentialModelString = "";
-        mExternalVariableMethodParameterString = ", external_variable";
         mExternalVariableMethodCallInAlgebraicModelString = "external_variable(variables, [INDEX])";
         mExternalVariableMethodCallInDifferentialModelString = "external_variable(voi, states, rates, variables, [INDEX])";
 
@@ -2282,16 +2279,6 @@ std::string GeneratorProfile::externalVariableMethodTypeDefinitionInDifferential
 void GeneratorProfile::setExternalVariableMethodTypeDefinitionInDifferentialModelString(const std::string &externalVariableMethodTypeDefinitionInDifferentialModelString)
 {
     mPimpl->mExternalVariableMethodTypeDefinitionInDifferentialModelString = externalVariableMethodTypeDefinitionInDifferentialModelString;
-}
-
-std::string GeneratorProfile::externalVariableMethodParameterString() const
-{
-    return mPimpl->mExternalVariableMethodParameterString;
-}
-
-void GeneratorProfile::setExternalVariableMethodParameterString(const std::string &externalVariableMethodParameterString)
-{
-    mPimpl->mExternalVariableMethodParameterString = externalVariableMethodParameterString;
 }
 
 std::string GeneratorProfile::externalVariableMethodCallInAlgebraicModelString() const

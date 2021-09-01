@@ -1554,15 +1554,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setExternalVariableMethodTypeDefinitionInDifferentialModelString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionInDifferentialModelString())
 
-    def test_external_variable_method_parameter_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual(', ExternalVariable externalVariable', g.externalVariableMethodParameterString())
-        g.setExternalVariableMethodParameterString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodParameterString())
-
     def test_external_variable_method_call_in_algebraic_model_string(self):
         from libcellml import GeneratorProfile
 
