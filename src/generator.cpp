@@ -1987,8 +1987,8 @@ void Generator::GeneratorImpl::addImplementationInitialiseStatesAndConstantsMeth
         }
 
         std::string interfaceMethodString = (mLockedModel->type() == AnalyserModel::Type::ALGEBRAIC) ?
-                                                mLockedProfile->implementationInitialiseConstantsMethodString() :
-                                                mLockedProfile->implementationInitialiseStatesAndConstantsMethodString();
+                                                mLockedProfile->implementationInitialiseVariablesMethodString() :
+                                                mLockedProfile->implementationInitialiseVariablesMethodString();
 
         mCode += replace(interfaceMethodString, "[CODE]", generateMethodBodyCode(methodBody));
     }
