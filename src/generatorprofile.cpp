@@ -188,7 +188,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mImplementationVariableCountString;
 
     std::string mVariableTypeObjectString;
-    std::string mVariableTypeObjectExternalTypeString;
 
     std::string mVariableOfIntegrationVariableTypeString;
     std::string mStateVariableTypeString;
@@ -473,7 +472,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "    COMPUTED_CONSTANT,\n"
                                     "    ALGEBRAIC[OPTIONAL_TYPE]\n"
                                     "} VariableType;\n";
-        mVariableTypeObjectExternalTypeString = ",\n    EXTERNAL";
 
         mVariableOfIntegrationVariableTypeString = "VARIABLE_OF_INTEGRATION";
         mStateVariableTypeString = "STATE";
@@ -780,7 +778,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "    COMPUTED_CONSTANT = 2\n"
                                     "    ALGEBRAIC = 3[OPTIONAL_TYPE]\n"
                                     "\n";
-        mVariableTypeObjectExternalTypeString = "\n    EXTERNAL = 4";
 
         mVariableOfIntegrationVariableTypeString = "VariableType.VARIABLE_OF_INTEGRATION";
         mStateVariableTypeString = "VariableType.STATE";
@@ -2010,16 +2007,6 @@ std::string GeneratorProfile::variableTypeObjectString() const
 void GeneratorProfile::setVariableTypeObjectString(const std::string &variableTypeObjectString)
 {
     mPimpl->mVariableTypeObjectString = variableTypeObjectString;
-}
-
-std::string GeneratorProfile::variableTypeObjectExternalTypeString() const
-{
-    return mPimpl->mVariableTypeObjectExternalTypeString;
-}
-
-void GeneratorProfile::setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString)
-{
-    mPimpl->mVariableTypeObjectExternalTypeString = variableTypeObjectExternalTypeString;
 }
 
 std::string GeneratorProfile::variableOfIntegrationVariableTypeString() const

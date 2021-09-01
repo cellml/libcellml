@@ -693,12 +693,6 @@ the <VARIABLE_COUNT> tag, which will be replaced with the number of states in th
 %feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectString
 "Sets the string for the data structure for the variable type object.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectExternalTypeString
-"Returns the string for the external type for the data structure for the variable type object.";
-
-%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeString
-"Sets the string for the external type for the data structure for the variable type object.";
-
 %feature("docstring") libcellml::GeneratorProfile::variableOfIntegrationVariableTypeString
 "Returns the string for the name of the variable of integration variable type.";
 

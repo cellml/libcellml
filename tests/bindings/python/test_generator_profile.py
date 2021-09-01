@@ -1470,16 +1470,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setVariableTypeObjectString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString())
 
-    def test_variable_type_object_external_type_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual(',\n    EXTERNAL',
-                         g.variableTypeObjectExternalTypeString())
-        g.setVariableTypeObjectExternalTypeString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectExternalTypeString())
-
     def test_variables_array_string(self):
         from libcellml import GeneratorProfile
 
