@@ -902,17 +902,17 @@ tag, which will be replaced with some code to create the variables array.";
 %feature("docstring") libcellml::GeneratorProfile::setImplementationDeleteArrayMethodString
 "Sets the string for the implementation to delete an array.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseConstantsMethodString
-"Returns the string for the interface to initialise constants.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseVariablesMethodString
+"Returns the string for the interface to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseConstantsMethodString
-"Sets the string for the interface to initialise constants.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseVariablesMethodString
+"Sets the string for the interface to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseConstantsMethodString
-"Returns the string for the implementation to initialise constants.";
+%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseVariablesMethodString
+"Returns the string for the implementation to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseConstantsMethodString
-"Sets the string for the implementation to initialise constants.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseVariablesMethodString
+"Sets the string for the implementation to initialise variables.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceComputeComputedConstantsMethodString
 "Returns the string for the interface to compute computed constants.";

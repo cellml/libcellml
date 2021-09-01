@@ -233,8 +233,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceDeleteArrayMethodString;
     std::string mImplementationDeleteArrayMethodString;
 
-    std::string mInterfaceInitialiseConstantsMethodString;
-    std::string mImplementationInitialiseConstantsMethodString;
+    std::string mInterfaceInitialiseVariablesMethodString;
+    std::string mImplementationInitialiseVariablesMethodString;
 
     std::string mInterfaceComputeComputedConstantsMethodString;
     std::string mImplementationComputeComputedConstantsMethodString;
@@ -550,8 +550,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitialiseConstantsMethodString = "void initialiseConstants(double *variables);\n";
-        mImplementationInitialiseConstantsMethodString = "void initialiseConstants(double *variables)\n"
+        mInterfaceInitialiseVariablesMethodString = "void initialiseVariables(double *variables);\n";
+        mImplementationInitialiseVariablesMethodString = "void initialiseVariables(double *variables)\n"
                                                          "{\n"
                                                          "[CODE]"
                                                          "}\n";
@@ -865,9 +865,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
 
-        mInterfaceInitialiseConstantsMethodString = "";
-        mImplementationInitialiseConstantsMethodString = "\n"
-                                                         "def initialise_constants(variables):\n"
+        mInterfaceInitialiseVariablesMethodString = "";
+        mImplementationInitialiseVariablesMethodString = "\n"
+                                                         "def initialise_variables(variables):\n"
                                                          "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
@@ -2374,24 +2374,24 @@ void GeneratorProfile::setImplementationDeleteArrayMethodString(const std::strin
     mPimpl->mImplementationDeleteArrayMethodString = implementationDeleteArrayMethodString;
 }
 
-std::string GeneratorProfile::interfaceInitialiseConstantsMethodString() const
+std::string GeneratorProfile::interfaceInitialiseVariablesMethodString() const
 {
-    return mPimpl->mInterfaceInitialiseConstantsMethodString;
+    return mPimpl->mInterfaceInitialiseVariablesMethodString;
 }
 
-void GeneratorProfile::setInterfaceInitialiseConstantsMethodString(const std::string &interfaceInitialiseConstantsMethodString)
+void GeneratorProfile::setInterfaceInitialiseVariablesMethodString(const std::string &interfaceInitialiseVariablesMethodString)
 {
-    mPimpl->mInterfaceInitialiseConstantsMethodString = interfaceInitialiseConstantsMethodString;
+    mPimpl->mInterfaceInitialiseVariablesMethodString = interfaceInitialiseVariablesMethodString;
 }
 
-std::string GeneratorProfile::implementationInitialiseConstantsMethodString() const
+std::string GeneratorProfile::implementationInitialiseVariablesMethodString() const
 {
-    return mPimpl->mImplementationInitialiseConstantsMethodString;
+    return mPimpl->mImplementationInitialiseVariablesMethodString;
 }
 
-void GeneratorProfile::setImplementationInitialiseConstantsMethodString(const std::string &implementationInitialiseConstantsMethodString)
+void GeneratorProfile::setImplementationInitialiseVariablesMethodString(const std::string &implementationInitialiseVariablesMethodString)
 {
-    mPimpl->mImplementationInitialiseConstantsMethodString = implementationInitialiseConstantsMethodString;
+    mPimpl->mImplementationInitialiseVariablesMethodString = implementationInitialiseVariablesMethodString;
 }
 
 std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString() const
