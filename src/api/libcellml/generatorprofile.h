@@ -3070,32 +3070,6 @@ public:
     void setExternalVariableMethodTypeDefinitionInDifferentialModelString(const std::string &externalVariableMethodTypeDefinitionInDifferentialModelString);
 
     /**
-     * @brief Get the @c std::string for the external variable method parameter.
-     *
-     * Return the @c std::string for the external variable method parameter.
-     *
-     * @sa setInterfaceComputeRatesMethodString,
-     * setImplementationComputeRatesMethodString,
-     * setInterfaceComputeVariablesMethodInAlgebraicModelString,
-     * setImplementationComputeVariablesMethodInAlgebraicModelString
-     * setInterfaceComputeVariablesMethodInDifferentialModelString,
-     * setImplementationComputeVariablesMethodInDifferentialModelString
-     *
-     * @return The @c std::string for the external variable method parameter.
-     */
-    std::string externalVariableMethodParameterString() const;
-
-    /**
-     * @brief Set the @c std::string for the external variable method parameter.
-     *
-     * Set this @c std::string for the external variable method parameter.
-     *
-     * @param externalVariableMethodParameterString The @c std::string to use
-     * for the external variable method parameter.
-     */
-    void setExternalVariableMethodParameterString(const std::string &externalVariableMethodParameterString);
-
-    /**
      * @brief Get the @c std::string for the call to the external variable
      * method in an algebraic model.
      *
@@ -3378,12 +3352,7 @@ public:
     /**
      * @brief Set the @c std::string for the interface to compute rates.
      *
-     * Set the @c std::string for the interface to compute rates. To be
-     * useful, the string should contain the [OPTIONAL_PARAMETER] tag, which
-     * will be replaced with a parameter for the compute external variables
-     * method, if needed.
-     *
-     * @sa externalVariableMethodParameterString
+     * Set the @c std::string for the interface to compute rates.
      *
      * @param interfaceComputeRatesMethodString The @c std::string to use for
      * the interface to compute rates.
@@ -3403,12 +3372,8 @@ public:
      * @brief Set the @c std::string for the implementation to compute rates.
      *
      * Set the @c std::string for the implementation to compute rates. To be
-     * useful, the string should contain both the [OPTIONAL_PARAMETER] and
-     * [CODE] tags, which will be replaced with a parameter for the compute
-     * external variables method, if needed, and with some code to compute
-     * rates, respectively.
-     *
-     * @sa externalVariableMethodParameterString
+     * useful, the string should contain the [CODE] tag, which will be replaced
+     * with some code to compute rates.
      *
      * @param implementationComputeRatesMethodString The @c std::string to use
      * for the implementation to compute rates.
@@ -3432,11 +3397,7 @@ public:
      * an algebraic model.
      *
      * Set the @c std::string for the interface to compute variables in an
-     * algebraic model. To be useful, the string should contain the
-     * [OPTIONAL_PARAMETER] tag, which will be replaced with a parameter for the
-     * compute external variables method, if needed.
-     *
-     * @sa externalVariableMethodParameterString
+     * algebraic model.
      *
      * @param interfaceComputeVariablesMethodInAlgebraicModelString The
      * @c std::string to use for the interface to compute variables in an
@@ -3461,12 +3422,8 @@ public:
      * variables in an algebraic model.
      *
      * Set the @c std::string for the implementation to compute variables in an
-     * algebraic model. To be useful, the string should contain both the
-     * [OPTIONAL_PARAMETER] and [CODE] tags, which will be replaced with a
-     * parameter for the compute external variables method, if needed, and with
-     * some code to compute rates, respectively.
-     *
-     * @sa externalVariableMethodParameterString
+     * algebraic model. To be useful, the string should contain the [CODE] tag,
+     * which will be replaced with some code to compute rates.
      *
      * @param implementationComputeVariablesMethodInAlgebraicModelString The
      * @c std::string to use for the implementation to compute variables in an
@@ -3491,11 +3448,7 @@ public:
      * differential model.
      *
      * Set the @c std::string for the interface to compute variables in a
-     * differential model. To be useful, the string should contain the
-     * [OPTIONAL_PARAMETER] tag, which will be replaced with a parameter for the
-     * compute external variables method, if needed.
-     *
-     * @sa externalVariableMethodParameterString
+     * differential model.
      *
      * @param interfaceComputeVariablesMethodInDifferentialModelString The
      * @c std::string to use for the interface to compute variables in a
@@ -3520,12 +3473,8 @@ public:
      * variables in a differential model.
      *
      * Set the @c std::string for the implementation to compute variables in a
-     * differential model. To be useful, the string should contain both the
-     * [OPTIONAL_PARAMETER] and [CODE] tags, which will be replaced with a
-     * parameter for the compute external variables method, if needed, and with
-     * some code to compute rates, respectively.
-     *
-     * @sa externalVariableMethodParameterString
+     * differential model. To be useful, the string should contain the [CODE]
+     * tag, which will be replaced with some code to compute rates.
      *
      * @param implementationComputeVariablesMethodInDifferentialModelString The
      * @c std::string to use for the implementation to compute variables in a

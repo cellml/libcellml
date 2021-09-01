@@ -837,12 +837,6 @@ describe("GeneratorProfile tests", () => {
     x.setExternalVariableMethodTypeDefinitionInDifferentialModelString("something")
     expect(x.externalVariableMethodTypeDefinitionInDifferentialModelString()).toBe("something")
   });
-  test("Checking GeneratorProfile.externalVariableMethodParameterString.", () => {
-    const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
-
-    x.setExternalVariableMethodParameterString("something")
-    expect(x.externalVariableMethodParameterString()).toBe("something")
-  });
   test("Checking GeneratorProfile.externalVariableMethodCallInAlgebraicModelString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.Profile.C)
 
