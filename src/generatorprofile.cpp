@@ -189,8 +189,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mVariableTypeObjectInAlgebraicModelString;
     std::string mVariableTypeObjectExternalTypeInAlgebraicModelString;
-    std::string mVariableTypeObjectInDifferentialModelString;
-    std::string mVariableTypeObjectExternalTypeInDifferentialModelString;
 
     std::string mVariableOfIntegrationVariableTypeString;
     std::string mStateVariableTypeString;
@@ -219,9 +217,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mVariablesArrayString;
 
     std::string mExternalVariableMethodTypeDefinitionInAlgebraicModelString;
-    std::string mExternalVariableMethodTypeDefinitionInDifferentialModelString;
     std::string mExternalVariableMethodCallInAlgebraicModelString;
-    std::string mExternalVariableMethodCallInDifferentialModelString;
 
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
@@ -243,9 +239,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mInterfaceComputeVariablesMethodInAlgebraicModelString;
     std::string mImplementationComputeVariablesMethodInAlgebraicModelString;
-
-    std::string mInterfaceComputeVariablesMethodInDifferentialModelString;
-    std::string mImplementationComputeVariablesMethodInDifferentialModelString;
 
     std::string mEmptyMethodString;
 
@@ -481,14 +474,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                     "    ALGEBRAIC[OPTIONAL_TYPE]\n"
                                                     "} VariableType;\n";
         mVariableTypeObjectExternalTypeInAlgebraicModelString = ",\n    EXTERNAL";
-        mVariableTypeObjectInDifferentialModelString = "typedef enum {\n"
-                                                       "    VARIABLE_OF_INTEGRATION,\n"
-                                                       "    STATE,\n"
-                                                       "    CONSTANT,\n"
-                                                       "    COMPUTED_CONSTANT,\n"
-                                                       "    ALGEBRAIC[OPTIONAL_TYPE]\n"
-                                                       "} VariableType;\n";
-        mVariableTypeObjectExternalTypeInDifferentialModelString = ",\n    EXTERNAL";
 
         mVariableOfIntegrationVariableTypeString = "VARIABLE_OF_INTEGRATION";
         mStateVariableTypeString = "STATE";
@@ -526,9 +511,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariablesArrayString = "variables";
 
         mExternalVariableMethodTypeDefinitionInAlgebraicModelString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
-        mExternalVariableMethodTypeDefinitionInDifferentialModelString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
         mExternalVariableMethodCallInAlgebraicModelString = "externalVariable(variables, [INDEX])";
-        mExternalVariableMethodCallInDifferentialModelString = "externalVariable(voi, states, rates, variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
@@ -570,12 +553,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                                       "{\n"
                                                                       "[CODE]"
                                                                       "}\n";
-
-        mInterfaceComputeVariablesMethodInDifferentialModelString = "void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n";
-        mImplementationComputeVariablesMethodInDifferentialModelString = "void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n"
-                                                                         "{\n"
-                                                                         "[CODE]"
-                                                                         "}\n";
 
         mEmptyMethodString = "";
 
@@ -804,15 +781,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                     "    ALGEBRAIC = 3[OPTIONAL_TYPE]\n"
                                                     "\n";
         mVariableTypeObjectExternalTypeInAlgebraicModelString = "\n    EXTERNAL = 4";
-        mVariableTypeObjectInDifferentialModelString = "\n"
-                                                       "class VariableType(Enum):\n"
-                                                       "    VARIABLE_OF_INTEGRATION = 1\n"
-                                                       "    STATE = 2\n"
-                                                       "    CONSTANT = 3\n"
-                                                       "    COMPUTED_CONSTANT = 4\n"
-                                                       "    ALGEBRAIC = 5[OPTIONAL_TYPE]\n"
-                                                       "\n";
-        mVariableTypeObjectExternalTypeInDifferentialModelString = "\n    EXTERNAL = 6";
 
         mVariableOfIntegrationVariableTypeString = "VariableType.VARIABLE_OF_INTEGRATION";
         mStateVariableTypeString = "VariableType.STATE";
@@ -845,9 +813,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariablesArrayString = "variables";
 
         mExternalVariableMethodTypeDefinitionInAlgebraicModelString = "";
-        mExternalVariableMethodTypeDefinitionInDifferentialModelString = "";
         mExternalVariableMethodCallInAlgebraicModelString = "external_variable(variables, [INDEX])";
-        mExternalVariableMethodCallInDifferentialModelString = "external_variable(voi, states, rates, variables, [INDEX])";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
@@ -881,11 +847,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mImplementationComputeVariablesMethodInAlgebraicModelString = "\n"
                                                                       "def compute_variables(variables[OPTIONAL_PARAMETER]):\n"
                                                                       "[CODE]";
-
-        mInterfaceComputeVariablesMethodInDifferentialModelString = "";
-        mImplementationComputeVariablesMethodInDifferentialModelString = "\n"
-                                                                         "def compute_variables(voi, states, rates, variables[OPTIONAL_PARAMETER]):\n"
-                                                                         "[CODE]";
 
         mEmptyMethodString = "pass\n";
 
@@ -2061,26 +2022,6 @@ void GeneratorProfile::setVariableTypeObjectExternalTypeInAlgebraicModelString(c
     mPimpl->mVariableTypeObjectExternalTypeInAlgebraicModelString = variableTypeObjectExternalTypeInAlgebraicModelString;
 }
 
-std::string GeneratorProfile::variableTypeObjectInDifferentialModelString() const
-{
-    return mPimpl->mVariableTypeObjectInDifferentialModelString;
-}
-
-void GeneratorProfile::setVariableTypeObjectInDifferentialModelString(const std::string &variableTypeObjectInDifferentialModelString)
-{
-    mPimpl->mVariableTypeObjectInDifferentialModelString = variableTypeObjectInDifferentialModelString;
-}
-
-std::string GeneratorProfile::variableTypeObjectExternalTypeInDifferentialModelString() const
-{
-    return mPimpl->mVariableTypeObjectExternalTypeInDifferentialModelString;
-}
-
-void GeneratorProfile::setVariableTypeObjectExternalTypeInDifferentialModelString(const std::string &variableTypeObjectExternalTypeInDifferentialModelString)
-{
-    mPimpl->mVariableTypeObjectExternalTypeInDifferentialModelString = variableTypeObjectExternalTypeInDifferentialModelString;
-}
-
 std::string GeneratorProfile::variableOfIntegrationVariableTypeString() const
 {
     return mPimpl->mVariableOfIntegrationVariableTypeString;
@@ -2271,16 +2212,6 @@ void GeneratorProfile::setExternalVariableMethodTypeDefinitionInAlgebraicModelSt
     mPimpl->mExternalVariableMethodTypeDefinitionInAlgebraicModelString = externalVariableMethodTypeDefinitionInAlgebraicModelString;
 }
 
-std::string GeneratorProfile::externalVariableMethodTypeDefinitionInDifferentialModelString() const
-{
-    return mPimpl->mExternalVariableMethodTypeDefinitionInDifferentialModelString;
-}
-
-void GeneratorProfile::setExternalVariableMethodTypeDefinitionInDifferentialModelString(const std::string &externalVariableMethodTypeDefinitionInDifferentialModelString)
-{
-    mPimpl->mExternalVariableMethodTypeDefinitionInDifferentialModelString = externalVariableMethodTypeDefinitionInDifferentialModelString;
-}
-
 std::string GeneratorProfile::externalVariableMethodCallInAlgebraicModelString() const
 {
     return mPimpl->mExternalVariableMethodCallInAlgebraicModelString;
@@ -2289,16 +2220,6 @@ std::string GeneratorProfile::externalVariableMethodCallInAlgebraicModelString()
 void GeneratorProfile::setExternalVariableMethodCallInAlgebraicModelString(const std::string &externalVariableMethodCallInAlgebraicModelString)
 {
     mPimpl->mExternalVariableMethodCallInAlgebraicModelString = externalVariableMethodCallInAlgebraicModelString;
-}
-
-std::string GeneratorProfile::externalVariableMethodCallInDifferentialModelString() const
-{
-    return mPimpl->mExternalVariableMethodCallInDifferentialModelString;
-}
-
-void GeneratorProfile::setExternalVariableMethodCallInDifferentialModelString(const std::string &externalVariableMethodCallInDifferentialModelString)
-{
-    mPimpl->mExternalVariableMethodCallInDifferentialModelString = externalVariableMethodCallInDifferentialModelString;
 }
 
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
@@ -2439,26 +2360,6 @@ std::string GeneratorProfile::implementationComputeVariablesMethodInAlgebraicMod
 void GeneratorProfile::setImplementationComputeVariablesMethodInAlgebraicModelString(const std::string &implementationComputeVariablesMethodInAlgebraicModelString)
 {
     mPimpl->mImplementationComputeVariablesMethodInAlgebraicModelString = implementationComputeVariablesMethodInAlgebraicModelString;
-}
-
-std::string GeneratorProfile::interfaceComputeVariablesMethodInDifferentialModelString() const
-{
-    return mPimpl->mInterfaceComputeVariablesMethodInDifferentialModelString;
-}
-
-void GeneratorProfile::setInterfaceComputeVariablesMethodInDifferentialModelString(const std::string &interfaceComputeVariablesMethodInDifferentialModelString)
-{
-    mPimpl->mInterfaceComputeVariablesMethodInDifferentialModelString = interfaceComputeVariablesMethodInDifferentialModelString;
-}
-
-std::string GeneratorProfile::implementationComputeVariablesMethodInDifferentialModelString() const
-{
-    return mPimpl->mImplementationComputeVariablesMethodInDifferentialModelString;
-}
-
-void GeneratorProfile::setImplementationComputeVariablesMethodInDifferentialModelString(const std::string &implementationComputeVariablesMethodInDifferentialModelString)
-{
-    mPimpl->mImplementationComputeVariablesMethodInDifferentialModelString = implementationComputeVariablesMethodInDifferentialModelString;
 }
 
 std::string GeneratorProfile::emptyMethodString() const

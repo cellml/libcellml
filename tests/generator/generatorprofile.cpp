@@ -288,15 +288,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "} VariableType;\n",
               generatorProfile->variableTypeObjectInAlgebraicModelString());
     EXPECT_EQ(",\n    EXTERNAL", generatorProfile->variableTypeObjectExternalTypeInAlgebraicModelString());
-    EXPECT_EQ("typedef enum {\n"
-              "    VARIABLE_OF_INTEGRATION,\n"
-              "    STATE,\n"
-              "    CONSTANT,\n"
-              "    COMPUTED_CONSTANT,\n"
-              "    ALGEBRAIC[OPTIONAL_TYPE]\n"
-              "} VariableType;\n",
-              generatorProfile->variableTypeObjectInDifferentialModelString());
-    EXPECT_EQ(",\n    EXTERNAL", generatorProfile->variableTypeObjectExternalTypeInDifferentialModelString());
 
     EXPECT_EQ("VARIABLE_OF_INTEGRATION", generatorProfile->variableOfIntegrationVariableTypeString());
     EXPECT_EQ("STATE", generatorProfile->stateVariableTypeString());
@@ -337,9 +328,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
     EXPECT_EQ("typedef double (* ExternalVariable)(double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionInAlgebraicModelString());
-    EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n", generatorProfile->externalVariableMethodTypeDefinitionInDifferentialModelString());
     EXPECT_EQ("externalVariable(variables, [INDEX])", generatorProfile->externalVariableMethodCallInAlgebraicModelString());
-    EXPECT_EQ("externalVariable(voi, states, rates, variables, [INDEX])", generatorProfile->externalVariableMethodCallInDifferentialModelString());
 
     EXPECT_EQ("double * createStatesArray();\n",
               generatorProfile->interfaceCreateStatesArrayMethodString());
@@ -396,14 +385,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeVariablesMethodInAlgebraicModelString());
-
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n",
-              generatorProfile->interfaceComputeVariablesMethodInDifferentialModelString());
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n"
-              "{\n"
-              "[CODE]"
-              "}\n",
-              generatorProfile->implementationComputeVariablesMethodInDifferentialModelString());
 
     EXPECT_EQ("", generatorProfile->emptyMethodString());
 
@@ -733,8 +714,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setVariableTypeObjectInAlgebraicModelString(value);
     generatorProfile->setVariableTypeObjectExternalTypeInAlgebraicModelString(value);
-    generatorProfile->setVariableTypeObjectInDifferentialModelString(value);
-    generatorProfile->setVariableTypeObjectExternalTypeInDifferentialModelString(value);
 
     generatorProfile->setVariableOfIntegrationVariableTypeString(value);
     generatorProfile->setStateVariableTypeString(value);
@@ -763,9 +742,7 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setVariablesArrayString(value);
 
     generatorProfile->setExternalVariableMethodTypeDefinitionInAlgebraicModelString(value);
-    generatorProfile->setExternalVariableMethodTypeDefinitionInDifferentialModelString(value);
     generatorProfile->setExternalVariableMethodCallInAlgebraicModelString(value);
-    generatorProfile->setExternalVariableMethodCallInDifferentialModelString(value);
 
     generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
     generatorProfile->setImplementationCreateStatesArrayMethodString(value);
@@ -787,9 +764,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setInterfaceComputeVariablesMethodInAlgebraicModelString(value);
     generatorProfile->setImplementationComputeVariablesMethodInAlgebraicModelString(value);
-
-    generatorProfile->setInterfaceComputeVariablesMethodInDifferentialModelString(value);
-    generatorProfile->setImplementationComputeVariablesMethodInDifferentialModelString(value);
 
     generatorProfile->setEmptyMethodString(value);
 
@@ -829,8 +803,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->variableTypeObjectInAlgebraicModelString());
     EXPECT_EQ(value, generatorProfile->variableTypeObjectExternalTypeInAlgebraicModelString());
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectInDifferentialModelString());
-    EXPECT_EQ(value, generatorProfile->variableTypeObjectExternalTypeInDifferentialModelString());
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationVariableTypeString());
     EXPECT_EQ(value, generatorProfile->stateVariableTypeString());
@@ -859,9 +831,7 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
 
     EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionInAlgebraicModelString());
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionInDifferentialModelString());
     EXPECT_EQ(value, generatorProfile->externalVariableMethodCallInAlgebraicModelString());
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodCallInDifferentialModelString());
 
     EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
@@ -883,9 +853,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->interfaceComputeVariablesMethodInAlgebraicModelString());
     EXPECT_EQ(value, generatorProfile->implementationComputeVariablesMethodInAlgebraicModelString());
-
-    EXPECT_EQ(value, generatorProfile->interfaceComputeVariablesMethodInDifferentialModelString());
-    EXPECT_EQ(value, generatorProfile->implementationComputeVariablesMethodInDifferentialModelString());
 
     EXPECT_EQ(value, generatorProfile->emptyMethodString());
 
