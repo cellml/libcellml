@@ -687,17 +687,17 @@ used respectively.";
 "Sets the string for the implementation of the variable count constant. To be useful, the string should contain
 the <VARIABLE_COUNT> tag, which will be replaced with the number of states in the model.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectInAlgebraicModelString
-"Returns the string for the data structure for the variable type object in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectString
+"Returns the string for the data structure for the variable type object.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectInAlgebraicModelString
-"Sets the string for the data structure for the variable type object in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectString
+"Sets the string for the data structure for the variable type object.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectExternalTypeInAlgebraicModelString
-"Returns the string for the external type for the data structure for the variable type object in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectExternalTypeString
+"Returns the string for the external type for the data structure for the variable type object.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeInAlgebraicModelString
-"Sets the string for the external type for the data structure for the variable type object in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeString
+"Sets the string for the external type for the data structure for the variable type object.";
 
 %feature("docstring") libcellml::GeneratorProfile::variableOfIntegrationVariableTypeString
 "Returns the string for the name of the variable of integration variable type.";
@@ -816,17 +816,17 @@ and units of a variable respectively.";
 %feature("docstring") libcellml::GeneratorProfile::setVariablesArrayString
 "Sets the string for the name of the variables array.";
 
-%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodTypeDefinitionInAlgebraicModelString
-"Returns the string for the type definition of an external variable method in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodTypeDefinitionString
+"Returns the string for the type definition of an external variable method.";
 
-%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodTypeDefinitionInAlgebraicModelString
-"Sets the string for the type definition of an external variable method in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodTypeDefinitionString
+"Sets the string for the type definition of an external variable method.";
 
-%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodCallInAlgebraicModelString
-"Returns the string for the call to the external variable method in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodCallString
+"Returns the string for the call to the external variable method.";
 
-%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodCallInAlgebraicModelString
-"Sets the string for the call to the external variable method in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodCallString
+"Sets the string for the call to the external variable method.";
 
 %feature("docstring") libcellml::GeneratorProfile::setReturnCreatedArrayString
 "Sets the string for returning a created array. To be useful, the string should contain the <ARRAY_SIZE> tag,
@@ -908,17 +908,17 @@ tag, which will be replaced with some code to create the variables array.";
 %feature("docstring") libcellml::GeneratorProfile::setImplementationComputeRatesMethodString
 "Sets the string for the implementation to compute rates.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceComputeVariablesMethodInAlgebraicModelString
-"Returns the string for the interface to compute variables in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceComputeVariablesMethodString
+"Returns the string for the interface to compute variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceComputeVariablesMethodInAlgebraicModelString
-"Sets the string for the interface to compute variables in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceComputeVariablesMethodString
+"Sets the string for the interface to compute variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationComputeVariablesMethodInAlgebraicModelString
-"Returns the string for the implementation to compute variables in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::implementationComputeVariablesMethodString
+"Returns the string for the implementation to compute variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationComputeVariablesMethodInAlgebraicModelString
-"Sets the string for the implementation to compute variables in an algebraic model.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationComputeVariablesMethodString
+"Sets the string for the implementation to compute variables.";
 
 %feature("docstring") libcellml::GeneratorProfile::emptyMethodString
 "Returns the string for an empty method.";

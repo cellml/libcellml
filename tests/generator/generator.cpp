@@ -2065,8 +2065,8 @@ TEST(Generator, coverage)
 
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectInAlgebraicModelString("");
-    profile->setVariableTypeObjectExternalTypeInAlgebraicModelString("");
+    profile->setVariableTypeObjectString("");
+    profile->setVariableTypeObjectExternalTypeString("");
 
     profile->setVariableOfIntegrationVariableTypeString("");
     profile->setStateVariableTypeString("");
@@ -2091,8 +2091,8 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesMethodInAlgebraicModelString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
-                                                                           "// xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
+    profile->setImplementationComputeVariablesMethodString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
+                                                           "// xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode());
@@ -2137,8 +2137,8 @@ TEST(Generator, coverage)
     profile->setInterfaceVariableCountString("");
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectInAlgebraicModelString("");
-    profile->setVariableTypeObjectExternalTypeInAlgebraicModelString("");
+    profile->setVariableTypeObjectString("");
+    profile->setVariableTypeObjectExternalTypeString("");
 
     profile->setVariableOfIntegrationVariableTypeString("");
     profile->setStateVariableTypeString("");

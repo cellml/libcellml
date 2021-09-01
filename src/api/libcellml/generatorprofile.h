@@ -2501,58 +2501,55 @@ public:
 
     /**
      * @brief Get the @c std::string for the data structure for the variable
-     * type object in an algebraic model.
+     * type object.
      *
      * Return the @c std::string for the data structure for the variable type
-     * object in an algebraic model.
+     * object.
      *
      * @return The @c std::string for the data structure for the variable type
-     * object in an algebraic model.
+     * object.
      */
-    std::string variableTypeObjectInAlgebraicModelString() const;
+    std::string variableTypeObjectString() const;
 
     /**
      * @brief Set the @c std::string for the data structure for the variable
-     * type object in an algebraic model.
+     * type object.
      *
-     * Set the @c std::string for the data structure for the variable
-     * type object in an algebraic model. To be useful, the string should
-     * contain the [OPTIONAL_TYPE] tag, which will be replaced with a type for
-     * the external variable type, if needed.
+     * Set the @c std::string for the data structure for the variable type
+     * object.
      *
-     * @sa variableTypeObjectInAlgebraicModelString
+     * @sa variableTypeObjectString
      *
-     * @param variableTypeObjectInAlgebraicModelString The @c std::string to use
-     * for the data structure for the variable type object in an algebraic model.
+     * @param variableTypeObjectString The @c std::string to use for the data
+     * structure for the variable type object.
      */
-    void setVariableTypeObjectInAlgebraicModelString(const std::string &variableTypeObjectInAlgebraicModelString);
+    void setVariableTypeObjectString(const std::string &variableTypeObjectString);
 
     /**
      * @brief Get the @c std::string for the external type for the data
-     * structure for the variable type object in an algebraic model.
+     * structure for the variable type object.
      *
      * Return the @c std::string for the external type for the data structure
-     * for the variable type object in an algebraic model.
+     * for the variable type object.
      *
-     * @sa setVariableTypeObjectInAlgebraicModelString
+     * @sa setVariableTypeObjectString
      *
      * @return The @c std::string for the external type for the data structure
-     * for the variable type object in an algebraic model.
+     * for the variable type object.
      */
-    std::string variableTypeObjectExternalTypeInAlgebraicModelString() const;
+    std::string variableTypeObjectExternalTypeString() const;
 
     /**
      * @brief Set the @c std::string for the external type for the data
-     * structure for the variable type object in an algebraic model.
+     * structure for the variable type object.
      *
      * Set this @c std::string for the external type for the data structure for
-     * the variable type object in an algebraic model.
+     * the variable type object.
      *
-     * @param variableTypeObjectExternalTypeInAlgebraicModelString The
-     * @c std::string to use for the external type for the data structure for
-     * the variable type object in an algebraic model.
+     * @param variableTypeObjectExternalTypeString The @c std::string to use for
+     * the external type for the data structure for the variable type object.
      */
-    void setVariableTypeObjectExternalTypeInAlgebraicModelString(const std::string &variableTypeObjectExternalTypeInAlgebraicModelString);
+    void setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString);
 
     /**
      * @brief Get the @c std::string for the name of the variable of integration
@@ -2965,54 +2962,50 @@ public:
 
     /**
      * @brief Get the @c std::string for the type definition of an external
-     * variable method in an algebraic model.
+     * variable method.
      *
      * Return the @c std::string for the type definition of an external variable
-     * method in an algebraic model.
+     * method.
      *
      * @return The @c std::string for the type definition of an external
-     * variable method in an algebraic model.
+     * variable method.
      */
-    std::string externalVariableMethodTypeDefinitionInAlgebraicModelString() const;
+    std::string externalVariableMethodTypeDefinitionString() const;
 
     /**
      * @brief Set the @c std::string for the type definition of an external
-     * variable method in an algebraic model.
+     * variable method.
      *
      * Set this @c std::string for the type definition of an external variable
-     * method in an algebraic model.
+     * method.
      *
-     * @param externalVariableMethodTypeDefinitionInAlgebraicModelString The
-     * @c std::string to use for the type definition of an external variable
-     * method in an algebraic model.
+     * @param externalVariableMethodTypeDefinitionString The @c std::string to
+     * use for the type definition of an external variable method.
      */
-    void setExternalVariableMethodTypeDefinitionInAlgebraicModelString(const std::string &externalVariableMethodTypeDefinitionInAlgebraicModelString);
+    void setExternalVariableMethodTypeDefinitionString(const std::string &externalVariableMethodTypeDefinitionString);
 
     /**
      * @brief Get the @c std::string for the call to the external variable
-     * method in an algebraic model.
+     * method.
      *
-     * Return the @c std::string for the call to the external variable method in
-     * an algebraic model.
+     * Return the @c std::string for the call to the external variable method.
      *
-     * @return The @c std::string for the call to the external variable method
-     * in an algebraic model.
+     * @return The @c std::string for the call to the external variable method.
      */
-    std::string externalVariableMethodCallInAlgebraicModelString() const;
+    std::string externalVariableMethodCallString() const;
 
     /**
      * @brief Set the @c std::string for the call to the external variable
-     * method in an algebraic model.
+     * method.
      *
-     * Set this @c std::string for the call to the external variable method in
-     * an algebraic model. To be useful, the string should contain the [INDEX]
-     * tag, which will be replaced with the index of the external variable.
+     * Set this @c std::string for the call to the external variable method. To
+     * be useful, the string should contain the [INDEX] tag, which will be
+     * replaced with the index of the external variable.
      *
-     * @param externalVariableMethodCallInAlgebraicModelString The
-     * @c std::string to use for the call to the external variable method in an
-     * algebraic model.
+     * @param externalVariableMethodCallString The @c std::string to use for the
+     * call to the external variable method.
      */
-    void setExternalVariableMethodCallInAlgebraicModelString(const std::string &externalVariableMethodCallInAlgebraicModelString);
+    void setExternalVariableMethodCallString(const std::string &externalVariableMethodCallString);
 
     /**
      * @brief Get the @c std::string for the interface to create the states
@@ -3274,55 +3267,46 @@ public:
     void setImplementationComputeRatesMethodString(const std::string &implementationComputeRatesMethodString);
 
     /**
-     * @brief Get the @c std::string for the interface to compute variables in
-     * an algebraic model.
+     * @brief Get the @c std::string for the interface to compute variables.
      *
-     * Return the @c std::string for the interface to compute variables in an
-     * algebraic model.
+     * Return the @c std::string for the interface to compute variables.
      *
-     * @return The @c std::string for the interface to compute variables in an
-     * algebraic model.
+     * @return The @c std::string for the interface to compute variables.
      */
-    std::string interfaceComputeVariablesMethodInAlgebraicModelString() const;
+    std::string interfaceComputeVariablesMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the interface to compute variables in
-     * an algebraic model.
+     * @brief Set the @c std::string for the interface to compute variables.
      *
-     * Set the @c std::string for the interface to compute variables in an
-     * algebraic model.
+     * Set the @c std::string for the interface to compute variables.
      *
-     * @param interfaceComputeVariablesMethodInAlgebraicModelString The
-     * @c std::string to use for the interface to compute variables in an
-     * algebraic model.
+     * @param interfaceComputeVariablesMethodString The @c std::string to use
+     * for the interface to compute variables.
      */
-    void setInterfaceComputeVariablesMethodInAlgebraicModelString(const std::string &interfaceComputeVariablesMethodInAlgebraicModelString);
+    void setInterfaceComputeVariablesMethodString(const std::string &interfaceComputeVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for the implementation to compute
-     * variables in an algebraic model.
+     * variables.
      *
-     * Return the @c std::string for the implementation to compute variables in
-     * an algebraic model.
+     * Return the @c std::string for the implementation to compute variables.
      *
-     * @return The @c std::string for the implementation to compute variables in
-     * an algebraic model.
+     * @return The @c std::string for the implementation to compute variables.
      */
-    std::string implementationComputeVariablesMethodInAlgebraicModelString() const;
+    std::string implementationComputeVariablesMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute
-     * variables in an algebraic model.
+     * variables.
      *
-     * Set the @c std::string for the implementation to compute variables in an
-     * algebraic model. To be useful, the string should contain the [CODE] tag,
-     * which will be replaced with some code to compute rates.
+     * Set the @c std::string for the implementation to compute variables. To be
+     * useful, the string should contain the [CODE] tag, which will be replaced
+     * with some code to compute rates.
      *
-     * @param implementationComputeVariablesMethodInAlgebraicModelString The
-     * @c std::string to use for the implementation to compute variables in an
-     * algebraic model.
+     * @param implementationComputeVariablesMethodString The @c std::string to
+     * use for the implementation to compute variables.
      */
-    void setImplementationComputeVariablesMethodInAlgebraicModelString(const std::string &implementationComputeVariablesMethodInAlgebraicModelString);
+    void setImplementationComputeVariablesMethodString(const std::string &implementationComputeVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for an empty method.
