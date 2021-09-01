@@ -245,8 +245,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceComputeComputedConstantsMethodString;
     std::string mImplementationComputeComputedConstantsMethodString;
 
-    std::string mInterfaceComputeRatesMethodString;
-    std::string mImplementationComputeRatesMethodString;
+    std::string mInterfaceComputeRatesMethodWoevString;
+    std::string mImplementationComputeRatesMethodWoevString;
+
+    std::string mInterfaceComputeRatesMethodWevString;
+    std::string mImplementationComputeRatesMethodWevString;
 
     std::string mInterfaceComputeVariablesMethodString;
     std::string mImplementationComputeVariablesMethodString;
@@ -592,8 +595,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                               "[CODE]"
                                                               "}\n";
 
-        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+        mInterfaceComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *variables);\n";
+        mImplementationComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+                                                  "[CODE]"
+                                                  "}\n";
+
+        mInterfaceComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n";
+        mImplementationComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n"
                                                   "[CODE]"
                                                   "}\n";
 
@@ -925,9 +933,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                               "def compute_computed_constants(variables):\n"
                                                               "[CODE]";
 
-        mInterfaceComputeRatesMethodString = "";
-        mImplementationComputeRatesMethodString = "\n"
+        mInterfaceComputeRatesMethodWoevString = "";
+        mImplementationComputeRatesMethodWoevString = "\n"
                                                   "def compute_rates(voi, states, rates, variables):\n"
+                                                  "[CODE]";
+
+        mInterfaceComputeRatesMethodWevString = "";
+        mImplementationComputeRatesMethodWevString = "\n"
+                                                  "def compute_rates(voi, states, rates, variables, external_variable):\n"
                                                   "[CODE]";
 
         mInterfaceComputeVariablesMethodString = "";
@@ -2480,24 +2493,42 @@ void GeneratorProfile::setImplementationComputeComputedConstantsMethodString(con
     mPimpl->mImplementationComputeComputedConstantsMethodString = implementationComputeComputedConstantsMethodString;
 }
 
-std::string GeneratorProfile::interfaceComputeRatesMethodString() const
+std::string GeneratorProfile::interfaceComputeRatesMethodString(bool withExternalVariables) const
 {
-    return mPimpl->mInterfaceComputeRatesMethodString;
+    if (withExternalVariables) {
+        return mPimpl->mInterfaceComputeRatesMethodWevString;
+    }
+
+    return mPimpl->mInterfaceComputeRatesMethodWoevString;
 }
 
-void GeneratorProfile::setInterfaceComputeRatesMethodString(const std::string &interfaceComputeRatesMethodString)
+void GeneratorProfile::setInterfaceComputeRatesMethodString(bool withExternalVariables,
+                                                            const std::string &interfaceComputeRatesMethodString)
 {
-    mPimpl->mInterfaceComputeRatesMethodString = interfaceComputeRatesMethodString;
+    if (withExternalVariables) {
+        mPimpl->mInterfaceComputeRatesMethodWevString = interfaceComputeRatesMethodString;
+    } else {
+        mPimpl->mInterfaceComputeRatesMethodWoevString = interfaceComputeRatesMethodString;
+    }
 }
 
-std::string GeneratorProfile::implementationComputeRatesMethodString() const
+std::string GeneratorProfile::implementationComputeRatesMethodString(bool withExternalVariables) const
 {
-    return mPimpl->mImplementationComputeRatesMethodString;
+    if (withExternalVariables) {
+        return mPimpl->mImplementationComputeRatesMethodWevString;
+    }
+
+    return mPimpl->mImplementationComputeRatesMethodWoevString;
 }
 
-void GeneratorProfile::setImplementationComputeRatesMethodString(const std::string &implementationComputeRatesMethodString)
+void GeneratorProfile::setImplementationComputeRatesMethodString(bool withExternalVariables,
+                                                                 const std::string &implementationComputeRatesMethodString)
 {
-    mPimpl->mImplementationComputeRatesMethodString = implementationComputeRatesMethodString;
+    if (withExternalVariables) {
+        mPimpl->mImplementationComputeRatesMethodWevString = implementationComputeRatesMethodString;
+    } else {
+        mPimpl->mImplementationComputeRatesMethodWoevString = implementationComputeRatesMethodString;
+    }
 }
 
 std::string GeneratorProfile::interfaceComputeVariablesMethodString() const

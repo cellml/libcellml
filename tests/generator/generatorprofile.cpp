@@ -385,25 +385,25 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(false, false));
 
-    EXPECT_EQ("void initialiseVariables(double *variables);\n",
+    EXPECT_EQ("void initialiseVariables(double *variables, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(false, true));
-    EXPECT_EQ("void initialiseVariables(double *variables)\n"
+    EXPECT_EQ("void initialiseVariables(double *variables, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(false, true));
 
-    EXPECT_EQ("void initialiseVariables(double *variables);\n",
+    EXPECT_EQ("void initialiseVariables(double *states, double *variables);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(true, false));
-    EXPECT_EQ("void initialiseVariables(double *variables)\n"
+    EXPECT_EQ("void initialiseVariables(double *states, double *variables)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(true, false));
 
-    EXPECT_EQ("void initialiseVariables(double *variables);\n",
+    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceInitialiseVariablesMethodString(true, true));
-    EXPECT_EQ("void initialiseVariables(double *variables)\n"
+    EXPECT_EQ("void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",
@@ -418,12 +418,20 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->implementationComputeComputedConstantsMethodString());
 
     EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables);\n",
-              generatorProfile->interfaceComputeRatesMethodString());
+              generatorProfile->interfaceComputeRatesMethodString(false));
     EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables)\n"
               "{\n"
               "[CODE]"
               "}\n",
-              generatorProfile->implementationComputeRatesMethodString());
+              generatorProfile->implementationComputeRatesMethodString(false));
+
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n",
+              generatorProfile->interfaceComputeRatesMethodString(true));
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
+              "{\n"
+              "[CODE]"
+              "}\n",
+              generatorProfile->implementationComputeRatesMethodString(true));
 
     EXPECT_EQ("void computeVariables(double *variables);\n",
               generatorProfile->interfaceComputeVariablesMethodString());
@@ -817,8 +825,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
     generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
 
-    generatorProfile->setInterfaceComputeRatesMethodString(value);
-    generatorProfile->setImplementationComputeRatesMethodString(value);
+    generatorProfile->setInterfaceComputeRatesMethodString(false, value);
+    generatorProfile->setImplementationComputeRatesMethodString(false, value);
+
+    generatorProfile->setInterfaceComputeRatesMethodString(true, value);
+    generatorProfile->setImplementationComputeRatesMethodString(true, value);
 
     generatorProfile->setInterfaceComputeVariablesMethodString(value);
     generatorProfile->setImplementationComputeVariablesMethodString(value);
@@ -917,8 +928,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceComputeRatesMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationComputeRatesMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceComputeRatesMethodString(false));
+    EXPECT_EQ(value, generatorProfile->implementationComputeRatesMethodString(false));
+
+    EXPECT_EQ(value, generatorProfile->interfaceComputeRatesMethodString(true));
+    EXPECT_EQ(value, generatorProfile->implementationComputeRatesMethodString(true));
 
     EXPECT_EQ(value, generatorProfile->interfaceComputeVariablesMethodString());
     EXPECT_EQ(value, generatorProfile->implementationComputeVariablesMethodString());

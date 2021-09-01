@@ -3241,28 +3241,37 @@ public:
      *
      * Return the @c std::string for the interface to compute rates.
      *
+     * @param withExternalVariables Whether the interface to compute rates is
+     * for a model with external variables.
+     *
      * @return The @c std::string for the interface to compute rates.
      */
-    std::string interfaceComputeRatesMethodString() const;
+    std::string interfaceComputeRatesMethodString(bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the interface to compute rates.
      *
      * Set the @c std::string for the interface to compute rates.
      *
+     * @param withExternalVariables Whether the interface to compute rates is
+     * for a model with external variables.
      * @param interfaceComputeRatesMethodString The @c std::string to use for
      * the interface to compute rates.
      */
-    void setInterfaceComputeRatesMethodString(const std::string &interfaceComputeRatesMethodString);
+    void setInterfaceComputeRatesMethodString(bool withExternalVariables,
+                                              const std::string &interfaceComputeRatesMethodString);
 
     /**
      * @brief Get the @c std::string for the implementation to compute rates.
      *
      * Return the @c std::string for the implementation to compute rates.
      *
+     * @param withExternalVariables Whether the implementation to compute rates
+     * is for a model with external variables.
+     *
      * @return The @c std::string for the implementation to compute rates.
      */
-    std::string implementationComputeRatesMethodString() const;
+    std::string implementationComputeRatesMethodString(bool withExternalVariables) const;
 
     /**
      * @brief Set the @c std::string for the implementation to compute rates.
@@ -3271,10 +3280,13 @@ public:
      * useful, the string should contain the [CODE] tag, which will be replaced
      * with some code to compute rates.
      *
+     * @param withExternalVariables Whether the implementation to compute rates
+     * is for a model with external variables.
      * @param implementationComputeRatesMethodString The @c std::string to use
      * for the implementation to compute rates.
      */
-    void setImplementationComputeRatesMethodString(const std::string &implementationComputeRatesMethodString);
+    void setImplementationComputeRatesMethodString(bool withExternalVariables,
+                                                   const std::string &implementationComputeRatesMethodString);
 
     /**
      * @brief Get the @c std::string for the interface to compute variables.
