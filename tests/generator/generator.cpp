@@ -2096,8 +2096,7 @@ TEST(Generator, coverage)
     profile->setImplementationComputeVariablesMethodString(false, false, "");
     profile->setImplementationComputeVariablesMethodString(false, true, "");
     profile->setImplementationComputeVariablesMethodString(true, false, "");
-    profile->setImplementationComputeVariablesMethodString(true, true, "// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
-                                                                       "// xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
+    profile->setImplementationComputeVariablesMethodString(true, true, "");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode());
