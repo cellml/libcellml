@@ -294,7 +294,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // computed constant or algebraic variable.
 
     if (unknownVariablesOrOdeVariablesLeft == 1) {
-        auto variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+        auto variable = mVariables.empty() ? mOdeVariables.front() : mVariables.front();
 
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
             auto localVariable = mComponent->variable(i);
