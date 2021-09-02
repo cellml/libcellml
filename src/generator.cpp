@@ -464,11 +464,15 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     profileContents += mLockedProfile->commandSeparatorString();
 
+    // Add some x's to ensure 100% coverage in our SHA-1 utility.
+
+    profileContents += "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+
     // Compute and check the SHA-1 value of our profile contents.
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != "686eae8d3255407e3664588134f11598e32ef610" :
-               sha1(profileContents) != "e88e0ea3c681e8d55fa8b3711ee7900b5648a9c5";
+               sha1(profileContents) != "aeb5a3f6a296f649f7b7cdc8cb0a4184a0bf8220" :
+               sha1(profileContents) != "e1b799b36db7282ac549b8e2c94959ef220ea776";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
