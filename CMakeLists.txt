@@ -227,6 +227,20 @@ if(LIBCELLML_COMPILER_CACHE)
   endif()
 endif()
 
+# On Windows, if we are using MSVC then replace some compiler flags.
+if(WIN32 AND MSVC)
+  # If we are treating warnings as errors then remove the /W3 option since it 
+  # will eventually be replaced with the /W4 and /WX options.
+  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
+    replace_compiler_flag("/W3" "")
+  endif()
+
+  # Replace the /Zi option (i.e. enable debugging information), if present, with
+  # the /Z7 option (i.e. enable old-style debugging information) otherwise
+  # caching (be it with buildcache or clcache) won't work.
+  replace_compiler_flag("/Z[iI]" "/Z7")
+endif()
+
 # Uninstall target
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.in.cmake"
                "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"

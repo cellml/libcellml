@@ -12,6 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+function(replace_compiler_flag _OLD _NEW)
+  set(__OLD "(^| )${_OLD}($| )")
+
+  if(NOT "${_NEW}" STREQUAL "")
+    set(__NEW " ${_NEW} ")
+  endif()
+
+  foreach(_VAR CMAKE_CXX_FLAGS
+               CMAKE_CXX_FLAGS_DEBUG
+               CMAKE_CXX_FLAGS_RELEASE
+               CMAKE_CXX_FLAGS_MINSIZEREL
+               CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+    if("${${_VAR}}" MATCHES "${__OLD}")
+      string(REGEX REPLACE "${__OLD}" "${__NEW}" ${_VAR} "${${_VAR}}")
+    endif()
+
+    set(${_VAR} "${${_VAR}}" PARENT_SCOPE)
+  endforeach()
+endfunction()
+
 function(target_warnings_as_errors _TARGET)
   set(_COMPILER_WAE)
 
