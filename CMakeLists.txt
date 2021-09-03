@@ -238,7 +238,7 @@ if(WIN32 AND MSVC)
   # Replace the /Zi option (i.e. enable debugging information), if present, with
   # the /Z7 option (i.e. enable old-style debugging information) otherwise
   # caching (be it with buildcache or clcache) won't work.
-  if(BUILDCACHE_EXE OR CCACHE_EXE)
+  if(BUILDCACHE_EXE OR CLCACHE_EXE)
     replace_compiler_flag("/Zi" "/Z7")
   endif()
 endif()
