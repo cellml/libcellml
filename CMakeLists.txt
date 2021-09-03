@@ -229,7 +229,7 @@ endif()
 
 # On Windows, if we are using MSVC then replace some compiler flags.
 if(WIN32 AND MSVC)
-  # If we are treating warnings as errors then remove the /W3 option since it 
+  # If we are treating warnings as errors then remove the /W3 option since it
   # will eventually be replaced with the /W4 and /WX options.
   if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
     replace_compiler_flag("/W3" "")
