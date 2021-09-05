@@ -13,10 +13,10 @@
 # limitations under the License.
 
 function(replace_compiler_flag _OLD _NEW)
-  set(__OLD "(^| )${_OLD}($| )")
+  set(_OLD "(^| )${_OLD}($| )")
 
   if(NOT "${_NEW}" STREQUAL "")
-    set(__NEW " ${_NEW} ")
+    set(_NEW " ${_NEW} ")
   endif()
 
   foreach(_VAR CMAKE_CXX_FLAGS
@@ -24,8 +24,8 @@ function(replace_compiler_flag _OLD _NEW)
                CMAKE_CXX_FLAGS_RELEASE
                CMAKE_CXX_FLAGS_MINSIZEREL
                CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-    if("${${_VAR}}" MATCHES "${__OLD}")
-      string(REGEX REPLACE "${__OLD}" "${__NEW}" ${_VAR} "${${_VAR}}")
+    if("${${_VAR}}" MATCHES "${_OLD}")
+      string(REGEX REPLACE "${_OLD}" "${_NEW}" ${_VAR} "${${_VAR}}")
     endif()
 
     set(${_VAR} "${${_VAR}}" PARENT_SCOPE)
