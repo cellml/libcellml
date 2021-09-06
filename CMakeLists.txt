@@ -41,10 +41,10 @@ include(environmentchecks)
 
 # COMPILER_CACHE  ==> LIBCELLML_COMPILER_CACHE
 set(_PARAM_ANNOTATION "Enable compiler cache.")
-if(BUILDCACHE_AVAILABLE OR (WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE))
+if(COMPILER_CACHE_AVAILABLE)
   set(LIBCELLML_COMPILER_CACHE ON CACHE BOOL "${_PARAM_ANNOTATION}")
 endif()
-if(DEFINED COMPILER_CACHE AND (BUILDCACHE_AVAILABLE OR (WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE)))
+if(DEFINED COMPILER_CACHE AND COMPILER_CACHE_AVAILABLE)
   set(LIBCELLML_COMPILER_CACHE "${COMPILER_CACHE}" CACHE BOOL "${_PARAM_ANNOTATION}" FORCE)
 elseif(COMPILER_CACHE)
   if(WIN32)
@@ -209,26 +209,20 @@ endif()
 if(LIBCELLML_COMPILER_CACHE)
   if(BUILDCACHE_EXE)
     set(CMAKE_CXX_COMPILER_LAUNCHER ${BUILDCACHE_EXE})
-  else()
-    if(WIN32)
-      if(CLCACHE_EXE)
-        set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
-        execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
-                        RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
-        if(RESULT EQUAL 0)
-          set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
-        endif()
-      endif()
-    else()
-      if(CCACHE_EXE)
-        set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXE})
-      endif()
+  elseif(CLCACHE_EXE)
+    set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
+    execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
+                    RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
+    if(RESULT EQUAL 0)
+      set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
     endif()
+  else()
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXE})
   endif()
 endif()
 
 # On Windows, if we are using MSVC then replace some compiler flags.
-if(WIN32 AND MSVC)
+if(MSVC)
   # If we are treating warnings as errors then remove the /W3 option since it
   # will eventually be replaced with the /W4 and /WX options (see
   # target_warnings_as_errors()).
