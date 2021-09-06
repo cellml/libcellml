@@ -11,15 +11,15 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 3;
 const size_t VARIABLE_COUNT = 19;
 
-const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
+const VariableInfo VOI_INFO = {"time", "millisecond", "environment", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"h", "dimensionless", "sodium_channel_h_gate"},
-    {"n", "dimensionless", "potassium_channel_n_gate"},
-    {"V", "millivolt", "membrane"}
+    {"h", "dimensionless", "sodium_channel_h_gate", STATE},
+    {"n", "dimensionless", "potassium_channel_n_gate", STATE},
+    {"V", "millivolt", "membrane", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"m", "dimensionless", "sodium_channel_m_gate", EXTERNAL},
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
@@ -43,12 +43,12 @@ const VariableInfoWithType VARIABLE_INFO[] = {
 
 double * createStatesArray()
 {
-    return (double *) malloc(STATE_COUNT*sizeof(double));
+    return malloc(STATE_COUNT*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    return malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)

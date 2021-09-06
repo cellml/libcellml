@@ -10,7 +10,7 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 
 const size_t VARIABLE_COUNT = 3;
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"k", "mM", "constants", CONSTANT},
     {"x", "mM", "main", COMPUTED_CONSTANT},
     {"y", "M", "main", COMPUTED_CONSTANT}
@@ -18,7 +18,7 @@ const VariableInfoWithType VARIABLE_INFO[] = {
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    return malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)

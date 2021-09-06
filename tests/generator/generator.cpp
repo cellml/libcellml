@@ -1875,35 +1875,6 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode());
 }
 
-#include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"
-
-double externalVariable(double /* unused */, double * /* unused */,
-                        double * /* unused */, double * /* unused */,
-                        size_t index)
-{
-    return 123.0 + double(index);
-}
-
-TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariablesUse)
-{
-    double *states = createStatesArray();
-    double *rates = createStatesArray();
-    double *variables = createVariablesArray();
-
-    initialiseStatesAndConstants(states, variables);
-    computeComputedConstants(variables);
-    computeRates(0, states, rates, variables, externalVariable);
-    computeVariables(0, states, rates, variables, externalVariable);
-
-    ASSERT_DOUBLE_EQ(123.0, variables[0]);
-    ASSERT_DOUBLE_EQ(133.0, variables[10]);
-    ASSERT_DOUBLE_EQ(140.0, variables[17]);
-
-    deleteArray(states);
-    deleteArray(rates);
-    deleteArray(variables);
-}
-
 TEST(Generator, nobleModel1962)
 {
     auto parser = libcellml::Parser::create();
@@ -2059,7 +2030,7 @@ TEST(Generator, coverage)
     profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
     profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
                                                             "{\n"
-                                                            "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                            "    return malloc(STATE_COUNT*sizeof(double));\n"
                                                             "}\n");
 
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.h"), generator->interfaceCode());
@@ -2094,16 +2065,19 @@ TEST(Generator, coverage)
 
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectString("");
-    profile->setVariableTypeObjectExternalTypeString("");
+    profile->setVariableTypeObjectInAlgebraicModelString("");
+    profile->setVariableTypeObjectExternalTypeInAlgebraicModelString("");
+    profile->setVariableTypeObjectInDifferentialModelString("");
+    profile->setVariableTypeObjectExternalTypeInDifferentialModelString("");
 
+    profile->setVariableOfIntegrationVariableTypeString("");
+    profile->setStateVariableTypeString("");
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
     profile->setAlgebraicVariableTypeString("");
     profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
-    profile->setVariableInfoWithTypeObjectString("");
 
     profile->setImplementationVoiInfoString("");
 
@@ -2112,7 +2086,6 @@ TEST(Generator, coverage)
     profile->setImplementationVariableInfoString("");
 
     profile->setVariableInfoEntryString("");
-    profile->setVariableInfoWithTypeEntryString("");
 
     profile->setImplementationCreateStatesArrayMethodString("");
 
@@ -2120,9 +2093,9 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesInAlgebraicModelMethodString("");
-    profile->setImplementationComputeVariablesInDifferentialModelMethodString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
-                                                                              "// xxxxxxxxxxxxxxxxxxxxxxx\n");
+    profile->setImplementationComputeVariablesMethodInAlgebraicModelString("");
+    profile->setImplementationComputeVariablesMethodInDifferentialModelString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
+                                                                              "// xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode());
@@ -2167,16 +2140,19 @@ TEST(Generator, coverage)
     profile->setInterfaceVariableCountString("");
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectString("");
-    profile->setVariableTypeObjectExternalTypeString("");
+    profile->setVariableTypeObjectInAlgebraicModelString("");
+    profile->setVariableTypeObjectExternalTypeInAlgebraicModelString("");
+    profile->setVariableTypeObjectInDifferentialModelString("");
+    profile->setVariableTypeObjectExternalTypeInDifferentialModelString("");
 
+    profile->setVariableOfIntegrationVariableTypeString("");
+    profile->setStateVariableTypeString("");
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
     profile->setAlgebraicVariableTypeString("");
     profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
-    profile->setVariableInfoWithTypeObjectString("");
 
     profile->setInterfaceVoiInfoString("");
     profile->setImplementationVoiInfoString("");
@@ -2188,7 +2164,6 @@ TEST(Generator, coverage)
     profile->setImplementationVariableInfoString("");
 
     profile->setVariableInfoEntryString("");
-    profile->setVariableInfoWithTypeEntryString("");
 
     EXPECT_EQ(fileContents("generator/coverage/model.interface.out"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.implementation.out"), generator->implementationCode());

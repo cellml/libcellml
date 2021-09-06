@@ -12,29 +12,31 @@ VARIABLE_COUNT = 185
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    VARIABLE_OF_INTEGRATION = 1
+    STATE = 2
+    CONSTANT = 3
+    COMPUTED_CONSTANT = 4
+    ALGEBRAIC = 5
 
 
-VOI_INFO = {"name": "time", "units": "second", "component": "environment"}
+VOI_INFO = {"name": "time", "units": "second", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "m", "units": "dimensionless", "component": "sodium_current_m_gate"},
-    {"name": "h1", "units": "dimensionless", "component": "sodium_current_h_gate"},
-    {"name": "h2", "units": "dimensionless", "component": "sodium_current_h_gate"},
-    {"name": "d_L", "units": "dimensionless", "component": "L_type_Ca_channel_d_gate"},
-    {"name": "f_L", "units": "dimensionless", "component": "L_type_Ca_channel_f_gate"},
-    {"name": "d_T", "units": "dimensionless", "component": "T_type_Ca_channel_d_gate"},
-    {"name": "f_T", "units": "dimensionless", "component": "T_type_Ca_channel_f_gate"},
-    {"name": "q", "units": "dimensionless", "component": "four_AP_sensitive_currents_q_gate"},
-    {"name": "r", "units": "dimensionless", "component": "four_AP_sensitive_currents_r_gate"},
-    {"name": "P_af", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate"},
-    {"name": "P_as", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate"},
-    {"name": "P_i", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_i_gate"},
-    {"name": "xs", "units": "dimensionless", "component": "slow_delayed_rectifying_potassium_current_xs_gate"},
-    {"name": "y", "units": "dimensionless", "component": "hyperpolarisation_activated_current_y_gate"},
-    {"name": "V", "units": "millivolt", "component": "membrane"}
+    {"name": "m", "units": "dimensionless", "component": "sodium_current_m_gate", "type": VariableType.STATE},
+    {"name": "h1", "units": "dimensionless", "component": "sodium_current_h_gate", "type": VariableType.STATE},
+    {"name": "h2", "units": "dimensionless", "component": "sodium_current_h_gate", "type": VariableType.STATE},
+    {"name": "d_L", "units": "dimensionless", "component": "L_type_Ca_channel_d_gate", "type": VariableType.STATE},
+    {"name": "f_L", "units": "dimensionless", "component": "L_type_Ca_channel_f_gate", "type": VariableType.STATE},
+    {"name": "d_T", "units": "dimensionless", "component": "T_type_Ca_channel_d_gate", "type": VariableType.STATE},
+    {"name": "f_T", "units": "dimensionless", "component": "T_type_Ca_channel_f_gate", "type": VariableType.STATE},
+    {"name": "q", "units": "dimensionless", "component": "four_AP_sensitive_currents_q_gate", "type": VariableType.STATE},
+    {"name": "r", "units": "dimensionless", "component": "four_AP_sensitive_currents_r_gate", "type": VariableType.STATE},
+    {"name": "P_af", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_af_gate", "type": VariableType.STATE},
+    {"name": "P_as", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_as_gate", "type": VariableType.STATE},
+    {"name": "P_i", "units": "dimensionless", "component": "rapid_delayed_rectifying_potassium_current_P_i_gate", "type": VariableType.STATE},
+    {"name": "xs", "units": "dimensionless", "component": "slow_delayed_rectifying_potassium_current_xs_gate", "type": VariableType.STATE},
+    {"name": "y", "units": "dimensionless", "component": "hyperpolarisation_activated_current_y_gate", "type": VariableType.STATE},
+    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [

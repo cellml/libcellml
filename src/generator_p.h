@@ -83,11 +83,11 @@ struct Generator::GeneratorImpl
     std::string generateVariableInfoObjectCode(const std::string &objectString) const;
 
     void addVariableInfoObjectCode();
-    void addVariableInfoWithTypeObjectCode();
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
-                                              const std::string &component) const;
+                                              const std::string &component,
+                                              const std::string &type) const;
 
     void addInterfaceVoiStateAndVariableInfoCode();
     void addImplementationVoiInfoCode();
