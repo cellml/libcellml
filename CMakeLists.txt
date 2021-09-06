@@ -35,6 +35,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(common)
 include(environmentchecks)
+include(macros)
 
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
@@ -203,37 +204,9 @@ else()
   set(LIBCELLML_ENABLE_UTILITIES OFF CACHE INTERNAL "${_PARAM_ANNOTATION}")
 endif()
 
-# If available and wanted, use compiler cache.
+# If available and wanted, apply compiler cache settings.
 if(LIBCELLML_COMPILER_CACHE)
-  if(BUILDCACHE_EXE)
-    set(CMAKE_CXX_COMPILER_LAUNCHER ${BUILDCACHE_EXE})
-  elseif(CLCACHE_EXE)
-    set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
-    execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
-                    RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
-    if(RESULT EQUAL 0)
-      set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
-    endif()
-  else()
-    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXE})
-  endif()
-endif()
-
-# On Windows, if we are using MSVC then replace some compiler flags.
-if(MSVC)
-  # If we are treating warnings as errors then remove the /W3 option since it
-  # will eventually be replaced with the /W4 and /WX options (see
-  # target_warnings_as_errors()).
-  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
-    replace_compiler_flag("/W3" "")
-  endif()
-
-  # Replace the /Zi option (i.e. enable debugging information), if present, with
-  # the /Z7 option (i.e. enable old-style debugging information) otherwise
-  # caching (be it with buildcache or clcache) won't work.
-  if(BUILDCACHE_EXE OR CLCACHE_EXE)
-    replace_compiler_flag("/Zi" "/Z7")
-  endif()
+  apply_compiler_cache_settings()
 endif()
 
 # Uninstall target
