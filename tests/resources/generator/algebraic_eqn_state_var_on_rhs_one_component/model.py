@@ -12,15 +12,17 @@ VARIABLE_COUNT = 2
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    VARIABLE_OF_INTEGRATION = 1
+    STATE = 2
+    CONSTANT = 3
+    COMPUTED_CONSTANT = 4
+    ALGEBRAIC = 5
 
 
-VOI_INFO = {"name": "t", "units": "second", "component": "my_model"}
+VOI_INFO = {"name": "t", "units": "second", "component": "my_model", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_model"}
+    {"name": "x", "units": "dimensionless", "component": "my_model", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [

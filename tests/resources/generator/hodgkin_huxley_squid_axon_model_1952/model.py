@@ -12,18 +12,20 @@ VARIABLE_COUNT = 18
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    VARIABLE_OF_INTEGRATION = 1
+    STATE = 2
+    CONSTANT = 3
+    COMPUTED_CONSTANT = 4
+    ALGEBRAIC = 5
 
 
-VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
+VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
-    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
-    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"},
-    {"name": "V", "units": "millivolt", "component": "membrane"}
+    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.STATE},
+    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate", "type": VariableType.STATE},
+    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate", "type": VariableType.STATE},
+    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [

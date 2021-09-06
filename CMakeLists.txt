@@ -35,24 +35,23 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(common)
 include(environmentchecks)
+include(macros)
 
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
 
 # COMPILER_CACHE  ==> LIBCELLML_COMPILER_CACHE
 set(_PARAM_ANNOTATION "Enable compiler cache.")
-if((WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE))
+if(COMPILER_CACHE_AVAILABLE)
   set(LIBCELLML_COMPILER_CACHE ON CACHE BOOL "${_PARAM_ANNOTATION}")
 endif()
-if(DEFINED COMPILER_CACHE AND ((WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE)))
+if(DEFINED COMPILER_CACHE AND COMPILER_CACHE_AVAILABLE)
   set(LIBCELLML_COMPILER_CACHE "${COMPILER_CACHE}" CACHE BOOL "${_PARAM_ANNOTATION}" FORCE)
 elseif(COMPILER_CACHE)
-  if(WIN32)
-    set(COMPILER_CACHE_TOOL clcache)
-  else()
-    set(COMPILER_CACHE_TOOL ccache)
+  if(MSVC)
+    set(CLCACHE ", clcache")
   endif()
-  message(WARNING "compiler cache is requested but ${COMPILER_CACHE_TOOL} not found!")
+  message(WARNING "compiler cache is requested but buildcache${CLCACHE} or ccache not found!")
 endif()
 unset(COMPILER_CACHE CACHE)
 
@@ -205,22 +204,9 @@ else()
   set(LIBCELLML_ENABLE_UTILITIES OFF CACHE INTERNAL "${_PARAM_ANNOTATION}")
 endif()
 
-# If available and wanted, use compiler cache.
+# If available and wanted, apply compiler cache settings.
 if(LIBCELLML_COMPILER_CACHE)
-  if(WIN32)
-    if(CLCACHE_EXE)
-      set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
-      execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
-                      RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
-      if(RESULT EQUAL 0)
-        set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
-      endif()
-    endif()
-  else()
-    if(CCACHE_EXE)
-      set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXE})
-    endif()
-  endif()
+  apply_compiler_cache_settings()
 endif()
 
 # Uninstall target
@@ -254,7 +240,7 @@ endif()
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
 
 # Format our code
-if(CLANG_FORMAT_EXE)
+if(CLANG_FORMAT_AVAILABLE)
   set(FILES_TO_FORMAT
     ${API_HEADER_FILES}
     ${MODULE_HEADER_FILES}

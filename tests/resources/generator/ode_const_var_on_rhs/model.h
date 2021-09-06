@@ -11,6 +11,8 @@ extern const size_t STATE_COUNT;
 extern const size_t VARIABLE_COUNT;
 
 typedef enum {
+    VARIABLE_OF_INTEGRATION,
+    STATE,
     CONSTANT,
     COMPUTED_CONSTANT,
     ALGEBRAIC
@@ -20,18 +22,12 @@ typedef struct {
     char name[2];
     char units[14];
     char component[12];
-} VariableInfo;
-
-typedef struct {
-    char name[2];
-    char units[14];
-    char component[12];
     VariableType type;
-} VariableInfoWithType;
+} VariableInfo;
 
 extern const VariableInfo VOI_INFO;
 extern const VariableInfo STATE_INFO[];
-extern const VariableInfoWithType VARIABLE_INFO[];
+extern const VariableInfo VARIABLE_INFO[];
 
 double * createStatesArray();
 double * createVariablesArray();

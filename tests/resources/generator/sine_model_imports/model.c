@@ -11,13 +11,13 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 1;
 const size_t VARIABLE_COUNT = 10;
 
-const VariableInfo VOI_INFO = {"x", "dimensionless", "main"};
+const VariableInfo VOI_INFO = {"x", "dimensionless", "main", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"sin", "dimensionless", "deriv_approx_sin"}
+    {"sin", "dimensionless", "deriv_approx_sin", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"C", "dimensionless", "main", CONSTANT},
     {"deriv_approx_initial_value", "dimensionless", "main", CONSTANT},
     {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
@@ -32,12 +32,12 @@ const VariableInfoWithType VARIABLE_INFO[] = {
 
 double * createStatesArray()
 {
-    return (double *) malloc(STATE_COUNT*sizeof(double));
+    return malloc(STATE_COUNT*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    return malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)
