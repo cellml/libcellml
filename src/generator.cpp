@@ -2051,8 +2051,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
 
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || (((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
-                     || (equation->type() == AnalyserEquation::Type::EXTERNAL))
+                || ((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
                     && equation->isStateRateBased())
                 || (equation->type() == AnalyserEquation::Type::EXTERNAL)) {
                 methodBody += generateEquationCode(equation, newRemainingEquations, true);
