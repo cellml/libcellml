@@ -105,6 +105,7 @@ def compute_rates(voi, states, rates, variables, external_variable):
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
+    variables[0] = external_variable(voi, states, variables, 0)
     variables[8] = variables[1]*(states[2]-variables[7])
     variables[10] = variables[5]*pow(variables[0], 3.0)*states[0]*(states[2]-variables[9])
     variables[11] = 0.1*(states[2]+25.0)/(exp((states[2]+25.0)/10.0)-1.0)

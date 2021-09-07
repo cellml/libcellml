@@ -94,6 +94,7 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
+    variables[0] = externalVariable(voi, states, variables, 0);
     variables[8] = variables[1]*(states[2]-variables[7]);
     variables[10] = variables[5]*pow(variables[0], 3.0)*states[0]*(states[2]-variables[9]);
     variables[11] = 0.1*(states[2]+25.0)/(exp((states[2]+25.0)/10.0)-1.0);
