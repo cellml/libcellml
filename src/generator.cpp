@@ -1872,7 +1872,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
-                                                           bool onlyStateRateBasedEquations) const
+                                                           bool forComputeVariables) const
 {
     std::string res;
 
@@ -1882,11 +1882,11 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             || (equation->type() == AnalyserEquation::Type::EXTERNAL)) {
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::RATE)
-                    && (!onlyStateRateBasedEquations
-                        || (((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
-                             || (dependency->type() == AnalyserEquation::Type::EXTERNAL))
-                            && dependency->isStateRateBased()))) {
-                    res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
+                    && (!forComputeVariables
+                        || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                            && dependency->isStateRateBased())
+                        || (dependency->type() == AnalyserEquation::Type::EXTERNAL))) {
+                    res += generateEquationCode(dependency, remainingEquations, forComputeVariables);
                 }
             }
         }
@@ -2053,7 +2053,8 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
                 || (((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
                      || (equation->type() == AnalyserEquation::Type::EXTERNAL))
-                    && equation->isStateRateBased())) {
+                    && equation->isStateRateBased())
+                || (equation->type() == AnalyserEquation::Type::EXTERNAL)) {
                 methodBody += generateEquationCode(equation, newRemainingEquations, true);
             }
         }
@@ -2231,10 +2232,10 @@ std::string Generator::implementationCode() const
     // Add code for the implementation to compute our variables.
     // Note: this method computes the remaining variables, i.e. the ones not
     //       needed to compute our rates, but also the variables that depend on
-    //       the value of some states/rates. Indeed, this method is typically
-    //       called after having integrated a model, thus ensuring that
-    //       variables that rely on the value of some states/rates are up to
-    //       date.
+    //       the value of some states/rates and all the external variables.
+    //       This method is typically called after having integrated a model,
+    //       thus ensuring that variables that rely on the value of some
+    //       states/rates are up to date.
 
     mPimpl->addImplementationComputeVariablesMethodCode(remainingEquations);
 

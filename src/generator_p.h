@@ -125,7 +125,7 @@ struct Generator::GeneratorImpl
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool onlyStateRateBasedEquations = false) const;
+                                     bool forComputeVariables = false) const;
 
     void addInterfaceComputeModelMethodsCode();
     void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
