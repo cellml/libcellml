@@ -128,7 +128,7 @@ Create the zlib library build instructions using CMake::
 
 Where <ZLIB_INSTALL_DIR> is to be replaced by a path on your computer.  Something like::
 
-  C:\Users\Andre\libraries
+  C:\Users\Andre\libcellml\libraries
 
 if your username was 'Andre'.
 
@@ -177,7 +177,7 @@ Where <ZLIB_INSTALL_DIR> is to be replaced by the path on your computer where zl
 Using the same directory that the zlib library is a good idea.
 Following this advice we would set <LIBXML2_INSTALL_DIR> to::
 
-  C:\Users\Andre\libraries
+  C:\Users\Andre\libcellml\libraries
 
 We can now build the library with the command::
 
