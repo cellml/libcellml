@@ -73,15 +73,14 @@ else ()
 
   set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
-  if(BUILDCACHE_EXE)
-    mark_as_advanced(BUILDCACHE_EXE)
-  elseif(MSVC)
+  if(MSVC)
     mark_as_advanced(CLCACHE_EXE)
   else()
     mark_as_advanced(CCACHE_EXE)
   endif()
 
   mark_as_advanced(
+    BUILDCACHE_EXE
     CLANG_TIDY_EXE
     CLANG_FORMAT_EXE
     FIND_EXE
@@ -108,12 +107,33 @@ set(HAVE_LIBXML2_CONFIG FALSE)
 # need to track how we found LibXml2.
 find_package(LibXml2 CONFIG QUIET)
 if(LibXml2_FOUND)
-  if(TARGET zlib)
+  if(TARGET z)
     set(HAVE_ZLIB_TARGET TRUE)
+    get_target_property(ZLIB_TARGET_TYPE z TYPE)
   else()
-    find_package(ZLIB REQUIRED)
+    find_package(ZLIB CONFIG QUIET)
+    if(ZLIB_FOUND)
+      if(TARGET z)
+        set(HAVE_ZLIB_TARGET TRUE)
+        get_target_property(ZLIB_TARGET_TYPE z TYPE)
+      endif()
+    endif()
+    if(NOT ZLIB_FOUND)
+      find_package(ZLIB REQUIRED)
+    endif()
   endif()
   set(HAVE_LIBXML2_CONFIG TRUE)
+  # Different versions of LibXml2 have different names for the library target.
+  # We try and capture that here.
+  if(TARGET xml2)
+    set(LIBXML2_TARGET_NAME xml2)
+  elseif(TARGET LibXml2)
+    set(LIBXML2_TARGET_NAME LibXml2)
+  else()
+    message(FATAL_ERROR "FindLibXml2: Found config for LibXml2 but could not determine target name.")
+  endif()
+  get_target_property(LIBXML2_TARGET_TYPE ${LIBXML2_TARGET_NAME} TYPE)
+  set(HAVE_LIBXML2_TARGET TRUE)
   # Clear out GUI variables created in module search mode.
   foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
     if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
@@ -122,7 +142,7 @@ if(LibXml2_FOUND)
   endforeach()
 else()
   find_package(LibXml2 REQUIRED)
-  if(TARGET zlib)
+  if(TARGET z)
     set(HAVE_ZLIB_TARGET TRUE)
   else()
     find_package(ZLIB REQUIRED)
@@ -153,6 +173,10 @@ if(CLANG_FORMAT_EXE)
       set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
     endif()
   endif()
+endif()
+
+if(IS_MULTI_CONFIG)
+  set(CONFIG_DIR_SUFFIX "/$<CONFIG>")
 endif()
 
 if(CLANG_TIDY_EXE)

@@ -39,16 +39,13 @@ set(TEST_SRCS
 include(test_resources.cmake)
 
 
-if(WIN32)
-  if(TARGET xml2)
-    set(GEN_EXP_XML2_TARGET_FILE_DIR "\;\$<TARGET_FILE_DIR:xml2>")
-  endif()
+if(MSVC)
   if(NOT POLICY CMP0078)
     set(_PYTHON_MODULE_TARGET _entity)
       else()
     set(_PYTHON_MODULE_TARGET entity)
   endif()
-  set(_RUN_PYTHON_ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:${_PYTHON_MODULE_TARGET}>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
+  set(_RUN_PYTHON_ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:${_PYTHON_MODULE_TARGET}>\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python${CONFIG_DIR_SUFFIX}")
 else()
   set(_RUN_PYTHON_ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python")
 endif()

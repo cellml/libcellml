@@ -21,14 +21,17 @@ set(PROJECT_DEVELOPER_VERSION -dev.21)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.
+if(POLICY CMP0063)
+  cmake_policy(SET CMP0063 NEW)
+endif()
 if(POLICY CMP0078)
   cmake_policy(SET CMP0078 NEW)
 endif()
 if(POLICY CMP0086)
   cmake_policy(SET CMP0086 NEW)
 endif()
-if(POLICY CMP0063)
-  cmake_policy(SET CMP0063 NEW)
+if(POLICY CMP0092)
+  cmake_policy(SET CMP0092 NEW)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -202,6 +205,18 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.18 AND NOT DEFINED EMSCRIPTEN)
   unset(ENABLE_UTILITIES CACHE)
 else()
   set(LIBCELLML_ENABLE_UTILITIES OFF CACHE INTERNAL "${_PARAM_ANNOTATION}")
+endif()
+
+# If we are treating warnings as errors then remove the /W3 option since it
+# will eventually be replaced with the /W4 and /WX options (see
+# target_warnings_as_errors()).
+# This manipulation can be removed once the minimum version can
+# be lifted to at least version 3.15 because the warning level will not 
+# automatically be set.
+if(MSVC AND CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS 3.15)
+  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
+    replace_compiler_flag("/W3" "")
+  endif()
 endif()
 
 # If available and wanted, apply compiler cache settings.
