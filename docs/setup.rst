@@ -17,7 +17,8 @@ The libCellML codebase is hosted on :github:`Github<>` and therefore :git:`Git<>
   #. :git:`Git<>` for tracking changes in code;
   #. :cmake:`CMake<>` to configure the build files;
   #. Toolchain for building the library (dependent on the operating system);
-  #. :libxml2:`LibXml2<>`, an external library used to parse XML; and
+  #. :libxml2:`LibXml2<>`, an external library used to parse XML;
+  #. :zlib:`zlib<>`, an external library used for compression; and
   #. :doxygen:`Doxygen<>` to generate documentation.
 
 If Python bindings are required, the following packages are also needed:
@@ -94,18 +95,97 @@ The following sub-sections provide guidance on how to install the recommended to
 - **Linux** TODO
 - **macOS** TODO
 
+.. _setup_zlib:
+
+zlib
+----
+:zlib:`zlib<>` is a common compression library.
+It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
+
+- **Windows** On Windows, it's easiest to install using the packaged version available from :opencmiss_repo:`the OpenCMISS site<>` .
+  You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.
+  To build :zlib:`zlib<>` from source refer to the next sub-section.
+- **Linux** zlib can be installed using :code:`sudo apt install zlib1g-dev`.
+- **macOS** zlib is already installed on macOS, so no further action is required on that platform.
+
+Building from source
+++++++++++++++++++++
+
+To create a zlib library suitable for libCellML we need to download, configure, build, and install it.
+
+To download zlib clone the repository https://github.com/OpenCMISS-Dependencies/zlib::
+
+  git clone https://github.com/OpenCMISS-Dependencies/zlib -b v1.2.3
+
+Create a build directory and change into it::
+
+  mkdir build-zlib
+  cd build-zlib
+
+Create the zlib library build instructions using CMake::
+
+  cmake -DCMAKE_INSTALL_PREFIX=<ZLIB_INSTALL_DIR> ..\zlib
+
+Where <ZLIB_INSTALL_DIR> is to be replaced by a path on your computer.  Something like::
+
+  C:\Users\Andre\libraries
+
+if your username was 'Andre'.
+
+We can now build the library with the command::
+
+  cmake --build . --config Release
+
+The last thing we do is install the library with the command::
+
+  cmake --build . --target install --config Release
+
 .. _setup_libxml2:
 
 LibXml2
 -------
-:libxml2:`LibXml2<>` is a parser and toolkit for manipulating XML files and text.  
-It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.  
+:libxml2:`LibXml2<>` is a parser and toolkit for manipulating XML files and text.
+It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
 
 - **Windows** On Windows, it's easiest to install using the packaged version available from :opencmiss_repo:`the OpenCMISS site<>` .
-  You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.  
-  Source code for building it yourself can be downloaded from the :libxml2:`LibXml2<>` site.
+  You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.
+  To build :libxml2:`LibXml2<>` from source refer to the next sub-section.
 - **Linux** LibXml2 can be installed using :code:`sudo apt install libxml2-dev`.
-- **macOS** LibXML2 is already installed on macOS, so no further action is required on that platform.  
+- **macOS** LibXML2 is already installed on macOS, so no further action is required on that platform.
+
+Building from source
+++++++++++++++++++++
+
+To create a LibXml2 library suitable for libCellML we need to download, configure, build, and install it.
+LibXml2 can be configured to use zlib so build and install that first before following these instructions.
+
+To download LibXml2 clone the repository https://github.com/OpenCMISS-Dependencies/libxml2::
+
+  git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.10
+
+Create a build directory and change into it::
+
+  mkdir build-libxml2
+  cd build-libxml2
+
+Create the LibXml2 library build instructions using CMake::
+
+  cmake -DCMAKE_PREFIX_PATH=<ZLIB_INSTALL_DIR> -DCMAKE_INSTALL_PREFIX=<LIBXML2_INSTALL_DIR> -DLIBXML2_WITH_DEBUG=OFF -DLIBXML2_WITH_DOCB=OFF -DLIBXML2_WITH_FTP=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_ICU=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_MEM_DEBUG=OFF -DLIBXML2_WITH_PROGRAMS=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_RUN_DEBUG=OFF -DLIBXML2_WITH_SAX1=OFF -DLIBXML2_WITH_TESTS=OFF ..\libxml2
+
+Where <ZLIB_INSTALL_DIR> is to be replaced by the path on your computer where zlib is installed.
+<LIBXML2_INSTALL_DIR> is to be replaced by a path on your computer.
+Using the same directory that the zlib library is a good idea.
+Following this advice we would set <LIBXML2_INSTALL_DIR> to::
+
+  C:\Users\Andre\libraries
+
+We can now build the library with the command::
+
+  cmake --build . --config Release
+
+The last thing we do is install the library with the command::
+
+  cmake --build . --target install --config Release
 
 .. _setup_doxygen:
 

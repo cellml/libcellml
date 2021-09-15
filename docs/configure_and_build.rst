@@ -48,20 +48,29 @@ Windows command line
 --------------------
 Note that CMake is also available on Windows as a GUI (instructions below).  
 This section describes how to use CMake on Windows directly from the command line.   
-Instructions for running CMake through the command line can be found on the :cmake:`CMake site</runningcmake/>` under the heading "Running CMake from the command line". 
+Additional instructions for running CMake through the command line can be found on the :cmake:`CMake site</runningcmake/>` under the heading "Running CMake from the command line".
 
-For Windows only the location of the libXML2 library must be specified through the command line by adding the parameter::
+For Windows we have to have the required libraries zlib and LibXml2 before we can configure and build libCellML.
+See :ref:`Setup page <setup>` for instructions on the commands required.
 
-  -DLibXml2_DIR="C:\Program Files\libxml2 2.9.6\lib\cmake"
+If you built zlib and LibXml2 from source as per the instructions in the :ref:`Setup page <setup>` libCellML can be configured with the following command::
 
-to the configuration command.  
-This library is built into Linux and MacOS systems, so this step is only needed on Windows.
+  cmake -DCMAKE_PREFIX_PATH=<LIBRARY_INSTALL_PATH> ..\libcellml
 
-This assumes that the recommended LibXml2 binaries have been installed to the default location :code:`C:\Program Files\libxml2 2.9.6`.
+Where <LIBRARY_INSTALL_PATH> is to be replaced by the path on your computer where the zlib and LibXml2 libraries have been installed.
+Following on from the :ref:`Setup page <setup>` our full configuration command would be::
+
+  cmake -DCMAKE_PREFIX_PATH=C:\Users\Andre\libraries ..\libcellml
+
+If, on the other hand, you used the installers to install zlib and LibXml2 the configuration command would be::
+
+  cmake -DLibXml2_DIR=C:\Program Files\libxml2 2.9.10\libxml2-2.9.10\CMake -DZLIB_DIR=C:\Program Files\zlib 1.2.3\zlib-1.2.3\CMake ..\libcellml
+
+This assumes that zlib and LibXml2 binaries have been installed to their default locations.
 
 ..container:: nb
 
-   Please note that libCellML will only work with a 64-bit installation of libXML2.  
+   Please note that libCellML will only work with a 64-bit installation of zlib and libXML2.
    A pre-built 64-bit installer is available from the :opencmiss_repo:`OpenCMISS repository<>` ; 32-bit binaries or 32-bit builds will not work with libCellML.
 
 
