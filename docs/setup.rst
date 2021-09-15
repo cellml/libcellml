@@ -102,7 +102,7 @@ zlib
 :zlib:`zlib<>` is a common compression library.
 It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
 
-- **Windows** On Windows, it's easiest to install using the packaged version available from :opencmiss_repo:`the OpenCMISS site<>` .
+- **Windows** On Windows, it's easiest to install using the packaged version available from the :opencmiss_zlib_repo:`OpenCMISS zlib releases page<>` on GitHub.
   You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.
   To build :zlib:`zlib<>` from source refer to the next sub-section.
 - **Linux** zlib can be installed using :code:`sudo apt install zlib1g-dev`.
@@ -147,7 +147,7 @@ LibXml2
 :libxml2:`LibXml2<>` is a parser and toolkit for manipulating XML files and text.
 It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
 
-- **Windows** On Windows, it's easiest to install using the packaged version available from :opencmiss_repo:`the OpenCMISS site<>` .
+- **Windows** On Windows, it's easiest to install using the packaged version available from the :opencmiss_libxml2_repo:`OpenCMISS LibXml2 releases page<>` on GitHub.
   You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.
   To build :libxml2:`LibXml2<>` from source refer to the next sub-section.
 - **Linux** LibXml2 can be installed using :code:`sudo apt install libxml2-dev`.
