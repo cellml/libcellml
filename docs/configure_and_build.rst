@@ -71,7 +71,7 @@ This assumes that zlib and LibXml2 binaries have been installed to their default
 ..container:: nb
 
    Please note that libCellML will only work with a 64-bit installation of zlib and libXML2.
-   A pre-built 64-bit installer is available from the :opencmiss_repo:`OpenCMISS repository<>` ; 32-bit binaries or 32-bit builds will not work with libCellML.
+   Pre-built 64-bit installers are available from :opencmiss_zlib_repo:`OpenCMISS zlib repository<>` and :opencmiss_libxml2_repo:`OpenCMISS LibXml2 repository<>` ; 32-bit binaries or 32-bit builds will not work with libCellML.
 
 
 Windows CMake-GUI
