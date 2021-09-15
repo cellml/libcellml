@@ -60,11 +60,11 @@ If you built zlib and LibXml2 from source as per the instructions in the :ref:`S
 Where <LIBRARY_INSTALL_PATH> is to be replaced by the path on your computer where the zlib and LibXml2 libraries have been installed.
 Following on from the :ref:`Setup page <setup>` our full configuration command would be::
 
-  cmake -DCMAKE_PREFIX_PATH=C:\Users\Andre\libraries ..\libcellml
+  cmake -DCMAKE_PREFIX_PATH=C:\Users\Andre\libcellml\libraries ..\libcellml
 
 If, on the other hand, you used the installers to install zlib and LibXml2 the configuration command would be::
 
-  cmake -DLibXml2_DIR=C:\Program Files\libxml2 2.9.10\libxml2-2.9.10\CMake -DZLIB_DIR=C:\Program Files\zlib 1.2.3\zlib-1.2.3\CMake ..\libcellml
+  cmake -DLibXml2_DIR="C:\Program Files\libxml2-2.9.10\libxml2-2.9.10\CMake" -DZLIB_DIR="C:\Program Files\zlib-1.2.3\zlib-1.2.3\CMake" ..\libcellml
 
 This assumes that zlib and LibXml2 binaries have been installed to their default locations.
 
@@ -113,7 +113,7 @@ The first time you push the *Configure* button you will probably encounter an er
    :alt: CMake-GUI on Windows showing configuration error after initial configuration attempt.
    :name: cmake_gui_with_errors
 
-   CMake-GUI showing configuration error after initial configuration attempt.
+   CMake-GUI showing LibXml2 configuration error after initial configuration attempt.
    
    
 To fix the issue, check that:
@@ -121,11 +121,14 @@ To fix the issue, check that:
 - you have installed libXML2 according to the directions on the :ref:`Setup page <setup>`;
 - there is a variable called :code:`LibXml2_DIR` listed in your CMake variables (use the *Add entry* button to create it if not);
 - that the path specified in the :code:`LibXml2_DIR` variable points to the :code:`cmake` directory inside your libXML2 installation;
-- that your installed version is 64-bit.   
+- you have installed zlib according to the directions on the :ref:`Setup page <setup>`;
+- there is a variable called :code:`ZLIB_DIR` listed in your CMake variables (use the *Add entry* button to create it if not);
+- that the path specified in the :code:`ZLIB_DIR` variable points to the :code:`cmake` directory inside your zlib installation;
+- that your installed versions are 64-bit.
 
 .. container:: nb
 
-   If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  
+   If after pushing the *Configure* button and your path to either the zlib or LibXml2 directory is lost, make sure that your zlib or LibXml2 is the required 64-bit version.
    If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  
  
 Once you’ve checked and set this path, push *Configure* again. 
