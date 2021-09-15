@@ -83,7 +83,7 @@ extlinks = {
     'swigwin_download': ('https://sourceforge.net/projects/swig/files/swigwin/%s',''),
     'wikipedia': ('https://en.wikipedia.org/wiki%s',''),
     'xml': ('https://www.w3.org/XML/%s',''),
-
+    'zlib': ('https://www.zlib.net/%s',''),
 }
 
 # The master toctree document.
