@@ -100,12 +100,12 @@ zlib
 ----
 
 :zlib:`zlib<>` is a common compression library.
-It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
+It is important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
 
 - **Windows** On Windows, it is easiest to install using the packaged version available from the :opencmiss_zlib_repo:`OpenCMISS zlib releases page<>` on GitHub.
   You are welcome to build your own version if you would rather, but please make sure it is a 64-bit implementation.
   To build :zlib:`zlib<>` from source refer to the next sub-section.
-- **Linux** For Debian based systems, zlib can be installed using :code:`sudo apt install zlib1g-dev`.
+- **Linux** For Debian-based systems, zlib can be installed using :code:`sudo apt install zlib1g-dev`.
 - **macOS** zlib is already installed on macOS, so no further action is required on that platform.
 
 Building from source
@@ -113,7 +113,7 @@ Building from source
 
 To create a zlib library suitable for libCellML, we need to download, configure, build, and install it.
 
-To download zlib clone the repository https://github.com/OpenCMISS-Dependencies/zlib::
+To download zlib, clone the repository https://github.com/OpenCMISS-Dependencies/zlib::
 
   git clone https://github.com/OpenCMISS-Dependencies/zlib -b v1.2.3
 
@@ -147,12 +147,12 @@ libxml2
 -------
 
 :libxml2:`libxml2<>` is a parser and toolkit for manipulating XML files and text.
-It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
+It is important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.
 
 - **Windows** On Windows, it is easiest to install using the packaged version available from the :opencmiss_libxml2_repo:`OpenCMISS libxml2 releases page<>` on GitHub.
   You are welcome to build your own version if you would rather, but please make sure it is a 64-bit implementation.
   To build :libxml2:`libxml2<>` from source refer to the next sub-section.
-- **Linux** For Debian based systems, libxml2 can be installed using :code:`sudo apt install libxml2-dev`.
+- **Linux** For Debian-based systems, libxml2 can be installed using :code:`sudo apt install libxml2-dev`.
 - **macOS** libxml2 is already installed on macOS, so no further action is required on that platform.
 
 Building from source
@@ -161,7 +161,7 @@ Building from source
 To create a libxml2 library suitable for libCellML, we need to download, configure, build, and install it.
 libxml2 can be configured to use zlib, so build and install that first before following these instructions.
 
-To download libxml2 clone the repository https://github.com/OpenCMISS-Dependencies/libxml2::
+To download libxml2, clone the repository https://github.com/OpenCMISS-Dependencies/libxml2::
 
   git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.10
 
