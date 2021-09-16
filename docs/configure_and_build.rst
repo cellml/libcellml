@@ -53,7 +53,7 @@ Note that CMake is also available on Windows as a GUI (instructions below).
 This section describes how to use CMake on Windows directly from the command line.   
 Additional instructions for running CMake through the command line can be found on the :cmake:`CMake site</runningcmake/>` under the heading "Running CMake from the command line".
 
-For Windows we have to have the required libraries zlib and libxml2 before we can configure and build libCellML.
+For Windows, we must have the required libraries zlib and libxml2 before we can configure and build libCellML.
 See :ref:`Setup page <setup>` for instructions on the commands required.
 
 If you built zlib and libxml2 from source as per the instructions in the :ref:`Setup page <setup>`, then libCellML can be configured with the following command::
