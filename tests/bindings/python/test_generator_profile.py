@@ -767,32 +767,45 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n{\n[CODE]}\n',
-            g.implementationComputeRatesMethodString())
-        g.setImplementationComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString())
+            'void computeRates(double voi, double *states, double *rates, double *variables)\n{\n[CODE]}\n',
+            g.implementationComputeRatesMethodString(False))
+        g.setImplementationComputeRatesMethodString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString(False))
 
-    def test_implementation_compute_variables_method_in_algebraic_model_string(self):
+        self.assertEqual(
+            'void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            g.implementationComputeRatesMethodString(True))
+        g.setImplementationComputeRatesMethodString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString(True))
+
+    def test_implementation_compute_variables_method_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeVariables(double *variables[OPTIONAL_PARAMETER])\n{\n[CODE]}\n',
-            g.implementationComputeVariablesMethodInAlgebraicModelString())
-        g.setImplementationComputeVariablesMethodInAlgebraicModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodInAlgebraicModelString())
-
-    def test_implementation_compute_variables_in_differential_model_method_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
+            'void computeVariables(double *variables)\n{\n[CODE]}\n',
+            g.implementationComputeVariablesMethodString(False, False))
+        g.setImplementationComputeVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(False, False))
 
         self.assertEqual(
-            'void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER])\n{\n[CODE]}\n',
-            g.implementationComputeVariablesMethodInDifferentialModelString())
-        g.setImplementationComputeVariablesMethodInDifferentialModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodInDifferentialModelString())
+            'void computeVariables(double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            g.implementationComputeVariablesMethodString(False, True))
+        g.setImplementationComputeVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(False, True))
+
+        self.assertEqual(
+            'void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n[CODE]}\n',
+            g.implementationComputeVariablesMethodString(True, False))
+        g.setImplementationComputeVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(True, False))
+
+        self.assertEqual(
+            'void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+            g.implementationComputeVariablesMethodString(True, True))
+        g.setImplementationComputeVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString(True, True))
 
     def test_implementation_create_states_array_method_string(self):
         from libcellml import GeneratorProfile
@@ -841,20 +854,25 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void initialiseConstants(double *variables)\n{\n[CODE]}\n',
-                         g.implementationInitialiseConstantsMethodString())
-        g.setImplementationInitialiseConstantsMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseConstantsMethodString())
+        self.assertEqual('void initialiseVariables(double *variables)\n{\n[CODE]}\n',
+                         g.implementationInitialiseVariablesMethodString(False, False))
+        g.setImplementationInitialiseVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(False, False))
 
-    def test_implementation_initialise_states_and_constants_method_string(self):
-        from libcellml import GeneratorProfile
+        self.assertEqual('void initialiseVariables(double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+                         g.implementationInitialiseVariablesMethodString(False, True))
+        g.setImplementationInitialiseVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(False, True))
 
-        g = GeneratorProfile()
+        self.assertEqual('void initialiseVariables(double *states, double *variables)\n{\n[CODE]}\n',
+                         g.implementationInitialiseVariablesMethodString(True, False))
+        g.setImplementationInitialiseVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True, False))
 
-        self.assertEqual('void initialiseStatesAndConstants(double *states, double *variables)\n{\n[CODE]}\n',
-                         g.implementationInitialiseStatesAndConstantsMethodString())
-        g.setImplementationInitialiseStatesAndConstantsMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseStatesAndConstantsMethodString())
+        self.assertEqual('void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+                         g.implementationInitialiseVariablesMethodString(True, True))
+        g.setImplementationInitialiseVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True, True))
 
     def test_implementation_libcellml_version_string(self):
         from libcellml import GeneratorProfile
@@ -955,32 +973,45 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeRates(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n',
-            g.interfaceComputeRatesMethodString())
-        g.setInterfaceComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString())
+            'void computeRates(double voi, double *states, double *rates, double *variables);\n',
+            g.interfaceComputeRatesMethodString(False))
+        g.setInterfaceComputeRatesMethodString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString(False))
 
-    def test_interface_compute_variables_method_in_algebraic_model_string(self):
+        self.assertEqual(
+            'void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n',
+            g.interfaceComputeRatesMethodString(True))
+        g.setInterfaceComputeRatesMethodString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString(True))
+
+    def test_interface_compute_variables_method_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
         self.assertEqual(
-            'void computeVariables(double *variables[OPTIONAL_PARAMETER]);\n',
-            g.interfaceComputeVariablesMethodInAlgebraicModelString())
-        g.setInterfaceComputeVariablesMethodInAlgebraicModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodInAlgebraicModelString())
-
-    def test_interface_compute_variables_in_differential_model_method_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
+            'void computeVariables(double *variables);\n',
+            g.interfaceComputeVariablesMethodString(False, False))
+        g.setInterfaceComputeVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(False, False))
 
         self.assertEqual(
-            'void computeVariables(double voi, double *states, double *rates, double *variables[OPTIONAL_PARAMETER]);\n',
-            g.interfaceComputeVariablesMethodInDifferentialModelString())
-        g.setInterfaceComputeVariablesMethodInDifferentialModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodInDifferentialModelString())
+            'void computeVariables(double *variables, ExternalVariable externalVariable);\n',
+            g.interfaceComputeVariablesMethodString(False, True))
+        g.setInterfaceComputeVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(False, True))
+
+        self.assertEqual(
+            'void computeVariables(double voi, double *states, double *rates, double *variables);\n',
+            g.interfaceComputeVariablesMethodString(True, False))
+        g.setInterfaceComputeVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(True, False))
+
+        self.assertEqual(
+            'void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n',
+            g.interfaceComputeVariablesMethodString(True, True))
+        g.setInterfaceComputeVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString(True, True))
 
     def test_interface_create_states_array_method_string(self):
         from libcellml import GeneratorProfile
@@ -1032,20 +1063,25 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void initialiseConstants(double *variables);\n',
-                         g.interfaceInitialiseConstantsMethodString())
-        g.setInterfaceInitialiseConstantsMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseConstantsMethodString())
+        self.assertEqual('void initialiseVariables(double *variables);\n',
+                         g.interfaceInitialiseVariablesMethodString(False, False))
+        g.setInterfaceInitialiseVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(False, False))
 
-    def test_interface_initialise_states_and_constants_method_string(self):
-        from libcellml import GeneratorProfile
+        self.assertEqual('void initialiseVariables(double *variables, ExternalVariable externalVariable);\n',
+                         g.interfaceInitialiseVariablesMethodString(False, True))
+        g.setInterfaceInitialiseVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(False, True))
 
-        g = GeneratorProfile()
+        self.assertEqual('void initialiseVariables(double *states, double *variables);\n',
+                         g.interfaceInitialiseVariablesMethodString(True, False))
+        g.setInterfaceInitialiseVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True, False))
 
-        self.assertEqual('void initialiseStatesAndConstants(double *states, double *variables);\n',
-                         g.interfaceInitialiseStatesAndConstantsMethodString())
-        g.setInterfaceInitialiseStatesAndConstantsMethodString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseStatesAndConstantsMethodString())
+        self.assertEqual('void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable);\n',
+                         g.interfaceInitialiseVariablesMethodString(True, True))
+        g.setInterfaceInitialiseVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True, True))
 
     def test_interface_libcellml_version_string(self):
         from libcellml import GeneratorProfile
@@ -1501,47 +1537,34 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setVariableInfoObjectString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableInfoObjectString())
 
-    def test_variable_type_in_algebraic_model_object_string(self):
+    def test_variable_type_object_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
         self.assertEqual(
-            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC[OPTIONAL_TYPE]\n} VariableType;\n',
-            g.variableTypeObjectInAlgebraicModelString())
-        g.setVariableTypeObjectInAlgebraicModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectInAlgebraicModelString())
-
-    def test_variable_type_in_algebraic_mdoel_object_external_type_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual(',\n    EXTERNAL',
-                         g.variableTypeObjectExternalTypeInAlgebraicModelString())
-        g.setVariableTypeObjectExternalTypeInAlgebraicModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectExternalTypeInAlgebraicModelString())
-
-    def test_variable_type_in_differential_model_object_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
+            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n',
+            g.variableTypeObjectString(False, False))
+        g.setVariableTypeObjectString(False, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(False, False))
 
         self.assertEqual(
-            'typedef enum {\n    VARIABLE_OF_INTEGRATION,\n    STATE,\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC[OPTIONAL_TYPE]\n} VariableType;\n',
-            g.variableTypeObjectInDifferentialModelString())
-        g.setVariableTypeObjectInDifferentialModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectInDifferentialModelString())
+            'typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC,\n    EXTERNAL\n} VariableType;\n',
+            g.variableTypeObjectString(False, True))
+        g.setVariableTypeObjectString(False, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(False, True))
 
-    def test_variable_type_in_differential_mdoel_object_external_type_string(self):
-        from libcellml import GeneratorProfile
+        self.assertEqual(
+            'typedef enum {\n    VARIABLE_OF_INTEGRATION,\n    STATE,\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n',
+            g.variableTypeObjectString(True, False))
+        g.setVariableTypeObjectString(True, False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(True, False))
 
-        g = GeneratorProfile()
-
-        self.assertEqual(',\n    EXTERNAL',
-                         g.variableTypeObjectExternalTypeInDifferentialModelString())
-        g.setVariableTypeObjectExternalTypeInDifferentialModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectExternalTypeInDifferentialModelString())
+        self.assertEqual(
+            'typedef enum {\n    VARIABLE_OF_INTEGRATION,\n    STATE,\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC,\n    EXTERNAL\n} VariableType;\n',
+            g.variableTypeObjectString(True, True))
+        g.setVariableTypeObjectString(True, True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(True, True))
 
     def test_variables_array_string(self):
         from libcellml import GeneratorProfile
@@ -1552,56 +1575,37 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setVariablesArrayString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variablesArrayString())
 
-    def test_external_variable_method_type_definition_in_algebraic_model_string(self):
+    def test_external_variable_method_type_definition_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
         self.assertEqual(
             'typedef double (* ExternalVariable)(double *variables, size_t index);\n',
-            g.externalVariableMethodTypeDefinitionInAlgebraicModelString())
-        g.setExternalVariableMethodTypeDefinitionInAlgebraicModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionInAlgebraicModelString())
-
-    def test_external_variable_in_differential_model_method_type_definition_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
+            g.externalVariableMethodTypeDefinitionString(False))
+        g.setExternalVariableMethodTypeDefinitionString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(False))
 
         self.assertEqual(
-            'typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n',
-            g.externalVariableMethodTypeDefinitionInDifferentialModelString())
-        g.setExternalVariableMethodTypeDefinitionInDifferentialModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionInDifferentialModelString())
+            'typedef double (* ExternalVariable)(double voi, double *states, double *variables, size_t index);\n',
+            g.externalVariableMethodTypeDefinitionString(True))
+        g.setExternalVariableMethodTypeDefinitionString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(True))
 
-    def test_external_variable_method_parameter_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual(', ExternalVariable externalVariable', g.externalVariableMethodParameterString())
-        g.setExternalVariableMethodParameterString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodParameterString())
-
-    def test_external_variable_method_call_in_algebraic_model_string(self):
+    def test_external_variable_method_call_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
         self.assertEqual('externalVariable(variables, [INDEX])',
-                         g.externalVariableMethodCallInAlgebraicModelString())
-        g.setExternalVariableMethodCallInAlgebraicModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallInAlgebraicModelString())
+                         g.externalVariableMethodCallString(False))
+        g.setExternalVariableMethodCallString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(False))
 
-    def test_external_variable_in_differential_model_method_call_string(self):
-        from libcellml import GeneratorProfile
-
-        g = GeneratorProfile()
-
-        self.assertEqual('externalVariable(voi, states, rates, variables, [INDEX])',
-                         g.externalVariableMethodCallInDifferentialModelString())
-        g.setExternalVariableMethodCallInDifferentialModelString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallInDifferentialModelString())
+        self.assertEqual('externalVariable(voi, states, variables, [INDEX])',
+                         g.externalVariableMethodCallString(True))
+        g.setExternalVariableMethodCallString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(True))
 
     def test_voi_string(self):
         from libcellml import GeneratorProfile
