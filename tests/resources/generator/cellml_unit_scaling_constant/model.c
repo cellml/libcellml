@@ -26,7 +26,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseConstants(double *variables)
+void initialiseVariables(double *variables)
 {
     variables[0] = 123.0;
 }

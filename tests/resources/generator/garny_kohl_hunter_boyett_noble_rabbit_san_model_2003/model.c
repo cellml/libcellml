@@ -234,7 +234,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseStatesAndConstants(double *states, double *variables)
+void initialiseVariables(double *states, double *variables)
 {
     variables[0] = 46.4;
     variables[1] = 0.0057938;

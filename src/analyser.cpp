@@ -294,7 +294,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // computed constant or algebraic variable.
 
     if (unknownVariablesOrOdeVariablesLeft == 1) {
-        auto variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+        auto variable = mVariables.empty() ? mOdeVariables.front() : mVariables.front();
 
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
             auto localVariable = mComponent->variable(i);
@@ -2575,6 +2575,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             // Make our internal equations available through our API.
 
+            std::vector<AnalyserInternalVariablePtr> externallyDependentVariables;
+
             for (const auto &internalEquation : mInternalEquations) {
                 // Determine the type of the equation.
 
@@ -2588,16 +2590,20 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     type = AnalyserEquation::Type::TRUE_CONSTANT;
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
                     // An equation for a variable-based constant may now rely on
-                    // external variables. If this is the case then we need to
-                    // requalify it as an algebraic equation.
+                    // external variables, be it directly or indirectly. If this
+                    // is the case then we need to requalify that equation as an
+                    // algebraic equation.
 
                     type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
 
                     for (const auto &variable : internalEquation->mAllVariables) {
-                        if (externalVariables.count(variable) == 1) {
+                        if ((externalVariables.count(variable) == 1)
+                            || (std::find(externallyDependentVariables.begin(), externallyDependentVariables.end(), variable) != externallyDependentVariables.end())) {
                             type = AnalyserEquation::Type::ALGEBRAIC;
 
                             stateOrVariable->mPimpl->mType = AnalyserVariable::Type::ALGEBRAIC;
+
+                            externallyDependentVariables.push_back(internalEquation->mVariable);
 
                             break;
                         }

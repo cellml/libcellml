@@ -56,7 +56,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseStatesAndConstants(double *states, double *variables)
+void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)
 {
     variables[0] = 0.3;
     variables[1] = 1.0;
@@ -67,6 +67,8 @@ void initialiseStatesAndConstants(double *states, double *variables)
     states[1] = 0.6;
     states[2] = 0.325;
     states[3] = 0.0;
+    variables[17] = externalVariable(voi, states, variables, 17);
+    variables[5] = externalVariable(voi, states, variables, 5);
 }
 
 void computeComputedConstants(double *variables)
@@ -85,9 +87,9 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
     variables[13] = 1.0/(exp((states[3]+30.0)/10.0)+1.0);
     rates[1] = variables[12]*(1.0-states[1])-variables[13]*states[1];
     variables[16] = 0.01*(states[3]+10.0)/(exp((states[3]+10.0)/10.0)-1.0);
-    variables[17] = externalVariable(voi, states, rates, variables, 17);
+    variables[17] = externalVariable(voi, states, variables, 17);
     rates[2] = variables[16]*(1.0-states[2])-variables[17]*states[2];
-    variables[5] = externalVariable(voi, states, rates, variables, 5);
+    variables[5] = externalVariable(voi, states, variables, 5);
     variables[7] = variables[0]*(states[3]-variables[6]);
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14]);
     variables[9] = variables[4]*pow(states[0], 3.0)*states[1]*(states[3]-variables[8]);
@@ -96,6 +98,8 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
+    variables[17] = externalVariable(voi, states, variables, 17);
+    variables[5] = externalVariable(voi, states, variables, 5);
     variables[7] = variables[0]*(states[3]-variables[6]);
     variables[9] = variables[4]*pow(states[0], 3.0)*states[1]*(states[3]-variables[8]);
     variables[10] = 0.1*(states[3]+25.0)/(exp((states[3]+25.0)/10.0)-1.0);
