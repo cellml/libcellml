@@ -987,7 +987,6 @@ TEST(Generator, cellmlUnitScalingConstant)
 
     EXPECT_EQ(nullptr, analyserModel->voi());
     EXPECT_EQ(nullptr, analyserModel->state(0));
-    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->variable(0));
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
     EXPECT_NE(nullptr, analyserModel->equation(0));
@@ -1226,6 +1225,99 @@ TEST(Generator, dependentEqns)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/dependent_eqns/model.py"), generator->implementationCode());
+}
+
+TEST(Generator, cellGeometryModel)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cell_geometry_model/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
+
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(4), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.c"), generator->implementationCode());
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.py"), generator->implementationCode());
+}
+
+TEST(Generator, cellGeometryModelWithExternalVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/cell_geometry_model/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("cell_geometry")->variable("L")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("cell_geometry")->variable("rad")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
+
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(4), analyserModel->variableCount());
+    EXPECT_EQ(size_t(4), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.external.h");
+
+    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.external.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.external.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cell_geometry_model/model.external.py"), generator->implementationCode());
 }
 
 TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
@@ -2065,10 +2157,10 @@ TEST(Generator, coverage)
 
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectInAlgebraicModelString("");
-    profile->setVariableTypeObjectExternalTypeInAlgebraicModelString("");
-    profile->setVariableTypeObjectInDifferentialModelString("");
-    profile->setVariableTypeObjectExternalTypeInDifferentialModelString("");
+    profile->setVariableTypeObjectString(false, false, "");
+    profile->setVariableTypeObjectString(false, true, "");
+    profile->setVariableTypeObjectString(true, false, "");
+    profile->setVariableTypeObjectString(true, true, "");
 
     profile->setVariableOfIntegrationVariableTypeString("");
     profile->setStateVariableTypeString("");
@@ -2093,9 +2185,10 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesMethodInAlgebraicModelString("");
-    profile->setImplementationComputeVariablesMethodInDifferentialModelString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
-                                                                              "// xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
+    profile->setImplementationComputeVariablesMethodString(false, false, "");
+    profile->setImplementationComputeVariablesMethodString(false, true, "");
+    profile->setImplementationComputeVariablesMethodString(true, false, "");
+    profile->setImplementationComputeVariablesMethodString(true, true, "");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode());
@@ -2140,10 +2233,10 @@ TEST(Generator, coverage)
     profile->setInterfaceVariableCountString("");
     profile->setImplementationVariableCountString("");
 
-    profile->setVariableTypeObjectInAlgebraicModelString("");
-    profile->setVariableTypeObjectExternalTypeInAlgebraicModelString("");
-    profile->setVariableTypeObjectInDifferentialModelString("");
-    profile->setVariableTypeObjectExternalTypeInDifferentialModelString("");
+    profile->setVariableTypeObjectString(false, false, "");
+    profile->setVariableTypeObjectString(false, true, "");
+    profile->setVariableTypeObjectString(true, false, "");
+    profile->setVariableTypeObjectString(true, true, "");
 
     profile->setVariableOfIntegrationVariableTypeString("");
     profile->setStateVariableTypeString("");
