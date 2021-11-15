@@ -17,7 +17,7 @@ limitations under the License.
 const libCellMLModule = require('libcellml.js/libcellml.common')
 let libcellml = null
 
-describe("Entity tests", () => {
+describe("NamedEntity tests", () => {
     beforeAll(async () => {
         libcellml = await libCellMLModule()
     })
