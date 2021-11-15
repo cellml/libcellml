@@ -15,9 +15,11 @@
 set(TEST_SRCS
   analyser.test.js
   component.test.js
+  componententity.test.js
   entity.test.js
   generatorprofile.test.js
   model.test.js
+  namedentity.test.js
   parentedentity.test.js
   parser.test.js
   reset.test.js
