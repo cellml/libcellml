@@ -76,14 +76,15 @@ extlinks = {
     'libxml2': ('http://xmlsoft.org/%s',''),
     'mathml': ('https://www.w3.org/Math/%s',''),
     'msvs': ('https://visualstudio.microsoft.com%s',''),
-    'opencmiss_repo': ('https://github.com/OpenCMISS-Dependencies/libxml2/releases%s',''),
+    'opencmiss_libxml2_repo': ('https://github.com/OpenCMISS-Dependencies/libxml2/releases%s',''),
+    'opencmiss_zlib_repo': ('https://github.com/OpenCMISS-Dependencies/zlib/releases%s',''),
     'python': ('https://www.python.org/%s',''),
     'sphinx': ('http://www.sphinx-doc.org/en/master/%s',''),
     'swig':('http://swig.org%s',''),
     'swigwin_download': ('https://sourceforge.net/projects/swig/files/swigwin/%s',''),
     'wikipedia': ('https://en.wikipedia.org/wiki%s',''),
     'xml': ('https://www.w3.org/XML/%s',''),
-
+    'zlib': ('https://www.zlib.net/%s',''),
 }
 
 # The master toctree document.

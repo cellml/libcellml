@@ -12,18 +12,20 @@ VARIABLE_COUNT = 19
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
-    EXTERNAL = 4
+    VARIABLE_OF_INTEGRATION = 1
+    STATE = 2
+    CONSTANT = 3
+    COMPUTED_CONSTANT = 4
+    ALGEBRAIC = 5
+    EXTERNAL = 6
 
 
-VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
+VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
-    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"},
-    {"name": "V", "units": "millivolt", "component": "membrane"}
+    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate", "type": VariableType.STATE},
+    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate", "type": VariableType.STATE},
+    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
@@ -69,7 +71,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_states_and_constants(states, variables):
+def initialise_variables(voi, states, variables, external_variable):
     variables[1] = 0.3
     variables[2] = 1.0
     variables[3] = 0.0
@@ -78,6 +80,7 @@ def initialise_states_and_constants(states, variables):
     states[0] = 0.6
     states[1] = 0.325
     states[2] = 0.0
+    variables[0] = external_variable(voi, states, variables, 0)
 
 
 def compute_computed_constants(variables):
@@ -96,12 +99,13 @@ def compute_rates(voi, states, rates, variables, external_variable):
     variables[6] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     variables[8] = variables[1]*(states[2]-variables[7])
     variables[16] = variables[4]*pow(states[1], 4.0)*(states[2]-variables[15])
-    variables[0] = external_variable(voi, states, rates, variables, 0)
+    variables[0] = external_variable(voi, states, variables, 0)
     variables[10] = variables[5]*pow(variables[0], 3.0)*states[0]*(states[2]-variables[9])
     rates[2] = -(-variables[6]+variables[10]+variables[16]+variables[8])/variables[2]
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
+    variables[0] = external_variable(voi, states, variables, 0)
     variables[8] = variables[1]*(states[2]-variables[7])
     variables[10] = variables[5]*pow(variables[0], 3.0)*states[0]*(states[2]-variables[9])
     variables[11] = 0.1*(states[2]+25.0)/(exp((states[2]+25.0)/10.0)-1.0)

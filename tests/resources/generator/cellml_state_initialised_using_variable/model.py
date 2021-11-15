@@ -12,15 +12,17 @@ VARIABLE_COUNT = 1
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    VARIABLE_OF_INTEGRATION = 1
+    STATE = 2
+    CONSTANT = 3
+    COMPUTED_CONSTANT = 4
+    ALGEBRAIC = 5
 
 
-VOI_INFO = {"name": "t", "units": "ms", "component": "environment"}
+VOI_INFO = {"name": "t", "units": "ms", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "x", "units": "mV", "component": "main"}
+    {"name": "x", "units": "mV", "component": "main", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
@@ -36,7 +38,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_states_and_constants(states, variables):
+def initialise_variables(states, variables):
     variables[0] = 123.0
     states[0] = variables[0]
 

@@ -11,14 +11,14 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 2;
 const size_t VARIABLE_COUNT = 20;
 
-const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
+const VariableInfo VOI_INFO = {"time", "millisecond", "environment", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"h", "dimensionless", "sodium_channel_h_gate"},
-    {"n", "dimensionless", "potassium_channel_n_gate"}
+    {"h", "dimensionless", "sodium_channel_h_gate", STATE},
+    {"n", "dimensionless", "potassium_channel_n_gate", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"m", "dimensionless", "sodium_channel_m_gate", EXTERNAL},
     {"V", "millivolt", "membrane", EXTERNAL},
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
@@ -43,12 +43,12 @@ const VariableInfoWithType VARIABLE_INFO[] = {
 
 double * createStatesArray()
 {
-    return (double *) malloc(STATE_COUNT*sizeof(double));
+    return malloc(STATE_COUNT*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    return malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)
@@ -56,7 +56,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseStatesAndConstants(double *states, double *variables)
+void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)
 {
     variables[2] = 0.3;
     variables[3] = 1.0;
@@ -65,6 +65,8 @@ void initialiseStatesAndConstants(double *states, double *variables)
     variables[6] = 120.0;
     states[0] = 0.6;
     states[1] = 0.325;
+    variables[1] = externalVariable(voi, states, variables, 1);
+    variables[0] = externalVariable(voi, states, variables, 0);
 }
 
 void computeComputedConstants(double *variables)
@@ -76,7 +78,7 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
-    variables[1] = externalVariable(voi, states, rates, variables, 1);
+    variables[1] = externalVariable(voi, states, variables, 1);
     variables[14] = 0.07*exp(variables[1]/20.0);
     variables[15] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0);
     rates[0] = variables[14]*(1.0-states[0])-variables[15]*states[0];
@@ -87,7 +89,8 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
-    variables[0] = externalVariable(voi, states, rates, variables, 0);
+    variables[1] = externalVariable(voi, states, variables, 1);
+    variables[0] = externalVariable(voi, states, variables, 0);
     variables[7] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
     variables[9] = variables[2]*(variables[1]-variables[8]);
     variables[11] = variables[6]*pow(variables[0], 3.0)*states[0]*(variables[1]-variables[10]);
