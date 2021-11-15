@@ -78,7 +78,7 @@ double acoth(double x)
     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
-void initialiseStatesAndConstants(double *states, double *variables)
+void initialiseVariables(double *states, double *variables)
 {
     variables[0] = 1.0;
     variables[1] = 2.0;
@@ -277,6 +277,3 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 {
     rates[0] = 1.0;
 }
-
-// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.
-// xxxxxxxxxxxxxxxxxxxxxxx
