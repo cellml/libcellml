@@ -63,19 +63,6 @@ public:
     void loadModel(const ModelPtr &model, const std::string &input);
 
     /**
-     * @brief Update a @p model with the attributes from a @c std::string.
-     *
-     * Update the @p model with entities and attributes
-     * from the @c std::string @p input. Any entities or attributes
-     * in the @p model with names matching those in @p input
-     * will be overwritten.
-     *
-     * @param model The @c ModelPtr to update.
-     * @param input The string to parse and update the @p model with.
-     */
-    void updateModel(const ModelPtr &model, const std::string &input);
-
-    /**
      * @brief Update the @p component with attributes parsed from @p node.
      *
      * Update the @p component with attributes and entities parsed from
@@ -250,14 +237,9 @@ ModelPtr Parser::parseModel(const std::string &input)
         pFunc()->addIssue(issue);
     } else {
         model = Model::create();
-        pFunc()->updateModel(model, input);
+        pFunc()->loadModel(model, input);
     }
     return model;
-}
-
-void Parser::ParserImpl::updateModel(const ModelPtr &model, const std::string &input)
-{
-    loadModel(model, input);
 }
 
 void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &input)
