@@ -21,6 +21,7 @@ limitations under the License.
 namespace libcellml {
 
 const char *const CELLML_1_0_NS = "http://www.cellml.org/cellml/1.0#";
+const char *const CELLML_1_1_NS = "http://www.cellml.org/cellml/1.1#";
 const char *const CELLML_2_0_NS = "http://www.cellml.org/cellml/2.0#";
 const char *const MATHML_NS = "http://www.w3.org/1998/Math/MathML";
 const char *const XLINK_NS = "http://www.w3.org/1999/xlink";

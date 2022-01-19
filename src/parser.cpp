@@ -279,9 +279,13 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         addIssue(issue);
         return;
     }
-    if (node->isCellml10Element("model")) {
+    if (node->isCellml1XElement("model")) {
         auto issue = Issue::IssueImpl::create();
-        issue->mPimpl->setDescription("Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.");
+        std::string version = "1.1";
+        if (node->isCellml10Element()) {
+            version = "1.0";
+        }
+        issue->mPimpl->setDescription("Given model is a CellML " + version + " model, the parser will try to represent this model in CellML 2.0.");
         issue->mPimpl->setLevel(Issue::Level::MESSAGE);
         issue->mPimpl->mItem->mPimpl->setModel(model);
         addIssue(issue);
