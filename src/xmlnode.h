@@ -142,6 +142,22 @@ public:
 
     /**
      * @brief Check if this @c XmlNode is an element node in the
+     * CellML 1.0 or 2.0 namespace with the given local name.
+     *
+     * Checks whether this @c XmlNode is an element node in
+     * the CellML 1.0 or 2.0 namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
+     *
+     * @param name The @c char element name to check for.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * CellML 1.0 or 2.0 namespace with the given local name @p name; and
+     * @c false otherwise.
+     */
+    bool isCellmlElement(const char *name = nullptr) const;
+
+    /**
+     * @brief Check if this @c XmlNode is an element node in the
      * CellML 2.0 namespace with the given local name.
      *
      * Checks whether this @c XmlNode is an element node in
@@ -154,7 +170,23 @@ public:
      * CellML 2.0 namespace with the given local name @p name; and
      * @c false otherwise.
      */
-    bool isCellmlElement(const char *name = nullptr) const;
+    bool isCellml20Element(const char *name = nullptr) const;
+
+    /**
+     * @brief Check if this @c XmlNode is an element node in the
+     * CellML 1.0 namespace with the given local name.
+     *
+     * Checks whether this @c XmlNode is an element node in
+     * the CellML 1.0 namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
+     *
+     * @param name The @c char element name to check for.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * CellML 1.0 namespace with the given local name @p name; and
+     * @c false otherwise.
+     */
+    bool isCellml10Element(const char *name = nullptr) const;
 
     /**
      * @brief Check if this @c XmlNode is an element node in the
