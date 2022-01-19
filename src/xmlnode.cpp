@@ -176,6 +176,16 @@ bool XmlNode::isElement() const
 
 bool XmlNode::isCellmlElement(const char *name) const
 {
+    return isCellml20Element(name) || isCellml10Element(name);
+}
+
+bool XmlNode::isCellml10Element(const char *name) const
+{
+    return isElement(name, CELLML_1_0_NS);
+}
+
+bool XmlNode::isCellml20Element(const char *name) const
+{
     return isElement(name, CELLML_2_0_NS);
 }
 

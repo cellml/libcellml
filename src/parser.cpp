@@ -279,6 +279,13 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         addIssue(issue);
         return;
     }
+    if (node->isCellml10Element("model")) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.");
+        issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+        issue->mPimpl->mItem->mPimpl->setModel(model);
+        addIssue(issue);
+    }
     // Get model attributes.
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
@@ -300,18 +307,18 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     std::vector<XmlNodePtr> connectionNodes;
     std::vector<XmlNodePtr> encapsulationNodes;
     while (childNode) {
-        if (childNode->isCellmlElement("component")) {
+        if (childNode->isCellml20Element("component")) {
             auto component = Component::create();
             loadComponent(component, childNode);
             model->addComponent(component);
-        } else if (childNode->isCellmlElement("units")) {
+        } else if (childNode->isCellml20Element("units")) {
             UnitsPtr units = Units::create();
             loadUnits(units, childNode);
             model->addUnits(units);
-        } else if (childNode->isCellmlElement("import")) {
+        } else if (childNode->isCellml20Element("import")) {
             ImportSourcePtr importSource = ImportSource::create();
             loadImport(importSource, model, childNode);
-        } else if (childNode->isCellmlElement("encapsulation")) {
+        } else if (childNode->isCellml20Element("encapsulation")) {
             // An encapsulation should not have attributes other than an 'id' attribute.
             if (childNode->firstAttribute()) {
                 XmlAttributePtr childAttribute = childNode->firstAttribute();
@@ -343,7 +350,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 issue->mPimpl->setLevel(libcellml::Issue::Level::WARNING);
                 addIssue(issue);
             }
-        } else if (childNode->isCellmlElement("connection")) {
+        } else if (childNode->isCellml20Element("connection")) {
             connectionNodes.push_back(childNode);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
@@ -413,11 +420,11 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
     }
     XmlNodePtr childNode = node->firstChild();
     while (childNode) {
-        if (childNode->isCellmlElement("variable")) {
+        if (childNode->isCellml20Element("variable")) {
             VariablePtr variable = Variable::create();
             loadVariable(variable, childNode);
             component->addVariable(variable);
-        } else if (childNode->isCellmlElement("reset")) {
+        } else if (childNode->isCellml20Element("reset")) {
             ResetPtr reset = Reset::create();
             loadReset(reset, component, childNode);
             component->addReset(reset);
@@ -477,7 +484,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
     }
     XmlNodePtr childNode = node->firstChild();
     while (childNode) {
-        if (childNode->isCellmlElement("unit")) {
+        if (childNode->isCellml20Element("unit")) {
             loadUnit(units, childNode);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
@@ -752,7 +759,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             grandchildNode = grandchildNode->next();
         }
 
-        if (childNode->isCellmlElement("map_variables")) {
+        if (childNode->isCellml20Element("map_variables")) {
             std::string variable1Name;
             std::string variable2Name;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
@@ -960,7 +967,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
     std::string childEncapsulationId;
     while (childComponentNode) {
         ComponentPtr childComponent = nullptr;
-        if (childComponentNode->isCellmlElement("component_ref")) {
+        if (childComponentNode->isCellml20Element("component_ref")) {
             childComponent = loadComponentRef(model, childComponentNode);
         } else if (childComponentNode->isText()) {
             const std::string textNode = childComponentNode->convertToString();
@@ -1005,7 +1012,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         ComponentPtr parentComponent = nullptr;
         std::string encapsulationId;
         bool haveComponentRef = false;
-        if (componentRefNode->isCellmlElement("component_ref")) {
+        if (componentRefNode->isCellml20Element("component_ref")) {
             haveComponentRef = true;
             parentComponent = loadComponentRef(model, componentRefNode);
         } else if (componentRefNode->isText()) {
@@ -1090,7 +1097,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
         addIssue(issue);
     }
     while (childNode) {
-        if (childNode->isCellmlElement("component")) {
+        if (childNode->isCellml20Element("component")) {
             ComponentPtr importedComponent = Component::create();
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             importedComponent->setImportSource(importSource);
@@ -1111,7 +1118,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                 childAttribute = childAttribute->next();
             }
             model->addComponent(importedComponent);
-        } else if (childNode->isCellmlElement("units")) {
+        } else if (childNode->isCellml20Element("units")) {
             UnitsPtr importedUnits = Units::create();
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             importedUnits->setImportSource(importSource);
@@ -1330,10 +1337,10 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
     size_t testValueCount = 0;
     size_t resetValueCount = 0;
     while (childNode) {
-        if (childNode->isCellmlElement("test_value")) {
+        if (childNode->isCellml20Element("test_value")) {
             loadResetChild("test_value", reset, component, childNode);
             testValueCount++;
-        } else if (childNode->isCellmlElement("reset_value")) {
+        } else if (childNode->isCellml20Element("reset_value")) {
             loadResetChild("reset_value", reset, component, childNode);
             resetValueCount++;
         } else if (childNode->isText()) {

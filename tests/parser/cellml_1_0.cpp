@@ -20,7 +20,7 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Parser, emptyCellML_1_0)
+TEST(Parser, emptyCellml_1_0)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -31,4 +31,16 @@ TEST(Parser, emptyCellML_1_0)
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, parser->issue(0)->level());
     EXPECT_EQ("Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.", parser->issue(0)->description());
+}
+
+TEST(Parser, parseNamedModelCellml_1_0)
+{
+    const std::string n = "name";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.0#\" name=\"name\"/>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    EXPECT_EQ(n, model->name());
 }
