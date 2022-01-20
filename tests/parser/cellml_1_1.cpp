@@ -50,6 +50,5 @@ TEST(Parser, sineCellml_1_1)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(fileContents("cellml11/sin.xml"));
 
-    EXPECT_EQ(size_t(0), parser->issueCount());
-    printIssues(parser);
+    EXPECT_EQ(size_t(2), parser->issueCount());
 }
