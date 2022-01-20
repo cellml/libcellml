@@ -47,8 +47,69 @@ TEST(Parser, parseNamedModelCellml_1_1)
 
 TEST(Parser, sineCellml_1_1)
 {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"sin\" id=\"sin\">\n"
+        "  <component name=\"sin\" id=\"sin\">\n"
+        "    <variable name=\"x\" units=\"dimensionless\" interface=\"public_and_private\"/>\n"
+        "    <variable name=\"sin\" units=\"dimensionless\" interface=\"public_and_private\" id=\"sin\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply id=\"actual_sin\">\n"
+        "        <eq/>\n"
+        "        <ci>sin</ci>\n"
+        "        <apply>\n"
+        "          <sin/>\n"
+        "          <ci>x</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(fileContents("cellml11/sin.xml"));
+    auto model = parser->parseModel(fileContents("cellml11/sin.xml"));
 
     EXPECT_EQ(size_t(2), parser->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Parser, derivedApproxSineCellml_1_1)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"deriv_approx_sin\" id=\"deriv_approx_sin\">\n"
+        "  <component name=\"sin\" id=\"sin\">\n"
+        "    <variable name=\"x\" units=\"dimensionless\" interface=\"public_and_private\" id=\"x\"/>\n"
+        "    <variable name=\"sin\" units=\"dimensionless\" initial_value=\"sin_initial_value\" interface=\"public_and_private\" id=\"sin\"/>\n"
+        "    <variable name=\"sin_initial_value\" units=\"dimensionless\" interface=\"public_and_private\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <apply>\n"
+        "          <diff/>\n"
+        "          <bvar>\n"
+        "            <ci>x</ci>\n"
+        "          </bvar>\n"
+        "          <ci>sin</ci>\n"
+        "        </apply>\n"
+        "        <apply>\n"
+        "          <cos/>\n"
+        "          <ci>x</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("cellml11/deriv_approx_sin.xml"));
+
+    EXPECT_EQ(size_t(2), parser->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
 }
