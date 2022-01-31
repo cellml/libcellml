@@ -146,9 +146,14 @@ public:
     void loadUnits(const UnitsPtr &units, const XmlNodePtr &node, bool transforming);
 
     /**
-     * @brief loadUnitsFromComponent
-     * @param model
-     * @param node
+     * @brief Load any units defined in a component into the model.
+     *
+     * The method is for transforming CellML 1.0 and CellML 1.1 models into CellML 2.0.
+     * It searches through the components in the model looking for units definitions and
+     * adding them to the model.
+     *
+     * @param model The @c ModelPtr to add any units to.
+     * @param node The @c XmlNodePtr to search for units children of components.
      */
     void loadUnitsFromComponent(const ModelPtr &model, const XmlNodePtr &node);
 
