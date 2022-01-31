@@ -2749,15 +2749,11 @@ TEST(Units, validateConnectionsWithBaseUnits)
         "  </connection>\n"
         "</model>\n";
 
-    std::cout << m << std::endl;
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(m);
-    printIssues(parser);
-    libcellml::PrinterPtr printer = libcellml::Printer::create();
-    const std::string a = printer->printModel(model);
-    std::cout << a << std::endl;
+
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(model);
-    EXPECT_EQ(size_t(10), validator->issueCount());
-    printIssues(validator);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
