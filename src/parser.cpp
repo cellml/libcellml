@@ -530,7 +530,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
                 // Remove all old CellML namespace definitions and references.
                 traverseTreeRemovingOldCellmlNamespaces(childNode);
 
-                if (cellmlAttributes.size()) {
+                if (!cellmlAttributes.empty()) {
                     // Add CellML 2.0 namespace to MathML element.
                     childNode->addNamespaceDefinition(CELLML_2_0_NS, "cellml");
 
