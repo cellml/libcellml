@@ -1903,8 +1903,7 @@ void updateBaseUnitCount(const ModelPtr &model,
     if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
         if (u->isBaseUnit()) {
-            auto unitMapEntry = unitMap.find(uName);
-            if (unitMapEntry == unitMap.end()) {
+            if (unitMap.find(uName) == unitMap.end()) {
                 unitMap.emplace(uName, 0.0);
             }
             unitMap[uName] += direction * uExp;
