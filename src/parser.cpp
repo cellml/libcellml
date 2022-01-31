@@ -517,6 +517,24 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             loadReset(reset, component, childNode);
             component->addReset(reset);
         } else if (childNode->isMathmlElement("math")) {
+            // If transforming, manipulate the math sub-document CellML namespaces.
+            if (transforming) {
+                // Find all attributes using old CellML namespace.
+                auto cellmlAttributes = findAllAttributesWithOldCellmlNamespace(childNode);
+
+                // Remove all old CellML namespace definitions and references.
+                traverseTreeRemovingOldCellmlNamespaces(childNode);
+
+                if (cellmlAttributes.size()) {
+                    // Add CellML 2.0 namespace to MathML element.
+                    childNode->addNamespaceDefinition(CELLML_2_0_NS, "cellml");
+
+                    // Set all attributes that had an old CellML namespace with CellML 2.0 namespace.
+                    for (const auto &cellmlAttribute : cellmlAttributes) {
+                        cellmlAttribute->setNamespacePrefix("cellml");
+                    }
+                }
+            }
             // Copy any namespaces that do not feature as a namespace definition
             // of the math node into the math node.
             auto mathElementDefinedNamespaces = childNode->definedNamespaces();

@@ -114,4 +114,16 @@ void XmlAttribute::removeAttribute()
     xmlRemoveProp(mPimpl->mXmlAttributePtr);
 }
 
+void XmlAttribute::setNamespacePrefix(const std::string &prefix)
+{
+    xmlChar buffer[50];
+    xmlNodePtr parent = mPimpl->mXmlAttributePtr->parent;
+
+    xmlChar *fullelemname = xmlBuildQName(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(prefix.c_str()), buffer, 50);
+
+    auto oldAttribute = mPimpl->mXmlAttributePtr;
+    mPimpl->mXmlAttributePtr = xmlSetProp(parent, fullelemname, reinterpret_cast<const xmlChar *>(value().c_str()));
+    xmlRemoveProp(oldAttribute);
+}
+
 } // namespace libcellml

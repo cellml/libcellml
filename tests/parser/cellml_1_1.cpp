@@ -114,7 +114,7 @@ TEST(Parser, derivedApproxSineCellml_1_1)
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, hodgkinHuxleyCellml_1_1)
+TEST(Parser, hodgkinHuxleyCellml_1_0)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("cellml11/Hodgkin_Huxley_1952_modified.cellml"));
@@ -126,5 +126,5 @@ TEST(Parser, hodgkinHuxleyCellml_1_1)
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
 
-    printIssues(validator);
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
