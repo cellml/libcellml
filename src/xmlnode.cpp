@@ -305,6 +305,7 @@ XmlNodePtr XmlNode::parent() const
 std::string XmlNode::convertToString() const
 {
     std::string contentString;
+    xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
     int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
     if (len > 0) {
