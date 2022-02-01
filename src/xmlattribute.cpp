@@ -120,7 +120,7 @@ void XmlAttribute::setNamespacePrefix(const std::string &prefix)
     std::array<xmlChar, 50> buffer = {};
     xmlNodePtr parent = mPimpl->mXmlAttributePtr->parent;
 
-    xmlChar *fullelemname = xmlBuildQName(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(prefix.c_str()), buffer.data(), buffer.size());
+    xmlChar *fullelemname = xmlBuildQName(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(prefix.c_str()), buffer.data(), static_cast<int>(buffer.size()));
 
     auto oldAttribute = mPimpl->mXmlAttributePtr;
     mPimpl->mXmlAttributePtr = xmlSetProp(parent, fullelemname, reinterpret_cast<const xmlChar *>(value().c_str()));
