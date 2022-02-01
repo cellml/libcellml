@@ -20,7 +20,7 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Parser, emptyCellml_1_1)
+TEST(ParserTransform, emptyCellml_1_1)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -33,7 +33,7 @@ TEST(Parser, emptyCellml_1_1)
     EXPECT_EQ("Given model is a CellML 1.1 model, the parser will try to represent this model in CellML 2.0.", parser->issue(0)->description());
 }
 
-TEST(Parser, parseNamedModelCellml_1_1)
+TEST(ParserTransform, parseNamedModelCellml_1_1)
 {
     const std::string n = "name";
     const std::string e =
@@ -45,7 +45,7 @@ TEST(Parser, parseNamedModelCellml_1_1)
     EXPECT_EQ(n, model->name());
 }
 
-TEST(Parser, sineCellml_1_1)
+TEST(ParserTransform, sineCellml_1_1)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -76,7 +76,7 @@ TEST(Parser, sineCellml_1_1)
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, derivedApproxSineCellml_1_1)
+TEST(ParserTransform, derivedApproxSineCellml_1_1)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -112,19 +112,4 @@ TEST(Parser, derivedApproxSineCellml_1_1)
     auto printer = libcellml::Printer::create();
     auto a = printer->printModel(model);
     EXPECT_EQ(e, a);
-}
-
-TEST(Parser, hodgkinHuxleyCellml_1_0)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("cellml11/Hodgkin_Huxley_1952_modified.cellml"));
-
-    EXPECT_EQ(size_t(7), model->unitsCount());
-    EXPECT_EQ(size_t(5), model->componentCount());
-    EXPECT_EQ(size_t(4), parser->issueCount());
-
-    auto validator = libcellml::Validator::create();
-    validator->validateModel(model);
-
-    EXPECT_EQ(size_t(0), validator->issueCount());
 }
