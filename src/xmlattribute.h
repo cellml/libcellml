@@ -160,7 +160,6 @@ public:
      */
     void setNamespacePrefix(const std::string &prefix);
 
-
 private:
     struct XmlAttributeImpl; /**< Forward declaration for pImpl idiom, @private. */
     XmlAttributeImpl *mPimpl; /**< Private member to implementation pointer, @private. */
