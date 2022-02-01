@@ -20,7 +20,7 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(ParserTransform, emptyCellml_1_1)
+TEST(ParserTransform, emptyCellml11)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -33,7 +33,7 @@ TEST(ParserTransform, emptyCellml_1_1)
     EXPECT_EQ("Given model is a CellML 1.1 model, the parser will try to represent this model in CellML 2.0.", parser->issue(0)->description());
 }
 
-TEST(ParserTransform, parseNamedModelCellml_1_1)
+TEST(ParserTransform, parseNamedModelCellml11)
 {
     const std::string n = "name";
     const std::string e =
@@ -45,7 +45,7 @@ TEST(ParserTransform, parseNamedModelCellml_1_1)
     EXPECT_EQ(n, model->name());
 }
 
-TEST(ParserTransform, sineCellml_1_1)
+TEST(ParserTransform, sineCellml11)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -76,7 +76,7 @@ TEST(ParserTransform, sineCellml_1_1)
     EXPECT_EQ(e, a);
 }
 
-TEST(ParserTransform, derivedApproxSineCellml_1_1)
+TEST(ParserTransform, derivedApproxSineCellml11)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
