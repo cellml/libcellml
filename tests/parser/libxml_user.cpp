@@ -26,7 +26,7 @@ limitations under the License.
 
 void structuredErrorCallback(void *userData, xmlErrorPtr error)
 {
-    if (userData && error) {
+    if (userData != nullptr && error != nullptr) {
         // Suppress any error messages raised from using LibXml2.
     }
 }
