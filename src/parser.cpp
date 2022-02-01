@@ -261,7 +261,7 @@ ModelPtr Parser::parseModel(const std::string &input)
     return model;
 }
 
-bool isIdAttribute(const XmlAttributePtr& attribute, bool transforming)
+bool isIdAttribute(const XmlAttributePtr &attribute, bool transforming)
 {
     return attribute->isType("id") || (attribute->isType("id", CMETA_1_0_NS) && transforming);
 }
@@ -497,7 +497,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             component->setName(attribute->value());
         } else if (isIdAttribute(attribute, transforming)) {
             component->setId(attribute->value());
-        } else {            
+        } else {
             auto issue = Issue::IssueImpl::create();
             if (transforming) {
                 issue->mPimpl->setDescription("Component '" + node->attribute("name") + "' ignoring attribute '" + attribute->name() + "'.");
