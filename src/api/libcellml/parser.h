@@ -58,11 +58,18 @@ public:
      *
      * All existing issues will be removed before the input is parsed.
      *
+     * If @p parseVersion1XModels is @c true then CellML 1.0, CellML 1.1, and
+     * CellML 2.0 models will be parsed. If @p parseVersion1XModels is @c false then
+     * only CellML 2.0 models will be parsed.  The default value of parseVersion1XModels
+     * is @c false.
+     *
      * @param input The string to parse into a model.
+     * @param parseVersion1XModels Boolean to signal whether CellML 1.X
+     * models should be parsed, @c false by default.
      *
      * @return The new @c ModelPtr deserialised from the input string.
      */
-    ModelPtr parseModel(const std::string &input);
+    ModelPtr parseModel(const std::string &input, bool parseVersion1XModels=false);
 
 private:
     Parser(); /**< Constructor, @private. */

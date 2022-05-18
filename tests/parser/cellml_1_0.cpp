@@ -27,10 +27,29 @@ TEST(ParserTransform, emptyCellml10)
         "<model xmlns=\"http://www.cellml.org/cellml/1.0#\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(e, true);
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, parser->issue(0)->level());
-    EXPECT_EQ("Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.", parser->issue(0)->description());
+    EXPECT_EQ("Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.",
+              parser->issue(0)->description());
+}
+
+TEST(ParserTransform, parseNamedModelCellml10WithoutAuthority)
+{
+    const std::string n = "name";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.0#\" name=\"name\"/>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+
+    EXPECT_EQ("", model->name());
+    EXPECT_EQ(size_t(1), parser->issueCount());
+    EXPECT_EQ(libcellml::Issue::Level::ERROR, parser->issue(0)->level());
+    EXPECT_EQ("Given model is a CellML 1.0 model, explicitly set parseVersion1XModels parameter true,"
+              " if you want the parser to try and represent this model in CellML 2.0.",
+              parser->issue(0)->description());
 }
 
 TEST(ParserTransform, parseNamedModelCellml10)
@@ -41,14 +60,14 @@ TEST(ParserTransform, parseNamedModelCellml10)
         "<model xmlns=\"http://www.cellml.org/cellml/1.0#\" name=\"name\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(e, true);
     EXPECT_EQ(n, model->name());
 }
 
 TEST(ParserTransform, hodgkinHuxleyCellml10)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("cellml11/Hodgkin_Huxley_1952_modified.cellml"));
+    auto model = parser->parseModel(fileContents("cellml1X/Hodgkin_Huxley_1952_modified.cellml"), true);
 
     EXPECT_EQ(size_t(7), model->unitsCount());
     EXPECT_EQ(size_t(5), model->componentCount());
