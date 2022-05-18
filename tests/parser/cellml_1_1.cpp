@@ -27,7 +27,7 @@ TEST(ParserTransform, emptyCellml11)
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(e, true);
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, parser->issue(0)->level());
     EXPECT_EQ("Given model is a CellML 1.1 model, the parser will try to represent this model in CellML 2.0.", parser->issue(0)->description());
@@ -41,7 +41,7 @@ TEST(ParserTransform, parseNamedModelCellml11)
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" name=\"name\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(e, true);
     EXPECT_EQ(n, model->name());
 }
 
@@ -67,7 +67,7 @@ TEST(ParserTransform, sineCellml11)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("cellml11/sin.xml"));
+    auto model = parser->parseModel(fileContents("cellml1X/sin.xml"), true);
 
     EXPECT_EQ(size_t(2), parser->issueCount());
 
@@ -105,7 +105,7 @@ TEST(ParserTransform, derivedApproxSineCellml11)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("cellml11/deriv_approx_sin.xml"));
+    auto model = parser->parseModel(fileContents("cellml1X/deriv_approx_sin.xml"), true);
 
     EXPECT_EQ(size_t(2), parser->issueCount());
 

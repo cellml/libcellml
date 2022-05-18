@@ -57,10 +57,16 @@ public:
      * the @c std::string @p input. Any entities or attributes in @p model with names
      * matching those in @p input will be overwritten.
      *
+     * If @p parseVersion1XModels is @c true then if the @p input is a CellML 1.0 or 1.1
+     * model parse it into CellML 2.0 data structures. If @p parseVersion1XModels is @c false
+     * strictly only parse CellML 2.0 models.
+     *
+     *
      * @param model The @c ModelPtr to update.
      * @param input The string to parse and update the @p model with.
+     * @param parseVersion1XModels
      */
-    void loadModel(const ModelPtr &model, const std::string &input);
+    void loadModel(const ModelPtr &model, const std::string &input, bool parseVersion1XModels);
 
     /**
      * @brief Update the @p component with attributes parsed from @p node.
@@ -245,7 +251,7 @@ ParserPtr Parser::create() noexcept
     return std::shared_ptr<Parser> {new Parser {}};
 }
 
-ModelPtr Parser::parseModel(const std::string &input)
+ModelPtr Parser::parseModel(const std::string &input, bool parseVersion1XModels)
 {
     pFunc()->removeAllIssues();
     ModelPtr model = nullptr;
@@ -256,7 +262,7 @@ ModelPtr Parser::parseModel(const std::string &input)
         pFunc()->addIssue(issue);
     } else {
         model = Model::create();
-        pFunc()->loadModel(model, input);
+        pFunc()->loadModel(model, input, parseVersion1XModels);
     }
     return model;
 }
@@ -306,7 +312,7 @@ bool isEncapsulationRelationship(const XmlNodePtr &node)
     return false;
 }
 
-void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &input)
+void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &input, bool parseVersion1XModels)
 {
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     doc->parse(input);
@@ -344,6 +350,18 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         return;
     }
     bool transforming = node->isCellml1XElement("model");
+    if (!parseVersion1XModels and transforming) {
+        auto issue = Issue::IssueImpl::create();
+        std::string version = "1.1";
+        if (node->isCellml10Element()) {
+            version = "1.0";
+        }
+        issue->mPimpl->setDescription("Given model is a CellML " + version + " model, explicitly set parseVersion1XModels parameter true, if you want the parser to try and represent this model in CellML 2.0.");
+        issue->mPimpl->setLevel(Issue::Level::ERROR);
+        issue->mPimpl->mItem->mPimpl->setModel(model);
+        addIssue(issue);
+        return;
+    }
     if (transforming) {
         auto issue = Issue::IssueImpl::create();
         std::string version = "1.1";
