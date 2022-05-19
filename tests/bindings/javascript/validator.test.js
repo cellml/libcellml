@@ -41,7 +41,7 @@ describe("Validator tests", () => {
     const x = new libcellml.Validator()
     const p = new libcellml.Parser()
 
-    const m = p.parseModel(model)
+    const m = p.parseModel(model, false)
 
     x.validateModel(m)
 

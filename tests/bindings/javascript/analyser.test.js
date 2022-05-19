@@ -77,7 +77,7 @@ describe("Analyser tests", () => {
   });
   beforeEach(() => {
     const p = new libcellml.Parser()
-    m = p.parseModel(modelString)
+    m = p.parseModel(modelString, false)
     a = new libcellml.Analyser()
 
     a.analyseModel(m)
@@ -89,7 +89,7 @@ describe("Analyser tests", () => {
   test("Checking Analyser.analyseModel.", () => {
     const p = new libcellml.Parser()
 
-    m = p.parseModel(modelStringWithError)
+    m = p.parseModel(modelStringWithError, false)
     expect(p.issueCount()).toBe(0)
 
     a.analyseModel(m)
