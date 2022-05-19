@@ -48,14 +48,14 @@ describe("Parser tests", () => {
     test('Checking Parser parse model.', () => {
         const p = new libcellml.Parser()
 
-        const m = p.parseModel(model)
+        const m = p.parseModel(model, false)
 
         expect(m.componentCount()).toBe(1)
     })
     test('Checking Parser parse model import component.', () => {
         const p = new libcellml.Parser()
 
-        const m = p.parseModel(componentImportModel)
+        const m = p.parseModel(componentImportModel, false)
 
         expect(m.componentCount()).toBe(1)
         expect(m.componentByIndex(0).isImport()).toBe(true)
