@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.10.2)
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
 set(_PROJECT_VERSION 0.2.0)
-set(PROJECT_DEVELOPER_VERSION -dev.21)
+set(PROJECT_DEVELOPER_VERSION -dev.24)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.
