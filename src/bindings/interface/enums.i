@@ -2,11 +2,11 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_string.i>
+
 %{
 #include "libcellml/enums.h"
 %}
-
-%ignore libcellml::cellmlElementTypeAsString;
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.
