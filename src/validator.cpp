@@ -1902,7 +1902,13 @@ void updateBaseUnitCount(const ModelPtr &model,
 {
     if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
-        if (!u->isBaseUnit()) {
+        if (u->isBaseUnit()) {
+            if (unitMap.find(uName) == unitMap.end()) {
+                unitMap.emplace(uName, 0.0);
+            }
+            unitMap[uName] += direction * uExp;
+            multiplier += direction * logMult;
+        } else {
             std::string ref;
             std::string pre;
             std::string id;
@@ -1921,9 +1927,6 @@ void updateBaseUnitCount(const ModelPtr &model,
                     multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + convertPrefixToInt(pre)) * exp);
                 }
             }
-        } else if (unitMap.find(uName) == unitMap.end()) {
-            unitMap.emplace(uName, direction * uExp);
-            multiplier += direction * logMult;
         }
     } else if (isStandardUnitName(uName)) {
         for (const auto &iter : standardUnitsList.at(uName)) {
