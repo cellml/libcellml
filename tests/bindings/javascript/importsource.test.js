@@ -13,3 +13,43 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+
+const loadLibCellML = require('libcellml.js/libcellml.common')
+let libcellml = null
+
+describe("Parser tests", () => {
+    beforeAll(async () => {
+        libcellml = await loadLibCellML()
+    })
+    test('Checking ImportSource url manipulation.', () => {
+        const iS = new libcellml.ImportSource()
+
+        expect(iS.url()).toBe("")
+
+        iS.setUrl("url_string")
+
+        expect(iS.url()).toBe("url_string")
+    })
+    test('Checking ImportSource model manipulation.', () => {
+        const iS = new libcellml.ImportSource()
+        const m = new libcellml.Model()
+
+        expect(iS.model()).toBe(null)
+
+        iS.setModel(m)
+
+        expect(iS.hasModel()).toBe(true)
+        iS.removeModel()
+        expect(iS.hasModel()).toBe(false)
+    })
+    test('Checking ImportSource clone.', () => {
+     const iS = new libcellml.ImportSource()
+
+     iS.setUrl("long_url")
+
+     const clonedIS = iS.clone()
+
+     expect(clonedIS.url()).toBe("long_url")
+    })
+})
