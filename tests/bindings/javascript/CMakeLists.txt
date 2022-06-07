@@ -25,6 +25,7 @@ set(TEST_SRCS
   reset.test.js
   units.test.js
   validator.test.js
+  variable.test.js
   version.test.js
 )
 
