@@ -17,6 +17,7 @@ set(TEST_SRCS
   component.test.js
   componententity.test.js
   entity.test.js
+  generator.test.js
   generatorprofile.test.js
   importsource.test.js
   model.test.js
