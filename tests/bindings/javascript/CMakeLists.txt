@@ -22,6 +22,7 @@ set(TEST_SRCS
   namedentity.test.js
   parentedentity.test.js
   parser.test.js
+  printer.test.js
   reset.test.js
   units.test.js
   validator.test.js
