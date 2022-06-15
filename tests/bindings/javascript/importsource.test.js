@@ -21,7 +21,7 @@ describe("Import Source tests", () => {
     beforeAll(async () => {
         libcellml = await loadLibCellML()
     })
-    test('Checking ImportSource url manipulation.', () => {
+    test('Checking ImportSource URL manipulation.', () => {
         const iS = new libcellml.ImportSource()
 
         expect(iS.url()).toBe("")
@@ -39,7 +39,9 @@ describe("Import Source tests", () => {
         iS.setModel(m)
 
         expect(iS.hasModel()).toBe(true)
+
         iS.removeModel()
+
         expect(iS.hasModel()).toBe(false)
     })
     test('Checking ImportSource clone.', () => {
