@@ -19,7 +19,7 @@ const { modelString } = require('./resources')
 
 let libcellml = null
 
-describe("Generator tests", () => {
+describe("Analyser Equation tests", () => {
     let m
     let a
     let am
