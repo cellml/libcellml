@@ -7,6 +7,8 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analysermodel)
 {
+    register_vector<libcellml::AnalyserEquationPtr>("VectorAnalyserEquation");
+
     enum_<libcellml::AnalyserModel::Type>("TypeM")
         .value("UNKNOWN", libcellml::AnalyserModel::Type::UNKNOWN)
         .value("ALGEBRAIC", libcellml::AnalyserModel::Type::ALGEBRAIC)

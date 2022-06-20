@@ -1,13 +1,14 @@
-# include <emscripten/bind.h>
+#include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
-# include "libcellml/analyserequation.h"
+#include "libcellml/analyserequation.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analyserequation)
 {
 
-    enum_<libcellml::AnalyserEquation::Type>("TypeE")
+    enum_<libcellml::AnalyserEquation::Type>("AnalyserEquation.Type")
         .value("TRUE_CONSTANT", libcellml::AnalyserEquation::Type::TRUE_CONSTANT)
         .value("VARIABLE_BASED_CONSTANT", libcellml::AnalyserEquation::Type::VARIABLE_BASED_CONSTANT)
         .value("RATE", libcellml::AnalyserEquation::Type::RATE)
@@ -23,4 +24,9 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequation)
         .function("isStateRateBased", &libcellml::AnalyserEquation::isStateRateBased)
         .function("variable", &libcellml::AnalyserEquation::variable)
     ;
+
+    EM_ASM(
+        Module['AnalyserEquation']['Type'] = Module['AnalyserEquation.Type'];
+        delete Module['AnalyserEquation.Type'];
+    );
 }

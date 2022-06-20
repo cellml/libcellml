@@ -14,6 +14,7 @@
 
 set(TEST_SRCS
   analyser.test.js
+  analyserequation.test.js
   component.test.js
   componententity.test.js
   entity.test.js
@@ -35,6 +36,9 @@ set(TEST_SRCS
 foreach(_TEST ${TEST_SRCS})
   configure_file(${_TEST} ${_TEST} COPYONLY)
 endforeach()
+
+# Copy over the resources file required by some tests.
+configure_file(resources.js resources.js COPYONLY)
 
 file(RELATIVE_PATH _RELATIVE_PATH ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_BINARY_DIR}/src/bindings/javascript/)
 
