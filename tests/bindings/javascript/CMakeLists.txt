@@ -16,6 +16,7 @@ set(TEST_SRCS
   analyser.test.js
   analyserequation.test.js
   analyserequationast.test.js
+  analyserexternalvariable.test.js
   component.test.js
   componententity.test.js
   entity.test.js
