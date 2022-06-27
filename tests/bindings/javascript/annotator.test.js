@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-const { duplicated_ids_model } = require('./resources')
+const { duplicatedIdsModel } = require('./resources')
 
 let libcellml = null
 
@@ -29,7 +29,7 @@ describe("Annotator tests", () => {
     });
     beforeEach(() => {
         const p = new libcellml.Parser()
-        m = p.parseModel(duplicated_ids_model)
+        m = p.parseModel(duplicatedIdsModel)
         a = new libcellml.Annotator()
     });
     test('Checking Annotator model.', () => {
