@@ -1,5 +1,6 @@
 
 #include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
 #include "libcellml/issue.h"
 
@@ -8,13 +9,13 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_issue) {
 
-    enum_<libcellml::Issue::Level>("Issue_Level")
+    enum_<libcellml::Issue::Level>("Issue.Level")
         .value("ERROR", libcellml::Issue::Level::ERROR)
         .value("WARNING", libcellml::Issue::Level::WARNING)
         .value("MESSAGE", libcellml::Issue::Level::MESSAGE)
     ;
 
-    enum_<libcellml::Issue::ReferenceRule>("Issue_ReferenceRule")
+    enum_<libcellml::Issue::ReferenceRule>("Issue.ReferenceRule")
         .value("UNDEFINED", libcellml::Issue::ReferenceRule::UNDEFINED)
         .value("XML", libcellml::Issue::ReferenceRule::XML)
         .value("DATA_REPR_IDENTIFIER_UNICODE", libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE)
@@ -123,4 +124,11 @@ EMSCRIPTEN_BINDINGS(libcellml_issue) {
         .function("url", &libcellml::Issue::url)
         .function("referenceHeading", &libcellml::Issue::referenceHeading)
     ;
+
+    EM_ASM(
+        Module['Issue']['ReferenceRule'] = Module['Issue.ReferenceRule'];
+        delete Module['Issue.ReferenceRule'];
+        Module['Issue']['Level'] = Module['Issue.Level'];
+        delete Module['Issue.Level'];
+    );
 }
