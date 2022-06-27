@@ -15,31 +15,9 @@ limitations under the License.
 */
 
 const libCellMLModule = require('libcellml.js/libcellml.common')
+const { model, componentImportModel } = require('./resources')
+
 let libcellml = null
-
-const model = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" name=\"sin\"> \
-  <component name=\"sin\"> \
-    <variable name=\"x\" units=\"dimensionless\" interface=\"public_and_private\"/> \
-    <variable units=\"dimensionless\" name=\"sin\" interface=\"public_and_private\"/> \
-    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"> \
-      <apply><eq/> \
-        <ci>sin</ci> \
-        <apply><sin/> \
-          <ci>x</ci> \
-        </apply> \
-      </apply> \
-    </math> \
-  </component> \
-</model> \
-"
-
-const componentImportModel =
-"<?xml version=\"1.0\" encoding=\"UTF-8\"?><model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" name=\"sin_approximations_import\"> \
-  <import xlink:href=\"sin.xml\"> \
-    <component name=\"actual_sin\" component_ref=\"sin\"/> \
-  </import> \
-</model> \
-"
 
 describe("Parser tests", () => {
     beforeAll(async () => {

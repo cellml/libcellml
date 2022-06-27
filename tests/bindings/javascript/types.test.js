@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-const { model_with_parse_errors } = require('./resources')
+const { modelWithParseErrors } = require('./resources')
 
 let libcellml = null
 
@@ -47,7 +47,7 @@ describe("Types tests", () => {
     });
     test("Checking AnyCellmlElement.", () => {
          const p = new libcellml.Parser()
-         const m = p.parseModel(model_with_parse_errors)
+         const m = p.parseModel(modelWithParseErrors)
 
          expect(p.issueCount()).toBe(4)
 

@@ -15,32 +15,9 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-let libcellml = null
+const { modelString } = require('./resources')
 
-const modelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
-<model name=\"model\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"> \
-    <units name=\"per_second\"> \
-        <unit exponent=\"-1\" units=\"second\"/> \
-    </units> \
-    <component name=\"component\"> \
-        <variable name=\"time\" units=\"second\"/> \
-        <variable name=\"x\" units=\"dimensionless\" initial_value=\"0\"/> \
-        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"> \
-            <apply> \
-                <eq/> \
-                <apply> \
-                    <diff/> \
-                    <bvar> \
-                        <ci>time</ci> \
-                    </bvar> \
-                    <ci>x</ci> \
-                </apply> \
-                <cn cellml:units=\"per_second\">1</cn> \
-            </apply> \
-        </math> \
-    </component> \
-</model> \
-"
+let libcellml = null
 
 describe("Generator tests", () => {
     beforeAll(async () => {
