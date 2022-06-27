@@ -25,11 +25,11 @@ describe("Generator tests", () => {
     })
     test('Checking Generator profile manipulation.', () => {
         const g = new libcellml.Generator()
-        const gP = new libcellml.GeneratorProfile(libcellml.Profile.C)
+        const gP = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
         expect(g.profile().commentString()).toBe("/* [CODE] */\n")
 
-        gP.setProfile(libcellml.Profile.PYTHON)
+        gP.setProfile(libcellml.GeneratorProfile.Profile.PYTHON)
         g.setProfile(gP)
 
         expect(g.profile().commentString()).toBe("# [CODE]\n")

@@ -1,13 +1,14 @@
 
-# include <emscripten/bind.h>
+#include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
-# include "libcellml/generatorprofile.h"
+#include "libcellml/generatorprofile.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
 {
-    enum_<libcellml::GeneratorProfile::Profile>("Profile")
+    enum_<libcellml::GeneratorProfile::Profile>("GeneratorProfile.Profile")
         .value("C", libcellml::GeneratorProfile::Profile::C)
         .value("PYTHON", libcellml::GeneratorProfile::Profile::PYTHON)
     ;
@@ -327,4 +328,9 @@ EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
         .function("commandSeparatorString", &libcellml::GeneratorProfile::commandSeparatorString)
         .function("setCommandSeparatorString", &libcellml::GeneratorProfile::setCommandSeparatorString)
     ;
+
+    EM_ASM(
+        Module['GeneratorProfile']['Profile'] = Module['GeneratorProfile.Profile'];
+        delete Module['GeneratorProfile.Profile'];
+    );
 }
