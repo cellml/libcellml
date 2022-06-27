@@ -23,6 +23,7 @@ set(TEST_SRCS
   component.test.js
   componententity.test.js
   entity.test.js
+  enums.test.js
   generator.test.js
   generatorprofile.test.js
   importsource.test.js
