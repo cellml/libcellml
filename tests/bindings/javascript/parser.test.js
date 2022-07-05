@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const libCellMLModule = require('libcellml.js/libcellml.common')
-const { model, componentImportModel } = require('./resources')
+const { sineModel, componentImportModel } = require('./resources')
 
 let libcellml = null
 
@@ -26,7 +26,7 @@ describe("Parser tests", () => {
     test('Checking Parser parse model.', () => {
         const p = new libcellml.Parser()
 
-        const m = p.parseModel(model)
+        const m = p.parseModel(sineModel)
 
         expect(m.componentCount()).toBe(1)
     })

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const libCellMLModule = require('libcellml.js/libcellml.common')
-const { model } = require('./resources')
+const { sineModel } = require('./resources')
 
 let libcellml = null
 
@@ -27,7 +27,7 @@ describe("Validator tests", () => {
     const x = new libcellml.Validator()
     const p = new libcellml.Parser()
 
-    const m = p.parseModel(model)
+    const m = p.parseModel(sineModel)
 
     x.validateModel(m)
 
