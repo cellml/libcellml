@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const libCellMLModule = require('libcellml.js/libcellml.common')
-const { modelString, modelStringWithError } = require('./resources')
+const { basicModel, modelWithError } = require('./resources')
 
 let libcellml = null
 
@@ -29,7 +29,7 @@ describe("Analyser tests", () => {
   });
   beforeEach(() => {
     const p = new libcellml.Parser()
-    m = p.parseModel(modelString)
+    m = p.parseModel(basicModel)
     a = new libcellml.Analyser()
 
     a.analyseModel(m)
@@ -41,7 +41,7 @@ describe("Analyser tests", () => {
   test("Checking Analyser.analyseModel.", () => {
     const p = new libcellml.Parser()
 
-    m = p.parseModel(modelStringWithError)
+    m = p.parseModel(modelWithError)
     expect(p.issueCount()).toBe(0)
 
     a.analyseModel(m)

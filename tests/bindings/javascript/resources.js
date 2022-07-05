@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const model = `<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin"> \
+const sineModel = `<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin"> \
   <component name="sin"> \
     <variable name="x" units="dimensionless" interface="public_and_private"/> \
     <variable units="dimensionless" name="sin" interface="public_and_private"/> \
@@ -38,7 +38,7 @@ const componentImportModel = `<?xml version="1.0" encoding="UTF-8"?><model xmlns
 `
 
 
-const modelStringWithError = `<?xml version="1.0" encoding="UTF-8"?>
+const modelWithError = `<?xml version="1.0" encoding="UTF-8"?>
 <model name="initialised_variable_of_integration" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="per_second">
         <unit exponent="-1" units="second"/>
@@ -63,7 +63,7 @@ const modelStringWithError = `<?xml version="1.0" encoding="UTF-8"?>
 </model>
 `
 
-const modelString = `<?xml version="1.0" encoding="UTF-8"?>
+const basicModel = `<?xml version="1.0" encoding="UTF-8"?>
 <model name="model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="per_second">
         <unit exponent="-1" units="second"/>
@@ -681,11 +681,11 @@ const hhSquidAxon1952 = `<?xml version='1.0' encoding='UTF-8'?>
 `;
 
 module.exports = {
-    model,
+    basicModel,
     componentImportModel,
-    modelString,
-    modelStringWithError,
-    hhSquidAxon1952,
     duplicatedIdsModel,
+    hhSquidAxon1952,
+    modelWithError,
     modelWithParseErrors,
+    sineModel,
 }
