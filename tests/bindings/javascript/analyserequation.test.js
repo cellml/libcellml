@@ -54,7 +54,7 @@ describe("Analyser Equation tests", () => {
     test('Checking Analyser Equation variable.', () => {
         expect(eqn.variable().variable().name()).toBe("x")
     });
-    test('Checking Analyser Equation ast.', () => {
+    test('Checking Analyser Equation AST.', () => {
         expect(eqn.ast().value()).toBe("")
     });
  })
