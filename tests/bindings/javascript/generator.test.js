@@ -61,7 +61,7 @@ describe("Generator tests", () => {
 
         g.setModel(a.model())
 
-        expect(g.interfaceCode().length).toBeGreaterThan(900)
-        expect(g.implementationCode().length).toBeGreaterThan(1000)
+        expect(g.interfaceCode().length).toBe(996)
+        expect(g.implementationCode().length).toBe(1058)
     })
 })
