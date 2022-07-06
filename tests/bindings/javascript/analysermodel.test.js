@@ -46,24 +46,24 @@ describe("Analyser Model tests", () => {
     test('Checking Analyser Model has external variables.', () => {
         expect(am.hasExternalVariables()).toBe(false)
     });
-    test('Checking Analyser Model voi.', () => {
+    test('Checking Analyser Model VOI.', () => {
         expect(am.voi().variable().name()).toBe("time")
+    });
+    test('Checking Analyser Model equations related API.', () => {
+        expect(am.equationCount()).toBe(17)
+        expect(am.equations().size()).toBe(17)
+        expect(am.equations().get(1).type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
+        expect(am.equation(1).type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
     });
     test('Checking Analyser Model states related API.', () => {
         expect(am.stateCount()).toBe(4)
         expect(am.states().size()).toBe(4)
         expect(am.state(2).variable().name()).toBe("n")
     });
-    test('Checking Analyser Model variable related API.', () => {
+    test('Checking Analyser Model variables related API.', () => {
         expect(am.variableCount()).toBe(18)
         expect(am.variables().size()).toBe(18)
         expect(am.variable(2).variable().name()).toBe("E_R")
-    });
-    test('Checking Analyser Model equation related API.', () => {
-        expect(am.equationCount()).toBe(17)
-        expect(am.equations().size()).toBe(17)
-        expect(am.equations().get(1).type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
-        expect(am.equation(1).type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
     });
     test('Checking Analyser Model need* API.', () => {
         expect(am.needEqFunction()).toBe(false)
