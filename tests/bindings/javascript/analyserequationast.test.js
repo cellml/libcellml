@@ -22,7 +22,7 @@ describe("Analyser Equation AST tests", () => {
     beforeAll(async () => {
         libcellml = await loadLibCellML()
     });
-    test('Checking Analyser Equation Ast type.', () => {
+    test('Checking Analyser Equation AST type.', () => {
         const aea = new libcellml.AnalyserEquationAst()
 
         expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.ASSIGNMENT.value)
@@ -33,7 +33,7 @@ describe("Analyser Equation AST tests", () => {
 
         expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.OTHERWISE.value)
     });
-    test('Checking Analyser Equation Ast value.', () => {
+    test('Checking Analyser Equation AST value.', () => {
         const aea = new libcellml.AnalyserEquationAst()
 
         expect(aea.value()).toBe("")
@@ -42,7 +42,7 @@ describe("Analyser Equation AST tests", () => {
 
         expect(aea.value()).toBe("new value")
     });
-    test('Checking Analyser Equation Ast variable.', () => {
+    test('Checking Analyser Equation AST variable.', () => {
         const aea = new libcellml.AnalyserEquationAst()
         const v = new libcellml.Variable()
         v.setName("x")
@@ -54,7 +54,7 @@ describe("Analyser Equation AST tests", () => {
         expect(aea.variable()).not.toBeNull()
         expect(aea.variable().name()).toBe("x")
     });
-    test('Checking Analyser Equation Ast tree manipulations.', () => {
+    test('Checking Analyser Equation AST tree manipulations.', () => {
         const aea = new libcellml.AnalyserEquationAst()
         const paea = new libcellml.AnalyserEquationAst()
         const laea = new libcellml.AnalyserEquationAst()
