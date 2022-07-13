@@ -1,10 +1,24 @@
+/*
+Copyright libCellML Contributors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 #include <emscripten/bind.h>
 
 #include "libcellml/annotator.h"
 
 using namespace emscripten;
-
 
 EMSCRIPTEN_BINDINGS(libcellml_annotator)
 {
@@ -49,16 +63,16 @@ EMSCRIPTEN_BINDINGS(libcellml_annotator)
         .function("items", &libcellml::Annotator::items)
         .function("ids", &libcellml::Annotator::ids)
         .function("duplicateIds", &libcellml::Annotator::duplicateIds)
-        .function("assignIdByModel", select_overload<std::string(const libcellml::ModelPtr &, libcellml::CellmlElementType)>(&libcellml::Annotator::assignId))
         .function("assignIdByComponent", select_overload<std::string(const libcellml::ComponentPtr &, libcellml::CellmlElementType)>(&libcellml::Annotator::assignId))
         .function("assignIdByImportSource", select_overload<std::string(const libcellml::ImportSourcePtr &)>(&libcellml::Annotator::assignId))
+        .function("assignIdByModel", select_overload<std::string(const libcellml::ModelPtr &, libcellml::CellmlElementType)>(&libcellml::Annotator::assignId))
         .function("assignIdByReset", select_overload<std::string(const libcellml::ResetPtr &, libcellml::CellmlElementType)>(&libcellml::Annotator::assignId))
         .function("assignIdByUnits", select_overload<std::string(const libcellml::UnitsPtr &)>(&libcellml::Annotator::assignId))
+        .function("assignIdByUnitsIndex", select_overload<std::string(const libcellml::UnitsPtr &, size_t)>(&libcellml::Annotator::assignId))
         .function("assignIdByUnitsItem", select_overload<std::string(const libcellml::UnitsItemPtr &)>(&libcellml::Annotator::assignId))
         .function("assignIdByVariable", select_overload<std::string(const libcellml::VariablePtr &)>(&libcellml::Annotator::assignId))
         .function("assignIdByVariablePair", select_overload<std::string(const libcellml::VariablePairPtr &, libcellml::CellmlElementType)>(&libcellml::Annotator::assignId))
         .function("assignIdByVariableVariable", select_overload<std::string(const libcellml::VariablePtr &, const libcellml::VariablePtr &, libcellml::CellmlElementType)>(&libcellml::Annotator::assignId))
-        .function("assignIdByUnitsIndex", select_overload<std::string(const libcellml::UnitsPtr &, size_t)>(&libcellml::Annotator::assignId))
         .function("itemCount", &libcellml::Annotator::itemCount)
         .function("hasModel", &libcellml::Annotator::hasModel)
     ;

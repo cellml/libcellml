@@ -14,32 +14,81 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const modelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
-<model name=\"model\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"> \
-    <units name=\"per_second\"> \
-        <unit exponent=\"-1\" units=\"second\"/> \
-    </units> \
-    <component name=\"component\"> \
-        <variable name=\"time\" units=\"second\"/> \
-        <variable name=\"x\" units=\"dimensionless\" initial_value=\"0\"/> \
-        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"> \
-            <apply> \
-                <eq/> \
-                <apply> \
-                    <diff/> \
-                    <bvar> \
-                        <ci>time</ci> \
-                    </bvar> \
-                    <ci>x</ci> \
-                </apply> \
-                <cn cellml:units=\"per_second\">1</cn> \
-            </apply> \
-        </math> \
-    </component> \
+const sineModel = `<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin"> \
+  <component name="sin"> \
+    <variable name="x" units="dimensionless" interface="public_and_private"/> \
+    <variable units="dimensionless" name="sin" interface="public_and_private"/> \
+    <math xmlns="http://www.w3.org/1998/Math/MathML"> \
+      <apply><eq/> \
+        <ci>sin</ci> \
+        <apply><sin/> \
+          <ci>x</ci> \
+        </apply> \
+      </apply> \
+    </math> \
+  </component> \
 </model> \
-"
+`
 
-const duplicated_ids_model = `<?xml version="1.0" encoding="UTF-8"?>
+const componentImportModel = `<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin_approximations_import"> \
+  <import xlink:href="sin.xml"> \
+    <component name="actual_sin" component_ref="sin"/> \
+  </import> \
+</model> \
+`
+
+
+const modelWithError = `<?xml version="1.0" encoding="UTF-8"?>
+<model name="initialised_variable_of_integration" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="per_second">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <component name="my_component">
+        <variable name="time" units="second" initial_value="0"/>
+        <variable name="x" units="dimensionless" initial_value="0"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="per_second">1</cn>
+            </apply>
+        </math>
+    </component>
+</model>
+`
+
+const basicModel = `<?xml version="1.0" encoding="UTF-8"?>
+<model name="model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="per_second">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <component name="component">
+        <variable name="time" units="second"/>
+        <variable name="x" units="dimensionless" initial_value="0"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="per_second">1</cn>
+            </apply>
+        </math>
+    </component>
+</model>
+`
+
+const duplicatedIdsModel = `<?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" name="everything" id="duplicateId2" >
   <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="some-other-model.xml" id="duplicateId1">
     <component component_ref="a_component_in_that_model" name="component1" id="duplicateId4"/>
@@ -114,7 +163,7 @@ const duplicated_ids_model = `<?xml version="1.0" encoding="UTF-8"?>
 </model>
 `
 
-const model_with_parse_errors = `<?xml version="1.0" encoding="UTF-8"?>
+const modelWithParseErrors = `<?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#">
   <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="some-other-model.xml" sauce="hollandaise">
     <units units_ref="a_units_in_that_model" name="units_in_this_model"/>
@@ -126,7 +175,7 @@ const model_with_parse_errors = `<?xml version="1.0" encoding="UTF-8"?>
 </model>
 `
 
-const hh_sa_1952 = `<?xml version='1.0' encoding='UTF-8'?>
+const hhSquidAxon1952 = `<?xml version='1.0' encoding='UTF-8'?>
 <model name="hodgkin_huxley_squid_axon_model_1952" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="millisecond">
         <unit prefix="milli" units="second"/>
@@ -632,8 +681,11 @@ const hh_sa_1952 = `<?xml version='1.0' encoding='UTF-8'?>
 `;
 
 module.exports = {
-    modelString,
-    hh_sa_1952,
-    duplicated_ids_model,
-    model_with_parse_errors,
+    basicModel,
+    componentImportModel,
+    duplicatedIdsModel,
+    hhSquidAxon1952,
+    modelWithError,
+    modelWithParseErrors,
+    sineModel,
 }

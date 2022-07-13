@@ -1,20 +1,35 @@
+/*
+Copyright libCellML Contributors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 #include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
 #include "libcellml/issue.h"
 
 using namespace emscripten;
 
-
 EMSCRIPTEN_BINDINGS(libcellml_issue) {
 
-    enum_<libcellml::Issue::Level>("Issue_Level")
+    enum_<libcellml::Issue::Level>("Issue.Level")
         .value("ERROR", libcellml::Issue::Level::ERROR)
         .value("WARNING", libcellml::Issue::Level::WARNING)
         .value("MESSAGE", libcellml::Issue::Level::MESSAGE)
     ;
 
-    enum_<libcellml::Issue::ReferenceRule>("Issue_ReferenceRule")
+    enum_<libcellml::Issue::ReferenceRule>("Issue.ReferenceRule")
         .value("UNDEFINED", libcellml::Issue::ReferenceRule::UNDEFINED)
         .value("XML", libcellml::Issue::ReferenceRule::XML)
         .value("DATA_REPR_IDENTIFIER_UNICODE", libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE)
@@ -123,4 +138,11 @@ EMSCRIPTEN_BINDINGS(libcellml_issue) {
         .function("url", &libcellml::Issue::url)
         .function("referenceHeading", &libcellml::Issue::referenceHeading)
     ;
+
+    EM_ASM(
+        Module['Issue']['ReferenceRule'] = Module['Issue.ReferenceRule'];
+        delete Module['Issue.ReferenceRule'];
+        Module['Issue']['Level'] = Module['Issue.Level'];
+        delete Module['Issue.Level'];
+    );
 }

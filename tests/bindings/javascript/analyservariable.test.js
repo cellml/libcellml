@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-const { hh_sa_1952 } = require('./resources')
+const { hhSquidAxon1952 } = require('./resources')
 
 let libcellml = null
 
@@ -29,7 +29,7 @@ describe("Analyser Variable tests", () => {
     });
     beforeEach(() => {
         const p = new libcellml.Parser()
-        m = p.parseModel(hh_sa_1952)
+        m = p.parseModel(hhSquidAxon1952)
         a = new libcellml.Analyser()
 
         a.analyseModel(m)
