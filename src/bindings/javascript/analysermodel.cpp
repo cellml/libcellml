@@ -1,15 +1,14 @@
 
-# include <emscripten/bind.h>
+#include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
-# include "libcellml/analysermodel.h"
+#include "libcellml/analysermodel.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analysermodel)
 {
-    register_vector<libcellml::AnalyserEquationPtr>("VectorAnalyserEquation");
-
-    enum_<libcellml::AnalyserModel::Type>("TypeM")
+    enum_<libcellml::AnalyserModel::Type>("AnalyserModel.Type")
         .value("UNKNOWN", libcellml::AnalyserModel::Type::UNKNOWN)
         .value("ALGEBRAIC", libcellml::AnalyserModel::Type::ALGEBRAIC)
         .value("ODE", libcellml::AnalyserModel::Type::ODE)
@@ -60,4 +59,9 @@ EMSCRIPTEN_BINDINGS(libcellml_analysermodel)
         .function("needAcothFunction", &libcellml::AnalyserModel::needAcothFunction)
         .function("areEquivalentVariables", &libcellml::AnalyserModel::areEquivalentVariables)
     ;
+
+    EM_ASM(
+        Module['AnalyserModel']['Type'] = Module['AnalyserModel.Type'];
+        delete Module['AnalyserModel.Type'];
+    );
 }
