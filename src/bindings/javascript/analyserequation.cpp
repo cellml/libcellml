@@ -7,7 +7,6 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analyserequation)
 {
-
     enum_<libcellml::AnalyserEquation::Type>("AnalyserEquation.Type")
         .value("TRUE_CONSTANT", libcellml::AnalyserEquation::Type::TRUE_CONSTANT)
         .value("VARIABLE_BASED_CONSTANT", libcellml::AnalyserEquation::Type::VARIABLE_BASED_CONSTANT)
