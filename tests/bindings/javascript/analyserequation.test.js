@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-const { modelString } = require('./resources')
+const { basicModel } = require('./resources')
 
 let libcellml = null
 
@@ -30,7 +30,7 @@ describe("Analyser Equation tests", () => {
     });
     beforeEach(() => {
         const p = new libcellml.Parser()
-        m = p.parseModel(modelString)
+        m = p.parseModel(basicModel)
         a = new libcellml.Analyser()
 
         a.analyseModel(m)
@@ -54,7 +54,7 @@ describe("Analyser Equation tests", () => {
     test('Checking Analyser Equation variable.', () => {
         expect(eqn.variable().variable().name()).toBe("x")
     });
-    test('Checking Analyser Equation ast.', () => {
+    test('Checking Analyser Equation AST.', () => {
         expect(eqn.ast().value()).toBe("")
     });
  })

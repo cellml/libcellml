@@ -15,57 +15,9 @@ limitations under the License.
 */
 
 const libCellMLModule = require('libcellml.js/libcellml.common')
+const { basicModel, modelWithError } = require('./resources')
+
 let libcellml = null
-
-const modelStringWithError = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
-<model name=\"initialised_variable_of_integration\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"> \
-    <units name=\"per_second\"> \
-        <unit exponent=\"-1\" units=\"second\"/> \
-    </units> \
-    <component name=\"my_component\"> \
-        <variable name=\"time\" units=\"second\" initial_value=\"0\"/> \
-        <variable name=\"x\" units=\"dimensionless\" initial_value=\"0\"/> \
-        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"> \
-            <apply> \
-                <eq/> \
-                <apply> \
-                    <diff/> \
-                    <bvar> \
-                        <ci>time</ci> \
-                    </bvar> \
-                    <ci>x</ci> \
-                </apply> \
-                <cn cellml:units=\"per_second\">1</cn> \
-            </apply> \
-        </math> \
-    </component> \
-</model> \
-"
-
-const modelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
-<model name=\"model\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"> \
-    <units name=\"per_second\"> \
-        <unit exponent=\"-1\" units=\"second\"/> \
-    </units> \
-    <component name=\"component\"> \
-        <variable name=\"time\" units=\"second\"/> \
-        <variable name=\"x\" units=\"dimensionless\" initial_value=\"0\"/> \
-        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"> \
-            <apply> \
-                <eq/> \
-                <apply> \
-                    <diff/> \
-                    <bvar> \
-                        <ci>time</ci> \
-                    </bvar> \
-                    <ci>x</ci> \
-                </apply> \
-                <cn cellml:units=\"per_second\">1</cn> \
-            </apply> \
-        </math> \
-    </component> \
-</model> \
-"
 
 describe("Analyser tests", () => {
   let m
@@ -77,7 +29,7 @@ describe("Analyser tests", () => {
   });
   beforeEach(() => {
     const p = new libcellml.Parser()
-    m = p.parseModel(modelString)
+    m = p.parseModel(basicModel)
     a = new libcellml.Analyser()
 
     a.analyseModel(m)
@@ -89,7 +41,7 @@ describe("Analyser tests", () => {
   test("Checking Analyser.analyseModel.", () => {
     const p = new libcellml.Parser()
 
-    m = p.parseModel(modelStringWithError)
+    m = p.parseModel(modelWithError)
     expect(p.issueCount()).toBe(0)
 
     a.analyseModel(m)
