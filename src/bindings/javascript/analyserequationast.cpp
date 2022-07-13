@@ -1,5 +1,6 @@
 
 # include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
 # include "libcellml/analyserequationast.h"
 
@@ -7,7 +8,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
 {
-    enum_<libcellml::AnalyserEquationAst::Type>("TypeEA")
+    enum_<libcellml::AnalyserEquationAst::Type>("AnalyserEquationAst.Type")
         .value("ASSIGNMENT", libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
         .value("EQ", libcellml::AnalyserEquationAst::Type::EQ)
         .value("NEQ", libcellml::AnalyserEquationAst::Type::NEQ)
@@ -90,4 +91,9 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
         .function("rightChild", &libcellml::AnalyserEquationAst::rightChild)
         .function("setRightChild", &libcellml::AnalyserEquationAst::setRightChild)
     ;
+
+    EM_ASM(
+        Module['AnalyserEquationAst']['Type'] = Module['AnalyserEquationAst.Type'];
+        delete Module['AnalyserEquationAst.Type'];
+    );
 }
