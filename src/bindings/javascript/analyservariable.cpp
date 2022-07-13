@@ -1,13 +1,14 @@
 
-# include <emscripten/bind.h>
+#include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
-# include "libcellml/analyservariable.h"
+#include "libcellml/analyservariable.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analyservariable)
 {
-    enum_<libcellml::AnalyserVariable::Type>("TypeV")
+    enum_<libcellml::AnalyserVariable::Type>("AnalyserVariable.Type")
         .value("VARIABLE_OF_INTEGRATION", libcellml::AnalyserVariable::Type::VARIABLE_OF_INTEGRATION)
         .value("STATE", libcellml::AnalyserVariable::Type::STATE)
         .value("CONSTANT", libcellml::AnalyserVariable::Type::CONSTANT)
@@ -24,4 +25,10 @@ EMSCRIPTEN_BINDINGS(libcellml_analyservariable)
         .function("variable", &libcellml::AnalyserVariable::variable)
         .function("equation", &libcellml::AnalyserVariable::equation)
     ;
+
+    EM_ASM(
+        Module['AnalyserVariable']['Type'] = Module['AnalyserVariable.Type'];
+        delete Module['AnalyserVariable.Type'];
+    );
+
 }
