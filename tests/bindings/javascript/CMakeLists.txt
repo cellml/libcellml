@@ -32,6 +32,7 @@ set(TEST_SRCS
   parser.test.js
   printer.test.js
   reset.test.js
+  types.test.js
   units.test.js
   validator.test.js
   variable.test.js

@@ -114,6 +114,18 @@ const duplicated_ids_model = `<?xml version="1.0" encoding="UTF-8"?>
 </model>
 `
 
+const model_with_parse_errors = `<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#">
+  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="some-other-model.xml" sauce="hollandaise">
+    <units units_ref="a_units_in_that_model" name="units_in_this_model"/>
+    <component component_ref="a_component_in_that_model" name="component_in_this_model"/>
+    <invalid_nonsense/>
+    <units units_ruff="dog" name="fido"/>
+    <component component_meow="cat" name="frank"/>
+  </import>
+</model>
+`
+
 const hh_sa_1952 = `<?xml version='1.0' encoding='UTF-8'?>
 <model name="hodgkin_huxley_squid_axon_model_1952" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="millisecond">
@@ -623,4 +635,5 @@ module.exports = {
     modelString,
     hh_sa_1952,
     duplicated_ids_model,
+    model_with_parse_errors,
 }
