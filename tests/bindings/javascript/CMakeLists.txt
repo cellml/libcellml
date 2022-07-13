@@ -19,6 +19,7 @@ set(TEST_SRCS
   analyserexternalvariable.test.js
   analysermodel.test.js
   analyservariable.test.js
+  annotator.test.js
   component.test.js
   componententity.test.js
   entity.test.js
