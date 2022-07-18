@@ -293,3 +293,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/packaging)
 if(LIBCELLML_ENABLE_UTILITIES)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/utils)
 endif()
+
+# Add target to print out version
+add_custom_target(print_version
+  COMMAND ${CMAKE_COMMAND} -E echo "version=v${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}")
+
