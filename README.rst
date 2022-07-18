@@ -1,3 +1,7 @@
+.. image:: https://github.com/hsorby/l1bcellml/actions/workflows/deploy-on-release.yml/badge.svg?branch=release
+  :width: 200
+  :target: https://github.com/hsorby/l1bcellml/actions/workflows/deploy-on-release.yml
+
 libCellML
 =========
 
