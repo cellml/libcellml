@@ -13,7 +13,7 @@ jobs:
   many-linux-wheels:
     name: ${{ matrix.config.name }}
     runs-on: ubuntu-20.04
-    container: quay.io/pypa/manylinux2014_x86_64
+    container: quay.io/pypa/manylinux2014_x86_64:2022-07-17-51324db
     env:
       DOWNLOADS_DIR: /home/downloads
       WORK_DIR: /home/work
@@ -38,42 +38,45 @@ jobs:
             python_tarball: "https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tgz"
           }
     steps:
-    - name: Download source code
+    - name: Checkout libCellML
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.release.tag_name }}
+        path: libcellml
+
+    - name: Make directories
       shell: bash
       run: |
         mkdir $DOWNLOADS_DIR
         mkdir $WORK_DIR
         mkdir $SRC_DIR
+
+    - name: Fetch Python source code
+      shell: bash
+      run: |
         # fetch libraries
-        git clone https://github.com/cellml/libcellml -b release --depth 1 $SRC_DIR/libcellml
-        git clone https://github.com/OpenCMISS-Dependencies/zlib -b v1.2.3 --depth 1 $SRC_DIR/zlib
-        git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.10 --depth 1 $SRC_DIR/libxml2
-        curl -L https://cfhcable.dl.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz > $DOWNLOADS_DIR/swig-4.0.2.tar.gz
         curl -L ${{ matrix.config.python_tarball }} > $DOWNLOADS_DIR/Python.tar.gz
 
-    - name: Extract source code
+    - name: Extract Python source code
       shell: bash
       run: |
         cd $SRC_DIR
-        tar -xzf $DOWNLOADS_DIR/swig-4.0.2.tar.gz
         tar -xzf $DOWNLOADS_DIR/Python.tar.gz
 
-    - name: Build and instal zlib
+    - name: Move checked out source code
       shell: bash
       run: |
-        # build libraries
-        cmake -S $SRC_DIR/zlib -B $WORK_DIR/build-zlib -D CMAKE_BUILD_TYPE=Release -D BUILD_TESTS=OFF
-        cd $WORK_DIR/build-zlib
-        make -j3
-        make install
+        mv $GITHUB_WORKSPACE/libcellml $SRC_DIR/libcellml
 
-    - name: Build and instal libXml2
+    - name: Instal zlib development files
       shell: bash
       run: |
-        cmake -S $SRC_DIR/libxml2 -B $WORK_DIR/build-libxml2 -D CMAKE_BUILD_TYPE=Release  -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=OFF -D LIBXML2_BUILD_TESTS=OFF -D LIBXML2_WITH_LZMA=OFF -D LIBXML2_WITH_PYTHON=OFF -D LIBXML2_WITH_ICONV=OFF -D LIBXML2_WITH_PROGRAMS=OFF -D LIBXML2_WITH_TESTS=OFF
-        cd $WORK_DIR/build-libxml2
-        make -j3
-        make install
+        yum -y install zlib-devel
+
+    - name: Instal libXml2 development files
+      shell: bash
+      run: |
+        yum -y install libxml2-devel
 
     - name: Instal openssl and libffi headers
       shell: bash
@@ -95,17 +98,10 @@ jobs:
     - name: Create virtual environment
       shell: bash
       run: |
-        pip${{ matrix.config.python_version }} install virtualenv
-        virtualenv $WORK_DIR/venv
-
-    - name: Build and instal swig
-      shell: bash
-      run: |
-        mkdir $WORK_DIR/build-swig
-        cd $WORK_DIR/build-swig
-        $SRC_DIR/swig-4.0.2/configure --without-alllang --with-python --with-python3
-        make -j3
-        make install
+        cd $WORK_DIR
+        python${{ matrix.config.python_version }} -m venv venv
+        source $WORK_DIR/venv/bin/activate
+        python -m pip install --upgrade pip
 
     - name: Build libcellml
       shell: bash
@@ -127,20 +123,21 @@ jobs:
       shell: bash
       run: |
         # Create Python Package
-        python${{ matrix.config.python_version }} -m pip install --upgrade pip
-        pip${{ matrix.config.python_version }} install setuptools twine wheel auditwheel
+        source $WORK_DIR/venv/bin/activate
+        pip install -U setuptools
+        pip install twine wheel auditwheel
         cd $WORK_DIR/build-libcellml/src/bindings/python
-        python${{ matrix.config.python_version }} setup.py bdist_wheel
+        python setup.py bdist_wheel
+        pip list
+        whl=`ls $WORK_DIR/build-libcellml/src/bindings/python/dist/*.whl`
+        auditwheel repair $whl
 
     - name: Test Python Package
       shell: bash
       run: |
         # Test Python Package
-        cd $WORK_DIR/build-libcellml/src/bindings/python
         python${{ matrix.config.python_version }} -m venv $WORK_DIR/venv_test
         source $WORK_DIR/venv_test/bin/activate
-        whl=`ls $WORK_DIR/build-libcellml/src/bindings/python/dist/*.whl`
-        auditwheel repair $whl
         whl=`ls $WORK_DIR/build-libcellml/src/bindings/python/wheelhouse/*.whl`
         pip install $whl
         python -c "import libcellml"
@@ -164,16 +161,16 @@ jobs:
         - {
             name: "Windows Server 2019 MSVC Py38", deploy_libs: false, deploy_python: true,
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/"',
-            zlib_dir: '-D "ZLIB_DIR=../usr/local/lib/cmake/ZLIB/"',
+            libxml2_dir: '-D "LibXml2_DIR=../usr/local/libxml2-2.9.10/CMake/"',
+            zlib_dir: '-D "ZLIB_DIR=../usr/local/ZLIB-1.2.3/CMake/"',
             build_type: "Release", cc: "cl", cxx: "cl", python_version: 3.8,
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
             name: "Windows Server 2019 MSVC Py39", deploy_libs: false, deploy_python: true,
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/"',
-            zlib_dir: '-D "ZLIB_DIR=../usr/local/ZLIB/ZLIB/CMake/"',
+            libxml2_dir: '-D "LibXml2_DIR=../usr/local/libxml2-2.9.10/CMake/"',
+            zlib_dir: '-D "ZLIB_DIR=../usr/local/ZLIB/ZLIB-1.2.3/CMake/"',
             build_type: "Release", cc: "gcc", cxx: "g++", python_version: 3.9
           }
         - {
@@ -182,14 +179,14 @@ jobs:
             build_type: "Release", cc: "gcc", cxx: "g++", python_version: 3.8
           }
         - {
-            name: "macOS 10.15 Clang Py38", deploy_libs: false, deploy_python: true,
-            os: macos-10.15,
+            name: "macOS 12.4 Clang Py38", deploy_libs: false, deploy_python: true,
+            os: macos-12,
             python_rpath: "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.8/",
             build_type: "Release", cc: "clang", cxx: "clang++", python_version: 3.8
           }
         - {
-            name: "macOS 10.15 Clang Py39", deploy_libs: false, deploy_python: true,
-            os: macos-10.15,
+            name: "macOS 12.4 Clang Py39", deploy_libs: false, deploy_python: true,
+            os: macos-12,
             python_rpath: "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.9/",
             build_type: "Release", cc: "clang", cxx: "clang++", python_version: 3.9
           }
@@ -198,7 +195,7 @@ jobs:
     - name: Checkout libCellML
       uses: actions/checkout@v2
       with:
-        ref: release
+        ref: ${{ github.event.release.tag_name }}
 
     - name: Checkout zlib
       uses: actions/checkout@v2
@@ -491,9 +488,8 @@ jobs:
       - name: Checkout libCellML
         uses: actions/checkout@v2
         with:
-          repository: cellml/libcellml
           path: libcellml
-          ref: release
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Checkout zlib
         uses: actions/checkout@v2
@@ -527,7 +523,7 @@ jobs:
         run: |
           mkdir build-libxml2-release
           cd build-libxml2-release
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/usr/local -DZLIB_DIR=$GITHUB_WORKSPACE/usr/local/lib/cmake/ZLIB-1.2.3/ -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
           make -j3 install
 
       - name: Build libcellml.js
@@ -535,8 +531,8 @@ jobs:
         run: |
           mkdir build-libcellml-release
           cd build-libcellml-release
-          emcmake cmake -DLibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/ -DBUILD_TYPE=Release ../libcellml/
-          make -j3
+          emcmake cmake -DLibXml2_DIR=$GITHUB_WORKSPACE/usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=$GITHUB_WORKSPACE/usr/local/lib/cmake/ZLIB-1.2.3/ -DBUILD_TYPE=Release ../libcellml/
+          make VERBOSE=1 -j3
 
       - name: Pack libcellml.js
         id: package-javascript
@@ -571,3 +567,4 @@ jobs:
         run: |
           cd build-libcellml-release/src/bindings/javascript
           npm publish --access public
+
