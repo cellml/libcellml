@@ -1488,6 +1488,17 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "    <variable name=\"jedi\">\n"
         "      rey\n"
         "    </variable>\n"
+        "    <reset variable=\"jedi\" test_variable=\"jedi\" order=\"3\">\n"
+        "      boba fet\n"
+        "      <test_value>\n"
+        "      boba fet\n"
+        "      <math/>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "      boba fet\n"
+        "      <math/>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
         "  </component>\n"
         "  <connection>\n"
         "    finn\n"
@@ -1510,6 +1521,11 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "Unit referencing 'ball' in units 'robot' has an invalid non-whitespace child text element '\n      rolls\n    '.",
         "Component 'ship' has an invalid non-whitespace child text element '\n    falcon\n    '.",
         "Variable 'jedi' has an invalid non-whitespace child text element '\n      rey\n    '.",
+        "Reset has an invalid non-whitespace child text element '\n      boba fet\n      '. Either a test_value block or a reset_value block is expected.",
+        "The test_value in the reset in component 'ship' referencing variable 'jedi' and test_variable 'jedi' should have a MathML block as a child.",
+        "The test_value in the reset in component 'ship' referencing variable 'jedi' and test_variable 'jedi' should have a MathML block as a child.",
+        "The reset_value in the reset in component 'ship' referencing variable 'jedi' and test_variable 'jedi' should have a MathML block as a child.",
+        "The reset_value in the reset in component 'ship' referencing variable 'jedi' and test_variable 'jedi' should have a MathML block as a child.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n    awakens\n    '.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n      force\n    '.",
         "Encapsulation in model 'starwars' specifies 'ship' as a parent component_ref but it does not have any children.",
@@ -1881,6 +1897,64 @@ TEST(Parser, parseResetsWithIssues)
     EXPECT_EQ_ISSUES(expectedIssues, p);
 
     EXPECT_EQ(resetExpected, p->issue(0)->item()->reset());
+}
+
+TEST(Parser, parseResetIllegalChild)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "  <component name=\"componentA\" id=\"c2id\">\n"
+        "    <variable name=\"variable1\" id=\"vid\"/>\n"
+        "    <variable name=\"variable2\" id=\"vid2\"/>\n"
+        "    <reset order=\"1\" id=\"rid\" variable=\"variable1\" test_variable=\"variable2\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some condition in mathml\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "      <initial_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </initial_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(in);
+
+    libcellml::ComponentPtr c = model->component(0);
+    EXPECT_EQ(size_t(1), c->resetCount());
+
+    libcellml::ResetPtr r = c->reset(0);
+    EXPECT_EQ(1, r->order());
+
+    libcellml::VariablePtr v1 = r->variable();
+    EXPECT_EQ("variable1", v1->name());
+
+    libcellml::VariablePtr v2 = r->testVariable();
+    EXPECT_EQ("variable2", v2->name());
+
+    std::string testValueString = r->testValue();
+    std::string t =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some condition in mathml\n"
+        "        </math>\n";
+    EXPECT_EQ(t, testValueString);
+
+    std::string resetValueString = r->resetValue();
+    std::string rt =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n";
+    EXPECT_EQ(rt, resetValueString);
 }
 
 TEST(Parser, unitsWithCellMLRealVariations)

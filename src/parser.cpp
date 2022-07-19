@@ -1620,6 +1620,12 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             }
         } else if (childNode->isComment()) {
             // Do nothing.
+        } else {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Reset in component '" + component->name() + "' has an invalid child '" + childNode->name() + "'.");
+            issue->mPimpl->mItem->mPimpl->setReset(reset);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_CHILD);
+            addIssue(issue);
         }
         childNode = childNode->next();
     }
