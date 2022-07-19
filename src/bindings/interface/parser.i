@@ -14,6 +14,9 @@
 %feature("docstring") libcellml::Parser::parseModel
 "Parses a string and returns a :class:`Model`.";
 
+%feature("docstring") libcellml::Parser::parse1XModel
+"Parses a string describing a CellML 1.0 or CellML 1.1 model and returns a :class:`Model`.";
+
 %{
 #include "libcellml/parser.h"
 %}

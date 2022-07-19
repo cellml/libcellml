@@ -69,7 +69,9 @@ public:
      *
      * @return The new @c ModelPtr deserialised from the input string.
      */
-    ModelPtr parseModel(const std::string &input, bool parseVersion1XModels=false);
+    ModelPtr parseModel(const std::string &input);
+
+    ModelPtr parse1XModel(const std::string &input, bool renameNonSIUnits=false);
 
 private:
     Parser(); /**< Constructor, @private. */

@@ -28,9 +28,15 @@ class ParserTestCase(unittest.TestCase):
         import libcellml
         from libcellml import Parser
 
-        # ModelPtr parseModel(const std::string &input)
         p = Parser()
         self.assertIsInstance(p.parseModel('rubbish'), libcellml.Model)
+
+    def test_parse_1x_model(self):
+        import libcellml
+        from libcellml import Parser
+
+        p = Parser()
+        self.assertIsInstance(p.parse1XModel('dump'), libcellml.Model)
 
 
 if __name__ == '__main__':
