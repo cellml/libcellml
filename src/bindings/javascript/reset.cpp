@@ -20,7 +20,6 @@ limitations under the License.
 
 using namespace emscripten;
 
-
 EMSCRIPTEN_BINDINGS(libcellml_reset) {
 
     class_<libcellml::Reset, base<libcellml::ParentedEntity>>("Reset")
@@ -49,5 +48,4 @@ EMSCRIPTEN_BINDINGS(libcellml_reset) {
         .function("resetValueId", &libcellml::Reset::resetValueId)
         .function("clone", &libcellml::Reset::clone)
     ;
-
 }

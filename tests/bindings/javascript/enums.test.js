@@ -14,18 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <emscripten/bind.h>
+const loadLibCellML = require('libcellml.js/libcellml.common')
 
-#include "libcellml/parentedentity.h"
+let libcellml = null
 
-using namespace emscripten;
-
-EMSCRIPTEN_BINDINGS(libcellml_parentedentity)
-{
-    class_<libcellml::ParentedEntity, base<libcellml::Entity>>("ParentedEntity")
-        .smart_ptr<std::shared_ptr<libcellml::ParentedEntity>>("ParentedEntityPtr")
-        .function("parent", &libcellml::ParentedEntity::parent)
-        .function("hasParent", &libcellml::ParentedEntity::hasParent)
-        .function("hasAncestor", &libcellml::ParentedEntity::hasAncestor)
-    ;
-}
+describe("Enums tests", () => {
+    beforeAll(async () => {
+        libcellml = await loadLibCellML()
+    });
+    test("Checking cellmlElementTypeAsString.", () => {
+             expect(libcellml.cellmlElementTypeAsString(libcellml.CellmlElementType.ENCAPSULATION)).toBe("encapsulation")
+    })
+})

@@ -20,7 +20,6 @@ limitations under the License.
 
 using namespace emscripten;
 
-
 EMSCRIPTEN_BINDINGS(libcellml_parser) {
 
     class_<libcellml::Parser, base<libcellml::Logger>>("Parser")
