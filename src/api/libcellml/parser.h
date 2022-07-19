@@ -71,7 +71,7 @@ public:
      */
     ModelPtr parseModel(const std::string &input);
 
-    ModelPtr parse1XModel(const std::string &input, bool renameNonSIUnits=false);
+    ModelPtr parse1XModel(const std::string &input, bool renameNonSIUnits = false);
 
 private:
     Parser(); /**< Constructor, @private. */

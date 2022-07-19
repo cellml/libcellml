@@ -152,4 +152,3 @@ TEST(ParserTransform, cellmlNsCn)
 
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
-
