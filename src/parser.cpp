@@ -910,6 +910,14 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
             childNode = childNode->next();
         }
+        if (componentNode == nullptr) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Connection definition in model '" + model->name() + "' does not have a 'map_components' element.");
+            issue->mPimpl->mItem->mPimpl->setModel(model);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT1);
+            addIssue(issue);
+            return;
+        }
     } else {
         componentNode = node;
     }
