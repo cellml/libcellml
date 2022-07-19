@@ -256,8 +256,6 @@ In addition, this study has been discussed in detail in a Perspectives article i
   </connection>
 
   <connection>
-    <map_components component_1="z" component_2="model_parameters"/>
-    <map_variables variable_1="p" variable_2="p"/>
   </connection>
 
   <connection>

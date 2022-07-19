@@ -45,6 +45,30 @@ TEST(ParserTransform, parseNamedModelCellml11)
     EXPECT_EQ(n, model->name());
 }
 
+TEST(ParserTransform, parseModelWithCMeta10Id)
+{
+    const std::string n = "name";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" xmlns:cmeta=\"http://www.cellml.org/metadata/1.0#\" name=\"name\" cmeta:id=\"great_id\"/>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    EXPECT_EQ(n, model->name());
+}
+
+TEST(ParserTransform, parseModelWithCMeta11Id)
+{
+    const std::string n = "name";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" xmlns:cmeta=\"http://www.cellml.org/metadata/1.1#\" name=\"name\" cmeta:id=\"great_id\"/>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    EXPECT_EQ(n, model->name());
+}
+
 TEST(ParserTransform, sineCellml11)
 {
     const std::string e =
