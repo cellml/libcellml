@@ -27,29 +27,27 @@ TEST(ParserTransform, emptyCellml10)
         "<model xmlns=\"http://www.cellml.org/cellml/1.0#\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e, true);
+    libcellml::ModelPtr model = parser->parse1XModel(e);
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, parser->issue(0)->level());
     EXPECT_EQ("Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.",
               parser->issue(0)->description());
 }
 
-TEST(ParserTransform, parseNamedModelCellml10WithoutAuthority)
+TEST(ParserTransform, parseUnknownCellml1Model)
 {
     const std::string n = "name";
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.0#\" name=\"name\"/>\n";
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parse1XModel(e);
 
     EXPECT_EQ("", model->name());
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::ERROR, parser->issue(0)->level());
-    EXPECT_EQ("Given model is a CellML 1.0 model, explicitly set parseVersion1XModels parameter true,"
-              " if you want the parser to try and represent this model in CellML 2.0.",
-              parser->issue(0)->description());
+    EXPECT_EQ("Given model is not a CellML 1.0 or CellML 1.1 model, try parsing with parseModel().", parser->issue(0)->description());
 }
 
 TEST(ParserTransform, parseNamedModelCellml10)
@@ -60,14 +58,14 @@ TEST(ParserTransform, parseNamedModelCellml10)
         "<model xmlns=\"http://www.cellml.org/cellml/1.0#\" name=\"name\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e, true);
+    libcellml::ModelPtr model = parser->parse1XModel(e);
     EXPECT_EQ(n, model->name());
 }
 
 TEST(ParserTransform, hodgkinHuxleyCellml10)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("cellml1X/Hodgkin_Huxley_1952_modified.cellml"), true);
+    auto model = parser->parse1XModel(fileContents("cellml1X/Hodgkin_Huxley_1952_modified.cellml"));
 
     EXPECT_EQ(size_t(7), model->unitsCount());
     EXPECT_EQ(size_t(5), model->componentCount());
@@ -77,4 +75,40 @@ TEST(ParserTransform, hodgkinHuxleyCellml10)
     validator->validateModel(model);
 
     EXPECT_EQ(size_t(0), validator->issueCount());
+}
+
+TEST(ParserTransform, annotatedModel)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto model = parser->parse1XModel(fileContents("cellml1X/annotated_model.cellml"));
+
+    EXPECT_EQ(size_t(5), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(78), parser->issueCount());
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(4), validator->issueCount());
+}
+
+TEST(ParserTransform, renameNonSiUnits)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto model = parser->parse1XModel(fileContents("cellml1X/non_si_units.cellml"), true);
+
+    EXPECT_EQ(size_t(11), model->unitsCount());
+    EXPECT_EQ(size_t(2), model->componentCount());
+
+    auto unitsUMetre = model->units(0);
+    auto unitsULitre = model->units(1);
+
+    EXPECT_EQ("metre", unitsUMetre->unitAttributeReference(0));
+    EXPECT_EQ("litre", unitsULitre->unitAttributeReference(0));
+
+    auto v1 = model->component(1)->variable(1);
+    auto v2 = model->component(1)->variable(3);
+
+    EXPECT_EQ("metre", v1->units()->name());
+    EXPECT_EQ("litre", v2->units()->name());
 }
