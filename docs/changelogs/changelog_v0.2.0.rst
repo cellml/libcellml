@@ -1,5 +1,5 @@
-libCellML v0.2.0 Change log
-===========================
+libCellML v0.2.0 Changelog
+==========================
 
 Bug
 ---
