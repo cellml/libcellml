@@ -1,5 +1,5 @@
-libCellML v0.1.0 Change log
-===========================
+libCellML v0.1.0 Changelog
+==========================
 
 No category
 -----------
