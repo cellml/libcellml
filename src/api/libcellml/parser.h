@@ -58,20 +58,38 @@ public:
      *
      * All existing issues will be removed before the input is parsed.
      *
-     * If @p parseVersion1XModels is @c true then CellML 1.0, CellML 1.1, and
-     * CellML 2.0 models will be parsed. If @p parseVersion1XModels is @c false then
-     * only CellML 2.0 models will be parsed.  The default value of parseVersion1XModels
-     * is @c false.
+     * Returns a @c nullptr if the @p input is not a @c std::string representation
+     * of a CellML model.
      *
      * @param input The string to parse into a model.
-     * @param parseVersion1XModels Boolean to signal whether CellML 1.X
-     * models should be parsed, @c false by default.
      *
      * @return The new @c ModelPtr deserialised from the input string.
      */
     ModelPtr parseModel(const std::string &input);
 
-    ModelPtr parse1XModel(const std::string &input, bool renameNonSIUnits = false);
+    /**
+     * @brief Create and populate a new model from a @c std::string.
+     *
+     * Creates and populates a new model pointer by parsing CellML
+     * entities and attributes from CellML 1.0 and 1.1 format @p input @c std::string.
+     *
+     * Returns a @c nullptr if the @p input is not a @c std::string representation
+     * of a CellML model.
+     *
+     * All existing issues will be removed before the input is parsed.
+     *
+     * Set the @p renameNonSiUnits to @c true to rename common alternate spellings
+     * of SI units. Renaming non-SI units is @c false by default. The SI units
+     * that will get renamed if this parameter is true are:
+     *  * liter -> litre
+     *  * meter -> metre
+     *
+     * @param input The string to parse into a model.
+     * @param renameNonSiUnits Rename SI units with common alternate spellings.
+     *
+     * @return The new @c ModelPtr deserialised from the input string.
+     */
+    ModelPtr parse1XModel(const std::string &input, bool renameNonSiUnits = false);
 
 private:
     Parser(); /**< Constructor, @private. */

@@ -63,14 +63,30 @@ public:
      * model parse it into CellML 2.0 data structures. If @p parseVersion1XModels is @c false
      * strictly only parse CellML 2.0 models.
      *
-     * If @p renameNonSIUnits is @c true then rename @ref Units. For example, rename *liter* to *litre*.
-     *
      * @param model The @c ModelPtr to update.
      * @param input The string to parse and update the @p model with.
-     * @param parseVersion1XModels If @c true will parse 1.X CellML models.
-     * @param renameNonSIUnits true to rename SI units spelling, false to not rename.
      */
     void loadModel(const ModelPtr &model, const std::string &input);
+
+    /**
+     * @brief Create and populate a new model from a @c std::string.
+     *
+     * Takes a @c std::string and attempts to parse it into CellML 2.0 data structures.
+     * Returns @c nullptr if the @p input is not a @c std::string representation of
+     * a CellML model.
+     *
+     * The @p parseVersion1XModels if @c true will parse CellML 1.0 and CellML 1.1 elements
+     * into CellML 2.0 as best it can.
+     *
+     * If @p renameNonSiUnits is @c true then some SI units will be renamed. For example, rename *liter* to *litre*.
+     *
+     * @param input The string to parse into a model.
+     * @param parseVersion1XModels If @c true will parse 1.X CellML models.
+     * @param renameNonSiUnits @c true to rename SI units spelling, @c false to not rename.
+     *
+     * @return The new @c ModelPtr deserialised from the input string.
+     */
+    ModelPtr parseModel(const std::string &input, bool parseVersion1XModels, bool renameNonSiUnits);
 
     /**
      * @brief Update the @p component with attributes parsed from @p node.
@@ -233,8 +249,6 @@ public:
      * @param component The @c ComponentPtr the reset belongs to.
      */
     void checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component);
-
-    ModelPtr parseModel(const std::string &input, bool parseVersion1XModels, bool renameNonSIUnits);
 };
 
 Parser::ParserImpl *Parser::pFunc()
@@ -263,15 +277,15 @@ ModelPtr Parser::parseModel(const std::string &input)
     return pFunc()->parseModel(input, false, false);
 }
 
-ModelPtr Parser::parse1XModel(const std::string &input, bool renameNonSIUnits)
+ModelPtr Parser::parse1XModel(const std::string &input, bool renameNonSiUnits)
 {
-    return pFunc()->parseModel(input, true, renameNonSIUnits);
+    return pFunc()->parseModel(input, true, renameNonSiUnits);
 }
 
-ModelPtr Parser::ParserImpl::parseModel(const std::string &input, bool parseVersion1XModels, bool renameNonSIUnits)
+ModelPtr Parser::ParserImpl::parseModel(const std::string &input, bool parseVersion1XModels, bool renameNonSiUnits)
 {
     removeAllIssues();
-    mRenameNonSiUnits = renameNonSIUnits;
+    mRenameNonSiUnits = renameNonSiUnits;
     mTransformFrom1X = parseVersion1XModels;
     ModelPtr model = nullptr;
     if (input.empty()) {
@@ -286,6 +300,18 @@ ModelPtr Parser::ParserImpl::parseModel(const std::string &input, bool parseVers
     return model;
 }
 
+/**
+ * @brief Test to determine if the attribute is an XML identifier.
+ *
+ * Test to determine if the attribute is an XML identifier. When
+ * transfoming from CellML 1.0 and CellML 1.1 it will also consider
+ * namespaced identifiers often used in CellML 1.X models.
+ *
+ * @param attribute The attribute to test.
+ * @param transforming @true if transfomring from CellML 1.0 or CellML 1.1, @c false otherwise.
+ *
+ * @return @c true if the given attribute is an XML identifier attribute, @c false otherwise.
+ */
 bool isIdAttribute(const XmlAttributePtr &attribute, bool transforming)
 {
     return attribute->isType("id") || (attribute->isType("id", CMETA_1_0_NS) && transforming) || (attribute->isType("id", CMETA_1_1_NS) && transforming);
@@ -299,6 +325,7 @@ bool isIdAttribute(const XmlAttributePtr &attribute, bool transforming)
  *  * meter -> metre
  *
  * @param unitsName Name of the units to convert.
+ *
  * @return The SI units name.
  */
 std::string convertNonSiUnits(const std::string &unitsName)
@@ -334,6 +361,15 @@ bool areUnitsDefinedInComponent(const XmlNodePtr &node)
     return false;
 }
 
+/**
+ * @brief Test to determine if the @p node describes an encapsulation relationship.
+ *
+ * Test to determine if the @p node describes an encapsulation relationship.
+ *
+ * @param node The XML node to test.
+ *
+ * @return @c true if the @p node has child node with a relationship that is an encapsulation, @c false otherwise
+ */
 bool isEncapsulationRelationship(const XmlNodePtr &node)
 {
     XmlNodePtr childNode = node->firstChild();
