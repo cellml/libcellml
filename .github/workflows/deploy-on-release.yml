@@ -254,7 +254,7 @@ jobs:
           endforeach()
           file(TO_NATIVE_PATH "${WIN_PATH}" WIN_PATH)
           set(ENV{PATH} "${WIN_PATH}")
-          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/zlib" -B "${ACTION_DIR}/build-zlib" -DCMAKE_INSTALL_PREFIX=../usr/local)
+          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/zlib" -B "${ACTION_DIR}/build-zlib" -DBUILD_SHARED_LIBS=FALSE -DCMAKE_INSTALL_PREFIX=../usr/local)
           execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-zlib" --config Release
             WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
           execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
@@ -515,7 +515,7 @@ jobs:
         run: |
           mkdir build-zlib-release
           cd build-zlib-release
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local ../zlib/
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/usr/local ../zlib/
           make -j3 install
 
       - name: Build and instal libXml2
@@ -523,7 +523,7 @@ jobs:
         run: |
           mkdir build-libxml2-release
           cd build-libxml2-release
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/usr/local -DZLIB_DIR=$GITHUB_WORKSPACE/usr/local/lib/cmake/ZLIB-1.2.3/ -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/usr/local -DZLIB_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/ZLIB-1.2.3/ -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
           make -j3 install
 
       - name: Build libcellml.js
@@ -531,7 +531,7 @@ jobs:
         run: |
           mkdir build-libcellml-release
           cd build-libcellml-release
-          emcmake cmake -DLibXml2_DIR=$GITHUB_WORKSPACE/usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=$GITHUB_WORKSPACE/usr/local/lib/cmake/ZLIB-1.2.3/ -DBUILD_TYPE=Release ../libcellml/
+          emcmake cmake -DLibXml2_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/ZLIB-1.2.3/ -DBUILD_TYPE=Release ../libcellml/
           make VERBOSE=1 -j3
 
       - name: Pack libcellml.js
