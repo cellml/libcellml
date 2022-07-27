@@ -483,7 +483,7 @@ jobs:
 
   emscripten:
     name: libcellml.js
-    runs-on: macos-10.15
+    runs-on: macos-12
     steps:
       - name: Checkout libCellML
         uses: actions/checkout@v2
