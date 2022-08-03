@@ -23,7 +23,14 @@ if (EMSCRIPTEN)
     find_program(NODE_EXE NAMES ${PREFERRED_NODE_NAMES} node)
     find_program(NPM_EXE NAMES ${PREFERRED_NPM_NAMES} npm)
 else ()
-  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.18 AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(_FIND_PYTHON_DEVELOPMENT_TYPE Development.Module)
+    set(FIND_PYTHON_DEVELOPMENT_MODULE TRUE)
+  else()
+    set(_FIND_PYTHON_DEVELOPMENT_TYPE Development)
+  endif()
+
+  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter ${_FIND_PYTHON_DEVELOPMENT_TYPE})
 
   find_program(BUILDCACHE_EXE buildcache)
   if(NOT BUILDCACHE_EXE)
@@ -40,7 +47,7 @@ else ()
   find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
   find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
   find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
-
+  find_program(INSTALL_NAME_TOOL_EXE NAMES ${PREFERRED_INSTALL_NAME_TOOL_NAMES} install_name_tool)
 
   if(Python_Interpreter_FOUND)
     if(NOT DEFINED TEST_COVERAGE_RESULT)
@@ -87,6 +94,7 @@ else ()
     GCC_COVERAGE_COMPILER_FLAGS_OK
     GCOV_EXE
     GIT_EXE
+    INSTALL_NAME_TOOL_EXE
     LLVM_COV_EXE
     LLVM_COVERAGE_COMPILER_FLAGS_OK
     LLVM_PROFDATA_EXE
@@ -190,12 +198,22 @@ if(SWIG_EXECUTABLE)
   set(BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Executable required to generate bindings is available.")
 endif()
 
+if(BINDINGS_AVAILABLE AND Python_Development.Module_FOUND)
+  set(PYTHON_BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Requirements for creating Python bindings are available.")
+elseif(BINDINGS_AVAILABLE AND Python_Development_FOUND)
+  set(PYTHON_BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Requirements for creating Python bindings are available.")
+endif()
+
 if(VALGRIND_EXE AND Python_Interpreter_FOUND)
   set(VALGRIND_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executable required to run valgrind testing is available.")
 endif()
 
 if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS_OK)
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
+endif()
+
+if(INSTALL_NAME_TOOL_EXE)
+  set(INSTALL_NAME_TOOL_AVAILABLE TRUE CACHE INTERNAL "Executable required for manipulating dynamic library paths is available.")
 endif()
 
 if(HAVE_COVERAGE)
