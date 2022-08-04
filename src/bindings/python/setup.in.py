@@ -19,10 +19,8 @@ Topic :: Software Development :: Libraries :: Python Modules
 import os
 import subprocess
 
-from setuptools import setup, Extension
+from setuptools import setup
 from setuptools.dist import Distribution
-from setuptools.command.install import install
-from setuptools.command.build_ext import build_ext
 
 
 doclines = __doc__.split("\n")
@@ -61,4 +59,3 @@ setup(
     include_package_data=True,
     zip_safe=False,
 )
-

@@ -290,6 +290,7 @@ jobs:
         shell: bash
         run: |
           mkdir src/bindings/python/libcellml
+          cp src/bindings/python/README.rst src/bindings/python/libcellml/README.rst
           v=${{ matrix.py }}
           echo "Setting tag as: TAG=${GITHUB_REF#refs/tags/}"
           echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
