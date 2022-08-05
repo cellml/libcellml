@@ -526,7 +526,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(non_unique_message, annotator.issue(0).description())
 
     def test_any_cellml_element(self):
-        from libcellml import Annotator, AnyCellmlElement, Parser
+        from libcellml import Annotator, AnyCellmlElement, Parser, cellmlElementTypeAsString
         from libcellml.enums import CellmlElementType
 
         self.assertRaises(AttributeError, AnyCellmlElement)
@@ -539,6 +539,7 @@ class AnnotatorTestCase(unittest.TestCase):
 
         item = annotator.item('component_1')
         self.assertEqual(CellmlElementType.COMPONENT, item.type())
+        self.assertEqual("component", cellmlElementTypeAsString(item.type()))
         self.assertEqual('component1', item.component().name())
 
         item = annotator.item('component_ref_1')

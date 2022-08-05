@@ -2,11 +2,14 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_string.i>
+
+%feature("docstring") libcellml::cellmlElementTypeAsString
+"Convert a CellmlElementType enumeration value into its string form.";
+
 %{
 #include "libcellml/enums.h"
 %}
-
-%ignore libcellml::cellmlElementTypeAsString;
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.
