@@ -1008,14 +1008,14 @@ TEST(Annotator, automaticIdsUndefined)
 }
 
 TEST(Annotator, automaticIdsMath)
-{   
+{
     // Adding test for coverage purposes.
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringNoIds);
     auto annotator = libcellml::Annotator::create();
-    
+
     annotator->setModel(model);
-    
+
     EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::MATH));
 }
 
