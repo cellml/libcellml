@@ -26,7 +26,7 @@ describe("Units tests", () => {
 
         expect(u.isBaseUnit()).toBe(true)
 
-        u.addUnitByStandardUnit(libcellml.StandardUnit.FARAD)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.FARAD)
         expect(u.isBaseUnit()).toBe(false)
     })
     test('Checking Units add unit by reference string prefix.', () => {
@@ -42,7 +42,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByReferenceEnumPrefix("name", libcellml.Prefix.TERA, 7, 9, "")
+        u.addUnitByReferenceEnumPrefix("name", libcellml.Units.Prefix.TERA, 7, 9, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by reference int prefix.', () => {
@@ -74,7 +74,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5, "")
+        u.addUnitByStandardUnitStringPrefix(libcellml.Units.StandardUnit.TESLA, "milli", 1.0, 5, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by standard unit enum prefix.', () => {
@@ -82,7 +82,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitEnumPrefix(libcellml.StandardUnit.TESLA, libcellml.Prefix.TERA, 7, 9, "")
+        u.addUnitByStandardUnitEnumPrefix(libcellml.Units.StandardUnit.TESLA, libcellml.Units.Prefix.TERA, 7, 9, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by standard unit int prefix.', () => {
@@ -90,7 +90,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitIntPrefix(libcellml.StandardUnit.TESLA, -2, 1.0, 5, "")
+        u.addUnitByStandardUnitIntPrefix(libcellml.Units.StandardUnit.TESLA, -2, 1.0, 5, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by standard unit exponent.', () => {
@@ -98,7 +98,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitExponent(libcellml.StandardUnit.TESLA, -4.0, "")
+        u.addUnitByStandardUnitExponent(libcellml.Units.StandardUnit.TESLA, -4.0, "")
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units add unit by standard unit.', () => {
@@ -106,7 +106,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnit(libcellml.StandardUnit.TESLA)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.TESLA)
         expect(u.unitCount()).toBe(1)
     })
     test('Checking Units unit attribute reference.', () => {
@@ -114,7 +114,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnit(libcellml.StandardUnit.FARAD)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.FARAD)
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributeReference(0)).toBe("farad")
@@ -124,7 +124,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByReferenceEnumPrefix("name", libcellml.Prefix.TERA, 7, 9, "")
+        u.addUnitByReferenceEnumPrefix("name", libcellml.Units.Prefix.TERA, 7, 9, "")
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributePrefix(0)).toBe("tera")
@@ -134,7 +134,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitExponent(libcellml.StandardUnit.TESLA, -4.0, "")
+        u.addUnitByStandardUnitExponent(libcellml.Units.StandardUnit.TESLA, -4.0, "")
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributeExponent(0)).toBe(-4.0)
@@ -144,7 +144,7 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", -2.0, 5, "")
+        u.addUnitByStandardUnitStringPrefix(libcellml.Units.StandardUnit.TESLA, "milli", -2.0, 5, "")
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributeMultiplier(0)).toBe(5.0)
@@ -154,9 +154,9 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnit(libcellml.StandardUnit.FARAD)
-        u.addUnitByStandardUnit(libcellml.StandardUnit.SIEMENS)
-        u.addUnitByStandardUnit(libcellml.StandardUnit.SIEVERT)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.FARAD)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.SIEMENS)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.SIEVERT)
         expect(u.unitCount()).toBe(3)
 
         u.removeUnitByIndex(1)
@@ -167,9 +167,9 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnit(libcellml.StandardUnit.FARAD)
-        u.addUnitByStandardUnit(libcellml.StandardUnit.SIEMENS)
-        u.addUnitByStandardUnit(libcellml.StandardUnit.SIEVERT)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.FARAD)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.SIEMENS)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.SIEVERT)
         expect(u.unitCount()).toBe(3)
 
         u.removeUnitByReference("siemens")
@@ -180,12 +180,12 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnit(libcellml.StandardUnit.FARAD)
-        u.addUnitByStandardUnit(libcellml.StandardUnit.SIEMENS)
-        u.addUnitByStandardUnit(libcellml.StandardUnit.SIEVERT)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.FARAD)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.SIEMENS)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.SIEVERT)
         expect(u.unitCount()).toBe(3)
 
-        u.removeUnitByStandardUnit(libcellml.StandardUnit.SIEMENS)
+        u.removeUnitByStandardUnit(libcellml.Units.StandardUnit.SIEMENS)
         expect(u.unitCount()).toBe(2)
     })
     test('Checking Units remove all units.', () => {
@@ -193,9 +193,9 @@ describe("Units tests", () => {
 
         expect(u.unitCount()).toBe(0)
 
-        u.addUnitByStandardUnit(libcellml.StandardUnit.FARAD)
-        u.addUnitByStandardUnit(libcellml.StandardUnit.SIEMENS)
-        u.addUnitByStandardUnit(libcellml.StandardUnit.SIEVERT)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.FARAD)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.SIEMENS)
+        u.addUnitByStandardUnit(libcellml.Units.StandardUnit.SIEVERT)
         expect(u.unitCount()).toBe(3)
 
         u.removeAllUnits()
@@ -213,7 +213,7 @@ describe("Units tests", () => {
     test('Checking Units clone.', () => {
         const u = new libcellml.Units("mine")
 
-        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5, "")
+        u.addUnitByStandardUnitStringPrefix(libcellml.Units.StandardUnit.TESLA, "milli", 1.0, 5, "")
 
         const uClone = u.clone()
         expect(uClone.name()).toBe("mine")
@@ -222,7 +222,7 @@ describe("Units tests", () => {
     test('Checking Units unit id.', () => {
         const u = new libcellml.Units()
 
-        u.addUnitByStandardUnitStringPrefix(libcellml.StandardUnit.TESLA, "milli", 1.0, 5, "")
+        u.addUnitByStandardUnitStringPrefix(libcellml.Units.StandardUnit.TESLA, "milli", 1.0, 5, "")
         expect(u.unitId(0)).toBe("")
 
         u.setUnitId(0, "bob")
