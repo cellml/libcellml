@@ -22,43 +22,56 @@ jobs:
       shell: cmake -P {0}
       run: |
         set(_OUTPUT_LOCATION "nowhere")
-        set(_ACTION "${{ github.event.action }}")
         set(PRERELEASE "${{ github.event.release.prerelease }}")
         if (PRERELEASE STREQUAL "true")
-          set(_OUTPUT_LOCATION "artifact")
+          set(_OUTPUT_LOCATION "Artifact")
         else()
-          set(_OUTPUT_LOCATION "publish")
+          set(_OUTPUT_LOCATION "Publish")
         endif()
-        if (_ACTION STREQUAL "edited")
-          set(_OUTPUT_LOCATION "skip")
+        if ("${{ github.event.action }}" STREQUAL "edited")
+          set(_OUTPUT_LOCATION "unknown")
           set(RELEASE_BODY "${{ github.event.release.body }}")
           string(REPLACE "\n" ";" _PARTS "${RELEASE_BODY}")
           foreach(_PART ${_PARTS})
             string(STRIP "${_PART}" _PART)
-            if ("${_PART}" STREQUAL "[ODD Publish]")
-              set(_OUTPUT_LOCATION "publish")
-            elseif ("${_PART}" STREQUAL "[ODD Artifact]")
-              set(_OUTPUT_LOCATION "artifact")
+            string(REGEX MATCH "^[[]ODD ([a-zA-Z]+) ([a-zA-Z]+)[]]$" _RESULT "${_PART}")
+            if (CMAKE_MATCH_1 STREQUAL "Publish")
+              set(_OUTPUT_LOCATION Publish)
+            elseif(CMAKE_MATCH_1 STREQUAL "Artifact")
+              set(_OUTPUT_LOCATION Artifact)
             endif()
           endforeach()
         endif()
-        message(STATUS "Setting output destination to '${_OUTPUT_LOCATION}'.")
+        message(STATUS "Setting binaries destination to '${_OUTPUT_LOCATION}'.")
         message("::set-output name=BINARIES-DESTINATION::${_OUTPUT_LOCATION}")
 
     - name: Determine next jobs
       id: do-jobs
       shell: cmake -P {0}
       run: |
-        set(_ALLOWED_JOBS "all")
-        if ("${{ steps.binaries-out.outputs.binaries-destination }}" STREQUAL "skip")
+        set(_ALLOWED_JOBS "All")
+        if ("${{ github.event.action }}" STREQUAL "edited")
           set(_ALLOWED_JOBS "none")
+          set(RELEASE_BODY "${{ github.event.release.body }}")
+          string(REPLACE "\n" ";" _PARTS "${RELEASE_BODY}")
+          foreach(_PART ${_PARTS})
+            string(STRIP "${_PART}" _PART)
+            string(REGEX MATCH "^[[]ODD ([a-zA-Z]+) ([a-zA-Z]+)[]]$" _RESULT "${_PART}")
+            if (CMAKE_MATCH_2 STREQUAL "Installers")
+              set(_ALLOWED_JOBS Installers)
+            elseif(CMAKE_MATCH_2 STREQUAL "Wheels")
+              set(_ALLOWED_JOBS Wheels)
+            elseif(CMAKE_MATCH_2 STREQUAL "Javascript")
+              set(_ALLOWED_JOBS Javascript)
+            endif()
+          endforeach()
         endif()
         message(STATUS "Setting allowed jobs to '${_ALLOWED_JOBS}'.")
         message("::set-output name=allowed-jobs::${_ALLOWED_JOBS}")
 
   os-binaries:
     needs: setup-jobs
-    if: needs.setup-jobs.outputs.allowed-jobs == 'installers' || needs.setup-jobs.outputs.allowed-jobs == 'all'
+    if: needs.setup-jobs.outputs.allowed-jobs == 'Installers' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
@@ -245,21 +258,21 @@ jobs:
           COMMAND echo "::set-output name=files::${_DIST_FILES}")
 
     - name: Publish libraries
-      if: needs.setup-jobs.outputs.binaries-destination == 'publish'
+      if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
       uses: softprops/action-gh-release@v1
       with:
         files: ${{ steps.package.outputs.files }}
         tag_name: ${{ github.event.release.tag_name }}
 
     - name: Upload libraries as artifacts
-      if: needs.setup-jobs.outputs.binaries-destination == 'artifact'
+      if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
       uses: actions/upload-artifact@v3
       with:
         path: ./build/dist/*
 
   wheels:
     needs: setup-jobs
-    if: needs.setup-jobs.outputs.allowed-jobs == 'wheel' || needs.setup-jobs.outputs.allowed-jobs == 'all'
+    if: needs.setup-jobs.outputs.allowed-jobs == 'Wheels' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: ${{ matrix.name }} ${{ matrix.py }} wheels
     runs-on: ${{ matrix.os }}
     strategy:
@@ -291,6 +304,7 @@ jobs:
         run: |
           mkdir src/bindings/python/libcellml
           cp src/bindings/python/README.rst src/bindings/python/libcellml/README.rst
+          mv src/bindings/python/cibuildwheel.setup.py src/bindings/python/setup.py
           v=${{ matrix.py }}
           echo "Setting tag as: TAG=${GITHUB_REF#refs/tags/}"
           echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
@@ -325,13 +339,13 @@ jobs:
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
 
       - name: Upload Python wheels as artifacts
-        if: needs.setup-jobs.outputs.binaries-destination == 'artifact'
+        if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
         uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
 
       - name: Publish Python wheels
-        if: needs.setup-jobs.outputs.binaries-destination == 'publish'
+        if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
         shell: bash
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
@@ -342,7 +356,7 @@ jobs:
 
   emscripten:
     needs: setup-jobs
-    if: needs.setup-jobs.outputs.allowed-jobs == 'javascript' || needs.setup-jobs.outputs.allowed-jobs == 'all'
+    if: needs.setup-jobs.outputs.allowed-jobs == 'Javascript' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: libcellml.js
     runs-on: macos-12
     steps:
@@ -404,20 +418,14 @@ jobs:
           package=`ls $PWD/libcellml.js-*.tgz`
           echo "::set-output name=files::$package"
 
-      - name: Prepare environment for uploading assets
-        shell: bash
-        run: |
-          cd $GITHUB_WORKSPACE/libcellml/.github/scripts/
-          npm install mime
-
       - name: Upload libcellml.js as artifacts
-        if: needs.setup-jobs.outputs.binaries-destination == 'artifact'
+        if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
         uses: actions/upload-artifact@v3
         with:
           path: ${{ steps.package-javascript.outputs.files }}
 
       - name: Publish libcellml.js
-        if: needs.setup-jobs.outputs.binaries-destination == 'publish'
+        if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
         shell: bash
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}

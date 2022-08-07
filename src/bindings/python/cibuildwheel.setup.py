@@ -33,12 +33,11 @@ tag = os.environ.get("LIBCELLML_VERSION_TAG", "v0.0.0")
 setup(
     name="libcellml",
     version=tag[1:],
-    description="libCellML is a library for manipulating CellML models.",
+    description=doclines[0],
     author="libCellML contributors",
     url="https://libcellml.org",
     license="Apache 2.0",
     packages=["libcellml"],
-    description=doclines[0],
     classifiers=classifiers.split("\n"),
     long_description=open('README.rst').read(),
     long_description_content_type='text/x-rst',
