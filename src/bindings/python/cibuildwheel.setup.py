@@ -21,7 +21,7 @@ import platform
 
 from skbuild import setup
 
-cmake_args = ["-DUNIT_TESTS=OFF", "-DCOVERAGE=OFF", "-DMEMCHECK=OFF", "-DLLVM_COVERAGE=OFF"]
+cmake_args = ["-DUNIT_TESTS=OFF", "-DCOVERAGE=OFF", "-DMEMCHECK=OFF", "-DLLVM_COVERAGE=OFF", "-DCLANG_TIDY=OFF"]
 
 if platform.system() == "Windows":
     cmake_args.append("-DLibXml2_DIR=C:/Program Files (x86)/libxml2/libxml2-2.9.10/CMake/")
