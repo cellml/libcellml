@@ -27,6 +27,16 @@ While there are many types of contribution, this section focuses on contribution
    :ref:`Coding Standards<coding_standards>`
    :ref:`Glossary<glossary_page>` 
 
+==========
+Changelogs
+==========
+
+.. toctree::
+   :glob:
+
+   changelogs/changelog_v0.2.0
+   changelogs/changelog_v0.1.0
+
 .. toctree::
    :hidden:
    :glob:
