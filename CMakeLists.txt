@@ -21,6 +21,9 @@ set(PROJECT_DEVELOPER_VERSION -dev.24)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.
+if(POLICY CMP0056)
+  cmake_policy(SET CMP0056 NEW)
+endif()
 if(POLICY CMP0063)
   cmake_policy(SET CMP0063 NEW)
 endif()
@@ -111,7 +114,7 @@ unset(MEMCHECK CACHE)
 
 # BINDINGS_PYTHON ==> LIBCELLML_BINDINGS_PYTHON
 set(_PARAM_ANNOTATION "Build Python wrappers.")
-if(BINDINGS_AVAILABLE AND Python_Development_FOUND)
+if(BINDINGS_AVAILABLE AND PYTHON_BINDINGS_AVAILABLE)
   set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL "${_PARAM_ANNOTATION}")
 endif()
 if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE AND Python_Development_FOUND)
@@ -293,3 +296,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/packaging)
 if(LIBCELLML_ENABLE_UTILITIES)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/utils)
 endif()
+
+# Add target to print out version
+add_custom_target(print_version
+  COMMAND ${CMAKE_COMMAND} -E echo "version=v${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}")
+

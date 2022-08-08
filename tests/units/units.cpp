@@ -1300,7 +1300,7 @@ TEST(Units, checkingOwningModelBothUnits)
 
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
-    u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
+    u1->addUnit("u", "milli", 2.0, 1000.0); // m^2
     u1->addUnit("dimensionless");
 
     libcellml::UnitsPtr u2 = libcellml::Units::create();
