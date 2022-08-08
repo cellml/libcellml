@@ -1844,11 +1844,11 @@ TEST(Parser, parseResetsWithIssues)
         "      </reset_value>\n"
         "    </reset>\n"
 
-        //order not specified, unknown attribute
+        // order not specified, unknown attribute
         "    <reset variable=\"variable2\" test_variable=\"variable4\" i_dont_belong_here=\"yep_really_i_dont\">\n"
 
-        //test_value missing
-        //reset_value missing
+        // test_value missing
+        // reset_value missing
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
