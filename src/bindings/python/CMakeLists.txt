@@ -112,7 +112,11 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   if(NOT POLICY CMP0078)
     set(MODULE_TARGET ${SWIG_MODULE_${MODULE_TARGET}_REAL_NAME})
   endif()
-  target_link_libraries(${MODULE_TARGET} PRIVATE cellml Python::Python)
+  if(FIND_PYTHON_DEVELOPMENT_MODULE)
+    target_link_libraries(${MODULE_TARGET} PRIVATE cellml Python::Module)
+  else()
+    target_link_libraries(${MODULE_TARGET} PRIVATE cellml Python::Python)
+  endif()
   # Disable use of Debug Python libraries when not present on Windows
   # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
   if(WIN32)
@@ -136,7 +140,7 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   set_target_properties(${MODULE_TARGET} PROPERTIES
     CXX_VISIBILITY_PRESET hidden
     BUILD_WITH_INSTALL_RPATH TRUE
-    INSTALL_RPATH ${RPATH_ORIGIN}
+    INSTALL_RPATH "${RPATH_ORIGIN}"
     FOLDER bindings/python
     RUNTIME_OUTPUT_DIRECTORY ${LIBCELLML_PYTHON_PACKAGE_DIR}
     LIBRARY_OUTPUT_DIRECTORY ${LIBCELLML_PYTHON_PACKAGE_DIR}
@@ -173,3 +177,48 @@ add_custom_command(TARGET python_bindings POST_BUILD
 
 # Add new paths to make clean
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${LIBCELLML_PYTHON_PACKAGE_DIR} ${SWIG_GENERATED_INTERMEDIARIES_FILES_DIR})
+
+if(SKBUILD)
+  if(INSTALL_NAME_TOOL_AVAILABLE)
+    set(LIST_SEPARATOR "<sep>")
+    set(_ARGS)
+    foreach(_SOME ${SWIG_PYTHON_BINDINGS_TARGETS})
+      list(APPEND _ARGS $<TARGET_FILE:${_SOME}>)
+    endforeach()
+
+    set(_ARGS_STR "${_ARGS}")
+    string(REPLACE ";" "${LIST_SEPARATOR}" _ARGS_STR "${_ARGS_STR}")
+    add_custom_command(TARGET python_bindings POST_BUILD
+      COMMAND ${CMAKE_COMMAND}
+        -DSHARED_OBJECT_MODULES="${_ARGS_STR}"
+        -DLIST_SEPARATOR="${LIST_SEPARATOR}"
+        -DINSTALL_NAME_TOOL_EXE="${INSTALL_NAME_TOOL_EXE}"
+        -DPython_VERSION_MAJOR="${Python_VERSION_MAJOR}"
+        -DPython_VERSION_MINOR="${Python_VERSION_MINOR}"
+        -P ${PROJECT_SOURCE_DIR}/cmake/add_rpath_for_python.cmake
+    )
+  endif()
+
+  install(TARGETS ${SWIG_PYTHON_BINDINGS_TARGETS}
+    COMPONENT wheel
+    DESTINATION libcellml
+    EXCLUDE_FROM_ALL
+  )
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
+    COMPONENT wheel
+    EXCLUDE_FROM_ALL
+    DESTINATION libcellml
+  )
+  install(DIRECTORY ${_SWIG_GENERATED_PYTHON_FILES_DIR}/
+    COMPONENT wheel
+    EXCLUDE_FROM_ALL
+    DESTINATION libcellml
+  )
+  add_custom_target(install-wheel
+    ${CMAKE_COMMAND}
+    -DCMAKE_INSTALL_COMPONENT=wheel
+    -P "${PROJECT_BINARY_DIR}/cmake_install.cmake"
+    DEPENDS ${SWIG_PYTHON_BINDINGS_TARGETS}
+  )
+endif()
+
