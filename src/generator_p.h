@@ -83,11 +83,11 @@ struct Generator::GeneratorImpl
     std::string generateVariableInfoObjectCode(const std::string &objectString) const;
 
     void addVariableInfoObjectCode();
-    void addVariableInfoWithTypeObjectCode();
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
-                                              const std::string &component) const;
+                                              const std::string &component,
+                                              const std::string &type) const;
 
     void addInterfaceVoiStateAndVariableInfoCode();
     void addImplementationVoiInfoCode();
@@ -122,13 +122,13 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value) const;
     std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
-    std::string generateInitializationCode(const AnalyserVariablePtr &variable) const;
+    std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool onlyStateRateBasedEquations = false) const;
+                                     bool forComputeVariables = false) const;
 
     void addInterfaceComputeModelMethodsCode();
-    void addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);

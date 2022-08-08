@@ -17,9 +17,11 @@ Topic :: Software Development :: Libraries :: Python Modules
 """
 
 import os
+import subprocess
+
 from setuptools import setup
 from setuptools.dist import Distribution
-from setuptools.command.install import install
+
 
 doclines = __doc__.split("\n")
 
@@ -32,11 +34,11 @@ class BinaryDistribution(Distribution):
         return True
 
 
-class InstallCommand(install):
-    def initialize_options(self):
-        super().initialize_options()
-        if os.name != 'nt':
-            self.install_lib = ""
+# This creates a list which is empty but returns a length of 1.
+# Should make the wheel a binary distribution and platlib compliant.
+class EmptyListWithLength(list):
+    def __len__(self):
+        return 1
 
 
 setup(
@@ -45,7 +47,6 @@ setup(
     author='libCellML developers',
     author_email='libcellml@googlegroups.com',
     packages=['libcellml'],
-    package_data={'libcellml': [@SETUP_PY_PACKAGE_FILES_STR@]},
     url='@PYPI_PACKAGE_URL@',
     license='Apache Software License',
     description=doclines[0],
@@ -53,9 +54,8 @@ setup(
     long_description=open('README.rst').read(),
     long_description_content_type='text/x-rst',
     distclass=BinaryDistribution,
-    cmdclass={
-        'install': InstallCommand,
-    },
+    ext_modules=EmptyListWithLength(),
+    package_data={'libcellml': [@SETUP_PY_PACKAGE_FILES_STR@]},
     include_package_data=True,
     zip_safe=False,
 )

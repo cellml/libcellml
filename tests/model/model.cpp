@@ -465,7 +465,7 @@ TEST(Model, constructors)
 
     EXPECT_EQ(e, a);
 
-    //Testing copy constructor
+    // Testing copy constructor
     libcellml::ModelPtr &m3(m);
     EXPECT_EQ("my_name", m3->name());
 

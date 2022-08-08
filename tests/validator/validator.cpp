@@ -2061,6 +2061,40 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
+TEST(Validator, unitUserCreatedUnitsCells)
+{
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+
+    libcellml::UnitsPtr uCells = libcellml::Units::create();
+    uCells->setName("cells");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("bushell_of_cells");
+    u1->addUnit("cells", 10.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("bunch_of_cells");
+    u2->addUnit("cells", 10.0);
+
+    v1->setUnits(u1);
+    v2->setUnits(u2);
+
+    m->addUnits(uCells);
+    m->addUnits(u1);
+    m->addUnits(u2);
+
+    libcellml::Variable::addEquivalence(v1, v2); // Bushell of cells == bunch of cells.
+
+    validator->validateModel(m);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
+}
+
 TEST(Validator, unitMissingEquivalentUnits)
 {
     const std::vector<std::string> expectedIssues = {

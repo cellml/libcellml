@@ -48,31 +48,34 @@ namespace libcellml {
 using IssuesList = std::vector<Strings>;
 
 /**
-* @brief Validate that equivalent variable pairs in the @p model
-* have equivalent units.
-* Any errors will be logged in the @c Validator.
-*
-* Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.
-* Where the base units are equivalent, the multiplier may be interpreted as units_of_v1 = (10^multiplier)*units_of_v2
-*
-* @param model The model containing the variables.
-* @param v1 The variable which may contain units.
-* @param v2 The equivalent variable which may contain units.
-* @param hints String containing error messages to be passed back to the calling function for logging.
-* @param multiplier Double returning the effective multiplier mismatch between the units.
-*/
+ * @brief Validate that equivalent variable pairs in the @p model
+ * have equivalent units.
+ * Any errors will be logged in the @c Validator.
+ *
+ * Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.
+ * Where the base units are equivalent, the multiplier may be interpreted as units_of_v1 = (10^multiplier)*units_of_v2
+ *
+ * @param model The model containing the variables.
+ * @param v1 The variable which may contain units.
+ * @param v2 The equivalent variable which may contain units.
+ * @param hints String containing error messages to be passed back to the calling function for logging.
+ * @param multiplier Double returning the effective multiplier mismatch between the units.
+ */
 bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints, double &multiplier);
 
 /**
-* @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
-*
-* @param model The model containing the variables.
-* @param unitMap A list of the exponents of base variables.
-* @param uName String name of the current variable being investigated.
-* @param standardList Nested map of the conversion between built-in units and the base units they contain.
-* @param uExp Exponent of the current unit in its parent.
-* @param direction Specify whether we want to increment (1) or decrement (-1).
-*/
+ * @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
+ *
+ * Utility function used by unitsAreEquivalent to compare base units of two variables.
+ *
+ * @param model The model containing the variables.
+ * @param unitMap A list of the exponents of base variables.
+ * @param multiplier Multiplier of the current unit in its parent.
+ * @param uName String name of the current variable being investigated.
+ * @param uExp Exponent of the current unit in its parent.
+ * @param logMult Log multiplier.
+ * @param direction Specify whether we want to increment (1) or decrement (-1).
+ */
 void updateBaseUnitCount(const ModelPtr &model,
                          std::map<std::string, double> &unitMap,
                          double &multiplier,
@@ -444,7 +447,7 @@ public:
     void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
 
     /**
-     * @brief Validate and clean the @cn node.
+     * @brief Validate and clean the @c cn node.
      *
      * Validate the @c cn node and clear any CellML namespace from the node.
      *
@@ -484,7 +487,7 @@ public:
      * attributes found on @c cn elements and removes them from the @c XmlNode @p node to leave MathML that may then
      * be validated using the MathML DTD.
      *
-     * @param node The @c XmlNode to validate CellML entities on and remove @c cellml:units from.
+     * @param node The @ref XmlNode to validate CellML entities on and remove @c cellml:units from.
      * @param component The component that the math @c XmlNode @p node is contained within.
      * @param variableNames A @c vector list of the names of variables found within the @p component.
      */
@@ -496,12 +499,15 @@ public:
      * Checks if the provided @p node is one of the supported MathML elements defined in the table
      * of supported MathML elements from the CellML specification version 2.0 document.
      *
-     * @param node The @c XmlNode node to check against the list of supported MathML elements.
-     * @return @c true if @node is a supported MathML element and @c false otherwise.
+     * @param node The @ref XmlNode node to check against the list of supported MathML elements.
+     *
+     * @return @c true if @p node is a supported MathML element and @c false otherwise.
      */
     bool isSupportedMathMLElement(const XmlNodePtr &node) const;
 
     /** @brief Function to check IDs within the model scope are unique.
+     *
+     * Function to check IDs within the model scope are unique.
      *
      * @param model The model to be checked.
      */
@@ -509,12 +515,16 @@ public:
 
     /** @brief Utility function to construct a map of identifiers used within the model.
      *
+     * Utility function to construct a map of identifiers used within the model.
+     *
      * @param model The model to be checked.
      * @return An IdMap of the items in the model with identifier fields.
      */
     IdMap buildModelIdMap(const ModelPtr &model);
 
     /** @brief Utility function called recursively to construct a map of identifiers in a component.
+     *
+     * Utility function called recursively to construct a map of identifiers in a component.
      *
      * @param component The component to check.
      * @param idMap The IdMap object to construct.
@@ -524,6 +534,8 @@ public:
 
     /** @brief Utility function to add an item to the idMap.
      *
+     * Utility function to add an item to the idMap.
+     *
      * @param id A string identifier to add.
      * @param info A string description of the item with this identifier.
      * @param idMap The IdMap under construction.
@@ -532,21 +544,28 @@ public:
 
     /** @brief Utility function to parse MathML children and add element identifiers to idMap.
      *
+     * Utility function to parse MathML children and add element identifiers to idMap.
+     *
      * @param node XMLNode to read.
-     * @param component Owning component of the MathML string.
+     * @param infoRef @c std::string reference information for the math.
      * @param idMap The IdMap under construction.
      */
     void buildMathChildIdMap(const XmlNodePtr &node, const std::string &infoRef, IdMap &idMap);
 
     /** @brief Utility function to parse math and add element identifiers to idMap.
      *
-     * @param component Component to investigate.
+     * Utility function to parse math and add element identifiers to idMap.
+     *
+     * @param infoRef @c std::string reference information for the math.
      * @param idMap The IdMap under construction.
+     * @param input The @c std::string MathML string.
      */
     void buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input);
 
     /**
      * @brief Validate the import source xlink:href and id.
+     *
+     * Validate the import source xlink:href and id.
      *
      * @param importSource The import source to validate.
      * @param importName The name of the entity that the import is called.
@@ -1883,7 +1902,13 @@ void updateBaseUnitCount(const ModelPtr &model,
 {
     if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
-        if (!u->isBaseUnit()) {
+        if (u->isBaseUnit()) {
+            if (unitMap.find(uName) == unitMap.end()) {
+                unitMap.emplace(uName, 0.0);
+            }
+            unitMap[uName] += direction * uExp;
+            multiplier += direction * logMult;
+        } else {
             std::string ref;
             std::string pre;
             std::string id;
@@ -1902,9 +1927,6 @@ void updateBaseUnitCount(const ModelPtr &model,
                     multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + convertPrefixToInt(pre)) * exp);
                 }
             }
-        } else if (unitMap.find(uName) == unitMap.end()) {
-            unitMap.emplace(uName, direction * uExp);
-            multiplier += direction * logMult;
         }
     } else if (isStandardUnitName(uName)) {
         for (const auto &iter : standardUnitsList.at(uName)) {

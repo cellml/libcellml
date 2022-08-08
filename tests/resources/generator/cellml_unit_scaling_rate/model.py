@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 LIBCELLML_VERSION = "0.2.0"
 
 STATE_COUNT = 1
@@ -12,15 +12,17 @@ VARIABLE_COUNT = 2
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    VARIABLE_OF_INTEGRATION = 1
+    STATE = 2
+    CONSTANT = 3
+    COMPUTED_CONSTANT = 4
+    ALGEBRAIC = 5
 
 
-VOI_INFO = {"name": "t", "units": "ms", "component": "environment"}
+VOI_INFO = {"name": "t", "units": "ms", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "k", "units": "mM", "component": "states"}
+    {"name": "k", "units": "mM", "component": "states", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
@@ -37,7 +39,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_states_and_constants(states, variables):
+def initialise_variables(states, variables):
     states[0] = 123.0
 
 

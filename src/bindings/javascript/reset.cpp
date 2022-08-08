@@ -20,14 +20,13 @@ limitations under the License.
 
 using namespace emscripten;
 
-
 EMSCRIPTEN_BINDINGS(libcellml_reset) {
 
     class_<libcellml::Reset, base<libcellml::ParentedEntity>>("Reset")
         .smart_ptr_constructor("Reset", select_overload<libcellml::ResetPtr()>(&libcellml::Reset::create))
         .function("setOrder", &libcellml::Reset::setOrder)
         .function("order", &libcellml::Reset::order)
-        .function("unsetOrder", &libcellml::Reset::unsetOrder)
+        .function("removeOrder", &libcellml::Reset::removeOrder)
         .function("isOrderSet", &libcellml::Reset::isOrderSet)
         .function("setVariable", &libcellml::Reset::setVariable)
         .function("variable", &libcellml::Reset::variable)
@@ -49,5 +48,4 @@ EMSCRIPTEN_BINDINGS(libcellml_reset) {
         .function("resetValueId", &libcellml::Reset::resetValueId)
         .function("clone", &libcellml::Reset::clone)
     ;
-
 }

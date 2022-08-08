@@ -13,3 +13,29 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+const libCellMLModule = require('libcellml.js/libcellml.common')
+const { sineModel, componentImportModel } = require('./resources')
+
+let libcellml = null
+
+describe("Parser tests", () => {
+    beforeAll(async () => {
+        libcellml = await libCellMLModule()
+    })
+    test('Checking Parser parse model.', () => {
+        const p = new libcellml.Parser()
+
+        const m = p.parseModel(sineModel)
+
+        expect(m.componentCount()).toBe(1)
+    })
+    test('Checking Parser parse model import component.', () => {
+        const p = new libcellml.Parser()
+
+        const m = p.parseModel(componentImportModel)
+
+        expect(m.componentCount()).toBe(1)
+        expect(m.componentByIndex(0).isImport()).toBe(true)
+    })
+})

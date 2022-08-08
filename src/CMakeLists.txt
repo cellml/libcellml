@@ -190,15 +190,15 @@ target_include_directories(cellml
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if(TARGET zlib)
-  target_link_libraries(cellml PRIVATE zlib)
+if(HAVE_ZLIB_TARGET)
+  target_link_libraries(cellml PUBLIC zlib)
 else()
   target_link_libraries(cellml PUBLIC ${ZLIB_LIBRARIES})
   target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
 endif()
 
 if(HAVE_LIBXML2_CONFIG)
-  target_link_libraries(cellml PUBLIC xml2)
+  target_link_libraries(cellml PUBLIC ${LIBXML2_TARGET_NAME})
 else()
   target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
   target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES} ${ZLIB_LIBRARIES})
@@ -298,6 +298,16 @@ install(TARGETS cellml EXPORT libcellml-targets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
 )
+
+if(SKBUILD)
+  install(TARGETS cellml
+    COMPONENT wheel
+    RUNTIME DESTINATION libcellml
+    LIBRARY DESTINATION libcellml
+    NAMELINK_SKIP
+    EXCLUDE_FROM_ALL
+  )
+endif()
 
 install(FILES
   ${API_HEADER_FILES}

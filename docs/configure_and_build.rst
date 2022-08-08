@@ -20,6 +20,7 @@ The variable :code:`LIBCELLML_BUILD` is used to refer to this build directory.
 
 Configure with CMake
 ====================
+
 The first step is to use :cmake:`CMake<>` to configure and generate build files for the libCellML library.  
 Linux and MacOS use a command line interface, and under Windows there is an optional GUI.  
 Note that CMake version 3.2 or later is required to configure libCellML.  
@@ -28,6 +29,7 @@ Instructions and information about installing CMake can be found in the :ref:`Se
 
 Command line Linux, MacOS
 -------------------------
+
 CMake can either be run through a simple text-based executable called :code:`ccmake`, or through the command line directly.  
 There are instructions for both available from :cmake:`CMake directly</runningcmake/>`.  
 Building libCellML requires that you set the configuration parameters as in the table below.
@@ -46,27 +48,38 @@ From the command line (bash shell), libCellML can be configured to create an opt
 
 Windows command line  
 --------------------
+
 Note that CMake is also available on Windows as a GUI (instructions below).  
 This section describes how to use CMake on Windows directly from the command line.   
-Instructions for running CMake through the command line can be found on the :cmake:`CMake site</runningcmake/>` under the heading "Running CMake from the command line". 
+Additional instructions for running CMake through the command line can be found on the :cmake:`CMake site</runningcmake/>` under the heading "Running CMake from the command line".
 
-For Windows only the location of the libXML2 library must be specified through the command line by adding the parameter::
+For Windows, we must have the required libraries zlib and libxml2 before we can configure and build libCellML.
+See :ref:`Setup page <setup>` for instructions on the commands required.
 
-  -DLibXml2_DIR="C:\Program Files\libxml2 2.9.6\lib\cmake"
+If you built zlib and libxml2 from source as per the instructions in the :ref:`Setup page <setup>`, then libCellML can be configured with the following command::
 
-to the configuration command.  
-This library is built into Linux and MacOS systems, so this step is only needed on Windows.
+  cmake -DCMAKE_PREFIX_PATH=<LIBRARY_INSTALL_PATH> ..\libcellml
 
-This assumes that the recommended LibXml2 binaries have been installed to the default location :code:`C:\Program Files\libxml2 2.9.6`.
+Where :code:`<LIBRARY_INSTALL_PATH>` is to be replaced by the path on your computer where the zlib and libxml2 libraries have been installed.
+Following on from the :ref:`Setup page <setup>`, our full configuration command would be::
+
+  cmake -DCMAKE_PREFIX_PATH=C:\Users\Andre\libcellml\libraries ..\libcellml
+
+If, on the other hand, you used the installers to install zlib and libxml2 the configuration command would be::
+
+  cmake -DLibXml2_DIR="C:\Program Files\libxml2-2.9.10\libxml2-2.9.10\CMake" -DZLIB_DIR="C:\Program Files\zlib-1.2.3\zlib-1.2.3\CMake" ..\libcellml
+
+This assumes that zlib and libxml2 binaries have been installed to their default locations.
 
 ..container:: nb
 
-   Please note that libCellML will only work with a 64-bit installation of libXML2.  
-   A pre-built 64-bit installer is available from the :opencmiss_repo:`OpenCMISS repository<>` ; 32-bit binaries or 32-bit builds will not work with libCellML.
+   Please note that libCellML will only work with a 64-bit installation of zlib and libxml2.
+   Pre-built 64-bit installers are available from :opencmiss_zlib_repo:`OpenCMISS zlib repository<>` and :opencmiss_libxml2_repo:`OpenCMISS libxml2 repository<>` ; 32-bit binaries or 32-bit builds will not work with libCellML.
 
 
 Windows CMake-GUI
 -----------------
+
 The CMake-GUI gives slightly different options - chief among these being that the config variables are prefixed with :code:`LIBCELLML_`.  
 Also, in Windows note that neither :code:`MEMCHECK` nor :code:`COVERAGE` testing options are available.
 
@@ -104,19 +117,22 @@ The first time you push the *Configure* button you will probably encounter an er
    :alt: CMake-GUI on Windows showing configuration error after initial configuration attempt.
    :name: cmake_gui_with_errors
 
-   CMake-GUI showing configuration error after initial configuration attempt.
+   CMake-GUI showing libxml2 configuration error after initial configuration attempt.
    
    
 To fix the issue, check that:
 
-- you have installed libXML2 according to the directions on the :ref:`Setup page <setup>`;
+- you have installed libxml2 according to the directions on the :ref:`Setup page <setup>`;
 - there is a variable called :code:`LibXml2_DIR` listed in your CMake variables (use the *Add entry* button to create it if not);
-- that the path specified in the :code:`LibXml2_DIR` variable points to the :code:`cmake` directory inside your libXML2 installation;
-- that your installed version is 64-bit.   
+- that the path specified in the :code:`LibXml2_DIR` variable points to the :code:`cmake` directory inside your libxml2 installation;
+- you have installed zlib according to the directions on the :ref:`Setup page <setup>`;
+- there is a variable called :code:`ZLIB_DIR` listed in your CMake variables (use the *Add entry* button to create it if not);
+- that the path specified in the :code:`ZLIB_DIR` variable points to the :code:`cmake` directory inside your zlib installation;
+- that your installed versions are 64-bit.
 
 .. container:: nb
 
-   If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  
+   If after pushing the *Configure* button and your path to either the zlib or libxml2 directory is lost, make sure that your zlib or libxml2 is the required 64-bit version.
    If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  
  
 Once you’ve checked and set this path, push *Configure* again. 
@@ -129,6 +145,7 @@ Troubleshooting
 
 Policy CMP0086 is not set
 -------------------------
+
 Despite being in red and repeated multiple times, this is a warning which can safely be ignored.  
 It's caused by a version mis-match between SWIG and libCellML and will be addressed in the next release.
 
@@ -142,6 +159,7 @@ It's caused by a version mis-match between SWIG and libCellML and will be addres
 
 On Windows without Python debug libraries
 -----------------------------------------
+
 Even if CMake reports that it has found Python at the beginning of its configuration output, it may still report that it has not found the debug library later on.  
 To address this you need to manually set the location of the Python library using the :code:`PYTHON_DEBUG_LIBRARY` flag.  
 This can be done through the interface by clicking the *Add entry* button, entering :code:`PYTHON_DEBUG_LIBRARY` in the Name field, and selecting :code:`FILEPATH` in the Option field.  
@@ -157,6 +175,7 @@ Then simply browse to find the file in your Python installation called something
 
 Could not find SWIG (missing: SWIG_DIR, SWIG_EXECUTABLE)
 --------------------------------------------------------
+
 SWIG is go-between software used by libCellML to generate bindings for Python and other languages.  
 If you have the CMake option :code:`LIBCELLML_BINDINGS_PYTHON` set to :code:`true` then SWIG is required.  
 Follow the instructions for :ref:`setting up SWIG <setup_swig>`.
@@ -164,6 +183,7 @@ You may need to restart your computer after installation, and then re-launch CMa
 
 Could NOT find Sphinx (missing: SPHINX_EXECUTABLE)
 --------------------------------------------------
+
 :sphinx:`Sphinx<>` is a documentation generator used by libCellML to collect documentation on Python bindings, which requires Python 3.5.2 or later in order to run.  
 Please see the installation instructions on the :sphinx:`installation page</usage/installation.html>` and then restart CMake.  
 If you do not need to generate bindings for Python then simply un-tick the CMake option :code:`LIBCELLML_BINDINGS_PYTHON`, and push *Configure* again. 

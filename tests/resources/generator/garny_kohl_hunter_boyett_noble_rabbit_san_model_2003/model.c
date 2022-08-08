@@ -5,33 +5,33 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.2.0";
+const char VERSION[] = "0.3.0";
 const char LIBCELLML_VERSION[] = "0.2.0";
 
 const size_t STATE_COUNT = 15;
 const size_t VARIABLE_COUNT = 185;
 
-const VariableInfo VOI_INFO = {"time", "second", "environment"};
+const VariableInfo VOI_INFO = {"time", "second", "environment", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"m", "dimensionless", "sodium_current_m_gate"},
-    {"h1", "dimensionless", "sodium_current_h_gate"},
-    {"h2", "dimensionless", "sodium_current_h_gate"},
-    {"d_L", "dimensionless", "L_type_Ca_channel_d_gate"},
-    {"f_L", "dimensionless", "L_type_Ca_channel_f_gate"},
-    {"d_T", "dimensionless", "T_type_Ca_channel_d_gate"},
-    {"f_T", "dimensionless", "T_type_Ca_channel_f_gate"},
-    {"q", "dimensionless", "four_AP_sensitive_currents_q_gate"},
-    {"r", "dimensionless", "four_AP_sensitive_currents_r_gate"},
-    {"P_af", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_af_gate"},
-    {"P_as", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_as_gate"},
-    {"P_i", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_i_gate"},
-    {"xs", "dimensionless", "slow_delayed_rectifying_potassium_current_xs_gate"},
-    {"y", "dimensionless", "hyperpolarisation_activated_current_y_gate"},
-    {"V", "millivolt", "membrane"}
+    {"m", "dimensionless", "sodium_current_m_gate", STATE},
+    {"h1", "dimensionless", "sodium_current_h_gate", STATE},
+    {"h2", "dimensionless", "sodium_current_h_gate", STATE},
+    {"d_L", "dimensionless", "L_type_Ca_channel_d_gate", STATE},
+    {"f_L", "dimensionless", "L_type_Ca_channel_f_gate", STATE},
+    {"d_T", "dimensionless", "T_type_Ca_channel_d_gate", STATE},
+    {"f_T", "dimensionless", "T_type_Ca_channel_f_gate", STATE},
+    {"q", "dimensionless", "four_AP_sensitive_currents_q_gate", STATE},
+    {"r", "dimensionless", "four_AP_sensitive_currents_r_gate", STATE},
+    {"P_af", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_af_gate", STATE},
+    {"P_as", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_as_gate", STATE},
+    {"P_i", "dimensionless", "rapid_delayed_rectifying_potassium_current_P_i_gate", STATE},
+    {"xs", "dimensionless", "slow_delayed_rectifying_potassium_current_xs_gate", STATE},
+    {"y", "dimensionless", "hyperpolarisation_activated_current_y_gate", STATE},
+    {"V", "millivolt", "membrane", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"E_Ca_L", "millivolt", "L_type_Ca_channel", CONSTANT},
     {"g_Ca_L_Centre_0DCapable", "microS", "L_type_Ca_channel", CONSTANT},
     {"g_Ca_L_Centre_1DCapable", "microS", "L_type_Ca_channel", CONSTANT},
@@ -221,12 +221,12 @@ const VariableInfoWithType VARIABLE_INFO[] = {
 
 double * createStatesArray()
 {
-    return (double *) malloc(STATE_COUNT*sizeof(double));
+    return malloc(STATE_COUNT*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    return malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)
@@ -234,7 +234,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseStatesAndConstants(double *states, double *variables)
+void initialiseVariables(double *states, double *variables)
 {
     variables[0] = 46.4;
     variables[1] = 0.0057938;

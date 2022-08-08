@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 LIBCELLML_VERSION = "0.2.0"
 
 STATE_COUNT = 3
@@ -12,18 +12,20 @@ VARIABLE_COUNT = 19
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
-    EXTERNAL = 4
+    VARIABLE_OF_INTEGRATION = 1
+    STATE = 2
+    CONSTANT = 3
+    COMPUTED_CONSTANT = 4
+    ALGEBRAIC = 5
+    EXTERNAL = 6
 
 
-VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
+VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
-    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
-    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"}
+    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.STATE},
+    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate", "type": VariableType.STATE},
+    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
@@ -69,7 +71,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_states_and_constants(states, variables):
+def initialise_variables(voi, states, variables, external_variable):
     variables[1] = 0.3
     variables[2] = 1.0
     variables[3] = 0.0
@@ -78,6 +80,9 @@ def initialise_states_and_constants(states, variables):
     states[0] = 0.05
     states[1] = 0.6
     states[2] = 0.325
+    variables[0] = external_variable(voi, states, variables, 0)
+    variables[17] = external_variable(voi, states, variables, 17)
+    variables[10] = external_variable(voi, states, variables, 10)
 
 
 def compute_computed_constants(variables):
@@ -87,20 +92,22 @@ def compute_computed_constants(variables):
 
 
 def compute_rates(voi, states, rates, variables, external_variable):
-    variables[0] = external_variable(voi, states, rates, variables, 0)
+    variables[0] = external_variable(voi, states, variables, 0)
     variables[11] = 0.1*(variables[0]+25.0)/(exp((variables[0]+25.0)/10.0)-1.0)
     variables[12] = 4.0*exp(variables[0]/18.0)
     rates[0] = variables[11]*(1.0-states[0])-variables[12]*states[0]
     variables[13] = 0.07*exp(variables[0]/20.0)
     variables[14] = 1.0/(exp((variables[0]+30.0)/10.0)+1.0)
     rates[1] = variables[13]*(1.0-states[1])-variables[14]*states[1]
-    variables[17] = external_variable(voi, states, rates, variables, 17)
+    variables[17] = external_variable(voi, states, variables, 17)
     variables[18] = 0.125*exp(variables[0]/80.0)
     rates[2] = variables[17]*(1.0-states[2])-variables[18]*states[2]
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
+    variables[0] = external_variable(voi, states, variables, 0)
     variables[6] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     variables[8] = variables[1]*(variables[0]-variables[7])
-    variables[10] = external_variable(voi, states, rates, variables, 10)
+    variables[17] = external_variable(voi, states, variables, 17)
+    variables[10] = external_variable(voi, states, variables, 10)
     variables[16] = variables[4]*pow(states[2], 4.0)*(variables[0]-variables[15])

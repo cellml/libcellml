@@ -20,14 +20,14 @@ limitations under the License.
 
 namespace libcellml {
 
-void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(AnalyserEquationAst::Type type,
                                                             const AnalyserEquationAstPtr &parent)
 {
     mType = type;
     mParent = parent;
 }
 
-void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(AnalyserEquationAst::Type type,
                                                             const std::string &value,
                                                             const AnalyserEquationAstPtr &parent)
 {
@@ -36,7 +36,7 @@ void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
     mParent = parent;
 }
 
-void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(AnalyserEquationAst::Type type,
                                                             const VariablePtr &variable,
                                                             const AnalyserEquationAstPtr &parent)
 {
