@@ -131,13 +131,25 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserexternalvariable_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/anycellmlelement_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/commonutils.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/component_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/componententity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/entity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generator_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/issue_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/logger_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/model_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/namedentity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/parentedentity_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/reset_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/units_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/variable_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
@@ -178,15 +190,15 @@ target_include_directories(cellml
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if(TARGET zlib)
-  target_link_libraries(cellml PRIVATE zlib)
+if(HAVE_ZLIB_TARGET)
+  target_link_libraries(cellml PUBLIC zlib)
 else()
   target_link_libraries(cellml PUBLIC ${ZLIB_LIBRARIES})
   target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
 endif()
 
 if(HAVE_LIBXML2_CONFIG)
-  target_link_libraries(cellml PUBLIC xml2)
+  target_link_libraries(cellml PUBLIC ${LIBXML2_TARGET_NAME})
 else()
   target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
   target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES} ${ZLIB_LIBRARIES})
@@ -198,8 +210,8 @@ target_compile_features(cellml PUBLIC cxx_std_17)
 
 set_target_properties(cellml PROPERTIES
   CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN 1
   DEBUG_POSTFIX d
+  VISIBILITY_INLINES_HIDDEN 1
   VERSION ${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}
   INTERFACE_libCellML_MAJOR_VERSION ${PROJECT_VERSION_MAJOR}
   COMPATIBLE_INTERFACE_STRING ${PROJECT_VERSION_MAJOR}
@@ -286,6 +298,16 @@ install(TARGETS cellml EXPORT libcellml-targets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
 )
+
+if(SKBUILD)
+  install(TARGETS cellml
+    COMPONENT wheel
+    RUNTIME DESTINATION libcellml
+    LIBRARY DESTINATION libcellml
+    NAMELINK_SKIP
+    EXCLUDE_FROM_ALL
+  )
+endif()
 
 install(FILES
   ${API_HEADER_FILES}

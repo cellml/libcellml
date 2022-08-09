@@ -247,9 +247,9 @@ std::string convertToString(size_t value);
 /**
  * @brief Convert a @c double to @c std::string format.
  *
- * Convert the @p value to @c std::string representation.
+ * @overload
  *
- * @overload std::string convertToString(int value)
+ * Convert the @p value to @c std::string representation.
  *
  * @param value The @c double value number to convert.
  * @param fullPrecision Whether the @p value is converted using full precision.
@@ -404,7 +404,7 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
  * @brief Check if the provided @p name is a standard unit.
  *
  * Checks if the provided @p name is one of the standard units in the
- * @c Units::StandardUnit @c enum. Returns @c true if @p name is a standard unit
+ * @ref libcellml::Units::StandardUnit @c enum. Returns @c true if @p name is a standard unit
  * and @c false otherwise.
  *
  * @param name The @c std::string name to check against the list of standard units.
@@ -414,13 +414,13 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
 bool isStandardUnitName(const std::string &name);
 
 /**
- * @brief Test if the provided @c Units is a standard unit.
+ * @brief Test if the provided @ref Units is a standard unit.
  *
  * Tests to determine if the provided @p units is equivalent to
  * a standard unit.  Returns @c true if the @p units is a standard unit
  * and @c false otherwise.
  *
- * @param units The @c Units to test.
+ * @param units The @ref Units to test.
  *
  * @return @c true if @p units is a standard unit, @c false otherwise.
  */
@@ -435,7 +435,7 @@ bool isStandardUnit(const UnitsPtr &units);
  *
  * @param name The @c std::string name to check against the list of standard prefixes.
  *
- * @return @c true if @name is a standard prefix and @c false otherwise.
+ * @return @c true if @p name is a standard prefix and @c false otherwise.
  */
 bool isStandardPrefixName(const std::string &name);
 
@@ -627,19 +627,19 @@ IdList listIds(const ModelPtr &model);
 std::string makeUniqueId(IdList &idList);
 
 /**
- * Function to support linking units names to their corresponding @c Units items.
+ * Function to support linking units names to their corresponding @ref Units items.
  *
  * @param component The component to check.
- * @param issueList A vector of @c IssuePtr items in which unlinked units are recorded for reporting.
+ * @param descriptionList A @c std::vector of variables paired with a description.
  *
  * @return @c true if all variables have been successfully linked to units, @c false otherwise.
  */
-bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList);
+bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &descriptionList);
 
 /**
  * @overload
  *
- * @brief Utility function used when linking units names to their corresponding @c Units items.
+ * @brief Utility function used when linking units names to their corresponding @ref Units items.
  *
  * Returns @c true if all variables in the component can be linked to their units, or
  * @c false otherwise.
@@ -653,20 +653,20 @@ bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &component
 /**
  * @overload
  *
- *  Utility function used when linking units names to their corresponding @c Units items.
+ *  Utility function used when linking units names to their corresponding @ref Units items.
  *
  * @param componentEntity The component entity to check.
- * @param issueList An optional @c std::vector of @c IssuePtr items which is used to record cases of missing units.
+ * @param descriptionList A @c std::vector of variables paired with a description.
  *
  * @return @c true upon success; @c false if not all variables could be linked to units.
  * */
-bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList);
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, DescriptionList &descriptionList);
 
 /**
  * @brief Test whether a component contains variables naming units which have not yet
- *        been linked to @c Units items.
+ *        been linked to @ref Units items.
  *
- * Utility function used when linking units names to their corresponding @c Units items. It
+ * Utility function used when linking units names to their corresponding @ref Units items. It
  * will return a value of @c true when there are variables without linked units, or @c false
  * otherwise.
  *
@@ -790,16 +790,16 @@ std::string importeeModelUrl(const History &history, const std::string &url);
 bool checkForImportCycles(const History &history, const HistoryEpochPtr &h);
 
 /**
- * @brief Make a cyclic dependency issue.
+ * @brief Form the description for a cyclic dependency.
  *
- * Make a cyclic dependency issue.
+ * Form the description for a cyclic dependency.
  *
  * @param history The history of the cyclic dependency.
  * @param action The action that made cyclic dependency, e.g. "resolve", "flatten".
  *
- * @return The issue.
+ * @return The @c std::string description of the cyclic dependency.
  */
-IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action);
+std::string formDescriptionOfCyclicDependency(const History &history, const std::string &action);
 
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);

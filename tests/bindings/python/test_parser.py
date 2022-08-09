@@ -23,8 +23,6 @@ class ParserTestCase(unittest.TestCase):
         self.assertIsNone(x.issue(0))
         self.assertIsNone(x.issue(-1))
         self.assertEqual(x.issueCount(), 0)
-        x.addIssue(libcellml.Issue())
-        self.assertEqual(x.issueCount(), 1)
 
     def test_parse_model(self):
         import libcellml

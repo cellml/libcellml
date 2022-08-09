@@ -31,10 +31,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Importer: public Logger
 {
 public:
-    ~Importer() override; /**< Destructor. */
-    Importer(const Importer &rhs) = delete; /**< Copy constructor. */
-    Importer(Importer &&rhs) noexcept = delete; /**< Move constructor. */
-    Importer &operator=(Importer rhs) = delete; /**< Assignment operator. */
+    ~Importer() override; /**< Destructor, @private. */
+    Importer(const Importer &rhs) = delete; /**< Copy constructor, @private. */
+    Importer(Importer &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Importer &operator=(Importer rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create an @c Importer object.
@@ -55,6 +55,8 @@ public:
      * The result is a self-contained model requiring no external
      * resources and having no imports.
      *
+     * All existing issues will be removed before the model is flattened.
+     *
      * @sa clone
      *
      * @param model A @c ModelPtr whose imports will be resolved.
@@ -67,15 +69,17 @@ public:
      * @brief Resolve all imports in the @p model.
      *
      * Resolve all @c Component and @c Units imports by loading the models
-     * from local disk through relative URLs.  The @p baseFile is used to determine
-     * the full path to the source model relative to this one.
+     * from local disk through relative URLs.  The @p basePath defines
+     * the full path to the directory that import URLs are relative to.
+     *
+     * All existing issues will be removed before any imports are resolved.
      *
      * @param model The @c Model whose imports need resolution.
-     * @param baseFile The @c std::string location on local disk of the source @c Model.
-     * 
+     * @param basePath The full path used to resolve relative import URLs.
+     *
      * @return @c true if all imports have been resolved successfully, @c false otherwise.
      */
-    bool resolveImports(ModelPtr &model, const std::string &baseFile);
+    bool resolveImports(ModelPtr &model, const std::string &basePath);
 
     /**
      * @brief Return the number of models present in the importer's library.
@@ -107,11 +111,11 @@ public:
 
     /**
      * @brief Get the key string under which a model is stored in the library, at the given @p index.
-     * 
+     *
      * Get the key string under which a model is stored in the library, at the given @p index.
-     * 
+     *
      * @param index The index of the key to return.
-     * 
+     *
      * @return If successful, a string under which the model has been stored, or an empty string otherwise.
      */
     std::string key(const size_t &index);
@@ -160,7 +164,7 @@ public:
 
     /**
      * @brief Remove all models from the library.
-     * 
+     *
      * Remove all models from the library.
      */
     void removeAllModels();
@@ -248,8 +252,10 @@ private:
     Importer(); /**< Constructor, @private. */
     explicit Importer(const std::string &name); /**< Constructor with std::string parameter, @private. */
 
-    struct ImporterImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ImporterImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ImporterImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ImporterImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
+    const ImporterImpl *pFunc() const; /**< Const getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

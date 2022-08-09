@@ -22,138 +22,112 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/types.h"
 
+#include "logger_p.h"
+
 namespace libcellml {
 
-/**
- * @brief The Logger::LoggerImpl struct.
- *
- * This struct is the private implementation struct for the LoggerImpl class.  Separating
- * the implementation from the definition allows for greater flexibility when
- * distributing the code.
- */
-struct Logger::LoggerImpl
+Logger::LoggerImpl *Logger::pFunc()
 {
-    std::vector<size_t> mErrors;
-    std::vector<size_t> mWarnings;
-    std::vector<size_t> mHints;
-    std::vector<size_t> mMessages;
-    std::vector<IssuePtr> mIssues;
-};
+    return mPimpl;
+}
 
-Logger::Logger()
-    : mPimpl(new LoggerImpl())
+const Logger::LoggerImpl *Logger::pFunc() const
+{
+    return mPimpl;
+}
+
+Logger::Logger(LoggerImpl *derivedPimpl)
+    : mPimpl(derivedPimpl)
 {
 }
 
-Logger::~Logger()
-{
-    delete mPimpl;
-}
+Logger::~Logger() = default;
 
 size_t Logger::errorCount() const
 {
-    return mPimpl->mErrors.size();
+    return pFunc()->mErrors.size();
 }
 
 IssuePtr Logger::error(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if (index < mPimpl->mErrors.size()) {
-        issue = mPimpl->mIssues.at(mPimpl->mErrors.at(index));
+    if (index < pFunc()->mErrors.size()) {
+        issue = pFunc()->mIssues.at(pFunc()->mErrors.at(index));
     }
     return issue;
 }
 
 size_t Logger::warningCount() const
 {
-    return mPimpl->mWarnings.size();
+    return pFunc()->mWarnings.size();
 }
 
 IssuePtr Logger::warning(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if (index < mPimpl->mWarnings.size()) {
-        issue = mPimpl->mIssues.at(mPimpl->mWarnings.at(index));
-    }
-    return issue;
-}
-
-size_t Logger::hintCount() const
-{
-    return mPimpl->mHints.size();
-}
-
-IssuePtr Logger::hint(size_t index) const
-{
-    IssuePtr issue = nullptr;
-    if (index < mPimpl->mHints.size()) {
-        issue = mPimpl->mIssues.at(mPimpl->mHints.at(index));
+    if (index < pFunc()->mWarnings.size()) {
+        issue = pFunc()->mIssues.at(pFunc()->mWarnings.at(index));
     }
     return issue;
 }
 
 size_t Logger::messageCount() const
 {
-    return mPimpl->mMessages.size();
+    return pFunc()->mMessages.size();
 }
 
 IssuePtr Logger::message(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if (index < mPimpl->mMessages.size()) {
-        issue = mPimpl->mIssues.at(mPimpl->mMessages.at(index));
+    if (index < pFunc()->mMessages.size()) {
+        issue = pFunc()->mIssues.at(pFunc()->mMessages.at(index));
     }
     return issue;
 }
 
-void Logger::removeAllIssues()
+void Logger::LoggerImpl::removeAllIssues()
 {
-    mPimpl->mIssues.clear();
-    mPimpl->mErrors.clear();
-    mPimpl->mWarnings.clear();
-    mPimpl->mHints.clear();
-    mPimpl->mMessages.clear();
+    mIssues.clear();
+    mErrors.clear();
+    mWarnings.clear();
+    mMessages.clear();
 }
 
-void Logger::addIssue(const IssuePtr &issue)
+void Logger::LoggerImpl::removeError(size_t index)
+{
+    mIssues.erase(mIssues.begin() + ptrdiff_t(mErrors.at(index)));
+    mErrors.erase(mErrors.begin() + ptrdiff_t(index));
+}
+
+void Logger::LoggerImpl::addIssue(const IssuePtr &issue)
 {
     // When an issue is added, update the appropriate array based on its level.
-    size_t index = mPimpl->mIssues.size();
-    mPimpl->mIssues.push_back(issue);
+    size_t index = mIssues.size();
+    mIssues.push_back(issue);
     libcellml::Issue::Level level = issue->level();
     switch (level) {
     case libcellml::Issue::Level::ERROR:
-        mPimpl->mErrors.push_back(index);
+        mErrors.push_back(index);
         break;
     case libcellml::Issue::Level::WARNING:
-        mPimpl->mWarnings.push_back(index);
-        break;
-    case libcellml::Issue::Level::HINT:
-        mPimpl->mHints.push_back(index);
+        mWarnings.push_back(index);
         break;
     case libcellml::Issue::Level::MESSAGE:
-        mPimpl->mMessages.push_back(index);
+        mMessages.push_back(index);
         break;
-    }
-}
-
-void Logger::addIssues(const std::vector<IssuePtr> &issues)
-{
-    for (auto &issue : issues) {
-        addIssue(issue);
     }
 }
 
 size_t Logger::issueCount() const
 {
-    return mPimpl->mIssues.size();
+    return pFunc()->mIssues.size();
 }
 
 IssuePtr Logger::issue(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if (index < mPimpl->mIssues.size()) {
-        issue = mPimpl->mIssues.at(index);
+    if (index < pFunc()->mIssues.size()) {
+        issue = pFunc()->mIssues.at(index);
     }
     return issue;
 }

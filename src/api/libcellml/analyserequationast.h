@@ -212,10 +212,10 @@ public:
         NAN
     };
 
-    ~AnalyserEquationAst(); /**< Destructor. */
-    AnalyserEquationAst(const AnalyserEquationAst &rhs) = delete; /**< Copy constructor. */
-    AnalyserEquationAst(AnalyserEquationAst &&rhs) noexcept = delete; /**< Move constructor. */
-    AnalyserEquationAst &operator=(AnalyserEquationAst rhs) = delete; /**< Assignment operator. */
+    ~AnalyserEquationAst(); /**< Destructor, @private. */
+    AnalyserEquationAst(const AnalyserEquationAst &rhs) = delete; /**< Copy constructor, @private. */
+    AnalyserEquationAst(AnalyserEquationAst &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    AnalyserEquationAst &operator=(AnalyserEquationAst rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create an @ref AnalyserEquationAst object.

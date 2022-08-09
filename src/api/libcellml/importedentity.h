@@ -32,7 +32,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT ImportedEntity
 {
 public:
-    virtual ~ImportedEntity(); /**< Destructor. */
+    virtual ~ImportedEntity() = 0; /**< Destructor. */
     ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor. */
     ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor. */
 

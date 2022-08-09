@@ -1,23 +1,23 @@
-/* The content of this file was generated using a modified C profile of libCellML 0.2.0. */
+/* The content of this file was generated using a modified C profile of libCellML 0.3.99. */
 
 #include "model.h"
 
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.2.0.post0";
-const char LIBCELLML_VERSION[] = "0.2.0";
+const char VERSION[] = "0.3.0.post0";
+const char LIBCELLML_VERSION[] = "0.3.99";
 
 const size_t STATE_COUNT = 1;
 const size_t VARIABLE_COUNT = 186;
 
-const VariableInfo VOI_INFO = {"t", "second", "my_component"};
+const VariableInfo VOI_INFO = {"t", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "dimensionless", "my_component"}
+    {"x", "dimensionless", "my_component", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"m", "dimensionless", "my_component", CONSTANT},
     {"n", "dimensionless", "my_component", CONSTANT},
     {"o", "dimensionless", "my_component", CONSTANT},
@@ -289,12 +289,12 @@ double acoth(double x)
 
 double * createStatesVector()
 {
-    return (double *) malloc(STATE_COUNT*sizeof(double));
+    return malloc(STATE_COUNT*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    return malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)
@@ -302,7 +302,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseStatesAndConstants(double *states, double *variables)
+void initialiseVariables(double *states, double *variables)
 {
     variables[0] = 1.0;
     variables[1] = 2.0;

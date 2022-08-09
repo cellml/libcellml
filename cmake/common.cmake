@@ -12,6 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+function(replace_compiler_flag _OLD _NEW)
+  set(_OLD "(^| )${_OLD}($| )")
+
+  if(NOT "${_NEW}" STREQUAL "")
+    set(_NEW " ${_NEW} ")
+  endif()
+
+  foreach(_VAR CMAKE_CXX_FLAGS
+               CMAKE_CXX_FLAGS_DEBUG
+               CMAKE_CXX_FLAGS_RELEASE
+               CMAKE_CXX_FLAGS_MINSIZEREL
+               CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+    if("${${_VAR}}" MATCHES "${_OLD}")
+      string(REGEX REPLACE "${_OLD}" "${_NEW}" ${_VAR} "${${_VAR}}")
+    endif()
+
+    set(${_VAR} "${${_VAR}}" PARENT_SCOPE)
+  endforeach()
+endfunction()
+
 function(target_warnings_as_errors _TARGET)
   set(_COMPILER_WAE)
 
@@ -101,6 +121,8 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
       -Wno-global-constructors
       -Wno-missing-prototypes
       -Wno-padded
+      -Wno-undefined-func-template
+      -Wno-weak-vtables # Applying this because NamedEntity.h doesn't define any virtual methods other than the destructor.
     )
 
     if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)

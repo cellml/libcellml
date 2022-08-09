@@ -4,157 +4,74 @@ on:
   release:
     types:
       - created
+      - edited
 
 env:
   BUILD_TYPE: Release
-  MACOSX_DEPLOYMENT_TARGET: 10.14
+  MACOSX_DEPLOYMENT_TARGET: 10.15
 
 jobs:
-  many-linux-wheels:
-    name: ${{ matrix.config.name }}
-    runs-on: ubuntu-20.04
-    container: quay.io/pypa/manylinux2014_x86_64
-    env:
-      DOWNLOADS_DIR: /home/downloads
-      WORK_DIR: /home/work
-      SRC_DIR: /home/src
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-        - {
-            name: "Many Linux 2014 Py37", cc: "cl", cxx: "cl",
-            python_version: 3.7, python_full_version: 3.7.9, python_patch_file: "Modules/Setup.dist",
-            python_tarball: "https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tgz"
-          }
-        - {
-            name: "Many Linux 2014 Py38", cc: "cl", cxx: "cl",
-            python_version: 3.8, python_full_version: 3.8.6, python_patch_file: "Modules/Setup",
-            python_tarball: "https://www.python.org/ftp/python/3.8.6/Python-3.8.6.tgz"
-          }
-        - {
-            name: "Many Linux 2014 Py39", cc: "cl", cxx: "cl",
-            python_version: 3.9, python_full_version: 3.9.5, python_patch_file: "Modules/Setup",
-            python_tarball: "https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tgz"
-          }
+  setup-jobs:
+    runs-on: ubuntu-latest
+    outputs:
+      binaries-destination: ${{ steps.binaries-out.outputs.binaries-destination }}
+      allowed-jobs: ${{ steps.do-jobs.outputs.allowed-jobs }}
     steps:
-    - name: Download source code
-      shell: bash
+    - name: Determine output location
+      id: binaries-out
+      shell: cmake -P {0}
       run: |
-        mkdir $DOWNLOADS_DIR
-        mkdir $WORK_DIR
-        mkdir $SRC_DIR
-        # fetch libraries
-        git clone https://github.com/cellml/libcellml -b release --depth 1 $SRC_DIR/libcellml
-        git clone https://github.com/OpenCMISS-Dependencies/zlib -b v1.2.3 --depth 1 $SRC_DIR/zlib
-        git clone https://github.com/OpenCMISS-Dependencies/libxml2 -b v2.9.10 --depth 1 $SRC_DIR/libxml2
-        curl -L https://cfhcable.dl.sourceforge.net/project/swig/swig/swig-4.0.2/swig-4.0.2.tar.gz > $DOWNLOADS_DIR/swig-4.0.2.tar.gz
-        curl -L ${{ matrix.config.python_tarball }} > $DOWNLOADS_DIR/Python.tar.gz
+        set(_OUTPUT_LOCATION "nowhere")
+        set(PRERELEASE "${{ github.event.release.prerelease }}")
+        if (PRERELEASE STREQUAL "true")
+          set(_OUTPUT_LOCATION "Artifact")
+        else()
+          set(_OUTPUT_LOCATION "Publish")
+        endif()
+        if ("${{ github.event.action }}" STREQUAL "edited")
+          set(_OUTPUT_LOCATION "unknown")
+          set(RELEASE_BODY "${{ github.event.release.body }}")
+          string(REPLACE "\n" ";" _PARTS "${RELEASE_BODY}")
+          foreach(_PART ${_PARTS})
+            string(STRIP "${_PART}" _PART)
+            string(REGEX MATCH "^[[]ODD ([a-zA-Z]+) ([a-zA-Z]+)[]]$" _RESULT "${_PART}")
+            if (CMAKE_MATCH_1 STREQUAL "Publish")
+              set(_OUTPUT_LOCATION Publish)
+            elseif(CMAKE_MATCH_1 STREQUAL "Artifact")
+              set(_OUTPUT_LOCATION Artifact)
+            endif()
+          endforeach()
+        endif()
+        message(STATUS "Setting binaries destination to '${_OUTPUT_LOCATION}'.")
+        message("::set-output name=BINARIES-DESTINATION::${_OUTPUT_LOCATION}")
 
-    - name: Extract source code
-      shell: bash
+    - name: Determine next jobs
+      id: do-jobs
+      shell: cmake -P {0}
       run: |
-        cd $SRC_DIR
-        tar -xzf $DOWNLOADS_DIR/swig-4.0.2.tar.gz
-        tar -xzf $DOWNLOADS_DIR/Python.tar.gz
-
-    - name: Build and instal zlib
-      shell: bash
-      run: |
-        # build libraries
-        cmake -S $SRC_DIR/zlib -B $WORK_DIR/build-zlib -D CMAKE_BUILD_TYPE=Release -D BUILD_TESTS=OFF
-        cd $WORK_DIR/build-zlib
-        make -j3
-        make install
-
-    - name: Build and instal libXml2
-      shell: bash
-      run: |
-        cmake -S $SRC_DIR/libxml2 -B $WORK_DIR/build-libxml2 -D CMAKE_BUILD_TYPE=Release  -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=OFF -D LIBXML2_BUILD_TESTS=OFF -D LIBXML2_WITH_LZMA=OFF -D LIBXML2_WITH_PYTHON=OFF -D LIBXML2_WITH_ICONV=OFF -D LIBXML2_WITH_PROGRAMS=OFF -D LIBXML2_WITH_TESTS=OFF
-        cd $WORK_DIR/build-libxml2
-        make -j3
-        make install
-
-    - name: Instal openssl and libffi headers
-      shell: bash
-      run: |
-        yum -y install libffi-devel openssl-devel
-
-    - name: Build and instal Python
-      shell: bash
-      run: |
-        cd $SRC_DIR/Python*
-        curl -L https://gist.githubusercontent.com/hsorby/6481eed3abb20cf3cfe6bdc7a9c852d9/raw/4701096ce95130eb239945bb7875fdd9ab33bfde/python-${{ matrix.config.python_full_version }}.patch > patch.txt
-        patch -i patch.txt ${{ matrix.config.python_patch_file }}
-        ./configure --enable-shared --enable-optimizations
-        make -j3 build_all
-        make altinstall
-        # Update ld cache
-        ldconfig
-
-    - name: Create virtual environment
-      shell: bash
-      run: |
-        pip${{ matrix.config.python_version }} install virtualenv
-        virtualenv $WORK_DIR/venv
-
-    - name: Build and instal swig
-      shell: bash
-      run: |
-        mkdir $WORK_DIR/build-swig
-        cd $WORK_DIR/build-swig
-        $SRC_DIR/swig-4.0.2/configure --without-alllang --with-python --with-python3
-        make -j3
-        make install
-
-    - name: Build libcellml
-      shell: bash
-      run: |
-        source $WORK_DIR/venv/bin/activate
-        which python
-        python --version
-        cmake -S $SRC_DIR/libcellml -B $WORK_DIR/build-libcellml -D COVERAGE=OFF -D BUILD_TYPE=Release -D Python_FIND_VIRTUALENV=ONLY
-        cd $WORK_DIR/build-libcellml
-        make -j3
-
-    - name: Test
-      shell: bash
-      run: |
-        cd $WORK_DIR/build-libcellml
-        make test
-
-    - name: Create Python Package
-      shell: bash
-      run: |
-        # Create Python Package
-        python${{ matrix.config.python_version }} -m pip install --upgrade pip
-        pip${{ matrix.config.python_version }} install setuptools twine wheel auditwheel
-        cd $WORK_DIR/build-libcellml/src/bindings/python
-        python${{ matrix.config.python_version }} setup.py bdist_wheel
-
-    - name: Test Python Package
-      shell: bash
-      run: |
-        # Test Python Package
-        cd $WORK_DIR/build-libcellml/src/bindings/python
-        python${{ matrix.config.python_version }} -m venv $WORK_DIR/venv_test
-        source $WORK_DIR/venv_test/bin/activate
-        whl=`ls $WORK_DIR/build-libcellml/src/bindings/python/dist/*.whl`
-        auditwheel repair $whl
-        whl=`ls $WORK_DIR/build-libcellml/src/bindings/python/wheelhouse/*.whl`
-        pip install $whl
-        python -c "import libcellml"
-
-    - name: Upload Python Package
-      shell: bash
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        cd $WORK_DIR/build-libcellml/src/bindings/python
-        twine upload --skip-existing wheelhouse/*
+        set(_ALLOWED_JOBS "All")
+        if ("${{ github.event.action }}" STREQUAL "edited")
+          set(_ALLOWED_JOBS "none")
+          set(RELEASE_BODY "${{ github.event.release.body }}")
+          string(REPLACE "\n" ";" _PARTS "${RELEASE_BODY}")
+          foreach(_PART ${_PARTS})
+            string(STRIP "${_PART}" _PART)
+            string(REGEX MATCH "^[[]ODD ([a-zA-Z]+) ([a-zA-Z]+)[]]$" _RESULT "${_PART}")
+            if (CMAKE_MATCH_2 STREQUAL "Installers")
+              set(_ALLOWED_JOBS Installers)
+            elseif(CMAKE_MATCH_2 STREQUAL "Wheels")
+              set(_ALLOWED_JOBS Wheels)
+            elseif(CMAKE_MATCH_2 STREQUAL "Javascript")
+              set(_ALLOWED_JOBS Javascript)
+            endif()
+          endforeach()
+        endif()
+        message(STATUS "Setting allowed jobs to '${_ALLOWED_JOBS}'.")
+        message("::set-output name=allowed-jobs::${_ALLOWED_JOBS}")
 
   os-binaries:
+    needs: setup-jobs
+    if: needs.setup-jobs.outputs.allowed-jobs == 'Installers' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
@@ -162,43 +79,29 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Server 2019 MSVC Py38", deploy_libs: false, deploy_python: true,
+            name: "Windows Server 2019 MSVC",
             os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/"',
-            zlib_dir: '-D "ZLIB_DIR=../usr/local/lib/cmake/ZLIB/"',
-            build_type: "Release", cc: "cl", cxx: "cl", python_version: 3.8,
+            libxml2_dir: '-D "LibXml2_DIR=$ENV{GITHUB_WORKSPACE}/usr/local/libxml2-2.9.10/CMake/"',
+            zlib_dir: '-D "ZLIB_DIR=$ENV{GITHUB_WORKSPACE}/usr/local/ZLIB-1.2.3/CMake/"',
+            cc: "cl", cxx: "cl",
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
-            name: "Windows Server 2019 MSVC Py39", deploy_libs: false, deploy_python: true,
-            os: windows-2019,
-            libxml2_dir: '-D "LibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/"',
-            zlib_dir: '-D "ZLIB_DIR=../usr/local/ZLIB/ZLIB/CMake/"',
-            build_type: "Release", cc: "gcc", cxx: "g++", python_version: 3.9
+            name: "Ubuntu 20.04 GCC",
+            os: ubuntu-20.04,
+            build_type: "Release", cc: "gcc", cxx: "g++"
           }
         - {
-            name: "Ubuntu 20.04 GCC Py38", deploy_libs: false, deploy_python: false,
-            os: ubuntu-20.04, container: ubuntu-latest, swig_executable: "-D SWIG_EXECUTABLE=/usr/local/bin/swig",
-            build_type: "Release", cc: "gcc", cxx: "g++", python_version: 3.8
-          }
-        - {
-            name: "macOS 10.15 Clang Py38", deploy_libs: false, deploy_python: true,
-            os: macos-10.15,
-            python_rpath: "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.8/",
-            build_type: "Release", cc: "clang", cxx: "clang++", python_version: 3.8
-          }
-        - {
-            name: "macOS 10.15 Clang Py39", deploy_libs: false, deploy_python: true,
-            os: macos-10.15,
-            python_rpath: "/usr/local/opt/python/Frameworks/Python.framework/Versions/3.9/",
-            build_type: "Release", cc: "clang", cxx: "clang++", python_version: 3.9
+            name: "macOS 12 Clang",
+            os: macos-12,
+            cc: "clang", cxx: "clang++"
           }
 
     steps:
     - name: Checkout libCellML
       uses: actions/checkout@v2
       with:
-        ref: release
+        ref: ${{ github.event.release.tag_name }}
 
     - name: Checkout zlib
       uses: actions/checkout@v2
@@ -214,74 +117,39 @@ jobs:
         path: libxml2
         ref: v2.9.10
 
-    - name: Set up Python ${{ matrix.config.python_version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.config.python_version }}
-
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
       if: runner.os == 'Windows'
 
-    - name: Fetch swig
-      shell: cmake -P {0}
-      run: |
-        # Fetch swig script.
-
-        set(ACTION_DIR ${CMAKE_CURRENT_BINARY_DIR})
-        if ("${{ runner.os }}" STREQUAL "Windows")
-          set(swig_url "http://prdownloads.sourceforge.net/swig/swigwin-4.0.2.zip")
-          file(DOWNLOAD "${swig_url}" "${ACTION_DIR}/swigwin-4.0.2.zip" SHOW_PROGRESS)
-          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf "${ACTION_DIR}/swigwin-4.0.2.zip" WORKING_DIRECTORY "${ACTION_DIR}")
-
-        else()
-          set(swig_url "http://prdownloads.sourceforge.net/swig/swig-4.0.2.tar.gz")
-          file(DOWNLOAD "${swig_url}" "${ACTION_DIR}/swig-4.0.2.tar.gz" SHOW_PROGRESS)
-          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf "${ACTION_DIR}/swig-4.0.2.tar.gz")
-        endif()
-
-    - name: Prepare environment
+    - name: Prepare Windows environment
+      if: runner.os == 'Windows'
       shell: cmake -P {0}
       run: |
         # Prepare environment script.
 
         set(ACTION_DIR ${CMAKE_CURRENT_BINARY_DIR})
-        if ("${{ runner.os }}" STREQUAL "Windows")
-          set(WIN_PATH)
-          file(TO_CMAKE_PATH "$ENV{PATH}" ENV_PATH)
-          set(PATH_LIST "")
-          foreach(_PATH ${ENV_PATH})
-            if (NOT "${_PATH}" MATCHES ".*Strawberry")
-              list(APPEND WIN_PATH "${_PATH}")
-            endif()
-          endforeach()
-          file(TO_NATIVE_PATH "${WIN_PATH}" WIN_PATH)
-          set(ENV{PATH} "${WIN_PATH}")
-          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/zlib" -B "${ACTION_DIR}/build-zlib" -DCMAKE_INSTALL_PREFIX=../usr/local)
-          execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-zlib" --config Release
-            WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
-          execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
-            WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
+        set(WIN_PATH)
+        file(TO_CMAKE_PATH "$ENV{PATH}" ENV_PATH)
+        set(PATH_LIST "")
+        foreach(_PATH ${ENV_PATH})
+          if (NOT "${_PATH}" MATCHES ".*Strawberry")
+            list(APPEND WIN_PATH "${_PATH}")
+          endif()
+        endforeach()
+        file(TO_NATIVE_PATH "${WIN_PATH}" WIN_PATH)
+        set(ENV{PATH} "${WIN_PATH}")
+        execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/zlib" -B "${ACTION_DIR}/build-zlib" -DBUILD_SHARED_LIBS=FALSE -DCMAKE_INSTALL_PREFIX=$ENV{GITHUB_WORKSPACE}/usr/local)
+        execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-zlib" --config Release
+          WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
+        execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-zlib" --config Release
+          WORKING_DIRECTORY "${ACTION_DIR}/build-zlib")
 
-          execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}  -DCMAKE_INSTALL_PREFIX=../usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
-            RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
-          execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
-          execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-libxml2" --config Release
-            WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
-        else()
-          execute_process(COMMAND ./configure WORKING_DIRECTORY "${ACTION_DIR}/swig-4.0.2")
-          execute_process(COMMAND make WORKING_DIRECTORY "${ACTION_DIR}/swig-4.0.2")
-          execute_process(COMMAND sudo make install WORKING_DIRECTORY "${ACTION_DIR}/swig-4.0.2")
-        endif()
-
-        if ("${{ runner.os }}" STREQUAL "macOS")
-          execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${{ matrix.config.python_rpath }})
-          execute_process(COMMAND ${CMAKE_COMMAND} -E remove ${{ matrix.config.python_rpath }}Python)
-          file(GLOB _DYNAMIC_LIBRARY $ENV{pythonLocation}/lib/libpython*.dylib)
-          execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${_DYNAMIC_LIBRARY} ${{ matrix.config.python_rpath }}Python)
-        endif()
-
+        execute_process(COMMAND ${CMAKE_COMMAND} -S "${ACTION_DIR}/libxml2" -B "${ACTION_DIR}/build-libxml2" ${{ matrix.config.zlib_dir }}  -DCMAKE_INSTALL_PREFIX=$ENV{GITHUB_WORKSPACE}/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
+          RESULT_VARIABLE _RESULT OUTPUT_VARIABLE _OUTPUT ERROR_VARIABLE _ERROR)
+        execute_process(COMMAND ${CMAKE_COMMAND} --build "${ACTION_DIR}/build-libxml2" --config Release
+          WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
+        execute_process(COMMAND ${CMAKE_COMMAND} --install "${ACTION_DIR}/build-libxml2" --config Release
+          WORKING_DIRECTORY "${ACTION_DIR}/build-libxml2")
 
     - name: Configure
       shell: cmake -P {0}
@@ -295,30 +163,24 @@ jobs:
         set(PYTHON_LOCATION $ENV{pythonLocation})
 
         set(ACTION_DIR ${CMAKE_CURRENT_BINARY_DIR})
-        if ("${{ runner.os }}" STREQUAL "Windows")
-          set(ENV{PATH} "${ACTION_DIR}/swigwin-4.0.2;$ENV{PATH}")
-          file(TO_CMAKE_PATH "${PYTHON_LOCATION}/python.exe" PYTHON_EXE)
-        else()
+        if (NOT "${{ runner.os }}" STREQUAL "Windows")
           list(APPEND OPTIONAL_ARGUMENTS -D BUILD_TYPE=$ENV{BUILD_TYPE})
           list(APPEND OPTIONAL_ARGUMENTS -D COVERAGE=OFF)
-          set(PYTHON_EXE ${PYTHON_LOCATION}/python)
         endif()
 
         if ("${{ matrix.config.cc }}" STREQUAL "clang")
           list(APPEND OPTIONAL_ARGUMENTS -D LLVM_COVERAGE=OFF)
         endif()
-        if ("${{ matrix.config.os }}" STREQUAL "ubuntu-latest")
+        if ("${{ matrix.config.os }}" STREQUAL "ubuntu-20.04")
           list(APPEND OPTIONAL_ARGUMENTS -D PACKAGE_ANY_LINUX=TRUE)
         endif()
 
-        list(APPEND OPTIONAL_ARGUMENTS ${{ matrix.config.swig_executable }})
         list(APPEND OPTIONAL_ARGUMENTS ${{ matrix.config.libxml2_dir }})
 
         execute_process(
           COMMAND ${CMAKE_COMMAND}
             -S .
             -B build
-            -D Python_EXECUTABLE=${PYTHON_EXE}
             ${OPTIONAL_ARGUMENTS}
           RESULT_VARIABLE result
         )
@@ -350,25 +212,6 @@ jobs:
         )
         if (NOT result EQUAL 0)
           message(FATAL_ERROR "Build failed.")
-        endif()
-
-        if ("${{ runner.os }}" STREQUAL "macOS")
-          # Have to manipulate the rpath for the Python macOS binaries in the libcellml Python package.
-          set(DESIRED_RPATHS "${{ matrix.config.python_rpath }}")
-          file(GLOB _TARGET_BINARIES ${ACTION_DIR}/build/src/bindings/python/libcellml/_*.so)
-          foreach(_TARGET_BINARY ${_TARGET_BINARIES})
-            foreach(DESIRED_RPATH ${DESIRED_RPATHS})
-              execute_process(
-                COMMAND install_name_tool -add_rpath ${DESIRED_RPATH} ${_TARGET_BINARY}
-              )
-            endforeach()
-            file(GLOB _TARGET_PYTHON_LIBS $ENV{pythonLocation}/lib/libpython*.dylib)
-            foreach(_TARGET_PYTHON_LIB ${_TARGET_PYTHON_LIBS})
-              execute_process(
-                COMMAND install_name_tool -change ${_TARGET_PYTHON_LIB} @rpath/Python ${_TARGET_BINARY}
-              )
-            endforeach()
-          endforeach()
         endif()
 
     - name: Test
@@ -407,93 +250,121 @@ jobs:
         )
 
         if (NOT result EQUAL 0)
-          message(FATAL_ERROR "Tests failed.")
+          message(FATAL_ERROR "Packaging failed.")
         endif()
 
         file(GLOB _DIST_FILES ${ACTION_DIR}/build/dist/*)
         execute_process(
           COMMAND echo "::set-output name=files::${_DIST_FILES}")
 
-    - name: Prepare environment for uploading assets
-      shell: bash
-      run: |
-        cd $GITHUB_WORKSPACE/.github/scripts/
-        npm install mime
-
-    - name: Upload Libraries
-      id: deploy
-      uses: actions/github-script@v3
-      if: ${{ matrix.config.deploy_libs }}
-      env:
-        DATA: ${{ steps.package.outputs.files }}
+    - name: Publish libraries
+      if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
+      uses: softprops/action-gh-release@v1
       with:
-        github-token: ${{secrets.MAINTAINER_WRITE_TOKEN}}
-        script: |
-          const script = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/upload-asset.js`)
-          script({github, context})
+        files: ${{ steps.package.outputs.files }}
+        tag_name: ${{ github.event.release.tag_name }}
 
-    - name: Create Python Package
-      shell: bash
-      if: ${{ matrix.config.deploy_python }}
-      run: |
-        # Deploy Python
+    - name: Upload libraries as artifacts
+      if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        path: ./build/dist/*
 
-        python --version
-        python -m pip install --upgrade pip
-        pip install setuptools twine wheel
-        if [ ${{ runner.os }} = Windows ]; then
-          cd build/src/bindings/python/Release
-        else
-          cd build/src/bindings/python
-        fi
-        python setup.py bdist_wheel
+  wheels:
+    needs: setup-jobs
+    if: needs.setup-jobs.outputs.allowed-jobs == 'Wheels' || needs.setup-jobs.outputs.allowed-jobs == 'All'
+    name: ${{ matrix.name }} ${{ matrix.py }} wheels
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-12, ubuntu-20.04, windows-2019]
+        py: ['3.7', '3.8', '3.9', '3.10']
+        include:
+          - name: 'Windows'
+            os: windows-2019
+          - name: 'Linux'
+            os: ubuntu-20.04
+          - name: 'macOS'
+            os: macos-12
+        exclude:
+          - os: macos-12
+            py: '3.7'
+          - os: macos-12
+            py: '3.8'
+    steps:
+      - name: Check out libCellML
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
-    - name: Test Python Package
-      shell: bash
-      if: ${{ matrix.config.deploy_python }}
-      run: |
-        # Test Python Package
+      - name: Setup for cibuildwheel
+        id: setup
+        shell: bash
+        run: |
+          mkdir src/bindings/python/libcellml
+          cp src/bindings/python/README.rst src/bindings/python/libcellml/README.rst
+          mv src/bindings/python/cibuildwheel.setup.py src/bindings/python/setup.py
+          v=${{ matrix.py }}
+          echo "Setting tag as: TAG=${GITHUB_REF#refs/tags/}"
+          echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
+          #echo ::set-output name=TAG::v0.2.0-dev.21
+          echo "Setting build as: BUILD=cp${v/./}-*"
+          echo ::set-output name=BUILD::cp${v/./}-*
 
-        pip install virtualenv
-        virtualenv venv_test
-        if [ ${{ runner.os }} = Windows ]; then
-          whl=`ls build/src/bindings/python/Release/dist/*.whl`
-          source venv_test/Scripts/activate
-        else
-          whl=`ls build/src/bindings/python/dist/*.whl`
-          source venv_test/bin/activate
-        fi
+      - name: Configure MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==2.8.1
+      - name: Build wheels
+        run: python -m cibuildwheel --output-dir wheelhouse src/bindings/python/
+        env:
+          #CIBW_BUILD_VERBOSITY: 1
+          CIBW_ARCHS: auto64
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
+          CIBW_BUILD: ${{ steps.setup.outputs.build }}
+          CIBW_TEST_SKIP: "*_arm64"
+          CIBW_BEFORE_ALL_LINUX: yum install -y libxml2-devel || (apk add libxml2-dev && rm /usr/lib/cmake/libxml2/libxml2-config.cmake)
+          CIBW_BEFORE_ALL_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
+          CIBW_ENVIRONMENT: LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
+          CIBW_ENVIRONMENT_MACOS: >
+            MACOSX_DEPLOYMENT_TARGET=11.0
+            LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
 
-        pip install $whl
-        python -c "import libcellml"
+      - name: Upload Python wheels as artifacts
+        if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./wheelhouse/*.whl
 
-    - name: Upload Python Package
-      shell: bash
-      if: ${{ matrix.config.deploy_python }}
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        # Upload Python packages
+      - name: Publish Python wheels
+        if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
+        shell: bash
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          twine upload --skip-existing ./wheelhouse/*.whl
 
-        if [ ${{ runner.os }} = Windows ]; then
-          cd build/src/bindings/python/Release
-        else
-          cd build/src/bindings/python
-        fi
-
-        twine upload --skip-existing dist/*
 
   emscripten:
+    needs: setup-jobs
+    if: needs.setup-jobs.outputs.allowed-jobs == 'Javascript' || needs.setup-jobs.outputs.allowed-jobs == 'All'
     name: libcellml.js
-    runs-on: macos-10.15
+    runs-on: macos-12
     steps:
       - name: Checkout libCellML
         uses: actions/checkout@v2
         with:
-          repository: cellml/libcellml
           path: libcellml
-          ref: release
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Checkout zlib
         uses: actions/checkout@v2
@@ -519,7 +390,7 @@ jobs:
         run: |
           mkdir build-zlib-release
           cd build-zlib-release
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local ../zlib/
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/usr/local ../zlib/
           make -j3 install
 
       - name: Build and instal libXml2
@@ -527,7 +398,7 @@ jobs:
         run: |
           mkdir build-libxml2-release
           cd build-libxml2-release
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../usr/local -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/ -DCMAKE_PREFIX_PATH=../usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/usr/local -DZLIB_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/ZLIB-1.2.3/ -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/usr/local -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF ../libxml2/
           make -j3 install
 
       - name: Build libcellml.js
@@ -535,8 +406,8 @@ jobs:
         run: |
           mkdir build-libcellml-release
           cd build-libcellml-release
-          emcmake cmake -DLibXml2_DIR=../usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=../usr/local/lib/cmake/ZLIB/ -DBUILD_TYPE=Release ../libcellml/
-          make -j3
+          emcmake cmake -DLibXml2_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/libxml2-2.9.10/ -DZLIB_DIR=${GITHUB_WORKSPACE}/usr/local/lib/cmake/ZLIB-1.2.3/ -DBUILD_TYPE=Release ../libcellml/
+          make VERBOSE=1 -j3
 
       - name: Pack libcellml.js
         id: package-javascript
@@ -547,24 +418,14 @@ jobs:
           package=`ls $PWD/libcellml.js-*.tgz`
           echo "::set-output name=files::$package"
 
-      - name: Prepare environment for uploading assets
-        shell: bash
-        run: |
-          cd $GITHUB_WORKSPACE/libcellml/.github/scripts/
-          npm install mime
-
-      - name: Upload libcellml.js
-        if: "!true"
-        uses: actions/github-script@v3
-        env:
-          DATA: ${{ steps.package-javascript.outputs.files }}
+      - name: Upload libcellml.js as artifacts
+        if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
+        uses: actions/upload-artifact@v3
         with:
-          github-token: ${{secrets.MAINTAINER_WRITE_TOKEN}}
-          script: |
-            const script = require(`${process.env.GITHUB_WORKSPACE}/libcellml/.github/scripts/upload-asset.js`)
-            script({github, context})
+          path: ${{ steps.package-javascript.outputs.files }}
 
       - name: Publish libcellml.js
+        if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
         shell: bash
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}

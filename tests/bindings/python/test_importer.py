@@ -26,8 +26,6 @@ class ImporterTestCase(unittest.TestCase):
         self.assertIsNone(x.issue(0))
         self.assertIsNone(x.issue(-1))
         self.assertEqual(x.issueCount(), 0)
-        x.addIssue(libcellml.Issue())
-        self.assertEqual(x.issueCount(), 1)
 
     def test_resolve_imports(self):
         from libcellml import Importer
@@ -44,6 +42,31 @@ class ImporterTestCase(unittest.TestCase):
 
         i.resolveImports(m, resource_path())
         self.assertFalse(m.hasUnresolvedImports())
+
+    def test_resolve_imports(self):
+        from libcellml import Importer
+        from libcellml import Parser
+
+        i = Importer()
+        p = Parser()
+
+        m1 = p.parseModel(file_contents('importer/units_imported.cellml'))
+        m2 = p.parseModel(file_contents('importer/units_imported.cellml'))
+        m3 = p.parseModel(file_contents('importer/units_imported.cellml'))
+
+        self.assertEqual(0, p.issueCount())
+
+        self.assertTrue(m1.hasUnresolvedImports())
+        i.resolveImports(m1, resource_path('importer/'))
+        self.assertFalse(m1.hasUnresolvedImports())
+
+        self.assertTrue(m2.hasUnresolvedImports())
+        i.resolveImports(m2, resource_path('importer'))
+        self.assertFalse(m2.hasUnresolvedImports())
+
+        self.assertTrue(m3.hasUnresolvedImports())
+        i.resolveImports(m3, resource_path('importer\\'))
+        self.assertFalse(m3.hasUnresolvedImports())
 
     def test_importer(self):
         from libcellml import Importer, Parser, Printer
@@ -229,7 +252,6 @@ class ImporterTestCase(unittest.TestCase):
         im.removeAllImportSources()
 
         self.assertEqual(0, im.importSourceCount())
-
 
 
 if __name__ == '__main__':

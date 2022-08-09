@@ -33,7 +33,10 @@ limitations under the License.
 #include "analyserequationast_p.h"
 #include "analysermodel_p.h"
 #include "analyservariable_p.h"
+#include "anycellmlelement_p.h"
 #include "generator_p.h"
+#include "issue_p.h"
+#include "logger_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
@@ -53,7 +56,10 @@ limitations under the License.
 namespace libcellml {
 
 struct AnalyserInternalEquation;
+struct AnalyserInternalVariable;
+
 using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
+using AnalyserInternalVariablePtr = std::shared_ptr<AnalyserInternalVariable>;
 
 struct AnalyserInternalVariable
 {
@@ -76,7 +82,7 @@ struct AnalyserInternalVariable
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
 
-    explicit AnalyserInternalVariable(const VariablePtr &variable);
+    static AnalyserInternalVariablePtr create(const VariablePtr &variable);
 
     void setVariable(const VariablePtr &variable,
                      bool checkInitialValue = true);
@@ -85,11 +91,13 @@ struct AnalyserInternalVariable
     void makeState();
 };
 
-using AnalyserInternalVariablePtr = std::shared_ptr<AnalyserInternalVariable>;
-
-AnalyserInternalVariable::AnalyserInternalVariable(const VariablePtr &variable)
+AnalyserInternalVariablePtr AnalyserInternalVariable::create(const VariablePtr &variable)
 {
-    setVariable(variable);
+    auto res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {}};
+
+    res->setVariable(variable);
+
+    return res;
 }
 
 void AnalyserInternalVariable::setVariable(const VariablePtr &variable,
@@ -150,8 +158,8 @@ struct AnalyserInternalEquation
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
 
-    explicit AnalyserInternalEquation(const ComponentPtr &component);
-    explicit AnalyserInternalEquation(const AnalyserInternalVariablePtr &variable);
+    static AnalyserInternalEquationPtr create(const ComponentPtr &component);
+    static AnalyserInternalEquationPtr create(const AnalyserInternalVariablePtr &variable);
 
     void addVariable(const AnalyserInternalVariablePtr &variable);
     void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
@@ -166,16 +174,24 @@ struct AnalyserInternalEquation
                const AnalyserModelPtr &model);
 };
 
-AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
-    : mAst(AnalyserEquationAst::create())
-    , mComponent(component)
+AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
 {
+    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+
+    res->mAst = AnalyserEquationAst::create();
+    res->mComponent = component;
+
+    return res;
 }
 
-AnalyserInternalEquation::AnalyserInternalEquation(const AnalyserInternalVariablePtr &variable)
-    : mVariable(variable)
-    , mComponent(owningComponent(variable->mVariable))
+AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInternalVariablePtr &variable)
 {
+    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+
+    res->mVariable = variable;
+    res->mComponent = owningComponent(variable->mVariable);
+
+    return res;
 }
 
 void AnalyserInternalEquation::addVariable(const AnalyserInternalVariablePtr &variable)
@@ -258,8 +274,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), isKnownVariable), mVariables.end());
     mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), isKnownOdeVariable), mOdeVariables.end());
 
-    // If there is no (ODE) variable left then it means that the equation is an
-    // overconstraint).
+    // If there is no (ODE) variable left then it means that the equation is
+    // overconstrained).
 
     auto unknownVariablesOrOdeVariablesLeft = mVariables.size() + mOdeVariables.size();
 
@@ -278,7 +294,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // computed constant or algebraic variable.
 
     if (unknownVariablesOrOdeVariablesLeft == 1) {
-        auto variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+        auto variable = mVariables.empty() ? mOdeVariables.front() : mVariables.front();
 
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
             auto localVariable = mComponent->variable(i);
@@ -325,7 +341,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 }
 
 /**
- * @brief The Analyser::AnalyserImpl struct.
+ * @brief The Analyser::AnalyserImpl class.
  *
  * The private implementation for the Analyser class.
  */
@@ -333,11 +349,13 @@ using UnitsMap = std::map<std::string, double>;
 using UnitsMaps = std::vector<UnitsMap>;
 using UnitsMultipliers = std::vector<double>;
 
-struct Analyser::AnalyserImpl
+class Analyser::AnalyserImpl: public Logger::LoggerImpl
 {
+public:
     Analyser *mAnalyser = nullptr;
 
-    AnalyserModelPtr mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
+    AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
+
     std::vector<AnalyserExternalVariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
@@ -348,7 +366,7 @@ struct Analyser::AnalyserImpl
     std::map<std::string, UnitsPtr> mStandardUnits;
     std::map<AnalyserEquationAstPtr, UnitsWeakPtr> mCiCnUnits;
 
-    explicit AnalyserImpl(Analyser *analyser);
+    AnalyserImpl();
     ~AnalyserImpl();
 
     static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
@@ -449,14 +467,13 @@ struct Analyser::AnalyserImpl
 
     void analyseModel(const ModelPtr &model);
 
-    std::vector<AnalyserExternalVariablePtr>::iterator findExternalVariable(const ModelPtr &model,
-                                                                            const std::string &componentName,
-                                                                            const std::string &variableName);
-    std::vector<AnalyserExternalVariablePtr>::iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable);
+    std::vector<AnalyserExternalVariablePtr>::const_iterator findExternalVariable(const ModelPtr &model,
+                                                                                  const std::string &componentName,
+                                                                                  const std::string &variableName) const;
+    std::vector<AnalyserExternalVariablePtr>::const_iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const;
 };
 
-Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
-    : mAnalyser(analyser)
+Analyser::AnalyserImpl::AnalyserImpl()
 {
     // Customise our generator's profile.
 
@@ -604,7 +621,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // No internal variable exists for the given variable, so create one, track
     // it and return it.
 
-    res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {variable}};
+    res = AnalyserInternalVariable::create(variable);
 
     mInternalVariables.push_back(res);
 
@@ -1023,7 +1040,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                     // Create and keep track of the equation associated with the
                     // given node.
 
-                    auto internalEquation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
+                    auto internalEquation = AnalyserInternalEquation::create(component);
 
                     mInternalEquations.push_back(internalEquation);
 
@@ -1056,18 +1073,18 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
         } else if ((variable != internalVariable->mVariable)
                    && !variable->initialValue().empty()
                    && !internalVariable->mVariable->initialValue().empty()) {
-            auto issue = Issue::create();
+            auto issue = Issue::IssueImpl::create();
             auto trackedVariableComponent = owningComponent(internalVariable->mVariable);
 
-            issue->setDescription("Variable '" + variable->name()
-                                  + "' in component '" + component->name()
-                                  + "' and variable '" + internalVariable->mVariable->name()
-                                  + "' in component '" + trackedVariableComponent->name()
-                                  + "' are equivalent and cannot therefore both be initialised.");
-            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE);
-            issue->setVariable(variable);
+            issue->mPimpl->setDescription("Variable '" + variable->name()
+                                          + "' in component '" + component->name()
+                                          + "' and variable '" + internalVariable->mVariable->name()
+                                          + "' in component '" + trackedVariableComponent->name()
+                                          + "' are equivalent and cannot therefore both be initialised.");
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE);
+            issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
 
         if (!internalVariable->mVariable->initialValue().empty()
@@ -1085,16 +1102,16 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
             auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(initialisingVariable);
 
             if (initialisingInternalVariable->mType != AnalyserInternalVariable::Type::CONSTANT) {
-                auto issue = Issue::create();
+                auto issue = Issue::IssueImpl::create();
 
-                issue->setDescription("Variable '" + variable->name()
-                                      + "' in component '" + component->name()
-                                      + "' is initialised using variable '" + internalVariable->mVariable->initialValue()
-                                      + "', which is not a constant.");
-                issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
-                issue->setVariable(variable);
+                issue->mPimpl->setDescription("Variable '" + variable->name()
+                                              + "' in component '" + component->name()
+                                              + "' is initialised using variable '" + internalVariable->mVariable->initialValue()
+                                              + "', which is not a constant.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VARIABLE_NON_CONSTANT_INITIALISATION);
+                issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
     }
@@ -1177,22 +1194,22 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
                     for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
                         if (!voiEquivalentVariable->initialValue().empty()) {
-                            auto issue = Issue::create();
+                            auto issue = Issue::IssueImpl::create();
 
-                            issue->setDescription("Variable '" + voiEquivalentVariable->name()
-                                                  + "' in component '" + owningComponent(voiEquivalentVariable)->name()
-                                                  + "' cannot be both a variable of integration and initialised.");
-                            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_INITIALISED);
-                            issue->setVariable(voiEquivalentVariable);
+                            issue->mPimpl->setDescription("Variable '" + voiEquivalentVariable->name()
+                                                          + "' in component '" + owningComponent(voiEquivalentVariable)->name()
+                                                          + "' cannot be both a variable of integration and initialised.");
+                            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_INITIALISED);
+                            issue->mPimpl->mItem->mPimpl->setVariable(voiEquivalentVariable);
 
-                            mAnalyser->addIssue(issue);
+                            addIssue(issue);
 
                             isVoiInitialised = true;
                         }
                     }
 
                     if (!isVoiInitialised) {
-                        mModel->mPimpl->mVoi = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
+                        mModel->mPimpl->mVoi = AnalyserVariable::AnalyserVariableImpl::create();
 
                         mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
                                                                0, nullptr, voi, nullptr);
@@ -1202,17 +1219,17 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                 }
             }
         } else if (!mModel->areEquivalentVariables(variable, mModel->mPimpl->mVoi->variable())) {
-            auto issue = Issue::create();
+            auto issue = Issue::IssueImpl::create();
 
-            issue->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
-                                  + "' in component '" + owningComponent(mModel->mPimpl->mVoi->variable())->name()
-                                  + "' and variable '" + variable->name()
-                                  + "' in component '" + owningComponent(variable)->name()
-                                  + "' cannot both be the variable of integration.");
-            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
-            issue->setVariable(variable);
+            issue->mPimpl->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
+                                          + "' in component '" + owningComponent(mModel->mPimpl->mVoi->variable())->name()
+                                          + "' and variable '" + variable->name()
+                                          + "' in component '" + owningComponent(variable)->name()
+                                          + "' cannot both be the variable of integration.");
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
+            issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
     }
 
@@ -1226,16 +1243,16 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
         double value = convertToDouble(ast->mPimpl->mValue, &validValue);
 
         if (!validValue || !areEqual(value, 1.0)) {
-            auto issue = Issue::create();
+            auto issue = Issue::IssueImpl::create();
             auto variable = astGreatGrandParent->mPimpl->mOwnedRightChild->variable();
 
-            issue->setDescription("The differential equation for variable '" + variable->name()
-                                  + "' in component '" + owningComponent(variable)->name()
-                                  + "' must be of the first order.");
-            issue->setMath(owningComponent(variable));
-            issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
+            issue->mPimpl->setDescription("The differential equation for variable '" + variable->name()
+                                          + "' in component '" + owningComponent(variable)->name()
+                                          + "' must be of the first order.");
+            issue->mPimpl->mItem->mPimpl->setMath(owningComponent(variable));
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
 
-            mAnalyser->addIssue(issue);
+            addIssue(issue);
         }
     }
 
@@ -2201,9 +2218,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Reset a few things in case this analyser was to be used to analyse more
     // than one model.
 
-    mAnalyser->removeAllIssues();
-
-    mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
+    mModel = AnalyserModel::AnalyserModelImpl::create();
 
     mInternalVariables.clear();
     mInternalEquations.clear();
@@ -2244,13 +2259,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                  issueDescriptions);
 
             for (const auto &issueDescription : issueDescriptions) {
-                auto issue = Issue::create();
+                auto issue = Issue::IssueImpl::create();
 
-                issue->setDescription(issueDescription);
-                issue->setLevel(Issue::Level::WARNING);
-                issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
+                issue->mPimpl->setDescription(issueDescription);
+                issue->mPimpl->setLevel(Issue::Level::WARNING);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNITS);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
     }
@@ -2305,16 +2320,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
 
             if (!issueType.empty()) {
-                auto issue = Issue::create();
+                auto issue = Issue::IssueImpl::create();
                 auto realVariable = internalVariable->mVariable;
 
-                issue->setDescription("Variable '" + realVariable->name()
-                                      + "' in component '" + owningComponent(realVariable)->name()
-                                      + "' " + issueType + ".");
-                issue->setReferenceRule(referenceRule);
-                issue->setVariable(realVariable);
+                issue->mPimpl->setDescription("Variable '" + realVariable->name()
+                                              + "' in component '" + owningComponent(realVariable)->name()
+                                              + "' " + issueType + ".");
+                issue->mPimpl->setReferenceRule(referenceRule);
+                issue->mPimpl->mItem->mPimpl->setVariable(realVariable);
 
-                mAnalyser->addIssue(issue);
+                addIssue(issue);
             }
         }
 
@@ -2358,7 +2373,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
-                mInternalEquations.push_back(std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {internalVariable}});
+                mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
             }
         }
 
@@ -2379,16 +2394,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                 if (variable != nullptr) {
                     if (owningModel(variable) != model) {
-                        auto issue = Issue::create();
+                        auto issue = Issue::IssueImpl::create();
 
-                        issue->setDescription("Variable '" + variable->name()
-                                              + "' in component '" + owningComponent(variable)->name()
-                                              + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
-                        issue->setLevel(Issue::Level::MESSAGE);
-                        issue->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
-                        issue->setVariable(variable);
+                        issue->mPimpl->setDescription("Variable '" + variable->name()
+                                                      + "' in component '" + owningComponent(variable)->name()
+                                                      + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
+                        issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
+                        issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-                        mAnalyser->addIssue(issue);
+                        addIssue(issue);
                     } else {
                         auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
 
@@ -2473,14 +2488,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE;
                     }
 
-                    auto issue = Issue::create();
+                    auto issue = Issue::IssueImpl::create();
 
-                    issue->setDescription(description);
-                    issue->setLevel(Issue::Level::MESSAGE);
-                    issue->setReferenceRule(referenceRule);
-                    issue->setVariable(primaryExternalVariable.first);
+                    issue->mPimpl->setDescription(description);
+                    issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+                    issue->mPimpl->setReferenceRule(referenceRule);
+                    issue->mPimpl->mItem->mPimpl->setVariable(primaryExternalVariable.first);
 
-                    mAnalyser->addIssue(issue);
+                    addIssue(issue);
                 }
             }
         }
@@ -2536,7 +2551,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                 // Populate and keep track of the state/variable.
 
-                auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
+                auto stateOrVariable = AnalyserVariable::AnalyserVariableImpl::create();
                 auto equation = equationMappings[internalVariable->mVariable];
 
                 stateOrVariable->mPimpl->populate(type,
@@ -2560,6 +2575,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             // Make our internal equations available through our API.
 
+            std::vector<AnalyserInternalVariablePtr> externallyDependentVariables;
+
             for (const auto &internalEquation : mInternalEquations) {
                 // Determine the type of the equation.
 
@@ -2572,7 +2589,25 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
                     type = AnalyserEquation::Type::TRUE_CONSTANT;
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+                    // An equation for a variable-based constant may now rely on
+                    // external variables, be it directly or indirectly. If this
+                    // is the case then we need to requalify that equation as an
+                    // algebraic equation.
+
                     type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+
+                    for (const auto &variable : internalEquation->mAllVariables) {
+                        if ((externalVariables.count(variable) == 1)
+                            || (std::find(externallyDependentVariables.begin(), externallyDependentVariables.end(), variable) != externallyDependentVariables.end())) {
+                            type = AnalyserEquation::Type::ALGEBRAIC;
+
+                            stateOrVariable->mPimpl->mType = AnalyserVariable::Type::ALGEBRAIC;
+
+                            externallyDependentVariables.push_back(internalEquation->mVariable);
+
+                            break;
+                        }
+                    }
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
                     type = AnalyserEquation::Type::RATE;
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
@@ -2648,9 +2683,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 }
 
-std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
-                                                                                                const std::string &componentName,
-                                                                                                const std::string &variableName)
+std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
+                                                                                                      const std::string &componentName,
+                                                                                                      const std::string &variableName) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
         auto v = ev->variable();
@@ -2662,21 +2697,32 @@ std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findE
     });
 }
 
-std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
+std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl::findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
         return ev == externalVariable;
     });
 }
 
-Analyser::Analyser()
-    : mPimpl(new AnalyserImpl {this})
+Analyser::AnalyserImpl *Analyser::pFunc()
 {
+    return reinterpret_cast<Analyser::AnalyserImpl *>(Logger::pFunc());
+}
+
+const Analyser::AnalyserImpl *Analyser::pFunc() const
+{
+    return reinterpret_cast<Analyser::AnalyserImpl const *>(Logger::pFunc());
+}
+
+Analyser::Analyser()
+    : Logger(new Analyser::AnalyserImpl())
+{
+    pFunc()->mAnalyser = this;
 }
 
 Analyser::~Analyser()
 {
-    delete mPimpl;
+    delete pFunc();
 }
 
 AnalyserPtr Analyser::create() noexcept
@@ -2688,7 +2734,16 @@ void Analyser::analyseModel(const ModelPtr &model)
 {
     // Make sure that we have a model and that it is valid before analysing it.
 
+    pFunc()->removeAllIssues();
+
     if (model == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+
+        issue->mPimpl->setDescription("The model is null.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::INVALID_ARGUMENT);
+
+        pFunc()->addIssue(issue);
+
         return;
     }
 
@@ -2701,23 +2756,35 @@ void Analyser::analyseModel(const ModelPtr &model)
         // them our own.
 
         for (size_t i = 0; i < validator->issueCount(); ++i) {
-            addIssue(validator->issue(i));
+            pFunc()->addIssue(validator->issue(i));
         }
 
-        mPimpl->mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
-
-        return;
+        pFunc()->mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
     }
 
-    // Analyse the model.
+    // Check for non-validation errors that will render the given model invalid
+    // for analysis.
 
-    mPimpl->analyseModel(model);
+    if (model->hasUnlinkedUnits()) {
+        auto issue = Issue::IssueImpl::create();
+
+        issue->mPimpl->setDescription("The model has units which are not linked together.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS);
+
+        pFunc()->addIssue(issue);
+    }
+
+    // Analyse the model, but only if we didn't come across any issues.
+
+    if (issueCount() == 0) {
+        pFunc()->analyseModel(model);
+    }
 }
 
 bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
-    if (std::find(mPimpl->mExternalVariables.begin(), mPimpl->mExternalVariables.end(), externalVariable) == mPimpl->mExternalVariables.end()) {
-        mPimpl->mExternalVariables.push_back(externalVariable);
+    if (std::find(pFunc()->mExternalVariables.begin(), pFunc()->mExternalVariables.end(), externalVariable) == pFunc()->mExternalVariables.end()) {
+        pFunc()->mExternalVariables.push_back(externalVariable);
 
         return true;
     }
@@ -2727,8 +2794,8 @@ bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVa
 
 bool Analyser::removeExternalVariable(size_t index)
 {
-    if (index < mPimpl->mExternalVariables.size()) {
-        mPimpl->mExternalVariables.erase(mPimpl->mExternalVariables.begin() + ptrdiff_t(index));
+    if (index < pFunc()->mExternalVariables.size()) {
+        pFunc()->mExternalVariables.erase(pFunc()->mExternalVariables.begin() + ptrdiff_t(index));
 
         return true;
     }
@@ -2740,10 +2807,10 @@ bool Analyser::removeExternalVariable(const ModelPtr &model,
                                       const std::string &componentName,
                                       const std::string &variableName)
 {
-    auto result = mPimpl->findExternalVariable(model, componentName, variableName);
+    auto result = pFunc()->findExternalVariable(model, componentName, variableName);
 
-    if (result != mPimpl->mExternalVariables.end()) {
-        mPimpl->mExternalVariables.erase(result);
+    if (result != pFunc()->mExternalVariables.end()) {
+        pFunc()->mExternalVariables.erase(result);
 
         return true;
     }
@@ -2753,10 +2820,10 @@ bool Analyser::removeExternalVariable(const ModelPtr &model,
 
 bool Analyser::removeExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
-    auto result = mPimpl->findExternalVariable(externalVariable);
+    auto result = pFunc()->findExternalVariable(externalVariable);
 
-    if (result != mPimpl->mExternalVariables.end()) {
-        mPimpl->mExternalVariables.erase(result);
+    if (result != pFunc()->mExternalVariables.end()) {
+        pFunc()->mExternalVariables.erase(result);
 
         return true;
     }
@@ -2766,25 +2833,25 @@ bool Analyser::removeExternalVariable(const AnalyserExternalVariablePtr &externa
 
 void Analyser::removeAllExternalVariables()
 {
-    mPimpl->mExternalVariables.clear();
+    pFunc()->mExternalVariables.clear();
 }
 
 bool Analyser::containsExternalVariable(const ModelPtr &model,
                                         const std::string &componentName,
                                         const std::string &variableName) const
 {
-    return mPimpl->findExternalVariable(model, componentName, variableName) != mPimpl->mExternalVariables.end();
+    return pFunc()->findExternalVariable(model, componentName, variableName) != pFunc()->mExternalVariables.end();
 }
 
 bool Analyser::containsExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
 {
-    return mPimpl->findExternalVariable(externalVariable) != mPimpl->mExternalVariables.end();
+    return pFunc()->findExternalVariable(externalVariable) != pFunc()->mExternalVariables.end();
 }
 
 AnalyserExternalVariablePtr Analyser::externalVariable(size_t index) const
 {
-    if (index < mPimpl->mExternalVariables.size()) {
-        return mPimpl->mExternalVariables[index];
+    if (index < pFunc()->mExternalVariables.size()) {
+        return pFunc()->mExternalVariables[index];
     }
 
     return nullptr;
@@ -2794,9 +2861,9 @@ AnalyserExternalVariablePtr Analyser::externalVariable(const ModelPtr &model,
                                                        const std::string &componentName,
                                                        const std::string &variableName) const
 {
-    auto result = mPimpl->findExternalVariable(model, componentName, variableName);
+    auto result = pFunc()->findExternalVariable(model, componentName, variableName);
 
-    if (result != mPimpl->mExternalVariables.end()) {
+    if (result != pFunc()->mExternalVariables.end()) {
         return *result;
     }
 
@@ -2805,12 +2872,12 @@ AnalyserExternalVariablePtr Analyser::externalVariable(const ModelPtr &model,
 
 size_t Analyser::externalVariableCount() const
 {
-    return mPimpl->mExternalVariables.size();
+    return pFunc()->mExternalVariables.size();
 }
 
 AnalyserModelPtr Analyser::model() const
 {
-    return mPimpl->mModel;
+    return pFunc()->mModel;
 }
 
 } // namespace libcellml

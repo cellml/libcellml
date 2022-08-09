@@ -693,11 +693,17 @@ the <VARIABLE_COUNT> tag, which will be replaced with the number of states in th
 %feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectString
 "Sets the string for the data structure for the variable type object.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectExternalTypeString
-"Returns the string for the external type for the data structure for the variable type object.";
+%feature("docstring") libcellml::GeneratorProfile::variableOfIntegrationVariableTypeString
+"Returns the string for the name of the variable of integration variable type.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeString
-"Sets the string for the external type for the data structure for the variable type object.";
+%feature("docstring") libcellml::GeneratorProfile::setVariableOfIntegrationVariableTypeString
+"Sets the string for the name of the variable of integration variable type.";
+
+%feature("docstring") libcellml::GeneratorProfile::stateVariableTypeString
+"Returns the string for the name of the state variable type.";
+
+%feature("docstring") libcellml::GeneratorProfile::setStateVariableTypeString
+"Sets the string for the name of the state variable type.";
 
 %feature("docstring") libcellml::GeneratorProfile::constantVariableTypeString
 "Returns the string for the name of the constant variable type.";
@@ -730,14 +736,6 @@ the <VARIABLE_COUNT> tag, which will be replaced with the number of states in th
 "Sets the string for the data structure for the variable information object. To be useful, the string should
 contain the <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which will be replaced with the maximum size of
 a string for holding the name of a component, variable and units, respectively.";
-
-%feature("docstring") libcellml::GeneratorProfile::variableInfoWithTypeObjectString
-"Returns the string for the data structure for the variable information (incl. its type) object.";
-
-%feature("docstring") libcellml::GeneratorProfile::setVariableInfoWithTypeObjectString
-"Sets the string for the data structure for the variable information (incl. its type) object. To be useful, the
-string should contain the <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which will be replaced with the
-maximum size of a string for holding the name of a component, variable and units, respectively.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceVoiInfoString
 "Returns the string for the interface of some information about the variable of integration.";
@@ -788,14 +786,6 @@ variables.";
 contain the <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced with the name of the component, name
 and units of a variable respectively.";
 
-%feature("docstring") libcellml::GeneratorProfile::variableInfoWithTypeEntryString
-"Returns the string for an entry in an array for some information about a variable (incl. its type).";
-
-%feature("docstring") libcellml::GeneratorProfile::setVariableInfoWithTypeEntryString
-"Sets the string for an entry in an array for some information about a variable (incl. its type). To be useful,
-the string should contain the <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced with the name of the
-component, name and units of a variable.";
-
 %feature("docstring") libcellml::GeneratorProfile::voiString
 "Returns the string for the name of the variable of integration.";
 
@@ -825,12 +815,6 @@ component, name and units of a variable.";
 
 %feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodTypeDefinitionString
 "Sets the string for the type definition of an external variable method.";
-
-%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodParameterString
-"Returns the string for the external variable method parameter.";
-
-%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodParameterString
-"Sets the string for the external variable method parameter.";
 
 %feature("docstring") libcellml::GeneratorProfile::externalVariableMethodCallString
 "Returns the string for the call to the external variable method.";
@@ -882,17 +866,17 @@ tag, which will be replaced with some code to create the variables array.";
 %feature("docstring") libcellml::GeneratorProfile::setImplementationDeleteArrayMethodString
 "Sets the string for the implementation to delete an array.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseStatesAndConstantsMethodString
-"Returns the string for the interface to initialise states and constants.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseVariablesMethodString
+"Returns the string for the interface to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseStatesAndConstantsMethodString
-"Sets the string for the interface to initialise states and constants.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseVariablesMethodString
+"Sets the string for the interface to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseStatesAndConstantsMethodString
-"Returns the string for the implementation to initialise states and constants.";
+%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseVariablesMethodString
+"Returns the string for the implementation to initialise variables.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseStatesAndConstantsMethodString
-"Sets the string for the implementation to initialise states and constants.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseVariablesMethodString
+"Sets the string for the implementation to initialise variables.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceComputeComputedConstantsMethodString
 "Returns the string for the interface to compute computed constants.";

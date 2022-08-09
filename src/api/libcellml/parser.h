@@ -33,10 +33,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Parser: public Logger
 {
 public:
-    ~Parser() override; /**< Destructor. */
-    Parser(const Parser &rhs) = delete; /**< Copy constructor. */
-    Parser(Parser &&rhs) noexcept = delete; /**< Move constructor. */
-    Parser &operator=(Parser rhs) = delete; /**< Assignment operator. */
+    ~Parser() override; /**< Destructor, @private. */
+    Parser(const Parser &rhs) = delete; /**< Copy constructor, @private. */
+    Parser(Parser &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    Parser &operator=(Parser rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Create a @c Parser object.
@@ -56,6 +56,8 @@ public:
      * Creates and populates a new model pointer by parsing CellML
      * entities and attributes from the @p input @c std::string.
      *
+     * All existing issues will be removed before the input is parsed.
+     *
      * @param input The string to parse into a model.
      *
      * @return The new @c ModelPtr deserialised from the input string.
@@ -65,8 +67,9 @@ public:
 private:
     Parser(); /**< Constructor, @private. */
 
-    struct ParserImpl; /**< Forward declaration for pImpl idiom, @private. */
-    ParserImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class ParserImpl; /**< Forward declaration for pImpl idiom, @private. */
+
+    ParserImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml

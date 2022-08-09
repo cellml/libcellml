@@ -20,6 +20,11 @@ limitations under the License.
 
 namespace libcellml {
 
+AnalyserVariablePtr AnalyserVariable::AnalyserVariableImpl::create()
+{
+    return std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
+}
+
 void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type type,
                                                       size_t index,
                                                       const VariablePtr &initialisingVariable,

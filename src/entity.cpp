@@ -16,46 +16,37 @@ limitations under the License.
 
 #include "libcellml/entity.h"
 
+#include <utility>
+
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
+
+#include "entity_p.h"
 
 namespace libcellml {
 
 using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entity pointer. */
 
-/**
- * @brief The Entity::EntityImpl struct.
- *
- * The private implementation for the Entity class.
- */
-struct Entity::EntityImpl
-{
-    std::string mId; /**< String document identifier for this entity. */
-};
-
-Entity::Entity()
-    : mPimpl(new EntityImpl())
+Entity::Entity(Entity::EntityImpl *derivedPimpl)
+    : mPimpl(derivedPimpl)
 {
 }
 
-Entity::~Entity()
-{
-    delete mPimpl;
-}
+Entity::~Entity() = default;
 
 void Entity::setId(const std::string &id)
 {
-    mPimpl->mId = id;
+    pFunc()->mId = id;
 }
 
 std::string Entity::id() const
 {
-    return mPimpl->mId;
+    return pFunc()->mId;
 }
 
 void Entity::removeId()
 {
-    mPimpl->mId = "";
+    pFunc()->mId = "";
 }
 
 bool Entity::equals(const EntityPtr &other) const
@@ -68,7 +59,7 @@ bool Entity::doEquals(const EntityPtr &other) const
     if (other == nullptr) {
         return false;
     }
-    return mPimpl->mId == other->id();
+    return pFunc()->mId == other->id();
 }
 
 } // namespace libcellml

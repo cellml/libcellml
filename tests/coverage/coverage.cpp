@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
@@ -40,7 +42,6 @@ TEST(Coverage, connectionComment)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
-    EXPECT_EQ(size_t(4), p->issueCount());
 }
 
 TEST(Coverage, importWithNonHrefXlink)
@@ -98,17 +99,9 @@ TEST(Annotator, automaticIdsUndefined)
     EXPECT_EQ("", model->id());
 }
 
-TEST(Annotator, automaticIdUndefined)
+TEST(Coverage, unitsItem)
 {
-    auto annotator = libcellml::Annotator::create();
-    auto model = libcellml::Model::create();
+    auto unitsItem = libcellml::UnitsItem::create(nullptr, 0);
 
-    annotator->setModel(model);
-
-    auto pair = std::make_pair(libcellml::CellmlElementType::UNDEFINED, nullptr);
-
-    annotator->assignId(pair);
-    EXPECT_TRUE(annotator->hasModel());
-
-    EXPECT_EQ("", model->id());
+    EXPECT_FALSE(unitsItem->isValid());
 }

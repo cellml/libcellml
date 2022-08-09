@@ -31,29 +31,18 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "anycellmlelement_p.h"
+#include "component_p.h"
+#include "componententity_p.h"
 #include "internaltypes.h"
+#include "issue_p.h"
+#include "model_p.h"
+#include "units_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
 
 namespace libcellml {
-
-/**
- * @brief The Model::ModelImpl struct.
- *
- * This struct is the private implementation struct for the Model class.  Separating
- * the implementation from the definition allows for greater flexibility when
- * distributing the code.
- */
-struct Model::ModelImpl
-{
-    std::vector<UnitsPtr> mUnits;
-
-    std::vector<UnitsPtr>::const_iterator findUnits(const std::string &name) const;
-    std::vector<UnitsPtr>::const_iterator findUnits(const UnitsPtr &units) const;
-
-    bool equalUnits(const ModelPtr &other) const;
-};
 
 std::vector<UnitsPtr>::const_iterator Model::ModelImpl::findUnits(const std::string &name) const
 {
@@ -78,17 +67,31 @@ bool Model::ModelImpl::equalUnits(const ModelPtr &other) const
     return equalEntities(other, entities);
 }
 
+Model::ModelImpl *Model::pFunc()
+{
+    return reinterpret_cast<Model::ModelImpl *>(Entity::pFunc());
+}
+
+const Model::ModelImpl *Model::pFunc() const
+{
+    return reinterpret_cast<Model::ModelImpl const *>(Entity::pFunc());
+}
+
 Model::Model()
-    : mPimpl(new ModelImpl())
+    : ComponentEntity(new Model::ModelImpl())
 {
 }
 
 Model::Model(const std::string &name)
-    : mPimpl(new ModelImpl())
+    : ComponentEntity(new Model::ModelImpl())
 {
     setName(name);
 }
 
+Model::~Model()
+{
+    delete pFunc();
+}
 ModelPtr Model::create() noexcept
 {
     return std::shared_ptr<Model> {new Model {}};
@@ -99,18 +102,13 @@ ModelPtr Model::create(const std::string &name) noexcept
     return std::shared_ptr<Model> {new Model {name}};
 }
 
-Model::~Model()
-{
-    delete mPimpl;
-}
-
 bool Model::doAddComponent(const ComponentPtr &component)
 {
     auto thisModel = shared_from_this();
     if (component->hasParent() && (thisModel != component->parent())) {
         removeComponentFromEntity(component->parent(), component);
     }
-    component->setParent(thisModel);
+    component->pFunc()->setParent(thisModel);
 
     return ComponentEntity::doAddComponent(component);
 }
@@ -127,8 +125,8 @@ bool Model::addUnits(const UnitsPtr &units)
         auto otherParent = std::dynamic_pointer_cast<Model>(units->parent());
         otherParent->removeUnits(units);
     }
-    mPimpl->mUnits.push_back(units);
-    units->setParent(thisModel);
+    pFunc()->mUnits.push_back(units);
+    units->pFunc()->setParent(thisModel);
 
     return true;
 }
@@ -136,10 +134,10 @@ bool Model::addUnits(const UnitsPtr &units)
 bool Model::removeUnits(size_t index)
 {
     bool status = false;
-    if (index < mPimpl->mUnits.size()) {
-        auto result = mPimpl->mUnits.begin() + ptrdiff_t(index);
-        (*result)->removeParent();
-        mPimpl->mUnits.erase(result);
+    if (index < pFunc()->mUnits.size()) {
+        auto result = pFunc()->mUnits.begin() + ptrdiff_t(index);
+        (*result)->pFunc()->removeParent();
+        pFunc()->mUnits.erase(result);
         status = true;
     }
 
@@ -149,10 +147,10 @@ bool Model::removeUnits(size_t index)
 bool Model::removeUnits(const std::string &name)
 {
     bool status = false;
-    auto result = mPimpl->findUnits(name);
-    if (result != mPimpl->mUnits.end()) {
-        (*result)->removeParent();
-        mPimpl->mUnits.erase(result);
+    auto result = pFunc()->findUnits(name);
+    if (result != pFunc()->mUnits.end()) {
+        (*result)->pFunc()->removeParent();
+        pFunc()->mUnits.erase(result);
         status = true;
     }
 
@@ -162,10 +160,10 @@ bool Model::removeUnits(const std::string &name)
 bool Model::removeUnits(const UnitsPtr &units)
 {
     bool status = false;
-    auto result = mPimpl->findUnits(units);
-    if (result != mPimpl->mUnits.end()) {
-        units->removeParent();
-        mPimpl->mUnits.erase(result);
+    auto result = pFunc()->findUnits(units);
+    if (result != pFunc()->mUnits.end()) {
+        units->pFunc()->removeParent();
+        pFunc()->mUnits.erase(result);
         status = true;
     }
 
@@ -174,27 +172,27 @@ bool Model::removeUnits(const UnitsPtr &units)
 
 void Model::removeAllUnits()
 {
-    for (const auto &u : mPimpl->mUnits) {
-        u->removeParent();
+    for (const auto &u : pFunc()->mUnits) {
+        u->pFunc()->removeParent();
     }
-    mPimpl->mUnits.clear();
+    pFunc()->mUnits.clear();
 }
 
 bool Model::hasUnits(const std::string &name) const
 {
-    return mPimpl->findUnits(name) != mPimpl->mUnits.end();
+    return pFunc()->findUnits(name) != pFunc()->mUnits.end();
 }
 
 bool Model::hasUnits(const UnitsPtr &units) const
 {
-    return mPimpl->findUnits(units) != mPimpl->mUnits.end();
+    return pFunc()->findUnits(units) != pFunc()->mUnits.end();
 }
 
 UnitsPtr Model::units(size_t index) const
 {
     UnitsPtr units = nullptr;
-    if (index < mPimpl->mUnits.size()) {
-        units = mPimpl->mUnits.at(index);
+    if (index < pFunc()->mUnits.size()) {
+        units = pFunc()->mUnits.at(index);
     }
 
     return units;
@@ -203,8 +201,8 @@ UnitsPtr Model::units(size_t index) const
 UnitsPtr Model::units(const std::string &name) const
 {
     UnitsPtr units = nullptr;
-    auto result = mPimpl->findUnits(name);
-    if (result != mPimpl->mUnits.end()) {
+    auto result = pFunc()->findUnits(name);
+    if (result != pFunc()->mUnits.end()) {
         units = *result;
     }
 
@@ -214,10 +212,10 @@ UnitsPtr Model::units(const std::string &name) const
 UnitsPtr Model::takeUnits(size_t index)
 {
     UnitsPtr units = nullptr;
-    if (index < mPimpl->mUnits.size()) {
-        units = mPimpl->mUnits.at(index);
+    if (index < pFunc()->mUnits.size()) {
+        units = pFunc()->mUnits.at(index);
         removeUnits(index);
-        units->removeParent();
+        units->pFunc()->removeParent();
     }
 
     return units;
@@ -225,15 +223,15 @@ UnitsPtr Model::takeUnits(size_t index)
 
 UnitsPtr Model::takeUnits(const std::string &name)
 {
-    return takeUnits(size_t(mPimpl->findUnits(name) - mPimpl->mUnits.begin()));
+    return takeUnits(size_t(pFunc()->findUnits(name) - pFunc()->mUnits.begin()));
 }
 
 bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 {
     bool status = false;
     if (removeUnits(index)) {
-        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + ptrdiff_t(index), units);
-        units->setParent(shared_from_this());
+        pFunc()->mUnits.insert(pFunc()->mUnits.begin() + ptrdiff_t(index), units);
+        units->pFunc()->setParent(shared_from_this());
         status = true;
     }
 
@@ -242,17 +240,17 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 
 bool Model::replaceUnits(const std::string &name, const UnitsPtr &units)
 {
-    return replaceUnits(size_t(mPimpl->findUnits(name) - mPimpl->mUnits.begin()), units);
+    return replaceUnits(size_t(pFunc()->findUnits(name) - pFunc()->mUnits.begin()), units);
 }
 
 bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 {
-    return replaceUnits(size_t(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
+    return replaceUnits(size_t(pFunc()->findUnits(oldUnits) - pFunc()->mUnits.begin()), newUnits);
 }
 
 size_t Model::unitsCount() const
 {
-    return mPimpl->mUnits.size();
+    return pFunc()->mUnits.size();
 }
 
 bool Model::linkUnits()
@@ -348,7 +346,7 @@ ModelPtr Model::clone() const
 
     m->setEncapsulationId(encapsulationId());
 
-    for (size_t index = 0; index < mPimpl->mUnits.size(); ++index) {
+    for (size_t index = 0; index < pFunc()->mUnits.size(); ++index) {
         m->addUnits(units(index)->clone());
     }
 
@@ -436,7 +434,7 @@ bool Model::doEquals(const EntityPtr &other) const
 {
     if (ComponentEntity::doEquals(other)) {
         auto model = std::dynamic_pointer_cast<Model>(other);
-        if ((model != nullptr) && mPimpl->equalUnits(model)) {
+        if ((model != nullptr) && pFunc()->equalUnits(model)) {
             return true;
         }
     }

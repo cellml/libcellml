@@ -10,9 +10,6 @@
 %feature("docstring") libcellml::Logger
 "Base class for all serialisable libCellML classes.";
 
-%feature("docstring") libcellml::Logger::removeAllIssues
-"Clears all issues from this logger.";
-
 %feature("docstring") libcellml::Logger::addIssue
 "Adds an issue to this logger.";
 
@@ -33,12 +30,6 @@
 
 %feature("docstring") libcellml::Logger::warningCount
 "Returns the number of issues of level WARNING currently stored in the logger.";
-
-%feature("docstring") libcellml::Logger::hint
-"Returns the issue of level HINT at the specified ``index``.";
-
-%feature("docstring") libcellml::Logger::hintCount
-"Returns the number of issues of level HINT currently stored in the logger.";
 
 %feature("docstring") libcellml::Logger::message
 "Returns the issue of level MESSAGE at the specified ``index``.";
@@ -65,7 +56,6 @@
 %}
 
 %ignore libcellml::Logger::Logger();
-%ignore libcellml::Logger::addIssues;
 
 %include "libcellml/types.h"
 %include "libcellml/logger.h"

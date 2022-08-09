@@ -1250,7 +1250,7 @@ std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
     return res;
 }
 
-bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList)
+bool linkComponentVariableUnits(const ComponentPtr &component, DescriptionList &descriptionList)
 {
     bool status = true;
     for (size_t index = 0; index < component->variableCount(); ++index) {
@@ -1268,21 +1268,11 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                 if (model->hasUnits(u->name())) {
                     v->setUnits(model->units(u->name()));
                 } else {
-                    auto issue = Issue::create();
-                    issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
-                    issue->setLevel(Issue::Level::WARNING);
-                    issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
-                    issue->setVariable(v);
-                    issueList.push_back(issue);
+                    descriptionList.push_back(std::make_pair(v, "Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'."));
                     status = false;
                 }
             } else if (model != nullptr) {
-                auto issue = Issue::create();
-                issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
-                issue->setLevel(Issue::Level::WARNING);
-                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
-                issue->setVariable(v);
-                issueList.push_back(issue);
+                descriptionList.push_back(std::make_pair(v, "The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'."));
                 status = false;
             }
         }
@@ -1292,19 +1282,19 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
 
 bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity)
 {
-    std::vector<IssuePtr> issueList;
-    return traverseComponentEntityTreeLinkingUnits(componentEntity, issueList);
+    DescriptionList descriptionList;
+    return traverseComponentEntityTreeLinkingUnits(componentEntity, descriptionList);
 }
 
-bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList)
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, DescriptionList &descriptionList)
 {
     auto component = std::dynamic_pointer_cast<Component>(componentEntity);
     bool status = (component != nullptr) ?
-                      linkComponentVariableUnits(component, issueList) :
+                      linkComponentVariableUnits(component, descriptionList) :
                       true;
     for (size_t index = 0; index < componentEntity->componentCount(); ++index) {
         auto c = componentEntity->component(index);
-        status = traverseComponentEntityTreeLinkingUnits(c, issueList) && status;
+        status = traverseComponentEntityTreeLinkingUnits(c, descriptionList) && status;
     }
     return status;
 }
@@ -1315,9 +1305,9 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
     for (size_t index = 0; index < component->variableCount() && !unlinked; ++index) {
         auto v = component->variable(index);
         auto u = v->units();
-        if (u != nullptr) {
+        if ((u != nullptr) && !isStandardUnit(u)) {
             auto model = owningModel(u);
-            unlinked = ((model == nullptr) && !isStandardUnit(u)) || (owningModel(component) != model);
+            unlinked = (model == nullptr) || (owningModel(component) != model);
         }
     }
     return unlinked;
@@ -1425,7 +1415,7 @@ bool checkForImportCycles(const History &history, const HistoryEpochPtr &h)
     });
 }
 
-IssuePtr makeIssueCyclicDependency(const History &history, const std::string &action)
+std::string formDescriptionOfCyclicDependency(const History &history, const std::string &action)
 {
     auto origin = history.front();
     auto model = origin->mSourceModel;
@@ -1450,11 +1440,7 @@ IssuePtr makeIssueCyclicDependency(const History &history, const std::string &ac
         ++i;
     }
 
-    auto issue = Issue::create();
-    issue->setDescription(msgHeader + msgHistory);
-    issue->setLevel(Issue::Level::ERROR);
-    issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
-    return issue;
+    return msgHeader + msgHistory;
 }
 
 } // namespace libcellml

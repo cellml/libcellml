@@ -53,10 +53,10 @@ public:
         EXTERNAL
     };
 
-    ~AnalyserVariable(); /**< Destructor. */
-    AnalyserVariable(const AnalyserVariable &rhs) = delete; /**< Copy constructor. */
-    AnalyserVariable(AnalyserVariable &&rhs) noexcept = delete; /**< Move constructor. */
-    AnalyserVariable &operator=(AnalyserVariable rhs) = delete; /**< Assignment operator. */
+    ~AnalyserVariable(); /**< Destructor, @private. */
+    AnalyserVariable(const AnalyserVariable &rhs) = delete; /**< Copy constructor, @private. */
+    AnalyserVariable(AnalyserVariable &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    AnalyserVariable &operator=(AnalyserVariable rhs) = delete; /**< Assignment operator, @private. */
 
     /**
      * @brief Get the @c Type of this @c AnalyserVariable.
