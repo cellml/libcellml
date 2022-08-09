@@ -94,11 +94,6 @@ New feature
 
 * Validator check for cyclical imports by `@hsorby <https://github.com/hsorby>`_ [`#837 <https://github.com/cellml/libcellml/pull/837>`_].
 
-No category
------------
-
-* Changing version to: 0.3.99-rc.1 by `@abi-git-user <https://github.com/abi-git-user>`_ [`#1011 <https://github.com/cellml/libcellml/pull/1011>`_].
-
 Python bindings
 ---------------
 
@@ -114,9 +109,5 @@ Contributors
    :width: 32
 .. image:: https://avatars.githubusercontent.com/u/778048?v=4
    :target: https://github.com/hsorby
-   :height: 32
-   :width: 32
-.. image:: https://avatars.githubusercontent.com/u/9956702?v=4
-   :target: https://github.com/abi-git-user
    :height: 32
    :width: 32
