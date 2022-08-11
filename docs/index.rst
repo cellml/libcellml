@@ -49,3 +49,5 @@ Changelogs
    :glob:
 
    *
+   changelogs/index
+
