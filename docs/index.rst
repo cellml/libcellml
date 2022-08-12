@@ -1,6 +1,5 @@
 .. _dev_index:
 
-====================
 Developer Guidelines
 ====================
 
@@ -27,19 +26,28 @@ While there are many types of contribution, this section focuses on contribution
    :ref:`Coding Standards<coding_standards>`
    :ref:`Glossary<glossary_page>` 
 
-==========
+..
+  The following content is automatically generated do not edit between the markers, at some point it will get overwritten.
+
+..
+  # CHANGELOG_TOC_START_MARKER
+
 Changelogs
 ==========
 
 .. toctree::
-   :glob:
 
-   changelogs/changelog_v0.3.99-rc.2
+   changelogs/changelog_v0.3.99-rc.3
    changelogs/changelog_v0.2.0
    changelogs/changelog_v0.1.0
+
+..
+  # CHANGELOG_TOC_END_MARKER
 
 .. toctree::
    :hidden:
    :glob:
 
    *
+   changelogs/index
+
