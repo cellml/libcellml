@@ -15,6 +15,9 @@ There are four steps in making a release.
 Each section has further details on what actions are required for a particular step.
 Each step must be done in order from step 1 through to step 4.
 
+For all the steps in creating a release, you must be logged in to the Buildbot CI and be in the *admin* group.
+If you are neither of these you will not be able to perform any of these actions.
+
 Step 1 - Setting the version number
 ===================================
 
