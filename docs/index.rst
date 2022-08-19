@@ -37,7 +37,9 @@ Changelogs
 
 .. toctree::
 
+   changelogs/changelog_v0.3.99
    changelogs/changelog_v0.3.99-rc.3
+   changelogs/changelog_v0.3.99-rc.2
    changelogs/changelog_v0.2.0
    changelogs/changelog_v0.1.0
 
