@@ -59,7 +59,7 @@ if(DOXYGEN_FOUND)
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
   set(DOXYGEN_API_XML_DOCS_TARGET api_xml_docs)
   set(_DOXYFILE ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.xml)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxy.api-xml.in.config ${_DOXYFILE} @ONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.api-xml.in.config ${_DOXYFILE} @ONLY)
   add_custom_target(${DOXYGEN_API_XML_DOCS_TARGET}
     COMMAND ${DOXYGEN_EXECUTABLE} ${_DOXYFILE}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
