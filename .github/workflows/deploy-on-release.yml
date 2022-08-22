@@ -254,6 +254,9 @@ jobs:
         endif()
 
         file(GLOB _DIST_FILES ${ACTION_DIR}/build/dist/*)
+        # softprops action requires a list of newline separated files.
+        # The %0A will be converted by GitHub actions into '\n'.
+        string(REPLACE ";" "%0A" _DIST_FILES "${_DIST_FILES}")
         execute_process(
           COMMAND echo "::set-output name=files::${_DIST_FILES}")
 
