@@ -59,10 +59,6 @@ public:
      * the @c std::string @p input. Any entities or attributes in @p model with names
      * matching those in @p input will be overwritten.
      *
-     * If @p parseVersion1XModels is @c true then if the @p input is a CellML 1.0 or 1.1
-     * model parse it into CellML 2.0 data structures. If @p parseVersion1XModels is @c false
-     * strictly only parse CellML 2.0 models.
-     *
      * @param model The @c ModelPtr to update.
      * @param input The string to parse and update the @p model with.
      */
