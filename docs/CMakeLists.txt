@@ -35,7 +35,7 @@ if(SPHINX_FOUND)
   set(SPHINX_HTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/html")
 
   configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/conf.in.py"
     "${BINARY_BUILD_DIR}/conf.py"
     @ONLY)
 
@@ -51,7 +51,7 @@ endif()
 
 if(DOXYGEN_FOUND)
   set(DOXYGEN_DOCS_TARGET api_docs)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in.config ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
   add_custom_target(${DOXYGEN_DOCS_TARGET}
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/html/code/
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
@@ -59,7 +59,7 @@ if(DOXYGEN_FOUND)
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
   set(DOXYGEN_API_XML_DOCS_TARGET api_xml_docs)
   set(_DOXYFILE ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.xml)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxy.api-xml.in.config ${_DOXYFILE} @ONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.api-xml.in.config ${_DOXYFILE} @ONLY)
   add_custom_target(${DOXYGEN_API_XML_DOCS_TARGET}
     COMMAND ${DOXYGEN_EXECUTABLE} ${_DOXYFILE}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
