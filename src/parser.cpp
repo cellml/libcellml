@@ -93,7 +93,6 @@ public:
      *
      * @param component The @c ComponentPtr to update.
      * @param node The @c XmlNodePtr to parse and update the @p component with.
-     * @param transforming Boolean indicating whether transforming to CellML 2.0 or not.
      */
     void loadComponent(const ComponentPtr &component, const XmlNodePtr &node);
 
@@ -106,7 +105,6 @@ public:
      *
      * @param model The @c ModelPtr to update.
      * @param node The @c XmlNodePtr to parse and update the model with.
-     * @param transforming Boolean indicating whether transforming to CellML 2.0 or not.
      */
     void loadConnection(const ModelPtr &model, const XmlNodePtr &node);
 
@@ -119,7 +117,6 @@ public:
      *
      * @param model The @c ModelPtr to update.
      * @param node The @c XmlNodePtr to parse and update the model with.
-     * @param transforming Boolean indicating whether transforming to CellML 2.0 or not.
      */
     void loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node);
 
@@ -131,7 +128,6 @@ public:
      *
      * @param model The @c ModelPtr to update.
      * @param node The @c XmlNodePtr to parse and update the model with.
-     * @param transforming Boolean indicating whether transforming to CellML 2.0 or not.
      *
      * @return A @c ComponentPtr which is the root of the component hierarchy.
      */
@@ -150,7 +146,6 @@ public:
      * @param importSource The @c ImportSourcePtr to update.
      * @param model The @c ModelPtr to add imported components/units to.
      * @param node The @c XmlNodePtr to parse and update the @p import source with.
-     * @param transforming Boolean indicating whether transforming to CellML 2.0 or not.
      */
     void loadImport(ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node);
 
@@ -163,7 +158,6 @@ public:
      *
      * @param units The @c UnitsPtr to update.
      * @param node The @c XmlNodePtr to parse and update the @p units with.
-     * @param transforming Boolean indicating whether transforming to CellML 2.0 or not.
      */
     void loadUnits(const UnitsPtr &units, const XmlNodePtr &node);
 
@@ -188,7 +182,6 @@ public:
      *
      * @param units The @c UnitsPtr to update.
      * @param node The unit @c XmlNodePtr to parse and update the @p units with.
-     * @param transforming Boolean indicating whether transforming to CellML 2.0 or not.
      */
     void loadUnit(const UnitsPtr &units, const XmlNodePtr &node);
 
@@ -201,7 +194,6 @@ public:
      *
      * @param variable The @c VariablePtr to update.
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
-     * @param transforming Boolean indicating whether transforming to CellML 2.0 or not.
      */
     void loadVariable(const VariablePtr &variable, const XmlNodePtr &node);
 
