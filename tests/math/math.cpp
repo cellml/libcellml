@@ -326,6 +326,7 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
 
 TEST(Maths, addingMathMLAsACompleteDocument)
 {
+    const std::string errorMessage = "LibXml2 error: XML declaration allowed only at the start of the document.";
     const std::string e =
         "<?xml version= \"1.0 \" encoding= \"UTF-8 \"?>\n"
         "<model xmlns= \"http://www.cellml.org/cellml/2.0# \">\n"
@@ -360,5 +361,7 @@ TEST(Maths, addingMathMLAsACompleteDocument)
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     std::string a = printer->printModel(m);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(1), printer->issueCount());
+    EXPECT_EQ(errorMessage, printer->issue(0)->description());
+    EXPECT_EQ("", a);
 }
