@@ -327,19 +327,6 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
 TEST(Maths, addingMathMLAsACompleteDocument)
 {
     const std::string errorMessage = "LibXml2 error: XML declaration allowed only at the start of the document.";
-    const std::string e =
-        "<?xml version= \"1.0 \" encoding= \"UTF-8 \"?>\n"
-        "<model xmlns= \"http://www.cellml.org/cellml/2.0# \">\n"
-        "  <component name= \"parameters \">\n"
-        "    <math xmlns= \"http://www.w3.org/1998/Math/MathML \">\n"
-        "      <apply>\n"
-        "        <divide/>\n"
-        "        <ci>eff</ci>\n"
-        "        <ci>t_ave</ci>\n"
-        "      </apply>\n"
-        "    </math>\n"
-        "  </component>\n"
-        "</model>\n";
 
     const std::string math =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -350,7 +337,6 @@ TEST(Maths, addingMathMLAsACompleteDocument)
         "    <ci> t_ave </ci>\n"
         "  </apply>\n"
         "</math>\n";
-
 
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr comp = libcellml::Component::create();
