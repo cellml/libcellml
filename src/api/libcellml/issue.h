@@ -34,6 +34,7 @@ class LIBCELLML_EXPORT Issue
     friend class Annotator;
     friend class Importer;
     friend class Parser;
+    friend class Printer;
     friend class Validator;
 
 public:
