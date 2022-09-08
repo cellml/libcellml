@@ -394,3 +394,46 @@ TEST(Printer, mathMLWithSyntaxError)
     EXPECT_NE(nullptr, itemComponent);
     EXPECT_EQ("component", itemComponent->name());
 }
+
+TEST(Printer, mathMLInResetWithSyntaxError)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <reset order=\"5\">\n"
+        "      <reset_value/>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::string math =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <divide/>\n"
+        "    <ci> eff </ci>\n"
+        "    <ci> t_ave <ci>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component = libcellml::Component::create("component");
+    model->addComponent(component);
+    auto reset = libcellml::Reset::create();
+    reset->setResetValue(math);
+    reset->setOrder(5);
+    component->addReset(reset);
+
+    EXPECT_EQ(e, printer->printModel(model));
+    EXPECT_EQ(size_t(4), printer->issueCount());
+    EXPECT_EQ("LibXml2 error: Opening and ending tag mismatch: ci line 1 and apply.", printer->issue(0)->description());
+    EXPECT_NE(nullptr, printer->issue(0)->item()->reset());
+    EXPECT_EQ("LibXml2 error: Premature end of data in tag math line 1.", printer->issue(3)->description());
+
+    auto itemReset = printer->issue(3)->item()->reset();
+    EXPECT_NE(nullptr, itemReset);
+    EXPECT_EQ(5, itemReset->order());
+}
