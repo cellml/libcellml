@@ -383,5 +383,14 @@ TEST(Printer, mathMLWithSyntaxError)
     auto component = libcellml::Component::create("component");
     model->addComponent(component);
     component->setMath(math);
+
     EXPECT_EQ(e, printer->printModel(model));
+    EXPECT_EQ(size_t(4), printer->issueCount());
+    EXPECT_EQ("LibXml2 error: Opening and ending tag mismatch: ci line 1 and apply.", printer->issue(0)->description());
+    EXPECT_NE(nullptr, printer->issue(0)->item()->component());
+    EXPECT_EQ("LibXml2 error: Premature end of data in tag math line 1.", printer->issue(3)->description());
+
+    auto itemComponent = printer->issue(3)->item()->component();
+    EXPECT_NE(nullptr, itemComponent);
+    EXPECT_EQ("component", itemComponent->name());
 }
