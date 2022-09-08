@@ -35,6 +35,8 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -127,12 +129,41 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
     return connections;
 }
 
+void replaceAll(std::string &target, const std::string& from, const std::string& to)
+{
+    size_t start_pos = 0;
+    while((start_pos = target.find(from, start_pos)) != std::string::npos) {
+        target.replace(start_pos, from.length(), to);
+        // Handles case where 'to' is a substring of 'from'
+        start_pos += to.length();
+    }
+}
+
 std::string printMath(const std::string &math)
 {
+    // Strip whitespace before and after first <, >.
     static const std::regex before(">[\\s\n\t]*");
     static const std::regex after("[\\s\n\t]*<");
+    static const std::string xmlDeclaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     auto temp = std::regex_replace(math, before, ">");
-    return std::regex_replace(temp, after, "<");
+    temp = std::regex_replace(temp, after, "<");
+    // Remove any XML declarations from the string.
+    replaceAll(temp, xmlDeclaration, "");
+    std::cout << "All" << std::endl;
+    XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
+    xmlKeepBlanksDefault(0);
+    xmlDoc->parse(temp);
+    if (xmlDoc->xmlErrorCount() == 0) {
+        auto result = xmlDoc->prettyPrint();
+        replaceAll(result, xmlDeclaration, "");
+        std::cout << "---------------------" << std::endl;
+        return result;
+    } else {
+        std::cout << ")))))))))))))))))" << std::endl;
+        std::cout << xmlDoc->xmlError(0) << std::endl;
+        std::cout << temp << std::endl;
+    }
+    return temp;
 }
 
 void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap)
