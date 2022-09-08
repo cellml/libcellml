@@ -32,6 +32,7 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "anycellmlelement_p.h"
 #include "internaltypes.h"
 #include "issue_p.h"
 #include "logger_p.h"
@@ -48,6 +49,8 @@ namespace libcellml {
 class Printer::PrinterImpl: public Logger::LoggerImpl
 {
 public:
+    Printer *mPrinter = nullptr;
+
     std::string printComponent(const ComponentPtr &component, IdList &idList, bool autoIds);
     std::string printEncapsulation(const ComponentPtr &component, IdList &idList, bool autoIds);
     std::string printImports(const ModelPtr &model, IdList &idList, bool autoIds);
@@ -291,7 +294,13 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, 
                 repr += printReset(component->reset(i), idList, autoIds);
             }
             if (!component->math().empty()) {
+                size_t startIssueCount = mPrinter->issueCount();
                 repr += printMath(component->math());
+                size_t endIssueCount = mPrinter->issueCount();
+                for (size_t current = startIssueCount; current < endIssueCount; ++current) {
+                    auto issue = mPrinter->issue(current);
+                    issue->mPimpl->mItem->mPimpl->setComponent(component);
+                }
             }
 
             repr += "</component>";
@@ -412,6 +421,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, IdList &idLi
         repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
 
+    size_t startIssueCount = mPrinter->issueCount();
     std::string testValue = printResetChild("test_value", reset->testValueId(), reset->testValue(), idList, autoIds);
     if (!testValue.empty()) {
         repr += ">" + testValue;
@@ -426,6 +436,11 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, IdList &idLi
         hasChild = true;
     }
     if (hasChild) {
+        size_t endIssueCount = mPrinter->issueCount();
+        for (size_t current = startIssueCount; current < endIssueCount; ++current) {
+            auto issue = mPrinter->issue(current);
+            issue->mPimpl->mItem->mPimpl->setReset(reset);
+        }
         repr += "</reset>";
     } else {
         repr += "/>";
@@ -497,6 +512,7 @@ Printer::PrinterImpl *Printer::pFunc()
 Printer::Printer()
     : Logger(new PrinterImpl())
 {
+    pFunc()->mPrinter = this;
 }
 
 Printer::~Printer()
