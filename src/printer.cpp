@@ -135,33 +135,22 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
     return connections;
 }
 
-void replaceAll(std::string &target, const std::string& from, const std::string& to)
-{
-    size_t start_pos = 0;
-    while((start_pos = target.find(from, start_pos)) != std::string::npos) {
-        target.replace(start_pos, from.length(), to);
-        // Handles case where 'to' is a substring of 'from'
-        start_pos += to.length();
-    }
-}
-
 std::string Printer::PrinterImpl::printMath(const std::string &math)
 {
     static const std::regex before(">[\\s\n\t]*");
     static const std::regex after("[\\s\n\t]*<");
     static const std::string xmlDeclaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
-    // Strip whitespace before and after first <, >.
-    auto temp = std::regex_replace(math, before, ">");
-    temp = std::regex_replace(temp, after, "<");
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
-    xmlDoc->parse(temp);
+    xmlDoc->parse(math);
     if (xmlDoc->xmlErrorCount() == 0) {
         auto result = xmlDoc->prettyPrint();
         // Remove any XML declarations from the string.
-        replaceAll(result, xmlDeclaration, "");
-        return result;
+        result = replace(result, xmlDeclaration, "");
+        // Clean whitespace in the math.
+        result = std::regex_replace(result, before, ">");
+        return std::regex_replace(result, after, "<");
     } else {
         for (size_t i = 0; i < xmlDoc->xmlErrorCount(); ++i) {
             auto issue = Issue::IssueImpl::create();
