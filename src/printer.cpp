@@ -50,13 +50,14 @@ namespace libcellml {
 class Printer::PrinterImpl: public Logger::LoggerImpl
 {
 public:
-    std::string printImports(const ModelPtr &model, IdList &idList, bool autoIds);
-    std::string printUnits(const UnitsPtr &units, IdList &idList, bool autoIds);
     std::string printComponent(const ComponentPtr &component, IdList &idList, bool autoIds);
     std::string printEncapsulation(const ComponentPtr &component, IdList &idList, bool autoIds);
-    std::string printVariable(const VariablePtr &variable, IdList &idList, bool autoIds);
+    std::string printImports(const ModelPtr &model, IdList &idList, bool autoIds);
+    std::string printMath(const std::string &math);
     std::string printReset(const ResetPtr &reset, IdList &idList, bool autoIds);
     std::string printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math, IdList &idList, bool autoIds);
+    std::string printUnits(const UnitsPtr &units, IdList &idList, bool autoIds);
+    std::string printVariable(const VariablePtr &variable, IdList &idList, bool autoIds);
 };
 
 std::string printMapVariables(const VariablePairPtr &variablePair, IdList &idList, bool autoIds)
@@ -143,29 +144,31 @@ void replaceAll(std::string &target, const std::string& from, const std::string&
     }
 }
 
-std::string printMath(const std::string &math)
+std::string Printer::PrinterImpl::printMath(const std::string &math)
 {
-    // Strip whitespace before and after first <, >.
     static const std::regex before(">[\\s\n\t]*");
     static const std::regex after("[\\s\n\t]*<");
     static const std::string xmlDeclaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+
+    // Strip whitespace before and after first <, >.
     auto temp = std::regex_replace(math, before, ">");
     temp = std::regex_replace(temp, after, "<");
-    // Remove any XML declarations from the string.
-    replaceAll(temp, xmlDeclaration, "");
-    std::cout << "All" << std::endl;
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
     xmlDoc->parse(temp);
     if (xmlDoc->xmlErrorCount() == 0) {
         auto result = xmlDoc->prettyPrint();
+        // Remove any XML declarations from the string.
         replaceAll(result, xmlDeclaration, "");
-        std::cout << "---------------------" << std::endl;
         return result;
     } else {
-        std::cout << ")))))))))))))))))" << std::endl;
-        std::cout << xmlDoc->xmlError(0) << std::endl;
-        std::cout << temp << std::endl;
+        for (size_t i = 0; i < xmlDoc->xmlErrorCount(); ++i) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("LibXml2 error: " + xmlDoc->xmlError(i));
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
+            addIssue(issue);
+        }
+        temp = "";
     }
     return temp;
 }
@@ -585,12 +588,6 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds)
     if (xmlDoc->xmlErrorCount() == 0) {
         return xmlDoc->prettyPrint();
     } else {
-        for (size_t i = 0; i < xmlDoc->xmlErrorCount(); ++i) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("LibXml2 error: " + xmlDoc->xmlError(i));
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
-            pFunc()->addIssue(issue);
-        }
     }
 
     return "";
