@@ -115,8 +115,6 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
         "  <component name=\"component\">\n"
         "    <variable name=\"variable1\"/>\n"
         "    <variable name=\"variable2\"/>\n"
-        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
-        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "  </component>\n"
         "</model>\n";
 
