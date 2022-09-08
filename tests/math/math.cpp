@@ -324,10 +324,21 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, addingMathMLAsACompleteDocument)
+TEST(Printer, addMathMLAsCompleteXMLDoc)
 {
-    const std::string errorMessage = "LibXml2 error: XML declaration allowed only at the start of the document.";
-
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <divide/>\n"
+        "        <ci>eff</ci>\n"
+        "        <ci>t_ave</ci>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
     const std::string math =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
@@ -338,16 +349,39 @@ TEST(Maths, addingMathMLAsACompleteDocument)
         "  </apply>\n"
         "</math>\n";
 
-    libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr comp = libcellml::Component::create();
-    comp->setName("parameters");
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create();
+    model->setName("model");
 
-    comp->appendMath(math);
-    m->addComponent(comp);
+    auto component = libcellml::Component::create("component");
+    model->addComponent(component);
+    component->setMath(math);
+    EXPECT_EQ(e, printer->printModel(model));
+}
 
-    libcellml::PrinterPtr printer = libcellml::Printer::create();
-    std::string a = printer->printModel(m);
-    EXPECT_EQ(size_t(1), printer->issueCount());
-    EXPECT_EQ(errorMessage, printer->issue(0)->description());
-    EXPECT_EQ("", a);
+TEST(Printer, mathMLWithSyntaxError)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\"/>\n"
+        "</model>\n";
+    const std::string math =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <divide/>\n"
+        "    <ci> eff </ci>\n"
+        "    <ci> t_ave <ci>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component = libcellml::Component::create("component");
+    model->addComponent(component);
+    component->setMath(math);
+    EXPECT_EQ(e, printer->printModel(model));
 }
