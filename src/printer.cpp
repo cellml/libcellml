@@ -26,12 +26,15 @@ limitations under the License.
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
+#include "libcellml/issue.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
 #include "internaltypes.h"
+#include "issue_p.h"
+#include "logger_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -44,8 +47,9 @@ namespace libcellml {
  *
  * The private implementation for the Printer class.
  */
-struct Printer::PrinterImpl
+class Printer::PrinterImpl: public Logger::LoggerImpl
 {
+public:
     std::string printImports(const ModelPtr &model, IdList &idList, bool autoIds);
     std::string printUnits(const UnitsPtr &units, IdList &idList, bool autoIds);
     std::string printComponent(const ComponentPtr &component, IdList &idList, bool autoIds);
@@ -485,13 +489,13 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
 }
 
 Printer::Printer()
-    : mPimpl(new PrinterImpl())
+    : Logger(new PrinterImpl())
 {
 }
 
 Printer::~Printer()
 {
-    delete mPimpl;
+    delete pFunc();
 }
 
 PrinterPtr Printer::create() noexcept
@@ -499,7 +503,7 @@ PrinterPtr Printer::create() noexcept
     return std::shared_ptr<Printer> {new Printer {}};
 }
 
-std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
+std::string Printer::printModel(const ModelPtr &model, bool autoIds)
 {
     if (model == nullptr) {
         return "";
@@ -578,7 +582,18 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
     xmlDoc->parse(repr);
-    return xmlDoc->prettyPrint();
+    if (xmlDoc->xmlErrorCount() == 0) {
+        return xmlDoc->prettyPrint();
+    } else {
+        for (size_t i = 0; i < xmlDoc->xmlErrorCount(); ++i) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("LibXml2 error: " + xmlDoc->xmlError(i));
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
+            pFunc()->addIssue(issue);
+        }
+    }
+
+    return "";
 }
 
 } // namespace libcellml
