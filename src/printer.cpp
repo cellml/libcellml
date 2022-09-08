@@ -38,8 +38,6 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
-#include <iostream>
-
 namespace libcellml {
 
 /**
@@ -168,9 +166,9 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
             addIssue(issue);
         }
-        temp = "";
     }
-    return temp;
+
+    return "";
 }
 
 void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap)
@@ -491,6 +489,11 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &id
     return repr;
 }
 
+Printer::PrinterImpl *Printer::pFunc()
+{
+    return reinterpret_cast<Printer::PrinterImpl *>(Logger::pFunc());
+}
+
 Printer::Printer()
     : Logger(new PrinterImpl())
 {
@@ -535,11 +538,11 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds)
     }
 
     if (model->hasImports()) {
-        repr += mPimpl->printImports(model, idList, autoIds);
+        repr += pFunc()->printImports(model, idList, autoIds);
     }
 
     for (size_t i = 0; i < model->unitsCount(); ++i) {
-        repr += mPimpl->printUnits(model->units(i), idList, autoIds);
+        repr += pFunc()->printUnits(model->units(i), idList, autoIds);
     }
 
     std::string componentEncapsulation;
@@ -547,9 +550,9 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds)
     //  ... but their locally-defined children have not.
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->component(i);
-        repr += mPimpl->printComponent(component, idList, autoIds);
+        repr += pFunc()->printComponent(component, idList, autoIds);
         if (component->componentCount() > 0) {
-            componentEncapsulation += mPimpl->printEncapsulation(component, idList, autoIds);
+            componentEncapsulation += pFunc()->printEncapsulation(component, idList, autoIds);
         }
     }
 
@@ -585,12 +588,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds)
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
     xmlDoc->parse(repr);
-    if (xmlDoc->xmlErrorCount() == 0) {
-        return xmlDoc->prettyPrint();
-    } else {
-    }
-
-    return "";
+    return xmlDoc->prettyPrint();
 }
 
 } // namespace libcellml

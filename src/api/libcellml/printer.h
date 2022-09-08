@@ -66,7 +66,7 @@ private:
     Printer(); /**< Constructor, @private. */
 
     class PrinterImpl; /**< Forward declaration for pImpl idiom, @private. */
-    PrinterImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    PrinterImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
