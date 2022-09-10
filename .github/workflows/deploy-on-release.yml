@@ -342,7 +342,7 @@ jobs:
             MACOSX_DEPLOYMENT_TARGET=11.0
             LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
-          CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
+          # CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
 
       - name: Upload Python wheels as artifacts
         if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
