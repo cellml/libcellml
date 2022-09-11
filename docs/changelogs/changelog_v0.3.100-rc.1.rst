@@ -1,2 +1,0 @@
-libCellML latest Changelog
-==========================

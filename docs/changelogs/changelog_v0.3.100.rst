@@ -1,5 +1,5 @@
-libCellML latest Changelog
-==========================
+libCellML v0.3.100 Changelog
+============================
 
 Infrastructure
 --------------
