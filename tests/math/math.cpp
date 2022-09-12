@@ -22,7 +22,7 @@ limitations under the License.
 
 // Version 2.9.4 of LibXml2 reports the following errors,
 // used on macOS and Linux CI machines.
-const std::vector<const std::string> expectedIssues_2_9_4 = {
+const std::vector<std::string> expectedIssues_2_9_4 = {
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
     "LibXml2 error: Premature end of data in tag apply line 3.",
@@ -31,7 +31,7 @@ const std::vector<const std::string> expectedIssues_2_9_4 = {
 
 // Version 2.9.10 of LibXml2 reports the following errors,
 // used on Windows CI machines.
-const std::vector<const std::string> expectedIssues_2_9_10 = {
+const std::vector<std::string> expectedIssues_2_9_10 = {
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
     "LibXml2 error: EndTag: '</' not found.",
