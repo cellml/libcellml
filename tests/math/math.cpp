@@ -408,7 +408,7 @@ TEST(Printer, mathMLWithSyntaxError)
         }
     }
 
-    auto itemComponent = printer->issue(3)->item()->component();
+    auto itemComponent = printer->issue(printer->issueCount() - 1)->item()->component();
     EXPECT_NE(nullptr, itemComponent);
     EXPECT_EQ("component", itemComponent->name());
 }
@@ -456,7 +456,7 @@ TEST(Printer, mathMLInResetWithSyntaxError)
         }
     }
 
-    auto itemReset = printer->issue(3)->item()->reset();
+    auto itemReset = printer->issue(printer->issueCount() - 1)->item()->reset();
     EXPECT_NE(nullptr, itemReset);
     EXPECT_EQ(5, itemReset->order());
 }
