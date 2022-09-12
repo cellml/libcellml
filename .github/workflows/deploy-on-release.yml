@@ -290,6 +290,10 @@ jobs:
             os: ubuntu-20.04
           - name: 'macOS'
             os: macos-12
+        exclude:
+          - os: macos-12
+            py: '3.7'
+
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v2
@@ -310,16 +314,16 @@ jobs:
           echo "Setting build as: BUILD=cp${v/./}-*"
           echo ::set-output name=BUILD::cp${v/./}-*
           if [[ "macOS" == "${{ matrix.name }}" ]]; then
-            if [[ "${{ matrix.py }}" == "3.9" || "${{ matrix.py }}" == "3.10" ]]; then
-              echo "Setting MACOS_ARCHS as: ARCHS='x86_64 arm64'"
-              echo ::set-output name=ARCHS::"x86_64 arm64"
+            if [[ "${{ matrix.py }}" == "3.8" ]]; then
+              echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64'"
+              echo ::set-output name=MACOS_ARCHS::x86_64
             else
-              echo "Setting MACOS_ARCHS as: ARCHS='x86_64'"
-              echo ::set-output name=ARCHS::x86_64
+              echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64 arm64'"
+              echo ::set-output name=MACOS_ARCHS::"x86_64 arm64"
             fi
           else
-            echo "Setting OTHER_ARCHS as: ARCHS='x86_64'"
-            echo ::set-output name=ARCHS::x86_64
+            echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64'"
+            echo ::set-output name=MACOS_ARCHS::x86_64
           fi
 
       - name: Configure MSVC
@@ -339,7 +343,7 @@ jobs:
         env:
           #CIBW_BUILD_VERBOSITY: 1
           CIBW_ARCHS: auto64
-          CIBW_ARCHS_MACOS: ${{ steps.setup.outputs.archs }}
+          CIBW_ARCHS_MACOS: ${{ steps.setup.outputs.macos_archs }}
           CIBW_BUILD: ${{ steps.setup.outputs.build }}
           CIBW_TEST_SKIP: "*_arm64"
           CIBW_BEFORE_ALL_LINUX: yum install -y libxml2-devel || (apk add libxml2-dev && rm /usr/lib/cmake/libxml2/libxml2-config.cmake)
