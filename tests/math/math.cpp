@@ -20,6 +20,20 @@ limitations under the License.
 
 #include <libcellml>
 
+// Depending on the libXML2 version the error messages differ.
+const std::vector<std::string> expectedIssues_2_9_4 = {
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: Premature end of data in tag apply line 3.",
+    "LibXml2 error: Premature end of data in tag math line 2.",
+};
+
+const std::vector<std::string> expectedIssues_2_9_10 = {
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: EndTag: '</' not found.",
+};
+
 TEST(Maths, setAndGetMath)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -383,10 +397,16 @@ TEST(Printer, mathMLWithSyntaxError)
     component->setMath(math);
 
     EXPECT_EQ(e, printer->printModel(model));
-    EXPECT_EQ(size_t(4), printer->issueCount());
-    EXPECT_EQ("LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.", printer->issue(0)->description());
-    EXPECT_NE(nullptr, printer->issue(0)->item()->component());
-    EXPECT_EQ("LibXml2 error: Premature end of data in tag math line 2.", printer->issue(3)->description());
+
+    if (expectedIssues_2_9_4.size() == printer->issueCount()) {
+        for (size_t i = 0; i < printer->issueCount(); ++i) {
+            EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
+        }
+    } else {
+        for (size_t i = 0; i < printer->issueCount(); ++i) {
+            EXPECT_EQ(expectedIssues_2_9_10.at(i), printer->issue(i)->description());
+        }
+    }
 
     auto itemComponent = printer->issue(3)->item()->component();
     EXPECT_NE(nullptr, itemComponent);
@@ -426,10 +446,15 @@ TEST(Printer, mathMLInResetWithSyntaxError)
     component->addReset(reset);
 
     EXPECT_EQ(e, printer->printModel(model));
-    EXPECT_EQ(size_t(4), printer->issueCount());
-    EXPECT_EQ("LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.", printer->issue(0)->description());
-    EXPECT_NE(nullptr, printer->issue(0)->item()->reset());
-    EXPECT_EQ("LibXml2 error: Premature end of data in tag math line 2.", printer->issue(3)->description());
+    if (expectedIssues_2_9_4.size() == printer->issueCount()) {
+        for (size_t i = 0; i < printer->issueCount(); ++i) {
+            EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
+        }
+    } else {
+        for (size_t i = 0; i < printer->issueCount(); ++i) {
+            EXPECT_EQ(expectedIssues_2_9_10.at(i), printer->issue(i)->description());
+        }
+    }
 
     auto itemReset = printer->issue(3)->item()->reset();
     EXPECT_NE(nullptr, itemReset);
