@@ -22,6 +22,6 @@ describe("Version tests", () => {
     libcellml = await libCellMLModule();
   });
   test('Checking version string.', () => {
-    expect(libcellml.versionString()).toBe('0.3.101');
+    expect(libcellml.versionString()).toBe('0.3.102');
   });
 })
