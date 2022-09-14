@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.3.102. */
+/* The content of this file was generated using the C profile of libCellML 0.3.103. */
 
 #include "model.external.h"
 
@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.3.0";
-const char LIBCELLML_VERSION[] = "0.3.102";
+const char LIBCELLML_VERSION[] = "0.3.103";
 
 const size_t VARIABLE_COUNT = 2;
 
