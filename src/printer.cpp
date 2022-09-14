@@ -39,6 +39,8 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -139,7 +141,7 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
 {
     static const std::regex before(">[\\s\n\t]*");
     static const std::regex after("[\\s\n\t]*<");
-    static const std::string xmlDeclaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    static const std::regex xmlDeclaration(R"|(<\?xml[[:space:]]+version=.*\?>)|");
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
@@ -147,7 +149,7 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
     if (xmlDoc->xmlErrorCount() == 0) {
         auto result = xmlDoc->prettyPrint();
         // Remove any XML declarations from the string.
-        result = replace(result, xmlDeclaration, "");
+        result = std::regex_replace(result, xmlDeclaration, "");
         // Clean whitespace in the math.
         result = std::regex_replace(result, before, ">");
         return std::regex_replace(result, after, "<");
