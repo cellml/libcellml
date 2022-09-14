@@ -19,6 +19,7 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/logger.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -28,7 +29,7 @@ namespace libcellml {
  *
  * The Printer class is for representing a CellML Printer.
  */
-class LIBCELLML_EXPORT Printer
+class LIBCELLML_EXPORT Printer: public Logger
 {
 public:
     ~Printer(); /**< Destructor, @private. */
@@ -59,13 +60,13 @@ public:
      *
      * @return The @c std::string representation of the @ref Model.
      */
-    std::string printModel(const ModelPtr &model, bool autoIds = false) const;
+    std::string printModel(const ModelPtr &model, bool autoIds = false);
 
 private:
     Printer(); /**< Constructor, @private. */
 
-    struct PrinterImpl; /**< Forward declaration for pImpl idiom, @private. */
-    PrinterImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    class PrinterImpl; /**< Forward declaration for pImpl idiom, @private. */
+    PrinterImpl *pFunc(); /**< Getter for private implementation pointer, @private. */
 };
 
 } // namespace libcellml
