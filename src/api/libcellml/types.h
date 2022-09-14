@@ -227,6 +227,7 @@ class LIBCELLML_EXPORT AnyCellmlElement
     friend class Importer;
     friend class Issue;
     friend class Parser;
+    friend class Printer;
     friend class Validator;
 
 public:
