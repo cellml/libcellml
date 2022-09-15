@@ -13,6 +13,7 @@
 # limitations under the License.
 
 include(CheckCXXCompilerFlag)
+include(TestUndefinedSymbolsAllowed)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
@@ -29,6 +30,8 @@ else ()
   else()
     set(_FIND_PYTHON_DEVELOPMENT_TYPE Development)
   endif()
+
+  test_undefined_symbols_allowed()
 
   find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter ${_FIND_PYTHON_DEVELOPMENT_TYPE})
 
