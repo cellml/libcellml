@@ -644,7 +644,7 @@ TEST(Model, cleanEmptyComponents)
         "  <component>\n"
         "    <reset/>\n"
         "  </component>\n"
-        "  <component>abc</component>\n"
+        "  <component/>\n"
         "</model>\n";
     auto model = libcellml::Model::create();
     auto c1 = libcellml::Component::create("c1");

@@ -112,10 +112,25 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   if(NOT POLICY CMP0078)
     set(MODULE_TARGET ${SWIG_MODULE_${MODULE_TARGET}_REAL_NAME})
   endif()
+  target_link_libraries(${MODULE_TARGET} PRIVATE cellml)
+
   if(FIND_PYTHON_DEVELOPMENT_MODULE)
-    target_link_libraries(${MODULE_TARGET} PRIVATE cellml Python::Module)
+    set(_PYTHON_LINK_TARGET Python::Module)
   else()
-    target_link_libraries(${MODULE_TARGET} PRIVATE cellml Python::Python)
+    set(_PYTHON_LINK_TARGET Python::Python)
+  endif()
+
+  if (APPLE)
+    # Specifically allow dynamic lookup, here we are really targetting Python symbols.
+    set_target_properties(${MODULE_TARGET} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    # But, we do need to know about the Python include directories.
+    target_include_directories(${MODULE_TARGET} PRIVATE ${Python_INCLUDE_DIRS})
+  elseif (UNDEFINED_SYMBOLS_ALLOWED)
+    # Linker allows undefined symbols, so let's not link Python.
+    # But, we do need to know about the Python include directories.
+    target_include_directories(${MODULE_TARGET} PRIVATE ${Python_INCLUDE_DIRS})
+  else()
+    target_link_libraries(${MODULE_TARGET} PRIVATE ${_PYTHON_LINK_TARGET})
   endif()
   # Disable use of Debug Python libraries when not present on Windows
   # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
@@ -179,26 +194,6 @@ add_custom_command(TARGET python_bindings POST_BUILD
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${LIBCELLML_PYTHON_PACKAGE_DIR} ${SWIG_GENERATED_INTERMEDIARIES_FILES_DIR})
 
 if(SKBUILD)
-  if(INSTALL_NAME_TOOL_AVAILABLE)
-    set(LIST_SEPARATOR "<sep>")
-    set(_ARGS)
-    foreach(_SOME ${SWIG_PYTHON_BINDINGS_TARGETS})
-      list(APPEND _ARGS $<TARGET_FILE:${_SOME}>)
-    endforeach()
-
-    set(_ARGS_STR "${_ARGS}")
-    string(REPLACE ";" "${LIST_SEPARATOR}" _ARGS_STR "${_ARGS_STR}")
-    add_custom_command(TARGET python_bindings POST_BUILD
-      COMMAND ${CMAKE_COMMAND}
-        -DSHARED_OBJECT_MODULES="${_ARGS_STR}"
-        -DLIST_SEPARATOR="${LIST_SEPARATOR}"
-        -DINSTALL_NAME_TOOL_EXE="${INSTALL_NAME_TOOL_EXE}"
-        -DPython_VERSION_MAJOR="${Python_VERSION_MAJOR}"
-        -DPython_VERSION_MINOR="${Python_VERSION_MINOR}"
-        -P ${PROJECT_SOURCE_DIR}/cmake/add_rpath_for_python.cmake
-    )
-  endif()
-
   install(TARGETS ${SWIG_PYTHON_BINDINGS_TARGETS}
     COMPONENT wheel
     DESTINATION libcellml
@@ -221,4 +216,3 @@ if(SKBUILD)
     DEPENDS ${SWIG_PYTHON_BINDINGS_TARGETS}
   )
 endif()
-
