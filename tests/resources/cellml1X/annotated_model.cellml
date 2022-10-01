@@ -15,7 +15,7 @@ DESCRIPTION :  This file contains a CellML description of Yates et al.'s 2007 ma
 
 CHANGES:
 
---><model xmlns="http://www.cellml.org/cellml/1.0#" xmlns:cmeta="http://www.cellml.org/metadata/1.1#" cmeta:id="yates_model_2007" name="truncated_yates_stark_klein_antia_callard_model_2007_version01">
+--><model xmlns="http://www.cellml.org/cellml/1.0#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#" cmeta:id="yates_model_2007" name="truncated_yates_stark_klein_antia_callard_model_2007_version01">
 
 <documentation xmlns="http://cellml.org/tmp-documentation">
 <article>

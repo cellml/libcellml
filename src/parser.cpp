@@ -302,7 +302,7 @@ ModelPtr Parser::ParserImpl::parseModel(const std::string &input, bool parseVers
  */
 bool isIdAttribute(const XmlAttributePtr &attribute, bool transforming)
 {
-    return attribute->isType("id") || (attribute->isType("id", CMETA_1_0_NS) && transforming) || (attribute->isType("id", CMETA_1_1_NS) && transforming);
+    return attribute->isType("id") || (attribute->isType("id", CMETA_1_0_NS) && transforming);
 }
 
 /**
