@@ -46,6 +46,12 @@ See the :ref:`Coding Standards <coding_standards>` document for deviations from 
 
 Merging a pull request
 ======================
+
+.. note::
+
+  Caution: before merging a pull request make sure that a release is not currently in progress.
+  If a release is in progress, the prime repository will have a branch called *release_staging_<version number>* (where <version number> is a semantic version number).
+
 When merging a pull request, the reviewer should add a comment so that the corresponding issue is closed.
 This can be done by adding a directive to the merge commit, like so::
 
