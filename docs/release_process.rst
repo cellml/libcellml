@@ -5,6 +5,7 @@ Release process for *libCellML*
 ===============================
 
 This document details the process for making a release of *libCellML*.
+The target audience of this document are the developers of *libCellML* with authority for write access to the `cellml/libcellml <https://github.com/cellml/libcellml>`__ repository.
 Releases are made using builders from the Buildbot Continuous Integration (CI).
 There are four steps in making a release.
 
@@ -17,7 +18,6 @@ Each section has further details on what actions are required for a particular s
 Each step must be done in order from step 1 through to step 4.
 
 For all the steps in creating a release, you must be logged in to the Buildbot CI and be in the *admin* group.
-If you are neither of these you will not be able to perform any of these actions.
 
 .. note::
 
@@ -41,9 +41,9 @@ The version that you set in the interface will be applied as is to the codebase.
 libCellML uses semantic versioning as a versioning system, see `Semantic versioning <https://semver.org/>`_ for further information.
 As such, each part of the version number carries a specific meaning and when setting a version number you need to make sure you are following semantic versioning rules.
 There are no checks to determine if semantic versioning is being followed.
-To version number is split into two parts the core version, made up of the major, minor, and patch version identifiers, and the developer version.
+The version number is split into two parts the core version, made up of the major, minor, and patch version identifiers, and the developer version.
 An official release is created by leaving the developer version input empty.
-The main difference between an official release and a developer release is the assets built by the release process are not uploaded or published to public registries or attached to an associated GitHub release.
+The main difference between an official release and a developer release is the assets built by the developer release process are not uploaded or published to public registries or attached to an associated GitHub release.
 
 .. figure:: ./images/release_process/set_version_builder_interface.png
    :align: center
@@ -99,6 +99,7 @@ The only thing you can do is start a build, (:numref:`libcellml_release_process_
 The prepare release builder will kick off a round of unit tests as part of the preparation process.
 
 When the release has been prepared the *release_staging_<version number>* branch will have been created and a changelog and table of contents entries for the changelog will have been created.
+Manual changes to the generated changelog can be made at this point in the release process.
 The changes made for the new changelog should be the only changes from the current *main* branch.
 
 Step 3 - Creating the release
