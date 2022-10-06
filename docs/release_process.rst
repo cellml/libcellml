@@ -185,7 +185,7 @@ The end-to-end testing database is the tag that specifies the version of the dat
    Example of choosing a tag for the end-to-end testing database.
 
 The *Finalise Release Builder* will update the libCellML staging website with the API documentation and the developer documentation.
-The user documentation will only be udpated for the release if the end-to-end testing passes.
+The user documentation will only be updated for the release, if the end-to-end testing passes.
 To this end, it is important to choose the appropriate end-to-end testing tag and end-to-end testing database tag.
 If the end-to-end testing passes, the specifics of the versions that the release was tested with will be saved and surfaced on the website.
 
