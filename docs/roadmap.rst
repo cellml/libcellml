@@ -35,14 +35,14 @@ This section will specify the environment for the development of libCellML.
 * Test: unit testing to use `gtest <https://github.com/google/googletest/>`_.
 * Documentation: written in `reStructuredText <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html>`_.
 * Documentation: API and source code examples will be documented using C++-style `Doxygen <http://www.doxygen.org/>`_ comments.
-* Website: `libcellml.org <https://libcellml.org>`_.
+* Website: `libcellml.org <https://libcellml.org>`__.
 * Website: content pulled from libCellML documentation, tutorials, and `website source <https://github.com/libcellml/website-src>`_.
 * Deploy: use Github actions to build artifacts for deployment.
 
 Requirements
 ------------
 
-* Documentation: made available on `libcellml.org <https://libcellml.org/>`_.
+* Documentation: made available on `libcellml.org <https://libcellml.org/>`__.
 * Documentation: is amenable for inclusion in external documentation efforts
 * Development: Agile, test driven development where:
 
