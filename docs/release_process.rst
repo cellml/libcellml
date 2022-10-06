@@ -162,7 +162,7 @@ The end-to-end testing database is the tag that specifies the version of the dat
 
 .. figure:: ./images/release_process/release_branch_chooser_example.png
    :align: center
-   :width: 25%
+   :width: 50%
    :alt: Buildbot finalise release interface showing example of choosing an available branch.
    :name: libcellml_release_process_release_branch_chooser_example
 
@@ -170,7 +170,7 @@ The end-to-end testing database is the tag that specifies the version of the dat
 
 .. figure:: ./images/release_process/end_to_end_framework_tag_chooser_example.png
    :align: center
-   :width: 25%
+   :width: 50%
    :alt: Buildbot finalise release interface showing example of choosing an end-to-end testing tag.
    :name: libcellml_release_process_end_to_end_framework_tag_chooser_example
 
@@ -178,7 +178,7 @@ The end-to-end testing database is the tag that specifies the version of the dat
 
 .. figure:: ./images/release_process/end_to_end_database_tag_chooser_example.png
    :align: center
-   :width: 25%
+   :width: 50%
    :alt: Buildbot finalise release interface showing example of choosing an end-to-end database tag.
    :name: libcellml_release_process_end_to_end_database_tag_chooser_example
 
