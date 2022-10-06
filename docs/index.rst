@@ -12,7 +12,8 @@ While there are many types of contribution, this section focuses on contribution
 #. :ref:`Testing libCellML<testing>` : How to test your code without opening a pull request.
 #. :ref:`Contributing to libCellML<contributing>` : Getting your code into the libCellML prime repository.
 #. :ref:`Review process<review_process>` : Instructions for code review and responding to comments.
-#. :ref:`Coding Standards<coding_standards>` : Guidelines for coding style and standards for contributions.
+#. :ref:`Coding standards<coding_standards>` : Guidelines for coding style and standards for contributions.
+#. :ref:`Release process<release_process>` : Instructions for making a release of libCellML.
 #. :ref:`Glossary<glossary_page>` : Glossary of terminology
 
 .. container:: quicklinks
@@ -22,9 +23,10 @@ While there are many types of contribution, this section focuses on contribution
    :ref:`Configuring and building libCellML<configure_and_build>`
    :ref:`Testing libCellML<testing>`
    :ref:`Contributing to libCellML<contributing>` 
-   :ref:`Review Process<review_process>`
-   :ref:`Coding Standards<coding_standards>`
-   :ref:`Glossary<glossary_page>` 
+   :ref:`Review process<review_process>`
+   :ref:`Coding standards<coding_standards>`
+   :ref:`Release process<release_process>`
+   :ref:`Glossary<glossary_page>`
 
 ..
   The following content is automatically generated do not edit between the markers, at some point it will get overwritten.
