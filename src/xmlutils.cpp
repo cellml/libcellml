@@ -80,7 +80,7 @@ XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node)
     return undefinedNamespaces;
 }
 
-std::vector<XmlAttributePtr> findAllAttributesWithOldCellmlNamespace(const XmlNodePtr &node)
+std::vector<XmlAttributePtr> attributesWithCellml1XNamespace(const XmlNodePtr &node)
 {
     std::vector<XmlAttributePtr> attributes;
 
@@ -95,7 +95,7 @@ std::vector<XmlAttributePtr> findAllAttributesWithOldCellmlNamespace(const XmlNo
             tempAttribute = tempAttribute->next();
         }
 
-        auto subAttributes = findAllAttributesWithOldCellmlNamespace(tempNode->firstChild());
+        auto subAttributes = attributesWithCellml1XNamespace(tempNode->firstChild());
 
         // Append attributes found on child nodes.
         attributes.insert(attributes.end(), subAttributes.begin(), subAttributes.end());

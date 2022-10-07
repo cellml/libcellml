@@ -70,7 +70,7 @@ void traverseTreeRemovingOldCellmlNamespaces(const XmlNodePtr &node);
  *
  * @return A @c std::vector list of @c XmlAttribute pointers that are in the CellML 1.0 or CellML 1.1 namespace.
  */
-std::vector<XmlAttributePtr> findAllAttributesWithOldCellmlNamespace(const XmlNodePtr &node);
+std::vector<XmlAttributePtr> attributesWithCellml1XNamespace(const XmlNodePtr &node);
 
 /**
  * @brief Turn XML content with potentially multiple root elements in a vector of documents.
