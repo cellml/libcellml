@@ -292,8 +292,8 @@ ModelPtr Parser::ParserImpl::parseModel(const std::string &input, bool parseVers
  * @brief Test to determine if the attribute is an XML identifier.
  *
  * Test to determine if the attribute is an XML identifier. When
- * transfoming from CellML 1.0 and CellML 1.1 it will also consider
- * namespaced identifiers often used in CellML 1.X models.
+ * transfoming from CellML 1.0 and CellML 1.1 it will also test for
+ * XML identifiers in the CMETA 1.0 namespace.
  *
  * @param attribute The attribute to test.
  * @param transforming @true if transfomring from CellML 1.0 or CellML 1.1, @c false otherwise.
