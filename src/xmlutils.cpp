@@ -106,7 +106,7 @@ std::vector<XmlAttributePtr> attributesWithCellml1XNamespace(const XmlNodePtr &n
     return attributes;
 }
 
-void traverseTreeRemovingOldCellmlNamespaces(const XmlNodePtr &node)
+void removeCellml1XNamespaces(const XmlNodePtr &node)
 {
     auto tempNode = node;
     while (tempNode != nullptr) {
@@ -120,7 +120,7 @@ void traverseTreeRemovingOldCellmlNamespaces(const XmlNodePtr &node)
             }
         }
 
-        traverseTreeRemovingOldCellmlNamespaces(tempNode->firstChild());
+        removeCellml1XNamespaces(tempNode->firstChild());
 
         tempNode = tempNode->next();
     }
