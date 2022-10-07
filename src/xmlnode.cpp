@@ -179,6 +179,11 @@ bool XmlNode::isCellmlElement(const char *name) const
     return isCellml20Element(name) || isCellml11Element(name) || isCellml10Element(name);
 }
 
+bool XmlNode::isCellml20Element(const char *name) const
+{
+    return isElement(name, CELLML_2_0_NS);
+}
+
 bool XmlNode::isCellml10Element(const char *name) const
 {
     return isElement(name, CELLML_1_0_NS);
@@ -192,11 +197,6 @@ bool XmlNode::isCellml11Element(const char *name) const
 bool XmlNode::isCellml1XElement(const char *name) const
 {
     return isCellml10Element(name) || isCellml11Element(name);
-}
-
-bool XmlNode::isCellml20Element(const char *name) const
-{
-    return isElement(name, CELLML_2_0_NS);
 }
 
 bool XmlNode::isMathmlElement(const char *name) const
