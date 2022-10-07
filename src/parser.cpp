@@ -72,7 +72,7 @@ public:
      * a CellML model.
      *
      * The @p parseVersion1XModels if @c true will parse CellML 1.0 and CellML 1.1 elements
-     * into CellML 2.0 as best it can.
+     * into CellML 2.0 as best as it can.
      *
      * If @p renameNonSiUnits is @c true then some SI units will be renamed. For example, rename *liter* to *litre*.
      *
