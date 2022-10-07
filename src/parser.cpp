@@ -604,7 +604,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             // If transforming, manipulate the math sub-document CellML namespaces.
             if (mTransformFrom1X) {
                 // Find all attributes using old CellML namespace.
-                auto cellmlAttributes = findAllAttributesWithOldCellmlNamespace(childNode);
+                auto cellmlAttributes = attributesWithCellml1XNamespace(childNode);
 
                 // Remove all old CellML namespace definitions and references.
                 traverseTreeRemovingOldCellmlNamespaces(childNode);
