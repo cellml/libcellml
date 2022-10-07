@@ -355,7 +355,7 @@ bool areUnitsDefinedInComponent(const XmlNodePtr &node)
  *
  * @param node The XML node to test.
  *
- * @return @c true if the @p node has a child node with a relationship that is an encapsulation, @c false otherwise
+ * @return @c true if the @p node has a child node with a relationship that is an encapsulation, @c false otherwise.
  */
 bool isEncapsulationRelationship(const XmlNodePtr &node)
 {
