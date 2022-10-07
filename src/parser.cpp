@@ -317,15 +317,15 @@ bool isIdAttribute(const XmlAttributePtr &attribute, bool transforming)
  */
 std::string convertNonSiUnits(const std::string &unitsName)
 {
-    std::string convertedName = unitsName;
     if (unitsName == "liter") {
-        convertedName = "litre";
-    } else if (unitsName == "meter") {
-        convertedName = "metre";
+        return "litre";
     }
 
-    return convertedName;
-}
+    if  (unitsName == "meter") {
+        return "metre";
+    }
+
+    return unitsName;}
 
 /**
  * @brief Test to determine if a units element is present.
