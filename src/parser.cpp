@@ -32,7 +32,6 @@ limitations under the License.
 #include "anycellmlelement_p.h"
 #include "issue_p.h"
 #include "logger_p.h"
-#include "model_p.h"
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
