@@ -75,10 +75,10 @@ public:
      * Returns a @c nullptr if the @p input is not a @c std::string representation
      * of a CellML model.
      *
-     * All existing issues will be removed before the input is parsed.
+     * All existing issues will be removed before the @p input is parsed.
      *
      * Set the @p renameNonSiUnits to @c true to rename common alternate spellings
-     * of SI units. Renaming non-SI units is @c false by default. The SI units
+     * of SI units. Renaming non-SI units is @c true by default. The SI units
      * that will get renamed if this parameter is true are:
      *  * liter -> litre
      *  * meter -> metre
@@ -88,7 +88,7 @@ public:
      *
      * @return The new @c ModelPtr deserialised from the input string.
      */
-    ModelPtr parse1XModel(const std::string &input, bool renameNonSiUnits = false);
+    ModelPtr parse1XModel(const std::string &input, bool renameNonSiUnits = true);
 
 private:
     Parser(); /**< Constructor, @private. */
