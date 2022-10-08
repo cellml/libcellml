@@ -645,19 +645,19 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             }
         } else if (childNode->isComment()) {
             // Do nothing.
+        } else if (mParseFromCellml1X && (childNode->name() == "units")) {
+            // Do nothing.
         } else {
-            if (!(mParseFromCellml1X && (childNode->name() == "units"))) {
-                auto issue = Issue::IssueImpl::create();
-                if (mParseFromCellml1X) {
-                    issue->mPimpl->setDescription("Component '" + component->name() + "' ignoring child element '" + childNode->name() + "'.");
-                    issue->mPimpl->setLevel(Issue::Level::MESSAGE);
-                } else {
-                    issue->mPimpl->setDescription("Component '" + component->name() + "' has an invalid child element '" + childNode->name() + "'.");
-                }
-                issue->mPimpl->mItem->mPimpl->setComponent(component);
+            auto issue = Issue::IssueImpl::create();
+            if (mParseFromCellml1X) {
+                issue->mPimpl->setDescription("Component '" + component->name() + "' ignoring child element '" + childNode->name() + "'.");
+                issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+            } else {
+                issue->mPimpl->setDescription("Component '" + component->name() + "' has an invalid child element '" + childNode->name() + "'.");
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_CHILD);
-                addIssue(issue);
             }
+            issue->mPimpl->mItem->mPimpl->setComponent(component);
+            addIssue(issue);
         }
         childNode = childNode->next();
     }
@@ -1312,14 +1312,14 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             }
         } else if (componentRefNode->isComment()) {
             // Do nothing.
+        } else if (mParseFromCellml1X && componentRefNode->isCellml1XElement("relationship_ref")) {
+            // Do nothing.
         } else {
-            if (!(mParseFromCellml1X && componentRefNode->isCellml1XElement("relationship_ref"))) {
-                auto issue = Issue::IssueImpl::create();
-                issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + componentRefNode->name() + "'.");
-                issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
-                addIssue(issue);
-            }
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + componentRefNode->name() + "'.");
+            issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
+            addIssue(issue);
         }
 
         // Add the parentComponent to the model with its child(ren) encapsulated.
