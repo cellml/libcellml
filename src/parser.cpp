@@ -418,7 +418,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             issue->mPimpl->setDescription("Model element is of invalid type '" + node->name() + "'. A valid CellML root node should be of type 'model'.");
         }
         issue->mPimpl->mItem->mPimpl->setModel(model);
-        if (!mParseFromCellml1X && !node->isCellml20Element("model")) {
+        if (!mParseFromCellml1X) {
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_ELEMENT);
         }
         addIssue(issue);
@@ -1332,7 +1332,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
                 addIssue(issue);
             }
-        } else if (!parentComponent && haveComponentRef) {
+        } else if (haveComponentRef) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' specifies an invalid parent component_ref that also does not have any children.");
             issue->mPimpl->mItem->mPimpl->setEncapsulation(model);

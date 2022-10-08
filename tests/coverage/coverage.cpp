@@ -105,3 +105,30 @@ TEST(Coverage, unitsItem)
 
     EXPECT_FALSE(unitsItem->isValid());
 }
+
+TEST(Coverage, parserBranchesCellml10RelationshipRef)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto model = parser->parse1XModel(fileContents("coverage/cellml1x_relationshipref.xml"), true);
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
+}
+
+TEST(Coverage, parserBranchesCMetaIdCellml2)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/cmeta_id_cellml2.xml"));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(0), model->componentCount());
+}
+
+TEST(Coverage, parserBranchesCellml1XImportComponent)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto model = parser->parse1XModel(fileContents("coverage/cellml1x_import_component.xml"));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
+}
