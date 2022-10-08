@@ -113,7 +113,7 @@ TEST(ParserTransform, parseNamedModelCellml10)
 TEST(ParserTransform, hodgkinHuxleyCellml10)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/Hodgkin_Huxley_1952_modified.cellml"));
+    auto model = parser->parse1XModel(fileContents("cellml1X/Hodgkin_Huxley_1952_modified.cellml"), false);
 
     EXPECT_EQ(size_t(7), model->unitsCount());
     EXPECT_EQ(size_t(5), model->componentCount());
@@ -128,7 +128,7 @@ TEST(ParserTransform, hodgkinHuxleyCellml10)
 TEST(ParserTransform, annotatedModel)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/annotated_model.cellml"));
+    auto model = parser->parse1XModel(fileContents("cellml1X/annotated_model.cellml"), false);
 
     EXPECT_EQ(size_t(5), model->unitsCount());
     EXPECT_EQ(size_t(2), model->componentCount());
@@ -143,7 +143,7 @@ TEST(ParserTransform, annotatedModel)
 TEST(ParserTransform, renameNonSiUnits)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/non_si_units.cellml"), true);
+    auto model = parser->parse1XModel(fileContents("cellml1X/non_si_units.cellml"));
 
     EXPECT_EQ(size_t(11), model->unitsCount());
     EXPECT_EQ(size_t(2), model->componentCount());
