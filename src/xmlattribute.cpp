@@ -16,9 +16,9 @@ limitations under the License.
 
 #include "xmlattribute.h"
 
-#include <array>
 #include <libxml/tree.h>
 #include <string>
+#include <vector>
 
 #include "namespaces.h"
 
@@ -117,9 +117,10 @@ void XmlAttribute::removeAttribute()
 
 void XmlAttribute::setNamespacePrefix(const std::string &prefix)
 {
-    std::array<xmlChar, 50> buffer = {};
+    std::vector<xmlChar> buffer;
     xmlNodePtr parent = mPimpl->mXmlAttributePtr->parent;
 
+    buffer.reserve(prefix.length() + 1);
     xmlChar *fullElemName = xmlBuildQName(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(prefix.c_str()), buffer.data(), static_cast<int>(buffer.size()));
 
     auto oldAttribute = mPimpl->mXmlAttributePtr;
