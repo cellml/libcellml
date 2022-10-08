@@ -152,7 +152,6 @@ public:
      * @brief Set the namespace prefix for this XmlAttribute.
      *
      * Set the namespace prefix for this XmlAttribute.
-     * The maximum length allowed for the namespace prefix and attribute name combined is 48 characters.
      * The existing attribute is removed and replaced with an attribute that has the
      * same value and the given namespace prefix.
      *
