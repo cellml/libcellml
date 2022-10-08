@@ -397,30 +397,32 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         addIssue(issue);
         return;
     }
-    if (!node->isCellmlElement("model")) {
+
+    if (!((!mParseFromCellml1X && node->isCellml20Element("model")) || (mParseFromCellml1X && node->isCellml1XElement("model")))) {
         auto issue = Issue::IssueImpl::create();
         if (node->name() == "model") {
             std::string nodeNamespace = node->namespaceUri();
             if (nodeNamespace.empty()) {
                 nodeNamespace = "null";
             }
-            issue->mPimpl->setDescription("Model element is in invalid namespace '" + nodeNamespace + "'. A valid CellML root node should be in namespace '" + CELLML_2_0_NS + "'.");
+            if (mParseFromCellml1X && node->isCellml20Element("model")) {
+                issue->mPimpl->setDescription("Given model is a CellML 2.0 model, use 'parseModel(...)' instead.");
+            } else if (!mParseFromCellml1X && node->isCellml1XElement("model")) {
+                issue->mPimpl->setDescription("Given model is a CellML 1.0 or CellML 1.1 model, use 'parse1XModel(...)' instead.");
+            } else if (mParseFromCellml1X) {
+                issue->mPimpl->setDescription("Given model is not a CellML 1.0 or CellML 1.1 model.");
+            } else {
+                issue->mPimpl->setDescription("Model element is in invalid namespace '" + nodeNamespace + "'. A valid CellML root node should be in namespace '" + CELLML_2_0_NS + "'.");
+            }
         } else {
             issue->mPimpl->setDescription("Model element is of invalid type '" + node->name() + "'. A valid CellML root node should be of type 'model'.");
         }
         issue->mPimpl->mItem->mPimpl->setModel(model);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_ELEMENT);
+        if (!mParseFromCellml1X && !node->isCellml20Element("model")) {
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_ELEMENT);
+        }
         addIssue(issue);
         return;
-    }
-    if (mParseFromCellml1X) {
-        if (!node->isCellml1XElement("model")) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Given model is not a CellML 1.0 or CellML 1.1 model, try parsing with parseModel().");
-            issue->mPimpl->mItem->mPimpl->setModel(model);
-            addIssue(issue);
-            return;
-        }
     }
     if (mParseFromCellml1X) {
         auto issue = Issue::IssueImpl::create();

@@ -53,7 +53,7 @@ TEST(ParserTransform, parseModelWithCMeta10Id)
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" xmlns:cmeta=\"http://www.cellml.org/metadata/1.0#\" name=\"name\" cmeta:id=\"great_id\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parse1XModel(e);
     EXPECT_EQ(n, model->name());
 }
 
