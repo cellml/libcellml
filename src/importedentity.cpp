@@ -79,7 +79,7 @@ bool ImportedEntity::doEquals(const ImportedEntityPtr &other) const
         && mPimpl->mImportReference == other->importReference()) {
         return mPimpl->mImportSource->equals(other->importSource());
     }
-    return importMatches;
+    return importMatches && mPimpl->mImportReference == other->importReference();
 }
 
 } // namespace libcellml
