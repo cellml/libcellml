@@ -2005,7 +2005,6 @@ TEST(Parser, parseResetsWithOrderIssues)
     EXPECT_EQ("variable2", v2->name());
 }
 
-
 TEST(Parser, unitsWithCellMLRealVariations)
 {
     const std::string in =
