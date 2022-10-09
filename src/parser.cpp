@@ -321,11 +321,12 @@ std::string convertNonSiUnits(const std::string &unitsName)
         return "litre";
     }
 
-    if  (unitsName == "meter") {
+    if (unitsName == "meter") {
         return "metre";
     }
 
-    return unitsName;}
+    return unitsName;
+}
 
 /**
  * @brief Test to determine if a units element is present.
