@@ -120,12 +120,13 @@ void XmlAttribute::setNamespacePrefix(const std::string &prefix)
     std::vector<xmlChar> buffer;
     xmlNodePtr parent = mPimpl->mXmlAttributePtr->parent;
 
-    buffer.reserve(prefix.length() + 1);
+    buffer.resize(prefix.length() + 1);
     xmlChar *fullElemName = xmlBuildQName(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(prefix.c_str()), buffer.data(), static_cast<int>(buffer.size()));
 
     auto oldAttribute = mPimpl->mXmlAttributePtr;
     mPimpl->mXmlAttributePtr = xmlSetProp(parent, fullElemName, reinterpret_cast<const xmlChar *>(value().c_str()));
     xmlRemoveProp(oldAttribute);
+    xmlFree(fullElemName);
 }
 
 } // namespace libcellml
