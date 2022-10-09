@@ -710,6 +710,38 @@ TEST(Equality, importSourceNotEqualInvalidInput)
     EXPECT_FALSE(is1->equals(nullptr));
 }
 
+TEST(Equality, importSourceNotEqualImportSource)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("bob");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("bob");
+
+    libcellml::ImportSourcePtr is1 = libcellml::ImportSource::create();
+    is1->setUrl("a_great_url");
+
+    c1->setImportSource(is1);
+
+    EXPECT_FALSE(c1->equals(c2));
+}
+
+TEST(Equality, importSourceNotEqualImportSourceReference)
+{
+    libcellml::ComponentPtr c1 = libcellml::Component::create("bob");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("bob");
+
+    libcellml::ImportSourcePtr is1 = libcellml::ImportSource::create();
+    is1->setUrl("a_great_url");
+
+    libcellml::ImportSourcePtr is2 = libcellml::ImportSource::create();
+    is2->setUrl("a_better_url");
+
+    c1->setImportSource(is1);
+    c1->setImportReference("dave");
+
+    c2->setImportSource(is2);
+
+    EXPECT_FALSE(c1->equals(c2));
+}
+
 TEST(Equality, modelEqual)
 {
     libcellml::ModelPtr m1 = libcellml::Model::create();
