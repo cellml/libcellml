@@ -481,7 +481,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             if (childNode->firstAttribute()) {
                 XmlAttributePtr childAttribute = childNode->firstAttribute();
                 while (childAttribute) {
-                    if (isIdAttribute(childAttribute, mParseFromCellml1X)) {
+                    if (isIdAttribute(childAttribute, false)) {
                         model->setEncapsulationId(childAttribute->value());
                     } else {
                         auto issue = Issue::IssueImpl::create();
