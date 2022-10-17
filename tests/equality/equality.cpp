@@ -884,3 +884,11 @@ TEST(Equality, clone)
     EXPECT_TRUE(model->equals(clonedModel));
     EXPECT_TRUE(clonedModel->equals(model));
 }
+
+TEST(Equality, namedEntityNotEqualNonNamedEntity)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create("variableA");
+    libcellml::ImportSourcePtr is1 = libcellml::ImportSource::create();
+
+    EXPECT_FALSE(v1->equals(is1));
+}
