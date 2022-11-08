@@ -247,6 +247,7 @@ Parser::Parser()
     : Logger(new ParserImpl())
 {
     pFunc()->mParser = this;
+    setStrict(true);
 }
 
 Parser::~Parser()
@@ -257,6 +258,13 @@ Parser::~Parser()
 ParserPtr Parser::create() noexcept
 {
     return std::shared_ptr<Parser> {new Parser {}};
+}
+
+ParserPtr Parser::create(bool strict) noexcept
+{
+    auto parser = std::shared_ptr<Parser> {new Parser {}};
+    parser->setStrict(strict);
+    return parser;
 }
 
 ModelPtr Parser::parseModel(const std::string &input)

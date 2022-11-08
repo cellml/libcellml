@@ -25,7 +25,6 @@ limitations under the License.
 #include <stdexcept>
 
 #include "libcellml/component.h"
-#include "libcellml/importer.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"

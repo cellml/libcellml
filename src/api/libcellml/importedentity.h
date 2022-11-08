@@ -19,7 +19,6 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/exportdefinitions.h"
-#include "libcellml/namedentity.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
