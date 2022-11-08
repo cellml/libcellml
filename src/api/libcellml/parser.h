@@ -84,30 +84,6 @@ public:
      */
     ModelPtr parseModel(const std::string &input);
 
-    /**
-     * @brief Create and populate a new model from a @c std::string.
-     *
-     * Creates and populates a new model pointer by parsing CellML
-     * entities and attributes from CellML 1.0 and 1.1 format @p input @c std::string.
-     *
-     * Returns a @c nullptr if the @p input is not a @c std::string representation
-     * of a CellML model.
-     *
-     * All existing issues will be removed before the @p input is parsed.
-     *
-     * Set the @p renameNonSiUnits to @c true to rename common alternate spellings
-     * of SI units. Renaming non-SI units is @c true by default. The SI units
-     * that will get renamed if this parameter is true are:
-     *  * liter -> litre
-     *  * meter -> metre
-     *
-     * @param input The string to parse into a model.
-     * @param renameNonSiUnits Rename SI units with common alternate spellings.
-     *
-     * @return The new @c ModelPtr deserialised from the input string.
-     */
-    ModelPtr parse1XModel(const std::string &input, bool renameNonSiUnits = true);
-
 #ifdef JAVASCRIPT_BINDINGS
 #    include "strict.impl"
 #endif

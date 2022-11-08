@@ -26,8 +26,8 @@ TEST(ParserTransform, emptyCellml11)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\"/>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parse1XModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, parser->issue(0)->level());
     EXPECT_EQ("Given model is a CellML 1.1 model, the parser will try to represent this model in CellML 2.0.", parser->issue(0)->description());
@@ -40,8 +40,8 @@ TEST(ParserTransform, parseNamedModelCellml11)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" name=\"name\"/>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parse1XModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(n, model->name());
 }
 
@@ -52,8 +52,8 @@ TEST(ParserTransform, parseModelWithCMeta10Id)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" xmlns:cmeta=\"http://www.cellml.org/metadata/1.0#\" name=\"name\" cmeta:id=\"great_id\"/>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parse1XModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(n, model->name());
 }
 
@@ -78,8 +78,8 @@ TEST(ParserTransform, sineCellml11)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/sin.xml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/sin.xml"));
 
     EXPECT_EQ(size_t(2), parser->issueCount());
 
@@ -116,8 +116,8 @@ TEST(ParserTransform, derivedApproxSineCellml11)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/deriv_approx_sin.xml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/deriv_approx_sin.xml"));
 
     EXPECT_EQ(size_t(2), parser->issueCount());
 
@@ -128,8 +128,8 @@ TEST(ParserTransform, derivedApproxSineCellml11)
 
 TEST(ParserTransform, cellmlNsCn)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/cellml_ns_cn.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/cellml_ns_cn.cellml"));
 
     EXPECT_EQ(size_t(2), model->unitsCount());
     EXPECT_EQ(size_t(3), model->componentCount());
