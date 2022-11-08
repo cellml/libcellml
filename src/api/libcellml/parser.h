@@ -19,7 +19,7 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/logger.h"
-#include "libcellml/model.h"
+#include "libcellml/strict.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -29,7 +29,7 @@ namespace libcellml {
  *
  * The Parser class is for representing a CellML Parser.
  */
-class LIBCELLML_EXPORT Parser: public Logger
+class LIBCELLML_EXPORT Parser: public Logger, public Strict
 {
 public:
     ~Parser() override; /**< Destructor, @private. */
@@ -48,6 +48,24 @@ public:
      * @return A smart pointer to a @c Parser object.
      */
     static ParserPtr create() noexcept;
+
+    /**
+     * @brief Create a @c Parser and set the strict flag.
+     *
+     * Factory method to create a @c Parser and set the strict flag.
+     * Create a parser with the strict flag set to @c false with:
+     *
+     * @code
+     *   ParserPtr parser = libcellml::Parser::create(false);
+     * @endcode
+     *
+     * @overload
+     *
+     * @param strict The name of the component.
+     *
+     * @return A smart pointer to a @c Parser object.
+     */
+    static ParserPtr create(bool strict) noexcept;
 
     /**
      * @brief Create and populate a new model from a @c std::string.
@@ -89,6 +107,10 @@ public:
      * @return The new @c ModelPtr deserialised from the input string.
      */
     ModelPtr parse1XModel(const std::string &input, bool renameNonSiUnits = true);
+
+#ifdef JAVASCRIPT_BINDINGS
+#    include "strict.impl"
+#endif
 
 private:
     Parser(); /**< Constructor, @private. */

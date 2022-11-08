@@ -20,11 +20,9 @@ limitations under the License.
 #include <utility>
 #include <vector>
 
-#include "libcellml/component.h"
 #include "libcellml/importedentity.h"
 #include "libcellml/model.h"
 #include "libcellml/types.h"
-#include "libcellml/units.h"
 
 #include "entity_p.h"
 #include "internaltypes.h"
