@@ -272,11 +272,6 @@ ModelPtr Parser::parseModel(const std::string &input)
     return pFunc()->parseModel(input, false, false);
 }
 
-ModelPtr Parser::parse1XModel(const std::string &input, bool renameNonSiUnits)
-{
-    return pFunc()->parseModel(input, true, renameNonSiUnits);
-}
-
 ModelPtr Parser::ParserImpl::parseModel(const std::string &input, bool parseVersion1XModels, bool renameNonSiUnits)
 {
     removeAllIssues();

@@ -28,15 +28,29 @@ class ParserTestCase(unittest.TestCase):
         import libcellml
         from libcellml import Parser
 
-        p = Parser()
-        self.assertIsInstance(p.parseModel('rubbish'), libcellml.Model)
+        model_string = """<?xml version="1.0" encoding="iso-8859-1"?>
+        <model name="sin" xmlns="http://www.cellml.org/cellml/2.0#">
+        </model>
+        """
 
-    def test_parse_1x_model(self):
+        p = Parser()
+        m = p.parseModel(model_string)
+        self.assertIsInstance(m, libcellml.Model)
+        self.assertEqual("sin", m.name())
+
+    def test_parse_permissive_model(self):
         import libcellml
         from libcellml import Parser
 
-        p = Parser()
-        self.assertIsInstance(p.parse1XModel('dump'), libcellml.Model)
+        model_string = """<?xml version="1.0" encoding="iso-8859-1"?>
+        <model name="sin" xmlns="http://www.cellml.org/cellml/1.0#">
+        </model>
+        """
+
+        p = Parser(False)
+        m = p.parseModel(model_string)
+        self.assertIsInstance(m, libcellml.Model)
+        self.assertEqual("sin", m.name())
 
 
 if __name__ == '__main__':

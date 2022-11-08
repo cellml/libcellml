@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
@@ -26,8 +25,8 @@ TEST(ParserTransform, emptyCellml10)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.0#\"/>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parse1XModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, parser->issue(0)->level());
     EXPECT_EQ("Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.",
@@ -41,8 +40,8 @@ TEST(ParserTransform, attemptToParseCellml20ModelWith1XParser)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parse1XModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(e);
 
     EXPECT_EQ("", model->name());
     EXPECT_EQ(size_t(1), parser->issueCount());
@@ -57,8 +56,8 @@ TEST(ParserTransform, attemptToParseUnknownXmlModelWith1XParser)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.3#\" name=\"name\"/>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parse1XModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(e);
 
     EXPECT_EQ("", model->name());
     EXPECT_EQ(size_t(1), parser->issueCount());
@@ -105,15 +104,15 @@ TEST(ParserTransform, parseNamedModelCellml10)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.0#\" name=\"name\"/>\n";
 
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parse1XModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(n, model->name());
 }
 
 TEST(ParserTransform, hodgkinHuxleyCellml10)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/Hodgkin_Huxley_1952_modified.cellml"), false);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/Hodgkin_Huxley_1952_modified.cellml"));
 
     EXPECT_EQ(size_t(7), model->unitsCount());
     EXPECT_EQ(size_t(5), model->componentCount());
@@ -127,8 +126,8 @@ TEST(ParserTransform, hodgkinHuxleyCellml10)
 
 TEST(ParserTransform, annotatedModel)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/annotated_model.cellml"), false);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/annotated_model.cellml"));
 
     EXPECT_EQ(size_t(5), model->unitsCount());
     EXPECT_EQ(size_t(2), model->componentCount());
@@ -142,8 +141,8 @@ TEST(ParserTransform, annotatedModel)
 
 TEST(ParserTransform, renameNonSiUnits)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("cellml1X/non_si_units.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/non_si_units.cellml"));
 
     EXPECT_EQ(size_t(11), model->unitsCount());
     EXPECT_EQ(size_t(2), model->componentCount());

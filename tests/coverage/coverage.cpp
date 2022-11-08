@@ -108,8 +108,8 @@ TEST(Coverage, unitsItem)
 
 TEST(Coverage, parserBranchesCellml10RelationshipRef)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("coverage/cellml1x_relationshipref.xml"), true);
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("coverage/cellml1x_relationshipref.xml"));
 
     EXPECT_EQ(size_t(0), model->unitsCount());
     EXPECT_EQ(size_t(1), model->componentCount());
@@ -127,7 +127,8 @@ TEST(Coverage, parserBranchesCMetaIdCellml2)
 TEST(Coverage, parserBranchesCellml1XImportComponent)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    auto model = parser->parse1XModel(fileContents("coverage/cellml1x_import_component.xml"));
+    parser->setStrict(false);
+    auto model = parser->parseModel(fileContents("coverage/cellml1x_import_component.xml"));
 
     EXPECT_EQ(size_t(0), model->unitsCount());
     EXPECT_EQ(size_t(1), model->componentCount());
