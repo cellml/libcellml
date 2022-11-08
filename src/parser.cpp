@@ -48,7 +48,6 @@ class Parser::ParserImpl: public Logger::LoggerImpl
 {
 public:
     Parser *mParser = nullptr;
-    bool mRenameNonSiUnits = false;
     bool mParseFromCellml1X = false;
 
     /**
@@ -77,11 +76,10 @@ public:
      *
      * @param input The string to parse into a model.
      * @param parseVersion1XModels If @c true will parse 1.X CellML models.
-     * @param renameNonSiUnits @c true to rename SI units spelling, @c false to not rename.
      *
      * @return The new @c ModelPtr deserialised from the input string.
      */
-    ModelPtr parseModel(const std::string &input, bool parseVersion1XModels, bool renameNonSiUnits);
+    ModelPtr parseModel(const std::string &input, bool parseVersion1XModels);
 
     /**
      * @brief Update the @p component with attributes parsed from @p node.
@@ -269,13 +267,12 @@ ParserPtr Parser::create(bool strict) noexcept
 
 ModelPtr Parser::parseModel(const std::string &input)
 {
-    return pFunc()->parseModel(input, false, false);
+    return pFunc()->parseModel(input, false);
 }
 
-ModelPtr Parser::ParserImpl::parseModel(const std::string &input, bool parseVersion1XModels, bool renameNonSiUnits)
+ModelPtr Parser::ParserImpl::parseModel(const std::string &input, bool parseVersion1XModels)
 {
     removeAllIssues();
-    mRenameNonSiUnits = renameNonSiUnits;
     mParseFromCellml1X = parseVersion1XModels;
     ModelPtr model = nullptr;
     if (input.empty()) {
@@ -764,7 +761,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("units")) {
-            if (mParseFromCellml1X && mRenameNonSiUnits) {
+            if (mParseFromCellml1X) {
                 reference = convertNonSiUnits(attribute->value());
             } else {
                 reference = attribute->value();
@@ -868,7 +865,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         } else if (isIdAttribute(attribute, mParseFromCellml1X)) {
             variable->setId(attribute->value());
         } else if (attribute->isType("units")) {
-            if (mParseFromCellml1X && mRenameNonSiUnits) {
+            if (mParseFromCellml1X) {
                 variable->setUnits(convertNonSiUnits(attribute->value()));
             } else {
                 variable->setUnits(attribute->value());
