@@ -7,6 +7,7 @@
 
 %import "createconstructor.i"
 %import "logger.i"
+%import "strict.i"
 %import "types.i"
 
 %feature("docstring") libcellml::Importer
@@ -78,6 +79,11 @@ library by index, or an empty string if the index is out of range."
 %}
 
 %create_constructor(Importer)
+%extend libcellml::Importer {
+    Importer(bool strict) {
+        auto ptr = new std::shared_ptr<  libcellml::Importer >(libcellml::Importer::create(strict));
+        return reinterpret_cast<libcellml::Importer *>(ptr);
+    }
+}
 
-%include "libcellml/types.h"
 %include "libcellml/importer.h"

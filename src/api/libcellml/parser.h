@@ -61,7 +61,7 @@ public:
      *
      * @overload
      *
-     * @param strict The name of the component.
+     * @param strict The boolean value to set.
      *
      * @return A smart pointer to a @c Parser object.
      */
