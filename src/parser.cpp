@@ -398,9 +398,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             if (nodeNamespace.empty()) {
                 nodeNamespace = "null";
             }
-            if (mParser->isStrict() && !node->isCellml20Element("model")) {
-                issue->mPimpl->setDescription("Given model is not a CellML 2.0 model.");
-            } else if (mParser->isStrict() && node->isCellml1XElement("model")) {
+            if (mParser->isStrict() && node->isCellml1XElement("model")) {
                 issue->mPimpl->setDescription("Given model is a CellML 1.0 or CellML 1.1 model but strict parsing mode is on.");
             } else {
                 std::string message = "Model element is in an invalid namespace '" + nodeNamespace + "'.";
