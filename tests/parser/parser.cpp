@@ -135,13 +135,29 @@ TEST(Parser, invalidRootNode)
     EXPECT_EQ_ISSUES(expectedIssues, p);
 }
 
+TEST(Parser, attemptToParse20ModelWithPermissiveParser)
+{
+    const std::string n = "name";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    libcellml::ModelPtr model = parser->parseModel(e);
+
+    EXPECT_EQ("name", model->name());
+    EXPECT_EQ(size_t(0), parser->issueCount());
+//    EXPECT_EQ(libcellml::Issue::Level::ERROR, parser->issue(0)->level());
+//    EXPECT_EQ("Model element is in an invalid namespace 'http://www.cellml.org/cellml/1.3#'.", parser->issue(0)->description());
+}
+
 TEST(Parser, noModelNamespace)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model/>\n";
     const std::vector<std::string> expectedIssues = {
-        "Model element is in invalid namespace 'null'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.",
+        "Model element is in an invalid namespace 'null'. A valid CellML root node should be in the namespace 'http://www.cellml.org/cellml/2.0#'.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -155,7 +171,7 @@ TEST(Parser, invalidModelNamespace)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>\n";
     const std::vector<std::string> expectedIssues = {
-        "Model element is in invalid namespace 'http://www.cellml.org/cellml/1.2#'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.",
+        "Model element is in an invalid namespace 'http://www.cellml.org/cellml/1.2#'. A valid CellML root node should be in the namespace 'http://www.cellml.org/cellml/2.0#'.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
