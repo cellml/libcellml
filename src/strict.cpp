@@ -26,7 +26,7 @@ namespace libcellml {
 class Strict::StrictImpl
 {
 public:
-    bool mStrict;
+    bool mStrict = true;
 };
 
 Strict::Strict()

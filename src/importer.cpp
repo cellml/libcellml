@@ -34,10 +34,7 @@ limitations under the License.
 #include "anycellmlelement_p.h"
 #include "issue_p.h"
 #include "logger_p.h"
-#include "namespaces.h"
 #include "utilities.h"
-#include "xmldoc.h"
-#include "xmlutils.h"
 
 namespace libcellml {
 
@@ -93,11 +90,19 @@ Importer::Importer()
     : Logger(new Importer::ImporterImpl())
 {
     pFunc()->mImporter = this;
+    setStrict(true);
 }
 
 ImporterPtr Importer::create() noexcept
 {
     return std::shared_ptr<Importer> {new Importer {}};
+}
+
+ImporterPtr Importer::create(bool strict) noexcept
+{
+    auto importer = std::shared_ptr<Importer> {new Importer {}};
+    importer->setStrict(strict);
+    return importer;
 }
 
 Importer::~Importer()
@@ -342,7 +347,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         }
         std::stringstream buffer;
         buffer << file.rdbuf();
-        auto parser = Parser::create();
+        auto parser = Parser::create(mImporter->isStrict());
         model = parser->parseModel(buffer.str());
         auto errorCount = parser->errorCount();
         if (errorCount > 0) {
