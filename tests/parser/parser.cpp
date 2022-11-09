@@ -147,8 +147,6 @@ TEST(Parser, attemptToParse20ModelWithPermissiveParser)
 
     EXPECT_EQ("name", model->name());
     EXPECT_EQ(size_t(0), parser->issueCount());
-//    EXPECT_EQ(libcellml::Issue::Level::ERROR, parser->issue(0)->level());
-//    EXPECT_EQ("Model element is in an invalid namespace 'http://www.cellml.org/cellml/1.3#'.", parser->issue(0)->description());
 }
 
 TEST(Parser, noModelNamespace)
