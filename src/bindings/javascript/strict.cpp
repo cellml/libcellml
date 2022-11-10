@@ -16,19 +16,14 @@ limitations under the License.
 
 #include <emscripten/bind.h>
 
-// To work around multiple inheritance we have to create a combined Units
-// and ImportedEntity class that we can bind with Emscripten.
-#define JAVASCRIPT_BINDINGS
-#include "libcellml/parser.h"
+#include "libcellml/importedentity.h"
 
 using namespace emscripten;
 
-EMSCRIPTEN_BINDINGS(libcellml_parser) {
+EMSCRIPTEN_BINDINGS(libcellml_strict) {
 
-    class_<libcellml::Parser, base<libcellml::Logger>>("Parser")
-        .smart_ptr<std::shared_ptr<libcellml::Parser>>("ParserPtr")
-        .constructor(select_overload<libcellml::ParserPtr()>(&libcellml::Parser::create))
-        .constructor(select_overload<libcellml::ParserPtr(bool)>(&libcellml::Parser::create))
-        .function("parseModel", &libcellml::Parser::parseModel)
+    class_<libcellml::Strict>("Strict")
+        .function("isStrict", &libcellml::Strict::isStrict)
+        .function("setStrict", &libcellml::Strict::setStrict)
     ;
 }

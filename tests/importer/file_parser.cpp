@@ -66,6 +66,7 @@ TEST(Importer, resolveUnitsImportFromFile)
     auto importer = libcellml::Importer::create();
 
     EXPECT_EQ(size_t(0), p->issueCount());
+    printIssues(p);
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     importer->resolveImports(model, resourcePath());
