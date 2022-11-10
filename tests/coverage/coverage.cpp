@@ -133,3 +133,29 @@ TEST(Coverage, parserBranchesCellml1XImportComponent)
     EXPECT_EQ(size_t(0), model->unitsCount());
     EXPECT_EQ(size_t(1), model->componentCount());
 }
+
+TEST(Coverage, cellMl20ImportInPermissiveMode)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/component_importer.cellml"));
+    auto importer = libcellml::Importer::create(false);
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+}
+
+TEST(Coverage, issueRetrieval)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model name=\"bob\" xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    EXPECT_EQ(nullptr, parser->error(3));
+    EXPECT_EQ(nullptr, parser->warning(4));
+}
