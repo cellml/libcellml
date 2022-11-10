@@ -349,6 +349,9 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         buffer << file.rdbuf();
         auto parser = Parser::create(mImporter->isStrict());
         model = parser->parseModel(buffer.str());
+        if (!mImporter->isStrict() && (parser->messageCount() > 0)) {
+            addIssue(parser->message(0));
+        }
         auto errorCount = parser->errorCount();
         if (errorCount > 0) {
             for (size_t index = 0; index < errorCount; ++index) {
