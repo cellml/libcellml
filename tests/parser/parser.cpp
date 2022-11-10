@@ -2418,3 +2418,30 @@ TEST(Parser, importComponentMadeConcrete)
     EXPECT_FALSE(model->component("childComponent")->isImport());
     EXPECT_FALSE(model->component("parentComponent")->isImport());
 }
+
+TEST(Parser, parseMixedCellMl1XAndCellMl20)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("mixed/sin_approximations_import_1X_and_20.xml"));
+
+    EXPECT_EQ(size_t(12), parser->issueCount());
+    EXPECT_EQ("sin_approximations_import_mixed", model->name());
+}
+
+TEST(Parser, parseMixedCellMl20AndCellMl1XStrict)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("mixed/sin_approximations_import_20_and_1X.xml"));
+
+    EXPECT_EQ(size_t(24), parser->issueCount());
+    EXPECT_EQ("sin_approximations_import_mixed", model->name());
+}
+
+TEST(Parser, parseMixedCellMl20AndCellMl1XPermissive)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("mixed/sin_approximations_import_20_and_1X.xml"));
+
+    EXPECT_EQ(size_t(24), parser->issueCount());
+    EXPECT_EQ("sin_approximations_import_mixed", model->name());
+}
