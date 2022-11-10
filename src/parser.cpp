@@ -17,6 +17,7 @@ limitations under the License.
 #include "libcellml/parser.h"
 
 #include <algorithm>
+#include <iostream>
 #include <limits>
 #include <sstream>
 #include <string>
@@ -48,6 +49,7 @@ class Parser::ParserImpl: public Logger::LoggerImpl
 {
 public:
     Parser *mParser = nullptr;
+    bool mParsingOldVersion = false;
 
     /**
      * @brief Update the @p model with attributes parsed from a @c std::string.
@@ -417,7 +419,13 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         addIssue(issue);
         return;
     }
-    if (!mParser->isStrict() && node->isCellml1XElement("model")) {
+    std::cout << "================" << std::endl;
+    std::cout << !mParser->isStrict() << std::endl;
+    std::cout << node->isCellml1XElement("model") << std::endl;
+    std::cout << node->name() << std::endl;
+    std::cout << node->namespaceUri() << std::endl;
+    mParsingOldVersion = !mParser->isStrict() && node->isCellml1XElement("model");
+    if (mParsingOldVersion) {
         auto issue = Issue::IssueImpl::create();
         std::string version = "1.1";
         if (node->isCellml10Element()) {
@@ -433,18 +441,18 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     while (attribute) {
         if (attribute->isType("name")) {
             model->setName(attribute->value());
-        } else if (isIdAttribute(attribute, !mParser->isStrict())) {
+        } else if (isIdAttribute(attribute, mParsingOldVersion)) {
             model->setId(attribute->value());
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (node->isCellml1XElement("model")) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Model '" + node->attribute("name") + "' ignoring attribute '" + attribute->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Model '" + node->attribute("name") + "' has an invalid attribute '" + attribute->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
             }
             issue->mPimpl->mItem->mPimpl->setModel(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
             addIssue(issue);
         }
         attribute = attribute->next();
@@ -454,18 +462,23 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     std::vector<XmlNodePtr> connectionNodes;
     std::vector<XmlNodePtr> encapsulationNodes;
     while (childNode) {
-        if ((mParser->isStrict() && childNode->isCellml20Element("component")) || (!mParser->isStrict() && childNode->isCellml1XElement("component"))) {
+//        std::cout << "================" << std::endl;
+//        std::cout << mParser->isStrict() << std::endl;
+//        std::cout << childNode->name() << std::endl;
+//        std::cout << mParsingOldVersion << std::endl;
+//        std::cout << childNode->isCellml1XElement("import") << std::endl;
+        if ((mParser->isStrict() && childNode->isCellml20Element("component")) || (mParsingOldVersion && childNode->isCellml1XElement("component"))) {
             auto component = Component::create();
             loadComponent(component, childNode);
             model->addComponent(component);
-            if (!mParser->isStrict() && areUnitsDefinedInComponent(childNode)) {
+            if (mParsingOldVersion && areUnitsDefinedInComponent(childNode)) {
                 loadUnitsFromComponent(model, childNode);
             }
-        } else if ((mParser->isStrict() && childNode->isCellml20Element("units")) || (!mParser->isStrict() && childNode->isCellml1XElement("units"))) {
+        } else if ((mParser->isStrict() && childNode->isCellml20Element("units")) || (mParsingOldVersion && childNode->isCellml1XElement("units"))) {
             UnitsPtr units = Units::create();
             loadUnits(units, childNode);
             model->addUnits(units);
-        } else if ((mParser->isStrict() && childNode->isCellml20Element("import")) || (!mParser->isStrict() && childNode->isCellml1XElement("import"))) {
+        } else if ((mParser->isStrict() && childNode->isCellml20Element("import")) || (mParsingOldVersion && childNode->isCellml1XElement("import"))) {
             ImportSourcePtr importSource = ImportSource::create();
             loadImport(importSource, model, childNode);
         } else if (mParser->isStrict() && childNode->isCellml20Element("encapsulation")) {
@@ -512,24 +525,24 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_CHILD);
                 addIssue(issue);
             }
-        } else if (!mParser->isStrict() && childNode->isCellml1XElement("group")) {
+        } else if (mParsingOldVersion && childNode->isCellml1XElement("group")) {
             if (isEncapsulationRelationship(childNode)) {
                 encapsulationNodes.push_back(childNode);
             }
-        } else if (!mParser->isStrict() && childNode->isCellml1XElement("connection")) {
+        } else if (mParsingOldVersion && childNode->isCellml1XElement("connection")) {
             connectionNodes.push_back(childNode);
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Model '" + model->name() + "' ignoring child element '" + childNode->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Model '" + model->name() + "' has an invalid child element '" + childNode->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_CHILD);
             }
             issue->mPimpl->mItem->mPimpl->setModel(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_CHILD);
             addIssue(issue);
         }
         childNode = childNode->next();
@@ -568,18 +581,18 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
     while (attribute) {
         if (attribute->isType("name")) {
             component->setName(attribute->value());
-        } else if (isIdAttribute(attribute, !mParser->isStrict())) {
+        } else if (isIdAttribute(attribute, mParsingOldVersion)) {
             component->setId(attribute->value());
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Component '" + node->attribute("name") + "' ignoring attribute '" + attribute->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Component '" + node->attribute("name") + "' has an invalid attribute '" + attribute->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_ATTRIBUTE);
             }
             issue->mPimpl->mItem->mPimpl->setComponent(component);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_ATTRIBUTE);
             addIssue(issue);
         }
         attribute = attribute->next();
@@ -596,7 +609,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             component->addReset(reset);
         } else if (childNode->isMathmlElement("math")) {
             // If transforming, manipulate the math sub-document CellML namespaces.
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 // Find all attributes using old CellML namespace.
                 auto cellmlAttributes = attributesWithCellml1XNamespace(childNode);
 
@@ -638,11 +651,11 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             }
         } else if (childNode->isComment()) {
             // Do nothing.
-        } else if (!mParser->isStrict() && (childNode->name() == "units")) {
+        } else if (mParsingOldVersion && (childNode->name() == "units")) {
             // Do nothing.
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Component '" + component->name() + "' ignoring child element '" + childNode->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
@@ -675,25 +688,25 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
     while (attribute) {
         if (attribute->isType("name")) {
             units->setName(attribute->value());
-        } else if (isIdAttribute(attribute, !mParser->isStrict())) {
+        } else if (isIdAttribute(attribute, mParsingOldVersion)) {
             units->setId(attribute->value());
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Units '" + units->name() + "' ignoring attribute '" + attribute->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Units '" + units->name() + "' has an invalid attribute '" + attribute->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_ATTRIBUTE);
             }
             issue->mPimpl->mItem->mPimpl->setUnits(units);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_ATTRIBUTE);
             addIssue(issue);
         }
         attribute = attribute->next();
     }
     XmlNodePtr childNode = node->firstChild();
     while (childNode) {
-        if ((mParser->isStrict() && childNode->isCellml20Element("unit")) || (!mParser->isStrict() && childNode->isCellml1XElement("unit"))) {
+        if ((mParser->isStrict() && childNode->isCellml20Element("unit")) || (mParsingOldVersion && childNode->isCellml1XElement("unit"))) {
             loadUnit(units, childNode);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
@@ -753,7 +766,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("units")) {
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 reference = convertNonSiUnits(attribute->value());
             } else {
                 reference = attribute->value();
@@ -804,7 +817,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_MULTIPLIER);
                 addIssue(issue);
             }
-        } else if (isIdAttribute(attribute, !mParser->isStrict())) {
+        } else if (isIdAttribute(attribute, mParsingOldVersion)) {
             id = attribute->value();
         } else {
             auto issue = Issue::IssueImpl::create();
@@ -838,14 +851,14 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             // Do nothing.
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Variable '" + node->attribute("name") + "' ignoring child element '" + childNode->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Variable '" + node->attribute("name") + "' has an invalid child element '" + childNode->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_CHILD);
             }
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_CHILD);
             addIssue(issue);
         }
         childNode = childNode->next();
@@ -854,10 +867,10 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     while (attribute) {
         if (attribute->isType("name")) {
             variable->setName(attribute->value());
-        } else if (isIdAttribute(attribute, !mParser->isStrict())) {
+        } else if (isIdAttribute(attribute, mParsingOldVersion)) {
             variable->setId(attribute->value());
         } else if (attribute->isType("units")) {
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 variable->setUnits(convertNonSiUnits(attribute->value()));
             } else {
                 variable->setUnits(attribute->value());
@@ -866,13 +879,13 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             variable->setInterfaceType(attribute->value());
         } else if (attribute->isType("initial_value")) {
             variable->setInitialValue(attribute->value());
-        } else if (!mParser->isStrict() && attribute->isType("public_interface")) {
+        } else if (mParsingOldVersion && attribute->isType("public_interface")) {
             if (variable->hasInterfaceType(Variable::InterfaceType::PRIVATE)) {
                 variable->setInterfaceType(Variable::InterfaceType::PUBLIC_AND_PRIVATE);
             } else {
                 variable->setInterfaceType(Variable::InterfaceType::PUBLIC);
             }
-        } else if (!mParser->isStrict() && attribute->isType("private_interface")) {
+        } else if (mParsingOldVersion && attribute->isType("private_interface")) {
             if (variable->hasInterfaceType(Variable::InterfaceType::PUBLIC)) {
                 variable->setInterfaceType(Variable::InterfaceType::PUBLIC_AND_PRIVATE);
             } else {
@@ -880,14 +893,14 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             }
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Variable '" + node->attribute("name") + "' ignoring attribute '" + attribute->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Variable '" + node->attribute("name") + "' has an invalid attribute '" + attribute->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_ATTRIBUTE);
             }
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_ATTRIBUTE);
             addIssue(issue);
         }
         attribute = attribute->next();
@@ -918,7 +931,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     std::string connectionId;
 
     XmlNodePtr componentNode = nullptr;
-    if (!mParser->isStrict()) {
+    if (mParsingOldVersion) {
         XmlNodePtr childNode = node->firstChild();
         while (childNode && componentNode == nullptr) {
             if (childNode->isCellml1XElement("map_components")) {
@@ -930,7 +943,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Connection definition in model '" + model->name() + "' does not have a 'map_components' element.");
             issue->mPimpl->mItem->mPimpl->setModel(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT1);
             addIssue(issue);
             return;
         }
@@ -944,17 +956,17 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             component1Name = attribute->value();
         } else if (attribute->isType("component_2")) {
             component2Name = attribute->value();
-        } else if (isIdAttribute(attribute, !mParser->isStrict())) {
+        } else if (isIdAttribute(attribute, mParsingOldVersion)) {
             connectionId = attribute->value();
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Connection definition in model '" + model->name() + "' ignoring attribute '" + attribute->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has an invalid connection attribute '" + attribute->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_ATTRIBUTE);
             }
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_ATTRIBUTE);
             issue->mPimpl->mItem->mPimpl->setModel(model);
             addIssue(issue);
         }
@@ -1026,7 +1038,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             grandchildNode = grandchildNode->next();
         }
 
-        if ((mParser->isStrict() && childNode->isCellml20Element("map_variables")) || (!mParser->isStrict() && childNode->isCellml1XElement("map_variables"))) {
+        if ((mParser->isStrict() && childNode->isCellml20Element("map_variables")) || (mParsingOldVersion && childNode->isCellml1XElement("map_variables"))) {
             std::string variable1Name;
             std::string variable2Name;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
@@ -1036,7 +1048,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable1Name = childAttribute->value();
                 } else if (childAttribute->isType("variable_2")) {
                     variable2Name = childAttribute->value();
-                } else if (isIdAttribute(childAttribute, !mParser->isStrict())) {
+                } else if (isIdAttribute(childAttribute, mParsingOldVersion)) {
                     mappingId = childAttribute->value();
                 } else {
                     auto issue = Issue::IssueImpl::create();
@@ -1082,16 +1094,16 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
-            if (!(!mParser->isStrict() && childNode->name() == "map_components")) {
+            if (!(mParsingOldVersion && childNode->name() == "map_components")) {
                 auto issue = Issue::IssueImpl::create();
-                if (!mParser->isStrict()) {
+                if (mParsingOldVersion) {
                     issue->mPimpl->setDescription("Connection in model '" + model->name() + "' ignoring child element '" + childNode->name() + "'.");
                     issue->mPimpl->setLevel(Issue::Level::MESSAGE);
                 } else {
                     issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has an invalid child element '" + childNode->name() + "'.");
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
                 }
                 issue->mPimpl->mItem->mPimpl->setModel(model);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
                 addIssue(issue);
             }
         }
@@ -1213,7 +1225,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT);
                 addIssue(issue);
             }
-        } else if (isIdAttribute(attribute, !mParser->isStrict())) {
+        } else if (isIdAttribute(attribute, mParsingOldVersion)) {
             encapsulationId = attribute->value();
         } else {
             auto issue = Issue::IssueImpl::create();
@@ -1241,7 +1253,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
     std::string childEncapsulationId;
     while (childComponentNode) {
         ComponentPtr childComponent = nullptr;
-        if ((mParser->isStrict() && childComponentNode->isCellml20Element("component_ref")) || (!mParser->isStrict() && childComponentNode->isCellml1XElement("component_ref"))) {
+        if ((mParser->isStrict() && childComponentNode->isCellml20Element("component_ref")) || (mParsingOldVersion && childComponentNode->isCellml1XElement("component_ref"))) {
             childComponent = loadComponentRef(model, childComponentNode);
         } else if (childComponentNode->isText()) {
             const std::string textNode = childComponentNode->convertToString();
@@ -1286,7 +1298,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         ComponentPtr parentComponent = nullptr;
         std::string encapsulationId;
         bool haveComponentRef = false;
-        if ((mParser->isStrict() && componentRefNode->isCellml20Element("component_ref")) || (!mParser->isStrict() && componentRefNode->isCellml1XElement("component_ref"))) {
+        if ((mParser->isStrict() && componentRefNode->isCellml20Element("component_ref")) || (mParsingOldVersion && componentRefNode->isCellml1XElement("component_ref"))) {
             haveComponentRef = true;
             parentComponent = loadComponentRef(model, componentRefNode);
         } else if (componentRefNode->isText()) {
@@ -1305,7 +1317,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             }
         } else if (componentRefNode->isComment()) {
             // Do nothing.
-        } else if (!mParser->isStrict() && componentRefNode->isCellml1XElement("relationship_ref")) {
+        } else if (mParsingOldVersion && componentRefNode->isCellml1XElement("relationship_ref")) {
             // Do nothing.
         } else {
             auto issue = Issue::IssueImpl::create();
@@ -1344,7 +1356,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
     while (attribute) {
         if (attribute->isType("href", XLINK_NS)) {
             importSource->setUrl(attribute->value());
-        } else if (isIdAttribute(attribute, !mParser->isStrict())) {
+        } else if (isIdAttribute(attribute, mParsingOldVersion)) {
             id = attribute->value();
             importSource->setId(id);
         } else if (attribute->inNamespaceUri(XLINK_NS)) {
@@ -1373,14 +1385,14 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
         addIssue(issue);
     }
     while (childNode) {
-        if ((mParser->isStrict() && childNode->isCellml20Element("component")) || (!mParser->isStrict() && childNode->isCellml1XElement("component"))) {
+        if ((mParser->isStrict() && childNode->isCellml20Element("component")) || (mParsingOldVersion && childNode->isCellml1XElement("component"))) {
             ComponentPtr importedComponent = Component::create();
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             importedComponent->setImportSource(importSource);
             while (childAttribute) {
                 if (childAttribute->isType("name")) {
                     importedComponent->setName(childAttribute->value());
-                } else if (isIdAttribute(childAttribute, !mParser->isStrict())) {
+                } else if (isIdAttribute(childAttribute, mParsingOldVersion)) {
                     importedComponent->setId(childAttribute->value());
                 } else if (childAttribute->isType("component_ref")) {
                     importedComponent->setImportReference(childAttribute->value());
@@ -1394,14 +1406,14 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                 childAttribute = childAttribute->next();
             }
             model->addComponent(importedComponent);
-        } else if ((mParser->isStrict() && childNode->isCellml20Element("units")) || (!mParser->isStrict() && childNode->isCellml1XElement("units"))) {
+        } else if ((mParser->isStrict() && childNode->isCellml20Element("units")) || (mParsingOldVersion && childNode->isCellml1XElement("units"))) {
             UnitsPtr importedUnits = Units::create();
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             importedUnits->setImportSource(importSource);
             while (childAttribute) {
                 if (childAttribute->isType("name")) {
                     importedUnits->setName(childAttribute->value());
-                } else if (isIdAttribute(childAttribute, !mParser->isStrict())) {
+                } else if (isIdAttribute(childAttribute, mParsingOldVersion)) {
                     importedUnits->setId(childAttribute->value());
                 } else if (childAttribute->isType("units_ref")) {
                     importedUnits->setImportReference(childAttribute->value());
@@ -1429,14 +1441,14 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
             // Do nothing.
         } else {
             auto issue = Issue::IssueImpl::create();
-            if (!mParser->isStrict()) {
+            if (mParsingOldVersion) {
                 issue->mPimpl->setDescription("Import from '" + node->attribute("href") + "' ignoring child element '" + childNode->name() + "'.");
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Import from '" + node->attribute("href") + "' has an invalid child element '" + childNode->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_CHILD);
             }
             issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_CHILD);
             addIssue(issue);
         }
         childNode = childNode->next();
