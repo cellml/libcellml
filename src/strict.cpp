@@ -39,7 +39,6 @@ Strict::~Strict()
     delete mPimpl;
 }
 
-
 void Strict::setStrict(bool strict)
 {
     pFunc()->mStrict = strict;
