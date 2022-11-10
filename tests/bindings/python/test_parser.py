@@ -12,6 +12,14 @@ class ParserTestCase(unittest.TestCase):
         x = Parser()
         del x
 
+    def test_create_strict(self):
+        from libcellml import Parser
+
+        x = Parser()
+        self.assertTrue(x.isStrict())
+        x.setStrict(False)
+        self.assertFalse(x.isStrict())
+
     def test_inheritance(self):
         import libcellml
         from libcellml import Parser

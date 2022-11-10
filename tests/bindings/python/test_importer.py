@@ -14,6 +14,9 @@ class ImporterTestCase(unittest.TestCase):
         x = Importer()
         del x
 
+        y = Importer(False)
+        del y
+
     def test_inheritance(self):
         import libcellml
         from libcellml import Importer
