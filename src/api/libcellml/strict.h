@@ -55,7 +55,6 @@ public:
     bool isStrict() const;
 
 protected:
-
     class StrictImpl; /**< Forward declaration for pImpl idiom, @private. */
 
     Strict(); /**< Constructor for derived classes, @private. */
