@@ -30,5 +30,7 @@ EMSCRIPTEN_BINDINGS(libcellml_parser) {
         .constructor(select_overload<libcellml::ParserPtr()>(&libcellml::Parser::create))
         .constructor(select_overload<libcellml::ParserPtr(bool)>(&libcellml::Parser::create))
         .function("parseModel", &libcellml::Parser::parseModel)
+        .function("isStrict", &libcellml::Parser::isStrict)
+        .function("setStrict", &libcellml::Parser::setStrict)
     ;
 }
