@@ -13,6 +13,11 @@ class ParserTestCase(unittest.TestCase):
         del x
 
     def test_create_strict(self):
+        from libcellml.strict import Strict
+
+        self.assertRaises(AttributeError, Strict)
+
+    def test_parser_strict_interface(self):
         from libcellml import Parser
 
         x = Parser()
