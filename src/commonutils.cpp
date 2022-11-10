@@ -27,7 +27,7 @@ libcellml::ModelPtr owningModel(const libcellml::ParentedEntityConstPtr &entity)
 {
     auto model = std::dynamic_pointer_cast<libcellml::Model>(entity->parent());
     auto component = owningComponent(entity);
-    while ((model == nullptr) && (component != nullptr) && component->parent()) {
+    while ((model == nullptr) && (component != nullptr)) {
         model = std::dynamic_pointer_cast<libcellml::Model>(component->parent());
         component = owningComponent(component);
     }

@@ -38,4 +38,11 @@ describe("Parser tests", () => {
         expect(m.componentCount()).toBe(1)
         expect(m.componentByIndex(0).isImport()).toBe(true)
     })
+    test('Checking Parser parse isStrict/setStrict.', () => {
+        const p = new libcellml.Parser()
+
+        expect(p.isStrict()).toBe(true)
+        p.setStrict(false)
+        expect(p.isStrict()).toBe(false)
+    })
 })
