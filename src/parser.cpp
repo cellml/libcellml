@@ -346,7 +346,7 @@ bool isEncapsulationRelationship(const XmlNodePtr &node)
     while (childNode != nullptr) {
         if (childNode->isCellml1XElement("relationship_ref")) {
             XmlAttributePtr attribute = childNode->firstAttribute();
-            while (attribute) {
+            while (attribute != nullptr) {
                 if (attribute->isType("relationship") && attribute->value() == "encapsulation") {
                     return true;
                 }
@@ -422,7 +422,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
     // Get model attributes.
     XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("name")) {
             model->setName(attribute->value());
         } else if (isIdAttribute(attribute, mParsingOldVersion)) {
@@ -557,7 +557,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
 void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node)
 {
     XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("name")) {
             component->setName(attribute->value());
         } else if (isIdAttribute(attribute, mParsingOldVersion)) {
@@ -664,7 +664,7 @@ void Parser::ParserImpl::loadUnitsFromComponent(const ModelPtr &model, const Xml
 void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
 {
     XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("name")) {
             units->setName(attribute->value());
         } else if (isIdAttribute(attribute, mParsingOldVersion)) {
@@ -743,7 +743,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     }
     // Parse the unit attributes.
     XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("units")) {
             if (mParsingOldVersion) {
                 reference = convertNonSiUnits(attribute->value());
@@ -843,7 +843,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         childNode = childNode->next();
     }
     XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("name")) {
             variable->setName(attribute->value());
         } else if (isIdAttribute(attribute, mParsingOldVersion)) {
@@ -930,7 +930,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
 
     XmlAttributePtr attribute = componentNode->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("component_1")) {
             component1Name = attribute->value();
         } else if (attribute->isType("component_2")) {
@@ -1191,7 +1191,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
     std::string encapsulationId;
     // Check for a component in the parent component_ref.
     XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("component")) {
             parentComponentName = attribute->value();
             if (model->containsComponent(parentComponentName)) {
@@ -1332,7 +1332,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
 {
     XmlAttributePtr attribute = node->firstAttribute();
     std::string id;
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("href", XLINK_NS)) {
             importSource->setUrl(attribute->value());
         } else if (isIdAttribute(attribute, mParsingOldVersion)) {
@@ -1538,7 +1538,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
     bool orderDefined = false;
 
     XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("variable")) {
             const std::string variableReference = attribute->value();
             VariablePtr referencedVariable = component->variable(variableReference);
