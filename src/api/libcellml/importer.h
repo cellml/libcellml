@@ -41,31 +41,23 @@ public:
      * @brief Create an @c Importer object.
      *
      * Factory method to create an @c Importer.  Create a
-     * blank importer with::
+     * blank importer with:
      *
+     * @code
      *   auto importer = libcellml::Importer::create();
+     * @endcode
      *
-     * @return A smart pointer to an @c Importer object.
-     */
-    static ImporterPtr create() noexcept;
-
-    /**
-     * @brief Create an @c Importer and set the strict flag.
-     *
-     * Factory method to create an @c Importer and set the strict flag.
      * Create an importer with the strict flag set to @c false with:
      *
      * @code
      *   ImporterPtr importer = libcellml::Importer::create(false);
      * @endcode
      *
-     * @overload
+     * @param strict [optional] A boolean value to set the strict flag to.
      *
-     * @param strict The boolean value to set.
-     *
-     * @return A smart pointer to a @c Importer object.
+     * @return A smart pointer to an @c Importer object.
      */
-    static ImporterPtr create(bool strict) noexcept;
+    static ImporterPtr create(bool strict = true) noexcept;
 
     /**
      * @brief Flatten the @p model.

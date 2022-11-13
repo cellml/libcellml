@@ -41,31 +41,23 @@ public:
      * @brief Create a @c Parser object.
      *
      * Factory method to create a @c Parser.  Create a
-     * parser with::
+     * blank parser with:
      *
+     * @code
      *   ParserPtr parser = libcellml::Parser::create();
+     * @endcode
      *
-     * @return A smart pointer to a @c Parser object.
-     */
-    static ParserPtr create() noexcept;
-
-    /**
-     * @brief Create a @c Parser and set the strict flag.
-     *
-     * Factory method to create a @c Parser and set the strict flag.
      * Create a parser with the strict flag set to @c false with:
      *
      * @code
      *   ParserPtr parser = libcellml::Parser::create(false);
      * @endcode
      *
-     * @overload
-     *
-     * @param strict The boolean value to set.
+     * @param strict [optional] A boolean value to set the strict flag to.
      *
      * @return A smart pointer to a @c Parser object.
      */
-    static ParserPtr create(bool strict) noexcept;
+    static ParserPtr create(bool strict = true) noexcept;
 
     /**
      * @brief Create and populate a new model from a @c std::string.

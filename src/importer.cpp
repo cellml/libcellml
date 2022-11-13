@@ -93,11 +93,6 @@ Importer::Importer()
     setStrict(true);
 }
 
-ImporterPtr Importer::create() noexcept
-{
-    return std::shared_ptr<Importer> {new Importer {}};
-}
-
 ImporterPtr Importer::create(bool strict) noexcept
 {
     auto importer = std::shared_ptr<Importer> {new Importer {}};
