@@ -1524,7 +1524,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
     std::string unitsName;
     XmlAttributePtr unitsAttribute = nullptr;
     std::vector<XmlAttributePtr> cellmlAttributesToRemove;
-    while (attribute) {
+    while (attribute != nullptr) {
         if (!attribute->value().empty()) {
             if (attribute->isCellmlType("units")) {
                 unitsName = attribute->value();
