@@ -343,7 +343,7 @@ std::string convertNonSiUnits(const std::string &unitsName)
 bool isEncapsulationRelationship(const XmlNodePtr &node)
 {
     XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
+    while (childNode != nullptr) {
         if (childNode->isCellml1XElement("relationship_ref")) {
             XmlAttributePtr attribute = childNode->firstAttribute();
             while (attribute) {
@@ -445,7 +445,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     XmlNodePtr childNode = node->firstChild();
     std::vector<XmlNodePtr> connectionNodes;
     std::vector<XmlNodePtr> encapsulationNodes;
-    while (childNode) {
+    while (childNode != nullptr) {
         if (parseNode(childNode, "component")) {
             auto component = Component::create();
             loadComponent(component, childNode);
@@ -577,7 +577,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
         attribute = attribute->next();
     }
     XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
+    while (childNode != nullptr) {
         if (childNode->isCellmlElement("variable")) {
             VariablePtr variable = Variable::create();
             loadVariable(variable, childNode);
@@ -651,7 +651,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
 void Parser::ParserImpl::loadUnitsFromComponent(const ModelPtr &model, const XmlNodePtr &node)
 {
     XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
+    while (childNode != nullptr) {
         if (childNode->isCellml1XElement("units")) {
             UnitsPtr units = Units::create();
             loadUnits(units, childNode);
@@ -684,7 +684,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
         attribute = attribute->next();
     }
     XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
+    while (childNode != nullptr) {
         if (parseNode(childNode, "unit")) {
             loadUnit(units, childNode);
         } else if (childNode->isText()) {
@@ -719,7 +719,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     std::string id;
     // A unit should not have any children.
     XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
+    while (childNode != nullptr) {
         if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
@@ -815,7 +815,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
 {
     // A variable should not have any children.
     XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
+    while (childNode != nullptr) {
         if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
@@ -991,7 +991,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
 
     // Iterate over connection child XML nodes.
-    while (childNode) {
+    while (childNode != nullptr) {
         // Connection map XML nodes should not have further children.
         XmlNodePtr grandchildNode = childNode->firstChild();
         while (grandchildNode) {
@@ -1363,7 +1363,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_CHILD);
         addIssue(issue);
     }
-    while (childNode) {
+    while (childNode != nullptr) {
         if (parseNode(childNode, "component")) {
             ComponentPtr importedComponent = Component::create();
             XmlAttributePtr childAttribute = childNode->firstAttribute();
@@ -1617,7 +1617,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
 
     size_t testValueCount = 0;
     size_t resetValueCount = 0;
-    while (childNode) {
+    while (childNode != nullptr) {
         if (childNode->isCellml20Element("test_value")) {
             loadResetChild("test_value", reset, component, childNode);
             testValueCount++;
