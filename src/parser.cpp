@@ -230,6 +230,18 @@ public:
      */
     void checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component);
 
+    /**
+     * @brief Test to determine if the node should be parsed.
+     *
+     * Tests whether the given @p node should be parsed if it matches
+     * the given @p name.  The test ensures that the namespace of the
+     * given @p node matches the namespace of the originating model element.
+     *
+     * @param node The node to test.
+     * @param name The name to match to the test node name.
+     *
+     * @return @c true if the node should be parsed, @c false otherwise.
+     */
     bool parseNode(const XmlNodePtr &node, const char *name);
 };
 
@@ -248,11 +260,6 @@ Parser::Parser()
 Parser::~Parser()
 {
     delete pFunc();
-}
-
-ParserPtr Parser::create() noexcept
-{
-    return std::shared_ptr<Parser> {new Parser {}};
 }
 
 ParserPtr Parser::create(bool strict) noexcept
