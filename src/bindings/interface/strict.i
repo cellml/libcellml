@@ -5,13 +5,13 @@
 %import "types.i"
 
 %feature("docstring") libcellml::Strict
-"Abstract base class for entities that can be imported.";
+"Abstract base class for entities that can be strict.";
 
 %feature("docstring") libcellml::Strict::isStrict
-"Returns an ImportSource if this entity is imported, else `None`.";
+"Returns True if the entity is strict, else False.";
 
 %feature("docstring") libcellml::Strict::setStrict
-"Set the ImportSource for this entity (use `None` to unset).";
+"Set the entity as strict or not strict.";
 
 %{
 #include "libcellml/types.h"
