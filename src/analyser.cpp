@@ -566,14 +566,13 @@ size_t Analyser::AnalyserImpl::mathmlChildCount(const XmlNodePtr &node) const
     // given node.
 
     auto childNode = node->firstChild();
-    size_t res = childNode->isMathmlElement() ? 1 : 0;
+    size_t res = 0;
 
     while (childNode != nullptr) {
-        childNode = childNode->next();
-
-        if (childNode && childNode->isMathmlElement()) {
+        if (childNode->isMathmlElement()) {
             ++res;
         }
+        childNode = childNode->next();
     }
 
     return res;
