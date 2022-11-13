@@ -912,7 +912,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     XmlNodePtr componentNode = nullptr;
     if (mParsingOldVersion) {
         XmlNodePtr childNode = node->firstChild();
-        while (childNode && componentNode == nullptr) {
+        while ((childNode != nullptr) && (componentNode == nullptr)) {
             if (childNode->isCellml1XElement("map_components")) {
                 componentNode = childNode;
             }
