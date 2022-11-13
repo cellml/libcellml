@@ -347,7 +347,7 @@ bool isEncapsulationRelationship(const XmlNodePtr &node)
         if (childNode->isCellml1XElement("relationship_ref")) {
             XmlAttributePtr attribute = childNode->firstAttribute();
             while (attribute != nullptr) {
-                if (attribute->isType("relationship") && attribute->value() == "encapsulation") {
+                if (attribute->isType("relationship") && (attribute->value() == "encapsulation")) {
                     return true;
                 }
                 attribute = attribute->next();
@@ -382,7 +382,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
 
     mParsing20Version = node->isCellml20Element("model");
-    if ((mParser->isStrict() && !mParsing20Version) || (!node->isCellmlElement("model"))) {
+    if ((mParser->isStrict() && !mParsing20Version) || !node->isCellmlElement("model")) {
         auto issue = Issue::IssueImpl::create();
         if (node->name() == "model") {
             std::string nodeNamespace = node->namespaceUri();
@@ -479,7 +479,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             }
             // Load encapsulated component_refs.
             XmlNodePtr componentRefNode = childNode->firstChild();
-            if (componentRefNode) {
+            if (componentRefNode != nullptr) {
                 // This component_ref and its child and sibling elements will be loaded
                 // and issue-checked in loadEncapsulation().
                 encapsulationNodes.push_back(childNode);
@@ -1273,7 +1273,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
 void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
 {
     XmlNodePtr componentRefNode = node->firstChild();
-    while (componentRefNode) {
+    while (componentRefNode != nullptr) {
         ComponentPtr parentComponent = nullptr;
         std::string encapsulationId;
         bool haveComponentRef = false;
