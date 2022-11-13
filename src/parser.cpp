@@ -332,27 +332,6 @@ std::string convertNonSiUnits(const std::string &unitsName)
 }
 
 /**
- * @brief Test to determine if a units element is present.
- *
- * Test to determine if a units element is a child of the given @p node.
- *
- * @param node The XML node to test the children of.
- * @return @c true if units is a child of the node, @c false otherwise.
- */
-bool areUnitsDefinedInComponent(const XmlNodePtr &node)
-{
-    XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
-        if (childNode->isCellml1XElement("units")) {
-            return true;
-        }
-        childNode = childNode->next();
-    }
-
-    return false;
-}
-
-/**
  * @brief Test to determine if the @p node describes an encapsulation relationship.
  *
  * Test to determine if the @p node describes an encapsulation relationship.
@@ -471,7 +450,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             auto component = Component::create();
             loadComponent(component, childNode);
             model->addComponent(component);
-            if (mParsingOldVersion && areUnitsDefinedInComponent(childNode)) {
+            if (mParsingOldVersion) {
                 loadUnitsFromComponent(model, childNode);
             }
         } else if (parseNode(childNode, "units")) {
