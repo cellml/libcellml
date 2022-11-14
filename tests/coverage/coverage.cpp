@@ -159,3 +159,19 @@ TEST(Coverage, issueRetrieval)
     EXPECT_EQ(nullptr, parser->error(3));
     EXPECT_EQ(nullptr, parser->warning(4));
 }
+
+TEST(Coverage, strictParsingWithEmptyModel)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel("");
+
+    EXPECT_EQ(size_t(1), parser->issueCount());
+}
+
+TEST(Coverage, strictParsingWithNonXmlModel)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel("not an xml document.");
+
+    EXPECT_EQ(size_t(2), parser->issueCount());
+}
