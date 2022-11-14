@@ -28,9 +28,14 @@ describe("Annotator tests", () => {
         libcellml = await loadLibCellML()
     });
     beforeEach(() => {
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
         m = p.parseModel(duplicatedIdsModel)
         a = new libcellml.Annotator()
+
+        p.delete()
+    });
+    afterEach(() => {
+        a.delete()
     });
     test('Checking Annotator model.', () => {
         expect(a.hasModel()).toBe(false)
@@ -95,6 +100,9 @@ describe("Annotator tests", () => {
         expect(a.assignIdByVariablePair(vp, libcellml.CellmlElementType.CONNECTION)).toBe("b4da5c")
         expect(a.assignIdByVariableVariable(v3, v4, libcellml.CellmlElementType.MAP_VARIABLES)).toBe("b4da5d")
         expect(a.assignIdByUnitsIndex(m.unitsByIndex(0), 0)).toBe("b4da5e")
+
+        vp.delete()
+        ui.delete()
     });
     test('Checking Annotator ids.', () => {
         a.setModel(m)

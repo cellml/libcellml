@@ -32,7 +32,7 @@ EMSCRIPTEN_BINDINGS(libcellml_variable) {
 
     class_<libcellml::Variable, base<libcellml::NamedEntity>>("Variable")
         .smart_ptr_constructor("Variable", select_overload<libcellml::VariablePtr()>(&libcellml::Variable::create))
-        .smart_ptr_constructor("VariableByName", select_overload<libcellml::VariablePtr(const std::string &)>(&libcellml::Variable::create))
+        .constructor(select_overload<libcellml::VariablePtr(const std::string &)>(&libcellml::Variable::create))
         .function("removeAllEquivalences", &libcellml::Variable::removeAllEquivalences)
         .function("equivalentVariable", &libcellml::Variable::equivalentVariable)
         .function("equivalentVariableCount", &libcellml::Variable::equivalentVariableCount)
