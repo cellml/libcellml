@@ -22,38 +22,39 @@ limitations under the License.
 
 TEST(ParserTransform, emptyCellml11)
 {
-    const std::string e =
+    const std::string e = "Given model is a CellML 1.1 model, the parser will try to represent this model in CellML 2.0.";
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create(false);
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(in);
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, parser->issue(0)->level());
-    EXPECT_EQ("Given model is a CellML 1.1 model, the parser will try to represent this model in CellML 2.0.", parser->issue(0)->description());
+    EXPECT_EQ(e, parser->issue(0)->description());
 }
 
 TEST(ParserTransform, parseNamedModelCellml11)
 {
     const std::string n = "name";
-    const std::string e =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" name=\"name\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create(false);
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(in);
     EXPECT_EQ(n, model->name());
 }
 
 TEST(ParserTransform, parseModelWithCMeta10Id)
 {
     const std::string n = "name";
-    const std::string e =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" xmlns:cmeta=\"http://www.cellml.org/metadata/1.0#\" name=\"name\" cmeta:id=\"great_id\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create(false);
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(in);
     EXPECT_EQ(n, model->name());
 }
 

@@ -21,64 +21,64 @@ limitations under the License.
 
 TEST(ParserTransform, emptyCellml10)
 {
-    const std::string e =
+    const std::string e = "Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.";
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.0#\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create(false);
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(in);
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, parser->issue(0)->level());
-    EXPECT_EQ("Given model is a CellML 1.0 model, the parser will try to represent this model in CellML 2.0.",
-              parser->issue(0)->description());
+    EXPECT_EQ(e, parser->issue(0)->description());
 }
 
 TEST(ParserTransform, attemptToParseUnknownXmlModelWithPermissiveParser)
 {
-    const std::string n = "name";
-    const std::string e =
+    const std::string e = "Model element is in an invalid namespace 'http://www.cellml.org/cellml/1.3#'.";
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.3#\" name=\"name\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create(false);
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(in);
 
     EXPECT_EQ("", model->name());
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::ERROR, parser->issue(0)->level());
-    EXPECT_EQ("Model element is in an invalid namespace 'http://www.cellml.org/cellml/1.3#'.", parser->issue(0)->description());
+    EXPECT_EQ(e, parser->issue(0)->description());
 }
 
 TEST(ParserTransform, attemptToParseUnknownXmlModelWith20Parser)
 {
-    const std::string n = "name";
-    const std::string e =
+    const std::string e = "Model element is in an invalid namespace 'http://www.cellml.org/cellml/1.3#'. A valid CellML root node should be in the namespace 'http://www.cellml.org/cellml/2.0#'.";
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.3#\" name=\"name\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(in);
 
     EXPECT_EQ("", model->name());
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::ERROR, parser->issue(0)->level());
-    EXPECT_EQ("Model element is in an invalid namespace 'http://www.cellml.org/cellml/1.3#'. A valid CellML root node should be in the namespace 'http://www.cellml.org/cellml/2.0#'.", parser->issue(0)->description());
+    EXPECT_EQ(e, parser->issue(0)->description());
 }
 
 TEST(ParserTransform, attemptToParseCellml1XModelWith20Parser)
 {
-    const std::string n = "name";
-    const std::string e =
+    const std::string e = "Given model is a CellML 1.0 or CellML 1.1 model but strict parsing mode is on.";
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" name=\"name\"/>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(in);
 
     EXPECT_EQ("", model->name());
     EXPECT_EQ(size_t(1), parser->issueCount());
     EXPECT_EQ(libcellml::Issue::Level::ERROR, parser->issue(0)->level());
-    EXPECT_EQ("Given model is a CellML 1.0 or CellML 1.1 model but strict parsing mode is on.", parser->issue(0)->description());
+    EXPECT_EQ(e, parser->issue(0)->description());
 }
 
 TEST(ParserTransform, parseNamedModelCellml10)
