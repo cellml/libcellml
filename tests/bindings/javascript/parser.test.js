@@ -24,14 +24,14 @@ describe("Parser tests", () => {
         libcellml = await libCellMLModule()
     })
     test('Checking Parser parse model.', () => {
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
 
         const m = p.parseModel(sineModel)
 
         expect(m.componentCount()).toBe(1)
     })
     test('Checking Parser parse model import component.', () => {
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
 
         const m = p.parseModel(componentImportModel)
 
@@ -39,7 +39,7 @@ describe("Parser tests", () => {
         expect(m.componentByIndex(0).isImport()).toBe(true)
     })
     test('Checking Parser parse isStrict/setStrict.', () => {
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
 
         expect(p.isStrict()).toBe(true)
         p.setStrict(false)

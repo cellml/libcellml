@@ -46,7 +46,7 @@ describe("Types tests", () => {
          expect(vp.isValid()).toBe(true)
     });
     test("Checking AnyCellmlElement.", () => {
-         const p = new libcellml.Parser()
+         const p = new libcellml.Parser(true)
          const m = p.parseModel(modelWithParseErrors)
 
          expect(p.issueCount()).toBe(4)

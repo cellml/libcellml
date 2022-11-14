@@ -29,7 +29,7 @@ describe("Analyser Equation tests", () => {
         libcellml = await loadLibCellML()
     });
     beforeEach(() => {
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
         m = p.parseModel(basicModel)
         a = new libcellml.Analyser()
 
