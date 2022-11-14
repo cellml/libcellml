@@ -1915,6 +1915,8 @@ TEST(Parser, parseResetsWithIssues)
 
 TEST(Parser, parseResetIllegalChild)
 {
+    const std::string e = "Reset in component 'componentA' has an invalid child 'initial_value'.";
+
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
@@ -1944,6 +1946,9 @@ TEST(Parser, parseResetIllegalChild)
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(in);
 
+    EXPECT_EQ(size_t(1), p->errorCount());
+    EXPECT_EQ(e, p->error(0)->description());
+
     libcellml::ComponentPtr c = model->component(0);
     EXPECT_EQ(size_t(1), c->resetCount());
 
@@ -1957,14 +1962,14 @@ TEST(Parser, parseResetIllegalChild)
     EXPECT_EQ("variable2", v2->name());
 
     std::string testValueString = r->testValue();
-    std::string t =
+    const std::string t =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some condition in mathml\n"
         "        </math>\n";
     EXPECT_EQ(t, testValueString);
 
     std::string resetValueString = r->resetValue();
-    std::string rt =
+    const std::string rt =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some value in mathml\n"
         "        </math>\n";
@@ -2333,12 +2338,13 @@ TEST(Parser, raiseIssueMissingUnits)
     std::vector<std::string> expectedIssues = {
         "Model does not contain the units 'nothing_to_find_here' required by variable 'my_units_are_missing' in component 'component'.",
     };
-    std::string modelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                              "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
-                              "  <component name=\"component\">\n"
-                              "    <variable name=\"my_units_are_missing\" units=\"nothing_to_find_here\"/>\n"
-                              "  </component>\n"
-                              "</model>\n";
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"my_units_are_missing\" units=\"nothing_to_find_here\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelString);
@@ -2347,7 +2353,7 @@ TEST(Parser, raiseIssueMissingUnits)
 
 TEST(Parser, parserDoesNotDeleteChildrenOfInvalidEncapsulation)
 {
-    auto inString =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"segfault\">\n"
         "   <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"importMe.cellml\">\n"
@@ -2365,14 +2371,14 @@ TEST(Parser, parserDoesNotDeleteChildrenOfInvalidEncapsulation)
         "Encapsulation in model 'segfault' specifies 'parentName' as a component in a component_ref but it does not exist in the model.",
         "Encapsulation in model 'segfault' specifies an invalid parent component_ref that also does not have any children."};
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(inString);
+    auto model = parser->parseModel(in);
     EXPECT_EQ(size_t(2), parser->errorCount());
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 }
 
 TEST(Parser, incorrectNumberOfImportSources)
 {
-    std::string modelString =
+    const std::string modelString =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import.cellml\">\n"
