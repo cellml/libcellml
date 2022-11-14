@@ -345,7 +345,11 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         auto parser = Parser::create(mImporter->isStrict());
         model = parser->parseModel(buffer.str());
         if (!mImporter->isStrict() && (parser->messageCount() > 0)) {
-            addIssue(parser->message(0));
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription(parser->message(0)->description());
+            issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+            issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+            addIssue(issue);
         }
         auto errorCount = parser->errorCount();
         if (errorCount > 0) {
