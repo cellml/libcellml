@@ -1072,19 +1072,17 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
         } else if (childNode->isComment()) {
             // Do nothing.
-        } else {
-            if (!(mParsingOldVersion && childNode->name() == "map_components")) {
-                auto issue = Issue::IssueImpl::create();
-                if (mParsingOldVersion) {
-                    issue->mPimpl->setDescription("Connection in model '" + model->name() + "' ignoring child element '" + childNode->name() + "'.");
-                    issue->mPimpl->setLevel(Issue::Level::MESSAGE);
-                } else {
-                    issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has an invalid child element '" + childNode->name() + "'.");
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
-                }
-                issue->mPimpl->mItem->mPimpl->setModel(model);
-                addIssue(issue);
+        } else if (!mParsingOldVersion || (childNode->name() != "map_components")) {
+            auto issue = Issue::IssueImpl::create();
+            if (mParsingOldVersion) {
+                issue->mPimpl->setDescription("Connection in model '" + model->name() + "' ignoring child element '" + childNode->name() + "'.");
+                issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+            } else {
+                issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has an invalid child element '" + childNode->name() + "'.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
             }
+            issue->mPimpl->mItem->mPimpl->setModel(model);
+            addIssue(issue);
         }
 
         childNode = childNode->next();
