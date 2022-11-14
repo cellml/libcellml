@@ -359,6 +359,25 @@ bool isEncapsulationRelationship(const XmlNodePtr &node)
     return false;
 }
 
+/**
+ * @brief Get the CellML version of the given node.
+ *
+ * Get the CellML version of the node.  Only returns
+ * the version for CellML 1.0 or 1.1 nodes.
+ *
+ * @param node The node to return the CellML version for.
+ *
+ * @return A @c std::string version of the given node.
+ */
+std::string nodesCellMl1XVersion(const XmlNodePtr &node)
+{
+    if (node->isCellml10Element()) {
+        return "1.0";
+    }
+
+    return "1.1";
+}
+
 void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &input)
 {
     XmlDocPtr doc = std::make_shared<XmlDoc>();
@@ -390,7 +409,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 nodeNamespace = "null";
             }
             if (mParser->isStrict() && node->isCellml1XElement("model")) {
-                issue->mPimpl->setDescription("Given model is a CellML 1.0 or CellML 1.1 model but strict parsing mode is on.");
+                issue->mPimpl->setDescription("Given model is a CellML " + nodesCellMl1XVersion(node) + " model but strict parsing mode is on.");
             } else {
                 std::string message = "Model element is in an invalid namespace '" + nodeNamespace + "'.";
                 if (mParser->isStrict()) {
@@ -411,11 +430,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     mParsingOldVersion = node->isCellml1XElement("model");
     if (mParsingOldVersion) {
         auto issue = Issue::IssueImpl::create();
-        std::string version = "1.1";
-        if (node->isCellml10Element()) {
-            version = "1.0";
-        }
-        issue->mPimpl->setDescription("Given model is a CellML " + version + " model, the parser will try to represent this model in CellML 2.0.");
+        issue->mPimpl->setDescription("Given model is a CellML " + nodesCellMl1XVersion(node) + " model, the parser will try to represent this model in CellML 2.0.");
         issue->mPimpl->setLevel(Issue::Level::MESSAGE);
         issue->mPimpl->mItem->mPimpl->setModel(model);
         addIssue(issue);

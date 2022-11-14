@@ -67,7 +67,7 @@ TEST(ParserTransform, attemptToParseUnknownXmlModelWith20Parser)
 
 TEST(ParserTransform, attemptToParseCellml1XModelWith20Parser)
 {
-    const std::string e = "Given model is a CellML 1.0 or CellML 1.1 model but strict parsing mode is on.";
+    const std::string e = "Given model is a CellML 1.1 model but strict parsing mode is on.";
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.1#\" name=\"name\"/>\n";
@@ -108,7 +108,7 @@ TEST(ParserTransform, hodgkinHuxleyCellml10)
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
-TEST(ParserTransform, annotatedModel)
+TEST(ParserTransform, annotatedCellMl10Model)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create(false);
     auto model = parser->parseModel(fileContents("cellml1X/annotated_model.cellml"));
