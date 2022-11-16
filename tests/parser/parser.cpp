@@ -1916,7 +1916,6 @@ TEST(Parser, parseResetsWithIssues)
 TEST(Parser, parseResetIllegalChild)
 {
     const std::string e = "Reset in component 'componentA' has an invalid child 'initial_value'.";
-
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
