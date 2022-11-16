@@ -41,7 +41,7 @@ public:
      * @brief Create an @c Importer object.
      *
      * Factory method to create an @c Importer.  Create a
-     * blank importer with:
+     * strict importer with:
      *
      * @code
      *   auto importer = libcellml::Importer::create();

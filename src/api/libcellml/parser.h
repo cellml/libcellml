@@ -41,7 +41,7 @@ public:
      * @brief Create a @c Parser object.
      *
      * Factory method to create a @c Parser.  Create a
-     * blank parser with:
+     * strict parser with:
      *
      * @code
      *   ParserPtr parser = libcellml::Parser::create();
