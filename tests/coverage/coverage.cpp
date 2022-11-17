@@ -105,3 +105,73 @@ TEST(Coverage, unitsItem)
 
     EXPECT_FALSE(unitsItem->isValid());
 }
+
+TEST(Coverage, parserBranchesCellml10RelationshipRef)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("coverage/cellml1x_relationshipref.xml"));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
+}
+
+TEST(Coverage, parserBranchesCMetaIdCellml2)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/cmeta_id_cellml2.xml"));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(0), model->componentCount());
+}
+
+TEST(Coverage, parserBranchesCellml1XImportComponent)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    parser->setStrict(false);
+    auto model = parser->parseModel(fileContents("coverage/cellml1x_import_component.xml"));
+
+    EXPECT_EQ(size_t(0), model->unitsCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
+}
+
+TEST(Coverage, cellMl20ImportInPermissiveMode)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/component_importer.cellml"));
+    auto importer = libcellml::Importer::create(false);
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+}
+
+TEST(Coverage, issueRetrieval)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model name=\"bob\" xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    EXPECT_EQ(nullptr, parser->error(3));
+    EXPECT_EQ(nullptr, parser->warning(4));
+}
+
+TEST(Coverage, strictParsingWithEmptyModel)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel("");
+
+    EXPECT_EQ(size_t(1), parser->issueCount());
+}
+
+TEST(Coverage, strictParsingWithNonXmlModel)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel("not an xml document.");
+
+    EXPECT_EQ(size_t(2), parser->issueCount());
+}

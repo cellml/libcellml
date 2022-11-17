@@ -19,6 +19,7 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/logger.h"
+#include "libcellml/strict.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -28,7 +29,7 @@ namespace libcellml {
  *
  * The Importer class is for representing a CellML Importer.
  */
-class LIBCELLML_EXPORT Importer: public Logger
+class LIBCELLML_EXPORT Importer: public Logger, public Strict
 {
 public:
     ~Importer() override; /**< Destructor, @private. */
@@ -40,13 +41,23 @@ public:
      * @brief Create an @c Importer object.
      *
      * Factory method to create an @c Importer.  Create a
-     * blank importer with::
+     * strict importer with:
      *
+     * @code
      *   auto importer = libcellml::Importer::create();
+     * @endcode
+     *
+     * Create an importer with the strict flag set to @c false with:
+     *
+     * @code
+     *   ImporterPtr importer = libcellml::Importer::create(false);
+     * @endcode
+     *
+     * @param strict [optional] A boolean value to set the strict flag to.
      *
      * @return A smart pointer to an @c Importer object.
      */
-    static ImporterPtr create() noexcept;
+    static ImporterPtr create(bool strict = true) noexcept;
 
     /**
      * @brief Flatten the @p model.
@@ -247,6 +258,10 @@ public:
      * @return @c true if the import source is in the importer and @c false otherwise.
      */
     bool hasImportSource(const ImportSourcePtr &importSource) const;
+
+#ifdef JAVASCRIPT_BINDINGS
+#    include "strict.impl"
+#endif
 
 private:
     Importer(); /**< Constructor, @private. */

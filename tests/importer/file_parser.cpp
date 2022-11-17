@@ -61,7 +61,7 @@ TEST(Importer, resolveComplexImportsModelFromFile)
 
 TEST(Importer, resolveUnitsImportFromFile)
 {
-    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ParserPtr p = libcellml::Parser::create(false);
     libcellml::ModelPtr model = p->parseModel(fileContents("import_units_model.cellml"));
     auto importer = libcellml::Importer::create();
 

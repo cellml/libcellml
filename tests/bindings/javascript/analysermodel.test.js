@@ -28,7 +28,7 @@ describe("Analyser Model tests", () => {
         libcellml = await loadLibCellML()
     });
     beforeEach(() => {
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
         m = p.parseModel(hhSquidAxon1952)
         a = new libcellml.Analyser()
 
