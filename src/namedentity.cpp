@@ -45,6 +45,11 @@ std::string NamedEntity::name() const
     return pFunc()->mName;
 }
 
+void NamedEntity::removeName()
+{
+    pFunc()->mName = "";
+}
+
 bool NamedEntity::doEquals(const EntityPtr &other) const
 {
     if (Entity::doEquals(other)) {
