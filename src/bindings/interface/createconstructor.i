@@ -1,6 +1,6 @@
 // This is a helper macro for extending the bindings to have a Constructor mapped to the static create method.
 
-// The macro create_name_constructor must be used in confuction with the create_constructor macro.
+// The macro create_name_constructor must be used in conjuction with the create_constructor macro.
 
 %define %create_constructor(TYPE...)
 %typemap(out) libcellml::TYPE *TYPE() {

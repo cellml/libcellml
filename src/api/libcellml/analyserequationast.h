@@ -17,7 +17,6 @@ limitations under the License.
 #pragma once
 
 #include "libcellml/analyser.h"
-#include "libcellml/generator.h"
 
 #ifdef NAN
 #    undef NAN

@@ -25,12 +25,14 @@ describe("Validator tests", () => {
   });
   test("Checking Validator.validateModel.", () => {
     const x = new libcellml.Validator()
-    const p = new libcellml.Parser()
+    const p = new libcellml.Parser(true)
 
     const m = p.parseModel(sineModel)
 
     x.validateModel(m)
 
     expect(x.issueCount()).toBe(0)
+
+    x.delete()
   });
 })

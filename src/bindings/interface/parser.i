@@ -6,6 +6,7 @@
 
 %import "createconstructor.i"
 %import "logger.i"
+%import "strict.i"
 %import "types.i"
 
 %feature("docstring") libcellml::Parser
@@ -23,6 +24,11 @@
 %}
 
 %create_constructor(Parser)
+%extend libcellml::Parser {
+    Parser(bool strict) {
+        auto ptr = new std::shared_ptr<  libcellml::Parser >(libcellml::Parser::create(strict));
+        return reinterpret_cast<libcellml::Parser *>(ptr);
+    }
+}
 
-%include "libcellml/types.h"
 %include "libcellml/parser.h"

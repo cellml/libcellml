@@ -24,6 +24,13 @@ limitations under the License.
 
 #include <libxml/parser.h>
 
+void structuredErrorCallback(void *userData, xmlErrorPtr error)
+{
+    if (userData != nullptr && error != nullptr) {
+        // Suppress any error messages raised from using LibXml2.
+    }
+}
+
 TEST(Parser, parseValidXmlDirectlyUsingLibxml)
 {
     const std::string e =
@@ -38,11 +45,16 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml)
     EXPECT_EQ(e, a);
 
     // and now parse directly using libxml2
+    xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
+    xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     EXPECT_NE(nullptr, doc);
     xmlFreeDoc(doc);
+    xmlSetStructuredErrorFunc(nullptr, nullptr);
+    xmlCleanupParser();
+    xmlCleanupGlobals();
 }
 
 TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
@@ -57,8 +69,14 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
     EXPECT_NE(size_t(0), parser->issueCount());
 
     // and now parse directly using libxml2
+    xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
+    xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
+    xmlSetStructuredErrorFunc(nullptr, nullptr);
+    xmlCleanupParser();
+    xmlCleanupGlobals();
+
     EXPECT_EQ(nullptr, doc);
 }
