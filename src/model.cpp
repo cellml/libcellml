@@ -27,20 +27,15 @@ limitations under the License.
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
-#include "libcellml/parser.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
-#include "anycellmlelement_p.h"
 #include "component_p.h"
 #include "componententity_p.h"
 #include "internaltypes.h"
-#include "issue_p.h"
 #include "model_p.h"
 #include "units_p.h"
 #include "utilities.h"
-#include "xmldoc.h"
-#include "xmlutils.h"
 
 namespace libcellml {
 

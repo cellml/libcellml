@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "xmlutils.h"
 
+#include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -77,6 +78,52 @@ XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node)
     }
 
     return undefinedNamespaces;
+}
+
+std::vector<XmlAttributePtr> attributesWithCellml1XNamespace(const XmlNodePtr &node)
+{
+    std::vector<XmlAttributePtr> attributes;
+
+    auto tempNode = node;
+    while (tempNode != nullptr) {
+        auto tempAttribute = tempNode->firstAttribute();
+        // Find attributes using old CellML namespace.
+        while (tempAttribute != nullptr) {
+            if (tempAttribute->namespaceUri() == CELLML_1_0_NS || tempAttribute->namespaceUri() == CELLML_1_1_NS) {
+                attributes.push_back(tempAttribute);
+            }
+            tempAttribute = tempAttribute->next();
+        }
+
+        auto subAttributes = attributesWithCellml1XNamespace(tempNode->firstChild());
+
+        // Append attributes found on child nodes.
+        attributes.insert(attributes.end(), subAttributes.begin(), subAttributes.end());
+
+        tempNode = tempNode->next();
+    }
+
+    return attributes;
+}
+
+void removeCellml1XNamespaces(const XmlNodePtr &node)
+{
+    auto tempNode = node;
+    while (tempNode != nullptr) {
+        auto definedNamespaces = tempNode->definedNamespaces();
+        XmlNamespaceMap::const_iterator it;
+        for (it = definedNamespaces.begin(); it != definedNamespaces.end(); ++it) {
+            if (it->second == CELLML_1_0_NS) {
+                tempNode->removeNamespaceDefinition(CELLML_1_0_NS);
+            } else if (it->second == CELLML_1_1_NS) {
+                tempNode->removeNamespaceDefinition(CELLML_1_1_NS);
+            }
+        }
+
+        removeCellml1XNamespaces(tempNode->firstChild());
+
+        tempNode = tempNode->next();
+    }
 }
 
 std::vector<XmlDocPtr> multiRootXml(const std::string &content)

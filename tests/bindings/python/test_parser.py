@@ -12,6 +12,19 @@ class ParserTestCase(unittest.TestCase):
         x = Parser()
         del x
 
+    def test_create_strict(self):
+        from libcellml.strict import Strict
+
+        self.assertRaises(AttributeError, Strict)
+
+    def test_parser_strict_interface(self):
+        from libcellml import Parser
+
+        x = Parser()
+        self.assertTrue(x.isStrict())
+        x.setStrict(False)
+        self.assertFalse(x.isStrict())
+
     def test_inheritance(self):
         import libcellml
         from libcellml import Parser
@@ -28,9 +41,29 @@ class ParserTestCase(unittest.TestCase):
         import libcellml
         from libcellml import Parser
 
-        # ModelPtr parseModel(const std::string &input)
+        model_string = """<?xml version="1.0" encoding="iso-8859-1"?>
+        <model name="sin" xmlns="http://www.cellml.org/cellml/2.0#">
+        </model>
+        """
+
         p = Parser()
-        self.assertIsInstance(p.parseModel('rubbish'), libcellml.Model)
+        m = p.parseModel(model_string)
+        self.assertIsInstance(m, libcellml.Model)
+        self.assertEqual("sin", m.name())
+
+    def test_parse_permissive_model(self):
+        import libcellml
+        from libcellml import Parser
+
+        model_string = """<?xml version="1.0" encoding="iso-8859-1"?>
+        <model name="sin" xmlns="http://www.cellml.org/cellml/1.0#">
+        </model>
+        """
+
+        p = Parser(False)
+        m = p.parseModel(model_string)
+        self.assertIsInstance(m, libcellml.Model)
+        self.assertEqual("sin", m.name())
 
 
 if __name__ == '__main__':
