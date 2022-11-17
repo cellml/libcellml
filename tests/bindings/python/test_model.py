@@ -15,6 +15,8 @@ class ModelTestCase(unittest.TestCase):
 
         y = Model('bob')
         self.assertEqual('bob', y.name())
+        y.removeName()
+        self.assertEqual('', y.name()
 
         z = libcellml.Model()
         del z

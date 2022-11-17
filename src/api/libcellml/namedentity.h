@@ -56,6 +56,13 @@ public:
      */
     std::string name() const;
 
+    /**
+     * @brief Remove the name of the Entity.
+     *
+     * Remove the name of the Entity.
+     */
+    void removeName();
+
 protected:
     bool doEquals(const EntityPtr &other) const override; /**< Virtual implementation method for equals, @private. */
 
