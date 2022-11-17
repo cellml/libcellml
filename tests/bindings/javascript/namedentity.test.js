@@ -28,5 +28,10 @@ describe("NamedEntity tests", () => {
 
         m.setName('m')
         expect(m.name()).toBe('m')
+
+        m.removeName()
+        expect(m.name()).toBe('')
+
+        m.delete()
     })
 })
