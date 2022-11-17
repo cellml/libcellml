@@ -2,7 +2,6 @@
 
 #define LIBCELLML_EXPORT
 
-%import "namedentity.i"
 %import "types.i"
 
 %feature("docstring") libcellml::ImportedEntity
@@ -35,5 +34,4 @@ string to unset).";
 
 %ignore libcellml::ImportedEntity::ImportedEntity();
 
-%include "libcellml/types.h"
 %include "libcellml/importedentity.h"

@@ -36,7 +36,7 @@ describe("Generator tests", () => {
     })
     test('Checking Generator model manipulation.', () => {
         const g = new libcellml.Generator()
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
 
         m = p.parseModel(basicModel)
         a = new libcellml.Analyser()
@@ -52,7 +52,7 @@ describe("Generator tests", () => {
     })
         test('Checking Generator code generation.', () => {
         const g = new libcellml.Generator()
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
 
         m = p.parseModel(basicModel)
         a = new libcellml.Analyser()

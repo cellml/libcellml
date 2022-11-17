@@ -34,10 +34,7 @@ limitations under the License.
 #include "anycellmlelement_p.h"
 #include "issue_p.h"
 #include "logger_p.h"
-#include "namespaces.h"
 #include "utilities.h"
-#include "xmldoc.h"
-#include "xmlutils.h"
 
 namespace libcellml {
 
@@ -93,11 +90,14 @@ Importer::Importer()
     : Logger(new Importer::ImporterImpl())
 {
     pFunc()->mImporter = this;
+    setStrict(true);
 }
 
-ImporterPtr Importer::create() noexcept
+ImporterPtr Importer::create(bool strict) noexcept
 {
-    return std::shared_ptr<Importer> {new Importer {}};
+    auto importer = std::shared_ptr<Importer> {new Importer {}};
+    importer->setStrict(strict);
+    return importer;
 }
 
 Importer::~Importer()
@@ -342,8 +342,15 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         }
         std::stringstream buffer;
         buffer << file.rdbuf();
-        auto parser = Parser::create();
+        auto parser = Parser::create(mImporter->isStrict());
         model = parser->parseModel(buffer.str());
+        if (!mImporter->isStrict() && (parser->messageCount() > 0)) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription(parser->message(0)->description());
+            issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+            issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+            addIssue(issue);
+        }
         auto errorCount = parser->errorCount();
         if (errorCount > 0) {
             for (size_t index = 0; index < errorCount; ++index) {

@@ -19,7 +19,7 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/logger.h"
-#include "libcellml/model.h"
+#include "libcellml/strict.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -29,7 +29,7 @@ namespace libcellml {
  *
  * The Parser class is for representing a CellML Parser.
  */
-class LIBCELLML_EXPORT Parser: public Logger
+class LIBCELLML_EXPORT Parser: public Logger, public Strict
 {
 public:
     ~Parser() override; /**< Destructor, @private. */
@@ -41,13 +41,23 @@ public:
      * @brief Create a @c Parser object.
      *
      * Factory method to create a @c Parser.  Create a
-     * parser with::
+     * strict parser with:
      *
+     * @code
      *   ParserPtr parser = libcellml::Parser::create();
+     * @endcode
+     *
+     * Create a parser with the strict flag set to @c false with:
+     *
+     * @code
+     *   ParserPtr parser = libcellml::Parser::create(false);
+     * @endcode
+     *
+     * @param strict [optional] A boolean value to set the strict flag to.
      *
      * @return A smart pointer to a @c Parser object.
      */
-    static ParserPtr create() noexcept;
+    static ParserPtr create(bool strict = true) noexcept;
 
     /**
      * @brief Create and populate a new model from a @c std::string.
@@ -57,11 +67,18 @@ public:
      *
      * All existing issues will be removed before the input is parsed.
      *
+     * Returns a @c nullptr if the @p input is not a @c std::string representation
+     * of a CellML model.
+     *
      * @param input The string to parse into a model.
      *
      * @return The new @c ModelPtr deserialised from the input string.
      */
     ModelPtr parseModel(const std::string &input);
+
+#ifdef JAVASCRIPT_BINDINGS
+#    include "strict.impl"
+#endif
 
 private:
     Parser(); /**< Constructor, @private. */

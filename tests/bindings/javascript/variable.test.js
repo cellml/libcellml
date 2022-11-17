@@ -23,15 +23,18 @@ describe("Variable tests", () => {
     })
     test('Checking Variable creation.', () => {
         const v1 = new libcellml.Variable()
-        const v2 = new libcellml.Variable.createByName("ms")
+        const v2 = new libcellml.Variable("ms")
 
         expect(v1.name()).toBe("")
         expect(v2.name()).toBe("ms")
+
+        v1.delete()
+        v2.delete()
     })
     test('Checking variable equivalence manipulation', () => {
-        const v1 = new libcellml.Variable.createByName("milliseconds")
-        const v2 = new libcellml.Variable.createByName("ms")
-        const v3 = new libcellml.Variable.createByName("millis")
+        const v1 = new libcellml.Variable("milliseconds")
+        const v2 = new libcellml.Variable("ms")
+        const v3 = new libcellml.Variable("millis")
 
         expect(v1.hasEquivalentVariable(v2, false)).toBe(false)
         expect(v1.equivalentVariableCount()).toBe(0)
@@ -58,9 +61,13 @@ describe("Variable tests", () => {
         v1.removeAllEquivalences()
 
         expect(v1.equivalentVariableCount()).toBe(0)
+
+        v1.delete()
+        v2.delete()
+        v3.delete()
     })
     test('Checking variable units manipulation', () => {
-        const v = new libcellml.Variable.createByName("V")
+        const v = new libcellml.Variable("V")
         const u = new libcellml.Units("mV")
 
         expect(v.units()).toBe(null)
@@ -76,6 +83,9 @@ describe("Variable tests", () => {
         v.removeUnits()
 
         expect(v.units()).toBe(null)
+
+        v.delete()
+        u.delete()
     })
     test('Checking variable initial value manipulation', () => {
         const v = new libcellml.Variable()
@@ -96,6 +106,9 @@ describe("Variable tests", () => {
         v.removeInitialValue()
 
         expect(v.initialValue()).toBe("")
+
+        v.delete()
+        vInitial.delete()
     })
     test('Checking variable interface manipulation', () => {
         const v = new libcellml.Variable()
@@ -115,10 +128,12 @@ describe("Variable tests", () => {
         v.removeInterfaceType()
 
         expect(v.interfaceType()).toBe("")
+
+        v.delete()
     })
     test('Checking variable id manipulation', () => {
-        const v1 = new libcellml.Variable.createByName("milliseconds")
-        const v2 = new libcellml.Variable.createByName("ms")
+        const v1 = new libcellml.Variable("milliseconds")
+        const v2 = new libcellml.Variable("ms")
 
         expect(libcellml.Variable.equivalenceConnectionId(v1, v2)).toBe("")
         expect(libcellml.Variable.equivalenceMappingId(v1, v2)).toBe("")
@@ -136,5 +151,8 @@ describe("Variable tests", () => {
 
         expect(libcellml.Variable.equivalenceConnectionId(v1, v2)).toBe("second_connection_id")
         expect(libcellml.Variable.equivalenceMappingId(v1, v2)).toBe("second_mapping_id")
+
+        v1.delete()
+        v2.delete()
     })
 })

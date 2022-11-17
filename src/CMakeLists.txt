@@ -72,6 +72,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/strict.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/types.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.cpp
@@ -109,6 +110,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/printer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/reset.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/strict.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/validator.h
