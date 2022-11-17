@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %import "importedentity.i"
+%import "namedentity.i"
 %import "types.i"
 
 %feature("docstring") libcellml::ComponentEntity

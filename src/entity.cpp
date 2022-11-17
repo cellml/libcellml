@@ -18,9 +18,6 @@ limitations under the License.
 
 #include <utility>
 
-#include "libcellml/component.h"
-#include "libcellml/componententity.h"
-
 #include "entity_p.h"
 
 namespace libcellml {
