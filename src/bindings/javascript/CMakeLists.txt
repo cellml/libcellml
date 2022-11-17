@@ -51,7 +51,7 @@ target_link_libraries(libcellml PUBLIC javascript-bindings)
 
 # Don't need this anymore (breaks linking)? -s USE_ES6_IMPORT_META=0
 set_target_properties(libcellml PROPERTIES
-  LINK_FLAGS "--bind -s ASSERTIONS=1 -s 'EXPORT_NAME=\"libCellML\"' -s EXPORT_ES6=1 -s MODULARIZE=1  -s ALLOW_MEMORY_GROWTH=1"
+  LINK_FLAGS "--bind -s ASSERTIONS=1 -s 'EXPORT_NAME=\"createLibCellML\"' -s EXPORT_ES6=1 -s ALLOW_MEMORY_GROWTH=1"
 )
 
 add_executable(libcellml.common $<TARGET_OBJECTS:javascript-bindings>)

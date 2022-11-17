@@ -162,4 +162,4 @@ yarn serve
 Open **localhost:8000** in a browser.
 You should see:
 
-![Vue app showing libcellml version](vue-app-with-libcellml.png)
+![Vue app showing libcellml version](src/bindings/javascript/vue-app-with-libcellml.png)

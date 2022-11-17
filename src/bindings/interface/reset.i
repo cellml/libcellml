@@ -94,5 +94,4 @@
 
 %create_constructor(Reset)
 
-%include "libcellml/types.h"
 %include "libcellml/reset.h"
