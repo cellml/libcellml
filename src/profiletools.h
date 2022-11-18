@@ -33,7 +33,15 @@ namespace libcellml {
  */
 std::string sha1(const std::string &string);
 
+/**
+ * @brief Form the @c std::string representation of the given @p profile.
+ *
+ * Form the @c std::string representation of the given @p profile.
+ *
+ * @param profile The profile to create the @c std::string representation of.
+ *
+ * @return The @c std::string representation of the given @p profile.
+ */
 std::string formProfileRepresentation(const GeneratorProfilePtr &profile);
-
 
 } // namespace libcellml
