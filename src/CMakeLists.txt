@@ -71,6 +71,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/parentedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/profiletools.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/strict.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/types.cpp
@@ -148,6 +149,7 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/parentedentity_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/profiletools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/reset_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/units_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
