@@ -21,6 +21,6 @@ limitations under the License.
 namespace libcellml {
 
 static const std::string C_PROFILE_SHA1 = "aeb5a3f6a296f649f7b7cdc8cb0a4184a0bf8220";
-static const std::string PYTHON_PROFILE_SHA1 = "e1b799b36db7282ac549b8e2c94959ef220ea776";
+static const std::string PYTHON_PROFILE_SHA1 = "000bc7b4704b9ada831099a93109a68e524cb3de";
 
 } // namespace libcellml

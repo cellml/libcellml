@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 LIBCELLML_VERSION = "0.3.104"
 
 STATE_COUNT = 1
@@ -12,11 +12,11 @@ VARIABLE_COUNT = 1
 
 
 class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 1
-    STATE = 2
-    CONSTANT = 3
-    COMPUTED_CONSTANT = 4
-    ALGEBRAIC = 5
+    VARIABLE_OF_INTEGRATION = 0
+    STATE = 1
+    CONSTANT = 2
+    COMPUTED_CONSTANT = 3
+    ALGEBRAIC = 4
 
 
 VOI_INFO = {"name": "t", "units": "ms", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
