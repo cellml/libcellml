@@ -18,9 +18,9 @@ limitations under the License.
 #include <iomanip>
 #include <sstream>
 
-#include "profiletools.h"
-
 #include "libcellml/generatorprofile.h"
+
+#include "generatorprofiletools.h"
 
 namespace libcellml {
 
