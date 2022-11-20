@@ -9,19 +9,19 @@
 
 int main()
 {
-    auto c_profile = libcellml::GeneratorProfile::create();
-    auto py_profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto cProfile = libcellml::GeneratorProfile::create();
+    auto pyProfile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    auto c_profile_repr = libcellml::formProfileRepresentation(c_profile);
-    std::string c_sha1_value = libcellml::sha1(c_profile_repr);
+    auto cProfileRepr = libcellml::formProfileRepresentation(cProfile);
+    std::string cSha1Value = libcellml::sha1(cProfileRepr);
 
-    auto py_profile_repr = libcellml::formProfileRepresentation(py_profile);
-    std::string py_sha1_value = libcellml::sha1(py_profile_repr);
+    auto pyProfileRepr = libcellml::formProfileRepresentation(pyProfile);
+    std::string pySha1Value = libcellml::sha1(pyProfileRepr);
 
     std::ofstream outFile("profilesha1values.cmake");
 
-    outFile << "set(C_PROFILE_SHA1_VALUE " << c_sha1_value << ")" << std::endl;
-    outFile << "set(PYTHON_PROFILE_SHA1_VALUE " << py_sha1_value << ")" << std::endl;
+    outFile << "set(C_PROFILE_SHA1_VALUE " << cSha1Value << ")" << std::endl;
+    outFile << "set(PYTHON_PROFILE_SHA1_VALUE " << pySha1Value << ")" << std::endl;
 
     outFile.close();
 
