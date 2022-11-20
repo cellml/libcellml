@@ -191,7 +191,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
 
 bool Generator::GeneratorImpl::modifiedProfile() const
 {
-    std::string profileContents = formProfileRepresentation(mLockedProfile);
+    std::string profileContents = generatorProfileAsString(mLockedProfile);
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
                sha1(profileContents) != C_PROFILE_SHA1 :

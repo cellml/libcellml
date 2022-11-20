@@ -42,6 +42,6 @@ std::string sha1(const std::string &string);
  *
  * @return The @c std::string representation of the given @p profile.
  */
-std::string formProfileRepresentation(const GeneratorProfilePtr &profile);
+std::string generatorProfileAsString(const GeneratorProfilePtr &profile);
 
 } // namespace libcellml

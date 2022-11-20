@@ -263,7 +263,7 @@ std::string sha1(const std::string &string)
     return result.str();
 }
 
-std::string formProfileRepresentation(const GeneratorProfilePtr &profile)
+std::string generatorProfileAsString(const GeneratorProfilePtr &profile)
 {
     // Whether the profile requires an interface to be generated.
 
