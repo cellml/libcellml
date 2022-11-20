@@ -39,4 +39,4 @@ add_custom_command(OUTPUT profilesha1.h
   COMMAND ${CMAKE_COMMAND} -P "${PROJECT_SOURCE_DIR}/cmake/generateprofilesha1header.cmake")
 add_custom_target(update_generator_profile_sha1_values
   DEPENDS profilesha1.h
-  COMMENT "Update SHA-1 values for C and Python generator profiles.")
+  COMMENT "Update SHA-1 values for C and Python generator profiles (in source directory, Eek!).")
