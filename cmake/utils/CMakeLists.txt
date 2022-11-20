@@ -32,11 +32,11 @@ set_target_properties(calculatesha1 PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE E
 target_include_directories(calculatesha1 PRIVATE ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(calculatesha1 PRIVATE cellml)
 
-add_custom_command(OUTPUT profilesha1.h
+add_custom_command(OUTPUT generatorprofilesha1values.cmake
   COMMENT "Updating SHA-1 values for C and Python generator profiles."
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMAND calculatesha1
   COMMAND ${CMAKE_COMMAND} -P "${PROJECT_SOURCE_DIR}/cmake/generateprofilesha1header.cmake")
 add_custom_target(update_generator_profile_sha1_values
-  DEPENDS profilesha1.h
+  DEPENDS generatorprofilesha1values.cmake
   COMMENT "Update SHA-1 values for C and Python generator profiles (in source directory, Eek!).")
