@@ -29,8 +29,8 @@ limitations under the License.
 
 #include "analyserequationast_p.h"
 #include "generator_p.h"
-#include "profilesha1values.h"
-#include "profiletools.h"
+#include "generatorprofilesha1values.h"
+#include "generatorprofiletools.h"
 #include "utilities.h"
 
 #ifdef NAN

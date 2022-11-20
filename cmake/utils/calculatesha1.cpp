@@ -18,7 +18,7 @@ int main()
     auto pyProfileRepr = libcellml::formProfileRepresentation(pyProfile);
     std::string pySha1Value = libcellml::sha1(pyProfileRepr);
 
-    std::ofstream outFile("profilesha1values.cmake");
+    std::ofstream outFile("generatorprofilesha1values.cmake");
 
     outFile << "set(C_PROFILE_SHA1_VALUE " << cSha1Value << ")" << std::endl;
     outFile << "set(PYTHON_PROFILE_SHA1_VALUE " << pySha1Value << ")" << std::endl;
