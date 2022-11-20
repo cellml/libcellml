@@ -27,7 +27,7 @@ add_custom_target(create_mathml_dtd_files
   DEPENDS mathmldtd.h
   COMMENT "Create mathmldtd files (in source directory, Eek!).")
 
-add_executable(calculatesha1 calculatesha1.cpp ${PROJECT_SOURCE_DIR}/src/profiletools.cpp)
+add_executable(calculatesha1 calculatesha1.cpp ${PROJECT_SOURCE_DIR}/src/generatorprofiletools.cpp)
 set_target_properties(calculatesha1 PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE EXCLUDE_FROM_ALL TRUE)
 target_include_directories(calculatesha1 PRIVATE ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(calculatesha1 PRIVATE cellml)
