@@ -27,10 +27,10 @@ int main()
     auto cProfile = libcellml::GeneratorProfile::create();
     auto pyProfile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    auto cProfileRepr = libcellml::formProfileRepresentation(cProfile);
+    auto cProfileRepr = libcellml::generatorProfileAsString(cProfile);
     std::string cSha1Value = libcellml::sha1(cProfileRepr);
 
-    auto pyProfileRepr = libcellml::formProfileRepresentation(pyProfile);
+    auto pyProfileRepr = libcellml::generatorProfileAsString(pyProfile);
     std::string pySha1Value = libcellml::sha1(pyProfileRepr);
 
     std::ofstream outFile("generatorprofilesha1values.cmake");
