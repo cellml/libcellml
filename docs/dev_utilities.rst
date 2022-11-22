@@ -16,7 +16,7 @@ Create MathML DTD files
 =======================
 
 The create MathML DTD files utility generates a compressed MathML DTD.
-The MathML DTD is used to determine the validity of MathML strings in a CellML model.
+The MathML DTD is used to determine the validity of MathML strings in a CellML document.
 This utility updates the header file :code:`mathmldtd.h` and source file :code:`mathmldtd.cpp` in the source tree of the current build.
 For a make-based envirionment, the utility may be run with the following command::
 
