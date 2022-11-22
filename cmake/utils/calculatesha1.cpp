@@ -35,8 +35,8 @@ int main()
 
     std::ofstream outFile("generatorprofilesha1values.cmake");
 
-    outFile << "set(C_PROFILE_SHA1_VALUE " << cSha1Value << ")" << std::endl;
-    outFile << "set(PYTHON_PROFILE_SHA1_VALUE " << pySha1Value << ")" << std::endl;
+    outFile << "set(C_GENERATOR_PROFILE_SHA1_VALUE " << cSha1Value << ")" << std::endl;
+    outFile << "set(PYTHON_GENERATOR_PROFILE_SHA1_VALUE " << pySha1Value << ")" << std::endl;
 
     outFile.close();
 
