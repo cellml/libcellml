@@ -24,14 +24,14 @@ limitations under the License.
 
 int main()
 {
-    auto cProfile = libcellml::GeneratorProfile::create();
-    auto pyProfile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto cGeneratorProfile = libcellml::GeneratorProfile::create();
+    auto pyGeneratorProfile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-    auto cProfileRepr = libcellml::generatorProfileAsString(cProfile);
-    std::string cSha1Value = libcellml::sha1(cProfileRepr);
+    auto cGeneratorProfileRepr = libcellml::generatorProfileAsString(cGeneratorProfile);
+    std::string cSha1Value = libcellml::sha1(cGeneratorProfileRepr);
 
-    auto pyProfileRepr = libcellml::generatorProfileAsString(pyProfile);
-    std::string pySha1Value = libcellml::sha1(pyProfileRepr);
+    auto pyGeneratorProfileRepr = libcellml::generatorProfileAsString(pyGeneratorProfile);
+    std::string pySha1Value = libcellml::sha1(pyGeneratorProfileRepr);
 
     std::ofstream outFile("generatorprofilesha1values.cmake");
 
