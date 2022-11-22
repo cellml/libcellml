@@ -194,8 +194,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     std::string profileContents = generatorProfileAsString(mLockedProfile);
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != C_PROFILE_SHA1 :
-               sha1(profileContents) != PYTHON_PROFILE_SHA1;
+               sha1(profileContents) != C_GENERATOR_PROFILE_SHA1 :
+               sha1(profileContents) != PYTHON_GENERATOR_PROFILE_SHA1;
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
