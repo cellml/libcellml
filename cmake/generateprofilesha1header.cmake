@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-include("profilesha1values.cmake")
-configure_file("${CMAKE_CURRENT_LIST_DIR}/../src/configure/profilesha1values.in.h" "${CMAKE_CURRENT_LIST_DIR}/../src/profilesha1values.h")
+include("generatorprofilesha1values.cmake")
+configure_file("${CMAKE_CURRENT_LIST_DIR}/../src/configure/generatorprofilesha1values.in.h" "${CMAKE_CURRENT_LIST_DIR}/../src/generatorprofilesha1values.h")

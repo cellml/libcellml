@@ -29,8 +29,8 @@ limitations under the License.
 
 #include "analyserequationast_p.h"
 #include "generator_p.h"
-#include "profilesha1values.h"
-#include "profiletools.h"
+#include "generatorprofilesha1values.h"
+#include "generatorprofiletools.h"
 #include "utilities.h"
 
 #ifdef NAN
@@ -191,11 +191,11 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
 
 bool Generator::GeneratorImpl::modifiedProfile() const
 {
-    std::string profileContents = formProfileRepresentation(mLockedProfile);
+    std::string profileContents = generatorProfileAsString(mLockedProfile);
 
     return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
-               sha1(profileContents) != C_PROFILE_SHA1 :
-               sha1(profileContents) != PYTHON_PROFILE_SHA1;
+               sha1(profileContents) != C_GENERATOR_PROFILE_SHA1 :
+               sha1(profileContents) != PYTHON_GENERATOR_PROFILE_SHA1;
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
