@@ -59,6 +59,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/enums.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
@@ -71,7 +72,6 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/parentedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/profiletools.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/strict.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/types.cpp
@@ -141,6 +141,7 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/entity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generator_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/issue_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/logger_p.h
@@ -149,7 +150,6 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/parentedentity_p.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/profiletools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/reset_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/units_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
