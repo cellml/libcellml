@@ -853,7 +853,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.3.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.3.1\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
@@ -866,33 +866,33 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mVariableTypeObjectFamWoevString = "\n"
                                            "class VariableType(Enum):\n"
-                                           "    CONSTANT = 1\n"
-                                           "    COMPUTED_CONSTANT = 2\n"
-                                           "    ALGEBRAIC = 3\n"
+                                           "    CONSTANT = 0\n"
+                                           "    COMPUTED_CONSTANT = 1\n"
+                                           "    ALGEBRAIC = 2\n"
                                            "\n";
         mVariableTypeObjectFamWevString = "\n"
                                           "class VariableType(Enum):\n"
-                                          "    CONSTANT = 1\n"
-                                          "    COMPUTED_CONSTANT = 2\n"
-                                          "    ALGEBRAIC = 3\n"
-                                          "    EXTERNAL = 4\n"
+                                          "    CONSTANT = 0\n"
+                                          "    COMPUTED_CONSTANT = 1\n"
+                                          "    ALGEBRAIC = 2\n"
+                                          "    EXTERNAL = 3\n"
                                           "\n";
         mVariableTypeObjectFdmWoevString = "\n"
                                            "class VariableType(Enum):\n"
-                                           "    VARIABLE_OF_INTEGRATION = 1\n"
-                                           "    STATE = 2\n"
-                                           "    CONSTANT = 3\n"
-                                           "    COMPUTED_CONSTANT = 4\n"
-                                           "    ALGEBRAIC = 5\n"
+                                           "    VARIABLE_OF_INTEGRATION = 0\n"
+                                           "    STATE = 1\n"
+                                           "    CONSTANT = 2\n"
+                                           "    COMPUTED_CONSTANT = 3\n"
+                                           "    ALGEBRAIC = 4\n"
                                            "\n";
         mVariableTypeObjectFdmWevString = "\n"
                                           "class VariableType(Enum):\n"
-                                          "    VARIABLE_OF_INTEGRATION = 1\n"
-                                          "    STATE = 2\n"
-                                          "    CONSTANT = 3\n"
-                                          "    COMPUTED_CONSTANT = 4\n"
-                                          "    ALGEBRAIC = 5\n"
-                                          "    EXTERNAL = 6\n"
+                                          "    VARIABLE_OF_INTEGRATION = 0\n"
+                                          "    STATE = 1\n"
+                                          "    CONSTANT = 2\n"
+                                          "    COMPUTED_CONSTANT = 3\n"
+                                          "    ALGEBRAIC = 4\n"
+                                          "    EXTERNAL = 5\n"
                                           "\n";
 
         mVariableOfIntegrationVariableTypeString = "VariableType.VARIABLE_OF_INTEGRATION";
