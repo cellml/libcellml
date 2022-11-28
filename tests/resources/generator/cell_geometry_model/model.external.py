@@ -4,17 +4,17 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 LIBCELLML_VERSION = "0.3.104"
 
 VARIABLE_COUNT = 4
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
-    EXTERNAL = 4
+    CONSTANT = 0
+    COMPUTED_CONSTANT = 1
+    ALGEBRAIC = 2
+    EXTERNAL = 3
 
 
 VARIABLE_INFO = [
