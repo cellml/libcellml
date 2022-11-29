@@ -39,6 +39,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/parser.i
     ../interface/printer.i
     ../interface/reset.i
+    ../interface/strict.i
     ../interface/types.i
     ../interface/units.i
     ../interface/validator.i

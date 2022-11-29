@@ -59,6 +59,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/enums.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
@@ -72,6 +73,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/strict.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/types.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.cpp
@@ -109,6 +111,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/printer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/reset.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/strict.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/validator.h
@@ -138,6 +141,8 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/entity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generator_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofilesha1values.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/issue_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/logger_p.h

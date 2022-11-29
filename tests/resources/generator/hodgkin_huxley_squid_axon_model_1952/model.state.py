@@ -1,23 +1,23 @@
-# The content of this file was generated using the Python profile of libCellML 0.3.104.
+# The content of this file was generated using the Python profile of libCellML 0.4.0.
 
 from enum import Enum
 from math import *
 
 
-__version__ = "0.3.0"
-LIBCELLML_VERSION = "0.3.104"
+__version__ = "0.3.1"
+LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 3
 VARIABLE_COUNT = 19
 
 
 class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 1
-    STATE = 2
-    CONSTANT = 3
-    COMPUTED_CONSTANT = 4
-    ALGEBRAIC = 5
-    EXTERNAL = 6
+    VARIABLE_OF_INTEGRATION = 0
+    STATE = 1
+    CONSTANT = 2
+    COMPUTED_CONSTANT = 3
+    ALGEBRAIC = 4
+    EXTERNAL = 5
 
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}

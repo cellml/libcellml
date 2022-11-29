@@ -376,17 +376,6 @@ std::vector<ComponentPtr> getImportedComponents(const ComponentEntityConstPtr &c
 std::vector<UnitsPtr> getImportedUnits(const ModelConstPtr &model);
 
 /**
- * @brief Compute the SHA-1 value of the @p string @c std::string.
- *
- * Compute and return the SHA-1 value of the @p string @c std::string.
- *
- * @param string The @c std::string value for which we want the SHA-1 value.
- *
- * @return The @c std::string SHA-1 value.
- */
-std::string sha1(const std::string &string);
-
-/**
  * @brief Remove the given component from the given entity.
  *
  * The entity given can be either a @c Model or @c Component and as such is

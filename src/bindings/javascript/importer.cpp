@@ -16,13 +16,16 @@ limitations under the License.
 
 #include <emscripten/bind.h>
 
+// To work around multiple inheritance we have to create a combined Importer
+// and Strict class that we can bind with Emscripten.
+#define JAVASCRIPT_BINDINGS
 #include "libcellml/importer.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_importer)
 {
-    class_<libcellml::Importer>("Importer")
+    class_<libcellml::Importer, base<libcellml::Logger>>("Importer")
         .smart_ptr_constructor("Importer", &libcellml::Importer::create)
         .function("flattenModel", &libcellml::Importer::flattenModel)
         .function("resolveImports", &libcellml::Importer::resolveImports)
@@ -41,5 +44,7 @@ EMSCRIPTEN_BINDINGS(libcellml_importer)
         .function("removeImportSourceByImportSource", select_overload<bool(const libcellml::ImportSourcePtr &)>(&libcellml::Importer::removeImportSource))
         .function("removeAllImportSources", &libcellml::Importer::removeAllImportSources)
         .function("hasImportSource", &libcellml::Importer::hasImportSource)
+        .function("isStrict", &libcellml::Importer::isStrict)
+        .function("setStrict", &libcellml::Importer::setStrict)
     ;
 }

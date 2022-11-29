@@ -16,10 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/issue.h"
-
-#include "anycellmlelement_p.h"
-#include "internaltypes.h"
+#include "libcellml/logger.h"
 
 namespace libcellml {
 

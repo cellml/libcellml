@@ -25,7 +25,6 @@ limitations under the License.
 #include <stdexcept>
 
 #include "libcellml/component.h"
-#include "libcellml/importer.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
@@ -1525,7 +1524,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
     std::string unitsName;
     XmlAttributePtr unitsAttribute = nullptr;
     std::vector<XmlAttributePtr> cellmlAttributesToRemove;
-    while (attribute) {
+    while (attribute != nullptr) {
         if (!attribute->value().empty()) {
             if (attribute->isCellmlType("units")) {
                 unitsName = attribute->value();

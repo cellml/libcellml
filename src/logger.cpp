@@ -19,7 +19,7 @@ limitations under the License.
 #include <algorithm>
 #include <vector>
 
-#include "libcellml/component.h"
+#include "libcellml/issue.h"
 #include "libcellml/types.h"
 
 #include "logger_p.h"
