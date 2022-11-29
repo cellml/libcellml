@@ -3,6 +3,11 @@
 #
 import unittest
 
+import libcellml.variable
+
+
+OLD_STATIC_METHODS_AVAILABLE = hasattr(libcellml.variable, 'Variable_setEquivalenceMappingId')
+
 
 class VariableTestCase(unittest.TestCase):
 
@@ -33,9 +38,6 @@ class VariableTestCase(unittest.TestCase):
 
     def test_id(self):
         from libcellml import Variable
-        from libcellml.variable import Variable_setEquivalenceMappingId, Variable_setEquivalenceConnectionId, \
-            Variable_equivalenceMappingId, Variable_equivalenceConnectionId
-        from libcellml.variable import Variable_removeEquivalenceMappingId, Variable_removeEquivalenceConnectionId
 
         v1 = Variable("v1")
         v2 = Variable("v2")
@@ -47,16 +49,27 @@ class VariableTestCase(unittest.TestCase):
         Variable.removeEquivalenceMappingId(v1, v2)
         self.assertEqual("", Variable.equivalenceMappingId(v1, v2))
 
-        Variable_setEquivalenceMappingId(v1, v2, "other_mapping_id")
-        self.assertEqual("other_mapping_id", Variable_equivalenceMappingId(v1, v2))
-        Variable_removeEquivalenceMappingId(v1, v2)
-        self.assertEqual("", Variable_equivalenceMappingId(v1, v2))
-
         self.assertEqual("", Variable.equivalenceConnectionId(v1, v2))
         Variable.setEquivalenceConnectionId(v1, v2, "connection_id")
         self.assertEqual("connection_id", Variable.equivalenceConnectionId(v1, v2))
         Variable.removeEquivalenceConnectionId(v1, v2)
         self.assertEqual("", Variable.equivalenceConnectionId(v1, v2))
+
+    @unittest.skipIf(not OLD_STATIC_METHODS_AVAILABLE, "Old module static methods not available.")
+    def test_id_coverage_old_swig(self):
+        from libcellml import Variable
+        from libcellml.variable import Variable_setEquivalenceMappingId, Variable_setEquivalenceConnectionId, \
+            Variable_equivalenceMappingId, Variable_equivalenceConnectionId
+        from libcellml.variable import Variable_removeEquivalenceMappingId, Variable_removeEquivalenceConnectionId
+
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+        Variable.addEquivalence(v1, v2)
+
+        Variable_setEquivalenceMappingId(v1, v2, "other_mapping_id")
+        self.assertEqual("other_mapping_id", Variable_equivalenceMappingId(v1, v2))
+        Variable_removeEquivalenceMappingId(v1, v2)
+        self.assertEqual("", Variable_equivalenceMappingId(v1, v2))
 
         Variable_setEquivalenceConnectionId(v1, v2, "other_connection_id")
         self.assertEqual("other_connection_id", Variable_equivalenceConnectionId(v1, v2))
@@ -65,7 +78,6 @@ class VariableTestCase(unittest.TestCase):
 
     def test_equivalence(self):
         from libcellml import Variable
-        from libcellml.variable import Variable_addEquivalence, Variable_removeEquivalence
 
         v1 = Variable()
         v2 = Variable()
@@ -76,6 +88,16 @@ class VariableTestCase(unittest.TestCase):
         self.assertTrue(v1.hasEquivalentVariable(v2))
 
         Variable.removeEquivalence(v1, v2)
+        self.assertFalse(v1.hasEquivalentVariable(v2))
+
+    @unittest.skipIf(not OLD_STATIC_METHODS_AVAILABLE, "Old module static methods not available.")
+    def test_equivalence_coverage_old_swig(self):
+        from libcellml import Variable
+        from libcellml.variable import Variable_addEquivalence, Variable_removeEquivalence
+
+        v1 = Variable()
+        v2 = Variable()
+
         self.assertFalse(v1.hasEquivalentVariable(v2))
 
         Variable_addEquivalence(v1, v2)
