@@ -274,8 +274,8 @@ class UnitsTestCase(unittest.TestCase):
         self.assertFalse(u.requiresImports())
 
     def test_scaling_factor(self):
+        import libcellml.units
         from libcellml import Units
-        from libcellml.units import Units_scalingFactor
 
         u1 = Units("BigVolts")
         u1.addUnit("volt", 0, 1, 1000)
@@ -284,11 +284,13 @@ class UnitsTestCase(unittest.TestCase):
         u2.addUnit("volt")
 
         self.assertEqual(0.001, Units.scalingFactor(u1, u2))
-        self.assertEqual(0.001, Units_scalingFactor(u1, u2))
+        if hasattr(libcellml.units, "Units_scalingFactor"):
+            from libcellml.units import Units_scalingFactor
+            self.assertEqual(0.001, Units_scalingFactor(u1, u2))
 
     def test_compatible(self):
+        import libcellml.units
         from libcellml import Units
-        from libcellml.units import Units_compatible
 
         u1 = Units("BigVolts")
         u1.addUnit("volt", 0, 1, 1000)
@@ -297,11 +299,13 @@ class UnitsTestCase(unittest.TestCase):
         u2.addUnit("volt")
 
         self.assertTrue(Units.compatible(u1, u2))
-        self.assertTrue(Units_compatible(u1, u2))
+        if hasattr(libcellml.units, "Units_compatible"):
+            from libcellml.units import Units_compatible
+            self.assertTrue(Units_compatible(u1, u2))
 
     def test_equivalent(self):
+        import libcellml.units
         from libcellml import Units
-        from libcellml.units import Units_equivalent
 
         u1 = Units("BigVolts")
         u1.addUnit("volt", 0, 1, 1000)
@@ -310,7 +314,9 @@ class UnitsTestCase(unittest.TestCase):
         u2.addUnit("volt")
 
         self.assertFalse(Units.equivalent(u1, u2))
-        self.assertFalse(Units_equivalent(u1, u2))
+        if hasattr(libcellml.units, "Units_equivalent"):
+            from libcellml.units import Units_equivalent
+            self.assertFalse(Units_equivalent(u1, u2))
 
     def test_clone(self):
         from libcellml import Units
