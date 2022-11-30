@@ -240,7 +240,13 @@ target_include_directories(cellml_debug_utilities
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
 )
 
-target_link_libraries(cellml PRIVATE debug cellml_debug_utilities)
+set_target_properties(cellml_debug_utilities PROPERTIES
+  CXX_VISIBILITY_PRESET hidden
+  DEBUG_POSTFIX d
+  VISIBILITY_INLINES_HIDDEN 1
+)
+
+target_link_libraries(cellml PRIVATE debug $<BUILD_INTERFACE:cellml_debug_utilities>)
 
 group_source_to_dir_structure(
   ${DEBUG_SOURCE_FILES}
@@ -376,6 +382,11 @@ set(SOURCE_FILES ${SOURCE_FILES} PARENT_SCOPE)
 set(API_HEADER_FILES ${GIT_API_HEADER_FILES} PARENT_SCOPE)
 set(MODULE_HEADER_FILES ${MODULE_HEADER_FILES} PARENT_SCOPE)
 set(HEADER_FILES ${GIT_HEADER_FILES} PARENT_SCOPE)
+set(GENERATED_HEADER_FILES
+  ${LIBCELLML_PRIVATECONFIG_H}
+  ${LIBCELLML_VERSIONCONFIG_H}
+  PARENT_SCOPE
+)
 set(CONFIG_FILES
   ${LIBCELLML_VERSIONCONFIG_H_IN}
   PARENT_SCOPE
