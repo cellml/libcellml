@@ -12,47 +12,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.18.0)
 
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
-set(_PROJECT_VERSION 0.2.0)
-set(PROJECT_DEVELOPER_VERSION -dev.21)
+set(_PROJECT_VERSION 0.4.0)
+set(PROJECT_DEVELOPER_VERSION -rc.2)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.
-if(POLICY CMP0078)
-  cmake_policy(SET CMP0078 NEW)
-endif()
-if(POLICY CMP0086)
-  cmake_policy(SET CMP0086 NEW)
-endif()
-if(POLICY CMP0063)
-  cmake_policy(SET CMP0063 NEW)
-endif()
+set(NEW_POLICIES CMP0056 CMP0063 CMP0074 CMP0078 CMP0086 CMP0092)
+foreach(NEW_POLICY ${NEW_POLICIES})
+  if(POLICY ${NEW_POLICY})
+    cmake_policy(SET ${NEW_POLICY} NEW)
+  endif()
+endforeach()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(common)
 include(environmentchecks)
+include(macros)
 
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
 
 # COMPILER_CACHE  ==> LIBCELLML_COMPILER_CACHE
 set(_PARAM_ANNOTATION "Enable compiler cache.")
-if((WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE))
+if(COMPILER_CACHE_AVAILABLE)
   set(LIBCELLML_COMPILER_CACHE ON CACHE BOOL "${_PARAM_ANNOTATION}")
 endif()
-if(DEFINED COMPILER_CACHE AND ((WIN32 AND CLCACHE_AVAILABLE) OR (NOT WIN32 AND CCACHE_AVAILABLE)))
+if(DEFINED COMPILER_CACHE AND COMPILER_CACHE_AVAILABLE)
   set(LIBCELLML_COMPILER_CACHE "${COMPILER_CACHE}" CACHE BOOL "${_PARAM_ANNOTATION}" FORCE)
 elseif(COMPILER_CACHE)
-  if(WIN32)
-    set(COMPILER_CACHE_TOOL clcache)
-  else()
-    set(COMPILER_CACHE_TOOL ccache)
+  if(MSVC)
+    set(CLCACHE ", clcache")
   endif()
-  message(WARNING "compiler cache is requested but ${COMPILER_CACHE_TOOL} not found!")
+  message(WARNING "compiler cache is requested but buildcache${CLCACHE} or ccache not found!")
 endif()
 unset(COMPILER_CACHE CACHE)
 
@@ -106,7 +102,7 @@ unset(MEMCHECK CACHE)
 
 # BINDINGS_PYTHON ==> LIBCELLML_BINDINGS_PYTHON
 set(_PARAM_ANNOTATION "Build Python wrappers.")
-if(BINDINGS_AVAILABLE AND Python_Development_FOUND)
+if(BINDINGS_AVAILABLE AND PYTHON_BINDINGS_AVAILABLE)
   set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL "${_PARAM_ANNOTATION}")
 endif()
 if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE AND Python_Development_FOUND)
@@ -158,9 +154,12 @@ unset(TWAE CACHE)
 # BUILD_TYPE ==> LIBCELLML_BUILD_TYPE
 if(NOT IS_MULTI_CONFIG)
   set(_PARAM_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
-  set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING "${_PARAM_ANNOTATION}")
-  if(DEFINED BUILD_TYPE)
+  if(DEFINED BUILD_TYPE AND NOT BUILD_TYPE STREQUAL "")
     set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING "${_PARAM_ANNOTATION}" FORCE)
+  elseif(NOT CMAKE_BUILD_TYPE STREQUAL "")
+    set(LIBCELLML_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "${_PARAM_ANNOTATION}")
+  else()
+    set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING "${_PARAM_ANNOTATION}" FORCE)
   endif()
 endif()
 unset(BUILD_TYPE CACHE)
@@ -195,7 +194,7 @@ endif()
 
 # ENABLE_UTILITIES ==> LIBCELLML_ENABLE_UTILITIES
 set(_PARAM_ANNOTATION "Enable the utility targets; e.g. create_mathml_dtd_files.")
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.18 AND NOT DEFINED EMSCRIPTEN)
+if(NOT DEFINED EMSCRIPTEN)
   set(LIBCELLML_ENABLE_UTILITIES OFF CACHE BOOL "${_PARAM_ANNOTATION}")
   if(DEFINED ENABLE_UTILITIES)
     set(LIBCELLML_ENABLE_UTILITIES ${ENABLE_UTILITIES} CACHE BOOL "${_PARAM_ANNOTATION}" FORCE)
@@ -205,22 +204,9 @@ else()
   set(LIBCELLML_ENABLE_UTILITIES OFF CACHE INTERNAL "${_PARAM_ANNOTATION}")
 endif()
 
-# If available and wanted, use compiler cache.
+# If available and wanted, apply compiler cache settings.
 if(LIBCELLML_COMPILER_CACHE)
-  if(WIN32)
-    if(CLCACHE_EXE)
-      set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
-      execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
-                      RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
-      if(RESULT EQUAL 0)
-        set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
-      endif()
-    endif()
-  else()
-    if(CCACHE_EXE)
-      set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXE})
-    endif()
-  endif()
+  apply_compiler_cache_settings()
 endif()
 
 # Uninstall target
@@ -254,7 +240,7 @@ endif()
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
 
 # Format our code
-if(CLANG_FORMAT_EXE)
+if(CLANG_FORMAT_AVAILABLE)
   set(FILES_TO_FORMAT
     ${API_HEADER_FILES}
     ${MODULE_HEADER_FILES}
@@ -286,3 +272,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/packaging)
 if(LIBCELLML_ENABLE_UTILITIES)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/utils)
 endif()
+
+# Add target to print out version
+add_custom_target(print_version
+  COMMAND ${CMAKE_COMMAND} -E echo "version=v${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}")
+

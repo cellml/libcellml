@@ -176,7 +176,27 @@ bool XmlNode::isElement() const
 
 bool XmlNode::isCellmlElement(const char *name) const
 {
+    return isCellml20Element(name) || isCellml11Element(name) || isCellml10Element(name);
+}
+
+bool XmlNode::isCellml20Element(const char *name) const
+{
     return isElement(name, CELLML_2_0_NS);
+}
+
+bool XmlNode::isCellml10Element(const char *name) const
+{
+    return isElement(name, CELLML_1_0_NS);
+}
+
+bool XmlNode::isCellml11Element(const char *name) const
+{
+    return isElement(name, CELLML_1_1_NS);
+}
+
+bool XmlNode::isCellml1XElement(const char *name) const
+{
+    return isCellml10Element(name) || isCellml11Element(name);
 }
 
 bool XmlNode::isMathmlElement(const char *name) const
@@ -285,6 +305,7 @@ XmlNodePtr XmlNode::parent() const
 std::string XmlNode::convertToString() const
 {
     std::string contentString;
+    xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
     int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
     if (len > 0) {

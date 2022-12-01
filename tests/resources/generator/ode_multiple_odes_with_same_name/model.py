@@ -1,27 +1,29 @@
-# The content of this file was generated using the Python profile of libCellML 0.2.0.
+# The content of this file was generated using the Python profile of libCellML 0.4.0.
 
 from enum import Enum
 from math import *
 
 
-__version__ = "0.3.0"
-LIBCELLML_VERSION = "0.2.0"
+__version__ = "0.3.1"
+LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 2
 VARIABLE_COUNT = 1
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    VARIABLE_OF_INTEGRATION = 0
+    STATE = 1
+    CONSTANT = 2
+    COMPUTED_CONSTANT = 3
+    ALGEBRAIC = 4
 
 
-VOI_INFO = {"name": "t", "units": "second", "component": "environment"}
+VOI_INFO = {"name": "t", "units": "second", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_first_ode"},
-    {"name": "x", "units": "dimensionless", "component": "my_second_ode"}
+    {"name": "x", "units": "dimensionless", "component": "my_first_ode", "type": VariableType.STATE},
+    {"name": "x", "units": "dimensionless", "component": "my_second_ode", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
@@ -37,7 +39,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_states_and_constants(states, variables):
+def initialise_variables(states, variables):
     variables[0] = 1.0
     states[0] = 1.0
     states[1] = 1.0

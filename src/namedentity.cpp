@@ -16,9 +16,6 @@ limitations under the License.
 
 #include "libcellml/namedentity.h"
 
-#include "libcellml/component.h"
-#include "libcellml/componententity.h"
-
 #include "namedentity_p.h"
 
 namespace libcellml {
@@ -46,6 +43,11 @@ void NamedEntity::setName(const std::string &name)
 std::string NamedEntity::name() const
 {
     return pFunc()->mName;
+}
+
+void NamedEntity::removeName()
+{
+    pFunc()->mName = "";
 }
 
 bool NamedEntity::doEquals(const EntityPtr &other) const

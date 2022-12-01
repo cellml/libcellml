@@ -13,6 +13,7 @@
 # limitations under the License.
 
 include(CheckCXXCompilerFlag)
+include(TestUndefinedSymbolsAllowed)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
@@ -23,12 +24,24 @@ if (EMSCRIPTEN)
     find_program(NODE_EXE NAMES ${PREFERRED_NODE_NAMES} node)
     find_program(NPM_EXE NAMES ${PREFERRED_NPM_NAMES} npm)
 else ()
-  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
-
-  if(WIN32)
-    find_program(CLCACHE_EXE clcache)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.18 AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(_FIND_PYTHON_DEVELOPMENT_TYPE Development.Module)
+    set(FIND_PYTHON_DEVELOPMENT_MODULE TRUE)
   else()
-    find_program(CCACHE_EXE ccache)
+    set(_FIND_PYTHON_DEVELOPMENT_TYPE Development)
+  endif()
+
+  test_undefined_symbols_allowed()
+
+  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter ${_FIND_PYTHON_DEVELOPMENT_TYPE})
+
+  find_program(BUILDCACHE_EXE buildcache)
+  if(NOT BUILDCACHE_EXE)
+    if(MSVC)
+      find_program(CLCACHE_EXE clcache)
+    else()
+      find_program(CCACHE_EXE ccache)
+    endif()
   endif()
   find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
   find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
@@ -37,7 +50,7 @@ else ()
   find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
   find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
   find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
-
+  find_program(INSTALL_NAME_TOOL_EXE NAMES ${PREFERRED_INSTALL_NAME_TOOL_NAMES} install_name_tool)
 
   if(Python_Interpreter_FOUND)
     if(NOT DEFINED TEST_COVERAGE_RESULT)
@@ -70,19 +83,21 @@ else ()
 
   set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
-  if(WIN32)
+  if(MSVC)
     mark_as_advanced(CLCACHE_EXE)
   else()
     mark_as_advanced(CCACHE_EXE)
   endif()
 
   mark_as_advanced(
+    BUILDCACHE_EXE
     CLANG_TIDY_EXE
     CLANG_FORMAT_EXE
     FIND_EXE
     GCC_COVERAGE_COMPILER_FLAGS_OK
     GCOV_EXE
     GIT_EXE
+    INSTALL_NAME_TOOL_EXE
     LLVM_COV_EXE
     LLVM_COVERAGE_COMPILER_FLAGS_OK
     LLVM_PROFDATA_EXE
@@ -103,12 +118,32 @@ set(HAVE_LIBXML2_CONFIG FALSE)
 # need to track how we found LibXml2.
 find_package(LibXml2 CONFIG QUIET)
 if(LibXml2_FOUND)
-  if(TARGET zlib)
+  if(TARGET z)
     set(HAVE_ZLIB_TARGET TRUE)
+    get_target_property(ZLIB_TARGET_TYPE z TYPE)
   else()
-    find_package(ZLIB REQUIRED)
+    find_package(ZLIB CONFIG QUIET)
+    if(ZLIB_FOUND)
+      if(TARGET z)
+        set(HAVE_ZLIB_TARGET TRUE)
+        get_target_property(ZLIB_TARGET_TYPE z TYPE)
+      endif()
+    else()
+      find_package(ZLIB REQUIRED)
+    endif()
   endif()
   set(HAVE_LIBXML2_CONFIG TRUE)
+  # Different versions of LibXml2 have different names for the library target.
+  # We try and capture that here.
+  if(TARGET xml2)
+    set(LIBXML2_TARGET_NAME xml2)
+  elseif(TARGET LibXml2)
+    set(LIBXML2_TARGET_NAME LibXml2)
+  else()
+    message(FATAL_ERROR "FindLibXml2: Found configuration file for LibXml2 but could not determine a target name from it.")
+  endif()
+  get_target_property(LIBXML2_TARGET_TYPE ${LIBXML2_TARGET_NAME} TYPE)
+  set(HAVE_LIBXML2_TARGET TRUE)
   # Clear out GUI variables created in module search mode.
   foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
     if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
@@ -117,8 +152,9 @@ if(LibXml2_FOUND)
   endforeach()
 else()
   find_package(LibXml2 REQUIRED)
-  if(TARGET zlib)
+  if(TARGET z)
     set(HAVE_ZLIB_TARGET TRUE)
+    get_target_property(ZLIB_TARGET_TYPE z TYPE)
   else()
     find_package(ZLIB REQUIRED)
   endif()
@@ -128,17 +164,11 @@ else()
   endif()
 endif()
 
-if(WIN32)
-  if(CLCACHE_EXE)
-    set(CLCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
-  endif()
-else()
-  if(CCACHE_EXE)
-    set(CCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
-  endif()
+if(BUILDCACHE_EXE OR CLCACHE_EXE OR CCACHE_EXE)
+  set(COMPILER_CACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
 endif()
 
-if(CLANG_FORMAT_EXE AND GIT_EXE)
+if(CLANG_FORMAT_EXE)
   set(CLANG_FORMAT_VERSION_MINIMUM 11)
   execute_process(COMMAND ${CLANG_FORMAT_EXE} -version
                   OUTPUT_VARIABLE CLANG_FORMAT_VERSION
@@ -146,10 +176,18 @@ if(CLANG_FORMAT_EXE AND GIT_EXE)
   string(REGEX REPLACE "^.*clang-format version ([.0-9]+).*$" "\\1" CLANG_FORMAT_VERSION "${CLANG_FORMAT_VERSION}")
 
   if(CLANG_FORMAT_VERSION VERSION_LESS CLANG_FORMAT_VERSION_MINIMUM)
-    message(STATUS "ClangFormat ${CLANG_FORMAT_VERSION} was found, but version ${CLANG_FORMAT_VERSION_MINIMUM}+ is needed to run the ClangFormat test")
+    message(STATUS "ClangFormat ${CLANG_FORMAT_VERSION} was found, but version ${CLANG_FORMAT_VERSION_MINIMUM}+ is needed to use ClangFormat")
   else()
-    set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
+    set(CLANG_FORMAT_AVAILABLE TRUE CACHE INTERNAL "Executable required to use ClangFormat is available.")
+
+    if(GIT_EXE)
+      set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
+    endif()
   endif()
+endif()
+
+if(IS_MULTI_CONFIG)
+  set(CONFIG_DIR_SUFFIX "/$<CONFIG>")
 endif()
 
 if(CLANG_TIDY_EXE)
@@ -164,12 +202,20 @@ if(SWIG_EXECUTABLE)
   set(BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Executable required to generate bindings is available.")
 endif()
 
+if(BINDINGS_AVAILABLE AND (Python_Development.Module_FOUND OR Python_Development_FOUND))
+  set(PYTHON_BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Requirements for creating Python bindings are available.")
+endif()
+
 if(VALGRIND_EXE AND Python_Interpreter_FOUND)
   set(VALGRIND_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executable required to run valgrind testing is available.")
 endif()
 
 if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS_OK)
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
+endif()
+
+if(INSTALL_NAME_TOOL_EXE)
+  set(INSTALL_NAME_TOOL_AVAILABLE TRUE CACHE INTERNAL "Executable required for manipulating dynamic library paths is available.")
 endif()
 
 if(HAVE_COVERAGE)

@@ -51,6 +51,28 @@ XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1,
 XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node);
 
 /**
+ * @brief Remove all the CellML 1.0 or CellML 1.1 namespaces from the given node and its children.
+ *
+ * From the root node of the tree given by the @p node, traverse the tree removing
+ * CellML 1.0 or CellML 1.1 namespaces.
+ *
+ * @param node The root node of the tree to traverse.
+ */
+void removeCellml1XNamespaces(const XmlNodePtr &node);
+
+/**
+ * @brief Find all attributes that use the CellML 1.0 or CellML 1.1 namespace.
+ *
+ * From the root node of the tree given by @p node, traverse the tree finding all
+ * attributes of the nodes that use the CellML 1.0 or CellML 1.1 namespace.
+ *
+ * @param node The root node of the tree to traverse.
+ *
+ * @return A @c std::vector list of @c XmlAttribute pointers that are in the CellML 1.0 or CellML 1.1 namespace.
+ */
+std::vector<XmlAttributePtr> attributesWithCellml1XNamespace(const XmlNodePtr &node);
+
+/**
  * @brief Turn XML content with potentially multiple root elements in a vector of documents.
  *
  * Parse the @p content and try to find XML documents returning a vector of any XML documents

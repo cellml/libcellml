@@ -1,13 +1,29 @@
+/*
+Copyright libCellML Contributors
 
-# include <emscripten/bind.h>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-# include "libcellml/generatorprofile.h"
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
+
+#include "libcellml/generatorprofile.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
 {
-    enum_<libcellml::GeneratorProfile::Profile>("Profile")
+    enum_<libcellml::GeneratorProfile::Profile>("GeneratorProfile.Profile")
         .value("C", libcellml::GeneratorProfile::Profile::C)
         .value("PYTHON", libcellml::GeneratorProfile::Profile::PYTHON)
     ;
@@ -240,8 +256,10 @@ EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
         .function("setImplementationVariableCountString", &libcellml::GeneratorProfile::setImplementationVariableCountString)
         .function("variableTypeObjectString", &libcellml::GeneratorProfile::variableTypeObjectString)
         .function("setVariableTypeObjectString", &libcellml::GeneratorProfile::setVariableTypeObjectString)
-        .function("variableTypeObjectExternalTypeString", &libcellml::GeneratorProfile::variableTypeObjectExternalTypeString)
-        .function("setVariableTypeObjectExternalTypeString", &libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeString)
+        .function("variableOfIntegrationVariableTypeString", &libcellml::GeneratorProfile::variableOfIntegrationVariableTypeString)
+        .function("setVariableOfIntegrationVariableTypeString", &libcellml::GeneratorProfile::setVariableOfIntegrationVariableTypeString)
+        .function("stateVariableTypeString", &libcellml::GeneratorProfile::stateVariableTypeString)
+        .function("setStateVariableTypeString", &libcellml::GeneratorProfile::setStateVariableTypeString)
         .function("constantVariableTypeString", &libcellml::GeneratorProfile::constantVariableTypeString)
         .function("setConstantVariableTypeString", &libcellml::GeneratorProfile::setConstantVariableTypeString)
         .function("computedConstantVariableTypeString", &libcellml::GeneratorProfile::computedConstantVariableTypeString)
@@ -252,8 +270,6 @@ EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
         .function("setExternalVariableTypeString", &libcellml::GeneratorProfile::setExternalVariableTypeString)
         .function("variableInfoObjectString", &libcellml::GeneratorProfile::variableInfoObjectString)
         .function("setVariableInfoObjectString", &libcellml::GeneratorProfile::setVariableInfoObjectString)
-        .function("variableInfoWithTypeObjectString", &libcellml::GeneratorProfile::variableInfoWithTypeObjectString)
-        .function("setVariableInfoWithTypeObjectString", &libcellml::GeneratorProfile::setVariableInfoWithTypeObjectString)
         .function("interfaceVoiInfoString", &libcellml::GeneratorProfile::interfaceVoiInfoString)
         .function("setInterfaceVoiInfoString", &libcellml::GeneratorProfile::setInterfaceVoiInfoString)
         .function("implementationVoiInfoString", &libcellml::GeneratorProfile::implementationVoiInfoString)
@@ -268,8 +284,6 @@ EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
         .function("setImplementationVariableInfoString", &libcellml::GeneratorProfile::setImplementationVariableInfoString)
         .function("variableInfoEntryString", &libcellml::GeneratorProfile::variableInfoEntryString)
         .function("setVariableInfoEntryString", &libcellml::GeneratorProfile::setVariableInfoEntryString)
-        .function("variableInfoWithTypeEntryString", &libcellml::GeneratorProfile::variableInfoWithTypeEntryString)
-        .function("setVariableInfoWithTypeEntryString", &libcellml::GeneratorProfile::setVariableInfoWithTypeEntryString)
         .function("voiString", &libcellml::GeneratorProfile::voiString)
         .function("setVoiString", &libcellml::GeneratorProfile::setVoiString)
         .function("statesArrayString", &libcellml::GeneratorProfile::statesArrayString)
@@ -278,16 +292,10 @@ EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
         .function("setRatesArrayString", &libcellml::GeneratorProfile::setRatesArrayString)
         .function("variablesArrayString", &libcellml::GeneratorProfile::variablesArrayString)
         .function("setVariablesArrayString", &libcellml::GeneratorProfile::setVariablesArrayString)
-        .function("externalVariableInAlgebraicModelMethodTypeDefinitionString", &libcellml::GeneratorProfile::externalVariableInAlgebraicModelMethodTypeDefinitionString)
-        .function("setExternalVariableInAlgebraicModelMethodTypeDefinitionString", &libcellml::GeneratorProfile::setExternalVariableInAlgebraicModelMethodTypeDefinitionString)
-        .function("externalVariableInDifferentialModelMethodTypeDefinitionString", &libcellml::GeneratorProfile::externalVariableInDifferentialModelMethodTypeDefinitionString)
-        .function("setExternalVariableInDifferentialModelMethodTypeDefinitionString", &libcellml::GeneratorProfile::setExternalVariableInDifferentialModelMethodTypeDefinitionString)
-        .function("externalVariableMethodParameterString", &libcellml::GeneratorProfile::externalVariableMethodParameterString)
-        .function("setExternalVariableMethodParameterString", &libcellml::GeneratorProfile::setExternalVariableMethodParameterString)
-        .function("externalVariableInAlgebraicModelMethodCallString", &libcellml::GeneratorProfile::externalVariableInAlgebraicModelMethodCallString)
-        .function("setExternalVariableInAlgebraicModelMethodCallString", &libcellml::GeneratorProfile::setExternalVariableInAlgebraicModelMethodCallString)
-        .function("externalVariableInDifferentialModelMethodCallString", &libcellml::GeneratorProfile::externalVariableInDifferentialModelMethodCallString)
-        .function("setExternalVariableInDifferentialModelMethodCallString", &libcellml::GeneratorProfile::setExternalVariableInDifferentialModelMethodCallString)
+        .function("externalVariableMethodTypeDefinitionString", &libcellml::GeneratorProfile::externalVariableMethodTypeDefinitionString)
+        .function("setExternalVariableMethodTypeDefinitionString", &libcellml::GeneratorProfile::setExternalVariableMethodTypeDefinitionString)
+        .function("externalVariableMethodCallString", &libcellml::GeneratorProfile::externalVariableMethodCallString)
+        .function("setExternalVariableMethodCallString", &libcellml::GeneratorProfile::setExternalVariableMethodCallString)
         .function("interfaceCreateStatesArrayMethodString", &libcellml::GeneratorProfile::interfaceCreateStatesArrayMethodString)
         .function("setInterfaceCreateStatesArrayMethodString", &libcellml::GeneratorProfile::setInterfaceCreateStatesArrayMethodString)
         .function("implementationCreateStatesArrayMethodString", &libcellml::GeneratorProfile::implementationCreateStatesArrayMethodString)
@@ -300,14 +308,10 @@ EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
         .function("setInterfaceDeleteArrayMethodString", &libcellml::GeneratorProfile::setInterfaceDeleteArrayMethodString)
         .function("implementationDeleteArrayMethodString", &libcellml::GeneratorProfile::implementationDeleteArrayMethodString)
         .function("setImplementationDeleteArrayMethodString", &libcellml::GeneratorProfile::setImplementationDeleteArrayMethodString)
-        .function("interfaceInitialiseConstantsMethodString", &libcellml::GeneratorProfile::interfaceInitialiseConstantsMethodString)
-        .function("setInterfaceInitialiseConstantsMethodString", &libcellml::GeneratorProfile::setInterfaceInitialiseConstantsMethodString)
-        .function("implementationInitialiseConstantsMethodString", &libcellml::GeneratorProfile::implementationInitialiseConstantsMethodString)
-        .function("setImplementationInitialiseConstantsMethodString", &libcellml::GeneratorProfile::setImplementationInitialiseConstantsMethodString)
-        .function("interfaceInitialiseStatesAndConstantsMethodString", &libcellml::GeneratorProfile::interfaceInitialiseStatesAndConstantsMethodString)
-        .function("setInterfaceInitialiseStatesAndConstantsMethodString", &libcellml::GeneratorProfile::setInterfaceInitialiseStatesAndConstantsMethodString)
-        .function("implementationInitialiseStatesAndConstantsMethodString", &libcellml::GeneratorProfile::implementationInitialiseStatesAndConstantsMethodString)
-        .function("setImplementationInitialiseStatesAndConstantsMethodString", &libcellml::GeneratorProfile::setImplementationInitialiseStatesAndConstantsMethodString)
+        .function("interfaceInitialiseVariablesMethodString", &libcellml::GeneratorProfile::interfaceInitialiseVariablesMethodString)
+        .function("setInterfaceInitialiseVariablesMethodString", &libcellml::GeneratorProfile::setInterfaceInitialiseVariablesMethodString)
+        .function("implementationInitialiseVariablesMethodString", &libcellml::GeneratorProfile::implementationInitialiseVariablesMethodString)
+        .function("setImplementationInitialiseVariablesMethodString", &libcellml::GeneratorProfile::setImplementationInitialiseVariablesMethodString)
         .function("interfaceComputeComputedConstantsMethodString", &libcellml::GeneratorProfile::interfaceComputeComputedConstantsMethodString)
         .function("setInterfaceComputeComputedConstantsMethodString", &libcellml::GeneratorProfile::setInterfaceComputeComputedConstantsMethodString)
         .function("implementationComputeComputedConstantsMethodString", &libcellml::GeneratorProfile::implementationComputeComputedConstantsMethodString)
@@ -316,14 +320,10 @@ EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
         .function("setInterfaceComputeRatesMethodString", &libcellml::GeneratorProfile::setInterfaceComputeRatesMethodString)
         .function("implementationComputeRatesMethodString", &libcellml::GeneratorProfile::implementationComputeRatesMethodString)
         .function("setImplementationComputeRatesMethodString", &libcellml::GeneratorProfile::setImplementationComputeRatesMethodString)
-        .function("interfaceComputeVariablesInAlgebraicModelMethodString", &libcellml::GeneratorProfile::interfaceComputeVariablesInAlgebraicModelMethodString)
-        .function("setInterfaceComputeVariablesInAlgebraicModelMethodString", &libcellml::GeneratorProfile::setInterfaceComputeVariablesInAlgebraicModelMethodString)
-        .function("implementationComputeVariablesInAlgebraicModelMethodString", &libcellml::GeneratorProfile::implementationComputeVariablesInAlgebraicModelMethodString)
-        .function("setImplementationComputeVariablesInAlgebraicModelMethodString", &libcellml::GeneratorProfile::setImplementationComputeVariablesInAlgebraicModelMethodString)
-        .function("interfaceComputeVariablesInDifferentialModelMethodString", &libcellml::GeneratorProfile::interfaceComputeVariablesInDifferentialModelMethodString)
-        .function("setInterfaceComputeVariablesInDifferentialModelMethodString", &libcellml::GeneratorProfile::setInterfaceComputeVariablesInDifferentialModelMethodString)
-        .function("implementationComputeVariablesInDifferentialModelMethodString", &libcellml::GeneratorProfile::implementationComputeVariablesInDifferentialModelMethodString)
-        .function("setImplementationComputeVariablesInDifferentialModelMethodString", &libcellml::GeneratorProfile::setImplementationComputeVariablesInDifferentialModelMethodString)
+        .function("interfaceComputeVariablesMethodString", &libcellml::GeneratorProfile::interfaceComputeVariablesMethodString)
+        .function("setInterfaceComputeVariablesMethodString", &libcellml::GeneratorProfile::setInterfaceComputeVariablesMethodString)
+        .function("implementationComputeVariablesMethodString", &libcellml::GeneratorProfile::implementationComputeVariablesMethodString)
+        .function("setImplementationComputeVariablesMethodString", &libcellml::GeneratorProfile::setImplementationComputeVariablesMethodString)
         .function("emptyMethodString", &libcellml::GeneratorProfile::emptyMethodString)
         .function("setEmptyMethodString", &libcellml::GeneratorProfile::setEmptyMethodString)
         .function("indentString", &libcellml::GeneratorProfile::indentString)
@@ -343,4 +343,9 @@ EMSCRIPTEN_BINDINGS(libcellml_generatorprofile)
         .function("commandSeparatorString", &libcellml::GeneratorProfile::commandSeparatorString)
         .function("setCommandSeparatorString", &libcellml::GeneratorProfile::setCommandSeparatorString)
     ;
+
+    EM_ASM(
+        Module['GeneratorProfile']['Profile'] = Module['GeneratorProfile.Profile'];
+        delete Module['GeneratorProfile.Profile'];
+    );
 }

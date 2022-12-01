@@ -25,6 +25,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/types.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/validator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/variable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
@@ -42,7 +43,6 @@ set_target_properties(javascript-bindings PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 0
-  COMPILE_FLAGS "-s ASSERTIONS=1"
 )
 
 add_executable(libcellml $<TARGET_OBJECTS:javascript-bindings>)
@@ -51,7 +51,7 @@ target_link_libraries(libcellml PUBLIC javascript-bindings)
 
 # Don't need this anymore (breaks linking)? -s USE_ES6_IMPORT_META=0
 set_target_properties(libcellml PROPERTIES
-  LINK_FLAGS "--bind -s 'EXPORT_NAME=\"libCellML\"' -s EXPORT_ES6=1 -s MODULARIZE=1  -s ALLOW_MEMORY_GROWTH=1"
+  LINK_FLAGS "--bind -s ASSERTIONS=1 -s 'EXPORT_NAME=\"createLibCellML\"' -s EXPORT_ES6=1 -s ALLOW_MEMORY_GROWTH=1"
 )
 
 add_executable(libcellml.common $<TARGET_OBJECTS:javascript-bindings>)

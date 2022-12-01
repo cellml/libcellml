@@ -1,13 +1,29 @@
+/*
+Copyright libCellML Contributors
 
-# include <emscripten/bind.h>
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-# include "libcellml/analyserequationast.h"
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
+
+#include "libcellml/analyserequationast.h"
 
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
 {
-    enum_<libcellml::AnalyserEquationAst::Type>("TypeEA")
+    enum_<libcellml::AnalyserEquationAst::Type>("AnalyserEquationAst.Type")
         .value("ASSIGNMENT", libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
         .value("EQ", libcellml::AnalyserEquationAst::Type::EQ)
         .value("NEQ", libcellml::AnalyserEquationAst::Type::NEQ)
@@ -90,4 +106,9 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
         .function("rightChild", &libcellml::AnalyserEquationAst::rightChild)
         .function("setRightChild", &libcellml::AnalyserEquationAst::setRightChild)
     ;
+
+    EM_ASM(
+        Module['AnalyserEquationAst']['Type'] = Module['AnalyserEquationAst.Type'];
+        delete Module['AnalyserEquationAst.Type'];
+    );
 }

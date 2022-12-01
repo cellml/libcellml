@@ -148,6 +148,17 @@ public:
      */
     void removeAttribute();
 
+    /**
+     * @brief Set the namespace prefix for this XmlAttribute.
+     *
+     * Set the namespace prefix for this XmlAttribute.
+     * The existing attribute is removed and replaced with an attribute that has the
+     * same value and the given namespace prefix.
+     *
+     * @param prefix A @c std::string representation of the XML namespace prefix.
+     */
+    void setNamespacePrefix(const std::string &prefix);
+
 private:
     struct XmlAttributeImpl; /**< Forward declaration for pImpl idiom, @private. */
     XmlAttributeImpl *mPimpl; /**< Private member to implementation pointer, @private. */

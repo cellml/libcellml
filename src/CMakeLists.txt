@@ -27,7 +27,7 @@ set(LIBCELLML_LIBRARY_VERSION_STRING "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION
 
 set(LIBCELLML_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/api/libcellml/exportdefinitions.h")
 set(LIBCELLML_VERSIONCONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/versionconfig.h")
-set(LIBCELLML_VERSIONCONFIG_H_IN "${CMAKE_CURRENT_SOURCE_DIR}/configure/versionconfig.h.in")
+set(LIBCELLML_VERSIONCONFIG_H_IN "${CMAKE_CURRENT_SOURCE_DIR}/configure/versionconfig.in.h")
 configure_file(
   ${LIBCELLML_VERSIONCONFIG_H_IN}
   ${LIBCELLML_VERSIONCONFIG_H}
@@ -59,6 +59,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/enums.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
@@ -72,6 +73,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/strict.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/types.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.cpp
@@ -109,6 +111,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/printer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/reset.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/strict.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/validator.h
@@ -138,6 +141,8 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/entity_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generator_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofilesha1values.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/issue_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/logger_p.h
@@ -190,15 +195,15 @@ target_include_directories(cellml
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if(TARGET zlib)
-  target_link_libraries(cellml PRIVATE zlib)
+if(HAVE_ZLIB_TARGET)
+  target_link_libraries(cellml PUBLIC zlib)
 else()
   target_link_libraries(cellml PUBLIC ${ZLIB_LIBRARIES})
   target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
 endif()
 
 if(HAVE_LIBXML2_CONFIG)
-  target_link_libraries(cellml PUBLIC xml2)
+  target_link_libraries(cellml PUBLIC ${LIBXML2_TARGET_NAME})
 else()
   target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
   target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES} ${ZLIB_LIBRARIES})
@@ -235,7 +240,13 @@ target_include_directories(cellml_debug_utilities
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
 )
 
-target_link_libraries(cellml PRIVATE debug cellml_debug_utilities)
+set_target_properties(cellml_debug_utilities PROPERTIES
+  CXX_VISIBILITY_PRESET hidden
+  DEBUG_POSTFIX d
+  VISIBILITY_INLINES_HIDDEN 1
+)
+
+target_link_libraries(cellml PRIVATE debug $<BUILD_INTERFACE:cellml_debug_utilities>)
 
 group_source_to_dir_structure(
   ${DEBUG_SOURCE_FILES}
@@ -299,6 +310,16 @@ install(TARGETS cellml EXPORT libcellml-targets
   ARCHIVE DESTINATION lib
 )
 
+if(SKBUILD)
+  install(TARGETS cellml
+    COMPONENT wheel
+    RUNTIME DESTINATION libcellml
+    LIBRARY DESTINATION libcellml
+    NAMELINK_SKIP
+    EXCLUDE_FROM_ALL
+  )
+endif()
+
 install(FILES
   ${API_HEADER_FILES}
   DESTINATION include/libcellml
@@ -361,6 +382,11 @@ set(SOURCE_FILES ${SOURCE_FILES} PARENT_SCOPE)
 set(API_HEADER_FILES ${GIT_API_HEADER_FILES} PARENT_SCOPE)
 set(MODULE_HEADER_FILES ${MODULE_HEADER_FILES} PARENT_SCOPE)
 set(HEADER_FILES ${GIT_HEADER_FILES} PARENT_SCOPE)
+set(GENERATED_HEADER_FILES
+  ${LIBCELLML_PRIVATECONFIG_H}
+  ${LIBCELLML_VERSIONCONFIG_H}
+  PARENT_SCOPE
+)
 set(CONFIG_FILES
   ${LIBCELLML_VERSIONCONFIG_H_IN}
   PARENT_SCOPE
