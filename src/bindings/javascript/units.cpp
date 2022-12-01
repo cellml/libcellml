@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
 // To work around multiple inheritance we have to create a combined Units
 // and ImportedEntity class that we can bind with Emscripten.
@@ -25,7 +26,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_units) {
 
-    enum_<libcellml::Units::Prefix>("Prefix")
+    enum_<libcellml::Units::Prefix>("Units.Prefix")
         .value("YOTTA", libcellml::Units::Prefix::YOTTA)
         .value("ZETTA", libcellml::Units::Prefix::ZETTA)
         .value("EXA", libcellml::Units::Prefix::EXA)
@@ -48,7 +49,7 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .value("YOCTO", libcellml::Units::Prefix::YOCTO)
     ;
 
-    enum_<libcellml::Units::StandardUnit>("StandardUnit")
+    enum_<libcellml::Units::StandardUnit>("Units.StandardUnit")
         .value("AMPERE", libcellml::Units::StandardUnit::AMPERE)
         .value("BECQUEREL", libcellml::Units::StandardUnit::BECQUEREL)
         .value("CANDELA", libcellml::Units::StandardUnit::CANDELA)
@@ -122,4 +123,11 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .class_function("equivalent", &libcellml::Units::equivalent)
     ;
 
+
+    EM_ASM(
+        Module['Units']['Prefix'] = Module['Units.Prefix'];
+        delete Module['Units.Prefix'];
+        Module['Units']['StandardUnit'] = Module['Units.StandardUnit'];
+        delete Module['Units.StandardUnit'];
+    );
 }

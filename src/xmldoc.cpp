@@ -112,7 +112,11 @@ void XmlDoc::parseMathML(const std::string &input)
     // Decompress the MathML DTD.
     int sizeMathmlDTDUncompressed = MATHML_DTD_LEN;
 
-    std::string mathMLDTD = decompressMathMLDTD();
+    static std::string mathMLDTD;
+
+    if (mathMLDTD.empty()) {
+        mathMLDTD = decompressMathMLDTD();
+    }
 
     xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();

@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.2.0. */
+/* The content of this file was generated using the C profile of libCellML 0.4.0. */
 
 #include "model.state.h"
 
@@ -6,20 +6,20 @@
 #include <stdlib.h>
 
 const char VERSION[] = "0.3.0";
-const char LIBCELLML_VERSION[] = "0.2.0";
+const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 3;
 const size_t VARIABLE_COUNT = 19;
 
-const VariableInfo VOI_INFO = {"time", "millisecond", "environment"};
+const VariableInfo VOI_INFO = {"time", "millisecond", "environment", VARIABLE_OF_INTEGRATION};
 
 const VariableInfo STATE_INFO[] = {
-    {"h", "dimensionless", "sodium_channel_h_gate"},
-    {"n", "dimensionless", "potassium_channel_n_gate"},
-    {"V", "millivolt", "membrane"}
+    {"h", "dimensionless", "sodium_channel_h_gate", STATE},
+    {"n", "dimensionless", "potassium_channel_n_gate", STATE},
+    {"V", "millivolt", "membrane", STATE}
 };
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"m", "dimensionless", "sodium_channel_m_gate", EXTERNAL},
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
@@ -43,12 +43,12 @@ const VariableInfoWithType VARIABLE_INFO[] = {
 
 double * createStatesArray()
 {
-    return (double *) malloc(STATE_COUNT*sizeof(double));
+    return malloc(STATE_COUNT*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    return malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)
@@ -56,7 +56,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseStatesAndConstants(double *states, double *variables)
+void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)
 {
     variables[1] = 0.3;
     variables[2] = 1.0;
@@ -66,6 +66,7 @@ void initialiseStatesAndConstants(double *states, double *variables)
     states[0] = 0.6;
     states[1] = 0.325;
     states[2] = 0.0;
+    variables[0] = externalVariable(voi, states, variables, 0);
 }
 
 void computeComputedConstants(double *variables)
@@ -86,13 +87,14 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
     variables[6] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
     variables[8] = variables[1]*(states[2]-variables[7]);
     variables[16] = variables[4]*pow(states[1], 4.0)*(states[2]-variables[15]);
-    variables[0] = externalVariable(voi, states, rates, variables, 0);
+    variables[0] = externalVariable(voi, states, variables, 0);
     variables[10] = variables[5]*pow(variables[0], 3.0)*states[0]*(states[2]-variables[9]);
     rates[2] = -(-variables[6]+variables[10]+variables[16]+variables[8])/variables[2];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
+    variables[0] = externalVariable(voi, states, variables, 0);
     variables[8] = variables[1]*(states[2]-variables[7]);
     variables[10] = variables[5]*pow(variables[0], 3.0)*states[0]*(states[2]-variables[9]);
     variables[11] = 0.1*(states[2]+25.0)/(exp((states[2]+25.0)/10.0)-1.0);

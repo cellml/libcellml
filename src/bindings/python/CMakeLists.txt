@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if(IS_MULTI_CONFIG)
-  set(_CFGDIR "/$<CONFIG>")
-endif()
-
 # Add swig interface files
 # Note: These filenames double as (generated .so file) module names!
 set(SWIG_INTERFACE_SRCS
@@ -43,6 +39,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/parser.i
     ../interface/printer.i
     ../interface/reset.i
+    ../interface/strict.i
     ../interface/types.i
     ../interface/units.i
     ../interface/validator.i
@@ -54,7 +51,7 @@ set(SWIG_INTERFACE_SRCS
 set(SWIG_GENERATED_INTERMEDIARIES_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/swig_intermediaries)
 
 # Set the location of the libcellml Python package directory.
-set(LIBCELLML_PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}${_CFGDIR}/libcellml)
+set(LIBCELLML_PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}${CONFIG_DIR_SUFFIX}/libcellml)
 set(_SWIG_GENERATED_PYTHON_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/swig_generated_python_files)
 set(FINALISE_PYTHON_BINDINGS_ARGUMENTS -DLIBCELLML_PYTHON_PACKAGE_DIR=${LIBCELLML_PYTHON_PACKAGE_DIR})
 
@@ -63,18 +60,10 @@ if(LIBCELLML_PYTHON_COVERAGE)
 endif()
 
 # Configure for C++
-if(${CMAKE_VERSION} VERSION_LESS 3.11)
-  set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES
-    CPLUSPLUS ON
-  )
-  include_directories(${PROJECT_SOURCE_DIR}/src/api ${PROJECT_BINARY_DIR}/src/api)
-  make_directory(${SWIG_GENERATED_INTERMEDIARIES_FILES_DIR})
-else()
-  set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES
-    CPLUSPLUS ON
-    INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/src/api;${PROJECT_BINARY_DIR}/src/api"
-  )
-endif()
+set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES
+  CPLUSPLUS ON
+  INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/src/api;${PROJECT_BINARY_DIR}/src/api"
+)
 
 set(SETUP_PY_PACKAGE_FILES "'\${TARGET_FILE_NAME_cellml}'")
 list(APPEND FINALISE_PYTHON_BINDINGS_ARGUMENTS -DTARGET_FILE_NAME_cellml=$<TARGET_FILE_NAME:cellml>)
@@ -82,35 +71,52 @@ if (UNIX AND NOT APPLE)
   list(APPEND SETUP_PY_PACKAGE_FILES "'\${TARGET_SONAME_FILE_NAME_cellml}'")
   list(APPEND FINALISE_PYTHON_BINDINGS_ARGUMENTS -DTARGET_SONAME_FILE_NAME_cellml=$<TARGET_SONAME_FILE_NAME:cellml>)
   set(_GENERATOR_EXPRESSION_LIBCELLML_SONAME $<TARGET_SONAME_FILE:cellml>)
-elseif(WIN32 AND HAVE_LIBXML2_CONFIG)
+endif()
+if(MSVC AND TARGET zlib AND ZLIB_TARGET_TYPE STREQUAL "SHARED_LIBRARY")
+  list(APPEND SETUP_PY_PACKAGE_FILES "'\${TARGET_FILE_NAME_zlib}'")
+  list(APPEND FINALISE_PYTHON_BINDINGS_ARGUMENTS -DTARGET_FILE_NAME_zlib=$<TARGET_FILE_NAME:z>)
+  set(_GENERATOR_EXPRESSION_ZLIB_FILE $<TARGET_FILE:z>)
+endif ()
+if(MSVC AND HAVE_LIBXML2_CONFIG AND LIBXML2_TARGET_TYPE STREQUAL "SHARED_LIBRARY")
   list(APPEND SETUP_PY_PACKAGE_FILES "'\${TARGET_FILE_NAME_libxml2}'")
-  list(APPEND FINALISE_PYTHON_BINDINGS_ARGUMENTS -DTARGET_FILE_NAME_libxml2=$<TARGET_FILE_NAME:xml2>)
-  set(_GENERATOR_EXPRESSION_LIBXML2_FILE $<TARGET_FILE:xml2>)
+  list(APPEND FINALISE_PYTHON_BINDINGS_ARGUMENTS -DTARGET_FILE_NAME_libxml2=$<TARGET_FILE_NAME:${LIBXML2_TARGET_NAME}>)
+  set(_GENERATOR_EXPRESSION_LIBXML2_FILE $<TARGET_FILE:${LIBXML2_TARGET_NAME}>)
 endif ()
 
 set(SWIG_PYTHON_BINDINGS_TARGETS)
 # Create bindings for each interface file
 foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   get_filename_component(MODULE_TARGET ${SWIG_INTERFACE_SRC} NAME_WE)
-  if(${CMAKE_VERSION} VERSION_LESS 3.13)
-    set(CMAKE_SWIG_OUTDIR ${_SWIG_GENERATED_PYTHON_FILES_DIR})
-    set(SWIG_OUTFILE_DIR ${SWIG_GENERATED_INTERMEDIARIES_FILES_DIR})
-    swig_add_library(${MODULE_TARGET}
-      LANGUAGE python
-      SOURCES ${SWIG_INTERFACE_SRC}
-    )
+  swig_add_library(${MODULE_TARGET}
+    LANGUAGE python
+    OUTPUT_DIR ${_SWIG_GENERATED_PYTHON_FILES_DIR}
+    OUTFILE_DIR ${SWIG_GENERATED_INTERMEDIARIES_FILES_DIR}
+    SOURCES ${SWIG_INTERFACE_SRC}
+  )
+  target_link_libraries(${MODULE_TARGET} PRIVATE cellml)
+
+  if(SWIG_VERSION VERSION_GREATER_EQUAL 4.1.0)
+    set_target_properties(${MODULE_TARGET} PROPERTIES SWIG_COMPILE_OPTIONS -flatstaticmethod)
+  endif()
+
+  if(FIND_PYTHON_DEVELOPMENT_MODULE)
+    set(_PYTHON_LINK_TARGET Python::Module)
   else()
-    swig_add_library(${MODULE_TARGET}
-      LANGUAGE python
-      OUTPUT_DIR ${_SWIG_GENERATED_PYTHON_FILES_DIR}
-      OUTFILE_DIR ${SWIG_GENERATED_INTERMEDIARIES_FILES_DIR}
-      SOURCES ${SWIG_INTERFACE_SRC}
-    )
+    set(_PYTHON_LINK_TARGET Python::Python)
   endif()
-  if(NOT POLICY CMP0078)
-    set(MODULE_TARGET ${SWIG_MODULE_${MODULE_TARGET}_REAL_NAME})
+
+  if (APPLE)
+    # Specifically allow dynamic lookup, here we are really targetting Python symbols.
+    set_target_properties(${MODULE_TARGET} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    # But, we do need to know about the Python include directories.
+    target_include_directories(${MODULE_TARGET} PRIVATE ${Python_INCLUDE_DIRS})
+  elseif (UNDEFINED_SYMBOLS_ALLOWED)
+    # Linker allows undefined symbols, so let's not link Python.
+    # But, we do need to know about the Python include directories.
+    target_include_directories(${MODULE_TARGET} PRIVATE ${Python_INCLUDE_DIRS})
+  else()
+    target_link_libraries(${MODULE_TARGET} PRIVATE ${_PYTHON_LINK_TARGET})
   endif()
-  target_link_libraries(${MODULE_TARGET} PRIVATE cellml Python::Python)
   # Disable use of Debug Python libraries when not present on Windows
   # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
   if(WIN32)
@@ -134,7 +140,7 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   set_target_properties(${MODULE_TARGET} PROPERTIES
     CXX_VISIBILITY_PRESET hidden
     BUILD_WITH_INSTALL_RPATH TRUE
-    INSTALL_RPATH ${RPATH_ORIGIN}
+    INSTALL_RPATH "${RPATH_ORIGIN}"
     FOLDER bindings/python
     RUNTIME_OUTPUT_DIRECTORY ${LIBCELLML_PYTHON_PACKAGE_DIR}
     LIBRARY_OUTPUT_DIRECTORY ${LIBCELLML_PYTHON_PACKAGE_DIR}
@@ -156,14 +162,14 @@ elseif (PROJECT_DEVELOPER_VERSION MATCHES "-dev\.")
 endif()
 set(SETUP_PY_PACKAGE_FILES_STR "${SETUP_PY_PACKAGE_FILES}")
 string(REPLACE ";" ", " SETUP_PY_PACKAGE_FILES_STR "${SETUP_PY_PACKAGE_FILES_STR}")
-set(SETUP_PRE_GEN_PY_FILE "${CMAKE_CURRENT_BINARY_DIR}/setup.pre_gen.py")
-configure_file(setup.in.py ${SETUP_PRE_GEN_PY_FILE} @ONLY)
+set(SETUP_PRE_GEN_PY_FILE "${CMAKE_CURRENT_BINARY_DIR}/pre_gen.setup.py")
+configure_file(pre_gen.setup.in.py ${SETUP_PRE_GEN_PY_FILE} @ONLY)
 
 set(FINALISE_PYTHON_BINDINGS_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/finalise_python_package.cmake)
 configure_file(${PROJECT_SOURCE_DIR}/cmake/finalise_python_package.in.cmake ${FINALISE_PYTHON_BINDINGS_SCRIPT} @ONLY)
 add_custom_command(TARGET python_bindings POST_BUILD
   COMMAND ${CMAKE_COMMAND} ${FINALISE_PYTHON_BINDINGS_ARGUMENTS} -P ${FINALISE_PYTHON_BINDINGS_SCRIPT}
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:cellml> ${_GENERATOR_EXPRESSION_LIBCELLML_SONAME} ${_GENERATOR_EXPRESSION_LIBXML2_FILE} ${LIBCELLML_PYTHON_PACKAGE_DIR}
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:cellml> ${_GENERATOR_EXPRESSION_LIBCELLML_SONAME} ${_GENERATOR_EXPRESSION_ZLIB_FILE} ${_GENERATOR_EXPRESSION_LIBXML2_FILE} ${LIBCELLML_PYTHON_PACKAGE_DIR}
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${_SWIG_GENERATED_PYTHON_FILES_DIR} ${LIBCELLML_PYTHON_PACKAGE_DIR}
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py ${CMAKE_CURRENT_SOURCE_DIR}/README.rst ${SETUP_PRE_GEN_PY_FILE}
   COMMENT "Finalise preparation of libCellML Python bindings."
@@ -171,3 +177,27 @@ add_custom_command(TARGET python_bindings POST_BUILD
 
 # Add new paths to make clean
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${LIBCELLML_PYTHON_PACKAGE_DIR} ${SWIG_GENERATED_INTERMEDIARIES_FILES_DIR})
+
+if(SKBUILD)
+  install(TARGETS ${SWIG_PYTHON_BINDINGS_TARGETS}
+    COMPONENT wheel
+    DESTINATION libcellml
+    EXCLUDE_FROM_ALL
+  )
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
+    COMPONENT wheel
+    EXCLUDE_FROM_ALL
+    DESTINATION libcellml
+  )
+  install(DIRECTORY ${_SWIG_GENERATED_PYTHON_FILES_DIR}/
+    COMPONENT wheel
+    EXCLUDE_FROM_ALL
+    DESTINATION libcellml
+  )
+  add_custom_target(install-wheel
+    ${CMAKE_COMMAND}
+    -DCMAKE_INSTALL_COMPONENT=wheel
+    -P "${PROJECT_BINARY_DIR}/cmake_install.cmake"
+    DEPENDS ${SWIG_PYTHON_BINDINGS_TARGETS}
+  )
+endif()

@@ -17,35 +17,33 @@ Topic :: Software Development :: Libraries :: Python Modules
 """
 
 import os
-from setuptools import setup
-from setuptools.dist import Distribution
-from setuptools.command.install import install
+import platform
+
+from skbuild import setup
+
+cmake_args = ["-DUNIT_TESTS=OFF", "-DCOVERAGE=OFF", "-DMEMCHECK=OFF", "-DLLVM_COVERAGE=OFF", "-DCLANG_TIDY=OFF"]
+
+if platform.system() == "Windows":
+    cmake_args.append("-DLibXml2_DIR=C:/Program Files (x86)/libxml2/libxml2-2.9.10/CMake/")
 
 doclines = __doc__.split("\n")
 
-
-class BinaryDistribution(Distribution):
-    def is_pure(self):
-        return False
-
-    def has_ext_modules(self):
-        return True
-
+tag = os.environ.get("LIBCELLML_VERSION_TAG", "v0.0.0")
 
 setup(
-    name='@PYPI_PACKAGE_NAME@',
-    version='@PYPI_PACKAGE_VERSION@@PYPI_PACKAGE_DEVELOPER_VERSION@',
-    author='libCellML developers',
-    author_email='libcellml@googlegroups.com',
-    packages=['libcellml'],
-    package_data={'libcellml': [@SETUP_PY_PACKAGE_FILES_STR@]},
-    url='@PYPI_PACKAGE_URL@',
-    license='Apache Software License',
+    name="libcellml",
+    version=tag[1:],
     description=doclines[0],
+    author="libCellML contributors",
+    url="https://libcellml.org",
+    license="Apache 2.0",
+    packages=["libcellml"],
     classifiers=classifiers.split("\n"),
     long_description=open('README.rst').read(),
     long_description_content_type='text/x-rst',
-    distclass=BinaryDistribution,
     include_package_data=True,
-    zip_safe=False,
+    cmake_source_dir="../../../",
+    cmake_install_target="install-wheel",
+    cmake_args=cmake_args,
+    exclude_package_data={"": ["bin/*", "cmake/*", "include/*", "lib/*"]},
 )

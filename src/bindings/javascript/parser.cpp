@@ -16,15 +16,19 @@ limitations under the License.
 
 #include <emscripten/bind.h>
 
+// To work around multiple inheritance we have to create a combined Parser
+// and Strict class that we can bind with Emscripten.
+#define JAVASCRIPT_BINDINGS
 #include "libcellml/parser.h"
 
 using namespace emscripten;
-
 
 EMSCRIPTEN_BINDINGS(libcellml_parser) {
 
     class_<libcellml::Parser, base<libcellml::Logger>>("Parser")
         .smart_ptr_constructor("Parser", &libcellml::Parser::create)
         .function("parseModel", &libcellml::Parser::parseModel)
+        .function("isStrict", &libcellml::Parser::isStrict)
+        .function("setStrict", &libcellml::Parser::setStrict)
     ;
 }

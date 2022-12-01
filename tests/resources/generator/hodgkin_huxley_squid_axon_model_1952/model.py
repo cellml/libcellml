@@ -1,29 +1,31 @@
-# The content of this file was generated using the Python profile of libCellML 0.2.0.
+# The content of this file was generated using the Python profile of libCellML 0.4.0.
 
 from enum import Enum
 from math import *
 
 
-__version__ = "0.3.0"
-LIBCELLML_VERSION = "0.2.0"
+__version__ = "0.3.1"
+LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 4
 VARIABLE_COUNT = 18
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    VARIABLE_OF_INTEGRATION = 0
+    STATE = 1
+    CONSTANT = 2
+    COMPUTED_CONSTANT = 3
+    ALGEBRAIC = 4
 
 
-VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
+VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment", "type": VariableType.VARIABLE_OF_INTEGRATION}
 
 STATE_INFO = [
-    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
-    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
-    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"},
-    {"name": "V", "units": "millivolt", "component": "membrane"}
+    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.STATE},
+    {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate", "type": VariableType.STATE},
+    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate", "type": VariableType.STATE},
+    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.STATE}
 ]
 
 VARIABLE_INFO = [
@@ -68,7 +70,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_states_and_constants(states, variables):
+def initialise_variables(states, variables):
     variables[0] = 0.3
     variables[1] = 1.0
     variables[2] = 0.0

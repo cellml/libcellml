@@ -15,23 +15,9 @@ limitations under the License.
 */
 
 const libCellMLModule = require('libcellml.js/libcellml.common')
-let libcellml = null
+const { sineModel } = require('./resources')
 
-const model = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" name=\"sin\"> \
-  <component name=\"sin\"> \
-    <variable name=\"x\" units=\"dimensionless\" interface=\"public_and_private\"/> \
-    <variable units=\"dimensionless\" name=\"sin\" interface=\"public_and_private\"/> \
-    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"> \
-      <apply><eq/> \
-        <ci>sin</ci> \
-        <apply><sin/> \
-          <ci>x</ci> \
-        </apply> \
-      </apply> \
-    </math> \
-  </component> \
-</model> \
-"
+let libcellml = null
 
 describe("Validator tests", () => {
   beforeAll(async () => {
@@ -39,12 +25,14 @@ describe("Validator tests", () => {
   });
   test("Checking Validator.validateModel.", () => {
     const x = new libcellml.Validator()
-    const p = new libcellml.Parser()
+    const p = new libcellml.Parser(true)
 
-    const m = p.parseModel(model)
+    const m = p.parseModel(sineModel)
 
     x.validateModel(m)
 
     expect(x.issueCount()).toBe(0)
+
+    x.delete()
   });
 })

@@ -1,14 +1,29 @@
+/*
+Copyright libCellML Contributors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 #include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
 #include "libcellml/variable.h"
 
 using namespace emscripten;
 
-
 EMSCRIPTEN_BINDINGS(libcellml_variable) {
 
-    enum_<libcellml::Variable::InterfaceType>("Variable_InterfaceType")
+    enum_<libcellml::Variable::InterfaceType>("Variable.InterfaceType")
         .value("NONE", libcellml::Variable::InterfaceType::NONE)
         .value("PRIVATE", libcellml::Variable::InterfaceType::PRIVATE)
         .value("PUBLIC", libcellml::Variable::InterfaceType::PUBLIC)
@@ -17,6 +32,7 @@ EMSCRIPTEN_BINDINGS(libcellml_variable) {
 
     class_<libcellml::Variable, base<libcellml::NamedEntity>>("Variable")
         .smart_ptr_constructor("Variable", select_overload<libcellml::VariablePtr()>(&libcellml::Variable::create))
+        .constructor(select_overload<libcellml::VariablePtr(const std::string &)>(&libcellml::Variable::create))
         .function("removeAllEquivalences", &libcellml::Variable::removeAllEquivalences)
         .function("equivalentVariable", &libcellml::Variable::equivalentVariable)
         .function("equivalentVariableCount", &libcellml::Variable::equivalentVariableCount)
@@ -46,4 +62,8 @@ EMSCRIPTEN_BINDINGS(libcellml_variable) {
         .class_function("setEquivalenceMappingId", &libcellml::Variable::setEquivalenceMappingId)
     ;
 
+    EM_ASM(
+        Module['Variable']['InterfaceType'] = Module['Variable.InterfaceType'];
+        delete Module['Variable.InterfaceType'];
+    );
 }

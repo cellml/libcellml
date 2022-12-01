@@ -21,6 +21,7 @@ limitations under the License.
 
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
+#include "libcellml/namedentity.h"
 #include "libcellml/types.h"
 
 // MSVC (and some other compilers?) may define PASCAL as __stdcall, resulting in

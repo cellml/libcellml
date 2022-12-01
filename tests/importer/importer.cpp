@@ -778,7 +778,8 @@ TEST(Importer, resolveWithMissingChildUnits)
 
 TEST(Importer, resolveWithMissingChildDependentUnits)
 {
-    std::string e = "Import of component 'component' from '" + resourcePath("importer/") + "components_missing_units.cellml' requires units named 'other_units_that_dont_exist' which cannot be found.";
+    const std::string e = "Import of component 'component' from '" + resourcePath("importer/") + "components_missing_units.cellml' requires units named 'other_units_that_dont_exist' which cannot be found.";
+
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_units.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -805,6 +806,7 @@ TEST(Importer, resolveWithChildUnitsImportedFromMissingModel)
 TEST(Importer, resolveComponentWithUnitsMissingModel)
 {
     std::string e = "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "missing_model.cellml' failed: the file could not be opened.";
+
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_imported_units_missing_model.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
