@@ -1,5 +1,5 @@
-libCellML v0.4.0.rc1 Changelog
-==============================
+libCellML v0.4.0-rc.2 Changelog
+===============================
 
 Documentation
 -------------
@@ -10,6 +10,12 @@ Generator
 ---------
 
 * Modify code generation to start Python enums from zero by `@hsorby <https://github.com/hsorby>`_ [`#1057 <https://github.com/cellml/libcellml/pull/1057>`_].
+
+Infrastructure
+--------------
+
+* Update cibuildwheel to version 2.11.2 by `@hsorby <https://github.com/hsorby>`_ [`#1061 <https://github.com/cellml/libcellml/pull/1061>`_].
+* Debug utilities library installation by `@hsorby <https://github.com/hsorby>`_ [`#1058 <https://github.com/cellml/libcellml/pull/1058>`_].
 
 Miscellaneous
 -------------
@@ -27,6 +33,7 @@ New feature
 Python bindings
 ---------------
 
+* Keep Python generated wrappers at SWIG version 4.0.1 by `@hsorby <https://github.com/hsorby>`_ [`#1063 <https://github.com/cellml/libcellml/pull/1063>`_].
 * Use pip list instead of pip freeze to detect presence of Python package by `@hsorby <https://github.com/hsorby>`_ [`#1052 <https://github.com/cellml/libcellml/pull/1052>`_].
 * Add Python 3.11 to wheel deployment script by `@hsorby <https://github.com/hsorby>`_ [`#1049 <https://github.com/cellml/libcellml/pull/1049>`_].
 
