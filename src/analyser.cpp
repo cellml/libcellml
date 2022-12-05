@@ -2631,12 +2631,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 // with an external equation and if its unknown variable is on
                 // its RHS.
 
-                if ((type != AnalyserEquation::Type::EXTERNAL)
-                    && (((internalEquation->mAst->rightChild()->type() == AnalyserEquationAst::Type::CI)
-                         && (internalEquation->mAst->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name()))
-                        || ((internalEquation->mAst->rightChild()->type() == AnalyserEquationAst::Type::DIFF)
-                            && (internalEquation->mAst->rightChild()->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name())))) {
-                    internalEquation->mAst->swapLeftAndRightChildren();
+                if (type != AnalyserEquation::Type::EXTERNAL) {
+                    auto ast = internalEquation->mAst;
+                    auto astRightChild = ast->rightChild();
+
+                    if (((astRightChild->type() == AnalyserEquationAst::Type::CI)
+                         && (astRightChild->variable()->name() == internalEquation->mVariable->mVariable->name()))
+                        || ((astRightChild->type() == AnalyserEquationAst::Type::DIFF)
+                            && (astRightChild->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name()))) {
+                        ast->swapLeftAndRightChildren();
+                    }
                 }
 
                 // Determine the equation's dependencies, i.e. the equations for
