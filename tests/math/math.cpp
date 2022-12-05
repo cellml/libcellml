@@ -37,6 +37,14 @@ const std::vector<std::string> expectedIssues_2_9_10 = {
     "LibXml2 error: EndTag: '</' not found.",
 };
 
+// Version 2.9.11 of LibXml2 reports the following errors,
+// used on macOS 13 machines.
+const std::vector<std::string> expectedIssues_2_9_11 = {
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: Premature end of data in tag apply line 3.",
+};
+
 TEST(Maths, setAndGetMath)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -407,7 +415,8 @@ TEST(Printer, mathMLWithSyntaxError)
         }
     } else {
         for (size_t i = 0; i < printer->issueCount(); ++i) {
-            EXPECT_EQ(expectedIssues_2_9_10.at(i), printer->issue(i)->description());
+            auto message = printer->issue(i)->description();
+            EXPECT_TRUE((expectedIssues_2_9_10.at(i) == message) || (expectedIssues_2_9_11.at(i) == message));
         }
     }
 
@@ -455,7 +464,8 @@ TEST(Printer, mathMLInResetWithSyntaxError)
         }
     } else {
         for (size_t i = 0; i < printer->issueCount(); ++i) {
-            EXPECT_EQ(expectedIssues_2_9_10.at(i), printer->issue(i)->description());
+            auto message = printer->issue(i)->description();
+            EXPECT_TRUE((expectedIssues_2_9_10.at(i) == message) || (expectedIssues_2_9_11.at(i) == message));
         }
     }
 

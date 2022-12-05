@@ -130,4 +130,19 @@ void AnalyserEquationAst::setRightChild(const AnalyserEquationAstPtr &rightChild
     mPimpl->mRightChild = rightChild;
 }
 
+void AnalyserEquationAst::swapLeftAndRightChildren()
+{
+    auto oldOwnedLeftChild = mPimpl->mOwnedLeftChild;
+    auto oldOwnedRightChild = mPimpl->mOwnedRightChild;
+
+    mPimpl->mOwnedLeftChild = oldOwnedRightChild;
+    mPimpl->mOwnedRightChild = oldOwnedLeftChild;
+
+    auto oldLeftChild = mPimpl->mLeftChild;
+    auto oldRightChild = mPimpl->mRightChild;
+
+    mPimpl->mLeftChild = oldRightChild;
+    mPimpl->mRightChild = oldLeftChild;
+}
+
 } // namespace libcellml

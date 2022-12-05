@@ -38,9 +38,10 @@ public:
      *  - TRUE_CONSTANT: an equation that computes a true constant, e.g. x = 3;
      *  - VARIABLE_BASED_CONSTANT: an equation that computes a variable-based
      *    constant, e.g. x = y+z where y and z are true constants;
-     *  - RATE: an equation that computes a rate, e.g. d(y)/dt = f(t, x); or
+     *  - RATE: an equation that computes a rate, e.g. d(y)/dt = f(t, x);
      *  - ALGEBRAIC: an equation that computes an algebraic variable, e.g.
-     *    y = f(x).
+     *    y = f(x); or
+     *  - EXTERNAL: an equation that is computed externally.
      */
     enum class Type
     {
