@@ -343,6 +343,13 @@ public:
      */
     void setRightChild(const AnalyserEquationAstPtr &rightChild);
 
+    /**
+     * @brief Swap the left and right children of this @ref AnalyserEquationAst.
+     *
+     * Swap the left and right children of this @ref AnalyserEquationAst.
+     */
+    void swapLeftAndRightChildren();
+
 private:
     AnalyserEquationAst(); /**< Constructor, @private. */
 
