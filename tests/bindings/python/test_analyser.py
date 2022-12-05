@@ -175,6 +175,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertIsNotNone(aea.leftChild())
         self.assertIsNotNone(aea.rightChild())
 
+        aea.swapLeftAndRightChildren()
         aea.setType(AnalyserEquationAst.Type.EQ)
         aea.setValue(AnalyserTestCase.VALUE)
         aea.setVariable(av.variable())
