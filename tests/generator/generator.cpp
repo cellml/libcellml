@@ -437,10 +437,10 @@ TEST(Generator, algebraicUnknownVarOnRhs)
     EXPECT_EQ(fileContents("generator/algebraic_unknown_var_on_rhs/model.py"), generator->implementationCode());
 }
 
-TEST(Generator, algebraicEqnWithOneUnknownOnRhs)
+TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_with_one_unknown_on_rhs/model.cellml"));
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -470,15 +470,15 @@ TEST(Generator, algebraicEqnWithOneUnknownOnRhs)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_unknown_on_rhs/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_unknown_on_rhs/model.c"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.c"), generator->implementationCode());
 
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_unknown_on_rhs/model.py"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.py"), generator->implementationCode());
 }
 
 TEST(Generator, odeComputedVarOnRhs)

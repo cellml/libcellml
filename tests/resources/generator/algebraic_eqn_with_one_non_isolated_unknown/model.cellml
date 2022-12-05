@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Algebraic equation with the unknown variable on its RHS
-   a: 1
+   a: 1 -> 9
    b = 3
    c = 5
    d = 7
