@@ -105,6 +105,7 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
         .function("setLeftChild", &libcellml::AnalyserEquationAst::setLeftChild)
         .function("rightChild", &libcellml::AnalyserEquationAst::rightChild)
         .function("setRightChild", &libcellml::AnalyserEquationAst::setRightChild)
+        .function("swapLeftAndRightChildren", &libcellml::AnalyserEquationAst::swapLeftAndRightChildren)
     ;
 
     EM_ASM(
