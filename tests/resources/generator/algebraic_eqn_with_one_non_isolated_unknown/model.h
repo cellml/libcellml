@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.2.0. */
+/* The content of this file was generated using the C profile of libCellML 0.4.0. */
 
 #pragma once
 
@@ -20,13 +20,13 @@ typedef struct {
     char units[14];
     char component[17];
     VariableType type;
-} VariableInfoWithType;
+} VariableInfo;
 
-extern const VariableInfoWithType VARIABLE_INFO[];
+extern const VariableInfo VARIABLE_INFO[];
 
 double * createVariablesArray();
 void deleteArray(double *array);
 
-void initialiseConstants(double *variables);
+void initialiseVariables(double *variables);
 void computeComputedConstants(double *variables);
 void computeVariables(double *variables);

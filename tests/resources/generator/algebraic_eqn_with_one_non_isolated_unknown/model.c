@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.2.0. */
+/* The content of this file was generated using the C profile of libCellML 0.4.0. */
 
 #include "model.h"
 
@@ -10,7 +10,7 @@ const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t VARIABLE_COUNT = 4;
 
-const VariableInfoWithType VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"b", "dimensionless", "my_algebraic_eqn", CONSTANT},
     {"c", "dimensionless", "my_algebraic_eqn", CONSTANT},
     {"d", "dimensionless", "my_algebraic_eqn", CONSTANT},
@@ -45,19 +45,22 @@ void objFunc0(double *u, double *f, void *data)
 
 void rootFind0(double *variables)
 {
-    double u[1] = { 1.0 };
     RootFindInfo rfi = { variables };
+    double u[1];
+
+    u[0] = variables[3];
 
     nlaSolve(objFunc0, u, 1, &rfi);
 
     variables[3] = u[0];
 }
 
-void initialiseConstants(double *variables)
+void initialiseVariables(double *variables)
 {
     variables[0] = 3.0;
     variables[1] = 5.0;
     variables[2] = 7.0;
+    variables[3] = 1.0;
 }
 
 void computeComputedConstants(double *variables)

@@ -1,4 +1,4 @@
-# The content of this file was generated using the Python profile of libCellML 0.2.0.
+# The content of this file was generated using the Python profile of libCellML 0.4.0.
 
 from enum import Enum
 from math import *
@@ -33,21 +33,24 @@ def obj_func_0(u, f, data):
 
     variables[3] = u[0]
 
-    f[0] = variables[0] + variables[1] - (variables[3] + variables[2]);
+    f[0] = variables[0] + variables[1] - (variables[3] + variables[2])
 
 
 def root_find_0(variables):
-    u = [1.0]
+    u = [nan] * 1
+
+    u[0] = variables[3]
 
     nla_solve(obj_func_0, u, 1, (variables))
 
     variables[3] = u[0]
 
 
-def initialise_constants(variables):
+def initialise_variables(variables):
     variables[0] = 3.0
     variables[1] = 5.0
     variables[2] = 7.0
+    variables[3] = 1.0
 
 
 def compute_computed_constants(variables):
