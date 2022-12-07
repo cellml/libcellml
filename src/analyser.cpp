@@ -168,7 +168,10 @@ struct AnalyserInternalEquation
     static bool isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
 
     static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    bool hasKnownVariables();
+
     static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    bool hasNonConstantVariables();
 
     bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex,
                const AnalyserModelPtr &model);
@@ -224,8 +227,12 @@ bool AnalyserInternalEquation::hasKnownVariables(const std::vector<AnalyserInter
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
                return isKnownVariable(variable);
-           })
-           != std::end(variables);
+           }) != std::end(variables);
+}
+
+bool AnalyserInternalEquation::hasKnownVariables()
+{
+    return hasKnownVariables(mVariables) || hasKnownVariables(mOdeVariables);
 }
 
 bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
@@ -235,8 +242,12 @@ bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<Analyse
                       && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
                       && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                       && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
-           })
-           != std::end(variables);
+           }) != std::end(variables);
+}
+
+bool AnalyserInternalEquation::hasNonConstantVariables()
+{
+    return hasNonConstantVariables(mVariables) || hasNonConstantVariables(mOdeVariables);
 }
 
 bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
@@ -253,12 +264,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // Determine, from the (new) known (ODE) variables, whether the equation is
     // used to compute a true constant or a variable-based constant.
 
-    mComputedTrueConstant = mComputedTrueConstant
-                            && !hasKnownVariables(mVariables)
-                            && !hasKnownVariables(mOdeVariables);
-    mComputedVariableBasedConstant = mComputedVariableBasedConstant
-                                     && !hasNonConstantVariables(mVariables)
-                                     && !hasNonConstantVariables(mOdeVariables);
+    mComputedTrueConstant = mComputedTrueConstant && !hasKnownVariables();
+    mComputedVariableBasedConstant = mComputedVariableBasedConstant && !hasNonConstantVariables();
 
     // Add, as a dependency, the variables used to compute the (new) known (ODE)
     // variables.
@@ -2337,12 +2344,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         auto hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const AnalyserInternalVariablePtr &variable) {
                                                 return (variable->mType == AnalyserInternalVariable::Type::UNKNOWN)
                                                        || (variable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
-                                            })
-                                            != std::end(mInternalVariables);
+                                            }) != std::end(mInternalVariables);
         auto hasOverconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const AnalyserInternalVariablePtr &variable) {
                                                return variable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
-                                           })
-                                           != std::end(mInternalVariables);
+                                           }) != std::end(mInternalVariables);
 
         if (hasUnderconstrainedVariables) {
             if (hasOverconstrainedVariables) {
@@ -2363,8 +2368,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Some final post-analysis is now needed, if we have a valid model.
 
-    if ((mModel->mPimpl->mType == AnalyserModel::Type::ODE)
-        || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
+    if (mModel->isValid()) {
         // Add a dummy equation for each of our true (i.e. non-computed)
         // constants.
         // Note: this is only so that we can mark a constant as an external
