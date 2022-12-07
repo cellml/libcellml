@@ -452,7 +452,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     auto analyserModel = analyser->model();
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::NLA, analyserModel->type());
 
     EXPECT_EQ(size_t(0), analyserModel->stateCount());
     EXPECT_EQ(size_t(4), analyserModel->variableCount());
