@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include "debug.h"
 
 #include "libcellml/analyser.h"
 
@@ -171,6 +172,8 @@ struct AnalyserInternalEquation
     static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
     bool hasKnownVariables();
 
+    static bool isNonConstantVariable(const AnalyserInternalVariablePtr &variable);
+
     static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
     bool hasNonConstantVariables();
 
@@ -236,13 +239,18 @@ bool AnalyserInternalEquation::hasKnownVariables()
     return hasKnownVariables(mVariables) || hasKnownVariables(mOdeVariables);
 }
 
+bool AnalyserInternalEquation::isNonConstantVariable(const AnalyserInternalVariablePtr &variable)
+{
+    return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
+           && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
+           && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+           && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
+}
+
 bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
-               return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
-                      && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
-                      && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                      && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
+               return isNonConstantVariable(variable);
            }) != std::end(variables);
 }
 
@@ -2312,11 +2320,36 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // At this stage, a variable that is still considered initialised is
         // either a constant or an algebraic variable (that needs to be computed
         // using an NLA solver). So, go through them and determine which they
-        // are.
+        // are and requalify the relevant algebraic equations.
 
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
                 internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
+            }
+        }
+
+        for (const auto &internalEquation : mInternalEquations) {
+            if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
+                internalEquation->mComputedTrueConstant = true;
+                internalEquation->mComputedVariableBasedConstant = true;
+
+                for (const auto &variable : internalEquation->mAllVariables) {
+                    if (variable != internalEquation->mVariable) {
+                        internalEquation->mComputedTrueConstant = internalEquation->mComputedTrueConstant && !internalEquation->isKnownVariable(variable);
+                        internalEquation->mComputedVariableBasedConstant = internalEquation->mComputedVariableBasedConstant && !internalEquation->isNonConstantVariable(variable);
+                    }
+                }
+
+                if (internalEquation->mComputedTrueConstant) {
+                    internalEquation->mType = AnalyserInternalEquation::Type::TRUE_CONSTANT;
+                    internalEquation->mVariable->mType = AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT;
+                } else if (internalEquation->mComputedVariableBasedConstant) {
+                    internalEquation->mType = AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT;
+                    internalEquation->mVariable->mType = AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT;
+                } else {
+                    internalEquation->mType = AnalyserInternalEquation::Type::ALGEBRAIC;
+                    internalEquation->mVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
+                }
             }
         }
 
