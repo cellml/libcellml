@@ -67,6 +67,7 @@ struct AnalyserInternalVariable
     {
         UNKNOWN,
         SHOULD_BE_STATE,
+        INITIALISED,
         VARIABLE_OF_INTEGRATION,
         STATE,
         CONSTANT,
@@ -104,11 +105,11 @@ void AnalyserInternalVariable::setVariable(const VariablePtr &variable,
                                            bool checkInitialValue)
 {
     if (checkInitialValue && !variable->initialValue().empty()) {
-        // The variable has an initial value, so it can either be a constant or
-        // a state. By default, we consider it to be a constant and, if we find
-        // an ODE for that variable, we will know that it was actually a state.
+        // The variable has an initial value, so it can either be a constant, an
+        // algebraic variable (that needs to be computed using an NLA solver),
+        // or a state. For now, all we know is that it is initialised.
 
-        mType = Type::CONSTANT;
+        mType = Type::INITIALISED;
 
         mInitialisingVariable = variable;
     }
@@ -125,7 +126,7 @@ void AnalyserInternalVariable::makeState()
 {
     if (mType == Type::UNKNOWN) {
         mType = Type::SHOULD_BE_STATE;
-    } else if (mType == Type::CONSTANT) {
+    } else if (mType == Type::INITIALISED) {
         mType = Type::STATE;
     }
 }
@@ -2307,6 +2308,17 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                 || relevantCheck;
             }
         } while (relevantCheck);
+
+        // At this stage, a variable that is still considered initialised is
+        // either a constant or an algebraic variable (that needs to be computed
+        // using an NLA solver). So, go through them and determine which they
+        // are.
+
+        for (const auto &internalVariable : mInternalVariables) {
+            if (internalVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
+                internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
+            }
+        }
 
         // Make sure that our variables are valid.
 
