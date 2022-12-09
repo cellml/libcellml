@@ -236,6 +236,11 @@ bool AnalyserInternalEquation::hasKnownVariables()
     return hasKnownVariables(mVariables) || hasKnownVariables(mOdeVariables);
 }
 
+bool AnalyserInternalEquation::hasKnownVariables()
+{
+    return hasKnownVariables(mVariables) || hasKnownVariables(mOdeVariables);
+}
+
 bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
@@ -244,6 +249,11 @@ bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<Analyse
                       && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                       && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
            }) != std::end(variables);
+}
+
+bool AnalyserInternalEquation::hasNonConstantVariables()
+{
+    return hasNonConstantVariables(mVariables) || hasNonConstantVariables(mOdeVariables);
 }
 
 bool AnalyserInternalEquation::hasNonConstantVariables()
