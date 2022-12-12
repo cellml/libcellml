@@ -565,13 +565,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
                                                        "{\n"
-                                                       "    return malloc(STATE_COUNT*sizeof(double));\n"
+                                                       "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
                                                        "}\n";
 
         mInterfaceCreateVariablesArrayMethodString = "double * createVariablesArray();\n";
         mImplementationCreateVariablesArrayMethodString = "double * createVariablesArray()\n"
                                                           "{\n"
-                                                          "    return malloc(VARIABLE_COUNT*sizeof(double));\n"
+                                                          "    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
                                                           "}\n";
 
         mInterfaceDeleteArrayMethodString = "void deleteArray(double *array);\n";
