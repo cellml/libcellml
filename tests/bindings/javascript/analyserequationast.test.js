@@ -56,6 +56,9 @@ describe("Analyser Equation AST tests", () => {
     });
     test('Checking Analyser Equation AST tree manipulations.', () => {
         const aea = new libcellml.AnalyserEquationAst()
+
+        aea.swapLeftAndRightChildren()
+
         const paea = new libcellml.AnalyserEquationAst()
         const laea = new libcellml.AnalyserEquationAst()
         const raea = new libcellml.AnalyserEquationAst()
