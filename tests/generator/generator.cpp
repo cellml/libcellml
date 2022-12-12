@@ -2206,7 +2206,7 @@ TEST(Generator, coverage)
     profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
     profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
                                                             "{\n"
-                                                            "    return malloc(STATE_COUNT*sizeof(double));\n"
+                                                            "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
                                                             "}\n");
 
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.h"), generator->interfaceCode());
