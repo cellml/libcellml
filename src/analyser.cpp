@@ -2627,6 +2627,22 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                 scaleEquationAst(internalEquation->mAst);
 
+                // Swap the LHS and RHS of the equation if we are not dealing
+                // with an external equation and if its unknown variable is on
+                // its RHS.
+
+                if (type != AnalyserEquation::Type::EXTERNAL) {
+                    auto ast = internalEquation->mAst;
+                    auto astRightChild = ast->rightChild();
+
+                    if (((astRightChild->type() == AnalyserEquationAst::Type::CI)
+                         && (astRightChild->variable()->name() == internalEquation->mVariable->mVariable->name()))
+                        || ((astRightChild->type() == AnalyserEquationAst::Type::DIFF)
+                            && (astRightChild->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name()))) {
+                        ast->swapLeftAndRightChildren();
+                    }
+                }
+
                 // Determine the equation's dependencies, i.e. the equations for
                 // the variables on which this equation depends.
                 // Note: an equation may depend on the variable of integration,

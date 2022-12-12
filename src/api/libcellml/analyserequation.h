@@ -34,21 +34,17 @@ public:
     /**
      * @brief The type of an equation.
      *
-     * An equation can be of one of the following types:
-     *  - TRUE_CONSTANT: an equation that computes a true constant, e.g. x = 3;
-     *  - VARIABLE_BASED_CONSTANT: an equation that computes a variable-based
-     *    constant, e.g. x = y+z where y and z are true constants;
-     *  - RATE: an equation that computes a rate, e.g. d(y)/dt = f(t, x); or
-     *  - ALGEBRAIC: an equation that computes an algebraic variable, e.g.
-     *    y = f(x).
+     * The type of an equation, i.e. whether it is used to compute a true
+     * constant, a variable-based constant, a rate, an algebraic variable,
+     * or whether it is an equation that is computed externally.
      */
     enum class Type
     {
-        TRUE_CONSTANT,
-        VARIABLE_BASED_CONSTANT,
-        RATE,
-        ALGEBRAIC,
-        EXTERNAL
+        TRUE_CONSTANT, /**< An equation that computes a true constant, e.g. x = 3. */
+        VARIABLE_BASED_CONSTANT, /**< An equation that computes a variable-based constant, e.g. x = y+z where y and z are true constants. */
+        RATE, /**< An equation that computes a rate, e.g. d(y)/dt = f(t, x). */
+        ALGEBRAIC, /**< An equation that computes an algebraic variable, e.g. y = f(x). */
+        EXTERNAL /**< An equation that is computed externally. */
     };
 
     ~AnalyserEquation(); /**< Destructor, @private. */
