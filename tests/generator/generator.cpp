@@ -830,20 +830,6 @@ TEST(Generator, odeUnknownVarOnRhs)
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
-
-    EXPECT_EQ(size_t(2), analyserModel->stateCount());
-    EXPECT_EQ(size_t(0), analyserModel->variableCount());
-    EXPECT_EQ(size_t(2), analyserModel->equationCount());
-
-    EXPECT_NE(nullptr, analyserModel->voi());
-    EXPECT_NE(nullptr, analyserModel->state(0));
-    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
-    EXPECT_EQ(nullptr, analyserModel->variable(0));
-    EXPECT_NE(nullptr, analyserModel->equation(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
-
     auto generator = libcellml::Generator::create();
 
     generator->setModel(analyserModel);
@@ -855,7 +841,6 @@ TEST(Generator, odeUnknownVarOnRhs)
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_unknown_var_on_rhs/model.py"), generator->implementationCode());
 }
 
