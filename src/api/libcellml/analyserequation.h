@@ -40,11 +40,11 @@ public:
      */
     enum class Type
     {
-        TRUE_CONSTANT, /** An equation that computes a true constant, e.g. x = 3. */
-        VARIABLE_BASED_CONSTANT, /** An equation that computes a variable-based constant, e.g. x = y+z where y and z are true constants. */
-        RATE, /** An equation that computes a rate, e.g. d(y)/dt = f(t, x). */
-        ALGEBRAIC, /** An equation that computes an algebraic variable, e.g. y = f(x). */
-        EXTERNAL /** An equation that is computed externally. */
+        TRUE_CONSTANT, /**< An equation that computes a true constant, e.g. x = 3. */
+        VARIABLE_BASED_CONSTANT, /**< An equation that computes a variable-based constant, e.g. x = y+z where y and z are true constants. */
+        RATE, /**< An equation that computes a rate, e.g. d(y)/dt = f(t, x). */
+        ALGEBRAIC, /**< An equation that computes an algebraic variable, e.g. y = f(x). */
+        EXTERNAL /**< An equation that is computed externally. */
     };
 
     ~AnalyserEquation(); /**< Destructor, @private. */
