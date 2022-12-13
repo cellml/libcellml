@@ -83,12 +83,12 @@ double acoth(double x)
 
 double * createStatesArray()
 {
-    return malloc(STATE_COUNT*sizeof(double));
+    return (double *) malloc(STATE_COUNT*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return malloc(VARIABLE_COUNT*sizeof(double));
+    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)
