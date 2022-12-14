@@ -2579,8 +2579,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Make our internal equations available through our API.
 
-    std::vector<AnalyserInternalVariablePtr> externallyDependentVariables;
-
     for (const auto &internalEquation : mInternalEquations) {
         // Determine the type of the equation.
 
