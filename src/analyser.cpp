@@ -78,6 +78,8 @@ struct AnalyserInternalVariable
 
     size_t mIndex = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
+    bool mIsExternal = false;
+    VariablePtrs mDependencies;
 
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
@@ -222,21 +224,19 @@ bool AnalyserInternalEquation::isKnownOdeVariable(const AnalyserInternalVariable
 
 bool AnalyserInternalEquation::hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
-    return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
-               return isKnownVariable(variable);
-           })
-           != std::end(variables);
+    return std::any_of(variables.begin(), variables.end(), [](const auto &variable) {
+        return isKnownVariable(variable);
+    });
 }
 
 bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
-    return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
-               return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
-                      && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
-                      && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                      && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
-           })
-           != std::end(variables);
+    return std::any_of(variables.begin(), variables.end(), [](const auto &variable) {
+        return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
+               && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
+               && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+               && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
+    });
 }
 
 bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
@@ -294,7 +294,9 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // computed constant or algebraic variable.
 
     if (unknownVariablesOrOdeVariablesLeft == 1) {
-        auto variable = mVariables.empty() ? mOdeVariables.front() : mVariables.front();
+        auto variable = mVariables.empty() ?
+                            mOdeVariables.front() :
+                            mVariables.front();
 
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
             auto localVariable = mComponent->variable(i);
@@ -330,7 +332,6 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
                     (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
                         Type::VARIABLE_BASED_CONSTANT :
                         Type::ALGEBRAIC;
-
             mVariable = variable;
 
             return true;
@@ -2341,15 +2342,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Determine the type of our model.
 
-    auto hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const AnalyserInternalVariablePtr &variable) {
-                                            return (variable->mType == AnalyserInternalVariable::Type::UNKNOWN)
-                                                   || (variable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
-                                        })
-                                        != std::end(mInternalVariables);
-    auto hasOverconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const AnalyserInternalVariablePtr &variable) {
-                                           return variable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
-                                       })
-                                       != std::end(mInternalVariables);
+    auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &internalVariable) {
+        return (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN)
+               || (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
+    });
+    auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &internalVariable) {
+        return internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
+    });
 
     if (hasUnderconstrainedVariables) {
         if (hasOverconstrainedVariables) {
@@ -2382,8 +2381,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Mark some variables as external variables, if needed.
 
-    std::map<AnalyserInternalVariablePtr, VariablePtrs> externalVariables;
-
     if (!mExternalVariables.empty()) {
         // Check whether an external variable belongs to the model being
         // analysed, or whether it is marked as an external variable more than
@@ -2414,14 +2411,12 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                     if (((mModel->mPimpl->mVoi == nullptr)
                          || (internalVariable->mVariable != mModel->mPimpl->mVoi->variable()))
-                        && (externalVariables.count(internalVariable) == 0)) {
-                        VariablePtrs dependencies;
+                        && !internalVariable->mIsExternal) {
+                        internalVariable->mIsExternal = true;
 
                         for (const auto &dependency : externalVariable->dependencies()) {
-                            dependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
+                            internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
                         }
-
-                        externalVariables.emplace(internalVariable, dependencies);
                     }
                 }
             }
@@ -2510,7 +2505,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make it known through our API whether the model has some external
     // variables.
 
-    mModel->mPimpl->mHasExternalVariables = !externalVariables.empty();
+    mModel->mPimpl->mHasExternalVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &internalVariable) {
+        return internalVariable->mIsExternal;
+    });
 
     // Sort our internal variables and equations.
 
@@ -2536,7 +2533,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         AnalyserVariable::Type type;
 
-        if (externalVariables.count(internalVariable) == 1) {
+        if (internalVariable->mIsExternal) {
             type = AnalyserVariable::Type::EXTERNAL;
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
             type = AnalyserVariable::Type::STATE;
@@ -2579,6 +2576,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Make our internal equations available through our API.
 
+    std::vector<AnalyserInternalVariablePtr> externallyDependentVariables;
+
     for (const auto &internalEquation : mInternalEquations) {
         // Determine the type of the equation.
 
@@ -2591,7 +2590,25 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
             type = AnalyserEquation::Type::TRUE_CONSTANT;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+            // An equation for a variable-based constant may now rely on
+            // external variables, be it directly or indirectly. If this is the
+            // case then we need to requalify that equation as an algebraic
+            // equation.
+
             type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+
+            for (const auto &variable : internalEquation->mAllVariables) {
+                if (variable->mIsExternal
+                    || (std::find(externallyDependentVariables.begin(), externallyDependentVariables.end(), variable) != externallyDependentVariables.end())) {
+                    type = AnalyserEquation::Type::ALGEBRAIC;
+
+                    stateOrVariable->mPimpl->mType = AnalyserVariable::Type::ALGEBRAIC;
+
+                    externallyDependentVariables.push_back(internalEquation->mVariable);
+
+                    break;
+                }
+            }
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
             type = AnalyserEquation::Type::RATE;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
@@ -2633,7 +2650,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         //       equationDependency against nullptr.
 
         VariablePtrs variableDependencies = (type == AnalyserEquation::Type::EXTERNAL) ?
-                                                externalVariables.find(internalEquation->mVariable)->second :
+                                                internalEquation->mVariable->mDependencies :
                                                 internalEquation->mDependencies;
         std::vector<AnalyserEquationPtr> equationDependencies;
 

@@ -37,15 +37,11 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
 
 void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
 {
-    std::vector<AnalyserEquationWeakPtr> dependencies;
-
-    for (const auto &dependency : mDependencies) {
-        if (dependency.lock()->variable() != nullptr) {
-            dependencies.push_back(dependency);
-        }
-    }
-
-    mDependencies = dependencies;
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(),
+                                       [=](const auto &dependency) -> bool {
+                                           return dependency.lock()->variable() == nullptr;
+                                       }),
+                        mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
