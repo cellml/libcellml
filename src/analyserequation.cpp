@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 
+#include <algorithm>
+
 #include "analyserequation_p.h"
 
 namespace libcellml {
