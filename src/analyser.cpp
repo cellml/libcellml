@@ -232,10 +232,11 @@ bool AnalyserInternalEquation::hasKnownVariables(const std::vector<AnalyserInter
 bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
     return std::any_of(variables.begin(), variables.end(), [](const auto &variable) {
-        return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
-               && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
-               && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-               && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
+        return variable->mIsExternal
+               || ((variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
+                   && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
+                   && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+                   && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT));
     });
 }
 
@@ -2238,6 +2239,48 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return;
     }
 
+    // Mark some variables as external variables, if needed.
+
+    std::map<VariablePtr, VariablePtrs> primaryExternalVariables;
+
+    if (!mExternalVariables.empty()) {
+        // Check whether an external variable belongs to the model being
+        // analysed, or whether it is marked as an external variable more than
+        // once through equivalence or is (equivalent to) the variable of
+        // integration.
+
+        for (const auto &externalVariable : mExternalVariables) {
+            auto variable = externalVariable->variable();
+
+            if (variable != nullptr) {
+                if (owningModel(variable) != model) {
+                    auto issue = Issue::IssueImpl::create();
+
+                    issue->mPimpl->setDescription("Variable '" + variable->name()
+                                                  + "' in component '" + owningComponent(variable)->name()
+                                                  + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
+                    issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
+                    issue->mPimpl->mItem->mPimpl->setVariable(variable);
+
+                    addIssue(issue);
+                } else {
+                    auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
+
+                    primaryExternalVariables[internalVariable->mVariable].push_back(variable);
+
+                    if (!internalVariable->mIsExternal) {
+                        internalVariable->mIsExternal = true;
+
+                        for (const auto &dependency : externalVariable->dependencies()) {
+                            internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // Analyse our different equations' AST to determine the type of our
     // variables.
 
@@ -2249,6 +2292,84 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
 
         return;
+    }
+
+    // Make sure that the variables that were marked as external variables were
+    // rightly so.
+
+    for (const auto &primaryExternalVariable : primaryExternalVariables) {
+        std::string description;
+        auto isVoi = (mModel->mPimpl->mVoi != nullptr)
+                     && (primaryExternalVariable.first == mModel->mPimpl->mVoi->variable());
+        auto equivalentVariableCount = primaryExternalVariable.second.size();
+        auto hasPrimaryVariable = std::find(primaryExternalVariable.second.begin(),
+                                            primaryExternalVariable.second.end(),
+                                            primaryExternalVariable.first)
+                                  != primaryExternalVariable.second.end();
+
+        if (isVoi || (equivalentVariableCount > 1) || !hasPrimaryVariable) {
+            description += (equivalentVariableCount == 2) ? "Both " : "";
+
+            for (size_t i = 0; i < equivalentVariableCount; ++i) {
+                if (i != 0) {
+                    description += (i != equivalentVariableCount - 1) ? ", " : " and ";
+                }
+
+                auto variableString = ((i == 0) && (equivalentVariableCount != 2)) ?
+                                          std::string("Variable") :
+                                          std::string("variable");
+
+                description += variableString + " '" + primaryExternalVariable.second[i]->name()
+                               + "' in component '" + owningComponent(primaryExternalVariable.second[i])->name()
+                               + "'";
+            }
+
+            Issue::ReferenceRule referenceRule;
+
+            if (isVoi) {
+                description += (equivalentVariableCount == 1) ?
+                                   " is marked as an external variable, but it is" :
+                                   " are marked as external variables, but they are";
+
+                if ((equivalentVariableCount == 1) && hasPrimaryVariable) {
+                    description += " the";
+                } else {
+                    description += " equivalent to variable '" + primaryExternalVariable.first->name()
+                                   + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
+                                   + "', the primary";
+                }
+
+                description += " variable of integration which cannot be used as an external variable.";
+
+                referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI;
+            } else {
+                description += (equivalentVariableCount == 1) ?
+                                   " is marked as an external variable, but it is not a primary variable." :
+                                   " are marked as external variables, but they are";
+                description += (equivalentVariableCount > 2) ? " all" : "";
+                description += (equivalentVariableCount == 1) ? "" : " equivalent.";
+                description += " Variable '" + primaryExternalVariable.first->name()
+                               + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
+                               + "' is";
+                description += hasPrimaryVariable ?
+                                   " the" :
+                               (equivalentVariableCount == 1) ?
+                                   " its corresponding" :
+                                   " their corresponding";
+                description += " primary variable and will therefore be the one used as an external variable.";
+
+                referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE;
+            }
+
+            auto issue = Issue::IssueImpl::create();
+
+            issue->mPimpl->setDescription(description);
+            issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+            issue->mPimpl->setReferenceRule(referenceRule);
+            issue->mPimpl->mItem->mPimpl->setVariable(primaryExternalVariable.first);
+
+            addIssue(issue);
+        }
     }
 
     // Analyse our different equations' units to make sure that everything is
@@ -2379,129 +2500,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    // Mark some variables as external variables, if needed.
-
-    if (!mExternalVariables.empty()) {
-        // Check whether an external variable belongs to the model being
-        // analysed, or whether it is marked as an external variable more than
-        // once through equivalence or is (equivalent to) the variable of
-        // integration.
-
-        std::map<VariablePtr, VariablePtrs> primaryExternalVariables;
-
-        for (const auto &externalVariable : mExternalVariables) {
-            auto variable = externalVariable->variable();
-
-            if (variable != nullptr) {
-                if (owningModel(variable) != model) {
-                    auto issue = Issue::IssueImpl::create();
-
-                    issue->mPimpl->setDescription("Variable '" + variable->name()
-                                                  + "' in component '" + owningComponent(variable)->name()
-                                                  + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
-                    issue->mPimpl->setLevel(Issue::Level::MESSAGE);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
-                    issue->mPimpl->mItem->mPimpl->setVariable(variable);
-
-                    addIssue(issue);
-                } else {
-                    auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
-
-                    primaryExternalVariables[internalVariable->mVariable].push_back(variable);
-
-                    if (((mModel->mPimpl->mVoi == nullptr)
-                         || (internalVariable->mVariable != mModel->mPimpl->mVoi->variable()))
-                        && !internalVariable->mIsExternal) {
-                        internalVariable->mIsExternal = true;
-
-                        for (const auto &dependency : externalVariable->dependencies()) {
-                            internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
-                        }
-                    }
-                }
-            }
-        }
-
-        for (const auto &primaryExternalVariable : primaryExternalVariables) {
-            std::string description;
-            auto isVoi = (mModel->mPimpl->mVoi != nullptr)
-                         && (primaryExternalVariable.first == mModel->mPimpl->mVoi->variable());
-            auto equivalentVariableCount = primaryExternalVariable.second.size();
-            auto hasPrimaryVariable = std::find(primaryExternalVariable.second.begin(),
-                                                primaryExternalVariable.second.end(),
-                                                primaryExternalVariable.first)
-                                      != primaryExternalVariable.second.end();
-
-            if (isVoi || (equivalentVariableCount > 1) || !hasPrimaryVariable) {
-                description += (equivalentVariableCount == 2) ? "Both " : "";
-
-                for (size_t i = 0; i < equivalentVariableCount; ++i) {
-                    if (i != 0) {
-                        description += (i != equivalentVariableCount - 1) ? ", " : " and ";
-                    }
-
-                    auto variableString = ((i == 0) && (equivalentVariableCount != 2)) ?
-                                              std::string("Variable") :
-                                              std::string("variable");
-
-                    description += variableString + " '" + primaryExternalVariable.second[i]->name()
-                                   + "' in component '" + owningComponent(primaryExternalVariable.second[i])->name()
-                                   + "'";
-                }
-
-                Issue::ReferenceRule referenceRule;
-
-                if (isVoi) {
-                    description += (equivalentVariableCount == 1) ?
-                                       " is marked as an external variable, but it is" :
-                                       " are marked as external variables, but they are";
-
-                    if ((equivalentVariableCount == 1) && hasPrimaryVariable) {
-                        description += " the";
-                    } else {
-                        description += " equivalent to variable '" + primaryExternalVariable.first->name()
-                                       + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
-                                       + "', the primary";
-                    }
-
-                    description += " variable of integration which cannot be used as an external variable.";
-
-                    referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI;
-                } else {
-                    description += (equivalentVariableCount == 1) ?
-                                       " is marked as an external variable, but it is not a primary variable." :
-                                       " are marked as external variables, but they are";
-                    description += (equivalentVariableCount > 2) ? " all" : "";
-                    description += (equivalentVariableCount == 1) ? "" : " equivalent.";
-                    description += " Variable '" + primaryExternalVariable.first->name()
-                                   + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
-                                   + "' is";
-                    description += hasPrimaryVariable ?
-                                       " the" :
-                                   (equivalentVariableCount == 1) ?
-                                       " its corresponding" :
-                                       " their corresponding";
-                    description += " primary variable and will therefore be the one used as an external variable.";
-
-                    referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE;
-                }
-
-                auto issue = Issue::IssueImpl::create();
-
-                issue->mPimpl->setDescription(description);
-                issue->mPimpl->setLevel(Issue::Level::MESSAGE);
-                issue->mPimpl->setReferenceRule(referenceRule);
-                issue->mPimpl->mItem->mPimpl->setVariable(primaryExternalVariable.first);
-
-                addIssue(issue);
-            }
-        }
-    }
-
-    if (mAnalyser->errorCount() != 0) {
-        return;
-    }
-
     // Make it known through our API whether the model has some external
     // variables.
 
@@ -2590,25 +2588,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
             type = AnalyserEquation::Type::TRUE_CONSTANT;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
-            // An equation for a variable-based constant may now rely on
-            // external variables, be it directly or indirectly. If this is the
-            // case then we need to requalify that equation as an algebraic
-            // equation.
-
             type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
-
-            for (const auto &variable : internalEquation->mAllVariables) {
-                if (variable->mIsExternal
-                    || (std::find(externallyDependentVariables.begin(), externallyDependentVariables.end(), variable) != externallyDependentVariables.end())) {
-                    type = AnalyserEquation::Type::ALGEBRAIC;
-
-                    stateOrVariable->mPimpl->mType = AnalyserVariable::Type::ALGEBRAIC;
-
-                    externallyDependentVariables.push_back(internalEquation->mVariable);
-
-                    break;
-                }
-            }
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
             type = AnalyserEquation::Type::RATE;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
