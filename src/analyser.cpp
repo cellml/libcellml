@@ -2396,12 +2396,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    if (mAnalyser->errorCount() != 0) {
-        mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
-
-        return;
-    }
-
     // Sort our variables, determine the index of our constant variables and
     // then loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
