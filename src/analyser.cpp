@@ -2294,8 +2294,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return;
     }
 
-    // Make sure that the variables that were marked as external variables were
-    // rightly so.
+    // Check that the variables that were marked as external were rightly so.
 
     for (const auto &primaryExternalVariable : primaryExternalVariables) {
         std::string description;
