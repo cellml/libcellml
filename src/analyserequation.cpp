@@ -39,10 +39,7 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
 
 void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
 {
-    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), [=](const auto &dependency) -> bool {
-                            return dependency.lock()->variable() == nullptr;
-                        }),
-                        mDependencies.end());
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), [=](const auto &dependency) -> bool { return dependency.lock()->variable() == nullptr; }), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
