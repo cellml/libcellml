@@ -175,3 +175,35 @@ TEST(Coverage, strictParsingWithNonXmlModel)
 
     EXPECT_EQ(size_t(2), parser->issueCount());
 }
+
+TEST(Coverage, sha1)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+    auto generatorProfile = libcellml::GeneratorProfile::create();
+
+    generator->setModel(analyserModel);
+    generator->setProfile(generatorProfile);
+
+    std::string xs = {};
+
+    for (int i = 0; i < 64; ++i) {
+        xs += "x";
+        // Note: the x's eventually ensure 100% coverage in our SHA-1 utility.
+
+        generatorProfile->setVoiString(xs);
+
+        generator->implementationCode();
+    }
+}
