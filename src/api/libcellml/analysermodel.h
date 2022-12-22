@@ -34,29 +34,21 @@ public:
     /**
      * @brief The type of a model.
      *
-     * A model can be of one of the following types:
-     *  - UNKNOWN: the type of the model is unknown;
-     *  - ALGEBRAIC: the model defines a system of algebraic equations that can
-     *    be solved directly;
-     *  - NLA: the model defines a system of (potentially non-linear) algebraic
-     *    equations that require an external solver to solve (e.g., KINSOL);
-     *  - ODE: the model defines a system of ordinary differential equations
-     *    that require an external solver to solve (e.g., CVODE);
-     *  - INVALID: the model is invalid;
-     *  - UNDERCONSTRAINED: the model is underconstrainted;
-     *  - OVERCONSTRAINED: the model is overconstrained; or
-     *  - UNSUITABLY_CONSTRAINED: the model is unsuitably constrained.
+     * The type of a model, i.e. whether it is unknown, invalid,
+     * underconstrained, overconstrained, or unsuitably constrained, or whether
+     * it defines a system of algebraic equations, a system of non-linear
+     * algebraic equations, or a system of ordinary differential equations.
      */
     enum class Type
     {
-        UNKNOWN,
-        ALGEBRAIC,
-        NLA,
-        ODE,
-        INVALID,
-        UNDERCONSTRAINED,
-        OVERCONSTRAINED,
-        UNSUITABLY_CONSTRAINED
+        UNKNOWN, /**< The type of the model is unknown. */
+        ALGEBRAIC, /**< The model defines a system of algebraic equations that can be solved directly. */
+        NLA, /**< The model defines a system of (potentially non-linear) algebraic equations that require an external solver to solve (e.g., KINSOL). */
+        ODE, /**< The model defines a system of ordinary differential equations that require an external solver to solve (e.g., CVODE). */
+        INVALID, /**< The model is invalid. */
+        UNDERCONSTRAINED, /**< The model is underconstrainted. */
+        OVERCONSTRAINED, /**< The model is overconstrained. */
+        UNSUITABLY_CONSTRAINED /**< The model is unsuitably constrained. */
     };
 
     ~AnalyserModel(); /**< Destructor, @private. */
