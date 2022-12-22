@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.3.1.post0";
+const char VERSION[] = "0.3.2.post0";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 1;
@@ -18,13 +18,6 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"m", "dimensionless", "my_component", CONSTANT},
-    {"n", "dimensionless", "my_component", CONSTANT},
-    {"o", "dimensionless", "my_component", CONSTANT},
-    {"p", "dimensionless", "my_component", CONSTANT},
-    {"q", "dimensionless", "my_component", CONSTANT},
-    {"r", "dimensionless", "my_component", CONSTANT},
-    {"s", "dimensionless", "my_component", CONSTANT},
     {"eqnEq", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnEqCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNeq", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -203,7 +196,14 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnExponentiale", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPi", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnInfinity", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnNotanumber", "dimensionless", "my_component", COMPUTED_CONSTANT}
+    {"eqnNotanumber", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"m", "dimensionless", "my_component", CONSTANT},
+    {"n", "dimensionless", "my_component", CONSTANT},
+    {"o", "dimensionless", "my_component", CONSTANT},
+    {"p", "dimensionless", "my_component", CONSTANT},
+    {"q", "dimensionless", "my_component", CONSTANT},
+    {"r", "dimensionless", "my_component", CONSTANT},
+    {"s", "dimensionless", "my_component", CONSTANT}
 };
 
 double xor(double x, double y)
@@ -304,197 +304,197 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *variables)
 {
-    variables[0] = 1.0;
-    variables[1] = 2.0;
-    variables[2] = 3.0;
-    variables[3] = 4.0;
-    variables[4] = 5.0;
-    variables[5] = 6.0;
-    variables[6] = 7.0;
-    variables[175] = 123.0;
-    variables[176] = 123.456789;
-    variables[177] = 123.0e99;
-    variables[178] = 123.456789e99;
-    variables[180] = 1.0;
-    variables[181] = 0.0;
-    variables[182] = 2.71828182845905;
-    variables[183] = 3.14159265358979;
-    variables[184] = INFINITY;
-    variables[185] = NAN;
+    variables[179] = 1.0;
+    variables[180] = 2.0;
+    variables[181] = 3.0;
+    variables[182] = 4.0;
+    variables[183] = 5.0;
+    variables[184] = 6.0;
+    variables[185] = 7.0;
+    variables[168] = 123.0;
+    variables[169] = 123.456789;
+    variables[170] = 123.0e99;
+    variables[171] = 123.456789e99;
+    variables[173] = 1.0;
+    variables[174] = 0.0;
+    variables[175] = 2.71828182845905;
+    variables[176] = 3.14159265358979;
+    variables[177] = INFINITY;
+    variables[178] = NAN;
     states[0] = 0.0;
 }
 
 void computeComputedConstants(double *variables)
 {
-    variables[7] = variables[0] == variables[1];
-    variables[8] = variables[0]/(variables[1] == variables[1]);
-    variables[9] = variables[0] != variables[1];
-    variables[10] = variables[0]/(variables[1] != variables[2]);
-    variables[11] = variables[0] < variables[1];
-    variables[12] = variables[0] <= variables[1];
-    variables[13] = variables[0] > variables[1];
-    variables[14] = variables[0] >= variables[1];
-    variables[15] = variables[0] && variables[1];
-    variables[16] = variables[0] && variables[1] && variables[2];
-    variables[17] = (variables[0] < variables[1]) && (variables[2] > variables[3]);
-    variables[18] = (variables[0]+variables[1]) && (variables[2] > variables[3]);
-    variables[19] = variables[0] && (variables[1] > variables[2]);
-    variables[20] = (variables[0]-variables[1]) && (variables[2] > variables[3]);
-    variables[21] = -variables[0] && (variables[1] > variables[2]);
-    variables[22] = pow(variables[0], variables[1]) && (variables[2] > variables[3]);
-    variables[23] = pow(variables[0], 1.0/variables[1]) && (variables[2] > variables[3]);
-    variables[24] = (variables[0] < variables[1]) && (variables[2]+variables[3]);
-    variables[25] = (variables[0] < variables[1]) && variables[2];
-    variables[26] = (variables[0] < variables[1]) && (variables[2]-variables[3]);
-    variables[27] = (variables[0] < variables[1]) && -variables[2];
-    variables[28] = (variables[0] < variables[1]) && pow(variables[2], variables[3]);
-    variables[29] = (variables[0] < variables[1]) && pow(variables[2], 1.0/variables[3]);
-    variables[30] = variables[0] || variables[1];
-    variables[31] = variables[0] || variables[1] || variables[2];
-    variables[32] = (variables[0] < variables[1]) || (variables[2] > variables[3]);
-    variables[33] = (variables[0]+variables[1]) || (variables[2] > variables[3]);
-    variables[34] = variables[0] || (variables[1] > variables[2]);
-    variables[35] = (variables[0]-variables[1]) || (variables[2] > variables[3]);
-    variables[36] = -variables[0] || (variables[1] > variables[2]);
-    variables[37] = pow(variables[0], variables[1]) || (variables[2] > variables[3]);
-    variables[38] = pow(variables[0], 1.0/variables[1]) || (variables[2] > variables[3]);
-    variables[39] = (variables[0] < variables[1]) || (variables[2]+variables[3]);
-    variables[40] = (variables[0] < variables[1]) || variables[2];
-    variables[41] = (variables[0] < variables[1]) || (variables[2]-variables[3]);
-    variables[42] = (variables[0] < variables[1]) || -variables[2];
-    variables[43] = (variables[0] < variables[1]) || pow(variables[2], variables[3]);
-    variables[44] = (variables[0] < variables[1]) || pow(variables[2], 1.0/variables[3]);
-    variables[45] = xor(variables[0], variables[1]);
-    variables[46] = xor(variables[0], xor(variables[1], variables[2]));
-    variables[47] = xor(variables[0] < variables[1], variables[2] > variables[3]);
-    variables[48] = xor(variables[0]+variables[1], variables[2] > variables[3]);
-    variables[49] = xor(variables[0], variables[1] > variables[2]);
-    variables[50] = xor(variables[0]-variables[1], variables[2] > variables[3]);
-    variables[51] = xor(-variables[0], variables[1] > variables[2]);
-    variables[52] = xor(pow(variables[0], variables[1]), variables[2] > variables[3]);
-    variables[53] = xor(pow(variables[0], 1.0/variables[1]), variables[2] > variables[3]);
-    variables[54] = xor(variables[0] < variables[1], variables[2]+variables[3]);
-    variables[55] = xor(variables[0] < variables[1], variables[2]);
-    variables[56] = xor(variables[0] < variables[1], variables[2]-variables[3]);
-    variables[57] = xor(variables[0] < variables[1], -variables[2]);
-    variables[58] = xor(variables[0] < variables[1], pow(variables[2], variables[3]));
-    variables[59] = xor(variables[0] < variables[1], pow(variables[2], 1.0/variables[3]));
-    variables[60] = !variables[0];
-    variables[61] = variables[0]+variables[1];
-    variables[62] = variables[0]+variables[1]+variables[2];
-    variables[63] = (variables[0] < variables[1])+(variables[2] > variables[3]);
-    variables[64] = variables[0];
-    variables[65] = variables[0]-variables[1];
-    variables[66] = (variables[0] < variables[1])-(variables[2] > variables[3]);
-    variables[67] = (variables[0] < variables[1])-(variables[2]+variables[3]);
-    variables[68] = (variables[0] < variables[1])-variables[2];
-    variables[69] = -variables[0];
-    variables[70] = -(variables[0] < variables[1]);
-    variables[71] = variables[0]*variables[1];
-    variables[72] = variables[0]*variables[1]*variables[2];
-    variables[73] = (variables[0] < variables[1])*(variables[2] > variables[3]);
-    variables[74] = (variables[0]+variables[1])*(variables[2] > variables[3]);
-    variables[75] = variables[0]*(variables[1] > variables[2]);
-    variables[76] = (variables[0]-variables[1])*(variables[2] > variables[3]);
-    variables[77] = -variables[0]*(variables[1] > variables[2]);
-    variables[78] = (variables[0] < variables[1])*(variables[2]+variables[3]);
-    variables[79] = (variables[0] < variables[1])*variables[2];
-    variables[80] = (variables[0] < variables[1])*(variables[2]-variables[3]);
-    variables[81] = (variables[0] < variables[1])*-variables[2];
-    variables[82] = variables[0]/variables[1];
-    variables[83] = (variables[0] < variables[1])/(variables[3] > variables[2]);
-    variables[84] = (variables[0]+variables[1])/(variables[3] > variables[2]);
-    variables[85] = variables[0]/(variables[2] > variables[1]);
-    variables[86] = (variables[0]-variables[1])/(variables[3] > variables[2]);
-    variables[87] = -variables[0]/(variables[2] > variables[1]);
-    variables[88] = (variables[0] < variables[1])/(variables[2]+variables[3]);
-    variables[89] = (variables[0] < variables[1])/variables[2];
-    variables[90] = (variables[0] < variables[1])/(variables[2]-variables[3]);
-    variables[91] = (variables[0] < variables[1])/-variables[2];
-    variables[92] = (variables[0] < variables[1])/(variables[2]*variables[3]);
-    variables[93] = (variables[0] < variables[1])/(variables[2]/variables[3]);
-    variables[94] = sqrt(variables[0]);
-    variables[95] = pow(variables[0], 2.0);
-    variables[96] = pow(variables[0], 3.0);
-    variables[97] = pow(variables[0], variables[1]);
-    variables[98] = pow(variables[0] < variables[1], variables[2] > variables[3]);
-    variables[99] = pow(variables[0]+variables[1], variables[2] > variables[3]);
-    variables[100] = pow(variables[0], variables[1] > variables[2]);
-    variables[101] = pow(variables[0]-variables[1], variables[2] > variables[3]);
-    variables[102] = pow(-variables[0], variables[1] > variables[2]);
-    variables[103] = pow(variables[0]*variables[1], variables[2] > variables[3]);
-    variables[104] = pow(variables[0]/variables[1], variables[2] > variables[3]);
-    variables[105] = pow(variables[0] < variables[1], variables[2]+variables[3]);
-    variables[106] = pow(variables[0] < variables[1], variables[2]);
-    variables[107] = pow(variables[0] < variables[1], variables[2]-variables[3]);
-    variables[108] = pow(variables[0] < variables[1], -variables[2]);
-    variables[109] = pow(variables[0] < variables[1], variables[2]*variables[3]);
-    variables[110] = pow(variables[0] < variables[1], variables[2]/variables[3]);
-    variables[111] = pow(variables[0] < variables[1], pow(variables[2], variables[3]));
-    variables[112] = pow(variables[0] < variables[1], pow(variables[2], 1.0/variables[3]));
-    variables[113] = sqrt(variables[0]);
-    variables[114] = sqrt(variables[0]);
-    variables[115] = pow(variables[0], 1.0/3.0);
-    variables[116] = pow(variables[0], 1.0/variables[1]);
-    variables[117] = pow(variables[0] < variables[1], 1.0/(variables[3] > variables[2]));
-    variables[118] = pow(variables[0]+variables[1], 1.0/(variables[3] > variables[2]));
-    variables[119] = pow(variables[0], 1.0/(variables[2] > variables[1]));
-    variables[120] = pow(variables[0]-variables[1], 1.0/(variables[3] > variables[2]));
-    variables[121] = pow(-variables[0], 1.0/(variables[2] > variables[1]));
-    variables[122] = pow(variables[0]*variables[1], 1.0/(variables[3] > variables[2]));
-    variables[123] = pow(variables[0]/variables[1], 1.0/(variables[3] > variables[2]));
-    variables[124] = pow(variables[0] < variables[1], 1.0/(variables[2]+variables[3]));
-    variables[125] = pow(variables[0] < variables[1], 1.0/variables[2]);
-    variables[126] = pow(variables[0] < variables[1], 1.0/(variables[2]-variables[3]));
-    variables[127] = pow(variables[0] < variables[1], 1.0/-variables[2]);
-    variables[128] = pow(variables[0] < variables[1], 1.0/(variables[2]*variables[3]));
-    variables[129] = pow(variables[0] < variables[1], 1.0/(variables[2]/variables[3]));
-    variables[130] = pow(variables[0] < variables[1], 1.0/pow(variables[2], variables[3]));
-    variables[131] = pow(variables[0] < variables[1], 1.0/pow(variables[2], 1.0/variables[3]));
-    variables[132] = fabs(variables[0]);
-    variables[133] = exp(variables[0]);
-    variables[134] = log(variables[0]);
-    variables[135] = log10(variables[0]);
-    variables[136] = log(variables[0])/log(2.0);
-    variables[137] = log10(variables[0]);
-    variables[138] = log(variables[0])/log(variables[1]);
-    variables[139] = ceil(variables[0]);
-    variables[140] = floor(variables[0]);
-    variables[141] = min(variables[0], variables[1]);
-    variables[142] = min(variables[0], min(variables[1], variables[2]));
-    variables[143] = max(variables[0], variables[1]);
-    variables[144] = max(variables[0], max(variables[1], variables[2]));
-    variables[145] = fmod(variables[0], variables[1]);
-    variables[146] = sin(variables[0]);
-    variables[147] = cos(variables[0]);
-    variables[148] = tan(variables[0]);
-    variables[149] = sec(variables[0]);
-    variables[150] = csc(variables[0]);
-    variables[151] = cot(variables[0]);
-    variables[152] = sinh(variables[0]);
-    variables[153] = cosh(variables[0]);
-    variables[154] = tanh(variables[0]);
-    variables[155] = sech(variables[0]);
-    variables[156] = csch(variables[0]);
-    variables[157] = coth(variables[0]);
-    variables[158] = asin(variables[0]);
-    variables[159] = acos(variables[0]);
-    variables[160] = atan(variables[0]);
-    variables[161] = asec(variables[0]);
-    variables[162] = acsc(variables[0]);
-    variables[163] = acot(variables[0]);
-    variables[164] = asinh(variables[0]);
-    variables[165] = acosh(variables[0]);
-    variables[166] = atanh(variables[0]/2.0);
-    variables[167] = asech(variables[0]);
-    variables[168] = acsch(variables[0]);
-    variables[169] = acoth(2.0*variables[0]);
-    variables[170] = (variables[0] > variables[1])?variables[0]:NAN;
-    variables[171] = (variables[0] > variables[1])?variables[0]:variables[2];
-    variables[172] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:NAN;
-    variables[173] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:variables[6];
-    variables[174] = 123.0+((variables[0] > variables[1])?variables[0]:NAN);
-    variables[179] = variables[0];
+    variables[0] = variables[179] == variables[180];
+    variables[1] = variables[179]/(variables[180] == variables[180]);
+    variables[2] = variables[179] != variables[180];
+    variables[3] = variables[179]/(variables[180] != variables[181]);
+    variables[4] = variables[179] < variables[180];
+    variables[5] = variables[179] <= variables[180];
+    variables[6] = variables[179] > variables[180];
+    variables[7] = variables[179] >= variables[180];
+    variables[8] = variables[179] && variables[180];
+    variables[9] = variables[179] && variables[180] && variables[181];
+    variables[10] = (variables[179] < variables[180]) && (variables[181] > variables[182]);
+    variables[11] = (variables[179]+variables[180]) && (variables[181] > variables[182]);
+    variables[12] = variables[179] && (variables[180] > variables[181]);
+    variables[13] = (variables[179]-variables[180]) && (variables[181] > variables[182]);
+    variables[14] = -variables[179] && (variables[180] > variables[181]);
+    variables[15] = pow(variables[179], variables[180]) && (variables[181] > variables[182]);
+    variables[16] = pow(variables[179], 1.0/variables[180]) && (variables[181] > variables[182]);
+    variables[17] = (variables[179] < variables[180]) && (variables[181]+variables[182]);
+    variables[18] = (variables[179] < variables[180]) && variables[181];
+    variables[19] = (variables[179] < variables[180]) && (variables[181]-variables[182]);
+    variables[20] = (variables[179] < variables[180]) && -variables[181];
+    variables[21] = (variables[179] < variables[180]) && pow(variables[181], variables[182]);
+    variables[22] = (variables[179] < variables[180]) && pow(variables[181], 1.0/variables[182]);
+    variables[23] = variables[179] || variables[180];
+    variables[24] = variables[179] || variables[180] || variables[181];
+    variables[25] = (variables[179] < variables[180]) || (variables[181] > variables[182]);
+    variables[26] = (variables[179]+variables[180]) || (variables[181] > variables[182]);
+    variables[27] = variables[179] || (variables[180] > variables[181]);
+    variables[28] = (variables[179]-variables[180]) || (variables[181] > variables[182]);
+    variables[29] = -variables[179] || (variables[180] > variables[181]);
+    variables[30] = pow(variables[179], variables[180]) || (variables[181] > variables[182]);
+    variables[31] = pow(variables[179], 1.0/variables[180]) || (variables[181] > variables[182]);
+    variables[32] = (variables[179] < variables[180]) || (variables[181]+variables[182]);
+    variables[33] = (variables[179] < variables[180]) || variables[181];
+    variables[34] = (variables[179] < variables[180]) || (variables[181]-variables[182]);
+    variables[35] = (variables[179] < variables[180]) || -variables[181];
+    variables[36] = (variables[179] < variables[180]) || pow(variables[181], variables[182]);
+    variables[37] = (variables[179] < variables[180]) || pow(variables[181], 1.0/variables[182]);
+    variables[38] = xor(variables[179], variables[180]);
+    variables[39] = xor(variables[179], xor(variables[180], variables[181]));
+    variables[40] = xor(variables[179] < variables[180], variables[181] > variables[182]);
+    variables[41] = xor(variables[179]+variables[180], variables[181] > variables[182]);
+    variables[42] = xor(variables[179], variables[180] > variables[181]);
+    variables[43] = xor(variables[179]-variables[180], variables[181] > variables[182]);
+    variables[44] = xor(-variables[179], variables[180] > variables[181]);
+    variables[45] = xor(pow(variables[179], variables[180]), variables[181] > variables[182]);
+    variables[46] = xor(pow(variables[179], 1.0/variables[180]), variables[181] > variables[182]);
+    variables[47] = xor(variables[179] < variables[180], variables[181]+variables[182]);
+    variables[48] = xor(variables[179] < variables[180], variables[181]);
+    variables[49] = xor(variables[179] < variables[180], variables[181]-variables[182]);
+    variables[50] = xor(variables[179] < variables[180], -variables[181]);
+    variables[51] = xor(variables[179] < variables[180], pow(variables[181], variables[182]));
+    variables[52] = xor(variables[179] < variables[180], pow(variables[181], 1.0/variables[182]));
+    variables[53] = !variables[179];
+    variables[54] = variables[179]+variables[180];
+    variables[55] = variables[179]+variables[180]+variables[181];
+    variables[56] = (variables[179] < variables[180])+(variables[181] > variables[182]);
+    variables[57] = variables[179];
+    variables[58] = variables[179]-variables[180];
+    variables[59] = (variables[179] < variables[180])-(variables[181] > variables[182]);
+    variables[60] = (variables[179] < variables[180])-(variables[181]+variables[182]);
+    variables[61] = (variables[179] < variables[180])-variables[181];
+    variables[62] = -variables[179];
+    variables[63] = -(variables[179] < variables[180]);
+    variables[64] = variables[179]*variables[180];
+    variables[65] = variables[179]*variables[180]*variables[181];
+    variables[66] = (variables[179] < variables[180])*(variables[181] > variables[182]);
+    variables[67] = (variables[179]+variables[180])*(variables[181] > variables[182]);
+    variables[68] = variables[179]*(variables[180] > variables[181]);
+    variables[69] = (variables[179]-variables[180])*(variables[181] > variables[182]);
+    variables[70] = -variables[179]*(variables[180] > variables[181]);
+    variables[71] = (variables[179] < variables[180])*(variables[181]+variables[182]);
+    variables[72] = (variables[179] < variables[180])*variables[181];
+    variables[73] = (variables[179] < variables[180])*(variables[181]-variables[182]);
+    variables[74] = (variables[179] < variables[180])*-variables[181];
+    variables[75] = variables[179]/variables[180];
+    variables[76] = (variables[179] < variables[180])/(variables[182] > variables[181]);
+    variables[77] = (variables[179]+variables[180])/(variables[182] > variables[181]);
+    variables[78] = variables[179]/(variables[181] > variables[180]);
+    variables[79] = (variables[179]-variables[180])/(variables[182] > variables[181]);
+    variables[80] = -variables[179]/(variables[181] > variables[180]);
+    variables[81] = (variables[179] < variables[180])/(variables[181]+variables[182]);
+    variables[82] = (variables[179] < variables[180])/variables[181];
+    variables[83] = (variables[179] < variables[180])/(variables[181]-variables[182]);
+    variables[84] = (variables[179] < variables[180])/-variables[181];
+    variables[85] = (variables[179] < variables[180])/(variables[181]*variables[182]);
+    variables[86] = (variables[179] < variables[180])/(variables[181]/variables[182]);
+    variables[87] = sqrt(variables[179]);
+    variables[88] = pow(variables[179], 2.0);
+    variables[89] = pow(variables[179], 3.0);
+    variables[90] = pow(variables[179], variables[180]);
+    variables[91] = pow(variables[179] < variables[180], variables[181] > variables[182]);
+    variables[92] = pow(variables[179]+variables[180], variables[181] > variables[182]);
+    variables[93] = pow(variables[179], variables[180] > variables[181]);
+    variables[94] = pow(variables[179]-variables[180], variables[181] > variables[182]);
+    variables[95] = pow(-variables[179], variables[180] > variables[181]);
+    variables[96] = pow(variables[179]*variables[180], variables[181] > variables[182]);
+    variables[97] = pow(variables[179]/variables[180], variables[181] > variables[182]);
+    variables[98] = pow(variables[179] < variables[180], variables[181]+variables[182]);
+    variables[99] = pow(variables[179] < variables[180], variables[181]);
+    variables[100] = pow(variables[179] < variables[180], variables[181]-variables[182]);
+    variables[101] = pow(variables[179] < variables[180], -variables[181]);
+    variables[102] = pow(variables[179] < variables[180], variables[181]*variables[182]);
+    variables[103] = pow(variables[179] < variables[180], variables[181]/variables[182]);
+    variables[104] = pow(variables[179] < variables[180], pow(variables[181], variables[182]));
+    variables[105] = pow(variables[179] < variables[180], pow(variables[181], 1.0/variables[182]));
+    variables[106] = sqrt(variables[179]);
+    variables[107] = sqrt(variables[179]);
+    variables[108] = pow(variables[179], 1.0/3.0);
+    variables[109] = pow(variables[179], 1.0/variables[180]);
+    variables[110] = pow(variables[179] < variables[180], 1.0/(variables[182] > variables[181]));
+    variables[111] = pow(variables[179]+variables[180], 1.0/(variables[182] > variables[181]));
+    variables[112] = pow(variables[179], 1.0/(variables[181] > variables[180]));
+    variables[113] = pow(variables[179]-variables[180], 1.0/(variables[182] > variables[181]));
+    variables[114] = pow(-variables[179], 1.0/(variables[181] > variables[180]));
+    variables[115] = pow(variables[179]*variables[180], 1.0/(variables[182] > variables[181]));
+    variables[116] = pow(variables[179]/variables[180], 1.0/(variables[182] > variables[181]));
+    variables[117] = pow(variables[179] < variables[180], 1.0/(variables[181]+variables[182]));
+    variables[118] = pow(variables[179] < variables[180], 1.0/variables[181]);
+    variables[119] = pow(variables[179] < variables[180], 1.0/(variables[181]-variables[182]));
+    variables[120] = pow(variables[179] < variables[180], 1.0/-variables[181]);
+    variables[121] = pow(variables[179] < variables[180], 1.0/(variables[181]*variables[182]));
+    variables[122] = pow(variables[179] < variables[180], 1.0/(variables[181]/variables[182]));
+    variables[123] = pow(variables[179] < variables[180], 1.0/pow(variables[181], variables[182]));
+    variables[124] = pow(variables[179] < variables[180], 1.0/pow(variables[181], 1.0/variables[182]));
+    variables[125] = fabs(variables[179]);
+    variables[126] = exp(variables[179]);
+    variables[127] = log(variables[179]);
+    variables[128] = log10(variables[179]);
+    variables[129] = log(variables[179])/log(2.0);
+    variables[130] = log10(variables[179]);
+    variables[131] = log(variables[179])/log(variables[180]);
+    variables[132] = ceil(variables[179]);
+    variables[133] = floor(variables[179]);
+    variables[134] = min(variables[179], variables[180]);
+    variables[135] = min(variables[179], min(variables[180], variables[181]));
+    variables[136] = max(variables[179], variables[180]);
+    variables[137] = max(variables[179], max(variables[180], variables[181]));
+    variables[138] = fmod(variables[179], variables[180]);
+    variables[139] = sin(variables[179]);
+    variables[140] = cos(variables[179]);
+    variables[141] = tan(variables[179]);
+    variables[142] = sec(variables[179]);
+    variables[143] = csc(variables[179]);
+    variables[144] = cot(variables[179]);
+    variables[145] = sinh(variables[179]);
+    variables[146] = cosh(variables[179]);
+    variables[147] = tanh(variables[179]);
+    variables[148] = sech(variables[179]);
+    variables[149] = csch(variables[179]);
+    variables[150] = coth(variables[179]);
+    variables[151] = asin(variables[179]);
+    variables[152] = acos(variables[179]);
+    variables[153] = atan(variables[179]);
+    variables[154] = asec(variables[179]);
+    variables[155] = acsc(variables[179]);
+    variables[156] = acot(variables[179]);
+    variables[157] = asinh(variables[179]);
+    variables[158] = acosh(variables[179]);
+    variables[159] = atanh(variables[179]/2.0);
+    variables[160] = asech(variables[179]);
+    variables[161] = acsch(variables[179]);
+    variables[162] = acoth(2.0*variables[179]);
+    variables[163] = (variables[179] > variables[180])?variables[179]:NAN;
+    variables[164] = (variables[179] > variables[180])?variables[179]:variables[181];
+    variables[165] = (variables[179] > variables[180])?variables[179]:(variables[181] > variables[182])?variables[181]:(variables[183] > variables[184])?variables[183]:NAN;
+    variables[166] = (variables[179] > variables[180])?variables[179]:(variables[181] > variables[182])?variables[181]:(variables[183] > variables[184])?variables[183]:variables[185];
+    variables[167] = 123.0+((variables[179] > variables[180])?variables[179]:NAN);
+    variables[172] = variables[179];
 }
 
 void computeRates(double voi, double *states, double *rates, double *variables)

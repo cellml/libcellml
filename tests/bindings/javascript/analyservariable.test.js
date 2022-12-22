@@ -48,15 +48,15 @@ describe("Analyser Variable tests", () => {
         expect(av.index()).toBe(7)
     });
     test('Checking Analyser Variable initialising variable.', () => {
-        const av = am.variable(3)
+        const av = am.variable(17)
         expect(av.initialisingVariable().name()).toBe("g_K")
     });
     test('Checking Analyser Variable variable.', () => {
-        const av = am.variable(10)
+        const av = am.variable(5)
         expect(av.variable().name()).toBe("alpha_m")
     });
     test('Checking Analyser Variable equation.', () => {
-        const av = am.variable(14)
+        const av = am.variable(9)
         expect(av.equation().type().value).toBe(libcellml.AnalyserEquation.Type.VARIABLE_BASED_CONSTANT.value)
     });
  })

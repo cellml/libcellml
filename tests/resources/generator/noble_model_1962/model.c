@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.3.1";
+const char VERSION[] = "0.3.2";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 4;
@@ -21,11 +21,6 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"E_L", "millivolt", "leakage_current", CONSTANT},
-    {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
-    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
-    {"E_Na", "millivolt", "sodium_channel", CONSTANT},
-    {"g_Na_max", "milliS_per_cm2", "sodium_channel", CONSTANT},
     {"i_Leak", "microA_per_cm2", "leakage_current", ALGEBRAIC},
     {"g_Na", "milliS_per_cm2", "sodium_channel", ALGEBRAIC},
     {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
@@ -37,7 +32,12 @@ const VariableInfo VARIABLE_INFO[] = {
     {"g_K2", "milliS_per_cm2", "potassium_channel", ALGEBRAIC},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
     {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC}
+    {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
+    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
+    {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
+    {"E_L", "millivolt", "leakage_current", CONSTANT},
+    {"g_Na_max", "milliS_per_cm2", "sodium_channel", CONSTANT},
+    {"E_Na", "millivolt", "sodium_channel", CONSTANT}
 };
 
 double * createStatesArray()
@@ -57,11 +57,11 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *variables)
 {
-    variables[0] = -60.0;
-    variables[1] = 0.075;
-    variables[2] = 12.0;
-    variables[3] = 40.0;
-    variables[4] = 400.0;
+    variables[12] = 12.0;
+    variables[13] = 0.075;
+    variables[14] = -60.0;
+    variables[15] = 400.0;
+    variables[16] = 40.0;
     states[0] = 0.01;
     states[1] = 0.8;
     states[2] = 0.01;
@@ -74,36 +74,36 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables)
 {
-    variables[8] = 0.1*(-states[3]-48.0)/(exp((-states[3]-48.0)/15.0)-1.0);
-    variables[9] = 0.12*(states[3]+8.0)/(exp((states[3]+8.0)/5.0)-1.0);
-    rates[0] = variables[8]*(1.0-states[0])-variables[9]*states[0];
-    variables[10] = 0.17*exp((-states[3]-90.0)/20.0);
-    variables[11] = 1.0/(1.0+exp((-states[3]-42.0)/10.0));
-    rates[1] = variables[10]*(1.0-states[1])-variables[11]*states[1];
-    variables[14] = 0.0001*(-states[3]-50.0)/(exp((-states[3]-50.0)/10.0)-1.0);
-    variables[15] = 0.002*exp((-states[3]-90.0)/80.0);
-    rates[2] = variables[14]*(1.0-states[2])-variables[15]*states[2];
-    variables[6] = pow(states[0], 3.0)*states[1]*variables[4];
-    variables[7] = (variables[6]+0.14)*(states[3]-variables[3]);
-    variables[5] = variables[1]*(states[3]-variables[0]);
-    variables[12] = 1.2*exp((-states[3]-90.0)/50.0)+0.015*exp((states[3]+90.0)/60.0);
-    variables[13] = 1.2*pow(states[2], 4.0);
-    variables[16] = (variables[12]+variables[13])*(states[3]+100.0);
-    rates[3] = -(variables[7]+variables[16]+variables[5])/variables[2];
+    variables[3] = 0.1*(-states[3]-48.0)/(exp((-states[3]-48.0)/15.0)-1.0);
+    variables[4] = 0.12*(states[3]+8.0)/(exp((states[3]+8.0)/5.0)-1.0);
+    rates[0] = variables[3]*(1.0-states[0])-variables[4]*states[0];
+    variables[5] = 0.17*exp((-states[3]-90.0)/20.0);
+    variables[6] = 1.0/(1.0+exp((-states[3]-42.0)/10.0));
+    rates[1] = variables[5]*(1.0-states[1])-variables[6]*states[1];
+    variables[9] = 0.0001*(-states[3]-50.0)/(exp((-states[3]-50.0)/10.0)-1.0);
+    variables[10] = 0.002*exp((-states[3]-90.0)/80.0);
+    rates[2] = variables[9]*(1.0-states[2])-variables[10]*states[2];
+    variables[1] = pow(states[0], 3.0)*states[1]*variables[15];
+    variables[2] = (variables[1]+0.14)*(states[3]-variables[16]);
+    variables[0] = variables[13]*(states[3]-variables[14]);
+    variables[7] = 1.2*exp((-states[3]-90.0)/50.0)+0.015*exp((states[3]+90.0)/60.0);
+    variables[8] = 1.2*pow(states[2], 4.0);
+    variables[11] = (variables[7]+variables[8])*(states[3]+100.0);
+    rates[3] = -(variables[2]+variables[11]+variables[0])/variables[12];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-    variables[5] = variables[1]*(states[3]-variables[0]);
-    variables[6] = pow(states[0], 3.0)*states[1]*variables[4];
-    variables[7] = (variables[6]+0.14)*(states[3]-variables[3]);
-    variables[8] = 0.1*(-states[3]-48.0)/(exp((-states[3]-48.0)/15.0)-1.0);
-    variables[9] = 0.12*(states[3]+8.0)/(exp((states[3]+8.0)/5.0)-1.0);
-    variables[10] = 0.17*exp((-states[3]-90.0)/20.0);
-    variables[11] = 1.0/(1.0+exp((-states[3]-42.0)/10.0));
-    variables[12] = 1.2*exp((-states[3]-90.0)/50.0)+0.015*exp((states[3]+90.0)/60.0);
-    variables[13] = 1.2*pow(states[2], 4.0);
-    variables[14] = 0.0001*(-states[3]-50.0)/(exp((-states[3]-50.0)/10.0)-1.0);
-    variables[15] = 0.002*exp((-states[3]-90.0)/80.0);
-    variables[16] = (variables[12]+variables[13])*(states[3]+100.0);
+    variables[0] = variables[13]*(states[3]-variables[14]);
+    variables[1] = pow(states[0], 3.0)*states[1]*variables[15];
+    variables[2] = (variables[1]+0.14)*(states[3]-variables[16]);
+    variables[3] = 0.1*(-states[3]-48.0)/(exp((-states[3]-48.0)/15.0)-1.0);
+    variables[4] = 0.12*(states[3]+8.0)/(exp((states[3]+8.0)/5.0)-1.0);
+    variables[5] = 0.17*exp((-states[3]-90.0)/20.0);
+    variables[6] = 1.0/(1.0+exp((-states[3]-42.0)/10.0));
+    variables[7] = 1.2*exp((-states[3]-90.0)/50.0)+0.015*exp((states[3]+90.0)/60.0);
+    variables[8] = 1.2*pow(states[2], 4.0);
+    variables[9] = 0.0001*(-states[3]-50.0)/(exp((-states[3]-50.0)/10.0)-1.0);
+    variables[10] = 0.002*exp((-states[3]-90.0)/80.0);
+    variables[11] = (variables[7]+variables[8])*(states[3]+100.0);
 }

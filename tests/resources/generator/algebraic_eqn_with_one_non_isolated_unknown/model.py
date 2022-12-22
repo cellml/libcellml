@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 LIBCELLML_VERSION = "0.4.0"
 
 VARIABLE_COUNT = 4
