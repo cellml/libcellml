@@ -244,6 +244,7 @@ bool AnalyserInternalEquation::isNonConstantVariable(const AnalyserInternalVaria
 {
     return variable->mIsExternal
            || ((variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
+               && (variable->mType != AnalyserInternalVariable::Type::INITIALISED)
                && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
                && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT));
@@ -388,9 +389,6 @@ public:
     AnalyserImpl();
     ~AnalyserImpl();
 
-    static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
-                                                   const AnalyserInternalVariablePtr &variable2);
-
     static bool isStateVariable(const AnalyserInternalVariablePtr &variable);
     static bool isConstantOrAlgebraicVariable(const AnalyserInternalVariablePtr &variable);
 
@@ -531,19 +529,6 @@ Analyser::AnalyserImpl::~AnalyserImpl()
     // Reset our generator's profile.
 
     mGenerator->mPimpl->resetLockedModelAndProfile();
-}
-
-bool Analyser::AnalyserImpl::compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
-                                                                const AnalyserInternalVariablePtr &variable2)
-{
-    auto realComponent1 = owningComponent(variable1->mVariable);
-    auto realComponent2 = owningComponent(variable2->mVariable);
-
-    if (realComponent1->name() == realComponent2->name()) {
-        return variable1->mVariable->name() < variable2->mVariable->name();
-    }
-
-    return realComponent1->name() < realComponent2->name();
 }
 
 bool Analyser::AnalyserImpl::isStateVariable(const AnalyserInternalVariablePtr &variable)
@@ -1117,7 +1102,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
             auto initialisingVariable = initialisingComponent->variable(internalVariable->mVariable->initialValue());
             auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(initialisingVariable);
 
-            if (initialisingInternalVariable->mType != AnalyserInternalVariable::Type::CONSTANT) {
+            if (initialisingInternalVariable->mType != AnalyserInternalVariable::Type::INITIALISED) {
                 auto issue = Issue::IssueImpl::create();
 
                 issue->mPimpl->setDescription("Variable '" + variable->name()
@@ -2410,21 +2395,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    // Sort our variables, determine the index of our constant variables and
-    // then loop over our equations, checking which variables, if any, can be
+    // Loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
 
-    std::sort(mInternalVariables.begin(), mInternalVariables.end(),
-              compareVariablesByComponentAndName);
-
     auto variableIndex = MAX_SIZE_T;
-
-    for (const auto &internalVariable : mInternalVariables) {
-        if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
-            internalVariable->mIndex = ++variableIndex;
-        }
-    }
-
     auto equationOrder = MAX_SIZE_T;
     auto stateIndex = MAX_SIZE_T;
     bool relevantCheck;
@@ -2450,6 +2424,26 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE) {
             issueType = "is used in an ODE, but it is not initialised";
             referenceRule = Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED;
+        } else if (internalVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
+            // The variable is initialised so, in the end, it is either a
+            // constant (if there is no equation associated with it) or a
+            // variable computed through an NLA equation. Either way, we need to
+            // finalise the type of the variable and give it an index. In the
+            // case of a constant, we also need to add a dummy equation to it so
+            // that a constant can be marked as an external variable.
+
+            internalVariable->mIndex = ++variableIndex;
+
+            /*---GRY---
+                        if (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mVariable == internalVariable; }) != mInternalEquations.end()) {
+                            internalVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
+                        } else {
+            */
+            if (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mVariable == internalVariable; }) == mInternalEquations.end()) {
+                internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
+
+                mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
+            }
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
             issueType = "is computed more than once";
             referenceRule = Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE;
@@ -2495,16 +2489,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     if (!mModel->isValid()) {
         return;
-    }
-
-    // Add a dummy equation for each of our true (i.e. non-computed) constants.
-    // Note: this is only so that we can mark a constant as an external
-    //       variable.
-
-    for (const auto &internalVariable : mInternalVariables) {
-        if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
-            mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
-        }
     }
 
     // Make it known through our API whether the model has some external

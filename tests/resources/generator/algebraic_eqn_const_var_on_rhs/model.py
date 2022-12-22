@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 LIBCELLML_VERSION = "0.4.0"
 
 VARIABLE_COUNT = 2
@@ -17,8 +17,8 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.CONSTANT},
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.CONSTANT}
 ]
 
 
@@ -27,11 +27,11 @@ def create_variables_array():
 
 
 def initialise_variables(variables):
-    variables[0] = 1.0
+    variables[1] = 1.0
 
 
 def compute_computed_constants(variables):
-    variables[1] = variables[0]
+    variables[0] = variables[1]
 
 
 def compute_variables(variables):
