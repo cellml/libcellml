@@ -540,10 +540,6 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
 
     profileContents += generatorProfile->commandSeparatorString();
 
-    // Add some x's to ensure 100% coverage in our SHA-1 utility.
-
-    profileContents += "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-
     return profileContents;
 }
 
