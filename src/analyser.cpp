@@ -242,10 +242,16 @@ bool AnalyserInternalEquation::hasKnownVariables()
 
 bool AnalyserInternalEquation::isNonConstantVariable(const AnalyserInternalVariablePtr &variable)
 {
+    // Note: no need to check whether the variable's type is different from
+    //       AnalyserInternalVariable::Type::CONSTANT since that type is only
+    //       applied after calling check() in
+    //       Analyser::AnalyserImpl::analyseModel(). (If we were to test for
+    //       that type then the condition would always be true, meaning that the
+    //       false branch would never be reached and llvm-cov would report it.
+
     return variable->mIsExternal
            || ((variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
                && (variable->mType != AnalyserInternalVariable::Type::INITIALISED)
-               && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
                && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT));
 }
@@ -316,16 +322,14 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
         auto variable = mVariables.empty() ?
                             mOdeVariables.front() :
                             mVariables.front();
+        auto i = MAX_SIZE_T;
+        VariablePtr localVariable;
 
-        for (size_t i = 0; i < mComponent->variableCount(); ++i) {
-            auto localVariable = mComponent->variable(i);
+        do {
+            localVariable = mComponent->variable(++i);
+        } while (!model->areEquivalentVariables(variable->mVariable, localVariable));
 
-            if (model->areEquivalentVariables(variable->mVariable, localVariable)) {
-                variable->setVariable(localVariable, false);
-
-                break;
-            }
-        }
+        variable->setVariable(localVariable, false);
 
         if (variable->mType == AnalyserInternalVariable::Type::UNKNOWN) {
             variable->mType = mComputedTrueConstant ?
@@ -647,7 +651,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
 
     VariablePtr res = nullptr;
 
-    for (size_t i = 0; i < component->componentCount() && res == nullptr; ++i) {
+    for (size_t i = 0; (res == nullptr) && (i < component->componentCount()); ++i) {
         res = voiFirstOccurrence(variable, component->component(i));
     }
 
@@ -1023,7 +1027,10 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         ast->mPimpl->populate(AnalyserEquationAst::Type::PI, astParent);
     } else if (node->isMathmlElement("infinity")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::INF, astParent);
-    } else if (node->isMathmlElement("notanumber")) {
+    } else {
+        // We have checked for everything, so if we reach this point it means
+        // that we have a NaN.
+
         ast->mPimpl->populate(AnalyserEquationAst::Type::NAN, astParent);
     }
 }
@@ -1072,8 +1079,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
             && internalVariable->mVariable->initialValue().empty()) {
             internalVariable->setVariable(variable);
         } else if ((variable != internalVariable->mVariable)
-                   && !variable->initialValue().empty()
-                   && !internalVariable->mVariable->initialValue().empty()) {
+                   && !variable->initialValue().empty()) {
             auto issue = Issue::IssueImpl::create();
             auto trackedVariableComponent = owningComponent(internalVariable->mVariable);
 
@@ -1157,14 +1163,20 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
+    // Note: CI and CN elements always have a parent, so no need to test whether
+    //       they do. BVAR and DEGREE elements always have a parent too, so CI
+    //       elements that have a BVAR element as a parent and CN elements that
+    //       have a DEGREE element as a parent always have a grantparent. In
+    //       addition, CN elements that have a DEGREE element as a parent and a
+    //       BVAR element as a grandparent always have a great-grandparent.
 
     auto astParent = ast->parent();
     auto astGrandParent = (astParent != nullptr) ? astParent->parent() : nullptr;
     auto astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->parent() : nullptr;
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGrandParent != nullptr) && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
+        && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
         auto variable = ast->variable();
 
         internalVariable(variable)->makeVoi();
@@ -1182,9 +1194,11 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             // first occurrence of our variable of integration.
 
             auto model = owningModel(variable);
+            auto i = MAX_SIZE_T;
+            VariablePtr voi;
 
-            for (size_t i = 0; i < model->componentCount(); ++i) {
-                auto voi = voiFirstOccurrence(variable, model->component(i));
+            do {
+                voi = voiFirstOccurrence(variable, model->component(++i));
 
                 if (voi != nullptr) {
                     // We have found the first occurrence of our variable of
@@ -1215,10 +1229,8 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                         mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
                                                                0, nullptr, voi, nullptr);
                     }
-
-                    break;
                 }
-            }
+            } while (voi == nullptr);
         } else if (!mModel->areEquivalentVariables(variable, mModel->mPimpl->mVoi->variable())) {
             auto issue = Issue::IssueImpl::create();
 
@@ -1237,13 +1249,12 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     // Make sure that we only use first-order ODEs.
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
-        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
-        && (astGrandParent != nullptr) && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        bool validValue;
-        double value = convertToDouble(ast->mPimpl->mValue, &validValue);
+        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
+        && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
+        && (astGreatGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        double value = convertToDouble(ast->mPimpl->mValue);
 
-        if (!validValue || !areEqual(value, 1.0)) {
+        if (!areEqual(value, 1.0)) {
             auto issue = Issue::IssueImpl::create();
             auto variable = astGreatGrandParent->mPimpl->mOwnedRightChild->variable();
 
@@ -1260,7 +1271,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     // Make a variable a state if it is used in an ODE.
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
         internalVariable(ast->variable())->makeState();
     }
 
@@ -1602,7 +1613,7 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast)
     }
 
     if (ast->value().empty()) {
-        if ((ast->mPimpl->mOwnedLeftChild == nullptr) && (ast->mPimpl->mOwnedRightChild == nullptr)) {
+        if (ast->mPimpl->mOwnedLeftChild == nullptr) {
             return 0.0;
         }
 
@@ -1657,7 +1668,7 @@ std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast
                                          nullptr;
 
             res += std::string(" in")
-                   + (((equationAstParent == nullptr) && equationAstGrandParent == nullptr) ? " equation" : "")
+                   + ((equationAstParent == nullptr) ? " equation" : "")
                    + " '" + mGenerator->mPimpl->generateCode(equationAst) + "'";
         }
 
