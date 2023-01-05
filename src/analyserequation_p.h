@@ -42,6 +42,8 @@ struct AnalyserEquation::AnalyserEquationImpl
                   const std::vector<AnalyserEquationPtr> &dependencies,
                   const AnalyserVariablePtr &variable);
 
+    static bool isEmptyDependency(const AnalyserEquationWeakPtr &dependency);
+
     void cleanUpDependencies();
 };
 
