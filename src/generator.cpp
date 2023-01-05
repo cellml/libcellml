@@ -197,6 +197,15 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                sha1(profileContents) != PYTHON_GENERATOR_PROFILE_SHA1;
 }
 
+std::string Generator::GeneratorImpl::newLineIfNeeded()
+{
+    if (!mCode.empty()) {
+        return "\n";
+    }
+
+    return {};
+}
+
 void Generator::GeneratorImpl::addOriginCommentCode()
 {
     if (!mLockedProfile->commentString().empty()
@@ -218,11 +227,8 @@ void Generator::GeneratorImpl::addOriginCommentCode()
 void Generator::GeneratorImpl::addInterfaceHeaderCode()
 {
     if (!mLockedProfile->interfaceHeaderString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->interfaceHeaderString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->interfaceHeaderString();
     }
 }
 
@@ -235,12 +241,9 @@ void Generator::GeneratorImpl::addImplementationHeaderCode()
     if (!mLockedProfile->implementationHeaderString().empty()
         && ((hasInterfaceFileName && !mLockedProfile->interfaceFileNameString().empty())
             || !hasInterfaceFileName)) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += replace(mLockedProfile->implementationHeaderString(),
-                         "[INTERFACE_FILE_NAME]", mLockedProfile->interfaceFileNameString());
+        mCode += newLineIfNeeded()
+                 + replace(mLockedProfile->implementationHeaderString(),
+                           "[INTERFACE_FILE_NAME]", mLockedProfile->interfaceFileNameString());
     }
 }
 
@@ -312,11 +315,8 @@ void Generator::GeneratorImpl::addVariableTypeObjectCode()
                                                                              mLockedModel->hasExternalVariables());
 
     if (!variableTypeObjectString.empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += variableTypeObjectString;
+        mCode += newLineIfNeeded()
+                 + variableTypeObjectString;
     }
 }
 
@@ -347,11 +347,8 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
 {
     if (!mLockedProfile->variableInfoObjectString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += generateVariableInfoObjectCode(mLockedProfile->variableInfoObjectString());
+        mCode += newLineIfNeeded()
+                 + generateVariableInfoObjectCode(mLockedProfile->variableInfoObjectString());
     }
 }
 
@@ -398,17 +395,14 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode()
         && !mLockedProfile->implementationVoiInfoString().empty()
         && !mLockedProfile->variableInfoEntryString().empty()
         && !mLockedProfile->variableOfIntegrationVariableTypeString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
         auto name = mLockedModel->voi()->variable()->name();
         auto units = mLockedModel->voi()->variable()->units()->name();
         auto component = owningComponent(mLockedModel->voi()->variable())->name();
         auto type = mLockedProfile->variableOfIntegrationVariableTypeString();
 
-        mCode += replace(mLockedProfile->implementationVoiInfoString(),
-                         "[CODE]", generateVariableInfoEntryCode(name, units, component, type));
+        mCode += newLineIfNeeded()
+                 + replace(mLockedProfile->implementationVoiInfoString(),
+                           "[CODE]", generateVariableInfoEntryCode(name, units, component, type));
     }
 }
 
@@ -419,10 +413,6 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
         && !mLockedProfile->variableInfoEntryString().empty()
         && !mLockedProfile->stateVariableTypeString().empty()
         && !mLockedProfile->arrayElementSeparatorString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
         std::string infoElementsCode;
         auto type = mLockedProfile->stateVariableTypeString();
 
@@ -438,12 +428,11 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
                                                                 type);
         }
 
-        if (!infoElementsCode.empty()) {
-            infoElementsCode += "\n";
-        }
+        infoElementsCode += "\n";
 
-        mCode += replace(mLockedProfile->implementationStateInfoString(),
-                         "[CODE]", infoElementsCode);
+        mCode += newLineIfNeeded()
+                 + replace(mLockedProfile->implementationStateInfoString(),
+                           "[CODE]", infoElementsCode);
     }
 }
 
@@ -458,10 +447,6 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
         && !mLockedProfile->computedConstantVariableTypeString().empty()
         && !mLockedProfile->algebraicVariableTypeString().empty()
         && !mLockedProfile->externalVariableTypeString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
         std::string infoElementsCode;
 
         for (const auto &variable : mLockedModel->variables()) {
@@ -493,8 +478,9 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
             infoElementsCode += "\n";
         }
 
-        mCode += replace(mLockedProfile->implementationVariableInfoString(),
-                         "[CODE]", infoElementsCode);
+        mCode += newLineIfNeeded()
+                 + replace(mLockedProfile->implementationVariableInfoString(),
+                           "[CODE]", infoElementsCode);
     }
 }
 
@@ -502,110 +488,74 @@ void Generator::GeneratorImpl::addArithmeticFunctionsCode()
 {
     if (mLockedModel->needEqFunction() && !mLockedProfile->hasEqOperator()
         && !mLockedProfile->eqFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->eqFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->eqFunctionString();
     }
 
     if (mLockedModel->needNeqFunction() && !mLockedProfile->hasNeqOperator()
         && !mLockedProfile->neqFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->neqFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->neqFunctionString();
     }
 
     if (mLockedModel->needLtFunction() && !mLockedProfile->hasLtOperator()
         && !mLockedProfile->ltFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->ltFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->ltFunctionString();
     }
 
     if (mLockedModel->needLeqFunction() && !mLockedProfile->hasLeqOperator()
         && !mLockedProfile->leqFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->leqFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->leqFunctionString();
     }
 
     if (mLockedModel->needGtFunction() && !mLockedProfile->hasGtOperator()
         && !mLockedProfile->gtFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->gtFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->gtFunctionString();
     }
 
     if (mLockedModel->needGeqFunction() && !mLockedProfile->hasGeqOperator()
         && !mLockedProfile->geqFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->geqFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->geqFunctionString();
     }
 
     if (mLockedModel->needAndFunction() && !mLockedProfile->hasAndOperator()
         && !mLockedProfile->andFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->andFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->andFunctionString();
     }
 
     if (mLockedModel->needOrFunction() && !mLockedProfile->hasOrOperator()
         && !mLockedProfile->orFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->orFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->orFunctionString();
     }
 
     if (mLockedModel->needXorFunction() && !mLockedProfile->hasXorOperator()
         && !mLockedProfile->xorFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->xorFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->xorFunctionString();
     }
 
     if (mLockedModel->needNotFunction() && !mLockedProfile->hasNotOperator()
         && !mLockedProfile->notFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->notFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->notFunctionString();
     }
 
     if (mLockedModel->needMinFunction()
         && !mLockedProfile->minFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->minFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->minFunctionString();
     }
 
     if (mLockedModel->needMaxFunction()
         && !mLockedProfile->maxFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->maxFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->maxFunctionString();
     }
 }
 
@@ -613,110 +563,74 @@ void Generator::GeneratorImpl::addTrigonometricFunctionsCode()
 {
     if (mLockedModel->needSecFunction()
         && !mLockedProfile->secFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->secFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->secFunctionString();
     }
 
     if (mLockedModel->needCscFunction()
         && !mLockedProfile->cscFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->cscFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->cscFunctionString();
     }
 
     if (mLockedModel->needCotFunction()
         && !mLockedProfile->cotFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->cotFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->cotFunctionString();
     }
 
     if (mLockedModel->needSechFunction()
         && !mLockedProfile->sechFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->sechFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->sechFunctionString();
     }
 
     if (mLockedModel->needCschFunction()
         && !mLockedProfile->cschFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->cschFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->cschFunctionString();
     }
 
     if (mLockedModel->needCothFunction()
         && !mLockedProfile->cothFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->cothFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->cothFunctionString();
     }
 
     if (mLockedModel->needAsecFunction()
         && !mLockedProfile->asecFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->asecFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->asecFunctionString();
     }
 
     if (mLockedModel->needAcscFunction()
         && !mLockedProfile->acscFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->acscFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->acscFunctionString();
     }
 
     if (mLockedModel->needAcotFunction()
         && !mLockedProfile->acotFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->acotFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->acotFunctionString();
     }
 
     if (mLockedModel->needAsechFunction()
         && !mLockedProfile->asechFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->asechFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->asechFunctionString();
     }
 
     if (mLockedModel->needAcschFunction()
         && !mLockedProfile->acschFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->acschFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->acschFunctionString();
     }
 
     if (mLockedModel->needAcothFunction()
         && !mLockedProfile->acothFunctionString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->acothFunctionString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->acothFunctionString();
     }
 }
 
@@ -750,8 +664,8 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
         auto externalVariableMethodTypeDefinitionString = mLockedProfile->externalVariableMethodTypeDefinitionString(mLockedModel->type() == AnalyserModel::Type::ODE);
 
         if (!externalVariableMethodTypeDefinitionString.empty()) {
-            mCode += "\n";
-            mCode += externalVariableMethodTypeDefinitionString;
+            mCode += "\n"
+                     + externalVariableMethodTypeDefinitionString;
         }
     }
 }
@@ -760,33 +674,24 @@ void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode()
 {
     if ((mLockedModel->type() == AnalyserModel::Type::ODE)
         && !mLockedProfile->implementationCreateStatesArrayMethodString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->implementationCreateStatesArrayMethodString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->implementationCreateStatesArrayMethodString();
     }
 }
 
 void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode()
 {
     if (!mLockedProfile->implementationCreateVariablesArrayMethodString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->implementationCreateVariablesArrayMethodString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->implementationCreateVariablesArrayMethodString();
     }
 }
 
 void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
 {
     if (!mLockedProfile->implementationDeleteArrayMethodString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
-        mCode += mLockedProfile->implementationDeleteArrayMethodString();
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->implementationDeleteArrayMethodString();
     }
 }
 
@@ -1673,10 +1578,6 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
                                                                                                                        mLockedModel->hasExternalVariables());
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
         std::string methodBody;
 
         for (const auto &variable : mLockedModel->variables()) {
@@ -1710,17 +1611,15 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             }
         }
 
-        mCode += replace(implementationInitialiseVariablesMethodString, "[CODE]", generateMethodBodyCode(methodBody));
+        mCode += newLineIfNeeded()
+                 + replace(implementationInitialiseVariablesMethodString,
+                           "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
 void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     if (!mLockedProfile->implementationComputeComputedConstantsMethodString().empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
         std::string methodBody;
 
         for (const auto &equation : mLockedModel->equations()) {
@@ -1729,8 +1628,9 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
             }
         }
 
-        mCode += replace(mLockedProfile->implementationComputeComputedConstantsMethodString(),
-                         "[CODE]", generateMethodBodyCode(methodBody));
+        mCode += newLineIfNeeded()
+                 + replace(mLockedProfile->implementationComputeComputedConstantsMethodString(),
+                           "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -1740,10 +1640,6 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
 
     if ((mLockedModel->type() == AnalyserModel::Type::ODE)
         && !implementationComputeRatesMethodString.empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
         std::string methodBody;
 
         for (const auto &equation : mLockedModel->equations()) {
@@ -1752,8 +1648,9 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             }
         }
 
-        mCode += replace(implementationComputeRatesMethodString,
-                         "[CODE]", generateMethodBodyCode(methodBody));
+        mCode += newLineIfNeeded()
+                 + replace(implementationComputeRatesMethodString,
+                           "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -1763,10 +1660,6 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
                                                                                                                  mLockedModel->hasExternalVariables());
 
     if (!implementationComputeVariablesMethodString.empty()) {
-        if (!mCode.empty()) {
-            mCode += "\n";
-        }
-
         std::string methodBody;
         auto equations = mLockedModel->equations();
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
@@ -1780,8 +1673,9 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
             }
         }
 
-        mCode += replace(implementationComputeVariablesMethodString,
-                         "[CODE]", generateMethodBodyCode(methodBody));
+        mCode += newLineIfNeeded()
+                 + replace(implementationComputeVariablesMethodString,
+                           "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 

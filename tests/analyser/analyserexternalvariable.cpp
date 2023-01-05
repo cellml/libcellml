@@ -229,3 +229,22 @@ TEST(AnalyserExternalVariable, dependencyByName)
     EXPECT_EQ(dependency, externalVariable->dependency(model, "membrane", "Cm"));
     EXPECT_EQ(nullptr, externalVariable->dependency(model, "membrane", "X"));
 }
+
+TEST(AnalyserExternalVariable, coverage)
+{
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(nullptr);
+
+    EXPECT_EQ(nullptr, externalVariable->variable());
+    EXPECT_EQ(false, externalVariable->addDependency(nullptr));
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    auto other_model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
+
+    externalVariable->addDependency(model->component("membrane")->variable("Cm"));
+
+    EXPECT_EQ(false, externalVariable->removeDependency(nullptr, "membrane", "Cm"));
+    EXPECT_EQ(false, externalVariable->removeDependency(model, "not_membrane", "Cm"));
+}

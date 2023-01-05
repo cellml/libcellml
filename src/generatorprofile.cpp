@@ -659,7 +659,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mStringDelimiterString = "\"";
 
         mCommandSeparatorString = ";";
-    } else if (profile == GeneratorProfile::Profile::PYTHON) {
+    } else { // Python profile.
         // Whether the profile requires an interface to be generated.
 
         mHasInterface = false;

@@ -2356,4 +2356,11 @@ TEST(Generator, coverage)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode());
+
+    // Coverage for the case where mLockedProfile is equal to nullptr in
+    // Generator::GeneratorImpl::retrieveLockedModelAndProfile().
+
+    generator->setProfile(nullptr);
+
+    generator->implementationCode();
 }
