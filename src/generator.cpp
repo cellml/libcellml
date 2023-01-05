@@ -1581,16 +1581,23 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
 {
-    std::string scalingFactorCode;
-    auto scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
+    std::string res;
+    auto initialisingVariable = variable->initialisingVariable();
 
-    if (!areNearlyEqual(scalingFactor, 1.0)) {
-        scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mLockedProfile->timesString();
+    if (initialisingVariable != nullptr) {
+        std::string scalingFactorCode;
+        auto scalingFactor = Generator::GeneratorImpl::scalingFactor(initialisingVariable);
+
+        if (!areNearlyEqual(scalingFactor, 1.0)) {
+            scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mLockedProfile->timesString();
+        }
+
+        res = mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+              + scalingFactorCode + generateDoubleOrConstantVariableNameCode(initialisingVariable)
+              + mLockedProfile->commandSeparatorString() + "\n";
     }
 
-    return mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
-           + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable())
-           + mLockedProfile->commandSeparatorString() + "\n";
+    return res;
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
@@ -1616,15 +1623,22 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
         if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
             std::ostringstream index;
+            auto variable = equation->variable();
 
-            index << equation->variable()->index();
+            if (variable != nullptr) {
+                index << variable->index();
 
-            res += mLockedProfile->indentString() + generateVariableNameCode(equation->variable()->variable()) + " = "
-                   + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
-                             "[INDEX]", index.str())
-                   + mLockedProfile->commandSeparatorString() + "\n";
+                res += mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+                       + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
+                                 "[INDEX]", index.str())
+                       + mLockedProfile->commandSeparatorString() + "\n";
+            }
         } else {
-            res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
+            auto ast = equation->ast();
+
+            if (ast != nullptr) {
+                res += mLockedProfile->indentString() + generateCode(ast) + mLockedProfile->commandSeparatorString() + "\n";
+            }
         }
 
         remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
