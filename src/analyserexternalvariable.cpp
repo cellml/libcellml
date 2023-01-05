@@ -157,7 +157,7 @@ VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
     auto result = mPimpl->findDependency(model, componentName, variableName);
 
     if (result != mPimpl->mDependencies.end()) {
-        return (*result).lock();
+        return result->lock();
     }
 
     return nullptr;

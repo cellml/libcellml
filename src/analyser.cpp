@@ -224,8 +224,8 @@ bool AnalyserInternalEquation::isKnownOdeVariable(const AnalyserInternalVariable
 
 bool AnalyserInternalEquation::hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
-    return std::any_of(variables.begin(), variables.end(), [](const auto &variable) {
-        return isKnownVariable(variable);
+    return std::any_of(variables.begin(), variables.end(), [](const auto &v) {
+        return isKnownVariable(v);
     });
 }
 
@@ -660,7 +660,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 {
     // Create the AST, if needed.
 
-    if (ast.get() == nullptr) {
+    if (ast == nullptr) {
         ast.reset(new AnalyserEquationAst {});
     }
 
@@ -727,7 +727,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
-        // distinguish between the two by checking its grand-parent. If it's a
+        // distinguish between the two by checking its grandparent. If it's a
         // "math" element then it means that it is used to describe "a = b"
         // otherwise it is used to describe "a == b". In the former case, there
         // is nothing more we need to do since `ast` is already of
@@ -2456,12 +2456,12 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Determine the type of our model.
 
-    auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &internalVariable) {
-        return (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN)
-               || (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
+    auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+        return (iv->mType == AnalyserInternalVariable::Type::UNKNOWN)
+               || (iv->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
     });
-    auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &internalVariable) {
-        return internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
+    auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+        return iv->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
     });
 
     if (hasUnderconstrainedVariables) {
@@ -2496,8 +2496,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make it known through our API whether the model has some external
     // variables.
 
-    mModel->mPimpl->mHasExternalVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &internalVariable) {
-        return internalVariable->mIsExternal;
+    mModel->mPimpl->mHasExternalVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+        return iv->mIsExternal;
     });
 
     // Sort our internal variables and equations.
@@ -2669,19 +2669,19 @@ std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl:
                                                                                                       const std::string &componentName,
                                                                                                       const std::string &variableName) const
 {
-    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
-        auto v = ev->variable();
+    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
+        auto variable = ev->variable();
 
-        return (v != nullptr)
-               && (owningModel(v) == model)
-               && (owningComponent(v)->name() == componentName)
-               && (v->name() == variableName);
+        return (variable != nullptr)
+               && (owningModel(variable) == model)
+               && (owningComponent(variable)->name() == componentName)
+               && (variable->name() == variableName);
     });
 }
 
 std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl::findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
 {
-    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
+    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
         return ev == externalVariable;
     });
 }
