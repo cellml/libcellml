@@ -39,7 +39,17 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
 
 void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
 {
-    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), [=](const auto &dependency) -> bool { return dependency.lock()->variable() == nullptr; }), mDependencies.end());
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), [=](const auto &dependency) -> bool {
+                            auto res = true;
+                            auto dep = dependency.lock();
+
+                            if (dep != nullptr) {
+                                res = dep->variable() == nullptr;
+                            }
+
+                            return res;
+                        }),
+                        mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
@@ -67,7 +77,11 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
     std::vector<AnalyserEquationPtr> res;
 
     for (const auto &dependency : mPimpl->mDependencies) {
-        res.push_back(dependency.lock());
+        auto dep = dependency.lock();
+
+        if (dep != nullptr) {
+            res.push_back(dep);
+        }
     }
 
     return res;

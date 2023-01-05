@@ -1231,18 +1231,23 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                     }
                 }
             } while (voi == nullptr);
-        } else if (!mModel->areEquivalentVariables(variable, mModel->mPimpl->mVoi->variable())) {
-            auto issue = Issue::IssueImpl::create();
+        } else {
+            auto voiVariable = mModel->mPimpl->mVoi->variable();
 
-            issue->mPimpl->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
-                                          + "' in component '" + owningComponent(mModel->mPimpl->mVoi->variable())->name()
-                                          + "' and variable '" + variable->name()
-                                          + "' in component '" + owningComponent(variable)->name()
-                                          + "' cannot both be the variable of integration.");
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
-            issue->mPimpl->mItem->mPimpl->setVariable(variable);
+            if ((voiVariable != nullptr)
+                && !mModel->areEquivalentVariables(variable, voiVariable)) {
+                auto issue = Issue::IssueImpl::create();
 
-            addIssue(issue);
+                issue->mPimpl->setDescription("Variable '" + voiVariable->name()
+                                              + "' in component '" + owningComponent(voiVariable)->name()
+                                              + "' and variable '" + variable->name()
+                                              + "' in component '" + owningComponent(variable)->name()
+                                              + "' cannot both be the variable of integration.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
+                issue->mPimpl->mItem->mPimpl->setVariable(variable);
+
+                addIssue(issue);
+            }
         }
     }
 
@@ -1844,20 +1849,23 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
         auto units = mCiCnUnits[ast].lock();
-        auto model = owningModel(units);
 
-        defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
+        if (units != nullptr) {
+            auto model = owningModel(units);
 
-        for (auto &unitsMap : unitsMaps) {
-            updateUnitsMap(model, units->name(), unitsMap);
-        }
+            defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
 
-        for (auto &userUnitsMap : userUnitsMaps) {
-            updateUnitsMap(model, units->name(), userUnitsMap, true);
-        }
+            for (auto &unitsMap : unitsMaps) {
+                updateUnitsMap(model, units->name(), unitsMap);
+            }
 
-        for (auto &unitsMultiplier : unitsMultipliers) {
-            updateUnitsMultiplier(model, units->name(), unitsMultiplier);
+            for (auto &userUnitsMap : userUnitsMaps) {
+                updateUnitsMap(model, units->name(), userUnitsMap, true);
+            }
+
+            for (auto &unitsMultiplier : unitsMultipliers) {
+                updateUnitsMultiplier(model, units->name(), unitsMultiplier);
+            }
         }
 
         return;
