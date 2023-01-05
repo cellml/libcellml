@@ -170,7 +170,12 @@ struct AnalyserInternalEquation
     static bool isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
 
     static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    bool hasKnownVariables();
+
+    static bool isNonConstantVariable(const AnalyserInternalVariablePtr &variable);
+
     static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    bool hasNonConstantVariables();
 
     bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex,
                const AnalyserModelPtr &model);
@@ -229,15 +234,30 @@ bool AnalyserInternalEquation::hasKnownVariables(const std::vector<AnalyserInter
     });
 }
 
+bool AnalyserInternalEquation::hasKnownVariables()
+{
+    return hasKnownVariables(mVariables) || hasKnownVariables(mOdeVariables);
+}
+
+bool AnalyserInternalEquation::isNonConstantVariable(const AnalyserInternalVariablePtr &variable)
+{
+    return variable->mIsExternal
+           || ((variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
+               && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
+               && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+               && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT));
+}
+
 bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
-    return std::any_of(variables.begin(), variables.end(), [](const auto &variable) {
-        return variable->mIsExternal
-               || ((variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
-                   && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
-                   && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                   && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT));
+    return std::any_of(variables.begin(), variables.end(), [](const auto &v) {
+        return isNonConstantVariable(v);
     });
+}
+
+bool AnalyserInternalEquation::hasNonConstantVariables()
+{
+    return hasNonConstantVariables(mVariables) || hasNonConstantVariables(mOdeVariables);
 }
 
 bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
@@ -254,12 +274,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // Determine, from the (new) known (ODE) variables, whether the equation is
     // used to compute a true constant or a variable-based constant.
 
-    mComputedTrueConstant = mComputedTrueConstant
-                            && !hasKnownVariables(mVariables)
-                            && !hasKnownVariables(mOdeVariables);
-    mComputedVariableBasedConstant = mComputedVariableBasedConstant
-                                     && !hasNonConstantVariables(mVariables)
-                                     && !hasNonConstantVariables(mOdeVariables);
+    mComputedTrueConstant = mComputedTrueConstant && !hasKnownVariables();
+    mComputedVariableBasedConstant = mComputedVariableBasedConstant && !hasNonConstantVariables();
 
     // Add, as a dependency, the variables used to compute the (new) known (ODE)
     // variables.

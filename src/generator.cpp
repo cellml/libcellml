@@ -27,7 +27,6 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/version.h"
 
-#include "analyserequationast_p.h"
 #include "generator_p.h"
 #include "generatorprofilesha1values.h"
 #include "generatorprofiletools.h"
