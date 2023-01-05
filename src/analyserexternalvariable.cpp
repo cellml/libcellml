@@ -168,7 +168,11 @@ std::vector<VariablePtr> AnalyserExternalVariable::dependencies() const
     std::vector<VariablePtr> res;
 
     for (const auto &dependency : mPimpl->mDependencies) {
-        res.push_back(dependency.lock());
+        auto dep = dependency.lock();
+
+        if (dep != nullptr) {
+            res.push_back(dep);
+        }
     }
 
     return res;

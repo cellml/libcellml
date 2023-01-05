@@ -495,28 +495,30 @@ Analyser::AnalyserImpl::AnalyserImpl()
 
     auto profile = mGenerator->profile();
 
-    profile->setAbsoluteValueString("abs");
-    profile->setNaturalLogarithmString("ln");
-    profile->setCommonLogarithmString("log");
-    profile->setRemString("rem");
-    profile->setAsinString("arcsin");
-    profile->setAcosString("arccos");
-    profile->setAtanString("arctan");
-    profile->setAsecString("arcsec");
-    profile->setAcscString("arccsc");
-    profile->setAcotString("arccot");
-    profile->setAsinhString("arcsinh");
-    profile->setAcoshString("arccosh");
-    profile->setAtanhString("arctanh");
-    profile->setAsechString("arcsech");
-    profile->setAcschString("arccsch");
-    profile->setAcothString("arccoth");
-    profile->setTrueString("true");
-    profile->setFalseString("false");
-    profile->setEString("exponentiale");
-    profile->setPiString("pi");
-    profile->setInfString("infinity");
-    profile->setNanString("notanumber");
+    if (profile != nullptr) {
+        profile->setAbsoluteValueString("abs");
+        profile->setNaturalLogarithmString("ln");
+        profile->setCommonLogarithmString("log");
+        profile->setRemString("rem");
+        profile->setAsinString("arcsin");
+        profile->setAcosString("arccos");
+        profile->setAtanString("arctan");
+        profile->setAsecString("arcsec");
+        profile->setAcscString("arccsc");
+        profile->setAcotString("arccot");
+        profile->setAsinhString("arcsinh");
+        profile->setAcoshString("arccosh");
+        profile->setAtanhString("arctanh");
+        profile->setAsechString("arcsech");
+        profile->setAcschString("arccsch");
+        profile->setAcothString("arccoth");
+        profile->setTrueString("true");
+        profile->setFalseString("false");
+        profile->setEString("exponentiale");
+        profile->setPiString("pi");
+        profile->setInfString("infinity");
+        profile->setNanString("notanumber");
+    }
 
     // Retrieve our generator's profile.
 
@@ -730,9 +732,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
                 astRightChild = tempAst;
             }
 
-            if (astRightChild != nullptr) {
-                astRightChild->mPimpl->mParent = ast;
-            }
+            astRightChild->mPimpl->mParent = ast;
 
             ast->mPimpl->mOwnedRightChild = astRightChild;
         }
@@ -1063,6 +1063,9 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                     mInternalEquations.push_back(internalEquation);
 
                     // Actually analyse the node.
+                    // Note: we must not test internalEquation->mAst->parent()
+                    //       since if it is equal to nullptr then a parent will
+                    //       be created by analyseNode().
 
                     analyseNode(node, internalEquation->mAst, internalEquation->mAst->parent(), component, internalEquation);
                 }
@@ -1173,90 +1176,86 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
-    // Note: CI and CN elements always have a parent, so no need to test whether
-    //       they do. BVAR and DEGREE elements always have a parent too, so CI
-    //       elements that have a BVAR element as a parent and CN elements that
-    //       have a DEGREE element as a parent always have a grantparent. In
-    //       addition, CN elements that have a DEGREE element as a parent and a
-    //       BVAR element as a grandparent always have a great-grandparent.
 
     auto astParent = ast->parent();
-    auto astGrandParent = (astParent != nullptr) ? astParent->parent() : nullptr;
-    auto astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->parent() : nullptr;
+    auto astGrandparent = (astParent != nullptr) ? astParent->parent() : nullptr;
+    auto astGreatGrandparent = (astGrandparent != nullptr) ? astGrandparent->parent() : nullptr;
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        auto variable = ast->variable();
+        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
+        && (astGrandparent != nullptr) && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        auto astVariable = ast->variable();
 
-        internalVariable(variable)->makeVoi();
-        // Note: we must make the variable a variable of integration in all
-        //       cases (i.e. even if there is, for example, already another
-        //       variable of integration) otherwise unnecessary issue messages
-        //       may be reported (since the type of the variable would be
-        //       unknown).
+        if (astVariable != nullptr) {
+            internalVariable(astVariable)->makeVoi();
+            // Note: we must make the variable a variable of integration in all
+            //       cases (i.e. even if there is, for example, already another
+            //       variable of integration) otherwise unnecessary issue
+            //       messages may be reported (since the type of the variable
+            //       would be unknown).
 
-        if (mModel->mPimpl->mVoi == nullptr) {
-            // We have found our variable of integration, but this may not be
-            // the one defined in our first component (i.e. the component under
-            // which we are likely to expect to see the variable of integration
-            // to be defined), so go through our components and look for the
-            // first occurrence of our variable of integration.
+            if (mModel->mPimpl->mVoi == nullptr) {
+                // We have found our variable of integration, but this may not
+                // be the one defined in our first component (i.e. the component
+                // under which we are likely to expect to see the variable of
+                // integration to be defined), so go through our components and
+                // look for the first occurrence of our variable of integration.
 
-            auto model = owningModel(variable);
-            auto i = MAX_SIZE_T;
-            VariablePtr voi;
+                auto model = owningModel(astVariable);
+                auto i = MAX_SIZE_T;
+                VariablePtr voi;
 
-            do {
-                voi = voiFirstOccurrence(variable, model->component(++i));
+                do {
+                    voi = voiFirstOccurrence(astVariable, model->component(++i));
 
-                if (voi != nullptr) {
-                    // We have found the first occurrence of our variable of
-                    // integration, but now we must ensure neither it (nor any
-                    // of its equivalent variables) is initialised.
+                    if (voi != nullptr) {
+                        // We have found the first occurrence of our variable of
+                        // integration, but now we must ensure neither it (nor
+                        // any of its equivalent variables) is initialised.
 
-                    bool isVoiInitialised = false;
+                        bool isVoiInitialised = false;
 
-                    for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
-                        if (!voiEquivalentVariable->initialValue().empty()) {
-                            auto issue = Issue::IssueImpl::create();
+                        for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
+                            if (!voiEquivalentVariable->initialValue().empty()) {
+                                auto issue = Issue::IssueImpl::create();
 
-                            issue->mPimpl->setDescription("Variable '" + voiEquivalentVariable->name()
-                                                          + "' in component '" + owningComponent(voiEquivalentVariable)->name()
-                                                          + "' cannot be both a variable of integration and initialised.");
-                            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_INITIALISED);
-                            issue->mPimpl->mItem->mPimpl->setVariable(voiEquivalentVariable);
+                                issue->mPimpl->setDescription("Variable '" + voiEquivalentVariable->name()
+                                                              + "' in component '" + owningComponent(voiEquivalentVariable)->name()
+                                                              + "' cannot be both a variable of integration and initialised.");
+                                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_INITIALISED);
+                                issue->mPimpl->mItem->mPimpl->setVariable(voiEquivalentVariable);
 
-                            addIssue(issue);
+                                addIssue(issue);
 
-                            isVoiInitialised = true;
+                                isVoiInitialised = true;
+                            }
+                        }
+
+                        if (!isVoiInitialised) {
+                            mModel->mPimpl->mVoi = AnalyserVariable::AnalyserVariableImpl::create();
+
+                            mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
+                                                                   0, nullptr, voi, nullptr);
                         }
                     }
+                } while (voi == nullptr);
+            } else {
+                auto voiVariable = mModel->mPimpl->mVoi->variable();
 
-                    if (!isVoiInitialised) {
-                        mModel->mPimpl->mVoi = AnalyserVariable::AnalyserVariableImpl::create();
+                if ((voiVariable != nullptr)
+                    && !mModel->areEquivalentVariables(astVariable, voiVariable)) {
+                    auto issue = Issue::IssueImpl::create();
 
-                        mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
-                                                               0, nullptr, voi, nullptr);
-                    }
+                    issue->mPimpl->setDescription("Variable '" + voiVariable->name()
+                                                  + "' in component '" + owningComponent(voiVariable)->name()
+                                                  + "' and variable '" + astVariable->name()
+                                                  + "' in component '" + owningComponent(astVariable)->name()
+                                                  + "' cannot both be the variable of integration.");
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
+                    issue->mPimpl->mItem->mPimpl->setVariable(astVariable);
+
+                    addIssue(issue);
                 }
-            } while (voi == nullptr);
-        } else {
-            auto voiVariable = mModel->mPimpl->mVoi->variable();
-
-            if ((voiVariable != nullptr)
-                && !mModel->areEquivalentVariables(variable, voiVariable)) {
-                auto issue = Issue::IssueImpl::create();
-
-                issue->mPimpl->setDescription("Variable '" + voiVariable->name()
-                                              + "' in component '" + owningComponent(voiVariable)->name()
-                                              + "' and variable '" + variable->name()
-                                              + "' in component '" + owningComponent(variable)->name()
-                                              + "' cannot both be the variable of integration.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
-                issue->mPimpl->mItem->mPimpl->setVariable(variable);
-
-                addIssue(issue);
             }
         }
     }
@@ -1264,30 +1263,37 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     // Make sure that we only use first-order ODEs.
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
-        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
-        && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGreatGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
+        && (astGrandparent != nullptr) && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
+        && (astGreatGrandparent != nullptr) && (astGreatGrandparent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
         double value = convertToDouble(ast->mPimpl->mValue);
 
         if (!areEqual(value, 1.0)) {
-            auto issue = Issue::IssueImpl::create();
-            auto variable = astGreatGrandParent->mPimpl->mOwnedRightChild->variable();
+            auto variable = astGreatGrandparent->mPimpl->mOwnedRightChild->variable();
 
-            issue->mPimpl->setDescription("The differential equation for variable '" + variable->name()
-                                          + "' in component '" + owningComponent(variable)->name()
-                                          + "' must be of the first order.");
-            issue->mPimpl->mItem->mPimpl->setMath(owningComponent(variable));
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
+            if (variable != nullptr) {
+                auto issue = Issue::IssueImpl::create();
 
-            addIssue(issue);
+                issue->mPimpl->setDescription("The differential equation for variable '" + variable->name()
+                                              + "' in component '" + owningComponent(variable)->name()
+                                              + "' must be of the first order.");
+                issue->mPimpl->mItem->mPimpl->setMath(owningComponent(variable));
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER);
+
+                addIssue(issue);
+            }
         }
     }
 
     // Make a variable a state if it is used in an ODE.
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        internalVariable(ast->variable())->makeState();
+        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        auto astVariable = ast->variable();
+
+        if (astVariable != nullptr) {
+            internalVariable(astVariable)->makeState();
+        }
     }
 
     // Recursively check the given AST's children.
@@ -1600,10 +1606,10 @@ std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &
     // through the AST, if needed, and returning the component of the first
     // variable we find on the LHS/RHS.
 
-    auto variable = ast->variable();
+    auto astVariable = ast->variable();
 
-    if (variable != nullptr) {
-        return std::dynamic_pointer_cast<Component>(variable->parent())->name();
+    if (astVariable != nullptr) {
+        return std::dynamic_pointer_cast<Component>(astVariable->parent())->name();
     }
 
     auto res = (ast->mPimpl->mOwnedLeftChild != nullptr) ?
@@ -1671,16 +1677,12 @@ std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast
     if (includeHierarchy) {
         AnalyserEquationAstPtr equationAst = ast;
         AnalyserEquationAstPtr equationAstParent = ast->parent();
-        AnalyserEquationAstPtr equationAstGrandParent = (equationAstParent != nullptr) ?
-                                                            equationAstParent->parent() :
-                                                            nullptr;
+        AnalyserEquationAstPtr equationAstGrandparent = (equationAstParent != nullptr) ? equationAstParent->parent() : nullptr;
 
         while (equationAstParent != nullptr) {
             equationAst = equationAstParent;
-            equationAstParent = equationAstGrandParent;
-            equationAstGrandParent = (equationAstParent != nullptr) ?
-                                         equationAstParent->parent() :
-                                         nullptr;
+            equationAstParent = equationAstGrandparent;
+            equationAstGrandparent = (equationAstParent != nullptr) ? equationAstParent->parent() : nullptr;
 
             res += std::string(" in")
                    + ((equationAstParent == nullptr) ? " equation" : "")
@@ -1855,20 +1857,23 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
         auto units = mCiCnUnits[ast].lock();
-        auto model = owningModel(units);
 
-        defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
+        if (units != nullptr) {
+            auto model = owningModel(units);
 
-        for (auto &unitsMap : unitsMaps) {
-            updateUnitsMap(model, units->name(), unitsMap);
-        }
+            defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
 
-        for (auto &userUnitsMap : userUnitsMaps) {
-            updateUnitsMap(model, units->name(), userUnitsMap, true);
-        }
+            for (auto &unitsMap : unitsMaps) {
+                updateUnitsMap(model, units->name(), unitsMap);
+            }
 
-        for (auto &unitsMultiplier : unitsMultipliers) {
-            updateUnitsMultiplier(model, units->name(), unitsMultiplier);
+            for (auto &userUnitsMap : userUnitsMaps) {
+                updateUnitsMap(model, units->name(), userUnitsMap, true);
+            }
+
+            for (auto &unitsMultiplier : unitsMultipliers) {
+                updateUnitsMultiplier(model, units->name(), unitsMultiplier);
+            }
         }
 
         return;
@@ -2157,44 +2162,60 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
         auto astParent = ast->parent();
 
-        if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
-            // We are dealing with a rate, so retrieve the scaling factor for
-            // its corresponding variable of integration and apply it, if
-            // needed.
+        if (astParent != nullptr) {
+            if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
+                // We are dealing with a rate, so retrieve the scaling factor
+                // for its corresponding variable of integration and apply it,
+                // if needed.
 
-            auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable());
+                auto variable = astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable();
 
-            if (!areNearlyEqual(scalingFactor, 1.0)) {
-                // We need to scale using the inverse of the scaling factor, but
-                // how we do it depends on whether the rate is to be computed or
-                // used.
+                if (variable != nullptr) {
+                    auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(variable);
 
-                auto astGrandParent = astParent->parent();
+                    if (!areNearlyEqual(scalingFactor, 1.0)) {
+                        // We need to scale using the inverse of the scaling
+                        // factor, but how we do it depends on whether the rate
+                        // is to be computed or used.
 
-                if ((astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
-                    && (astGrandParent->mPimpl->mOwnedLeftChild == astParent)) {
-                    scaleAst(astGrandParent->mPimpl->mOwnedRightChild, astGrandParent, 1.0 / scalingFactor);
-                } else {
-                    scaleAst(astParent, astGrandParent, 1.0 / scalingFactor);
+                        auto astGrandparent = astParent->parent();
+
+                        if (astGrandparent != nullptr) {
+                            if ((astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
+                                && (astGrandparent->mPimpl->mOwnedLeftChild == astParent)) {
+                                scaleAst(astGrandparent->mPimpl->mOwnedRightChild, astGrandparent, 1.0 / scalingFactor);
+                            } else {
+                                scaleAst(astParent, astGrandparent, 1.0 / scalingFactor);
+                            }
+                        }
+                    }
                 }
             }
-        }
 
-        if (((astParent->mPimpl->mType != AnalyserEquationAst::Type::ASSIGNMENT)
-             || (astParent->mPimpl->mOwnedLeftChild != ast))
-            && (astParent->mPimpl->mType != AnalyserEquationAst::Type::BVAR)) {
-            // We are dealing with a variable which is neither a computed
-            // variable nor our variable of integration, so retrieve its scaling
-            // factor and apply it, if needed, distinguishing between a rate
-            // variable and an algebraic variable.
+            if (((astParent->mPimpl->mType != AnalyserEquationAst::Type::ASSIGNMENT)
+                 || (astParent->mPimpl->mOwnedLeftChild != ast))
+                && (astParent->mPimpl->mType != AnalyserEquationAst::Type::BVAR)) {
+                // We are dealing with a variable which is neither a computed
+                // variable nor our variable of integration, so retrieve its
+                // scaling factor and apply it, if needed, distinguishing
+                // between a rate variable and an algebraic variable.
 
-            auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->variable());
+                auto astVariable = ast->variable();
 
-            if (!areNearlyEqual(scalingFactor, 1.0)) {
-                if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
-                    scaleAst(astParent, astParent->parent(), scalingFactor);
-                } else {
-                    scaleAst(ast, astParent, scalingFactor);
+                if (astVariable != nullptr) {
+                    auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astVariable);
+
+                    if (!areNearlyEqual(scalingFactor, 1.0)) {
+                        if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
+                            auto astGrandparent = astParent->parent();
+
+                            if (astGrandparent != nullptr) {
+                                scaleAst(astParent, astGrandparent, scalingFactor);
+                            }
+                        } else {
+                            scaleAst(ast, astParent, scalingFactor);
+                        }
+                    }
                 }
             }
         }
@@ -2612,11 +2633,26 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             auto ast = internalEquation->mAst;
             auto astRightChild = ast->rightChild();
 
-            if (((astRightChild->type() == AnalyserEquationAst::Type::CI)
-                 && (astRightChild->variable()->name() == internalEquation->mVariable->mVariable->name()))
-                || ((astRightChild->type() == AnalyserEquationAst::Type::DIFF)
-                    && (astRightChild->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name()))) {
-                ast->swapLeftAndRightChildren();
+            if (astRightChild != nullptr) {
+                if (astRightChild->type() == AnalyserEquationAst::Type::CI) {
+                    auto astRightChildVariable = astRightChild->variable();
+
+                    if ((astRightChildVariable != nullptr)
+                        && (astRightChildVariable->name() == internalEquation->mVariable->mVariable->name())) {
+                        ast->swapLeftAndRightChildren();
+                    }
+                } else if (astRightChild->type() == AnalyserEquationAst::Type::DIFF) {
+                    auto astRightChildRightChild = astRightChild->rightChild();
+
+                    if (astRightChildRightChild != nullptr) {
+                        auto astRightChildRightChildVariable = astRightChildRightChild->variable();
+
+                        if ((astRightChildRightChildVariable != nullptr)
+                            && (astRightChildRightChildVariable->name() == internalEquation->mVariable->mVariable->name())) {
+                            ast->swapLeftAndRightChildren();
+                        }
+                    }
+                }
             }
         }
 
