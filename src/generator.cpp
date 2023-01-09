@@ -71,11 +71,12 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         for (const auto &modelState : mLockedModel->states()) {
             auto modelStateVariable = modelState->variable();
 
-            if ((modelStateVariable != nullptr)
-                && mLockedModel->areEquivalentVariables(variable, modelStateVariable)) {
-                res = modelState;
+            if VALID_SHARED_PTR (modelStateVariable) {
+                if (mLockedModel->areEquivalentVariables(variable, modelStateVariable)) {
+                    res = modelState;
 
-                break;
+                    break;
+                }
             }
         }
 
@@ -83,11 +84,12 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
             for (const auto &modelVariable : mLockedModel->variables()) {
                 auto modelVariableVariable = modelVariable->variable();
 
-                if ((modelVariableVariable != nullptr)
-                    && mLockedModel->areEquivalentVariables(variable, modelVariableVariable)) {
-                    res = modelVariable;
+                if VALID_SHARED_PTR (modelVariableVariable) {
+                    if (mLockedModel->areEquivalentVariables(variable, modelVariableVariable)) {
+                        res = modelVariable;
 
-                    break;
+                        break;
+                    }
                 }
             }
         }
@@ -103,7 +105,7 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) cons
     auto res = 0.0;
     auto analyserVariableVariable = analyserVariable(variable)->variable();
 
-    if (analyserVariableVariable != nullptr) {
+    if VALID_SHARED_PTR (analyserVariableVariable) {
         res = Units::scalingFactor(variable->units(), analyserVariableVariable->units());
     }
 
@@ -198,7 +200,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
 {
     auto variableVariable = variable->variable();
 
-    if (variableVariable != nullptr) {
+    if VALID_SHARED_PTR (variableVariable) {
         auto variableComponentSize = owningComponent(variableVariable)->name().length() + 1;
         auto variableNameSize = variableVariable->name().length() + 1;
         auto variableUnitsSize = variableVariable->units()->name().length() + 1;
@@ -446,7 +448,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
 
             auto stateVariable = state->variable();
 
-            if (stateVariable != nullptr) {
+            if VALID_SHARED_PTR (stateVariable) {
                 infoElementsCode += mLockedProfile->indentString()
                                     + generateVariableInfoEntryCode(stateVariable->name(),
                                                                     stateVariable->units()->name(),
@@ -495,7 +497,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 
             auto variableVariable = variable->variable();
 
-            if (variableVariable != nullptr) {
+            if VALID_SHARED_PTR (variableVariable) {
                 infoElementsCode += mLockedProfile->indentString()
                                     + replace(replace(replace(replace(mLockedProfile->variableInfoEntryString(),
                                                                       "[NAME]", variableVariable->name()),
@@ -1062,7 +1064,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 
             auto astLeftChildLeftChild = astLeftChild->leftChild();
 
-            if (astLeftChildLeftChild != nullptr) {
+            if VALID_SHARED_PTR (astLeftChildLeftChild) {
                 if (isRelationalOperator(astLeftChildLeftChild)
                     || isLogicalOperator(astLeftChildLeftChild)
                     || isMinusOperator(astLeftChildLeftChild)
@@ -1095,7 +1097,7 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
     std::string res;
     auto astLeftChild = ast->leftChild();
 
-    if (astLeftChild != nullptr) {
+    if VALID_SHARED_PTR (astLeftChild) {
         auto code = generateCode(astLeftChild);
 
         // Determine whether parentheses should be added around the left code.
@@ -1127,7 +1129,7 @@ std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std
     auto astLeftChild = ast->leftChild();
     auto astRightChild = ast->rightChild();
 
-    if (astLeftChild != nullptr) {
+    if VALID_SHARED_PTR (astLeftChild) {
         res = function + "(" + generateCode(astLeftChild) + ", " + generateCode(astRightChild) + ")";
     }
 
@@ -1158,127 +1160,96 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
     std::string code;
 
-    switch (ast->type()) {
-    case AnalyserEquationAst::Type::ASSIGNMENT:
+    if (ast->type() == AnalyserEquationAst::Type::ASSIGNMENT) {
         code = generateOperatorCode(mLockedProfile->assignmentString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::EQ:
+    } else if (ast->type() == AnalyserEquationAst::Type::EQ) {
         if (mLockedProfile->hasEqOperator()) {
             code = generateOperatorCode(mLockedProfile->eqString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->eqString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::NEQ:
+    } else if (ast->type() == AnalyserEquationAst::Type::NEQ) {
         if (mLockedProfile->hasNeqOperator()) {
             code = generateOperatorCode(mLockedProfile->neqString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->neqString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::LT:
+    } else if (ast->type() == AnalyserEquationAst::Type::LT) {
         if (mLockedProfile->hasLtOperator()) {
             code = generateOperatorCode(mLockedProfile->ltString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->ltString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::LEQ:
+    } else if (ast->type() == AnalyserEquationAst::Type::LEQ) {
         if (mLockedProfile->hasLeqOperator()) {
             code = generateOperatorCode(mLockedProfile->leqString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->leqString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::GT:
+    } else if (ast->type() == AnalyserEquationAst::Type::GT) {
         if (mLockedProfile->hasGtOperator()) {
             code = generateOperatorCode(mLockedProfile->gtString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->gtString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::GEQ:
+    } else if (ast->type() == AnalyserEquationAst::Type::GEQ) {
         if (mLockedProfile->hasGeqOperator()) {
             code = generateOperatorCode(mLockedProfile->geqString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->geqString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::AND:
+    } else if (ast->type() == AnalyserEquationAst::Type::AND) {
         if (mLockedProfile->hasAndOperator()) {
             code = generateOperatorCode(mLockedProfile->andString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->andString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::OR:
+    } else if (ast->type() == AnalyserEquationAst::Type::OR) {
         if (mLockedProfile->hasOrOperator()) {
             code = generateOperatorCode(mLockedProfile->orString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->orString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::XOR:
+    } else if (ast->type() == AnalyserEquationAst::Type::XOR) {
         if (mLockedProfile->hasXorOperator()) {
             code = generateOperatorCode(mLockedProfile->xorString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mLockedProfile->xorString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::NOT:
+    } else if (ast->type() == AnalyserEquationAst::Type::NOT) {
         if (mLockedProfile->hasNotOperator()) {
             auto astLeftChild = ast->leftChild();
 
-            if (astLeftChild != nullptr) {
+            if VALID_SHARED_PTR (astLeftChild) {
                 code = mLockedProfile->notString() + generateCode(astLeftChild);
             }
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->notString(), ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::PLUS:
+    } else if (ast->type() == AnalyserEquationAst::Type::PLUS) {
         if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mLockedProfile->plusString(), ast);
         } else {
             auto astLeftChild = ast->leftChild();
 
-            if (astLeftChild != nullptr) {
+            if VALID_SHARED_PTR (astLeftChild) {
                 code = generateCode(astLeftChild);
             }
         }
-
-        break;
-    case AnalyserEquationAst::Type::MINUS:
+    } else if (ast->type() == AnalyserEquationAst::Type::MINUS) {
         if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mLockedProfile->minusString(), ast);
         } else {
             code = generateMinusUnaryCode(ast);
         }
-
-        break;
-    case AnalyserEquationAst::Type::TIMES:
+    } else if (ast->type() == AnalyserEquationAst::Type::TIMES) {
         code = generateOperatorCode(mLockedProfile->timesString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::DIVIDE:
+    } else if (ast->type() == AnalyserEquationAst::Type::DIVIDE) {
         code = generateOperatorCode(mLockedProfile->divideString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::POWER: {
+    } else if (ast->type() == AnalyserEquationAst::Type::POWER) {
         auto astRightChild = ast->rightChild();
 
-        if (astRightChild != nullptr) {
+        if VALID_SHARED_PTR (astRightChild) {
             auto stringValue = generateCode(astRightChild);
             bool validConversion;
             double doubleValue = convertToDouble(stringValue, &validConversion);
@@ -1291,23 +1262,20 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
             } else {
                 auto astLeftChild = ast->leftChild();
 
-                if (astLeftChild != nullptr) {
+                if VALID_SHARED_PTR (astLeftChild) {
                     code = mLockedProfile->hasPowerOperator() ?
                                generateOperatorCode(mLockedProfile->powerString(), ast) :
                                mLockedProfile->powerString() + "(" + generateCode(astLeftChild) + ", " + stringValue + ")";
                 }
             }
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::ROOT: {
+    } else if (ast->type() == AnalyserEquationAst::Type::ROOT) {
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
             auto astLeftChild = ast->leftChild();
 
-            if (astLeftChild != nullptr) {
+            if VALID_SHARED_PTR (astLeftChild) {
                 bool validConversion;
                 double doubleValue = convertToDouble(generateCode(astLeftChild), &validConversion);
 
@@ -1338,28 +1306,19 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::ABS:
+    } else if (ast->type() == AnalyserEquationAst::Type::ABS) {
         code = generateOneParameterFunctionCode(mLockedProfile->absoluteValueString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::EXP:
+    } else if (ast->type() == AnalyserEquationAst::Type::EXP) {
         code = generateOneParameterFunctionCode(mLockedProfile->exponentialString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::LN:
+    } else if (ast->type() == AnalyserEquationAst::Type::LN) {
         code = generateOneParameterFunctionCode(mLockedProfile->naturalLogarithmString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::LOG: {
+    } else if (ast->type() == AnalyserEquationAst::Type::LOG) {
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
             auto astLeftChild = ast->leftChild();
 
-            if (astLeftChild != nullptr) {
+            if VALID_SHARED_PTR (astLeftChild) {
                 auto stringValue = generateCode(astLeftChild);
                 bool validConversion;
                 double doubleValue = convertToDouble(stringValue, &validConversion);
@@ -1373,223 +1332,130 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->commonLogarithmString(), ast);
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::CEILING:
+    } else if (ast->type() == AnalyserEquationAst::Type::CEILING) {
         code = generateOneParameterFunctionCode(mLockedProfile->ceilingString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::FLOOR:
+    } else if (ast->type() == AnalyserEquationAst::Type::FLOOR) {
         code = generateOneParameterFunctionCode(mLockedProfile->floorString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::MIN:
+    } else if (ast->type() == AnalyserEquationAst::Type::MIN) {
         code = generateTwoParameterFunctionCode(mLockedProfile->minString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::MAX:
+    } else if (ast->type() == AnalyserEquationAst::Type::MAX) {
         code = generateTwoParameterFunctionCode(mLockedProfile->maxString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::REM:
+    } else if (ast->type() == AnalyserEquationAst::Type::REM) {
         code = generateTwoParameterFunctionCode(mLockedProfile->remString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::DIFF: {
+    } else if (ast->type() == AnalyserEquationAst::Type::DIFF) {
         auto astRightChild = ast->rightChild();
 
-        if (astRightChild != nullptr) {
+        if VALID_SHARED_PTR (astRightChild) {
             code = generateCode(astRightChild);
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::SIN:
+    } else if (ast->type() == AnalyserEquationAst::Type::SIN) {
         code = generateOneParameterFunctionCode(mLockedProfile->sinString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::COS:
+    } else if (ast->type() == AnalyserEquationAst::Type::COS) {
         code = generateOneParameterFunctionCode(mLockedProfile->cosString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::TAN:
+    } else if (ast->type() == AnalyserEquationAst::Type::TAN) {
         code = generateOneParameterFunctionCode(mLockedProfile->tanString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::SEC:
+    } else if (ast->type() == AnalyserEquationAst::Type::SEC) {
         code = generateOneParameterFunctionCode(mLockedProfile->secString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::CSC:
+    } else if (ast->type() == AnalyserEquationAst::Type::CSC) {
         code = generateOneParameterFunctionCode(mLockedProfile->cscString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::COT:
+    } else if (ast->type() == AnalyserEquationAst::Type::COT) {
         code = generateOneParameterFunctionCode(mLockedProfile->cotString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::SINH:
+    } else if (ast->type() == AnalyserEquationAst::Type::SINH) {
         code = generateOneParameterFunctionCode(mLockedProfile->sinhString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::COSH:
+    } else if (ast->type() == AnalyserEquationAst::Type::COSH) {
         code = generateOneParameterFunctionCode(mLockedProfile->coshString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::TANH:
+    } else if (ast->type() == AnalyserEquationAst::Type::TANH) {
         code = generateOneParameterFunctionCode(mLockedProfile->tanhString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::SECH:
+    } else if (ast->type() == AnalyserEquationAst::Type::SECH) {
         code = generateOneParameterFunctionCode(mLockedProfile->sechString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::CSCH:
+    } else if (ast->type() == AnalyserEquationAst::Type::CSCH) {
         code = generateOneParameterFunctionCode(mLockedProfile->cschString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::COTH:
+    } else if (ast->type() == AnalyserEquationAst::Type::COTH) {
         code = generateOneParameterFunctionCode(mLockedProfile->cothString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ASIN:
+    } else if (ast->type() == AnalyserEquationAst::Type::ASIN) {
         code = generateOneParameterFunctionCode(mLockedProfile->asinString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ACOS:
+    } else if (ast->type() == AnalyserEquationAst::Type::ACOS) {
         code = generateOneParameterFunctionCode(mLockedProfile->acosString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ATAN:
+    } else if (ast->type() == AnalyserEquationAst::Type::ATAN) {
         code = generateOneParameterFunctionCode(mLockedProfile->atanString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ASEC:
+    } else if (ast->type() == AnalyserEquationAst::Type::ASEC) {
         code = generateOneParameterFunctionCode(mLockedProfile->asecString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ACSC:
+    } else if (ast->type() == AnalyserEquationAst::Type::ACSC) {
         code = generateOneParameterFunctionCode(mLockedProfile->acscString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ACOT:
+    } else if (ast->type() == AnalyserEquationAst::Type::ACOT) {
         code = generateOneParameterFunctionCode(mLockedProfile->acotString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ASINH:
+    } else if (ast->type() == AnalyserEquationAst::Type::ASINH) {
         code = generateOneParameterFunctionCode(mLockedProfile->asinhString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ACOSH:
+    } else if (ast->type() == AnalyserEquationAst::Type::ACOSH) {
         code = generateOneParameterFunctionCode(mLockedProfile->acoshString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ATANH:
+    } else if (ast->type() == AnalyserEquationAst::Type::ATANH) {
         code = generateOneParameterFunctionCode(mLockedProfile->atanhString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ASECH:
+    } else if (ast->type() == AnalyserEquationAst::Type::ASECH) {
         code = generateOneParameterFunctionCode(mLockedProfile->asechString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ACSCH:
+    } else if (ast->type() == AnalyserEquationAst::Type::ACSCH) {
         code = generateOneParameterFunctionCode(mLockedProfile->acschString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::ACOTH:
+    } else if (ast->type() == AnalyserEquationAst::Type::ACOTH) {
         code = generateOneParameterFunctionCode(mLockedProfile->acothString(), ast);
-
-        break;
-    case AnalyserEquationAst::Type::PIECEWISE: {
+    } else if (ast->type() == AnalyserEquationAst::Type::PIECEWISE) {
         auto astLeftChild = ast->leftChild();
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
             if (astRightChild->type() == AnalyserEquationAst::Type::PIECE) {
-                if (astLeftChild != nullptr) {
+                if VALID_SHARED_PTR (astLeftChild) {
                     code = generateCode(astLeftChild) + generatePiecewiseElseCode(generateCode(astRightChild) + generatePiecewiseElseCode(mLockedProfile->nanString()));
                 }
             } else {
-                if (astLeftChild != nullptr) {
+                if VALID_SHARED_PTR (astLeftChild) {
                     code = generateCode(astLeftChild) + generatePiecewiseElseCode(generateCode(astRightChild));
                 }
             }
         } else {
-            if (astLeftChild != nullptr) {
+            if VALID_SHARED_PTR (astLeftChild) {
                 code = generateCode(astLeftChild) + generatePiecewiseElseCode(mLockedProfile->nanString());
             }
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::PIECE: {
+    } else if (ast->type() == AnalyserEquationAst::Type::PIECE) {
         auto astLeftChild = ast->leftChild();
         auto astRightChild = ast->rightChild();
 
-        if (astLeftChild != nullptr) {
+        if VALID_SHARED_PTR (astLeftChild) {
             code = generatePiecewiseIfCode(generateCode(astRightChild), generateCode(astLeftChild));
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::OTHERWISE: {
+    } else if (ast->type() == AnalyserEquationAst::Type::OTHERWISE) {
         auto astLeftChild = ast->leftChild();
 
-        if (astLeftChild != nullptr) {
+        if VALID_SHARED_PTR (astLeftChild) {
             code = generateCode(astLeftChild);
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::CI: {
+    } else if (ast->type() == AnalyserEquationAst::Type::CI) {
         auto astVariable = ast->variable();
 
-        if (astVariable != nullptr) {
+        if VALID_SHARED_PTR (astVariable) {
             code = generateVariableNameCode(astVariable, ast);
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::CN:
+    } else if (ast->type() == AnalyserEquationAst::Type::CN) {
         code = generateDoubleCode(ast->value());
-
-        break;
-    case AnalyserEquationAst::Type::DEGREE:
-    case AnalyserEquationAst::Type::LOGBASE:
-    case AnalyserEquationAst::Type::BVAR: {
+    } else if ((ast->type() == AnalyserEquationAst::Type::DEGREE)
+               || (ast->type() == AnalyserEquationAst::Type::LOGBASE)
+               || (ast->type() == AnalyserEquationAst::Type::BVAR)) {
         auto astLeftChild = ast->leftChild();
 
-        if (astLeftChild != nullptr) {
+        if VALID_SHARED_PTR (astLeftChild) {
             code = generateCode(astLeftChild);
         }
-    }
-
-    break;
-    case AnalyserEquationAst::Type::TRUE:
+    } else if (ast->type() == AnalyserEquationAst::Type::TRUE) {
         code = mLockedProfile->trueString();
-
-        break;
-    case AnalyserEquationAst::Type::FALSE:
+    } else if (ast->type() == AnalyserEquationAst::Type::FALSE) {
         code = mLockedProfile->falseString();
-
-        break;
-    case AnalyserEquationAst::Type::E:
+    } else if (ast->type() == AnalyserEquationAst::Type::E) {
         code = mLockedProfile->eString();
-
-        break;
-    case AnalyserEquationAst::Type::PI:
+    } else if (ast->type() == AnalyserEquationAst::Type::PI) {
         code = mLockedProfile->piString();
-
-        break;
-    case AnalyserEquationAst::Type::INF:
+    } else if (ast->type() == AnalyserEquationAst::Type::INF) {
         code = mLockedProfile->infString();
-
-        break;
-    case AnalyserEquationAst::Type::NAN:
+    } else { // AnalyserEquationAst::Type::NAN.
         code = mLockedProfile->nanString();
-
-        break;
     }
 
     return code;
@@ -1600,7 +1466,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
     std::string res;
     auto initialisingVariable = variable->initialisingVariable();
 
-    if (initialisingVariable != nullptr) {
+    if VALID_SHARED_PTR (initialisingVariable) {
         std::string scalingFactorCode;
         auto scalingFactor = Generator::GeneratorImpl::scalingFactor(initialisingVariable);
 
@@ -1610,7 +1476,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
 
         auto variableVariable = variable->variable();
 
-        if (variableVariable != nullptr) {
+        if VALID_SHARED_PTR (variableVariable) {
             res = mLockedProfile->indentString() + generateVariableNameCode(variableVariable) + " = "
                   + scalingFactorCode + generateDoubleOrConstantVariableNameCode(initialisingVariable)
                   + mLockedProfile->commandSeparatorString() + "\n";
@@ -1644,24 +1510,24 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
             std::ostringstream index;
             auto variable = equation->variable();
-            VariablePtr variableVariable = nullptr;
 
-            if (variable != nullptr) {
+            if VALID_SHARED_PTR (variable) {
+                VariablePtr variableVariable = nullptr;
                 variableVariable = variable->variable();
-            }
 
-            if (variableVariable != nullptr) {
-                index << variable->index();
+                if VALID_SHARED_PTR (variableVariable) {
+                    index << variable->index();
 
-                res += mLockedProfile->indentString() + generateVariableNameCode(variableVariable) + " = "
-                       + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
-                                 "[INDEX]", index.str())
-                       + mLockedProfile->commandSeparatorString() + "\n";
+                    res += mLockedProfile->indentString() + generateVariableNameCode(variableVariable) + " = "
+                           + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
+                                     "[INDEX]", index.str())
+                           + mLockedProfile->commandSeparatorString() + "\n";
+                }
             }
         } else {
             auto ast = equation->ast();
 
-            if (ast != nullptr) {
+            if VALID_SHARED_PTR (ast) {
                 res += mLockedProfile->indentString() + generateCode(ast) + mLockedProfile->commandSeparatorString() + "\n";
             }
         }

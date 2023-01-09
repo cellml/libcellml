@@ -299,6 +299,7 @@ if(LIBCELLML_COVERAGE)
 endif()
 
 if(LIBCELLML_LLVM_COVERAGE)
+  add_compile_definitions(LLVM_COVERAGE)
   append_target_property(cellml COMPILE_FLAGS "-fprofile-instr-generate -fcoverage-mapping")
   append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate")
 endif()

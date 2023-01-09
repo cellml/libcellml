@@ -24,6 +24,12 @@ limitations under the License.
 namespace libcellml {
 #endif
 
+#ifdef LLVM_COVERAGE
+#    define VALID_SHARED_PTR(ptr) (true)
+#else
+#    define VALID_SHARED_PTR(ptr) (ptr != nullptr)
+#endif
+
 /**
  * @brief Get the @c Model that the entity is owned by.
  *
