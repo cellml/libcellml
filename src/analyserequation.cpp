@@ -19,6 +19,7 @@ limitations under the License.
 #include <algorithm>
 
 #include "analyserequation_p.h"
+#include "commonutils.h"
 
 namespace libcellml {
 
@@ -81,7 +82,7 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
     for (const auto &dependency : mPimpl->mDependencies) {
         auto dep = dependency.lock();
 
-        if (dep != nullptr) {
+        if VALID_SHARED_PTR (dep) {
             res.push_back(dep);
         }
     }

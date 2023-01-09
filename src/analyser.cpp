@@ -495,7 +495,7 @@ Analyser::AnalyserImpl::AnalyserImpl()
 
     auto profile = mGenerator->profile();
 
-    if (profile != nullptr) {
+    if VALID_SHARED_PTR (profile) {
         profile->setAbsoluteValueString("abs");
         profile->setNaturalLogarithmString("ln");
         profile->setCommonLogarithmString("log");
@@ -1182,11 +1182,11 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     auto astGreatGrandparent = (astGrandparent != nullptr) ? astGrandparent->parent() : nullptr;
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGrandparent != nullptr) && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        && (VALID_SHARED_PTR(astParent) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR))
+        && (VALID_SHARED_PTR(astGrandparent) && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::DIFF))) {
         auto astVariable = ast->variable();
 
-        if (astVariable != nullptr) {
+        if VALID_SHARED_PTR (astVariable) {
             internalVariable(astVariable)->makeVoi();
             // Note: we must make the variable a variable of integration in all
             //       cases (i.e. even if there is, for example, already another
@@ -1242,19 +1242,20 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             } else {
                 auto voiVariable = mModel->mPimpl->mVoi->variable();
 
-                if ((voiVariable != nullptr)
-                    && !mModel->areEquivalentVariables(astVariable, voiVariable)) {
-                    auto issue = Issue::IssueImpl::create();
+                if VALID_SHARED_PTR (voiVariable) {
+                    if (!mModel->areEquivalentVariables(astVariable, voiVariable)) {
+                        auto issue = Issue::IssueImpl::create();
 
-                    issue->mPimpl->setDescription("Variable '" + voiVariable->name()
-                                                  + "' in component '" + owningComponent(voiVariable)->name()
-                                                  + "' and variable '" + astVariable->name()
-                                                  + "' in component '" + owningComponent(astVariable)->name()
-                                                  + "' cannot both be the variable of integration.");
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
-                    issue->mPimpl->mItem->mPimpl->setVariable(astVariable);
+                        issue->mPimpl->setDescription("Variable '" + voiVariable->name()
+                                                      + "' in component '" + owningComponent(voiVariable)->name()
+                                                      + "' and variable '" + astVariable->name()
+                                                      + "' in component '" + owningComponent(astVariable)->name()
+                                                      + "' cannot both be the variable of integration.");
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
+                        issue->mPimpl->mItem->mPimpl->setVariable(astVariable);
 
-                    addIssue(issue);
+                        addIssue(issue);
+                    }
                 }
             }
         }
@@ -1263,15 +1264,15 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     // Make sure that we only use first-order ODEs.
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
-        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
-        && (astGrandparent != nullptr) && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGreatGrandparent != nullptr) && (astGreatGrandparent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        && (VALID_SHARED_PTR(astParent) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE))
+        && (VALID_SHARED_PTR(astGrandparent) && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::BVAR))
+        && (VALID_SHARED_PTR(astGreatGrandparent) && (astGreatGrandparent->mPimpl->mType == AnalyserEquationAst::Type::DIFF))) {
         double value = convertToDouble(ast->mPimpl->mValue);
 
         if (!areEqual(value, 1.0)) {
             auto variable = astGreatGrandparent->mPimpl->mOwnedRightChild->variable();
 
-            if (variable != nullptr) {
+            if VALID_SHARED_PTR (variable) {
                 auto issue = Issue::IssueImpl::create();
 
                 issue->mPimpl->setDescription("The differential equation for variable '" + variable->name()
@@ -1287,12 +1288,14 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     // Make a variable a state if it is used in an ODE.
 
-    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        auto astVariable = ast->variable();
+    if VALID_SHARED_PTR (astParent) {
+        if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
+            && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+            auto astVariable = ast->variable();
 
-        if (astVariable != nullptr) {
-            internalVariable(astVariable)->makeState();
+            if VALID_SHARED_PTR (astVariable) {
+                internalVariable(astVariable)->makeState();
+            }
         }
     }
 
@@ -1858,7 +1861,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
         auto units = mCiCnUnits[ast].lock();
 
-        if (units != nullptr) {
+        if VALID_SHARED_PTR (units) {
             auto model = owningModel(units);
 
             defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
@@ -2029,9 +2032,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
                 powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
-            } else {
-                // Root case.
-
+            } else { // AnalyserEquationAst::Type::ROOT.
                 if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
                     unitsMaps = rightUnitsMaps;
                     userUnitsMaps = rightUserUnitsMaps;
@@ -2162,7 +2163,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
         auto astParent = ast->parent();
 
-        if (astParent != nullptr) {
+        if VALID_SHARED_PTR (astParent) {
             if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
                 // We are dealing with a rate, so retrieve the scaling factor
                 // for its corresponding variable of integration and apply it,
@@ -2170,7 +2171,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
                 auto variable = astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable();
 
-                if (variable != nullptr) {
+                if VALID_SHARED_PTR (variable) {
                     auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(variable);
 
                     if (!areNearlyEqual(scalingFactor, 1.0)) {
@@ -2180,9 +2181,8 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
                         auto astGrandparent = astParent->parent();
 
-                        if (astGrandparent != nullptr) {
-                            if ((astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
-                                && (astGrandparent->mPimpl->mOwnedLeftChild == astParent)) {
+                        if VALID_SHARED_PTR (astGrandparent) {
+                            if (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT) {
                                 scaleAst(astGrandparent->mPimpl->mOwnedRightChild, astGrandparent, 1.0 / scalingFactor);
                             } else {
                                 scaleAst(astParent, astGrandparent, 1.0 / scalingFactor);
@@ -2202,14 +2202,14 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
                 auto astVariable = ast->variable();
 
-                if (astVariable != nullptr) {
+                if VALID_SHARED_PTR (astVariable) {
                     auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astVariable);
 
                     if (!areNearlyEqual(scalingFactor, 1.0)) {
                         if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
                             auto astGrandparent = astParent->parent();
 
-                            if (astGrandparent != nullptr) {
+                            if VALID_SHARED_PTR (astGrandparent) {
                                 scaleAst(astParent, astGrandparent, scalingFactor);
                             }
                         } else {
@@ -2279,7 +2279,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         for (const auto &externalVariable : mExternalVariables) {
             auto variable = externalVariable->variable();
 
-            if (variable != nullptr) {
+            if VALID_SHARED_PTR (variable) {
                 if (owningModel(variable) != model) {
                     auto issue = Issue::IssueImpl::create();
 
@@ -2562,7 +2562,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             type = AnalyserVariable::Type::COMPUTED_CONSTANT;
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC) {
             type = AnalyserVariable::Type::ALGEBRAIC;
-        } else {
+        } else { // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
             // This is the variable of integration, so skip it.
 
             continue;
@@ -2611,7 +2611,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             type = AnalyserEquation::Type::RATE;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
             type = AnalyserEquation::Type::ALGEBRAIC;
-        } else {
+        } else { // AnalyserEquation::Type::UNKNOWN.
             // The equation type is unknown, which means that it is a dummy
             // equation for a true (i.e. non-computed) constant (so that it
             // could have been marked as an external variable), so we skip it
@@ -2633,23 +2633,25 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             auto ast = internalEquation->mAst;
             auto astRightChild = ast->rightChild();
 
-            if (astRightChild != nullptr) {
+            if VALID_SHARED_PTR (astRightChild) {
                 if (astRightChild->type() == AnalyserEquationAst::Type::CI) {
                     auto astRightChildVariable = astRightChild->variable();
 
-                    if ((astRightChildVariable != nullptr)
-                        && (astRightChildVariable->name() == internalEquation->mVariable->mVariable->name())) {
-                        ast->swapLeftAndRightChildren();
+                    if VALID_SHARED_PTR (astRightChildVariable) {
+                        if (astRightChildVariable->name() == internalEquation->mVariable->mVariable->name()) {
+                            ast->swapLeftAndRightChildren();
+                        }
                     }
                 } else if (astRightChild->type() == AnalyserEquationAst::Type::DIFF) {
                     auto astRightChildRightChild = astRightChild->rightChild();
 
-                    if (astRightChildRightChild != nullptr) {
+                    if VALID_SHARED_PTR (astRightChildRightChild) {
                         auto astRightChildRightChildVariable = astRightChildRightChild->variable();
 
-                        if ((astRightChildRightChildVariable != nullptr)
-                            && (astRightChildRightChildVariable->name() == internalEquation->mVariable->mVariable->name())) {
-                            ast->swapLeftAndRightChildren();
+                        if VALID_SHARED_PTR (astRightChildRightChildVariable) {
+                            if (astRightChildRightChildVariable->name() == internalEquation->mVariable->mVariable->name()) {
+                                ast->swapLeftAndRightChildren();
+                            }
                         }
                     }
                 }
@@ -2670,7 +2672,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         for (const auto &variableDependency : variableDependencies) {
             auto equationDependency = equationMappings[variableDependency];
 
-            if (equationDependency != nullptr) {
+            if VALID_SHARED_PTR (equationDependency) {
                 equationDependencies.push_back(equationDependency);
             }
         }
@@ -2714,7 +2716,7 @@ std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl:
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
         auto variable = ev->variable();
 
-        return (variable != nullptr)
+        return VALID_SHARED_PTR(variable)
                && (owningModel(variable) == model)
                && (owningComponent(variable)->name() == componentName)
                && (variable->name() == variableName);
