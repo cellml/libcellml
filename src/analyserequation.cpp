@@ -80,11 +80,9 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
     std::vector<AnalyserEquationPtr> res;
 
     for (const auto &dependency : mPimpl->mDependencies) {
-        auto dep = dependency.lock();
+        // Note: see the llvm-cov section in src/README.rst.
 
-        if VALID_SHARED_PTR (dep) {
-            res.push_back(dep);
-        }
+        res.push_back(dependency.lock());
     }
 
     return res;

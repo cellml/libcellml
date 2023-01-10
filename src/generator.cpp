@@ -58,38 +58,32 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 
     AnalyserVariablePtr res;
     auto modelVoi = mLockedModel->voi();
-    VariablePtr modelVoiVariable = nullptr;
-
-    if (modelVoi != nullptr) {
-        modelVoiVariable = modelVoi->variable();
-    }
+    VariablePtr modelVoiVariable = (modelVoi != nullptr) ? modelVoi->variable() : nullptr;
 
     if ((modelVoiVariable != nullptr)
         && mLockedModel->areEquivalentVariables(variable, modelVoiVariable)) {
         res = modelVoi;
     } else {
         for (const auto &modelState : mLockedModel->states()) {
-            auto modelStateVariable = modelState->variable();
+            // Note: see the llvm-cov section in src/README.rst for
+            //       modelState->variable().
 
-            if VALID_SHARED_PTR (modelStateVariable) {
-                if (mLockedModel->areEquivalentVariables(variable, modelStateVariable)) {
-                    res = modelState;
+            if (mLockedModel->areEquivalentVariables(variable, modelState->variable())) {
+                res = modelState;
 
-                    break;
-                }
+                break;
             }
         }
 
         if (res == nullptr) {
             for (const auto &modelVariable : mLockedModel->variables()) {
-                auto modelVariableVariable = modelVariable->variable();
+                // Note: see the llvm-cov section in src/README.rst for
+                //       modelVariable->variable().
 
-                if VALID_SHARED_PTR (modelVariableVariable) {
-                    if (mLockedModel->areEquivalentVariables(variable, modelVariableVariable)) {
-                        res = modelVariable;
+                if (mLockedModel->areEquivalentVariables(variable, modelVariable->variable())) {
+                    res = modelVariable;
 
-                        break;
-                    }
+                    break;
                 }
             }
         }
@@ -101,15 +95,10 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) const
 {
     // Return the scaling factor for the given variable.
+    // Note: see the llvm-cov section in src/README.rst for
+    //       analyserVariable(variable)->variable().
 
-    auto res = 0.0;
-    auto analyserVariableVariable = analyserVariable(variable)->variable();
-
-    if VALID_SHARED_PTR (analyserVariableVariable) {
-        res = Units::scalingFactor(variable->units(), analyserVariableVariable->units());
-    }
-
-    return res;
+    return Units::scalingFactor(variable->units(), analyserVariable(variable)->variable()->units());
 }
 
 bool Generator::GeneratorImpl::isRelationalOperator(const AnalyserEquationAstPtr &ast) const
@@ -198,18 +187,17 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &unitsSize,
                                                        const AnalyserVariablePtr &variable) const
 {
+    // Note: see the llvm-cov section in src/README.rst for variableVariable.
+
     auto variableVariable = variable->variable();
+    auto variableComponentSize = owningComponent(variableVariable)->name().length() + 1;
+    auto variableNameSize = variableVariable->name().length() + 1;
+    auto variableUnitsSize = variableVariable->units()->name().length() + 1;
+    // Note: +1 to account for the end of string termination.
 
-    if VALID_SHARED_PTR (variableVariable) {
-        auto variableComponentSize = owningComponent(variableVariable)->name().length() + 1;
-        auto variableNameSize = variableVariable->name().length() + 1;
-        auto variableUnitsSize = variableVariable->units()->name().length() + 1;
-        // Note: +1 to account for the end of string termination.
-
-        componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
-        nameSize = (nameSize > variableNameSize) ? nameSize : variableNameSize;
-        unitsSize = (unitsSize > variableUnitsSize) ? unitsSize : variableUnitsSize;
-    }
+    componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
+    nameSize = (nameSize > variableNameSize) ? nameSize : variableNameSize;
+    unitsSize = (unitsSize > variableUnitsSize) ? unitsSize : variableUnitsSize;
 }
 
 bool Generator::GeneratorImpl::modifiedProfile() const
@@ -446,15 +434,16 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
                 infoElementsCode += mLockedProfile->arrayElementSeparatorString() + "\n";
             }
 
+            // Note: see the llvm-cov section in src/README.rst for
+            //       stateVariable.
+
             auto stateVariable = state->variable();
 
-            if VALID_SHARED_PTR (stateVariable) {
-                infoElementsCode += mLockedProfile->indentString()
-                                    + generateVariableInfoEntryCode(stateVariable->name(),
-                                                                    stateVariable->units()->name(),
-                                                                    owningComponent(stateVariable)->name(),
-                                                                    type);
-            }
+            infoElementsCode += mLockedProfile->indentString()
+                                + generateVariableInfoEntryCode(stateVariable->name(),
+                                                                stateVariable->units()->name(),
+                                                                owningComponent(stateVariable)->name(),
+                                                                type);
         }
 
         infoElementsCode += "\n";
@@ -495,16 +484,17 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
                 variableType = mLockedProfile->externalVariableTypeString();
             }
 
+            // Note: see the llvm-cov section in src/README.rst for
+            //       variableVariable.
+
             auto variableVariable = variable->variable();
 
-            if VALID_SHARED_PTR (variableVariable) {
-                infoElementsCode += mLockedProfile->indentString()
-                                    + replace(replace(replace(replace(mLockedProfile->variableInfoEntryString(),
-                                                                      "[NAME]", variableVariable->name()),
-                                                              "[UNITS]", variableVariable->units()->name()),
-                                                      "[COMPONENT]", owningComponent(variableVariable)->name()),
-                                              "[TYPE]", variableType);
-            }
+            infoElementsCode += mLockedProfile->indentString()
+                                + replace(replace(replace(replace(mLockedProfile->variableInfoEntryString(),
+                                                                  "[NAME]", variableVariable->name()),
+                                                          "[UNITS]", variableVariable->units()->name()),
+                                                  "[COMPONENT]", owningComponent(variableVariable)->name()),
+                                          "[TYPE]", variableType);
         }
 
         if (!infoElementsCode.empty()) {
@@ -808,312 +798,305 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                                                            const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the left and right branches of the given AST.
+    // Note: see the llvm-cov section in src/README.rst for astLeftChild and
+    //       astRightChild.
 
     std::string res;
     auto astLeftChild = ast->leftChild();
     auto astRightChild = ast->rightChild();
+    auto astLeftChildCode = generateCode(astLeftChild);
+    auto astRightChildCode = generateCode(astRightChild);
 
-    if ((astLeftChild != nullptr) && (astRightChild != nullptr)) {
-        auto astLeftChildCode = generateCode(astLeftChild);
-        auto astRightChildCode = generateCode(astRightChild);
+    // Determine whether parentheses should be added around the left and/or
+    // right piece of code, and this based on the precedence of the
+    // operators used in CellML, which are listed below from higher to lower
+    // precedence:
+    //  1. Parentheses                                           [Left to right]
+    //  2. POWER (as an operator, not as a function, i.e.        [Left to right]
+    //            as in Matlab and not in C, for example)
+    //  3. Unary PLUS, Unary MINUS, NOT                          [Right to left]
+    //  4. TIMES, DIVIDE                                         [Left to right]
+    //  5. PLUS, MINUS                                           [Left to right]
+    //  6. LT, LEQ, GT, GEQ                                      [Left to right]
+    //  7. EQ, NEQ                                               [Left to right]
+    //  8. XOR (bitwise)                                         [Left to right]
+    //  9. AND (logical)                                         [Left to right]
+    // 10. OR (logical)                                          [Left to right]
+    // 11. PIECEWISE (as an operator)                            [Right to left]
 
-        // Determine whether parentheses should be added around the left and/or
-        // right piece of code, and this based on the precedence of the
-        // operators used in CellML, which are listed below from higher to lower
-        // precedence:
-        //  1. Parentheses                                       [Left to right]
-        //  2. POWER (as an operator, not as a function, i.e.    [Left to right]
-        //            as in Matlab and not in C, for example)
-        //  3. Unary PLUS, Unary MINUS, NOT                      [Right to left]
-        //  4. TIMES, DIVIDE                                     [Left to right]
-        //  5. PLUS, MINUS                                       [Left to right]
-        //  6. LT, LEQ, GT, GEQ                                  [Left to right]
-        //  7. EQ, NEQ                                           [Left to right]
-        //  8. XOR (bitwise)                                     [Left to right]
-        //  9. AND (logical)                                     [Left to right]
-        // 10. OR (logical)                                      [Left to right]
-        // 11. PIECEWISE (as an operator)                        [Right to left]
-
-        if (isPlusOperator(ast)) {
-            if (isRelationalOperator(astLeftChild)
-                || isLogicalOperator(astLeftChild)
-                || isPiecewiseStatement(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            }
-
-            if (isRelationalOperator(astRightChild)
-                || isLogicalOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            }
-        } else if (isMinusOperator(ast)) {
-            if (isRelationalOperator(astLeftChild)
-                || isLogicalOperator(astLeftChild)
-                || isPiecewiseStatement(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            }
-
-            if (isRelationalOperator(astRightChild)
-                || isLogicalOperator(astRightChild)
-                || isMinusOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isPlusOperator(astRightChild)) {
-                if (astRightChild->rightChild() != nullptr) {
-                    astRightChildCode = "(" + astRightChildCode + ")";
-                }
-            }
-        } else if (isTimesOperator(ast)) {
-            if (isRelationalOperator(astLeftChild)
-                || isLogicalOperator(astLeftChild)
-                || isPiecewiseStatement(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isPlusOperator(astLeftChild)
-                       || isMinusOperator(astLeftChild)) {
-                if (astLeftChild->rightChild() != nullptr) {
-                    astLeftChildCode = "(" + astLeftChildCode + ")";
-                }
-            }
-
-            if (isRelationalOperator(astRightChild)
-                || isLogicalOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isPlusOperator(astRightChild)
-                       || isMinusOperator(astRightChild)) {
-                if (astRightChild->rightChild() != nullptr) {
-                    astRightChildCode = "(" + astRightChildCode + ")";
-                }
-            }
-        } else if (isDivideOperator(ast)) {
-            if (isRelationalOperator(astLeftChild)
-                || isLogicalOperator(astLeftChild)
-                || isPiecewiseStatement(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isPlusOperator(astLeftChild)
-                       || isMinusOperator(astLeftChild)) {
-                if (astLeftChild->rightChild() != nullptr) {
-                    astLeftChildCode = "(" + astLeftChildCode + ")";
-                }
-            }
-
-            if (isRelationalOperator(astRightChild)
-                || isLogicalOperator(astRightChild)
-                || isTimesOperator(astRightChild)
-                || isDivideOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isPlusOperator(astRightChild)
-                       || isMinusOperator(astRightChild)) {
-                if (astRightChild->rightChild() != nullptr) {
-                    astRightChildCode = "(" + astRightChildCode + ")";
-                }
-            }
-        } else if (isAndOperator(ast)) {
-            // Note: according to the precedence rules above, we only need to
-            //       add parentheses around OR and PIECEWISE. However, it looks
-            //       better/clearer to have some around some other operators
-            //       (agreed, this is somewhat subjective).
-
-            if (isRelationalOperator(astLeftChild)
-                || isOrOperator(astLeftChild)
-                || isXorOperator(astLeftChild)
-                || isPiecewiseStatement(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isPlusOperator(astLeftChild)
-                       || isMinusOperator(astLeftChild)) {
-                if (astLeftChild->rightChild() != nullptr) {
-                    astLeftChildCode = "(" + astLeftChildCode + ")";
-                }
-            } else if (isPowerOperator(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isRootOperator(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            }
-
-            if (isRelationalOperator(astRightChild)
-                || isOrOperator(astRightChild)
-                || isXorOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isPlusOperator(astRightChild)
-                       || isMinusOperator(astRightChild)) {
-                if (astRightChild->rightChild() != nullptr) {
-                    astRightChildCode = "(" + astRightChildCode + ")";
-                }
-            } else if (isPowerOperator(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isRootOperator(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            }
-        } else if (isOrOperator(ast)) {
-            // Note: according to the precedence rules above, we only need to
-            //       add parentheses around PIECEWISE. However, it looks
-            //       better/clearer to have some around some other operators
-            //       (agreed, this is somewhat subjective).
-
-            if (isRelationalOperator(astLeftChild)
-                || isAndOperator(astLeftChild)
-                || isXorOperator(astLeftChild)
-                || isPiecewiseStatement(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isPlusOperator(astLeftChild)
-                       || isMinusOperator(astLeftChild)) {
-                if (astLeftChild->rightChild() != nullptr) {
-                    astLeftChildCode = "(" + astLeftChildCode + ")";
-                }
-            } else if (isPowerOperator(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isRootOperator(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            }
-
-            if (isRelationalOperator(astRightChild)
-                || isAndOperator(astRightChild)
-                || isXorOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isPlusOperator(astRightChild)
-                       || isMinusOperator(astRightChild)) {
-                if (astRightChild->rightChild() != nullptr) {
-                    astRightChildCode = "(" + astRightChildCode + ")";
-                }
-            } else if (isPowerOperator(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isRootOperator(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            }
-        } else if (isXorOperator(ast)) {
-            // Note: according to the precedence rules above, we only need to
-            //       add parentheses around AND, OR and PIECEWISE. However, it
-            //       looks better/clearer to have some around some other
-            //       operators (agreed, this is somewhat subjective).
-
-            if (isRelationalOperator(astLeftChild)
-                || isAndOperator(astLeftChild)
-                || isOrOperator(astLeftChild)
-                || isPiecewiseStatement(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isPlusOperator(astLeftChild)
-                       || isMinusOperator(astLeftChild)) {
-                if (astLeftChild->rightChild() != nullptr) {
-                    astLeftChildCode = "(" + astLeftChildCode + ")";
-                }
-            } else if (isPowerOperator(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isRootOperator(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            }
-
-            if (isRelationalOperator(astRightChild)
-                || isAndOperator(astRightChild)
-                || isOrOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isPlusOperator(astRightChild)
-                       || isMinusOperator(astRightChild)) {
-                if (astRightChild->rightChild() != nullptr) {
-                    astRightChildCode = "(" + astRightChildCode + ")";
-                }
-            } else if (isPowerOperator(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isRootOperator(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            }
-        } else if (isPowerOperator(ast)) {
-            if (isRelationalOperator(astLeftChild)
-                || isLogicalOperator(astLeftChild)
-                || isMinusOperator(astLeftChild)
-                || isTimesOperator(astLeftChild)
-                || isDivideOperator(astLeftChild)
-                || isPiecewiseStatement(astLeftChild)) {
-                astLeftChildCode = "(" + astLeftChildCode + ")";
-            } else if (isPlusOperator(astLeftChild)) {
-                if (astLeftChild->rightChild() != nullptr) {
-                    astLeftChildCode = "(" + astLeftChildCode + ")";
-                }
-            }
-
-            if (isRelationalOperator(astRightChild)
-                || isLogicalOperator(astRightChild)
-                || isMinusOperator(astLeftChild)
-                || isTimesOperator(astRightChild)
-                || isDivideOperator(astRightChild)
-                || isPowerOperator(astRightChild)
-                || isRootOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isPlusOperator(astRightChild)) {
-                if (astRightChild->rightChild() != nullptr) {
-                    astRightChildCode = "(" + astRightChildCode + ")";
-                }
-            }
-        } else if (isRootOperator(ast)) {
-            if (isRelationalOperator(astRightChild)
-                || isLogicalOperator(astRightChild)
-                || isMinusOperator(astRightChild)
-                || isTimesOperator(astRightChild)
-                || isDivideOperator(astRightChild)
-                || isPiecewiseStatement(astRightChild)) {
-                astRightChildCode = "(" + astRightChildCode + ")";
-            } else if (isPlusOperator(astRightChild)) {
-                if (astRightChild->rightChild() != nullptr) {
-                    astRightChildCode = "(" + astRightChildCode + ")";
-                }
-            }
-
-            auto astLeftChildLeftChild = astLeftChild->leftChild();
-
-            if VALID_SHARED_PTR (astLeftChildLeftChild) {
-                if (isRelationalOperator(astLeftChildLeftChild)
-                    || isLogicalOperator(astLeftChildLeftChild)
-                    || isMinusOperator(astLeftChildLeftChild)
-                    || isTimesOperator(astLeftChildLeftChild)
-                    || isDivideOperator(astLeftChildLeftChild)
-                    || isPowerOperator(astLeftChildLeftChild)
-                    || isRootOperator(astLeftChildLeftChild)
-                    || isPiecewiseStatement(astLeftChildLeftChild)) {
-                    astLeftChildCode = "(" + astLeftChildCode + ")";
-                } else if (isPlusOperator(astLeftChildLeftChild)) {
-                    if (astLeftChildLeftChild->rightChild() != nullptr) {
-                        astLeftChildCode = "(" + astLeftChildCode + ")";
-                    }
-                }
-            }
-
-            return astRightChildCode + op + "(1.0/" + astLeftChildCode + ")";
+    if (isPlusOperator(ast)) {
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
         }
 
-        res = astLeftChildCode + op + astRightChildCode;
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        }
+    } else if (isMinusOperator(ast)) {
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        }
+
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isMinusOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
+            }
+        }
+    } else if (isTimesOperator(ast)) {
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
+            }
+        }
+
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
+            }
+        }
+    } else if (isDivideOperator(ast)) {
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
+            }
+        }
+
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isTimesOperator(astRightChild)
+            || isDivideOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
+            }
+        }
+    } else if (isAndOperator(ast)) {
+        // Note: according to the precedence rules above, we only need to
+        //       add parentheses around OR and PIECEWISE. However, it looks
+        //       better/clearer to have some around some other operators
+        //       (agreed, this is somewhat subjective).
+
+        if (isRelationalOperator(astLeftChild)
+            || isOrOperator(astLeftChild)
+            || isXorOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
+            }
+        } else if (isPowerOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isRootOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        }
+
+        if (isRelationalOperator(astRightChild)
+            || isOrOperator(astRightChild)
+            || isXorOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
+            }
+        } else if (isPowerOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isRootOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        }
+    } else if (isOrOperator(ast)) {
+        // Note: according to the precedence rules above, we only need to
+        //       add parentheses around PIECEWISE. However, it looks
+        //       better/clearer to have some around some other operators
+        //       (agreed, this is somewhat subjective).
+
+        if (isRelationalOperator(astLeftChild)
+            || isAndOperator(astLeftChild)
+            || isXorOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
+            }
+        } else if (isPowerOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isRootOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        }
+
+        if (isRelationalOperator(astRightChild)
+            || isAndOperator(astRightChild)
+            || isXorOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
+            }
+        } else if (isPowerOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isRootOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        }
+    } else if (isXorOperator(ast)) {
+        // Note: according to the precedence rules above, we only need to
+        //       add parentheses around AND, OR and PIECEWISE. However, it
+        //       looks better/clearer to have some around some other
+        //       operators (agreed, this is somewhat subjective).
+
+        if (isRelationalOperator(astLeftChild)
+            || isAndOperator(astLeftChild)
+            || isOrOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)
+                   || isMinusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
+            }
+        } else if (isPowerOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isRootOperator(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        }
+
+        if (isRelationalOperator(astRightChild)
+            || isAndOperator(astRightChild)
+            || isOrOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)
+                   || isMinusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
+            }
+        } else if (isPowerOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isRootOperator(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        }
+    } else if (isPowerOperator(ast)) {
+        if (isRelationalOperator(astLeftChild)
+            || isLogicalOperator(astLeftChild)
+            || isMinusOperator(astLeftChild)
+            || isTimesOperator(astLeftChild)
+            || isDivideOperator(astLeftChild)
+            || isPiecewiseStatement(astLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChild)) {
+            if (astLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
+            }
+        }
+
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isMinusOperator(astLeftChild)
+            || isTimesOperator(astRightChild)
+            || isDivideOperator(astRightChild)
+            || isPowerOperator(astRightChild)
+            || isRootOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
+            }
+        }
+    } else if (isRootOperator(ast)) {
+        if (isRelationalOperator(astRightChild)
+            || isLogicalOperator(astRightChild)
+            || isMinusOperator(astRightChild)
+            || isTimesOperator(astRightChild)
+            || isDivideOperator(astRightChild)
+            || isPiecewiseStatement(astRightChild)) {
+            astRightChildCode = "(" + astRightChildCode + ")";
+        } else if (isPlusOperator(astRightChild)) {
+            if (astRightChild->rightChild() != nullptr) {
+                astRightChildCode = "(" + astRightChildCode + ")";
+            }
+        }
+
+        // Note: see the llvm-cov section in src/README.rst for
+        //       astLeftChildLeftChild.
+
+        auto astLeftChildLeftChild = astLeftChild->leftChild();
+
+        if (isRelationalOperator(astLeftChildLeftChild)
+            || isLogicalOperator(astLeftChildLeftChild)
+            || isMinusOperator(astLeftChildLeftChild)
+            || isTimesOperator(astLeftChildLeftChild)
+            || isDivideOperator(astLeftChildLeftChild)
+            || isPowerOperator(astLeftChildLeftChild)
+            || isRootOperator(astLeftChildLeftChild)
+            || isPiecewiseStatement(astLeftChildLeftChild)) {
+            astLeftChildCode = "(" + astLeftChildCode + ")";
+        } else if (isPlusOperator(astLeftChildLeftChild)) {
+            if (astLeftChildLeftChild->rightChild() != nullptr) {
+                astLeftChildCode = "(" + astLeftChildCode + ")";
+            }
+        }
+
+        return astRightChildCode + op + "(1.0/" + astLeftChildCode + ")";
     }
 
-    return res;
+    return astLeftChildCode + op + astRightChildCode;
 }
 
 std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the left branch of the given AST.
+    // Note: see the llvm-cov section in src/README.rst for astLeftChild.
 
-    std::string res;
     auto astLeftChild = ast->leftChild();
+    auto code = generateCode(astLeftChild);
 
-    if VALID_SHARED_PTR (astLeftChild) {
-        auto code = generateCode(astLeftChild);
+    // Determine whether parentheses should be added around the left code.
 
-        // Determine whether parentheses should be added around the left code.
-
-        if (isRelationalOperator(astLeftChild)
-            || isLogicalOperator(astLeftChild)
-            || isPlusOperator(astLeftChild)
-            || isMinusOperator(astLeftChild)
-            || isPiecewiseStatement(astLeftChild)) {
-            code = "(" + code + ")";
-        }
-
-        res = mLockedProfile->minusString() + code;
+    if (isRelationalOperator(astLeftChild)
+        || isLogicalOperator(astLeftChild)
+        || isPlusOperator(astLeftChild)
+        || isMinusOperator(astLeftChild)
+        || isPiecewiseStatement(astLeftChild)) {
+        code = "(" + code + ")";
     }
 
-    return res;
+    return mLockedProfile->minusString() + code;
 }
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
@@ -1125,15 +1108,9 @@ std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std
 std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std::string &function,
                                                                        const AnalyserEquationAstPtr &ast) const
 {
-    std::string res;
-    auto astLeftChild = ast->leftChild();
-    auto astRightChild = ast->rightChild();
+    // Note: see the llvm-cov section in src/README.rst.
 
-    if VALID_SHARED_PTR (astLeftChild) {
-        res = function + "(" + generateCode(astLeftChild) + ", " + generateCode(astRightChild) + ")";
-    }
-
-    return res;
+    return function + "(" + generateCode(ast->leftChild()) + ", " + generateCode(ast->rightChild()) + ")";
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
@@ -1218,11 +1195,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         }
     } else if (ast->type() == AnalyserEquationAst::Type::NOT) {
         if (mLockedProfile->hasNotOperator()) {
-            auto astLeftChild = ast->leftChild();
+            // Note: see the llvm-cov section in src/README.rst for
+            //       ast->leftChild().
 
-            if VALID_SHARED_PTR (astLeftChild) {
-                code = mLockedProfile->notString() + generateCode(astLeftChild);
-            }
+            code = mLockedProfile->notString() + generateCode(ast->leftChild());
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->notString(), ast);
         }
@@ -1230,11 +1206,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mLockedProfile->plusString(), ast);
         } else {
-            auto astLeftChild = ast->leftChild();
+            // Note: see the llvm-cov section in src/README.rst for
+            //       ast->leftChild().
 
-            if VALID_SHARED_PTR (astLeftChild) {
-                code = generateCode(astLeftChild);
-            }
+            code = generateCode(ast->leftChild());
         }
     } else if (ast->type() == AnalyserEquationAst::Type::MINUS) {
         if (ast->rightChild() != nullptr) {
@@ -1247,60 +1222,59 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     } else if (ast->type() == AnalyserEquationAst::Type::DIVIDE) {
         code = generateOperatorCode(mLockedProfile->divideString(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::POWER) {
-        auto astRightChild = ast->rightChild();
+        // Note: see the llvm-cov section in src/README.rst for
+        //       ast->rightChild().
 
-        if VALID_SHARED_PTR (astRightChild) {
-            auto stringValue = generateCode(astRightChild);
-            bool validConversion;
-            double doubleValue = convertToDouble(stringValue, &validConversion);
+        auto stringValue = generateCode(ast->rightChild());
+        bool validConversion;
+        double doubleValue = convertToDouble(stringValue, &validConversion);
 
-            if (validConversion && areEqual(doubleValue, 0.5)) {
-                code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
-            } else if (validConversion && areEqual(doubleValue, 2.0)
-                       && !mLockedProfile->squareString().empty()) {
-                code = generateOneParameterFunctionCode(mLockedProfile->squareString(), ast);
-            } else {
-                auto astLeftChild = ast->leftChild();
+        if (validConversion && areEqual(doubleValue, 0.5)) {
+            code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
+        } else if (validConversion && areEqual(doubleValue, 2.0)
+                   && !mLockedProfile->squareString().empty()) {
+            code = generateOneParameterFunctionCode(mLockedProfile->squareString(), ast);
+        } else {
+            // Note: see the llvm-cov section in src/README.rst for
+            //       ast->leftChild().
 
-                if VALID_SHARED_PTR (astLeftChild) {
-                    code = mLockedProfile->hasPowerOperator() ?
-                               generateOperatorCode(mLockedProfile->powerString(), ast) :
-                               mLockedProfile->powerString() + "(" + generateCode(astLeftChild) + ", " + stringValue + ")";
-                }
-            }
+            code = mLockedProfile->hasPowerOperator() ?
+                       generateOperatorCode(mLockedProfile->powerString(), ast) :
+                       mLockedProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
         }
     } else if (ast->type() == AnalyserEquationAst::Type::ROOT) {
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
+            // Note: see the llvm-cov section in src/README.rst for
+            //       astLeftChild.
+
             auto astLeftChild = ast->leftChild();
 
-            if VALID_SHARED_PTR (astLeftChild) {
-                bool validConversion;
-                double doubleValue = convertToDouble(generateCode(astLeftChild), &validConversion);
+            bool validConversion;
+            double doubleValue = convertToDouble(generateCode(astLeftChild), &validConversion);
 
-                if (validConversion && areEqual(doubleValue, 2.0)) {
-                    code = mLockedProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
+            if (validConversion && areEqual(doubleValue, 2.0)) {
+                code = mLockedProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
+            } else {
+                if (mLockedProfile->hasPowerOperator()) {
+                    code = generateOperatorCode(mLockedProfile->powerString(), ast);
                 } else {
-                    if (mLockedProfile->hasPowerOperator()) {
-                        code = generateOperatorCode(mLockedProfile->powerString(), ast);
-                    } else {
-                        auto rootValueAst = AnalyserEquationAst::create();
+                    auto rootValueAst = AnalyserEquationAst::create();
 
-                        rootValueAst->setType(AnalyserEquationAst::Type::DIVIDE);
-                        rootValueAst->setParent(ast);
+                    rootValueAst->setType(AnalyserEquationAst::Type::DIVIDE);
+                    rootValueAst->setParent(ast);
 
-                        auto leftChild = AnalyserEquationAst::create();
+                    auto leftChild = AnalyserEquationAst::create();
 
-                        leftChild->setType(AnalyserEquationAst::Type::CN);
-                        leftChild->setValue("1.0");
-                        leftChild->setParent(rootValueAst);
+                    leftChild->setType(AnalyserEquationAst::Type::CN);
+                    leftChild->setValue("1.0");
+                    leftChild->setParent(rootValueAst);
 
-                        rootValueAst->setLeftChild(leftChild);
-                        rootValueAst->setRightChild(astLeftChild->leftChild());
+                    rootValueAst->setLeftChild(leftChild);
+                    rootValueAst->setRightChild(astLeftChild->leftChild());
 
-                        code = mLockedProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mLockedProfile->divideString(), rootValueAst) + ")";
-                    }
+                    code = mLockedProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mLockedProfile->divideString(), rootValueAst) + ")";
                 }
             }
         } else {
@@ -1316,18 +1290,17 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
-            auto astLeftChild = ast->leftChild();
+            // Note: see the llvm-cov section in src/README.rst for
+            //       ast->leftChild().
 
-            if VALID_SHARED_PTR (astLeftChild) {
-                auto stringValue = generateCode(astLeftChild);
-                bool validConversion;
-                double doubleValue = convertToDouble(stringValue, &validConversion);
+            auto stringValue = generateCode(ast->leftChild());
+            bool validConversion;
+            double doubleValue = convertToDouble(stringValue, &validConversion);
 
-                if (validConversion && areEqual(doubleValue, 10.0)) {
-                    code = mLockedProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
-                } else {
-                    code = mLockedProfile->naturalLogarithmString() + "(" + generateCode(astRightChild) + ")/" + mLockedProfile->naturalLogarithmString() + "(" + stringValue + ")";
-                }
+            if (validConversion && areEqual(doubleValue, 10.0)) {
+                code = mLockedProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
+            } else {
+                code = mLockedProfile->naturalLogarithmString() + "(" + generateCode(astRightChild) + ")/" + mLockedProfile->naturalLogarithmString() + "(" + stringValue + ")";
             }
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->commonLogarithmString(), ast);
@@ -1343,11 +1316,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     } else if (ast->type() == AnalyserEquationAst::Type::REM) {
         code = generateTwoParameterFunctionCode(mLockedProfile->remString(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::DIFF) {
-        auto astRightChild = ast->rightChild();
+        // Note: see the llvm-cov section in src/README.rst for
+        //       ast->rightChild().
 
-        if VALID_SHARED_PTR (astRightChild) {
-            code = generateCode(astRightChild);
-        }
+        code = generateCode(ast->rightChild());
     } else if (ast->type() == AnalyserEquationAst::Type::SIN) {
         code = generateOneParameterFunctionCode(mLockedProfile->sinString(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::COS) {
@@ -1397,53 +1369,44 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     } else if (ast->type() == AnalyserEquationAst::Type::ACOTH) {
         code = generateOneParameterFunctionCode(mLockedProfile->acothString(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::PIECEWISE) {
-        auto astLeftChild = ast->leftChild();
+        // Note: see the llvm-cov section in src/README.rst for
+        //       ast->leftChild().
+
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
             if (astRightChild->type() == AnalyserEquationAst::Type::PIECE) {
-                if VALID_SHARED_PTR (astLeftChild) {
-                    code = generateCode(astLeftChild) + generatePiecewiseElseCode(generateCode(astRightChild) + generatePiecewiseElseCode(mLockedProfile->nanString()));
-                }
+                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(astRightChild) + generatePiecewiseElseCode(mLockedProfile->nanString()));
             } else {
-                if VALID_SHARED_PTR (astLeftChild) {
-                    code = generateCode(astLeftChild) + generatePiecewiseElseCode(generateCode(astRightChild));
-                }
+                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(astRightChild));
             }
         } else {
-            if VALID_SHARED_PTR (astLeftChild) {
-                code = generateCode(astLeftChild) + generatePiecewiseElseCode(mLockedProfile->nanString());
-            }
+            code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mLockedProfile->nanString());
         }
     } else if (ast->type() == AnalyserEquationAst::Type::PIECE) {
-        auto astLeftChild = ast->leftChild();
-        auto astRightChild = ast->rightChild();
+        // Note: see the llvm-cov section in src/README.rst for
+        //       ast->leftChild() and ast->rightChild().
 
-        if VALID_SHARED_PTR (astLeftChild) {
-            code = generatePiecewiseIfCode(generateCode(astRightChild), generateCode(astLeftChild));
-        }
+        code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
     } else if (ast->type() == AnalyserEquationAst::Type::OTHERWISE) {
-        auto astLeftChild = ast->leftChild();
+        // Note: see the llvm-cov section in src/README.rst for
+        //       ast->leftChild().
 
-        if VALID_SHARED_PTR (astLeftChild) {
-            code = generateCode(astLeftChild);
-        }
+        code = generateCode(ast->leftChild());
     } else if (ast->type() == AnalyserEquationAst::Type::CI) {
-        auto astVariable = ast->variable();
+        // Note: see the llvm-cov section in src/README.rst for
+        //       ast->variable().
 
-        if VALID_SHARED_PTR (astVariable) {
-            code = generateVariableNameCode(astVariable, ast);
-        }
+        code = generateVariableNameCode(ast->variable(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::CN) {
         code = generateDoubleCode(ast->value());
     } else if ((ast->type() == AnalyserEquationAst::Type::DEGREE)
                || (ast->type() == AnalyserEquationAst::Type::LOGBASE)
                || (ast->type() == AnalyserEquationAst::Type::BVAR)) {
-        auto astLeftChild = ast->leftChild();
+        // Note: see the llvm-cov section in src/README.rst for
+        //       ast->leftChild().
 
-        if VALID_SHARED_PTR (astLeftChild) {
-            code = generateCode(astLeftChild);
-        }
+        code = generateCode(ast->leftChild());
     } else if (ast->type() == AnalyserEquationAst::Type::TRUE) {
         code = mLockedProfile->trueString();
     } else if (ast->type() == AnalyserEquationAst::Type::FALSE) {
@@ -1463,27 +1426,20 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
 {
-    std::string res;
+    // Note: see the llvm-cov section in src/README.rst for
+    //       initialisingVariable and variable->variable().
+
     auto initialisingVariable = variable->initialisingVariable();
+    auto scalingFactor = Generator::GeneratorImpl::scalingFactor(initialisingVariable);
+    std::string scalingFactorCode;
 
-    if VALID_SHARED_PTR (initialisingVariable) {
-        std::string scalingFactorCode;
-        auto scalingFactor = Generator::GeneratorImpl::scalingFactor(initialisingVariable);
-
-        if (!areNearlyEqual(scalingFactor, 1.0)) {
-            scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mLockedProfile->timesString();
-        }
-
-        auto variableVariable = variable->variable();
-
-        if VALID_SHARED_PTR (variableVariable) {
-            res = mLockedProfile->indentString() + generateVariableNameCode(variableVariable) + " = "
-                  + scalingFactorCode + generateDoubleOrConstantVariableNameCode(initialisingVariable)
-                  + mLockedProfile->commandSeparatorString() + "\n";
-        }
+    if (!areNearlyEqual(scalingFactor, 1.0)) {
+        scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mLockedProfile->timesString();
     }
 
-    return res;
+    return mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+           + scalingFactorCode + generateDoubleOrConstantVariableNameCode(initialisingVariable)
+           + mLockedProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
@@ -1508,28 +1464,23 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         }
 
         if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
+            // Note: see the llvm-cov section in src/README.rst for variable and
+            //       variable->variable().
+
             std::ostringstream index;
             auto variable = equation->variable();
 
-            if VALID_SHARED_PTR (variable) {
-                VariablePtr variableVariable = nullptr;
-                variableVariable = variable->variable();
+            index << variable->index();
 
-                if VALID_SHARED_PTR (variableVariable) {
-                    index << variable->index();
-
-                    res += mLockedProfile->indentString() + generateVariableNameCode(variableVariable) + " = "
-                           + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
-                                     "[INDEX]", index.str())
-                           + mLockedProfile->commandSeparatorString() + "\n";
-                }
-            }
+            res += mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+                   + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
+                             "[INDEX]", index.str())
+                   + mLockedProfile->commandSeparatorString() + "\n";
         } else {
-            auto ast = equation->ast();
+            // Note: see the llvm-cov section in src/README.rst for
+            //       equation->ast().
 
-            if VALID_SHARED_PTR (ast) {
-                res += mLockedProfile->indentString() + generateCode(ast) + mLockedProfile->commandSeparatorString() + "\n";
-            }
+            res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
         }
 
         remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
