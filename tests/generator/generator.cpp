@@ -2165,8 +2165,8 @@ TEST(Generator, coverage)
     EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(186), analyserModel->variableCount());
-    EXPECT_EQ(size_t(180), analyserModel->equationCount());
+    EXPECT_EQ(size_t(203), analyserModel->variableCount());
+    EXPECT_EQ(size_t(197), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(nullptr, analyserModel->voi()->equation());
@@ -2361,6 +2361,88 @@ TEST(Generator, coverage)
     // Generator::GeneratorImpl::retrieveLockedModelAndProfile().
 
     generator->setProfile(nullptr);
+
+    generator->implementationCode();
+
+    // Coverage for various profile settings.
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_component")->variable("eqnEq")));
+
+    analyser->analyseModel(model);
+
+    generator->setModel(analyser->model());
+    generator->setProfile(profile);
+
+    profile->setAcotFunctionString("");
+    profile->setAcothFunctionString("");
+    profile->setAcscFunctionString("");
+    profile->setAcschFunctionString("");
+    profile->setAsecFunctionString("");
+    profile->setAsechFunctionString("");
+    profile->setCommentString("");
+    profile->setCotFunctionString("");
+    profile->setCothFunctionString("");
+    profile->setCscFunctionString("");
+    profile->setCschFunctionString("");
+    profile->setExternalVariableMethodTypeDefinitionString(true, "");
+    profile->setHasConditionalOperator(true);
+    profile->setHasInterface(true);
+    profile->setHasPowerOperator(true);
+    profile->setHasXorOperator(true);
+    profile->setImplementationComputeComputedConstantsMethodString("");
+    profile->setImplementationComputeRatesMethodString(true, "");
+    profile->setImplementationHeaderString("[INTERFACE_FILE_NAME]");
+    profile->setImplementationInitialiseVariablesMethodString(true, true, "");
+    profile->setInterfaceFileNameString("");
+    profile->setInterfaceHeaderString("");
+    profile->setMaxFunctionString("");
+    profile->setMinFunctionString("");
+    profile->setSecFunctionString("");
+    profile->setSechFunctionString("");
+    profile->setVariableInfoEntryString("");
+
+    generator->interfaceCode();
+    generator->implementationCode();
+
+    profile->setArrayElementSeparatorString("");
+    profile->setCommentString("xxx");
+    profile->setOriginCommentString("");
+    profile->setVariableInfoEntryString("xxx");
+
+    generator->implementationCode();
+
+    profile->setArrayElementSeparatorString("xxx");
+    profile->setVariableOfIntegrationVariableTypeString("");
+
+    generator->implementationCode();
+
+    profile->setStateVariableTypeString("");
+    profile->setVariableOfIntegrationVariableTypeString("xxx");
+
+    generator->implementationCode();
+
+    profile->setConstantVariableTypeString("");
+    profile->setStateVariableTypeString("xxx");
+
+    generator->implementationCode();
+
+    profile->setComputedConstantVariableTypeString("");
+    profile->setConstantVariableTypeString("xxx");
+
+    generator->implementationCode();
+
+    profile->setComputedConstantVariableTypeString("xxx");
+    profile->setAlgebraicVariableTypeString("");
+
+    generator->implementationCode();
+
+    profile->setAlgebraicVariableTypeString("xxx");
+    profile->setExternalVariableTypeString("");
+
+    generator->implementationCode();
+
+    profile->setHasXorOperator(false);
+    profile->setXorFunctionString("");
 
     generator->implementationCode();
 }
