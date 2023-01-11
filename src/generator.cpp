@@ -76,16 +76,33 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         }
 
         if (res == nullptr) {
-            for (const auto &modelVariable : mLockedModel->variables()) {
+            // Normally, we would have:
+            //
+            //     for (const auto &modelVariable : mLockedModel->variables()) {
+            //         if (mLockedModel->areEquivalentVariables(variable, modelVariable->variable())) {
+            //             res = modelVariable;
+            //
+            //             break;
+            //         }
+            //     }
+            //
+            // but we always have variables, so llvm-cov will complain that the
+            // false branch of our for loop is never reached. The below code is
+            // a bit more verbose but at least it makes llvm-cov happy.
+
+            auto modelVariables = mLockedModel->variables();
+            auto modelVariable = modelVariables.begin();
+
+            do {
                 // Note: see the llvm-cov section in src/README.rst for
                 //       modelVariable->variable().
 
-                if (mLockedModel->areEquivalentVariables(variable, modelVariable->variable())) {
-                    res = modelVariable;
-
-                    break;
+                if (mLockedModel->areEquivalentVariables(variable, (*modelVariable)->variable())) {
+                    res = *modelVariable;
+                } else {
+                    ++modelVariable;
                 }
-            }
+            } while (res == nullptr);
         }
     }
 
@@ -480,7 +497,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
                 variableType = mLockedProfile->computedConstantVariableTypeString();
             } else if (variable->type() == AnalyserVariable::Type::ALGEBRAIC) {
                 variableType = mLockedProfile->algebraicVariableTypeString();
-            } else if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
+            } else { // AnalyserVariable::Type::EXTERNAL.
                 variableType = mLockedProfile->externalVariableTypeString();
             }
 
@@ -1134,6 +1151,8 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
 std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the given AST.
+    // Note: we don't handle the case of AnalyserEquationAst::Type::BVAR since
+    //       we don't need to generate any code for it.
 
     std::string code;
 
@@ -1401,8 +1420,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     } else if (ast->type() == AnalyserEquationAst::Type::CN) {
         code = generateDoubleCode(ast->value());
     } else if ((ast->type() == AnalyserEquationAst::Type::DEGREE)
-               || (ast->type() == AnalyserEquationAst::Type::LOGBASE)
-               || (ast->type() == AnalyserEquationAst::Type::BVAR)) {
+               || (ast->type() == AnalyserEquationAst::Type::LOGBASE)) {
         // Note: see the llvm-cov section in src/README.rst for
         //       ast->leftChild().
 
