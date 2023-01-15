@@ -821,9 +821,8 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     auto astRightChildCode = generateCode(astRightChild);
 
     // Determine whether parentheses should be added around the left and/or
-    // right piece of code, and this based on the precedence of the
-    // operators used in CellML, which are listed below from higher to lower
-    // precedence:
+    // right piece of code, and this based on the precedence of the operators
+    // used in CellML, which are listed below from higher to lower precedence:
     //  1. Parentheses                                           [Left to right]
     //  2. POWER (as an operator, not as a function, i.e.        [Left to right]
     //            as in Matlab and not in C, for example)
