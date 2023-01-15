@@ -228,11 +228,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
 std::string Generator::GeneratorImpl::newLineIfNeeded()
 {
-    if (!mCode.empty()) {
-        return "\n";
-    }
-
-    return {};
+    return mCode.empty() ? "" : "\n";
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode()
