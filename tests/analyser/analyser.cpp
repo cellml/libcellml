@@ -983,8 +983,6 @@ TEST(Analyser, coverage)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("analyser/coverage.cellml"));
-    printIssues(parser);
 
     analyser->analyseModel(model);
-    printIssues(analyser);
 }
