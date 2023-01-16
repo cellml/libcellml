@@ -381,9 +381,6 @@ public:
     static bool compareEquationsByVariable(const AnalyserInternalEquationPtr &equation1,
                                            const AnalyserInternalEquationPtr &equation2);
 
-    size_t mathmlChildCount(const XmlNodePtr &node) const;
-    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
-
     AnalyserInternalVariablePtr internalVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
@@ -558,44 +555,6 @@ bool Analyser::AnalyserImpl::compareEquationsByVariable(const AnalyserInternalEq
                                                         const AnalyserInternalEquationPtr &equation2)
 {
     return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
-}
-
-size_t Analyser::AnalyserImpl::mathmlChildCount(const XmlNodePtr &node) const
-{
-    // Return the number of child elements, in the MathML namespace, for the
-    // given node.
-
-    auto childNode = node->firstChild();
-    size_t res = 0;
-
-    while (childNode != nullptr) {
-        if (childNode->isMathmlElement()) {
-            ++res;
-        }
-        childNode = childNode->next();
-    }
-
-    return res;
-}
-
-XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
-                                                   size_t index) const
-{
-    // Return the nth child element of the given node, skipping anything that is
-    // not in the MathML namespace.
-
-    auto res = node->firstChild();
-    auto childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
-
-    while ((res != nullptr) && (childNodeIndex != index)) {
-        res = res->next();
-
-        if (res && res->isMathmlElement()) {
-            ++childNodeIndex;
-        }
-    }
-
-    return res;
 }
 
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)

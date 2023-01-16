@@ -33,6 +33,14 @@ limitations under the License.
 #include "generatorprofiletools.h"
 #include "utilities.h"
 
+#ifdef TRUE
+#    undef TRUE
+#endif
+
+#ifdef FALSE
+#    undef FALSE
+#endif
+
 #ifdef NAN
 #    undef NAN
 #endif
