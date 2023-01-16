@@ -231,6 +231,7 @@ void expectEqualIssuesSpecificationHeadingsUrls(const std::vector<std::string> &
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     EXPECT_EQ(specificationHeadings.size(), logger->issueCount());
+    EXPECT_EQ(urls.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
         EXPECT_EQ(specificationHeadings.at(i), logger->issue(i)->referenceHeading());
@@ -248,6 +249,8 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
     EXPECT_EQ(issues.size(), logger->issueCount());
     EXPECT_EQ(cellmlElementTypes.size(), logger->issueCount());
     EXPECT_EQ(levels.size(), logger->issueCount());
+    EXPECT_EQ(referenceRules.size(), logger->issueCount());
+    EXPECT_EQ(urls.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
         EXPECT_EQ(cellmlElementTypes.at(i), logger->issue(i)->item()->type());
