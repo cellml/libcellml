@@ -21,6 +21,7 @@ limitations under the License.
 #include <string>
 
 #include "namespaces.h"
+#include "utilities.h"
 #include "xmlattribute.h"
 
 namespace libcellml {
@@ -209,6 +210,15 @@ bool XmlNode::isText() const
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
 }
 
+bool XmlNode::isNumber() const
+{
+    bool validConversion;
+
+    convertToDouble(convertToStrippedString(), &validConversion);
+
+    return validConversion;
+}
+
 bool XmlNode::isComment() const
 {
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
@@ -262,6 +272,11 @@ XmlAttributePtr XmlNode::firstAttribute() const
         attributeHandle->setXmlAttribute(attribute);
     }
     return attributeHandle;
+}
+
+bool XmlNode::is(const XmlNodePtr &node) const
+{
+    return mPimpl->mXmlNodePtr == node->mPimpl->mXmlNodePtr;
 }
 
 XmlNodePtr XmlNode::firstChild() const

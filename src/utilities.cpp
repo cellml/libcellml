@@ -1201,4 +1201,68 @@ std::string formDescriptionOfCyclicDependency(const History &history, const std:
     return msgHeader + msgHistory;
 }
 
+size_t nonCommentChildCount(const XmlNodePtr &node)
+{
+    size_t res = 0;
+    auto childNode = node->firstChild();
+
+    while (childNode != nullptr) {
+        if (!childNode->isComment()) {
+            ++res;
+        }
+
+        childNode = childNode->next();
+    }
+
+    return res;
+}
+
+XmlNodePtr nonCommentChildNode(const XmlNodePtr &node, size_t index)
+{
+    auto res = node->firstChild();
+    auto childNodeIndex = (res->isText() || res->isMathmlElement()) ? 0 : MAX_SIZE_T;
+
+    while ((res != nullptr) && (childNodeIndex != index)) {
+        res = res->next();
+
+        if ((res != nullptr) && !res->isComment()) {
+            ++childNodeIndex;
+        }
+    }
+
+    return res;
+}
+
+size_t mathmlChildCount(const XmlNodePtr &node)
+{
+    size_t res = 0;
+    auto childNode = node->firstChild();
+
+    while (childNode != nullptr) {
+        if (childNode->isMathmlElement()) {
+            ++res;
+        }
+
+        childNode = childNode->next();
+    }
+
+    return res;
+}
+
+XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
+{
+    auto res = node->firstChild();
+    auto childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
+
+    while ((res != nullptr) && (childNodeIndex != index)) {
+        res = res->next();
+
+        if ((res != nullptr) && res->isMathmlElement()) {
+            ++childNodeIndex;
+        }
+    }
+
+    return res;
+}
+
 } // namespace libcellml
