@@ -2102,8 +2102,6 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
 
         // Token elements.
 
-        //---GRY--- TO BE DONE...
-
     } else if (node->isMathmlElement("ci")) {
         auto ok = (nonCommentChildCount(node) != 1) ? false : !nonCommentChildNode(node, 0)->convertToStrippedString().empty();
 
