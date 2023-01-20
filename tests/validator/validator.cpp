@@ -3611,11 +3611,13 @@ TEST(Validator, invalidMathMLElementsChildrenOrSiblings)
         "Math has a 'cn' element which is not in base 10.",
         "Math has a 'cn' element which is not of 'real' or 'e-notation' type.",
         "Math has a 'cn' element of 'real' type with no text node (representing a number) as a child.",
-        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children.",
-        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children.",
-        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children.",
-        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children.",
-        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children.",
+        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
+        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
+        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
+        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
+        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
+        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
+        "Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
         "Math has a 'degree' element without one or two MathML siblings.",
         "Math has a 'degree' element which is not the second MathML sibling.",
         "Math has a 'degree' element without a MathML child.",
@@ -3642,7 +3644,7 @@ TEST(Validator, invalidMathMLElementsChildrenOrSiblings)
     };
 
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("invalidmathmlelements.cellml"));
+    auto model = parser->parseModel(fileContents("invalidmathmlelementschildrenorsiblings.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
