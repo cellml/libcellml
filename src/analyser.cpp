@@ -922,8 +922,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         if (node->parent()->firstChild()->isMathmlElement("diff")) {
             equation->addOdeVariable(internalVariable(variable));
-        } else if (!(node->parent()->isMathmlElement("bvar")
-                     && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
+        } else if (!node->parent()->isMathmlElement("bvar")) {
             equation->addVariable(internalVariable(variable));
         }
 
@@ -1142,8 +1141,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     auto astGreatGrandparent = (astGrandparent != nullptr) ? astGrandparent->parent() : nullptr;
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)) {
         // Note: see the llvm-cov section in src/README.rst for astVariable.
 
         auto astVariable = ast->variable();
@@ -1225,8 +1223,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
         && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
-        && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGreatGrandparent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)) {
         double value = convertToDouble(ast->mPimpl->mValue);
 
         if (!areEqual(value, 1.0)) {
