@@ -661,12 +661,20 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- cn -->
             <apply>
+                <!-- 'cn' element in base 10. -->
+                <cn cellml:units="dimensionless" base="10">1</cn>
+            </apply>
+            <apply>
                 <!-- 'cn' element not in base 10. -->
                 <cn cellml:units="dimensionless" base="16">A</cn>
             </apply>
             <apply>
                 <!-- 'cn' element not of 'real' or 'e-notation' type. -->
                 <cn cellml:units="dimensionless" type="integer">3</cn>
+            </apply>
+            <apply>
+                <!-- 'cn' element of real type. -->
+                <cn cellml:units="dimensionless" type="real">1</cn>
             </apply>
             <apply>
                 <!-- 'cn' element of 'real' type with no text node (representing a number) as a child. -->
@@ -677,33 +685,51 @@
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children. -->
+                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">3</cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children. -->
+                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     <sep/>
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children. -->
+                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     Three
                     <sep/>
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children. -->
+                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     <sep/>
                     Five
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children. -->
+                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     Three
+                    <sep/>
+                    5
+                </cn>
+            </apply>
+            <apply>
+                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <cn cellml:units="dimensionless" type="e-notation">
+                    3
+                    <!-- Separator. -->
+                    5
+                    <!-- Separator. -->
+                    7
+                </cn>
+            </apply>
+            <apply>
+                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <cn cellml:units="dimensionless" type="e-notation">
+                    3
                     <sep/>
                     Five
                 </cn>

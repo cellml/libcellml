@@ -2147,7 +2147,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
             }
 
             if (!ok) {
-                addMathMLIssue("Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and no text node (representing a number) as children.",
+                addMathMLIssue("Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
                                Issue::ReferenceRule::MATH_CN_FORMAT,
                                component);
             }
