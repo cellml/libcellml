@@ -16,7 +16,10 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 
+#include <algorithm>
+
 #include "analyserequation_p.h"
+#include "commonutils.h"
 
 namespace libcellml {
 
@@ -35,17 +38,21 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
     mVariable = variable;
 }
 
-void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
+bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    std::vector<AnalyserEquationWeakPtr> dependencies;
+    auto res = true;
+    auto dep = dependency.lock();
 
-    for (const auto &dependency : mDependencies) {
-        if (dependency.lock()->variable() != nullptr) {
-            dependencies.push_back(dependency);
-        }
+    if (dep != nullptr) {
+        res = dep->variable() == nullptr;
     }
 
-    mDependencies = dependencies;
+    return res;
+}
+
+void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
+{
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isEmptyDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
@@ -73,6 +80,8 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
     std::vector<AnalyserEquationPtr> res;
 
     for (const auto &dependency : mPimpl->mDependencies) {
+        // Note: see the llvm-cov section in src/README.rst.
+
         res.push_back(dependency.lock());
     }
 

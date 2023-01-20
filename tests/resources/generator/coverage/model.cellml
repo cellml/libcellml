@@ -17,9 +17,13 @@
         <variable name="eqnNeq" units="dimensionless"/>
         <variable name="eqnNeqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnLt" units="dimensionless"/>
+        <variable name="eqnLtCoverageParentheses" units="dimensionless"/>
         <variable name="eqnLeq" units="dimensionless"/>
+        <variable name="eqnLeqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnGt" units="dimensionless"/>
+        <variable name="eqnGtCoverageParentheses" units="dimensionless"/>
         <variable name="eqnGeq" units="dimensionless"/>
+        <variable name="eqnGeqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnAnd" units="dimensionless"/>
         <variable name="eqnAndMultiple" units="dimensionless"/>
         <variable name="eqnAndParentheses" units="dimensionless"/>
@@ -35,6 +39,7 @@
         <variable name="eqnAndParenthesesRightMinusWithout" units="dimensionless"/>
         <variable name="eqnAndParenthesesRightPower" units="dimensionless"/>
         <variable name="eqnAndParenthesesRightRoot" units="dimensionless"/>
+        <variable name="eqnAndCoverageParentheses" units="dimensionless"/>
         <variable name="eqnOr" units="dimensionless"/>
         <variable name="eqnOrMultiple" units="dimensionless"/>
         <variable name="eqnOrParentheses" units="dimensionless"/>
@@ -50,6 +55,7 @@
         <variable name="eqnOrParenthesesRightMinusWithout" units="dimensionless"/>
         <variable name="eqnOrParenthesesRightPower" units="dimensionless"/>
         <variable name="eqnOrParenthesesRightRoot" units="dimensionless"/>
+        <variable name="eqnOrCoverageParentheses" units="dimensionless"/>
         <variable name="eqnXor" units="dimensionless"/>
         <variable name="eqnXorMultiple" units="dimensionless"/>
         <variable name="eqnXorParentheses" units="dimensionless"/>
@@ -65,6 +71,7 @@
         <variable name="eqnXorParenthesesRightMinusWithout" units="dimensionless"/>
         <variable name="eqnXorParenthesesRightPower" units="dimensionless"/>
         <variable name="eqnXorParenthesesRightRoot" units="dimensionless"/>
+        <variable name="eqnXorCoverageParentheses" units="dimensionless"/>
         <variable name="eqnNot" units="dimensionless"/>
         <variable name="eqnPlus" units="dimensionless"/>
         <variable name="eqnPlusMultiple" units="dimensionless"/>
@@ -191,6 +198,16 @@
         <variable name="eqnPi" units="dimensionless"/>
         <variable name="eqnInfinity" units="dimensionless"/>
         <variable name="eqnNotanumber" units="dimensionless"/>
+        <variable name="eqnCoverageForPlusOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForMinusOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForTimesOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForDivideOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForAndOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForOrOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForXorOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForPowerOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForRootOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForMinusUnary" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
         <variable initial_value="3" name="o" units="dimensionless"/>
@@ -270,6 +287,19 @@
                     <ci>n</ci>
                 </apply>
             </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLtCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <lt/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
         </math>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
@@ -279,6 +309,19 @@
                     <leq/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLeqCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <leq/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
                 </apply>
             </apply>
         </math>
@@ -292,6 +335,19 @@
                     <ci>n</ci>
                 </apply>
             </apply>
+            <apply>
+                <eq/>
+                <ci>eqnGtCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <gt/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
         </math>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
@@ -301,6 +357,19 @@
                     <geq/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnGeqCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <geq/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
                 </apply>
             </apply>
         </math>
@@ -541,6 +610,19 @@
                         <degree>
                             <ci>p</ci>
                         </degree>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAndCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <and/>
+                        <ci>n</ci>
                         <ci>o</ci>
                     </apply>
                 </apply>
@@ -787,6 +869,19 @@
                     </apply>
                 </apply>
             </apply>
+            <apply>
+                <eq/>
+                <ci>eqnOrCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <or/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
         </math>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
@@ -1025,6 +1120,19 @@
                         <degree>
                             <ci>p</ci>
                         </degree>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <xor/>
+                        <ci>n</ci>
                         <ci>o</ci>
                     </apply>
                 </apply>
@@ -1574,12 +1682,12 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
                     <apply>
-                        <gt/>
+                        <geq/>
                         <ci>o</ci>
                         <ci>p</ci>
                     </apply>
@@ -1596,7 +1704,7 @@
                         <ci>n</ci>
                     </apply>
                     <apply>
-                        <gt/>
+                        <geq/>
                         <ci>o</ci>
                         <ci>p</ci>
                     </apply>
@@ -1612,7 +1720,7 @@
                         <ci>m</ci>
                     </apply>
                     <apply>
-                        <gt/>
+                        <geq/>
                         <ci>n</ci>
                         <ci>o</ci>
                     </apply>
@@ -1629,7 +1737,7 @@
                         <ci>n</ci>
                     </apply>
                     <apply>
-                        <gt/>
+                        <geq/>
                         <ci>o</ci>
                         <ci>p</ci>
                     </apply>
@@ -1645,7 +1753,7 @@
                         <ci>m</ci>
                     </apply>
                     <apply>
-                        <gt/>
+                        <geq/>
                         <ci>n</ci>
                         <ci>o</ci>
                     </apply>
@@ -1662,7 +1770,7 @@
                         <ci>n</ci>
                     </apply>
                     <apply>
-                        <gt/>
+                        <geq/>
                         <ci>o</ci>
                         <ci>p</ci>
                     </apply>
@@ -1679,7 +1787,7 @@
                         <ci>n</ci>
                     </apply>
                     <apply>
-                        <gt/>
+                        <geq/>
                         <ci>o</ci>
                         <ci>p</ci>
                     </apply>
@@ -1691,7 +1799,7 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
@@ -1708,7 +1816,7 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
@@ -1724,7 +1832,7 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
@@ -1741,7 +1849,7 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
@@ -1757,7 +1865,7 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
@@ -1774,7 +1882,7 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
@@ -1791,7 +1899,7 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
@@ -1808,7 +1916,7 @@
                 <apply>
                     <power/>
                     <apply>
-                        <lt/>
+                        <leq/>
                         <ci>m</ci>
                         <ci>n</ci>
                     </apply>
@@ -2741,6 +2849,494 @@
                 <eq/>
                 <ci>eqnNotanumber</ci>
                 <notanumber/>
+            </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForPlusOperator</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <plus/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <ci>q</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <and/>
+                        <ci>r</ci>
+                        <ci>s</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForMinusOperator</ci>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <minus/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <apply>
+                                <minus/>
+                                <ci>q</ci>
+                                <piecewise>
+                                    <piece>
+                                        <ci>n</ci>
+                                        <apply>
+                                            <gt/>
+                                            <ci>o</ci>
+                                            <ci>p</ci>
+                                        </apply>
+                                    </piece>
+                                </piecewise>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <and/>
+                        <ci>r</ci>
+                        <ci>s</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForTimesOperator</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <apply>
+                                <times/>
+                                <ci>q</ci>
+                                <piecewise>
+                                    <piece>
+                                        <ci>n</ci>
+                                        <apply>
+                                            <gt/>
+                                            <ci>o</ci>
+                                            <ci>p</ci>
+                                        </apply>
+                                    </piece>
+                                </piecewise>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <and/>
+                        <ci>r</ci>
+                        <ci>s</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForDivideOperator</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <and/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <divide/>
+                        <piecewise>
+                            <piece>
+                                <ci>n</ci>
+                                <apply>
+                                    <gt/>
+                                    <ci>o</ci>
+                                    <ci>p</ci>
+                                </apply>
+                            </piece>
+                        </piecewise>
+                        <apply>
+                            <divide/>
+                            <ci>q</ci>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForAndOperator</ci>
+                <apply>
+                    <and/>
+                    <apply>
+                        <or/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <and/>
+                        <apply>
+                            <xor/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <and/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <apply>
+                                <and/>
+                                <apply>
+                                    <and/>
+                                    <apply>
+                                        <and/>
+                                        <ci>q</ci>
+                                        <piecewise>
+                                            <piece>
+                                                <ci>n</ci>
+                                                <apply>
+                                                    <gt/>
+                                                    <ci>o</ci>
+                                                    <ci>p</ci>
+                                                </apply>
+                                            </piece>
+                                        </piecewise>
+                                    </apply>
+                                    <apply>
+                                        <xor/>
+                                        <ci>m</ci>
+                                        <ci>n</ci>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <or/>
+                                    <ci>m</ci>
+                                    <ci>n</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForOrOperator</ci>
+                <apply>
+                    <or/>
+                    <apply>
+                        <and/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <or/>
+                        <apply>
+                            <xor/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <or/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <apply>
+                                <or/>
+                                <apply>
+                                    <or/>
+                                    <apply>
+                                        <or/>
+                                        <ci>q</ci>
+                                        <piecewise>
+                                            <piece>
+                                                <ci>n</ci>
+                                                <apply>
+                                                    <gt/>
+                                                    <ci>o</ci>
+                                                    <ci>p</ci>
+                                                </apply>
+                                            </piece>
+                                        </piecewise>
+                                    </apply>
+                                    <apply>
+                                        <xor/>
+                                        <ci>m</ci>
+                                        <ci>n</ci>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <and/>
+                                    <ci>m</ci>
+                                    <ci>n</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForXorOperator</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <and/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <xor/>
+                        <apply>
+                            <or/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <xor/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <apply>
+                                <xor/>
+                                <apply>
+                                    <xor/>
+                                    <apply>
+                                        <xor/>
+                                        <ci>q</ci>
+                                        <piecewise>
+                                            <piece>
+                                                <ci>n</ci>
+                                                <apply>
+                                                    <gt/>
+                                                    <ci>o</ci>
+                                                    <ci>p</ci>
+                                                </apply>
+                                            </piece>
+                                        </piecewise>
+                                    </apply>
+                                    <apply>
+                                        <or/>
+                                        <ci>m</ci>
+                                        <ci>n</ci>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <and/>
+                                    <ci>m</ci>
+                                    <ci>n</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForPowerOperator</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <and/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <power/>
+                        <piecewise>
+                            <piece>
+                                <ci>n</ci>
+                                <apply>
+                                    <gt/>
+                                    <ci>o</ci>
+                                    <ci>p</ci>
+                                </apply>
+                            </piece>
+                        </piecewise>
+                        <apply>
+                            <power/>
+                            <apply>
+                                <power/>
+                                <ci>q</ci>
+                                <piecewise>
+                                    <piece>
+                                        <ci>n</ci>
+                                        <apply>
+                                            <gt/>
+                                            <ci>o</ci>
+                                            <ci>p</ci>
+                                        </apply>
+                                    </piece>
+                                </piecewise>
+                            </apply>
+                            <apply>
+                                <and/>
+                                <ci>m</ci>
+                                <ci>n</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForRootOperator</ci>
+                <apply>
+                    <root/>
+                    <degree>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </degree>
+                    <apply>
+                        <root/>
+                        <degree>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                        </degree>
+                        <apply>
+                            <root/>
+                            <degree>
+                                <apply>
+                                    <root/>
+                                    <degree>
+                                        <ci>q</ci>
+                                    </degree>
+                                    <piecewise>
+                                        <piece>
+                                            <ci>n</ci>
+                                            <apply>
+                                                <gt/>
+                                                <ci>o</ci>
+                                                <ci>p</ci>
+                                            </apply>
+                                        </piece>
+                                    </piecewise>
+                                </apply>
+                            </degree>
+                            <apply>
+                                <and/>
+                                <ci>m</ci>
+                                <ci>n</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForMinusUnary</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <piecewise>
+                            <piece>
+                                <ci>n</ci>
+                                <apply>
+                                    <gt/>
+                                    <ci>o</ci>
+                                    <ci>p</ci>
+                                </apply>
+                            </piece>
+                        </piecewise>
+                    </apply>
+                </apply>
             </apply>
         </math>
     </component>

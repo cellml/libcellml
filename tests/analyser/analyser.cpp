@@ -509,8 +509,11 @@ TEST(Analyser, removeExternalVariableByName)
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
 
-    EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(nullptr, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "X", "V"));
     EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "X"));
+    EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "V"));
 }
 
 TEST(Analyser, removeExternalVariableByPointer)
@@ -527,9 +530,9 @@ TEST(Analyser, removeExternalVariableByPointer)
 
     analyser->addExternalVariable(externalVariable);
 
+    EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
     EXPECT_TRUE(analyser->removeExternalVariable(externalVariable));
     EXPECT_FALSE(analyser->removeExternalVariable(externalVariable));
-    EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
 }
 
 TEST(Analyser, removeAllExternalVariables)
@@ -934,12 +937,15 @@ TEST(Analyser, coverage)
 
     EXPECT_EQ(size_t(0), analyserModel->stateCount());
     EXPECT_EQ(size_t(0), analyserModel->states().size());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
 
     EXPECT_EQ(size_t(0), analyserModel->variableCount());
     EXPECT_EQ(size_t(0), analyserModel->variables().size());
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 
     EXPECT_EQ(size_t(0), analyserModel->equationCount());
     EXPECT_EQ(size_t(0), analyserModel->equations().size());
+    EXPECT_EQ(nullptr, analyserModel->equation(0));
 
     EXPECT_FALSE(analyserModel->needEqFunction());
     EXPECT_FALSE(analyserModel->needNeqFunction());
@@ -974,4 +980,9 @@ TEST(Analyser, coverage)
     ast->setValue({});
     ast->setVariable(libcellml::Variable::create());
     ast->setParent(libcellml::AnalyserEquationAst::create());
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/coverage.cellml"));
+
+    analyser->analyseModel(model);
 }
