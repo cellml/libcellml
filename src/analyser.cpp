@@ -2239,16 +2239,12 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return;
     }
 
-    // Mark some variables as external variables, if needed.
+    // Mark some variables as external variables, should there be some and
+    // should they belong to the model being analysed.
 
     std::map<VariablePtr, VariablePtrs> primaryExternalVariables;
 
     if (!mExternalVariables.empty()) {
-        // Check whether an external variable belongs to the model being
-        // analysed, or whether it is marked as an external variable more than
-        // once through equivalence or is (equivalent to) the variable of
-        // integration.
-
         for (const auto &externalVariable : mExternalVariables) {
             auto variable = externalVariable->variable();
 
@@ -2484,8 +2480,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     // Add a dummy equation for each of our true (i.e. non-computed) constants.
-    // Note: this is only so that we can mark a constant as an external
-    //       variable.
+    // Note: this is so that a constant can be marked as an external variable.
 
     for (const auto &internalVariable : mInternalVariables) {
         if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
