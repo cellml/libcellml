@@ -393,15 +393,6 @@ public:
     AnalyserImpl();
     ~AnalyserImpl();
 
-    static bool isStateVariable(const AnalyserInternalVariablePtr &variable);
-    static bool isConstantOrAlgebraicVariable(const AnalyserInternalVariablePtr &variable);
-
-    static bool compareVariablesByTypeAndIndex(const AnalyserInternalVariablePtr &variable1,
-                                               const AnalyserInternalVariablePtr &variable2);
-
-    static bool compareEquationsByVariable(const AnalyserInternalEquationPtr &equation1,
-                                           const AnalyserInternalEquationPtr &equation2);
-
     AnalyserInternalVariablePtr internalVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
@@ -531,39 +522,6 @@ Analyser::AnalyserImpl::~AnalyserImpl()
     // Reset our generator's profile.
 
     mGenerator->mPimpl->resetLockedModelAndProfile();
-}
-
-bool Analyser::AnalyserImpl::isStateVariable(const AnalyserInternalVariablePtr &variable)
-{
-    return variable->mType == AnalyserInternalVariable::Type::STATE;
-}
-
-bool Analyser::AnalyserImpl::isConstantOrAlgebraicVariable(const AnalyserInternalVariablePtr &variable)
-{
-    return (variable->mType == AnalyserInternalVariable::Type::CONSTANT)
-           || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-           || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-           || (variable->mType == AnalyserInternalVariable::Type::ALGEBRAIC);
-}
-
-bool Analyser::AnalyserImpl::compareVariablesByTypeAndIndex(const AnalyserInternalVariablePtr &variable1,
-                                                            const AnalyserInternalVariablePtr &variable2)
-{
-    if (isStateVariable(variable1) && isConstantOrAlgebraicVariable(variable2)) {
-        return true;
-    }
-
-    if (isConstantOrAlgebraicVariable(variable1) && isStateVariable(variable2)) {
-        return false;
-    }
-
-    return variable1->mIndex < variable2->mIndex;
-}
-
-bool Analyser::AnalyserImpl::compareEquationsByVariable(const AnalyserInternalEquationPtr &equation1,
-                                                        const AnalyserInternalEquationPtr &equation2)
-{
-    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
 
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)
@@ -2461,21 +2419,18 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return iv->mIsExternal;
     });
 
-    // Sort our internal variables and equations.
-
-    std::sort(mInternalVariables.begin(), mInternalVariables.end(),
-              compareVariablesByTypeAndIndex);
-    std::sort(mInternalEquations.begin(), mInternalEquations.end(),
-              compareEquationsByVariable);
+    // Create a mapping between our internal equations and our future equations
+    // in the API.
 
     std::map<VariablePtr, AnalyserEquationPtr> equationMappings;
-    std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
 
     for (const auto &internalEquation : mInternalEquations) {
         equationMappings.emplace(internalEquation->mVariable->mVariable, std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}});
     }
 
     // Make our internal variables available through our API.
+
+    std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
 
     stateIndex = MAX_SIZE_T;
     variableIndex = MAX_SIZE_T;
@@ -2590,9 +2545,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         // Determine the equation's dependencies, i.e. the equations for the
         // variables on which this equation depends.
-        // Note: an equation may depend on the variable of integration, for
-        //       which there is no equation, hence we need to test
-        //       equationDependency against nullptr.
 
         VariablePtrs variableDependencies = (type == AnalyserEquation::Type::EXTERNAL) ?
                                                 internalEquation->mVariable->mDependencies :
