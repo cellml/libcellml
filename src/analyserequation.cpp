@@ -37,19 +37,21 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
     mVariable = variable;
 }
 
+bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
+{
+    auto res = true;
+    auto dep = dependency.lock();
+
+    if (dep != nullptr) {
+        res = dep->variable() == nullptr;
+    }
+
+    return res;
+}
+
 void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
 {
-    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), [=](const auto &dependency) -> bool {
-                            auto res = true;
-                            auto dep = dependency.lock();
-
-                            if (dep != nullptr) {
-                                res = dep->variable() == nullptr;
-                            }
-
-                            return res;
-                        }),
-                        mDependencies.end());
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isEmptyDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
@@ -77,11 +79,9 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
     std::vector<AnalyserEquationPtr> res;
 
     for (const auto &dependency : mPimpl->mDependencies) {
-        auto dep = dependency.lock();
+        // Note: see the llvm-cov section in src/README.rst.
 
-        if (dep != nullptr) {
-            res.push_back(dep);
-        }
+        res.push_back(dependency.lock());
     }
 
     return res;

@@ -27,6 +27,7 @@ limitations under the License.
 
 #include "commonutils.h"
 #include "internaltypes.h"
+#include "xmldoc.h"
 
 namespace libcellml {
 
@@ -799,5 +800,51 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+
+/**
+ * @brief Return the number of non-comment children.
+ *
+ * Return the number of non-comment children for the given node.
+ *
+ * @param node The node for which we want the number of non-comment children.
+ *
+ * @return The number of non-comment children.
+ */
+size_t nonCommentChildCount(const XmlNodePtr &node);
+
+/**
+ * @brief Return the non-comment child at a given index.
+ *
+ * Return the non-comment child, at @p index, of the given node.
+ *
+ * @param node The node from which we want the non-comment child at @p index.
+ * @param index The index of the non-comment child.
+ *
+ * @return The non-comment child at @p index.
+ */
+XmlNodePtr nonCommentChildNode(const XmlNodePtr &node, size_t index);
+
+/**
+ * @brief Return the number of MathML children.
+ *
+ * Return the number of MathML children for the given node.
+ *
+ * @param node The node for which we want the number of MathML children.
+ *
+ * @return The number of MathML children.
+ */
+size_t mathmlChildCount(const XmlNodePtr &node);
+
+/**
+ * @brief Return the MathML child at a given index.
+ *
+ * Return the MathML child, at @p index, of the given node.
+ *
+ * @param node The node from which we want the MathML child at @p index.
+ * @param index The index of the MathML child.
+ *
+ * @return The MathML child at @p index.
+ */
+XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index);
 
 } // namespace libcellml

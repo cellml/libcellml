@@ -402,9 +402,6 @@ public:
     static bool compareEquationsByVariable(const AnalyserInternalEquationPtr &equation1,
                                            const AnalyserInternalEquationPtr &equation2);
 
-    size_t mathmlChildCount(const XmlNodePtr &node) const;
-    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
-
     AnalyserInternalVariablePtr internalVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
@@ -497,6 +494,7 @@ public:
 Analyser::AnalyserImpl::AnalyserImpl()
 {
     // Customise our generator's profile.
+    // Note: see the llvm-cov section in src/README.rst for profile.
 
     auto profile = mGenerator->profile();
 
@@ -568,44 +566,6 @@ bool Analyser::AnalyserImpl::compareEquationsByVariable(const AnalyserInternalEq
     return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
 
-size_t Analyser::AnalyserImpl::mathmlChildCount(const XmlNodePtr &node) const
-{
-    // Return the number of child elements, in the MathML namespace, for the
-    // given node.
-
-    auto childNode = node->firstChild();
-    size_t res = 0;
-
-    while (childNode != nullptr) {
-        if (childNode->isMathmlElement()) {
-            ++res;
-        }
-        childNode = childNode->next();
-    }
-
-    return res;
-}
-
-XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
-                                                   size_t index) const
-{
-    // Return the nth child element of the given node, skipping anything that is
-    // not in the MathML namespace.
-
-    auto res = node->firstChild();
-    auto childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
-
-    while ((res != nullptr) && (childNodeIndex != index)) {
-        res = res->next();
-
-        if (res && res->isMathmlElement()) {
-            ++childNodeIndex;
-        }
-    }
-
-    return res;
-}
-
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)
 {
     // Find and return, if there is one, the internal variable associated with
@@ -666,7 +626,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 {
     // Create the AST, if needed.
 
-    if (ast.get() == nullptr) {
+    if (ast == nullptr) {
         ast.reset(new AnalyserEquationAst {});
     }
 
@@ -954,8 +914,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         if (node->parent()->firstChild()->isMathmlElement("diff")) {
             equation->addOdeVariable(internalVariable(variable));
-        } else if (!(node->parent()->isMathmlElement("bvar")
-                     && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
+        } else if (!node->parent()->isMathmlElement("bvar")) {
             equation->addVariable(internalVariable(variable));
         }
 
@@ -1053,6 +1012,9 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                     mInternalEquations.push_back(internalEquation);
 
                     // Actually analyse the node.
+                    // Note: we must not test internalEquation->mAst->parent()
+                    //       since if it is equal to nullptr then a parent will
+                    //       be created by analyseNode().
 
                     analyseNode(node, internalEquation->mAst, internalEquation->mAst->parent(), component, internalEquation);
                 }
@@ -1163,23 +1125,20 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
-    // Note: CI and CN elements always have a parent, so no need to test whether
-    //       they do. BVAR and DEGREE elements always have a parent too, so CI
-    //       elements that have a BVAR element as a parent and CN elements that
-    //       have a DEGREE element as a parent always have a grantparent. In
-    //       addition, CN elements that have a DEGREE element as a parent and a
-    //       BVAR element as a grandparent always have a great-grandparent.
+    // Note: see the llvm-cov section in src/README.rst for astParent and
+    //       astGrandparent.
 
     auto astParent = ast->parent();
-    auto astGrandParent = (astParent != nullptr) ? astParent->parent() : nullptr;
-    auto astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->parent() : nullptr;
+    auto astGrandparent = (astParent != nullptr) ? astParent->parent() : nullptr;
+    auto astGreatGrandparent = (astGrandparent != nullptr) ? astGrandparent->parent() : nullptr;
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        auto variable = ast->variable();
+        && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)) {
+        // Note: see the llvm-cov section in src/README.rst for astVariable.
 
-        internalVariable(variable)->makeVoi();
+        auto astVariable = ast->variable();
+
+        internalVariable(astVariable)->makeVoi();
         // Note: we must make the variable a variable of integration in all
         //       cases (i.e. even if there is, for example, already another
         //       variable of integration) otherwise unnecessary issue messages
@@ -1193,12 +1152,12 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             // to be defined), so go through our components and look for the
             // first occurrence of our variable of integration.
 
-            auto model = owningModel(variable);
+            auto model = owningModel(astVariable);
             auto i = MAX_SIZE_T;
             VariablePtr voi;
 
             do {
-                voi = voiFirstOccurrence(variable, model->component(++i));
+                voi = voiFirstOccurrence(astVariable, model->component(++i));
 
                 if (voi != nullptr) {
                     // We have found the first occurrence of our variable of
@@ -1232,19 +1191,20 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                 }
             } while (voi == nullptr);
         } else {
+            // Note: see the llvm-cov section in src/README.rst for voiVariable.
+
             auto voiVariable = mModel->mPimpl->mVoi->variable();
 
-            if ((voiVariable != nullptr)
-                && !mModel->areEquivalentVariables(variable, voiVariable)) {
+            if (!mModel->areEquivalentVariables(astVariable, voiVariable)) {
                 auto issue = Issue::IssueImpl::create();
 
                 issue->mPimpl->setDescription("Variable '" + voiVariable->name()
                                               + "' in component '" + owningComponent(voiVariable)->name()
-                                              + "' and variable '" + variable->name()
-                                              + "' in component '" + owningComponent(variable)->name()
+                                              + "' and variable '" + astVariable->name()
+                                              + "' in component '" + owningComponent(astVariable)->name()
                                               + "' cannot both be the variable of integration.");
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_VOI_SEVERAL);
-                issue->mPimpl->mItem->mPimpl->setVariable(variable);
+                issue->mPimpl->mItem->mPimpl->setVariable(astVariable);
 
                 addIssue(issue);
             }
@@ -1255,13 +1215,14 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
         && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
-        && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
-        && (astGreatGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)) {
         double value = convertToDouble(ast->mPimpl->mValue);
 
         if (!areEqual(value, 1.0)) {
+            // Note: see the llvm-cov section in src/README.rst for variable.
+
+            auto variable = astGreatGrandparent->mPimpl->mOwnedRightChild->variable();
             auto issue = Issue::IssueImpl::create();
-            auto variable = astGreatGrandParent->mPimpl->mOwnedRightChild->variable();
 
             issue->mPimpl->setDescription("The differential equation for variable '" + variable->name()
                                           + "' in component '" + owningComponent(variable)->name()
@@ -1277,6 +1238,9 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
+        // Note: see the llvm-cov section in src/README.rst for
+        //       ast->variable().
+
         internalVariable(ast->variable())->makeState();
     }
 
@@ -1590,10 +1554,10 @@ std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &
     // through the AST, if needed, and returning the component of the first
     // variable we find on the LHS/RHS.
 
-    auto variable = ast->variable();
+    auto astVariable = ast->variable();
 
-    if (variable != nullptr) {
-        return std::dynamic_pointer_cast<Component>(variable->parent())->name();
+    if (astVariable != nullptr) {
+        return std::dynamic_pointer_cast<Component>(astVariable->parent())->name();
     }
 
     auto res = (ast->mPimpl->mOwnedLeftChild != nullptr) ?
@@ -1661,16 +1625,12 @@ std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast
     if (includeHierarchy) {
         AnalyserEquationAstPtr equationAst = ast;
         AnalyserEquationAstPtr equationAstParent = ast->parent();
-        AnalyserEquationAstPtr equationAstGrandParent = (equationAstParent != nullptr) ?
-                                                            equationAstParent->parent() :
-                                                            nullptr;
+        AnalyserEquationAstPtr equationAstGrandparent = (equationAstParent != nullptr) ? equationAstParent->parent() : nullptr;
 
         while (equationAstParent != nullptr) {
             equationAst = equationAstParent;
-            equationAstParent = equationAstGrandParent;
-            equationAstGrandParent = (equationAstParent != nullptr) ?
-                                         equationAstParent->parent() :
-                                         nullptr;
+            equationAstParent = equationAstGrandparent;
+            equationAstGrandparent = (equationAstParent != nullptr) ? equationAstParent->parent() : nullptr;
 
             res += std::string(" in")
                    + ((equationAstParent == nullptr) ? " equation" : "")
@@ -1701,11 +1661,7 @@ std::string Analyser::AnalyserImpl::expressionUnits(const UnitsMaps &unitsMaps,
                                 convertToString(unitsMultipliers[i], false);
 
             if (exponent != "0") {
-                unit += "10";
-
-                if (exponent != "1") {
-                    unit += "^" + exponent;
-                }
+                unit += "10^" + exponent;
             }
         }
 
@@ -1848,6 +1804,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
+        // Note: see the llvm-cov section in src/README.rst.
+
         auto units = mCiCnUnits[ast].lock();
 
         if (units != nullptr) {
@@ -1943,49 +1901,33 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                || (ast->mPimpl->mType == AnalyserEquationAst::Type::LN)
                || (ast->mPimpl->mType == AnalyserEquationAst::Type::LOG)) {
         bool isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
-        bool isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
 
-        if (!isDimensionlessUnitsMaps || !isDimensionlessRightUnitsMaps) {
+        if (!isDimensionlessUnitsMaps) {
+            bool isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
             std::string issueDescription = "The unit";
 
-            if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
+            if (!isDimensionlessRightUnitsMaps) {
                 issueDescription += "s";
             }
 
-            issueDescription += " of ";
-
-            if (!isDimensionlessUnitsMaps) {
-                issueDescription += expression(ast->mPimpl->mOwnedLeftChild, false);
-            }
-
-            if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
-                issueDescription += " and ";
-            }
+            issueDescription += " of " + expression(ast->mPimpl->mOwnedLeftChild, false);
 
             if (!isDimensionlessRightUnitsMaps) {
-                issueDescription += expression(ast->mPimpl->mOwnedRightChild, false);
+                issueDescription += " and " + expression(ast->mPimpl->mOwnedRightChild, false);
             }
 
             issueDescription += " in " + expression(ast);
 
-            if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
+            if (!isDimensionlessRightUnitsMaps) {
                 issueDescription += " are ";
             } else {
                 issueDescription += " is ";
             }
 
-            issueDescription += "not dimensionless. ";
-
-            if (!isDimensionlessUnitsMaps) {
-                issueDescription += expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers);
-            }
-
-            if (!isDimensionlessUnitsMaps && !isDimensionlessRightUnitsMaps) {
-                issueDescription += " while ";
-            }
+            issueDescription += "not dimensionless. " + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers);
 
             if (!isDimensionlessRightUnitsMaps) {
-                issueDescription += expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers);
+                issueDescription += " while " + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers);
             }
 
             issueDescription += ".";
@@ -2037,9 +1979,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
                 powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
-            } else {
-                // Root case.
-
+            } else { // AnalyserEquationAst::Type::ROOT.
                 if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
                     unitsMaps = rightUnitsMaps;
                     userUnitsMaps = rightUserUnitsMaps;
@@ -2167,6 +2107,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         // The kind of scaling we may end up doing depends on whether we are
         // dealing with a rate or some other variable, i.e. whether or not it
         // has a DIFF node as a parent.
+        // Note: see the llvm-cov section in src/README.rst for astParent.
 
         auto astParent = ast->parent();
 
@@ -2174,6 +2115,8 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
             // We are dealing with a rate, so retrieve the scaling factor for
             // its corresponding variable of integration and apply it, if
             // needed.
+            // Note: see the llvm-cov section in src/README.rst for
+            //       astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable().
 
             auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable());
 
@@ -2181,14 +2124,15 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
                 // We need to scale using the inverse of the scaling factor, but
                 // how we do it depends on whether the rate is to be computed or
                 // used.
+                // Note: see the llvm-cov section in src/README.rst for
+                //       astGrandparent.
 
-                auto astGrandParent = astParent->parent();
+                auto astGrandparent = astParent->parent();
 
-                if ((astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
-                    && (astGrandParent->mPimpl->mOwnedLeftChild == astParent)) {
-                    scaleAst(astGrandParent->mPimpl->mOwnedRightChild, astGrandParent, 1.0 / scalingFactor);
+                if (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT) {
+                    scaleAst(astGrandparent->mPimpl->mOwnedRightChild, astGrandparent, 1.0 / scalingFactor);
                 } else {
-                    scaleAst(astParent, astGrandParent, 1.0 / scalingFactor);
+                    scaleAst(astParent, astGrandparent, 1.0 / scalingFactor);
                 }
             }
         }
@@ -2200,11 +2144,16 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
             // variable nor our variable of integration, so retrieve its scaling
             // factor and apply it, if needed, distinguishing between a rate
             // variable and an algebraic variable.
+            // Note: see the llvm-cov section in src/README.rst for
+            //       ast->variable().
 
             auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->variable());
 
             if (!areNearlyEqual(scalingFactor, 1.0)) {
                 if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
+                    // Note: see the llvm-cov section in src/README.rst for
+                    //       astParent->parent().
+
                     scaleAst(astParent, astParent->parent(), scalingFactor);
                 } else {
                     scaleAst(ast, astParent, scalingFactor);
@@ -2258,42 +2207,38 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return;
     }
 
-    // Mark some variables as external variables, if needed.
+    // Mark some variables as external variables, should there be some and
+    // should they belong to the model being analysed.
 
     std::map<VariablePtr, VariablePtrs> primaryExternalVariables;
 
     if (!mExternalVariables.empty()) {
-        // Check whether an external variable belongs to the model being
-        // analysed, or whether it is marked as an external variable more than
-        // once through equivalence or is (equivalent to) the variable of
-        // integration.
-
         for (const auto &externalVariable : mExternalVariables) {
+            // Note: see the llvm-cov section in src/README.rst for variable.
+
             auto variable = externalVariable->variable();
 
-            if (variable != nullptr) {
-                if (owningModel(variable) != model) {
-                    auto issue = Issue::IssueImpl::create();
+            if (owningModel(variable) != model) {
+                auto issue = Issue::IssueImpl::create();
 
-                    issue->mPimpl->setDescription("Variable '" + variable->name()
-                                                  + "' in component '" + owningComponent(variable)->name()
-                                                  + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
-                    issue->mPimpl->setLevel(Issue::Level::MESSAGE);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
-                    issue->mPimpl->mItem->mPimpl->setVariable(variable);
+                issue->mPimpl->setDescription("Variable '" + variable->name()
+                                              + "' in component '" + owningComponent(variable)->name()
+                                              + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
+                issue->mPimpl->setLevel(Issue::Level::MESSAGE);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL);
+                issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
-                    addIssue(issue);
-                } else {
-                    auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
+                addIssue(issue);
+            } else {
+                auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
 
-                    primaryExternalVariables[internalVariable->mVariable].push_back(variable);
+                primaryExternalVariables[internalVariable->mVariable].push_back(variable);
 
-                    if (!internalVariable->mIsExternal) {
-                        internalVariable->mIsExternal = true;
+                if (!internalVariable->mIsExternal) {
+                    internalVariable->mIsExternal = true;
 
-                        for (const auto &dependency : externalVariable->dependencies()) {
-                            internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
-                        }
+                    for (const auto &dependency : externalVariable->dependencies()) {
+                        internalVariable->mDependencies.push_back(Analyser::AnalyserImpl::internalVariable(dependency)->mVariable);
                     }
                 }
             }
@@ -2510,6 +2455,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return;
     }
 
+    // Add a dummy equation for each of our true (i.e. non-computed) constants.
+    // Note: this is so that a constant can be marked as an external variable.
+
+    for (const auto &internalVariable : mInternalVariables) {
+        if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
+            mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
+        }
+    }
+
     // Make it known through our API whether the model has some external
     // variables.
 
@@ -2552,7 +2506,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             type = AnalyserVariable::Type::COMPUTED_CONSTANT;
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC) {
             type = AnalyserVariable::Type::ALGEBRAIC;
-        } else {
+        } else { // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
             // This is the variable of integration, so skip it.
 
             continue;
@@ -2601,7 +2555,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             type = AnalyserEquation::Type::RATE;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
             type = AnalyserEquation::Type::ALGEBRAIC;
-        } else {
+        } else { // AnalyserEquation::Type::UNKNOWN.
             // The equation type is unknown, which means that it is a dummy
             // equation for a true (i.e. non-computed) constant (so that it
             // could have been marked as an external variable), so we skip it
@@ -2620,14 +2574,27 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // external equation and if its unknown variable is on its RHS.
 
         if (type != AnalyserEquation::Type::EXTERNAL) {
+            // Note: see the llvm-cov section in src/README.rst for
+            //       astRightChild.
+
             auto ast = internalEquation->mAst;
             auto astRightChild = ast->rightChild();
 
-            if (((astRightChild->type() == AnalyserEquationAst::Type::CI)
-                 && (astRightChild->variable()->name() == internalEquation->mVariable->mVariable->name()))
-                || ((astRightChild->type() == AnalyserEquationAst::Type::DIFF)
-                    && (astRightChild->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name()))) {
-                ast->swapLeftAndRightChildren();
+            if (astRightChild->type() == AnalyserEquationAst::Type::CI) {
+                // Note: see the llvm-cov section in src/README.rst for
+                //       astRightChild->variable().
+
+                if (astRightChild->variable()->name() == internalEquation->mVariable->mVariable->name()) {
+                    ast->swapLeftAndRightChildren();
+                }
+            } else if (astRightChild->type() == AnalyserEquationAst::Type::DIFF) {
+                // Note: see the llvm-cov section in src/README.rst for
+                //       astRightChild->rightChild() and
+                //       astRightChild->rightChild()->variable().
+
+                if (astRightChild->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name()) {
+                    ast->swapLeftAndRightChildren();
+                }
             }
         }
 
@@ -2643,11 +2610,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         std::vector<AnalyserEquationPtr> equationDependencies;
 
         for (const auto &variableDependency : variableDependencies) {
-            auto equationDependency = equationMappings[variableDependency];
+            // Note: see the llvm-cov section in src/README.rst for
+            //       equationMappings[variableDependency].
 
-            if (equationDependency != nullptr) {
-                equationDependencies.push_back(equationDependency);
-            }
+            equationDependencies.push_back(equationMappings[variableDependency]);
         }
 
         // Populate and keep track of the equation.
@@ -2687,12 +2653,13 @@ std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl:
                                                                                                       const std::string &variableName) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
-        auto v = ev->variable();
+        // Note: see the llvm-cov section in src/README.rst for variable.
 
-        return (v != nullptr)
-               && (owningModel(v) == model)
-               && (owningComponent(v)->name() == componentName)
-               && (v->name() == variableName);
+        auto variable = ev->variable();
+
+        return (owningModel(variable) == model)
+               && (owningComponent(variable)->name() == componentName)
+               && (variable->name() == variableName);
     });
 }
 

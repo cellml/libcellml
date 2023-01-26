@@ -1,15 +1,15 @@
-/* The content of this file was generated using the C profile of libCellML 0.4.0. */
+/* The content of this file was generated using a modified C profile of libCellML 0.4.0. */
 
 #include "model.h"
 
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.3.2";
+const char VERSION[] = "0.3.2.post0";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 1;
-const size_t VARIABLE_COUNT = 186;
+const size_t VARIABLE_COUNT = 203;
 
 const VariableInfo VOI_INFO = {"t", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
@@ -23,9 +23,13 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnNeq", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNeqCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnLt", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnLtCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnLeq", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnLeqCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnGt", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnGtCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnGeq", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnGeqCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAnd", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndMultiple", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -41,6 +45,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnAndParenthesesRightMinusWithout", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndParenthesesRightPower", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndParenthesesRightRoot", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnAndCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnOr", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnOrMultiple", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnOrParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -56,6 +61,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnOrParenthesesRightMinusWithout", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnOrParenthesesRightPower", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnOrParenthesesRightRoot", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnOrCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnXor", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnXorMultiple", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnXorParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -71,6 +77,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnXorParenthesesRightMinusWithout", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnXorParenthesesRightPower", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnXorParenthesesRightRoot", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnXorCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNot", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPlus", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPlusMultiple", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -287,7 +294,7 @@ double acoth(double x)
     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
-double * createStatesArray()
+double * createStatesVector()
 {
     return (double *) malloc(STATE_COUNT*sizeof(double));
 }

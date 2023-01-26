@@ -144,6 +144,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::RESET_RESET_VALUE, {"RESET_RESET_VALUE", "2.11", baseSpecificationUrl, "specB11"}},
     {Issue::ReferenceRule::MATH_MATHML, {"MATH_MATHML", "2.12.1", baseSpecificationUrl, "specB12"}},
     {Issue::ReferenceRule::MATH_CHILD, {"MATH_CHILD", "2.12.2", baseSpecificationUrl, "specB12"}},
+    {Issue::ReferenceRule::MATH_CI, {"MATH_CI", "2.12.3", baseSpecificationUrl, "specB12"}},
     {Issue::ReferenceRule::MATH_CI_VARIABLE_REF, {"MATH_CI_VARIABLE_REF", "2.12.3", baseSpecificationUrl, "specB12"}},
     {Issue::ReferenceRule::MATH_CN_UNITS, {"MATH_CN_UNITS", "2.12.4", baseSpecificationUrl, "specB13"}},
     {Issue::ReferenceRule::MATH_CN_BASE10, {"MATH_CN_BASE10", "2.12.5", baseSpecificationUrl, "specB13"}},
