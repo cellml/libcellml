@@ -1,7 +1,7 @@
 configure_file(@CMAKE_CURRENT_SOURCE_DIR@/__init__.py ${LIBCELLML_PYTHON_PACKAGE_DIR}/__init__.py)
 configure_file(@CMAKE_CURRENT_SOURCE_DIR@/README.rst ${LIBCELLML_PYTHON_PACKAGE_DIR}/../README.rst)
 message(STATUS "pre-gen setup file: @SETUP_PRE_GEN_PY_FILE@")
-message(STATUS "python package dir: ${LIBCELLML_PYTHON_PACKAGE_DIR}/../")\
+message(STATUS "python package dir: ${LIBCELLML_PYTHON_PACKAGE_DIR}/../")
 if(EXISTS "@SETUP_PRE_GEN_PY_FILE@")
   message(STATUS "The pre-generated setup file exists.")
 else()
