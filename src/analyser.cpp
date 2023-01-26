@@ -1807,23 +1807,20 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         // Note: see the llvm-cov section in src/README.rst.
 
         auto units = mCiCnUnits[ast].lock();
+        auto model = owningModel(units);
 
-        if (units != nullptr) {
-            auto model = owningModel(units);
+        defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
 
-            defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
+        for (auto &unitsMap : unitsMaps) {
+            updateUnitsMap(model, units->name(), unitsMap);
+        }
 
-            for (auto &unitsMap : unitsMaps) {
-                updateUnitsMap(model, units->name(), unitsMap);
-            }
+        for (auto &userUnitsMap : userUnitsMaps) {
+            updateUnitsMap(model, units->name(), userUnitsMap, true);
+        }
 
-            for (auto &userUnitsMap : userUnitsMaps) {
-                updateUnitsMap(model, units->name(), userUnitsMap, true);
-            }
-
-            for (auto &unitsMultiplier : unitsMultipliers) {
-                updateUnitsMultiplier(model, units->name(), unitsMultiplier);
-            }
+        for (auto &unitsMultiplier : unitsMultipliers) {
+            updateUnitsMultiplier(model, units->name(), unitsMultiplier);
         }
 
         return;
@@ -2402,12 +2399,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         if (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mVariable == internalVariable; }) != mInternalEquations.end()) {
                             internalVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
                         } else {
-            */
-            if (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mVariable == internalVariable; }) == mInternalEquations.end()) {
-                internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
+                            internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
 
-                mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
-            }
+                            mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
+                        }
+            */
+            internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
+
+            mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
             issueType = "is computed more than once";
             referenceRule = Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE;
@@ -2453,15 +2452,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     if (!mModel->isValid()) {
         return;
-    }
-
-    // Add a dummy equation for each of our true (i.e. non-computed) constants.
-    // Note: this is so that a constant can be marked as an external variable.
-
-    for (const auto &internalVariable : mInternalVariables) {
-        if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
-            mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
-        }
     }
 
     // Make it known through our API whether the model has some external
