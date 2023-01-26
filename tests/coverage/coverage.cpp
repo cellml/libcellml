@@ -340,7 +340,8 @@ TEST(Generator, coverage)
     }
 
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        EXPECT_EQ(i < 7, analyserModel->variable(i)->initialisingVariable() != nullptr);
+        EXPECT_EQ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 177) || (i == 178) || (i == 180),
+                  analyserModel->variable(i)->initialisingVariable() != nullptr);
     }
 
     EXPECT_EQ(nullptr, generator->model());
