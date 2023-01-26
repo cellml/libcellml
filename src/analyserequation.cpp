@@ -39,14 +39,13 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
 
 bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    auto res = true;
     auto dep = dependency.lock();
 
     if (dep != nullptr) {
-        res = dep->variable() == nullptr;
+        return dep->variable() == nullptr;
     }
 
-    return res;
+    return true;
 }
 
 void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
