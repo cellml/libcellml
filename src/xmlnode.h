@@ -247,6 +247,17 @@ public:
     bool isText() const;
 
     /**
+     * @brief Check if this @c XmlNode is a text node representing a number.
+     *
+     * Checks whether this @c XmlNode is a text node representing a number.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a text node representing a number
+     * and @c false otherwise.
+     */
+    bool isNumber() const;
+
+    /**
      * @brief Check if this @c XmlNode is a comment node.
      *
      * Checks whether this @c XmlNode is a comment node.
@@ -305,6 +316,18 @@ public:
      * for this @c XmlNode.
      */
     XmlAttributePtr firstAttribute() const;
+
+    /**
+     * @brief Test if this @c XmlNode is the given node.
+     *
+     * Test if this @c XmlNode is the given node. If it is true is returned,
+     * otherwise false is.
+     *
+     * @param node The @c XmlNode to test against.
+     *
+     * @return true if this @c XmlNode is the given node, false otherwise.
+     */
+    bool is(const XmlNodePtr &node) const;
 
     /**
      * @brief Get the first child for this @c XmlNode.

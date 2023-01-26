@@ -51,16 +51,16 @@ public:
 
         // Relational and logical operators.
 
-        EQ, /**< The equal to function. */
-        NEQ, /**< The not equal to function. */
-        LT, /**< The less than function. */
-        LEQ, /**< The less than or equal to function. */
-        GT, /**< The greater than function. */
-        GEQ, /**< The greater than or equal to function. */
-        AND, /**< The and function. */
-        OR, /**< The or function. */
-        XOR, /**< The exclusive or function. */
-        NOT, /**< The not function. */
+        EQ, /**< The equal to operator. */
+        NEQ, /**< The not equal to operator. */
+        LT, /**< The less than operator. */
+        LEQ, /**< The less than or equal to operator. */
+        GT, /**< The greater than operator. */
+        GEQ, /**< The greater than or equal to operator. */
+        AND, /**< The and operator. */
+        OR, /**< The or operator. */
+        XOR, /**< The exclusive or operator. */
+        NOT, /**< The not operator. */
 
         // Arithmetic operators.
 
