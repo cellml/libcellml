@@ -247,7 +247,7 @@ bool AnalyserInternalEquation::isNonConstantVariable(const AnalyserInternalVaria
     //       applied after calling check() in
     //       Analyser::AnalyserImpl::analyseModel(). (If we were to test for
     //       that type then the condition would always be true, meaning that the
-    //       false branch would never be reached and llvm-cov would report it.
+    //       false branch would never be reached and llvm-cov would report it.)
 
     return variable->mIsExternal
            || ((variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
