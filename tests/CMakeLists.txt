@@ -132,9 +132,6 @@ if(LIBCELLML_COVERAGE)
     DEPENDS clean_coverage ${TEST_LIST}
     COMMAND ${CMAKE_CTEST_COMMAND} > /dev/null
     COMMENT "Prepare for coverage tests")
-    #if(TARGET python_bindings)
-    #  add_dependencies(prepare_coverage python_bindings)
-    #endif()
 
   add_custom_target(coverage
     COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/gcovr-4.1.1.zip -r ${GCOV_PREFIX_PATH} --gcov-executable=${GCOV_EXE} ${GCOV_ANALYSIS_PATH}
