@@ -2642,9 +2642,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         // Determine the equation's dependencies, i.e. the equations for the
         // variables on which this equation depends.
-        // Note: an equation may depend on the variable of integration, for
-        //       which there is no equation, hence we need to test
-        //       equationDependency against nullptr.
 
         VariablePtrs variableDependencies = (type == AnalyserEquation::Type::EXTERNAL) ?
                                                 internalEquation->mVariable->mDependencies :
@@ -2671,9 +2668,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     // Clean up our equations' dependencies.
-    // Note: indeed, some equations may have a dependency on one or several true
-    //       (i.e. non-computed) constants, for which there are no proper
-    //       equations. So, we need to remove those dependencies, and obviously
+    // Note: indeed, some equations may have a dependency on the variable of
+    //       integration (for which there is no equation) and/or one or several
+    //       true (i.e. non-computed) constants (for which there are no proper
+    //       equations). So, we need to remove those dependencies, and obviously
     //       this can only be done once all our equations are ready.
 
     for (const auto &equation : mModel->mPimpl->mEquations) {
