@@ -1275,7 +1275,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             // Note: see the llvm-cov section in src/README.rst for variable.
 
             auto variable = astGreatGrandparent->mPimpl->mOwnedRightChild->variable();
-
             auto issue = Issue::IssueImpl::create();
 
             issue->mPimpl->setDescription("The differential equation for variable '" + variable->name()
