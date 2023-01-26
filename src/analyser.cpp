@@ -2571,9 +2571,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     // Clean up our equations' dependencies.
-    // Note: indeed, some equations may have a dependency on one or several true
-    //       (i.e. non-computed) constants, for which there are no proper
-    //       equations. So, we need to remove those dependencies, and obviously
+    // Note: indeed, some equations may have a dependency on the variable of
+    //       integration (for which there is no equation) and/or one or several
+    //       true (i.e. non-computed) constants (for which there are no proper
+    //       equations). So, we need to remove those dependencies, and obviously
     //       this can only be done once all our equations are ready.
 
     for (const auto &equation : mModel->mPimpl->mEquations) {
