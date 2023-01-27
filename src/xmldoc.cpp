@@ -97,7 +97,7 @@ void XmlDoc::parse(const std::string &input)
 std::string decompressMathMLDTD()
 {
     std::vector<unsigned char> mathmlDTD;
-    UNCOMPRESS_SIZE_TYPE sizeMathmlDTDUncompressedResize = MATHML_DTD_LEN;
+    uLong sizeMathmlDTDUncompressedResize = MATHML_DTD_LEN;
     mathmlDTD.resize(sizeMathmlDTDUncompressedResize);
 
     const unsigned char *a = compressedMathMLDTD();
