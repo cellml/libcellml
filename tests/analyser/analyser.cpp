@@ -346,8 +346,8 @@ TEST(Analyser, overconstrainedTwoVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is computed more than once.",
         "Variable 'y' in component 'my_component' is computed more than once.",
+        "Variable 'x' in component 'my_component' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -372,9 +372,9 @@ TEST(Analyser, overconstrainedThreeVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
+        "Variable 'z' in component 'my_component' is computed more than once.",
         "Variable 'x' in component 'my_component' is computed more than once.",
         "Variable 'y' in component 'my_component' is computed more than once.",
-        "Variable 'z' in component 'my_component' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -399,16 +399,16 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is unused.",
         "Variable 'y' in component 'my_component' is computed more than once.",
+        "Variable 'x' in component 'my_component' is unused.",
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
         libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
     };
     const std::vector<std::string> expectedUrls = {
-        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNUSED",
         "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNUSED",
     };
 
     auto analyser = libcellml::Analyser::create();
