@@ -65,9 +65,6 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         res = modelVoi;
     } else {
         for (const auto &modelState : mLockedModel->states()) {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       modelState->variable().
-
             if (mLockedModel->areEquivalentVariables(variable, modelState->variable())) {
                 res = modelState;
 
@@ -94,9 +91,6 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
             auto modelVariable = modelVariables.begin();
 
             do {
-                // Note: see the llvm-cov section in src/README.rst for
-                //       modelVariable->variable().
-
                 if (mLockedModel->areEquivalentVariables(variable, (*modelVariable)->variable())) {
                     res = *modelVariable;
                 } else {
@@ -112,8 +106,6 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) const
 {
     // Return the scaling factor for the given variable.
-    // Note: see the llvm-cov section in src/README.rst for
-    //       analyserVariable(variable)->variable().
 
     return Units::scalingFactor(variable->units(), analyserVariable(variable)->variable()->units());
 }
@@ -204,8 +196,6 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &unitsSize,
                                                        const AnalyserVariablePtr &variable) const
 {
-    // Note: see the llvm-cov section in src/README.rst for variableVariable.
-
     auto variableVariable = variable->variable();
     auto variableComponentSize = owningComponent(variableVariable)->name().length() + 1;
     auto variableNameSize = variableVariable->name().length() + 1;
@@ -447,9 +437,6 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
                 infoElementsCode += mLockedProfile->arrayElementSeparatorString() + "\n";
             }
 
-            // Note: see the llvm-cov section in src/README.rst for
-            //       stateVariable.
-
             auto stateVariable = state->variable();
 
             infoElementsCode += mLockedProfile->indentString()
@@ -496,9 +483,6 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
             } else { // AnalyserVariable::Type::EXTERNAL.
                 variableType = mLockedProfile->externalVariableTypeString();
             }
-
-            // Note: see the llvm-cov section in src/README.rst for
-            //       variableVariable.
 
             auto variableVariable = variable->variable();
 
@@ -811,8 +795,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                                                            const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the left and right branches of the given AST.
-    // Note: see the llvm-cov section in src/README.rst for astLeftChild and
-    //       astRightChild.
 
     std::string res;
     auto astLeftChild = ast->leftChild();
@@ -1064,9 +1046,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             }
         }
 
-        // Note: see the llvm-cov section in src/README.rst for
-        //       astLeftChildLeftChild.
-
         auto astLeftChildLeftChild = astLeftChild->leftChild();
 
         if (isRelationalOperator(astLeftChildLeftChild)
@@ -1093,7 +1072,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the left branch of the given AST.
-    // Note: see the llvm-cov section in src/README.rst for astLeftChild.
 
     auto astLeftChild = ast->leftChild();
     auto code = generateCode(astLeftChild);
@@ -1120,8 +1098,6 @@ std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std
 std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std::string &function,
                                                                        const AnalyserEquationAstPtr &ast) const
 {
-    // Note: see the llvm-cov section in src/README.rst.
-
     return function + "(" + generateCode(ast->leftChild()) + ", " + generateCode(ast->rightChild()) + ")";
 }
 
@@ -1209,9 +1185,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         }
     } else if (ast->type() == AnalyserEquationAst::Type::NOT) {
         if (mLockedProfile->hasNotOperator()) {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       ast->leftChild().
-
             code = mLockedProfile->notString() + generateCode(ast->leftChild());
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->notString(), ast);
@@ -1220,9 +1193,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mLockedProfile->plusString(), ast);
         } else {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       ast->leftChild().
-
             code = generateCode(ast->leftChild());
         }
     } else if (ast->type() == AnalyserEquationAst::Type::MINUS) {
@@ -1236,9 +1206,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     } else if (ast->type() == AnalyserEquationAst::Type::DIVIDE) {
         code = generateOperatorCode(mLockedProfile->divideString(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::POWER) {
-        // Note: see the llvm-cov section in src/README.rst for
-        //       ast->rightChild().
-
         auto stringValue = generateCode(ast->rightChild());
         bool validConversion;
         double doubleValue = convertToDouble(stringValue, &validConversion);
@@ -1249,9 +1216,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                    && !mLockedProfile->squareString().empty()) {
             code = generateOneParameterFunctionCode(mLockedProfile->squareString(), ast);
         } else {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       ast->leftChild().
-
             code = mLockedProfile->hasPowerOperator() ?
                        generateOperatorCode(mLockedProfile->powerString(), ast) :
                        mLockedProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
@@ -1260,9 +1224,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       astLeftChild.
-
             auto astLeftChild = ast->leftChild();
 
             bool validConversion;
@@ -1304,9 +1265,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       ast->leftChild().
-
             auto stringValue = generateCode(ast->leftChild());
             bool validConversion;
             double doubleValue = convertToDouble(stringValue, &validConversion);
@@ -1330,9 +1288,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     } else if (ast->type() == AnalyserEquationAst::Type::REM) {
         code = generateTwoParameterFunctionCode(mLockedProfile->remString(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::DIFF) {
-        // Note: see the llvm-cov section in src/README.rst for
-        //       ast->rightChild().
-
         code = generateCode(ast->rightChild());
     } else if (ast->type() == AnalyserEquationAst::Type::SIN) {
         code = generateOneParameterFunctionCode(mLockedProfile->sinString(), ast);
@@ -1383,9 +1338,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     } else if (ast->type() == AnalyserEquationAst::Type::ACOTH) {
         code = generateOneParameterFunctionCode(mLockedProfile->acothString(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::PIECEWISE) {
-        // Note: see the llvm-cov section in src/README.rst for
-        //       ast->leftChild().
-
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
@@ -1398,27 +1350,15 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
             code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mLockedProfile->nanString());
         }
     } else if (ast->type() == AnalyserEquationAst::Type::PIECE) {
-        // Note: see the llvm-cov section in src/README.rst for
-        //       ast->leftChild() and ast->rightChild().
-
         code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
     } else if (ast->type() == AnalyserEquationAst::Type::OTHERWISE) {
-        // Note: see the llvm-cov section in src/README.rst for
-        //       ast->leftChild().
-
         code = generateCode(ast->leftChild());
     } else if (ast->type() == AnalyserEquationAst::Type::CI) {
-        // Note: see the llvm-cov section in src/README.rst for
-        //       ast->variable().
-
         code = generateVariableNameCode(ast->variable(), ast);
     } else if (ast->type() == AnalyserEquationAst::Type::CN) {
         code = generateDoubleCode(ast->value());
     } else if ((ast->type() == AnalyserEquationAst::Type::DEGREE)
                || (ast->type() == AnalyserEquationAst::Type::LOGBASE)) {
-        // Note: see the llvm-cov section in src/README.rst for
-        //       ast->leftChild().
-
         code = generateCode(ast->leftChild());
     } else if (ast->type() == AnalyserEquationAst::Type::TRUE) {
         code = mLockedProfile->trueString();
@@ -1439,9 +1379,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
 {
-    // Note: see the llvm-cov section in src/README.rst for
-    //       initialisingVariable and variable->variable().
-
     auto initialisingVariable = variable->initialisingVariable();
     auto scalingFactor = Generator::GeneratorImpl::scalingFactor(initialisingVariable);
     std::string scalingFactorCode;
@@ -1477,9 +1414,6 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         }
 
         if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
-            // Note: see the llvm-cov section in src/README.rst for variable and
-            //       variable->variable().
-
             std::ostringstream index;
             auto variable = equation->variable();
 
@@ -1490,9 +1424,6 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
                              "[INDEX]", index.str())
                    + mLockedProfile->commandSeparatorString() + "\n";
         } else {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       equation->ast().
-
             res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
         }
 
