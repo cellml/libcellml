@@ -26,7 +26,6 @@ limitations under the License.
 #include <zlib.h>
 
 #include "internaltypes.h"
-#include "libcellmlconfig_p.h"
 #include "mathmldtd.h"
 #include "xmlnode.h"
 
