@@ -124,10 +124,8 @@ bool XmlNode::hasNamespaceDefinition(const std::string &uri)
     if (mPimpl->mXmlNodePtr->nsDef != nullptr) {
         auto next = mPimpl->mXmlNodePtr->nsDef;
         while (next != nullptr) {
-            std::string href;
-            if (next->href != nullptr) {
-                href = std::string(reinterpret_cast<const char *>(next->href));
-            }
+            // If you have a namespace, the href cannot be empty.
+            std::string href = std::string(reinterpret_cast<const char *>(next->href));
             if (href == uri) {
                 return true;
             }
@@ -147,10 +145,8 @@ XmlNamespaceMap XmlNode::definedNamespaces() const
             if (next->prefix != nullptr) {
                 prefix = std::string(reinterpret_cast<const char *>(next->prefix));
             }
-            std::string href;
-            if (next->href != nullptr) {
-                href = std::string(reinterpret_cast<const char *>(next->href));
-            }
+            // If you have a namespace, the href cannot be empty.
+            std::string href = std::string(reinterpret_cast<const char *>(next->href));
             namespaceMap.emplace(prefix, href);
             next = next->next;
         }
