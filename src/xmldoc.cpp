@@ -19,6 +19,7 @@ limitations under the License.
 #include <cstring>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -44,11 +45,8 @@ namespace libcellml {
  */
 void structuredErrorCallback(void *userData, xmlErrorPtr error)
 {
-    std::string errorString = std::string(error->message);
     // Swap libxml2 carriage return for a period.
-    if (errorString.substr(errorString.length() - 1) == "\n") {
-        errorString.replace(errorString.end() - 1, errorString.end(), ".");
-    }
+    std::string errorString = std::regex_replace(error->message, std::regex("\\n"), ".");
     auto context = reinterpret_cast<xmlParserCtxtPtr>(userData);
     auto doc = reinterpret_cast<XmlDoc *>(context->_private);
     doc->addXmlError(errorString);
