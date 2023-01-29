@@ -33,8 +33,6 @@ std::vector<VariableWeakPtr>::iterator AnalyserExternalVariable::AnalyserExterna
                                                                                                               const std::string &variableName)
 {
     return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const VariableWeakPtr &v) {
-        // Note: see the llvm-cov section in src/README.rst.
-
         auto variable = v.lock();
 
         return (owningModel(variable) == model)
@@ -169,8 +167,6 @@ std::vector<VariablePtr> AnalyserExternalVariable::dependencies() const
     std::vector<VariablePtr> res;
 
     for (const auto &dependency : mPimpl->mDependencies) {
-        // Note: see the llvm-cov section in src/README.rst.
-
         res.push_back(dependency.lock());
     }
 
