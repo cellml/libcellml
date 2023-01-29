@@ -91,11 +91,9 @@ std::string XmlAttribute::name() const
 std::string XmlAttribute::value() const
 {
     std::string valueString;
-    if ((mPimpl->mXmlAttributePtr->name != nullptr) && (mPimpl->mXmlAttributePtr->parent != nullptr)) {
-        xmlChar *value = xmlGetProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name);
-        valueString = std::string(reinterpret_cast<const char *>(value));
-        xmlFree(value);
-    }
+    xmlChar *value = xmlGetProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name);
+    valueString = std::string(reinterpret_cast<const char *>(value));
+    xmlFree(value);
     return valueString;
 }
 
