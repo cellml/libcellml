@@ -217,12 +217,8 @@ std::string XmlNode::name() const
 
 bool XmlNode::hasAttribute(const char *attributeName) const
 {
-    bool found = false;
     xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
-    if (attribute != nullptr) {
-        found = true;
-    }
-    return found;
+    return (attribute == nullptr) ? false : true;
 }
 
 xmlNsPtr getAttributeNamespace(const xmlNodePtr &node, const char *attributeName)
