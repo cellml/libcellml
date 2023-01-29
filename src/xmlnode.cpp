@@ -286,23 +286,17 @@ XmlNodePtr XmlNode::next() const
 XmlNodePtr XmlNode::parent() const
 {
     xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
-    XmlNodePtr parentHandle = nullptr;
-    if (parent != nullptr) {
-        parentHandle = std::make_shared<XmlNode>();
-        parentHandle->setXmlNode(parent);
-    }
+    XmlNodePtr parentHandle = std::make_shared<XmlNode>();
+    parentHandle->setXmlNode(parent);
     return parentHandle;
 }
 
 std::string XmlNode::convertToString() const
 {
-    std::string contentString;
     xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
-    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
-    if (len > 0) {
-        contentString = std::string(reinterpret_cast<const char *>(buffer->content));
-    }
+    xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
+    std::string contentString = std::string(reinterpret_cast<const char *>(buffer->content));
     xmlBufferFree(buffer);
     return contentString;
 }
