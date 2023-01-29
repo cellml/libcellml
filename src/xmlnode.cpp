@@ -264,7 +264,7 @@ XmlNodePtr XmlNode::firstChild() const
         childHandle = std::make_shared<XmlNode>();
         childHandle->setXmlNode(child);
         bool textNode = childHandle->isText();
-        if (!textNode || (textNode && !childHandle->convertToStrippedString().empty())) {
+        if (!textNode || !childHandle->convertToStrippedString().empty()) {
             break;
         }
         child = child->next;
