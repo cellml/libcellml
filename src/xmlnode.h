@@ -270,7 +270,7 @@ public:
      * @brief Check if this @c XmlNode has the specified attribute.
      *
      * Checks whether this @c XmlNode has an attribute of the type
-     * specified by the argument @p attributeName. Returns @ true
+     * specified by the argument @p attributeName. Returns @c true
      * if so, and @c false otherwise.
      *
      * @param attributeName The @c char attribute type to check for.
@@ -293,6 +293,16 @@ public:
      */
     std::string attribute(const char *attributeName) const;
 
+    /**
+     * @brief Set the attribute of the given name to the given value.
+     *
+     * Set the attribute of the given @p attributeName to the given @p attributeValue.
+     * The attribute name must already exist.
+     * If the attribute name does not already exist the attibute value will not be modified.
+     *
+     * @param attributeName The @c char attribute type.
+     * @param attributeValue The @c char value of the attribute to set.
+     */
     void setAttribute(const char *attributeName, const char *attributeValue);
 
     /**
