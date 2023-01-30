@@ -35,22 +35,18 @@ public:
     /**
      * @brief The type of a variable.
      *
-     * A variable can be of one of the following types:
-     *  - VARIABLE_OF_INTEGRATION: the variable is the variable of integration;
-     *  - STATE: the variable is a state;
-     *  - CONSTANT: the variable is a constant (e.g. x = 3);
-     *  - COMPUTED_CONSTANT: the variable is a computed constant (e.g. x = 3+5,
-     *    x = 3+z, x = y+z where y and z are constants); or
-     *  - ALGEBRAIC: the variable is an algebraic variable.
+     * The type of a variable, i.e. whether it is the variable of integration, a
+     * state, a constant, a computed constant, an algebraic variable, or an
+     * external variable.
      */
     enum class Type
     {
-        VARIABLE_OF_INTEGRATION,
-        STATE,
-        CONSTANT,
-        COMPUTED_CONSTANT,
-        ALGEBRAIC,
-        EXTERNAL
+        VARIABLE_OF_INTEGRATION, /**< The variable is the variable of integration. */
+        STATE, /**< The variable is a state. */
+        CONSTANT, /**< The variable is a constant (e.g. x = 3). */
+        COMPUTED_CONSTANT, /**< The variable is a computed constant (e.g. x = 3+5, x = 3+z, x = y+z where y and z are constants). */
+        ALGEBRAIC, /**< The variable is an algebraic variable. */
+        EXTERNAL /**< The variable is an external variable, i.e. not computed as part of the model. */
     };
 
     ~AnalyserVariable(); /**< Destructor, @private. */

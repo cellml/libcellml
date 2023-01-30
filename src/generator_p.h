@@ -69,6 +69,8 @@ struct Generator::GeneratorImpl
 
     bool modifiedProfile() const;
 
+    std::string newLineIfNeeded();
+
     void addOriginCommentCode();
 
     void addInterfaceHeaderCode();
