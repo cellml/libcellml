@@ -38,177 +38,104 @@ public:
     /**
      * @brief The type of a node in an abstract syntax tree (AST).
      *
-     * A node in an abstract syntax tree (AST) can be of one of the following
-     * types:
-     *  - Assignment type:
-     *     - ASSIGNMENT: the assignment operator
-     *  - Relational and logical operators:
-     *    - EQ: the equal to function;
-     *    - NEQ: the not equal to function;
-     *    - LT: the less than function;
-     *    - LEQ: the less than or equal to function;
-     *    - GT: the greater than function;
-     *    - GEQ: the greater than or equal to function;
-     *    - AND: the and function;
-     *    - OR: the or function
-     *    - XOR: the exclusive or function;
-     *    - NOT: the not function;
-     *  - Arithmetic operators:
-     *    - PLUS: the plus operator;
-     *    - MINUS: the minus operator;
-     *    - TIMES: the times operator;
-     *    - DIVIDE: the divide operator;
-     *    - POWER: the power operator;
-     *    - ROOT: the root operator;
-     *    - ABS: the absolute value function;
-     *    - EXP: the exponential function;
-     *    - LN: the natural logarithm function;
-     *    - LOG: the common logarithm function;
-     *    - CEILING: the ceiling function;
-     *    - FLOOR: the floor function;
-     *    - MIN: the minimum function;
-     *    - MAX: the maximum function;
-     *    - REM: the remainder function;
-     *  - Calculus elements:
-     *    - DIFF: the differentiation operator;
-     *  - Trigonometric operators:
-     *    - SIN: the sine function;
-     *    - COS: the cosine function;
-     *    - TAN: the tangent function;
-     *    - SEC: the secant function;
-     *    - CSC: the cosecant function;
-     *    - COT: the cotangent function;
-     *    - SINH: the hyperbolic sine function;
-     *    - COSH: the hyperbolic cosine function;
-     *    - TANH: the hyperbolic tangent function;
-     *    - SECH: the hyperbolic secant function;
-     *    - CSCH: the hyperbolic cosecant function;
-     *    - COTH: the hyperbolic cotangent function;
-     *    - ASIN: the arc sine function;
-     *    - ACOS: the arc cosine function;
-     *    - ATAN: the arc tangent function;
-     *    - ASEC: the arc secant function;
-     *    - ACSC: the arc cosecant function;
-     *    - ACOT: the arc cotangent function;
-     *    - ASINH: the arc hyperbolic sine function;
-     *    - ACOSH: the arc hyperbolic cosine function;
-     *    - ATANH: the arc hyperbolic tangent function;
-     *    - ASECH: the arc hyperbolic secant function;
-     *    - ACSCH: the arc hyperbolic cosecant function;
-     *    - ACOTH: the arc hyperbolic cotangent function;
-     *  - Piecewise statement:
-     *    - PIECEWISE: the "piecewise" statement;
-     *    - PIECE: the "piece" part of a "piecewise" statement;
-     *    - OTHERWISE: the "otherwise" part of a "piecewise" statement;
-     *  - Token elements:
-     *    - CI: an identifier (i.e. the name of a model variable);
-     *    - CN: a number;
-     *  - Qualifier elements:
-     *    - DEGREE: the degree of a root operator (it is only used when its
-     *      value is not 2);
-     *    - LOGBASE: the base with respect to which the logarithm is taken;
-     *    - BVAR: the bound variable of a differential equation;
-     *  - Constants:
-     *    - TRUE: the "true" boolean;
-     *    - FALSE: the "false" boolean;
-     *    - E: Euler's number;
-     *    - PI: the π constant;
-     *    - INF: the infinity value; or
-     *    - NAN: the not-a-number value.
+     * The type of a node in an abstract syntax tree (AST), i.e. whether it is
+     * an assignment type, a relational or a logical operator, an arithmetic
+     * operator, a calculus element, a trigonometric operator, a piecewise
+     * statement, a token element, a qualifier element, or a constant.
      */
     enum class Type
     {
         // Assignment.
 
-        ASSIGNMENT,
+        ASSIGNMENT, /**< The assignment operator. */
 
         // Relational and logical operators.
 
-        EQ,
-        NEQ,
-        LT,
-        LEQ,
-        GT,
-        GEQ,
-        AND,
-        OR,
-        XOR,
-        NOT,
+        EQ, /**< The equal to operator. */
+        NEQ, /**< The not equal to operator. */
+        LT, /**< The less than operator. */
+        LEQ, /**< The less than or equal to operator. */
+        GT, /**< The greater than operator. */
+        GEQ, /**< The greater than or equal to operator. */
+        AND, /**< The and operator. */
+        OR, /**< The or operator. */
+        XOR, /**< The exclusive or operator. */
+        NOT, /**< The not operator. */
 
         // Arithmetic operators.
 
-        PLUS,
-        MINUS,
-        TIMES,
-        DIVIDE,
-        POWER,
-        ROOT,
-        ABS,
-        EXP,
-        LN,
-        LOG,
-        CEILING,
-        FLOOR,
-        MIN,
-        MAX,
-        REM,
+        PLUS, /**< The plus operator. */
+        MINUS, /**< The minus operator. */
+        TIMES, /**< The times operator. */
+        DIVIDE, /**< The divide operator. */
+        POWER, /**< The power operator. */
+        ROOT, /**< The root operator. */
+        ABS, /**< The absolute value function. */
+        EXP, /**< The exponential function. */
+        LN, /**< The natural logarithm function. */
+        LOG, /**< The common logarithm function. */
+        CEILING, /**< The ceiling function. */
+        FLOOR, /**< The floor function. */
+        MIN, /**< The minimum function. */
+        MAX, /**< The maximum function. */
+        REM, /**< The remainder function. */
 
         // Calculus elements.
 
-        DIFF,
+        DIFF, /**< The differentiation operator. */
 
         // Trigonometric operators.
 
-        SIN,
-        COS,
-        TAN,
-        SEC,
-        CSC,
-        COT,
-        SINH,
-        COSH,
-        TANH,
-        SECH,
-        CSCH,
-        COTH,
-        ASIN,
-        ACOS,
-        ATAN,
-        ASEC,
-        ACSC,
-        ACOT,
-        ASINH,
-        ACOSH,
-        ATANH,
-        ASECH,
-        ACSCH,
-        ACOTH,
+        SIN, /**< The sine function. */
+        COS, /**< The cosine function. */
+        TAN, /**< The tangent function. */
+        SEC, /**< The secant function. */
+        CSC, /**< The cosecant function. */
+        COT, /**< The cotangent function. */
+        SINH, /**< The hyperbolic sine function. */
+        COSH, /**< The hyperbolic cosine function. */
+        TANH, /**< The hyperbolic tangent function. */
+        SECH, /**< The hyperbolic secant function. */
+        CSCH, /**< The hyperbolic cosecant function. */
+        COTH, /**< The hyperbolic cotangent function. */
+        ASIN, /**< The arc sine function. */
+        ACOS, /**< The arc cosine function. */
+        ATAN, /**< The arc tangent function. */
+        ASEC, /**< The arc secant function. */
+        ACSC, /**< The arc cosecant function. */
+        ACOT, /**< The arc cotangent function. */
+        ASINH, /**< The arc hyperbolic sine function. */
+        ACOSH, /**< The arc hyperbolic cosine function. */
+        ATANH, /**< The arc hyperbolic tangent function. */
+        ASECH, /**< The arc hyperbolic secant function. */
+        ACSCH, /**< The arc hyperbolic cosecant function. */
+        ACOTH, /**< The arc hyperbolic cotangent function. */
 
         // Piecewise statement.
 
-        PIECEWISE,
-        PIECE,
-        OTHERWISE,
+        PIECEWISE, /**< The "piecewise" statement. */
+        PIECE, /**< The "piece" part of a "piecewise" statement. */
+        OTHERWISE, /**< The "otherwise" part of a "piecewise" statement. */
 
         // Token elements.
 
-        CI,
-        CN,
+        CI, /**< An identifier (i.e. the name of a model variable). */
+        CN, /**< A number. */
 
         // Qualifier elements.
 
-        DEGREE,
-        LOGBASE,
-        BVAR,
+        DEGREE, /**< The degree of a root operator (it is only used when its value is not 2). */
+        LOGBASE, /**< The base with respect to which the logarithm is taken. */
+        BVAR, /**< The bound variable of a differential equation. */
 
         // Constants.
 
-        TRUE,
-        FALSE,
-        E,
-        PI,
-        INF,
-        NAN
+        TRUE, /**< The "true" boolean. */
+        FALSE, /**< The "false" boolean. */
+        E, /**< Euler's number. */
+        PI, /**< The π constant. */
+        INF, /**< The infinity value. */
+        NAN /**< The not-a-number value. */
     };
 
     ~AnalyserEquationAst(); /**< Destructor, @private. */
