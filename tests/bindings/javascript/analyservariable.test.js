@@ -28,7 +28,7 @@ describe("Analyser Variable tests", () => {
         libcellml = await loadLibCellML()
     });
     beforeEach(() => {
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
         m = p.parseModel(hhSquidAxon1952)
         a = new libcellml.Analyser()
 
@@ -41,14 +41,14 @@ describe("Analyser Variable tests", () => {
     });
     test('Checking Analyser Variable type.', () => {
         const av = am.variable(5)
-        expect(av.type().value).toBe(libcellml.AnalyserVariable.Type.ALGEBRAIC.value)
+        expect(av.type().value).toBe(libcellml.AnalyserVariable.Type.CONSTANT.value)
     });
     test('Checking Analyser Variable index.', () => {
         const av = am.variable(7)
         expect(av.index()).toBe(7)
     });
     test('Checking Analyser Variable initialising variable.', () => {
-        const av = am.variable(3)
+        const av = am.variable(15)
         expect(av.initialisingVariable().name()).toBe("g_K")
     });
     test('Checking Analyser Variable variable.', () => {

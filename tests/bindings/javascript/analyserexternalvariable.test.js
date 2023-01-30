@@ -26,7 +26,7 @@ describe("Analyser External Variable tests", () => {
         libcellml = await loadLibCellML()
     });
     beforeEach(() => {
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
         m = p.parseModel(hhSquidAxon1952)
     });
     test("Checking Analyser.External Variable variable.", () => {

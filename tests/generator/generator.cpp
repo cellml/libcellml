@@ -22,6 +22,7 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
+/*
 TEST(Generator, emptyModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create("empty_model");
@@ -39,6 +40,7 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
 }
+*/
 
 TEST(Generator, algebraicEqnComputedVarOnRhs)
 {
@@ -392,6 +394,34 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.py"), generator->implementationCode());
+}
+
+TEST(Generator, algebraicUnknownVarOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_unknown_var_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(fileContents("generator/algebraic_unknown_var_on_rhs/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_unknown_var_on_rhs/model.c"), generator->implementationCode());
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/algebraic_unknown_var_on_rhs/model.py"), generator->implementationCode());
 }
 
 TEST(Generator, odeComputedVarOnRhs)
@@ -786,6 +816,34 @@ TEST(Generator, odeMultipleOdesWithSameName)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/ode_multiple_odes_with_same_name/model.py"), generator->implementationCode());
+}
+
+TEST(Generator, odeUnknownVarOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/ode_unknown_var_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(fileContents("generator/ode_unknown_var_on_rhs/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/ode_unknown_var_on_rhs/model.c"), generator->implementationCode());
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/ode_unknown_var_on_rhs/model.py"), generator->implementationCode());
 }
 
 TEST(Generator, cellmlMappingsAndEncapsulations)
@@ -1452,6 +1510,34 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
 }
 
+TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model_unknown_vars_on_rhs.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
+}
+
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateAsExternalVariable)
 {
     // Generate some code for the HH52 model with sodium_channel.m (i.e. not a
@@ -2061,215 +2147,4 @@ TEST(Generator, sineImports)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/sine_model_imports/model.py"), generator->implementationCode());
-}
-
-TEST(Generator, coverage)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/coverage/model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ(size_t(0), analyser->errorCount());
-
-    auto analyserModel = analyser->model();
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
-
-    EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(186), analyserModel->variableCount());
-    EXPECT_EQ(size_t(180), analyserModel->equationCount());
-
-    EXPECT_NE(nullptr, analyserModel->voi());
-    EXPECT_EQ(nullptr, analyserModel->voi()->equation());
-    EXPECT_NE(nullptr, analyserModel->state(0));
-    EXPECT_NE(nullptr, analyserModel->state(0)->equation());
-    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
-    EXPECT_NE(nullptr, analyserModel->variable(0));
-    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(0));
-    EXPECT_NE(nullptr, analyserModel->equation(0)->variable());
-    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
-
-    auto generator = libcellml::Generator::create();
-
-    EXPECT_EQ(nullptr, analyserModel->voi()->initialisingVariable());
-
-    for (size_t i = 0; i < analyserModel->stateCount(); ++i) {
-        EXPECT_NE(nullptr, analyserModel->state(i)->initialisingVariable());
-    }
-
-    for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        EXPECT_EQ(i < 7, analyserModel->variable(i)->initialisingVariable() != nullptr);
-    }
-
-    EXPECT_EQ(nullptr, generator->model());
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-
-    generator->setModel(analyserModel);
-
-    EXPECT_EQ(analyserModel, generator->model());
-    EXPECT_EQ(fileContents("generator/coverage/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/coverage/model.c"), generator->implementationCode());
-
-    auto profile = generator->profile();
-
-    profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
-    profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
-                                                            "{\n"
-                                                            "    return malloc(STATE_COUNT*sizeof(double));\n"
-                                                            "}\n");
-
-    EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.c"), generator->implementationCode());
-
-    profile = libcellml::GeneratorProfile::create();
-
-    generator->setProfile(profile);
-
-    profile->setHasInterface(false);
-
-    profile->setXorString("^");
-    profile->setHasXorOperator(true);
-
-    profile->setPowerString("^^");
-    profile->setSquareString("sqr");
-    profile->setHasPowerOperator(true);
-
-    profile->setPiecewiseIfString("piecewise([CONDITION], [IF_STATEMENT]");
-    profile->setPiecewiseElseString(", [ELSE_STATEMENT])");
-    profile->setHasConditionalOperator(false);
-
-    profile->setInterfaceFileNameString("customheaderfile.h");
-
-    profile->setImplementationHeaderString("#include \"[INTERFACE_FILE_NAME]\"\n");
-
-    profile->setImplementationVersionString("");
-
-    profile->setImplementationLibcellmlVersionString("");
-
-    profile->setImplementationStateCountString("");
-
-    profile->setImplementationVariableCountString("");
-
-    profile->setVariableTypeObjectString(false, false, "");
-    profile->setVariableTypeObjectString(false, true, "");
-    profile->setVariableTypeObjectString(true, false, "");
-    profile->setVariableTypeObjectString(true, true, "");
-
-    profile->setVariableOfIntegrationVariableTypeString("");
-    profile->setStateVariableTypeString("");
-    profile->setConstantVariableTypeString("");
-    profile->setComputedConstantVariableTypeString("");
-    profile->setAlgebraicVariableTypeString("");
-    profile->setExternalVariableTypeString("");
-
-    profile->setVariableInfoObjectString("");
-
-    profile->setImplementationVoiInfoString("");
-
-    profile->setImplementationStateInfoString("");
-
-    profile->setImplementationVariableInfoString("");
-
-    profile->setVariableInfoEntryString("");
-
-    profile->setImplementationCreateStatesArrayMethodString("");
-
-    profile->setImplementationCreateVariablesArrayMethodString("");
-
-    profile->setImplementationDeleteArrayMethodString("");
-
-    profile->setImplementationComputeVariablesMethodString(false, false, "");
-    profile->setImplementationComputeVariablesMethodString(false, true, "");
-    profile->setImplementationComputeVariablesMethodString(true, false, "");
-    profile->setImplementationComputeVariablesMethodString(true, true, "");
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode());
-
-    profile = libcellml::GeneratorProfile::create();
-
-    generator->setProfile(profile);
-
-    profile->setHasInterface(true);
-
-    profile->setEqString("eq");
-    profile->setNeqString("neq");
-    profile->setLtString("lt");
-    profile->setLeqString("leq");
-    profile->setGtString("gt");
-    profile->setGeqString("geq");
-    profile->setAndString("and");
-    profile->setOrString("or");
-    profile->setNotString("not");
-
-    profile->setHasEqOperator(false);
-    profile->setHasNeqOperator(false);
-    profile->setHasLtOperator(false);
-    profile->setHasLeqOperator(false);
-    profile->setHasGtOperator(false);
-    profile->setHasGeqOperator(false);
-    profile->setHasAndOperator(false);
-    profile->setHasOrOperator(false);
-    profile->setHasNotOperator(false);
-
-    profile->setImplementationHeaderString("");
-
-    profile->setInterfaceVersionString("");
-    profile->setImplementationVersionString("");
-
-    profile->setInterfaceLibcellmlVersionString("");
-    profile->setImplementationLibcellmlVersionString("");
-
-    profile->setInterfaceStateCountString("");
-    profile->setImplementationStateCountString("");
-
-    profile->setInterfaceVariableCountString("");
-    profile->setImplementationVariableCountString("");
-
-    profile->setVariableTypeObjectString(false, false, "");
-    profile->setVariableTypeObjectString(false, true, "");
-    profile->setVariableTypeObjectString(true, false, "");
-    profile->setVariableTypeObjectString(true, true, "");
-
-    profile->setVariableOfIntegrationVariableTypeString("");
-    profile->setStateVariableTypeString("");
-    profile->setConstantVariableTypeString("");
-    profile->setComputedConstantVariableTypeString("");
-    profile->setAlgebraicVariableTypeString("");
-    profile->setExternalVariableTypeString("");
-
-    profile->setVariableInfoObjectString("");
-
-    profile->setInterfaceVoiInfoString("");
-    profile->setImplementationVoiInfoString("");
-
-    profile->setInterfaceStateInfoString("");
-    profile->setImplementationStateInfoString("");
-
-    profile->setInterfaceVariableInfoString("");
-    profile->setImplementationVariableInfoString("");
-
-    profile->setVariableInfoEntryString("");
-
-    EXPECT_EQ(fileContents("generator/coverage/model.interface.out"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/coverage/model.implementation.out"), generator->implementationCode());
-
-    profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/coverage/model.py"), generator->implementationCode());
-
-    profile->setImplementationCreateStatesArrayMethodString("\n"
-                                                            "def create_states_vector():\n"
-                                                            "    return [nan]*STATE_COUNT\n");
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode());
 }

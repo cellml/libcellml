@@ -16,7 +16,7 @@ limitations under the License.
 
 #include <emscripten/bind.h>
 
-// To work around multiple inheritance we have to create a combined Units
+// To work around multiple inheritance we have to create a combined Component
 // and ImportedEntity class that we can bind with Emscripten.
 #define JAVASCRIPT_BINDINGS
 #include "libcellml/component.h"

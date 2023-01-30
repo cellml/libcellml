@@ -28,7 +28,7 @@ describe("Analyser tests", () => {
     libcellml = await libCellMLModule();
   });
   beforeEach(() => {
-    const p = new libcellml.Parser()
+    const p = new libcellml.Parser(true)
     m = p.parseModel(basicModel)
     a = new libcellml.Analyser()
 
@@ -39,7 +39,7 @@ describe("Analyser tests", () => {
     aev = new libcellml.AnalyserExternalVariable(v)
   });
   test("Checking Analyser.analyseModel.", () => {
-    const p = new libcellml.Parser()
+    const p = new libcellml.Parser(true)
 
     m = p.parseModel(modelWithError)
     expect(p.issueCount()).toBe(0)

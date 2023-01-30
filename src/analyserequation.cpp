@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 
+#include <algorithm>
+
 #include "analyserequation_p.h"
 
 namespace libcellml {
@@ -35,17 +37,20 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
     mVariable = variable;
 }
 
-void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
+bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    std::vector<AnalyserEquationWeakPtr> dependencies;
+    auto dep = dependency.lock();
 
-    for (const auto &dependency : mDependencies) {
-        if (dependency.lock()->variable() != nullptr) {
-            dependencies.push_back(dependency);
-        }
+    if (dep != nullptr) {
+        return dep->variable() == nullptr;
     }
 
-    mDependencies = dependencies;
+    return true;
+}
+
+void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
+{
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isEmptyDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()

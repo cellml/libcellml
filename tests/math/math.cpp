@@ -20,6 +20,31 @@ limitations under the License.
 
 #include <libcellml>
 
+// Version 2.9.4 of LibXml2 reports the following errors,
+// used on macOS and Linux CI machines.
+const std::vector<std::string> expectedIssues_2_9_4 = {
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: Premature end of data in tag apply line 3.",
+    "LibXml2 error: Premature end of data in tag math line 2.",
+};
+
+// Version 2.9.10 of LibXml2 reports the following errors,
+// used on Windows CI machines.
+const std::vector<std::string> expectedIssues_2_9_10 = {
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: EndTag: '</' not found.",
+};
+
+// Version 2.9.11 of LibXml2 reports the following errors,
+// used on macOS 13 machines.
+const std::vector<std::string> expectedIssues_2_9_11 = {
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
+    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: Premature end of data in tag apply line 3.",
+};
+
 TEST(Maths, setAndGetMath)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -115,8 +140,6 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
         "  <component name=\"component\">\n"
         "    <variable name=\"variable1\"/>\n"
         "    <variable name=\"variable2\"/>\n"
-        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
-        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "  </component>\n"
         "</model>\n";
 
@@ -322,4 +345,131 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
     libcellml::ModelPtr model = parser->parseModel(e);
     a = printer->printModel(model);
     EXPECT_EQ(e, a);
+}
+
+TEST(Printer, addMathMLAsCompleteXMLDoc)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <divide/>\n"
+        "        <ci>eff</ci>\n"
+        "        <ci>t_ave</ci>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::string math =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <divide/>\n"
+        "    <ci> eff </ci>\n"
+        "    <ci> t_ave </ci>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component = libcellml::Component::create("component");
+    model->addComponent(component);
+    component->setMath(math);
+    EXPECT_EQ(e, printer->printModel(model));
+}
+
+TEST(Printer, mathMLWithSyntaxError)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\"/>\n"
+        "</model>\n";
+    const std::string math =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <divide/>\n"
+        "    <ci> eff </ci>\n"
+        "    <ci> t_ave <ci>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component = libcellml::Component::create("component");
+    model->addComponent(component);
+    component->setMath(math);
+
+    EXPECT_EQ(e, printer->printModel(model));
+
+    if (expectedIssues_2_9_4.size() == printer->issueCount()) {
+        for (size_t i = 0; i < printer->issueCount(); ++i) {
+            EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
+        }
+    } else {
+        for (size_t i = 0; i < printer->issueCount(); ++i) {
+            auto message = printer->issue(i)->description();
+            EXPECT_TRUE((expectedIssues_2_9_10.at(i) == message) || (expectedIssues_2_9_11.at(i) == message));
+        }
+    }
+
+    auto itemComponent = printer->issue(printer->issueCount() - 1)->item()->component();
+    EXPECT_NE(nullptr, itemComponent);
+    EXPECT_EQ("component", itemComponent->name());
+}
+
+TEST(Printer, mathMLInResetWithSyntaxError)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <reset order=\"5\">\n"
+        "      <reset_value/>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::string math =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <divide/>\n"
+        "    <ci> eff </ci>\n"
+        "    <ci> t_ave <ci>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    auto printer = libcellml::Printer::create();
+    auto model = libcellml::Model::create();
+    model->setName("model");
+
+    auto component = libcellml::Component::create("component");
+    model->addComponent(component);
+    auto reset = libcellml::Reset::create();
+    reset->setResetValue(math);
+    reset->setOrder(5);
+    component->addReset(reset);
+
+    EXPECT_EQ(e, printer->printModel(model));
+    if (expectedIssues_2_9_4.size() == printer->issueCount()) {
+        for (size_t i = 0; i < printer->issueCount(); ++i) {
+            EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
+        }
+    } else {
+        for (size_t i = 0; i < printer->issueCount(); ++i) {
+            auto message = printer->issue(i)->description();
+            EXPECT_TRUE((expectedIssues_2_9_10.at(i) == message) || (expectedIssues_2_9_11.at(i) == message));
+        }
+    }
+
+    auto itemReset = printer->issue(printer->issueCount() - 1)->item()->reset();
+    EXPECT_NE(nullptr, itemReset);
+    EXPECT_EQ(5, itemReset->order());
 }

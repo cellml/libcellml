@@ -13,6 +13,7 @@
 # limitations under the License.
 
 include(CheckCXXCompilerFlag)
+include(TestUndefinedSymbolsAllowed)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
@@ -29,6 +30,8 @@ else ()
   else()
     set(_FIND_PYTHON_DEVELOPMENT_TYPE Development)
   endif()
+
+  test_undefined_symbols_allowed()
 
   find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter ${_FIND_PYTHON_DEVELOPMENT_TYPE})
 
@@ -136,6 +139,8 @@ if(LibXml2_FOUND)
     set(LIBXML2_TARGET_NAME xml2)
   elseif(TARGET LibXml2)
     set(LIBXML2_TARGET_NAME LibXml2)
+  elseif(TARGET LibXml2::LibXml2)
+    set(LIBXML2_TARGET_NAME LibXml2::LibXml2)
   else()
     message(FATAL_ERROR "FindLibXml2: Found configuration file for LibXml2 but could not determine a target name from it.")
   endif()
@@ -151,6 +156,7 @@ else()
   find_package(LibXml2 REQUIRED)
   if(TARGET z)
     set(HAVE_ZLIB_TARGET TRUE)
+    get_target_property(ZLIB_TARGET_TYPE z TYPE)
   else()
     find_package(ZLIB REQUIRED)
   endif()

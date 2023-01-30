@@ -17,6 +17,7 @@ limitations under the License.
 #include "internaltypes.h"
 
 #include "commonutils.h"
+#include "libcellml/importsource.h"
 
 namespace libcellml {
 

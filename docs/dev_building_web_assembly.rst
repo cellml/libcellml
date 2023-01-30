@@ -88,7 +88,7 @@ Then, as before, we simply issue the build and install commands::
 
 That is all that is required for preparing the dependencies ready for *libCellML*.
 
-*libCellML*
+libCellML
 ---------
 
 Following a similar approach to building the dependencies, we can now configure and build *libCellML*.

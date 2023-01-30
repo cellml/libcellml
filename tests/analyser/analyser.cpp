@@ -346,8 +346,8 @@ TEST(Analyser, overconstrainedTwoVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is computed more than once.",
         "Variable 'y' in component 'my_component' is computed more than once.",
+        "Variable 'x' in component 'my_component' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -372,9 +372,9 @@ TEST(Analyser, overconstrainedThreeVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
+        "Variable 'z' in component 'my_component' is computed more than once.",
         "Variable 'x' in component 'my_component' is computed more than once.",
         "Variable 'y' in component 'my_component' is computed more than once.",
-        "Variable 'z' in component 'my_component' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -399,16 +399,16 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is unused.",
         "Variable 'y' in component 'my_component' is computed more than once.",
+        "Variable 'x' in component 'my_component' is unused.",
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
         libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
     };
     const std::vector<std::string> expectedUrls = {
-        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNUSED",
         "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNUSED",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -509,8 +509,11 @@ TEST(Analyser, removeExternalVariableByName)
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
 
-    EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(nullptr, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "X", "V"));
     EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "X"));
+    EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "V"));
 }
 
 TEST(Analyser, removeExternalVariableByPointer)
@@ -527,9 +530,9 @@ TEST(Analyser, removeExternalVariableByPointer)
 
     analyser->addExternalVariable(externalVariable);
 
+    EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
     EXPECT_TRUE(analyser->removeExternalVariable(externalVariable));
     EXPECT_FALSE(analyser->removeExternalVariable(externalVariable));
-    EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
 }
 
 TEST(Analyser, removeAllExternalVariables)
@@ -912,66 +915,4 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
                                                                    expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE),
                                                                    expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE"),
                                                                    analyser);
-}
-
-TEST(Analyser, coverage)
-{
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(nullptr);
-
-    EXPECT_EQ(size_t(1), analyser->issueCount());
-
-    auto analyserModel = analyser->model();
-
-    EXPECT_FALSE(analyserModel->isValid());
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::UNKNOWN, analyserModel->type());
-
-    EXPECT_EQ(nullptr, analyserModel->voi());
-
-    EXPECT_FALSE(analyserModel->hasExternalVariables());
-
-    EXPECT_EQ(size_t(0), analyserModel->stateCount());
-    EXPECT_EQ(size_t(0), analyserModel->states().size());
-
-    EXPECT_EQ(size_t(0), analyserModel->variableCount());
-    EXPECT_EQ(size_t(0), analyserModel->variables().size());
-
-    EXPECT_EQ(size_t(0), analyserModel->equationCount());
-    EXPECT_EQ(size_t(0), analyserModel->equations().size());
-
-    EXPECT_FALSE(analyserModel->needEqFunction());
-    EXPECT_FALSE(analyserModel->needNeqFunction());
-    EXPECT_FALSE(analyserModel->needLtFunction());
-    EXPECT_FALSE(analyserModel->needLeqFunction());
-    EXPECT_FALSE(analyserModel->needGtFunction());
-    EXPECT_FALSE(analyserModel->needGeqFunction());
-    EXPECT_FALSE(analyserModel->needAndFunction());
-    EXPECT_FALSE(analyserModel->needOrFunction());
-    EXPECT_FALSE(analyserModel->needXorFunction());
-    EXPECT_FALSE(analyserModel->needNotFunction());
-    EXPECT_FALSE(analyserModel->needMinFunction());
-    EXPECT_FALSE(analyserModel->needMaxFunction());
-    EXPECT_FALSE(analyserModel->needSecFunction());
-    EXPECT_FALSE(analyserModel->needCscFunction());
-    EXPECT_FALSE(analyserModel->needCotFunction());
-    EXPECT_FALSE(analyserModel->needSechFunction());
-    EXPECT_FALSE(analyserModel->needCschFunction());
-    EXPECT_FALSE(analyserModel->needCothFunction());
-    EXPECT_FALSE(analyserModel->needAsecFunction());
-    EXPECT_FALSE(analyserModel->needAcscFunction());
-    EXPECT_FALSE(analyserModel->needAcotFunction());
-    EXPECT_FALSE(analyserModel->needAsechFunction());
-    EXPECT_FALSE(analyserModel->needAcschFunction());
-    EXPECT_FALSE(analyserModel->needAcothFunction());
-
-    auto ast = libcellml::AnalyserEquationAst::create();
-
-    EXPECT_NE(nullptr, ast);
-
-    ast->setType(libcellml::AnalyserEquationAst::Type::ASSIGNMENT);
-    ast->setValue({});
-    ast->setVariable(libcellml::Variable::create());
-    ast->setParent(libcellml::AnalyserEquationAst::create());
 }

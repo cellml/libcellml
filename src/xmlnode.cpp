@@ -21,6 +21,7 @@ limitations under the License.
 #include <string>
 
 #include "namespaces.h"
+#include "utilities.h"
 #include "xmlattribute.h"
 
 namespace libcellml {
@@ -176,7 +177,27 @@ bool XmlNode::isElement() const
 
 bool XmlNode::isCellmlElement(const char *name) const
 {
+    return isCellml20Element(name) || isCellml11Element(name) || isCellml10Element(name);
+}
+
+bool XmlNode::isCellml20Element(const char *name) const
+{
     return isElement(name, CELLML_2_0_NS);
+}
+
+bool XmlNode::isCellml10Element(const char *name) const
+{
+    return isElement(name, CELLML_1_0_NS);
+}
+
+bool XmlNode::isCellml11Element(const char *name) const
+{
+    return isElement(name, CELLML_1_1_NS);
+}
+
+bool XmlNode::isCellml1XElement(const char *name) const
+{
+    return isCellml10Element(name) || isCellml11Element(name);
 }
 
 bool XmlNode::isMathmlElement(const char *name) const
@@ -187,6 +208,15 @@ bool XmlNode::isMathmlElement(const char *name) const
 bool XmlNode::isText() const
 {
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
+}
+
+bool XmlNode::isNumber() const
+{
+    bool validConversion;
+
+    convertToDouble(convertToStrippedString(), &validConversion);
+
+    return validConversion;
 }
 
 bool XmlNode::isComment() const
@@ -244,6 +274,11 @@ XmlAttributePtr XmlNode::firstAttribute() const
     return attributeHandle;
 }
 
+bool XmlNode::is(const XmlNodePtr &node) const
+{
+    return mPimpl->mXmlNodePtr == node->mPimpl->mXmlNodePtr;
+}
+
 XmlNodePtr XmlNode::firstChild() const
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
@@ -285,6 +320,7 @@ XmlNodePtr XmlNode::parent() const
 std::string XmlNode::convertToString() const
 {
     std::string contentString;
+    xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
     int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
     if (len > 0) {

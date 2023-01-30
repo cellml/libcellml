@@ -36,7 +36,7 @@ describe("Generator tests", () => {
     })
     test('Checking Generator model manipulation.', () => {
         const g = new libcellml.Generator()
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
 
         m = p.parseModel(basicModel)
         a = new libcellml.Analyser()
@@ -52,7 +52,7 @@ describe("Generator tests", () => {
     })
         test('Checking Generator code generation.', () => {
         const g = new libcellml.Generator()
-        const p = new libcellml.Parser()
+        const p = new libcellml.Parser(true)
 
         m = p.parseModel(basicModel)
         a = new libcellml.Analyser()
@@ -61,7 +61,10 @@ describe("Generator tests", () => {
 
         g.setModel(a.model())
 
-        expect(g.interfaceCode().length).toBe(996)
-        expect(g.implementationCode().length).toBe(1058)
+        const interface_lines = g.interfaceCode().split('\n')
+        expect(interface_lines.length).toBe(40)
+
+        const implementation_lines = g.implementationCode().split('\n')
+        expect(implementation_lines.length).toBe(55)
     })
 })

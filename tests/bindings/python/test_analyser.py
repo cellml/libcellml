@@ -158,7 +158,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         ae = am.equation(3)
 
-        self.assertEqual(AnalyserEquation.Type.RATE, ae.type())
+        self.assertEqual(AnalyserEquation.Type.ALGEBRAIC, ae.type())
         self.assertIsNotNone(ae.ast())
         self.assertIsNotNone(ae.dependencies())
         self.assertTrue(ae.isStateRateBased())
@@ -175,6 +175,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertIsNotNone(aea.leftChild())
         self.assertIsNotNone(aea.rightChild())
 
+        aea.swapLeftAndRightChildren()
         aea.setType(AnalyserEquationAst.Type.EQ)
         aea.setValue(AnalyserTestCase.VALUE)
         aea.setVariable(av.variable())

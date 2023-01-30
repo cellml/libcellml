@@ -34,6 +34,7 @@ class LIBCELLML_EXPORT Issue
     friend class Annotator;
     friend class Importer;
     friend class Parser;
+    friend class Printer;
     friend class Validator;
 
 public:
@@ -127,6 +128,7 @@ public:
         RESET_RESET_VALUE,
         MATH_MATHML,
         MATH_CHILD,
+        MATH_CI,
         MATH_CI_VARIABLE_REF,
         MATH_CN_UNITS,
         MATH_CN_BASE10,

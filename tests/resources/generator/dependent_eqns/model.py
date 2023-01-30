@@ -1,22 +1,22 @@
-# The content of this file was generated using the Python profile of libCellML 0.2.0.
+# The content of this file was generated using the Python profile of libCellML 0.4.0.
 
 from enum import Enum
 from math import *
 
 
-__version__ = "0.3.0"
-LIBCELLML_VERSION = "0.2.0"
+__version__ = "0.3.1"
+LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 1
 VARIABLE_COUNT = 2
 
 
 class VariableType(Enum):
-    VARIABLE_OF_INTEGRATION = 1
-    STATE = 2
-    CONSTANT = 3
-    COMPUTED_CONSTANT = 4
-    ALGEBRAIC = 5
+    VARIABLE_OF_INTEGRATION = 0
+    STATE = 1
+    CONSTANT = 2
+    COMPUTED_CONSTANT = 3
+    ALGEBRAIC = 4
 
 
 VOI_INFO = {"name": "time", "units": "second", "component": "my_component", "type": VariableType.VARIABLE_OF_INTEGRATION}
@@ -26,8 +26,8 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"name": "b", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC},
-    {"name": "a", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC}
+    {"name": "a", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC},
+    {"name": "b", "units": "second", "component": "my_component", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -52,5 +52,5 @@ def compute_rates(voi, states, rates, variables):
 
 
 def compute_variables(voi, states, rates, variables):
-    variables[0] = 2.0*voi
-    variables[1] = 3.0*variables[0]
+    variables[0] = 3.0*variables[1]
+    variables[1] = 2.0*voi

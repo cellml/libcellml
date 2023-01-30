@@ -254,6 +254,9 @@ jobs:
         endif()
 
         file(GLOB _DIST_FILES ${ACTION_DIR}/build/dist/*)
+        # softprops action requires a list of newline separated files.
+        # The %0A will be converted by GitHub actions into '\n'.
+        string(REPLACE ";" "%0A" _DIST_FILES "${_DIST_FILES}")
         execute_process(
           COMMAND echo "::set-output name=files::${_DIST_FILES}")
 
@@ -279,7 +282,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-12, ubuntu-20.04, windows-2019]
-        py: ['3.7', '3.8', '3.9', '3.10']
+        py: ['3.7', '3.8', '3.9', '3.10', '3.11']
         include:
           - name: 'Windows'
             os: windows-2019
@@ -290,8 +293,7 @@ jobs:
         exclude:
           - os: macos-12
             py: '3.7'
-          - os: macos-12
-            py: '3.8'
+
     steps:
       - name: Check out libCellML
         uses: actions/checkout@v2
@@ -311,32 +313,48 @@ jobs:
           #echo ::set-output name=TAG::v0.2.0-dev.21
           echo "Setting build as: BUILD=cp${v/./}-*"
           echo ::set-output name=BUILD::cp${v/./}-*
+          if [[ "macOS" == "${{ matrix.name }}" ]]; then
+            if [[ "${{ matrix.py }}" == "3.8" ]]; then
+              echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64'"
+              echo ::set-output name=MACOS_ARCHS::x86_64
+            else
+              echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64 arm64'"
+              echo ::set-output name=MACOS_ARCHS::"x86_64 arm64"
+            fi
+          else
+            echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64'"
+            echo ::set-output name=MACOS_ARCHS::x86_64
+          fi
 
       - name: Configure MSVC
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
+
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.8.1
+        run: python -m pip install cibuildwheel==2.11.2
+
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse src/bindings/python/
         env:
           #CIBW_BUILD_VERBOSITY: 1
           CIBW_ARCHS: auto64
-          CIBW_ARCHS_MACOS: "x86_64 arm64"
+          CIBW_ARCHS_MACOS: ${{ steps.setup.outputs.macos_archs }}
           CIBW_BUILD: ${{ steps.setup.outputs.build }}
           CIBW_TEST_SKIP: "*_arm64"
           CIBW_BEFORE_ALL_LINUX: yum install -y libxml2-devel || (apk add libxml2-dev && rm /usr/lib/cmake/libxml2/libxml2-config.cmake)
           CIBW_BEFORE_ALL_WINDOWS: cd src/bindings/python && cmake -S wheel_dependencies -B build-wheel_dependencies -G Ninja && cd build-wheel_dependencies && ninja
           CIBW_ENVIRONMENT: LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
           CIBW_ENVIRONMENT_MACOS: >
-            MACOSX_DEPLOYMENT_TARGET=11.0
+            MACOSX_DEPLOYMENT_TARGET=10.15
             LIBCELLML_VERSION_TAG=${{ steps.setup.outputs.tag }}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
-          CIBW_REPAIR_WHEEL_COMMAND_LINUX: ""
+          CIBW_BEFORE_BUILD_LINUX: pip install renamewheel
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: renamewheel -w {dest_dir} {wheel}
 
       - name: Upload Python wheels as artifacts
         if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
@@ -351,6 +369,7 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
+          python -m pip install twine
           twine upload --skip-existing ./wheelhouse/*.whl
 
 

@@ -46,6 +46,9 @@
 %feature("docstring") libcellml::AnalyserEquationAst::setRightChild
 "Sets the :class:`AnalyserEquationAst` right child for this :class:`AnalyserEquationAst` object.";
 
+%feature("docstring") libcellml::AnalyserEquationAst::swapLeftAndRightChildren
+"Swaps the left and right children of this :class:`AnalyserEquationAst` object.";
+
 %{
 #include "libcellml/analyserequationast.h"
 %}

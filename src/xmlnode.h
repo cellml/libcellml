@@ -142,6 +142,22 @@ public:
 
     /**
      * @brief Check if this @c XmlNode is an element node in the
+     * CellML 1.X or 2.0 namespace with the given local name.
+     *
+     * Checks whether this @c XmlNode is an element node in
+     * the CellML 1.X or 2.0 namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
+     *
+     * @param name The @c char element name to check for.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * CellML 1.X or 2.0 namespace with the given local name @p name; and
+     * @c false otherwise.
+     */
+    bool isCellmlElement(const char *name = nullptr) const;
+
+    /**
+     * @brief Check if this @c XmlNode is an element node in the
      * CellML 2.0 namespace with the given local name.
      *
      * Checks whether this @c XmlNode is an element node in
@@ -154,7 +170,55 @@ public:
      * CellML 2.0 namespace with the given local name @p name; and
      * @c false otherwise.
      */
-    bool isCellmlElement(const char *name = nullptr) const;
+    bool isCellml20Element(const char *name = nullptr) const;
+
+    /**
+     * @brief Check if this @c XmlNode is an element node in the
+     * CellML 1.0 namespace with the given local name.
+     *
+     * Checks whether this @c XmlNode is an element node in
+     * the CellML 1.0 namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
+     *
+     * @param name The @c char element name to check for.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * CellML 1.0 namespace with the given local name @p name; and
+     * @c false otherwise.
+     */
+    bool isCellml10Element(const char *name = nullptr) const;
+
+    /**
+     * @brief Check if this @c XmlNode is an element node in the
+     * CellML 1.1 namespace with the given local name.
+     *
+     * Checks whether this @c XmlNode is an element node in
+     * the CellML 1.1 namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
+     *
+     * @param name The @c char element name to check for.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * CellML 1.1 namespace with the given local name @p name; and
+     * @c false otherwise.
+     */
+    bool isCellml11Element(const char *name = nullptr) const;
+
+    /**
+     * @brief Check if this @c XmlNode is an element node in the
+     * CellML 1.0 or CellML 1.1 namespace with the given local name.
+     *
+     * Checks whether this @c XmlNode is an element node in
+     * the CellML 1.0 or CellML 1.1 namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
+     *
+     * @param name The @c char element name to check for.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * CellML 1.0 or CellML 1.1 namespace with the given local name @p name; and
+     * @c false otherwise.
+     */
+    bool isCellml1XElement(const char *name = nullptr) const;
 
     /**
      * @brief Check if this @c XmlNode is an element node in the
@@ -181,6 +245,17 @@ public:
      * @return @c true if this @c XmlNode is a text node and @c false otherwise.
      */
     bool isText() const;
+
+    /**
+     * @brief Check if this @c XmlNode is a text node representing a number.
+     *
+     * Checks whether this @c XmlNode is a text node representing a number.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a text node representing a number
+     * and @c false otherwise.
+     */
+    bool isNumber() const;
 
     /**
      * @brief Check if this @c XmlNode is a comment node.
@@ -241,6 +316,18 @@ public:
      * for this @c XmlNode.
      */
     XmlAttributePtr firstAttribute() const;
+
+    /**
+     * @brief Test if this @c XmlNode is the given node.
+     *
+     * Test if this @c XmlNode is the given node. If it is true is returned,
+     * otherwise false is.
+     *
+     * @param node The @c XmlNode to test against.
+     *
+     * @return true if this @c XmlNode is the given node, false otherwise.
+     */
+    bool is(const XmlNodePtr &node) const;
 
     /**
      * @brief Get the first child for this @c XmlNode.

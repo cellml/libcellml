@@ -4,6 +4,7 @@
 
 %import "createconstructor.i"
 %import "importedentity.i"
+%import "namedentity.i"
 %import "types.i"
 
 // Add typemaps to fix string ref inputs (fixes memory leak issues)

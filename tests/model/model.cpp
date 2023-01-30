@@ -52,7 +52,7 @@ TEST(Model, name)
     EXPECT_EQ(e, a2);
 }
 
-TEST(Model, unsetName)
+TEST(Model, removeName)
 {
     const std::string n = "name";
     const std::string eName =
@@ -70,7 +70,7 @@ TEST(Model, unsetName)
     std::string a = printer->printModel(m);
     EXPECT_EQ(eName, a);
 
-    m->setName("");
+    m->removeName();
     EXPECT_EQ("", m->name());
     a = printer->printModel(m);
     EXPECT_EQ(e, a);
@@ -644,7 +644,7 @@ TEST(Model, cleanEmptyComponents)
         "  <component>\n"
         "    <reset/>\n"
         "  </component>\n"
-        "  <component>abc</component>\n"
+        "  <component/>\n"
         "</model>\n";
     auto model = libcellml::Model::create();
     auto c1 = libcellml::Component::create("c1");

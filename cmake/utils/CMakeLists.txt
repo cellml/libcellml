@@ -26,3 +26,18 @@ add_custom_command(OUTPUT mathmldtd.h
 add_custom_target(create_mathml_dtd_files
   DEPENDS mathmldtd.h
   COMMENT "Create mathmldtd files (in source directory, Eek!).")
+
+add_executable(calculatesha1 calculatesha1.cpp ${PROJECT_SOURCE_DIR}/src/generatorprofiletools.cpp)
+set_target_properties(calculatesha1 PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE EXCLUDE_FROM_ALL TRUE)
+target_include_directories(calculatesha1 PRIVATE ${PROJECT_SOURCE_DIR}/src)
+target_link_libraries(calculatesha1 PRIVATE cellml)
+
+add_custom_command(OUTPUT generatorprofilesha1values.cmake
+  COMMENT "Updating SHA-1 values for C and Python generator profiles."
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  DEPENDS calculatesha1
+  COMMAND calculatesha1
+  COMMAND ${CMAKE_COMMAND} -P "${PROJECT_SOURCE_DIR}/cmake/generateprofilesha1header.cmake")
+add_custom_target(update_generator_profile_sha1_values
+  DEPENDS generatorprofilesha1values.cmake
+  COMMENT "Update SHA-1 values for C and Python generator profiles (in source directory, Eek!).")
