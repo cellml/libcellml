@@ -402,10 +402,15 @@ std::string doPrintAst(const AnalyserEquationAstPtr &ast)
 
         // Token elements.
 
-    case AnalyserEquationAst::Type::CI:
-        res = ast->variable()->name();
+    case AnalyserEquationAst::Type::CI: {
+        auto astVariable = ast->variable();
+
+        if (astVariable != nullptr) {
+            res = astVariable->name();
+        }
 
         break;
+    }
     case AnalyserEquationAst::Type::CN:
         res = ast->value();
 
@@ -467,7 +472,11 @@ void doPrintAst(const AnalyserEquationAstPtr &ast,
     std::string prevStr = SPACES;
     AnalyserEquationAstTrunk trunk(prevTrunk, prevStr);
 
-    doPrintAst(ast->leftChild(), &trunk, true);
+    auto astLeftChild = ast->leftChild();
+
+    if (astLeftChild != nullptr) {
+        doPrintAst(astLeftChild, &trunk, true);
+    }
 
     if (prevTrunk == nullptr) {
         trunk.mStr = "──";
@@ -489,7 +498,11 @@ void doPrintAst(const AnalyserEquationAstPtr &ast,
 
     trunk.mStr = TRUNK;
 
-    doPrintAst(ast->rightChild(), &trunk, false);
+    auto astRightChild = ast->rightChild();
+
+    if (astRightChild != nullptr) {
+        doPrintAst(astRightChild, &trunk, false);
+    }
 }
 
 void printAst(const AnalyserEquationAstPtr &ast)
