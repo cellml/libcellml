@@ -1219,13 +1219,17 @@ size_t nonCommentChildCount(const XmlNodePtr &node)
 
 XmlNodePtr nonCommentChildNode(const XmlNodePtr &node, size_t index)
 {
+    // Note: we assume that there is always a non-comment child at the given
+    //       index, hence there is never a need to test for res being equal to
+    //       nullptr.
+
     auto res = node->firstChild();
     auto childNodeIndex = res->isComment() ? MAX_SIZE_T : 0;
 
-    while ((res != nullptr) && (childNodeIndex != index)) {
+    while (childNodeIndex != index) {
         res = res->next();
 
-        if ((res != nullptr) && !res->isComment()) {
+        if (!res->isComment()) {
             ++childNodeIndex;
         }
     }
