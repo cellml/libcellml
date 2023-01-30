@@ -2132,18 +2132,12 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
                                component);
             }
         } else if (cnType == "e-notation") {
-            auto ok = true;
+            auto ok = false;
 
-            if (nonCommentChildCount(node) != 3) {
-                ok = false;
-            } else {
-                auto child0 = nonCommentChildNode(node, 0);
-                auto child1 = nonCommentChildNode(node, 1);
-                auto child2 = nonCommentChildNode(node, 2);
-
-                ok = child0->isNumber()
-                     && child1->isMathmlElement("sep")
-                     && child2->isNumber();
+            if (nonCommentChildCount(node) == 3) {
+                ok = nonCommentChildNode(node, 0)->isNumber()
+                     && nonCommentChildNode(node, 1)->isMathmlElement("sep")
+                     && nonCommentChildNode(node, 2)->isNumber();
             }
 
             if (!ok) {
