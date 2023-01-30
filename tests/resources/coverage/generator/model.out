@@ -1,0 +1,296 @@
+/* The content of this file was generated using a modified C profile of libCellML 0.4.0. */
+
+#include "customheaderfile.h"
+
+double min(double x, double y)
+{
+    return (x < y)?x:y;
+}
+
+double max(double x, double y)
+{
+    return (x > y)?x:y;
+}
+
+double sec(double x)
+{
+    return 1.0/cos(x);
+}
+
+double csc(double x)
+{
+    return 1.0/sin(x);
+}
+
+double cot(double x)
+{
+    return 1.0/tan(x);
+}
+
+double sech(double x)
+{
+    return 1.0/cosh(x);
+}
+
+double csch(double x)
+{
+    return 1.0/sinh(x);
+}
+
+double coth(double x)
+{
+    return 1.0/tanh(x);
+}
+
+double asec(double x)
+{
+    return acos(1.0/x);
+}
+
+double acsc(double x)
+{
+    return asin(1.0/x);
+}
+
+double acot(double x)
+{
+    return atan(1.0/x);
+}
+
+double asech(double x)
+{
+    double oneOverX = 1.0/x;
+
+    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));
+}
+
+double acsch(double x)
+{
+    double oneOverX = 1.0/x;
+
+    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));
+}
+
+double acoth(double x)
+{
+    double oneOverX = 1.0/x;
+
+    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
+}
+
+void initialiseVariables(double *states, double *variables)
+{
+    variables[0] = 1.0;
+    variables[1] = 2.0;
+    variables[2] = 3.0;
+    variables[3] = 4.0;
+    variables[4] = 5.0;
+    variables[5] = 6.0;
+    variables[6] = 7.0;
+    variables[182] = 123.0;
+    variables[183] = 123.456789;
+    variables[184] = 123.0e99;
+    variables[185] = 123.456789e99;
+    variables[187] = 1.0;
+    variables[188] = 0.0;
+    variables[189] = 2.71828182845905;
+    variables[190] = 3.14159265358979;
+    variables[191] = INFINITY;
+    variables[192] = NAN;
+    states[0] = 0.0;
+}
+
+void computeComputedConstants(double *variables)
+{
+    variables[7] = variables[0] == variables[1];
+    variables[8] = variables[0]/(variables[1] == variables[1]);
+    variables[9] = variables[0] != variables[1];
+    variables[10] = variables[0]/(variables[1] != variables[2]);
+    variables[11] = variables[0] < variables[1];
+    variables[12] = variables[0]/(variables[1] < variables[2]);
+    variables[13] = variables[0] <= variables[1];
+    variables[14] = variables[0]/(variables[1] <= variables[2]);
+    variables[15] = variables[0] > variables[1];
+    variables[16] = variables[0]/(variables[1] > variables[2]);
+    variables[17] = variables[0] >= variables[1];
+    variables[18] = variables[0]/(variables[1] >= variables[2]);
+    variables[19] = variables[0] && variables[1];
+    variables[20] = variables[0] && variables[1] && variables[2];
+    variables[21] = (variables[0] < variables[1]) && (variables[2] > variables[3]);
+    variables[22] = (variables[0]+variables[1]) && (variables[2] > variables[3]);
+    variables[23] = variables[0] && (variables[1] > variables[2]);
+    variables[24] = (variables[0]-variables[1]) && (variables[2] > variables[3]);
+    variables[25] = -variables[0] && (variables[1] > variables[2]);
+    variables[26] = (variables[0]^^variables[1]) && (variables[2] > variables[3]);
+    variables[27] = (variables[0]^^(1.0/variables[1])) && (variables[2] > variables[3]);
+    variables[28] = (variables[0] < variables[1]) && (variables[2]+variables[3]);
+    variables[29] = (variables[0] < variables[1]) && variables[2];
+    variables[30] = (variables[0] < variables[1]) && (variables[2]-variables[3]);
+    variables[31] = (variables[0] < variables[1]) && -variables[2];
+    variables[32] = (variables[0] < variables[1]) && (variables[2]^^variables[3]);
+    variables[33] = (variables[0] < variables[1]) && (variables[2]^^(1.0/variables[3]));
+    variables[34] = variables[0]/(variables[1] && variables[2]);
+    variables[35] = variables[0] || variables[1];
+    variables[36] = variables[0] || variables[1] || variables[2];
+    variables[37] = (variables[0] < variables[1]) || (variables[2] > variables[3]);
+    variables[38] = (variables[0]+variables[1]) || (variables[2] > variables[3]);
+    variables[39] = variables[0] || (variables[1] > variables[2]);
+    variables[40] = (variables[0]-variables[1]) || (variables[2] > variables[3]);
+    variables[41] = -variables[0] || (variables[1] > variables[2]);
+    variables[42] = (variables[0]^^variables[1]) || (variables[2] > variables[3]);
+    variables[43] = (variables[0]^^(1.0/variables[1])) || (variables[2] > variables[3]);
+    variables[44] = (variables[0] < variables[1]) || (variables[2]+variables[3]);
+    variables[45] = (variables[0] < variables[1]) || variables[2];
+    variables[46] = (variables[0] < variables[1]) || (variables[2]-variables[3]);
+    variables[47] = (variables[0] < variables[1]) || -variables[2];
+    variables[48] = (variables[0] < variables[1]) || (variables[2]^^variables[3]);
+    variables[49] = (variables[0] < variables[1]) || (variables[2]^^(1.0/variables[3]));
+    variables[50] = variables[0]/(variables[1] || variables[2]);
+    variables[51] = variables[0]^variables[1];
+    variables[52] = variables[0]^variables[1]^variables[2];
+    variables[53] = (variables[0] < variables[1])^(variables[2] > variables[3]);
+    variables[54] = (variables[0]+variables[1])^(variables[2] > variables[3]);
+    variables[55] = variables[0]^(variables[1] > variables[2]);
+    variables[56] = (variables[0]-variables[1])^(variables[2] > variables[3]);
+    variables[57] = -variables[0]^(variables[1] > variables[2]);
+    variables[58] = (variables[0]^^variables[1])^(variables[2] > variables[3]);
+    variables[59] = (variables[0]^^(1.0/variables[1]))^(variables[2] > variables[3]);
+    variables[60] = (variables[0] < variables[1])^(variables[2]+variables[3]);
+    variables[61] = (variables[0] < variables[1])^variables[2];
+    variables[62] = (variables[0] < variables[1])^(variables[2]-variables[3]);
+    variables[63] = (variables[0] < variables[1])^-variables[2];
+    variables[64] = (variables[0] < variables[1])^(variables[2]^^variables[3]);
+    variables[65] = (variables[0] < variables[1])^(variables[2]^^(1.0/variables[3]));
+    variables[66] = variables[0]/(variables[1]^variables[2]);
+    variables[67] = !variables[0];
+    variables[68] = variables[0]+variables[1];
+    variables[69] = variables[0]+variables[1]+variables[2];
+    variables[70] = (variables[0] < variables[1])+(variables[2] > variables[3]);
+    variables[71] = variables[0];
+    variables[72] = variables[0]-variables[1];
+    variables[73] = (variables[0] < variables[1])-(variables[2] > variables[3]);
+    variables[74] = (variables[0] < variables[1])-(variables[2]+variables[3]);
+    variables[75] = (variables[0] < variables[1])-variables[2];
+    variables[76] = -variables[0];
+    variables[77] = -(variables[0] < variables[1]);
+    variables[78] = variables[0]*variables[1];
+    variables[79] = variables[0]*variables[1]*variables[2];
+    variables[80] = (variables[0] < variables[1])*(variables[2] > variables[3]);
+    variables[81] = (variables[0]+variables[1])*(variables[2] > variables[3]);
+    variables[82] = variables[0]*(variables[1] > variables[2]);
+    variables[83] = (variables[0]-variables[1])*(variables[2] > variables[3]);
+    variables[84] = -variables[0]*(variables[1] > variables[2]);
+    variables[85] = (variables[0] < variables[1])*(variables[2]+variables[3]);
+    variables[86] = (variables[0] < variables[1])*variables[2];
+    variables[87] = (variables[0] < variables[1])*(variables[2]-variables[3]);
+    variables[88] = (variables[0] < variables[1])*-variables[2];
+    variables[89] = variables[0]/variables[1];
+    variables[90] = (variables[0] < variables[1])/(variables[3] > variables[2]);
+    variables[91] = (variables[0]+variables[1])/(variables[3] > variables[2]);
+    variables[92] = variables[0]/(variables[2] > variables[1]);
+    variables[93] = (variables[0]-variables[1])/(variables[3] > variables[2]);
+    variables[94] = -variables[0]/(variables[2] > variables[1]);
+    variables[95] = (variables[0] < variables[1])/(variables[2]+variables[3]);
+    variables[96] = (variables[0] < variables[1])/variables[2];
+    variables[97] = (variables[0] < variables[1])/(variables[2]-variables[3]);
+    variables[98] = (variables[0] < variables[1])/-variables[2];
+    variables[99] = (variables[0] < variables[1])/(variables[2]*variables[3]);
+    variables[100] = (variables[0] < variables[1])/(variables[2]/variables[3]);
+    variables[101] = sqrt(variables[0]);
+    variables[102] = sqr(variables[0]);
+    variables[103] = variables[0]^^3.0;
+    variables[104] = variables[0]^^variables[1];
+    variables[105] = (variables[0] <= variables[1])^^(variables[2] >= variables[3]);
+    variables[106] = (variables[0]+variables[1])^^(variables[2] >= variables[3]);
+    variables[107] = variables[0]^^(variables[1] >= variables[2]);
+    variables[108] = (variables[0]-variables[1])^^(variables[2] >= variables[3]);
+    variables[109] = (-variables[0])^^(variables[1] >= variables[2]);
+    variables[110] = (variables[0]*variables[1])^^(variables[2] >= variables[3]);
+    variables[111] = (variables[0]/variables[1])^^(variables[2] >= variables[3]);
+    variables[112] = (variables[0] <= variables[1])^^(variables[2]+variables[3]);
+    variables[113] = (variables[0] <= variables[1])^^variables[2];
+    variables[114] = (variables[0] <= variables[1])^^variables[2]-variables[3];
+    variables[115] = (variables[0] <= variables[1])^^-variables[2];
+    variables[116] = (variables[0] <= variables[1])^^(variables[2]*variables[3]);
+    variables[117] = (variables[0] <= variables[1])^^(variables[2]/variables[3]);
+    variables[118] = (variables[0] <= variables[1])^^(variables[2]^^variables[3]);
+    variables[119] = (variables[0] <= variables[1])^^(variables[2]^^(1.0/variables[3]));
+    variables[120] = sqrt(variables[0]);
+    variables[121] = sqrt(variables[0]);
+    variables[122] = variables[0]^^(1.0/3.0);
+    variables[123] = variables[0]^^(1.0/variables[1]);
+    variables[124] = (variables[0] < variables[1])^^(1.0/(variables[3] > variables[2]));
+    variables[125] = (variables[0]+variables[1])^^(1.0/(variables[3] > variables[2]));
+    variables[126] = variables[0]^^(1.0/(variables[2] > variables[1]));
+    variables[127] = (variables[0]-variables[1])^^(1.0/(variables[3] > variables[2]));
+    variables[128] = (-variables[0])^^(1.0/(variables[2] > variables[1]));
+    variables[129] = (variables[0]*variables[1])^^(1.0/(variables[3] > variables[2]));
+    variables[130] = (variables[0]/variables[1])^^(1.0/(variables[3] > variables[2]));
+    variables[131] = (variables[0] < variables[1])^^(1.0/(variables[2]+variables[3]));
+    variables[132] = (variables[0] < variables[1])^^(1.0/variables[2]);
+    variables[133] = (variables[0] < variables[1])^^(1.0/(variables[2]-variables[3]));
+    variables[134] = (variables[0] < variables[1])^^(1.0/(-variables[2]));
+    variables[135] = (variables[0] < variables[1])^^(1.0/(variables[2]*variables[3]));
+    variables[136] = (variables[0] < variables[1])^^(1.0/(variables[2]/variables[3]));
+    variables[137] = (variables[0] < variables[1])^^(1.0/(variables[2]^^variables[3]));
+    variables[138] = (variables[0] < variables[1])^^(1.0/(variables[2]^^(1.0/variables[3])));
+    variables[139] = fabs(variables[0]);
+    variables[140] = exp(variables[0]);
+    variables[141] = log(variables[0]);
+    variables[142] = log10(variables[0]);
+    variables[143] = log(variables[0])/log(2.0);
+    variables[144] = log10(variables[0]);
+    variables[145] = log(variables[0])/log(variables[1]);
+    variables[146] = ceil(variables[0]);
+    variables[147] = floor(variables[0]);
+    variables[148] = min(variables[0], variables[1]);
+    variables[149] = min(variables[0], min(variables[1], variables[2]));
+    variables[150] = max(variables[0], variables[1]);
+    variables[151] = max(variables[0], max(variables[1], variables[2]));
+    variables[152] = fmod(variables[0], variables[1]);
+    variables[153] = sin(variables[0]);
+    variables[154] = cos(variables[0]);
+    variables[155] = tan(variables[0]);
+    variables[156] = sec(variables[0]);
+    variables[157] = csc(variables[0]);
+    variables[158] = cot(variables[0]);
+    variables[159] = sinh(variables[0]);
+    variables[160] = cosh(variables[0]);
+    variables[161] = tanh(variables[0]);
+    variables[162] = sech(variables[0]);
+    variables[163] = csch(variables[0]);
+    variables[164] = coth(variables[0]);
+    variables[165] = asin(variables[0]);
+    variables[166] = acos(variables[0]);
+    variables[167] = atan(variables[0]);
+    variables[168] = asec(variables[0]);
+    variables[169] = acsc(variables[0]);
+    variables[170] = acot(variables[0]);
+    variables[171] = asinh(variables[0]);
+    variables[172] = acosh(variables[0]);
+    variables[173] = atanh(variables[0]/2.0);
+    variables[174] = asech(variables[0]);
+    variables[175] = acsch(variables[0]);
+    variables[176] = acoth(2.0*variables[0]);
+    variables[177] = piecewise(variables[0] > variables[1], variables[0], NAN);
+    variables[178] = piecewise(variables[0] > variables[1], variables[0], variables[2]);
+    variables[179] = piecewise(variables[0] > variables[1], variables[0], piecewise(variables[2] > variables[3], variables[2], piecewise(variables[4] > variables[5], variables[4], NAN)));
+    variables[180] = piecewise(variables[0] > variables[1], variables[0], piecewise(variables[2] > variables[3], variables[2], piecewise(variables[4] > variables[5], variables[4], variables[6])));
+    variables[181] = 123.0+piecewise(variables[0] > variables[1], variables[0], NAN);
+    variables[186] = variables[0];
+    variables[193] = (variables[0] && variables[1])+piecewise(variables[2] > variables[3], variables[1], NAN)+variables[4]+(variables[5] && variables[6]);
+    variables[194] = (variables[0] && variables[1])-(piecewise(variables[2] > variables[3], variables[1], NAN)-(variables[4]-piecewise(variables[2] > variables[3], variables[1], NAN)))-(variables[5] && variables[6]);
+    variables[195] = (variables[0] && variables[1])*piecewise(variables[2] > variables[3], variables[1], NAN)*variables[4]*piecewise(variables[2] > variables[3], variables[1], NAN)*(variables[5] && variables[6]);
+    variables[196] = (variables[0] && variables[1])/(piecewise(variables[2] > variables[3], variables[1], NAN)/(variables[4]/piecewise(variables[2] > variables[3], variables[1], NAN)));
+    variables[197] = (variables[0] || variables[1]) && (variables[0]^variables[1]) && piecewise(variables[2] > variables[3], variables[1], NAN) && variables[4] && piecewise(variables[2] > variables[3], variables[1], NAN) && (variables[0]^variables[1]) && (variables[0] || variables[1]);
+    variables[198] = (variables[0] && variables[1]) || (variables[0]^variables[1]) || piecewise(variables[2] > variables[3], variables[1], NAN) || variables[4] || piecewise(variables[2] > variables[3], variables[1], NAN) || (variables[0]^variables[1]) || (variables[0] && variables[1]);
+    variables[199] = (variables[0] && variables[1])^(variables[0] || variables[1])^piecewise(variables[2] > variables[3], variables[1], NAN)^variables[4]^piecewise(variables[2] > variables[3], variables[1], NAN)^(variables[0] || variables[1])^(variables[0] && variables[1]);
+    variables[200] = (variables[0] && variables[1])^^(piecewise(variables[2] > variables[3], variables[1], NAN)^^(variables[4]^^piecewise(variables[2] > variables[3], variables[1], NAN)^^(variables[0] && variables[1])));
+    variables[201] = (variables[0] && variables[1])^^(1.0/(piecewise(variables[2] > variables[3], variables[1], NAN)^^(1.0/variables[4])))^^(1.0/piecewise(variables[2] > variables[3], variables[1], NAN))^^(1.0/(variables[0] && variables[1]));
+    variables[202] = -(variables[0] && variables[1])+-piecewise(variables[2] > variables[3], variables[1], NAN);
+}
+
+void computeRates(double voi, double *states, double *rates, double *variables)
+{
+    rates[0] = 1.0;
+}

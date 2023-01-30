@@ -35,8 +35,7 @@ std::vector<VariableWeakPtr>::iterator AnalyserExternalVariable::AnalyserExterna
     return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const VariableWeakPtr &v) {
         auto variable = v.lock();
 
-        return (variable != nullptr)
-               && (owningModel(variable) == model)
+        return (owningModel(variable) == model)
                && (owningComponent(variable)->name() == componentName)
                && (variable->name() == variableName);
     });
@@ -157,7 +156,7 @@ VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
     auto result = mPimpl->findDependency(model, componentName, variableName);
 
     if (result != mPimpl->mDependencies.end()) {
-        return (*result).lock();
+        return result->lock();
     }
 
     return nullptr;
