@@ -78,8 +78,6 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
     std::vector<AnalyserEquationPtr> res;
 
     for (const auto &dependency : mPimpl->mDependencies) {
-        // Note: see the llvm-cov section in src/README.rst.
-
         res.push_back(dependency.lock());
     }
 

@@ -18,8 +18,8 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"b", "second", "my_component", ALGEBRAIC},
-    {"a", "second", "my_component", ALGEBRAIC}
+    {"a", "second", "my_component", ALGEBRAIC},
+    {"b", "second", "my_component", ALGEBRAIC}
 };
 
 double * createStatesArray()
@@ -53,6 +53,6 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-    variables[0] = 2.0*voi;
-    variables[1] = 3.0*variables[0];
+    variables[0] = 3.0*variables[1];
+    variables[1] = 2.0*voi;
 }
