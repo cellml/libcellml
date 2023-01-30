@@ -37,3 +37,8 @@ The following rules for naming of variables should be followed.
  * Class member variables: :code:`mMyClassMemberVariable`.
  * Function parameter variables: :code:`myFunctionParameterVariable`.
  * Local variables: :code:`myLocalVariable`.
+
+Weak pointers
+=============
+
+ * The return value of :code:`std::weak_ptr<T>::lock()` should only be tested if it may be equal to :code:`nullptr`.
