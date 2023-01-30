@@ -37,9 +37,20 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
     mVariable = variable;
 }
 
+bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
+{
+    auto dep = dependency.lock();
+
+    if (dep != nullptr) {
+        return dep->variable() == nullptr;
+    }
+
+    return true;
+}
+
 void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
 {
-    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), [=](const auto &dependency) -> bool { return dependency.lock()->variable() == nullptr; }), mDependencies.end());
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isEmptyDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
