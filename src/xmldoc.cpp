@@ -32,6 +32,8 @@ limitations under the License.
 
 namespace libcellml {
 
+static std::regex newLineRegex("\\n");
+
 /**
  * @brief Callback for errors from the libxml2 context parser.
  *
@@ -45,7 +47,7 @@ namespace libcellml {
 void structuredErrorCallback(void *userData, xmlErrorPtr error)
 {
     // Swap libxml2 carriage return for a period.
-    std::string errorString = std::regex_replace(error->message, std::regex("\\n"), ".");
+    std::string errorString = std::regex_replace(error->message, newLineRegex, ".");
     auto context = reinterpret_cast<xmlParserCtxtPtr>(userData);
     auto doc = reinterpret_cast<XmlDoc *>(context->_private);
     doc->addXmlError(errorString);
