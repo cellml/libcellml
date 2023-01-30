@@ -892,3 +892,12 @@ TEST(Equality, namedEntityNotEqualNonNamedEntity)
 
     EXPECT_FALSE(v1->equals(is1));
 }
+
+TEST(Equality, modelNotEqualComponent)
+{
+    libcellml::ModelPtr m = libcellml::Model::create("name");
+    libcellml::ComponentPtr c = libcellml::Component::create("name");
+
+    EXPECT_FALSE(m->equals(c));
+    EXPECT_FALSE(c->equals(m));
+}
