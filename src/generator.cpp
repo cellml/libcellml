@@ -532,7 +532,7 @@ void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
             versionAndLibcellmlCode += mLockedProfile->interfaceVersionString();
         } else {
             if (modifiedProfile()) {
-                std::regex regEx("([0-9]+\\.[0-9]+\\.[0-9]+)");
+                static const std::regex regEx("([0-9]+\\.[0-9]+\\.[0-9]+)");
 
                 versionAndLibcellmlCode += std::regex_replace(mLockedProfile->implementationVersionString(), regEx, "$1.post0");
             } else {
