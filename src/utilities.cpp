@@ -1220,7 +1220,7 @@ size_t nonCommentChildCount(const XmlNodePtr &node)
 XmlNodePtr nonCommentChildNode(const XmlNodePtr &node, size_t index)
 {
     auto res = node->firstChild();
-    auto childNodeIndex = (res->isText() || res->isMathmlElement()) ? 0 : MAX_SIZE_T;
+    auto childNodeIndex = res->isComment() ? MAX_SIZE_T : 0;
 
     while ((res != nullptr) && (childNodeIndex != index)) {
         res = res->next();
