@@ -485,7 +485,6 @@ public:
 Analyser::AnalyserImpl::AnalyserImpl()
 {
     // Customise our generator's profile.
-    // Note: see the llvm-cov section in src/README.rst for profile.
 
     auto profile = mGenerator->profile();
 
@@ -1083,8 +1082,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
-    // Note: see the llvm-cov section in src/README.rst for astParent and
-    //       astGrandparent.
 
     auto astParent = ast->parent();
     auto astGrandparent = (astParent != nullptr) ? astParent->parent() : nullptr;
@@ -1092,8 +1089,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)) {
-        // Note: see the llvm-cov section in src/README.rst for astVariable.
-
         auto astVariable = ast->variable();
 
         internalVariable(astVariable)->makeVoi();
@@ -1149,8 +1144,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                 }
             } while (voi == nullptr);
         } else {
-            // Note: see the llvm-cov section in src/README.rst for voiVariable.
-
             auto voiVariable = mModel->mPimpl->mVoi->variable();
 
             if (!mModel->areEquivalentVariables(astVariable, voiVariable)) {
@@ -1177,8 +1170,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
         double value = convertToDouble(ast->mPimpl->mValue);
 
         if (!areEqual(value, 1.0)) {
-            // Note: see the llvm-cov section in src/README.rst for variable.
-
             auto variable = astGreatGrandparent->mPimpl->mOwnedRightChild->variable();
             auto issue = Issue::IssueImpl::create();
 
@@ -1196,9 +1187,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        // Note: see the llvm-cov section in src/README.rst for
-        //       ast->variable().
-
         internalVariable(ast->variable())->makeState();
     }
 
@@ -1762,8 +1750,6 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
-        // Note: see the llvm-cov section in src/README.rst.
-
         auto units = mCiCnUnits[ast].lock();
         auto model = owningModel(units);
 
@@ -2062,7 +2048,6 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         // The kind of scaling we may end up doing depends on whether we are
         // dealing with a rate or some other variable, i.e. whether or not it
         // has a DIFF node as a parent.
-        // Note: see the llvm-cov section in src/README.rst for astParent.
 
         auto astParent = ast->parent();
 
@@ -2070,8 +2055,6 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
             // We are dealing with a rate, so retrieve the scaling factor for
             // its corresponding variable of integration and apply it, if
             // needed.
-            // Note: see the llvm-cov section in src/README.rst for
-            //       astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable().
 
             auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable());
 
@@ -2079,8 +2062,6 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
                 // We need to scale using the inverse of the scaling factor, but
                 // how we do it depends on whether the rate is to be computed or
                 // used.
-                // Note: see the llvm-cov section in src/README.rst for
-                //       astGrandparent.
 
                 auto astGrandparent = astParent->parent();
 
@@ -2099,16 +2080,11 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
             // variable nor our variable of integration, so retrieve its scaling
             // factor and apply it, if needed, distinguishing between a rate
             // variable and an algebraic variable.
-            // Note: see the llvm-cov section in src/README.rst for
-            //       ast->variable().
 
             auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->variable());
 
             if (!areNearlyEqual(scalingFactor, 1.0)) {
                 if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
-                    // Note: see the llvm-cov section in src/README.rst for
-                    //       astParent->parent().
-
                     scaleAst(astParent, astParent->parent(), scalingFactor);
                 } else {
                     scaleAst(ast, astParent, scalingFactor);
@@ -2169,8 +2145,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     if (!mExternalVariables.empty()) {
         for (const auto &externalVariable : mExternalVariables) {
-            // Note: see the llvm-cov section in src/README.rst for variable.
-
             auto variable = externalVariable->variable();
 
             if (owningModel(variable) != model) {
@@ -2519,24 +2493,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // external equation and if its unknown variable is on its RHS.
 
         if (type != AnalyserEquation::Type::EXTERNAL) {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       astRightChild.
-
             auto ast = internalEquation->mAst;
             auto astRightChild = ast->rightChild();
 
             if (astRightChild->type() == AnalyserEquationAst::Type::CI) {
-                // Note: see the llvm-cov section in src/README.rst for
-                //       astRightChild->variable().
-
                 if (astRightChild->variable()->name() == internalEquation->mVariable->mVariable->name()) {
                     ast->swapLeftAndRightChildren();
                 }
             } else if (astRightChild->type() == AnalyserEquationAst::Type::DIFF) {
-                // Note: see the llvm-cov section in src/README.rst for
-                //       astRightChild->rightChild() and
-                //       astRightChild->rightChild()->variable().
-
                 if (astRightChild->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name()) {
                     ast->swapLeftAndRightChildren();
                 }
@@ -2552,9 +2516,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         std::vector<AnalyserEquationPtr> equationDependencies;
 
         for (const auto &variableDependency : variableDependencies) {
-            // Note: see the llvm-cov section in src/README.rst for
-            //       equationMappings[variableDependency].
-
             equationDependencies.push_back(equationMappings[variableDependency]);
         }
 
@@ -2596,8 +2557,6 @@ std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl:
                                                                                                       const std::string &variableName) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
-        // Note: see the llvm-cov section in src/README.rst for variable.
-
         auto variable = ev->variable();
 
         return (owningModel(variable) == model)

@@ -18,9 +18,9 @@ class VariableType(Enum):
 
 VARIABLE_INFO = [
     {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "L", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT},
-    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT}
+    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT},
+    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT}
 ]
 
 
@@ -29,13 +29,13 @@ def create_variables_array():
 
 
 def initialise_variables(variables):
-    variables[2] = 0.01
-    variables[3] = 0.0011
+    variables[1] = 0.01
+    variables[2] = 0.0011
 
 
 def compute_computed_constants(variables):
-    variables[0] = 1000.0*3.14*variables[3]*variables[3]*variables[2]
-    variables[1] = 0.02*variables[0]
+    variables[0] = 1000.0*3.14*variables[2]*variables[2]*variables[1]
+    variables[3] = 0.02*variables[0]
 
 
 def compute_variables(variables):

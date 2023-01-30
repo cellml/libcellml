@@ -58,12 +58,12 @@ describe("Analyser Model tests", () => {
     test('Checking Analyser Model states related API.', () => {
         expect(am.stateCount()).toBe(4)
         expect(am.states().size()).toBe(4)
-        expect(am.state(2).variable().name()).toBe("n")
+        expect(am.state(2).variable().name()).toBe("m")
     });
     test('Checking Analyser Model variables related API.', () => {
         expect(am.variableCount()).toBe(18)
         expect(am.variables().size()).toBe(18)
-        expect(am.variable(14).variable().name()).toBe("E_R")
+        expect(am.variable(2).variable().name()).toBe("i_K")
     });
     test('Checking Analyser Model need* API.', () => {
         expect(am.needEqFunction()).toBe(false)

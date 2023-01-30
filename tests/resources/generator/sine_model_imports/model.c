@@ -19,15 +19,15 @@ const VariableInfo STATE_INFO[] = {
 
 const VariableInfo VARIABLE_INFO[] = {
     {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
+    {"deriv_approx_initial_value", "dimensionless", "main", CONSTANT},
+    {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
+    {"C", "dimensionless", "main", CONSTANT},
     {"k2_oPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"k2Pi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_2", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_32", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
-    {"z", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
-    {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
-    {"deriv_approx_initial_value", "dimensionless", "main", CONSTANT},
-    {"C", "dimensionless", "main", CONSTANT}
+    {"z", "dimensionless", "parabolic_approx_sin", ALGEBRAIC}
 };
 
 double * createStatesArray()
@@ -47,14 +47,14 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *variables)
 {
-    variables[8] = 0.0;
-    variables[9] = 0.75;
-    variables[1] = 2.0/3.14159265358979;
-    variables[2] = 2.0*3.14159265358979;
-    variables[3] = 3.14159265358979/2.0;
-    variables[4] = 3.14159265358979;
-    variables[5] = 3.0*3.14159265358979/2.0;
-    states[0] = variables[8];
+    variables[1] = 0.0;
+    variables[3] = 0.75;
+    variables[4] = 2.0/3.14159265358979;
+    variables[5] = 2.0*3.14159265358979;
+    variables[6] = 3.14159265358979/2.0;
+    variables[7] = 3.14159265358979;
+    variables[8] = 3.0*3.14159265358979/2.0;
+    states[0] = variables[1];
 }
 
 void computeComputedConstants(double *variables)
@@ -69,6 +69,6 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
     variables[0] = sin(voi);
-    variables[6] = (voi < variables[3])?voi*variables[1]-0.5:(voi < variables[4])?(3.14159265358979-voi)*variables[1]-0.5:(voi < variables[5])?(voi-3.14159265358979)*variables[1]-0.5:(variables[2]-voi)*variables[1]-0.5;
-    variables[7] = (voi < variables[3])?-variables[6]*variables[6]+variables[9]+variables[6]:(voi < variables[4])?-variables[6]*variables[6]+variables[9]+variables[6]:(voi < variables[5])?variables[6]*variables[6]-variables[9]-variables[6]:variables[6]*variables[6]-variables[9]-variables[6];
+    variables[9] = (voi < variables[6])?voi*variables[4]-0.5:(voi < variables[7])?(3.14159265358979-voi)*variables[4]-0.5:(voi < variables[8])?(voi-3.14159265358979)*variables[4]-0.5:(variables[5]-voi)*variables[4]-0.5;
+    variables[2] = (voi < variables[6])?-variables[9]*variables[9]+variables[3]+variables[9]:(voi < variables[7])?-variables[9]*variables[9]+variables[3]+variables[9]:(voi < variables[8])?variables[9]*variables[9]-variables[3]-variables[9]:variables[9]*variables[9]-variables[3]-variables[9];
 }
