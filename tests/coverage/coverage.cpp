@@ -297,7 +297,7 @@ TEST(Coverage, analyserExternalVariable)
     EXPECT_EQ(false, externalVariable->removeDependency(model, "not_membrane", "Cm"));
 }
 
-TEST(Generator, coverage)
+TEST(Coverage, generator)
 {
     static const std::string EMPTY_STRING;
 
