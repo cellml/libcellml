@@ -38,12 +38,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
     {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
-    {"E_R", "millivolt", "membrane", CONSTANT},
-    {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
-    {"g_Na", "milliS_per_cm2", "sodium_channel", CONSTANT},
-    {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT}
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
 };
 
 double * createStatesArray()
@@ -84,12 +79,12 @@ void computeComputedConstants(double *variables)
 void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
     variables[1] = externalVariable(voi, states, variables, 1);
-    variables[9] = 0.07*exp(variables[1]/20.0);
-    variables[10] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0);
-    rates[0] = variables[9]*(1.0-states[0])-variables[10]*states[0];
-    variables[13] = 0.01*(variables[1]+10.0)/(exp((variables[1]+10.0)/10.0)-1.0);
-    variables[14] = 0.125*exp(variables[1]/80.0);
-    rates[1] = variables[13]*(1.0-states[1])-variables[14]*states[1];
+    variables[14] = 0.07*exp(variables[1]/20.0);
+    variables[15] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0);
+    rates[0] = variables[14]*(1.0-states[0])-variables[15]*states[0];
+    variables[18] = 0.01*(variables[1]+10.0)/(exp((variables[1]+10.0)/10.0)-1.0);
+    variables[19] = 0.125*exp(variables[1]/80.0);
+    rates[1] = variables[18]*(1.0-states[1])-variables[19]*states[1];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)

@@ -47,12 +47,7 @@ VARIABLE_INFO = [
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel", "type": VariableType.CONSTANT},
     {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
-    {"name": "E_R", "units": "millivolt", "component": "membrane", "type": VariableType.CONSTANT},
-    {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
-    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel", "type": VariableType.CONSTANT},
-    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel", "type": VariableType.CONSTANT}
+    {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -96,12 +91,12 @@ def compute_computed_constants(variables):
 
 def compute_rates(voi, states, rates, variables, external_variable):
     variables[1] = external_variable(voi, states, variables, 1)
-    variables[9] = 0.07*exp(variables[1]/20.0)
-    variables[10] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0)
-    rates[0] = variables[9]*(1.0-states[0])-variables[10]*states[0]
-    variables[13] = 0.01*(variables[1]+10.0)/(exp((variables[1]+10.0)/10.0)-1.0)
-    variables[14] = 0.125*exp(variables[1]/80.0)
-    rates[1] = variables[13]*(1.0-states[1])-variables[14]*states[1]
+    variables[14] = 0.07*exp(variables[1]/20.0)
+    variables[15] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0)
+    rates[0] = variables[14]*(1.0-states[0])-variables[15]*states[0]
+    variables[18] = 0.01*(variables[1]+10.0)/(exp((variables[1]+10.0)/10.0)-1.0)
+    variables[19] = 0.125*exp(variables[1]/80.0)
+    rates[1] = variables[18]*(1.0-states[1])-variables[19]*states[1]
 
 
 def compute_variables(voi, states, rates, variables, external_variable):

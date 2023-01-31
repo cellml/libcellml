@@ -220,14 +220,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnCoverageForXorOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForPowerOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForRootOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"m", "dimensionless", "my_component", CONSTANT},
-    {"n", "dimensionless", "my_component", CONSTANT},
-    {"o", "dimensionless", "my_component", CONSTANT},
-    {"p", "dimensionless", "my_component", CONSTANT},
-    {"q", "dimensionless", "my_component", CONSTANT},
-    {"r", "dimensionless", "my_component", CONSTANT},
-    {"s", "dimensionless", "my_component", CONSTANT}
+    {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT}
 };
 
 double xor(double x, double y)
