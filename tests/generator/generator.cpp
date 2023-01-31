@@ -22,7 +22,6 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
-/*
 TEST(Generator, emptyModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create("empty_model");
@@ -40,7 +39,6 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
 }
-*/
 
 TEST(Generator, algebraicEqnComputedVarOnRhs)
 {
