@@ -38,12 +38,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
     {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", EXTERNAL},
-    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
-    {"E_R", "millivolt", "membrane", CONSTANT},
-    {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
-    {"g_Na", "milliS_per_cm2", "sodium_channel", CONSTANT},
-    {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT}
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
 };
 
 double * createStatesArray()

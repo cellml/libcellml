@@ -148,11 +148,11 @@ class AnalyserTestCase(unittest.TestCase):
 
         av = am.variable(3)
 
-        self.assertEqual(AnalyserVariable.Type.ALGEBRAIC, av.type())
+        self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
         self.assertEqual(3, av.index())
-        self.assertIsNone(av.initialisingVariable())
+        self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
-        self.assertIsNotNone(av.equation())
+        self.assertIsNone(av.equation())
 
         # Ensure coverage for AnalyserEquation.
 
