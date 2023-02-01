@@ -1404,11 +1404,11 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
     std::string res;
 
     if (std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end()) {
-        if ((equation->type() == AnalyserEquation::Type::RATE)
+        if ((equation->type() == AnalyserEquation::Type::ODE)
             || (equation->type() == AnalyserEquation::Type::ALGEBRAIC)
             || (equation->type() == AnalyserEquation::Type::EXTERNAL)) {
             for (const auto &dependency : equation->dependencies()) {
-                if ((dependency->type() != AnalyserEquation::Type::RATE)
+                if ((dependency->type() != AnalyserEquation::Type::ODE)
                     && (!forComputeVariables
                         || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
                             && dependency->isStateRateBased())
@@ -1544,7 +1544,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
         std::string methodBody;
 
         for (const auto &equation : mLockedModel->equations()) {
-            if (equation->type() == AnalyserEquation::Type::RATE) {
+            if (equation->type() == AnalyserEquation::Type::ODE) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
