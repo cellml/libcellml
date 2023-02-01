@@ -38,9 +38,9 @@ AnalyserModel::~AnalyserModel()
 
 bool AnalyserModel::isValid() const
 {
-    return (mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)
+    return (mPimpl->mType == AnalyserModel::Type::ODE)
            //---GRY---           || (mPimpl->mType == AnalyserModel::Type::NLA)
-           || (mPimpl->mType == AnalyserModel::Type::ODE);
+           || (mPimpl->mType == AnalyserModel::Type::ALGEBRAIC);
 }
 
 AnalyserModel::Type AnalyserModel::type() const

@@ -42,9 +42,9 @@ public:
     enum class Type
     {
         UNKNOWN, /**< The type of the model is unknown. */
-        ALGEBRAIC, /**< The model defines a system of algebraic equations that can be solved directly. */
         NLA, /**< The model defines a system of (potentially non-linear) algebraic equations that require an external solver to solve (e.g., KINSOL). */
         ODE, /**< The model defines a system of ordinary differential equations that require an external solver to solve (e.g., CVODE). */
+        ALGEBRAIC, /**< The model defines a system of algebraic equations that can be solved directly. */
         INVALID, /**< The model is invalid. */
         UNDERCONSTRAINED, /**< The model is underconstrainted. */
         OVERCONSTRAINED, /**< The model is overconstrained. */
