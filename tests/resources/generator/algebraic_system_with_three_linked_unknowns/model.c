@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.3.0";
+const char VERSION[] = "0.3.2";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t VARIABLE_COUNT = 3;
@@ -18,7 +18,7 @@ const VariableInfo VARIABLE_INFO[] = {
 
 double * createVariablesArray()
 {
-    return malloc(VARIABLE_COUNT*sizeof(double));
+    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)
@@ -28,14 +28,14 @@ void deleteArray(double *array)
 
 typedef struct {
     double *variables;
-} RootFindInfo;
+} RootFindingInfo;
 
-extern void nlaSolve(void (*objFunc)(double *, double *, void *),
+extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
                      double *u, int n, void *data);
 
-void objFunc0(double *u, double *f, void *data)
+void objectiveFunction0(double *u, double *f, void *data)
 {
-    double *variables = ((RootFindInfo *) data)->variables;
+    double *variables = ((RootFindingInfo *) data)->variables;
 
     variables[0] = u[0];
     variables[1] = u[1];
@@ -46,16 +46,16 @@ void objFunc0(double *u, double *f, void *data)
     f[2] = variables[0]-2.0*variables[1]+3.0*variables[2]-6.0;
 }
 
-void rootFind0(double *variables)
+void findRoot0(double *variables)
 {
-    RootFindInfo rfi = { variables };
+    RootFindingInfo rfi = { variables };
     double u[3];
 
     u[0] = variables[0];
     u[1] = variables[1];
     u[2] = variables[2];
 
-    nlaSolve(objFunc0, u, 3, &rfi);
+    nlaSolve(objectiveFunction0, u, 3, &rfi);
 
     variables[0] = u[0];
     variables[1] = u[1];
@@ -71,7 +71,7 @@ void initialiseVariables(double *variables)
 
 void computeComputedConstants(double *variables)
 {
-    rootFind0(variables);
+    findRoot0(variables);
 }
 
 void computeVariables(double *variables)

@@ -11,9 +11,9 @@ VARIABLE_COUNT = 4
 
 
 class VariableType(Enum):
-    CONSTANT = 1
-    COMPUTED_CONSTANT = 2
-    ALGEBRAIC = 3
+    CONSTANT = 0
+    COMPUTED_CONSTANT = 1
+    ALGEBRAIC = 2
 
 
 VARIABLE_INFO = [
@@ -28,7 +28,7 @@ def create_variables_array():
     return [nan] * VARIABLE_COUNT
 
 
-def obj_func_0(u, f, data):
+def objective_function_0(u, f, data):
     variables = data[0]
 
     variables[3] = u[0]
@@ -36,12 +36,12 @@ def obj_func_0(u, f, data):
     f[0] = variables[0] + variables[1] - (variables[3] + variables[2])
 
 
-def root_find_0(variables):
-    u = [nan] * 1
+def find_root_0(variables):
+    u = [nan]*1
 
     u[0] = variables[3]
 
-    nla_solve(obj_func_0, u, 1, (variables))
+    nla_solve(objective_function_0, u, 1, (variables))
 
     variables[3] = u[0]
 
@@ -54,7 +54,7 @@ def initialise_variables(variables):
 
 
 def compute_computed_constants(variables):
-    root_find_0(variables)
+    find_root_0(variables)
 
 
 def compute_variables(variables):

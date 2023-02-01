@@ -1,5 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Overconstrained model with three variables
+    x: 1
+    y: 3
+    z = x+y+1
+    z = x+y+3-->
     <component name="my_component">
         <variable name="x" units="dimensionless" initial_value="1"/>
         <variable name="y" units="dimensionless" initial_value="3"/>
