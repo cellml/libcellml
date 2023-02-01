@@ -17,9 +17,9 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "b", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.CONSTANT},
-    {"name": "c", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.CONSTANT},
-    {"name": "d", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.CONSTANT},
+    {"name": "b", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "c", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "d", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.ALGEBRAIC}
 ]
 

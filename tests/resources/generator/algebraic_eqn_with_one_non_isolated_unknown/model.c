@@ -11,9 +11,9 @@ const char LIBCELLML_VERSION[] = "0.4.0";
 const size_t VARIABLE_COUNT = 4;
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"b", "dimensionless", "my_algebraic_eqn", CONSTANT},
-    {"c", "dimensionless", "my_algebraic_eqn", CONSTANT},
-    {"d", "dimensionless", "my_algebraic_eqn", CONSTANT},
+    {"b", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
+    {"c", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
+    {"d", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
     {"a", "dimensionless", "my_algebraic_eqn", ALGEBRAIC}
 };
 
