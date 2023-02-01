@@ -442,7 +442,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     EXPECT_EQ(size_t(0), analyserModel->stateCount());
     EXPECT_EQ(size_t(4), analyserModel->variableCount());
-    EXPECT_EQ(size_t(1), analyserModel->equationCount());
+    EXPECT_EQ(size_t(4), analyserModel->equationCount());
 
     EXPECT_EQ(nullptr, analyserModel->voi());
     EXPECT_EQ(nullptr, analyserModel->state(0));
