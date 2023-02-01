@@ -140,7 +140,7 @@ struct AnalyserInternalEquation
         UNKNOWN,
         TRUE_CONSTANT,
         VARIABLE_BASED_CONSTANT,
-        RATE,
+        ODE,
         ALGEBRAIC
     };
 
@@ -349,7 +349,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
             mOrder = ++equationOrder;
             mType = (variable->mType == AnalyserInternalVariable::Type::STATE) ?
-                        Type::RATE :
+                        Type::ODE :
                     (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
                         Type::TRUE_CONSTANT :
                     (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
@@ -2104,7 +2104,7 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equatio
     checkedEquations.push_back(equation);
 
     for (const auto &dependency : equation->dependencies()) {
-        if ((dependency->type() == AnalyserEquation::Type::RATE)
+        if ((dependency->type() == AnalyserEquation::Type::ODE)
             || isStateRateBased(dependency, checkedEquations)) {
             return true;
         }
@@ -2470,8 +2470,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             type = AnalyserEquation::Type::TRUE_CONSTANT;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
             type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
-        } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
-            type = AnalyserEquation::Type::RATE;
+        } else if (internalEquation->mType == AnalyserInternalEquation::Type::ODE) {
+            type = AnalyserEquation::Type::ODE;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
             type = AnalyserEquation::Type::ALGEBRAIC;
         } else { // AnalyserEquation::Type::UNKNOWN.
