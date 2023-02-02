@@ -25,7 +25,7 @@ VARIABLE_INFO = [
 
 
 def create_variables_array():
-    return [nan] * VARIABLE_COUNT
+    return [nan]*VARIABLE_COUNT
 
 
 def objective_function_0(u, f, data):
@@ -33,7 +33,7 @@ def objective_function_0(u, f, data):
 
     variables[3] = u[0]
 
-    f[0] = variables[0] + variables[1] - (variables[3] + variables[2])
+    f[0] = variables[0]+variables[1]-(variables[3]+variables[2])
 
 
 def find_root_0(variables):
@@ -47,10 +47,10 @@ def find_root_0(variables):
 
 
 def initialise_variables(variables):
+    variables[3] = 1.0
     variables[0] = 3.0
     variables[1] = 5.0
     variables[2] = 7.0
-    variables[3] = 1.0
 
 
 def compute_computed_constants(variables):

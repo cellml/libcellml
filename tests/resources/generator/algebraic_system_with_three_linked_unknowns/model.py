@@ -24,7 +24,7 @@ VARIABLE_INFO = [
 
 
 def create_variables_array():
-    return [nan] * VARIABLE_COUNT
+    return [nan]*VARIABLE_COUNT
 
 
 def objective_function_0(u, f, data):
