@@ -141,6 +141,7 @@ struct AnalyserInternalEquation
         TRUE_CONSTANT,
         VARIABLE_BASED_CONSTANT,
         ODE,
+        NLA,
         ALGEBRAIC
     };
 
@@ -299,17 +300,45 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), isKnownVariable), mVariables.end());
     mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), isKnownOdeVariable), mOdeVariables.end());
 
-    // If there is no (ODE) variable left then it means that the equation is
-    // overconstrained).
+    // If there is no (ODE) variable left then it means that the variables in
+    // the equation are overconstrained unless one of them was initialised in
+    // which case it will now be considered as an algebraic variable and this
+    // equation as an NLA equation.
 
     auto unknownVariablesOrOdeVariablesLeft = mVariables.size() + mOdeVariables.size();
+    AnalyserInternalVariablePtr initialisedVariable = nullptr;
 
     if (unknownVariablesOrOdeVariablesLeft == 0) {
         for (const auto &variable : mAllVariables) {
-            variable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
+            if (variable->mType == AnalyserInternalVariable::Type::INITIALISED) {
+                if (initialisedVariable != nullptr) {
+                    // We have found an initialised variable, but there is
+                    // already another one, so in the end the variables in the
+                    // equation are overconstrained.
+
+                    initialisedVariable = nullptr;
+
+                    break;
+                }
+
+                initialisedVariable = variable;
+            }
         }
 
-        return false;
+        if (initialisedVariable != nullptr) {
+            // The equation contains one initialised variable, so consider it as
+            // an algebraic variable.
+
+            initialisedVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
+
+            unknownVariablesOrOdeVariablesLeft = 1;
+        } else {
+            for (const auto &variable : mAllVariables) {
+                variable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
+            }
+
+            return false;
+        }
     }
 
     // If there is one (ODE) variable left then update its variable (to be the
@@ -320,6 +349,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     if (unknownVariablesOrOdeVariablesLeft == 1) {
         auto variable = mVariables.empty() ?
+                            mOdeVariables.empty() ?
+                            initialisedVariable :
                             mOdeVariables.front() :
                             mVariables.front();
         auto i = MAX_SIZE_T;
@@ -354,6 +385,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
                         Type::TRUE_CONSTANT :
                     (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
                         Type::VARIABLE_BASED_CONSTANT :
+                    (variable == initialisedVariable) ?
+                        Type::NLA :
                         Type::ALGEBRAIC;
             mVariable = variable;
 
@@ -2327,18 +2360,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             internalVariable->mIndex = ++variableIndex;
 
-            /*---GRY---
-                        if (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mVariable == internalVariable; }) != mInternalEquations.end()) {
-                            internalVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
-                        } else {
-                            internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
+            if (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mVariable == internalVariable; }) != mInternalEquations.end()) {
+                internalVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
+            } else {
+                internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
 
-                            mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
-                        }
-            */
-            internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
-
-            mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
+                mInternalEquations.push_back(AnalyserInternalEquation::create(internalVariable));
+            }
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
             issueType = "is computed more than once";
             referenceRule = Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE;
@@ -2379,7 +2407,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     } else if (mModel->mPimpl->mVoi != nullptr) {
         mModel->mPimpl->mType = AnalyserModel::Type::ODE;
     } else if (!mInternalVariables.empty()) {
-        mModel->mPimpl->mType = AnalyserModel::Type::ALGEBRAIC;
+        mModel->mPimpl->mType = (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mType == AnalyserInternalEquation::Type::NLA; }) != mInternalEquations.end()) ?
+                                    AnalyserModel::Type::NLA :
+                                    AnalyserModel::Type::ALGEBRAIC;
     }
 
     if (!mModel->isValid()) {
@@ -2472,6 +2502,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::ODE) {
             type = AnalyserEquation::Type::ODE;
+        } else if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
+            type = AnalyserEquation::Type::NLA;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
             type = AnalyserEquation::Type::ALGEBRAIC;
         } else { // AnalyserEquation::Type::UNKNOWN.
