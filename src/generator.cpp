@@ -719,6 +719,24 @@ void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
     }
 }
 
+void Generator::GeneratorImpl::addRootFindingInfoObjectCode()
+{
+    if ((mLockedModel->type() == AnalyserModel::Type::NLA)
+        && !mLockedProfile->rootFindingInfoObjectString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->rootFindingInfoObjectString();
+    }
+}
+
+void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
+{
+    if ((mLockedModel->type() == AnalyserModel::Type::NLA)
+        && !mLockedProfile->externNlaSolveMethodString().empty()) {
+        mCode += newLineIfNeeded()
+                 + mLockedProfile->externNlaSolveMethodString();
+    }
+}
+
 std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody) const
 {
     return methodBody.empty() ?
@@ -1484,6 +1502,9 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         for (const auto &variable : mLockedModel->variables()) {
             if (variable->type() == AnalyserVariable::Type::CONSTANT) {
                 methodBody += generateInitialisationCode(variable);
+            } else if ((variable->type() == AnalyserVariable::Type::ALGEBRAIC)
+                       && (variable->initialisingVariable() != nullptr)) {
+                methodBody += generateInitialisationCode(variable);
             }
         }
 
@@ -1728,6 +1749,11 @@ std::string Generator::implementationCode() const
     mPimpl->addImplementationCreateStatesArrayMethodCode();
     mPimpl->addImplementationCreateVariablesArrayMethodCode();
     mPimpl->addImplementationDeleteArrayMethodCode();
+
+    // Add code for the NLA solver.
+
+    mPimpl->addRootFindingInfoObjectCode();
+    mPimpl->addExternNlaSolveMethodCode();
 
     // Add code for the implementation to initialise our variables.
 

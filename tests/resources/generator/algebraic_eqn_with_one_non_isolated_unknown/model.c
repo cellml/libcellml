@@ -57,10 +57,10 @@ void findRoot0(double *variables)
 
 void initialiseVariables(double *variables)
 {
+    variables[3] = 1.0;
     variables[0] = 3.0;
     variables[1] = 5.0;
     variables[2] = 7.0;
-    variables[3] = 1.0;
 }
 
 void computeComputedConstants(double *variables)

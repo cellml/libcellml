@@ -105,6 +105,9 @@ struct Generator::GeneratorImpl
     void addImplementationCreateVariablesArrayMethodCode();
     void addImplementationDeleteArrayMethodCode();
 
+    void addRootFindingInfoObjectCode();
+    void addExternNlaSolveMethodCode();
+
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
     std::string generateDoubleCode(const std::string &value) const;
