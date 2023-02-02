@@ -224,6 +224,15 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mExternalVariableMethodCallFamString;
     std::string mExternalVariableMethodCallFdmString;
 
+    std::string mRootFindingInfoObjectString;
+    std::string mExternNlaSolveMethodString;
+    std::string mFindRootCallString;
+    std::string mFindRootMethodString;
+    std::string mNlaSolveCallString;
+    std::string mObjectiveFunctionMethodString;
+    std::string mUArrayString;
+    std::string mFArrayString;
+
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
 
@@ -561,6 +570,29 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mExternalVariableMethodCallFamString = "externalVariable(variables, [INDEX])";
         mExternalVariableMethodCallFdmString = "externalVariable(voi, states, variables, [INDEX])";
+
+        mRootFindingInfoObjectString = "typedef struct {\n"
+                                       "    double *variables;\n"
+                                       "} RootFindingInfo;\n";
+        mExternNlaSolveMethodString = "extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
+                                      "                     double *u, int n, void *data);\n";
+        mFindRootCallString = "findRoot[INDEX](variables);";
+        mFindRootMethodString = "void findRoot[INDEX](double *variables)\n"
+                                "{\n"
+                                "    RootFindingInfo rfi = { variables };\n"
+                                "    double u[[SIZE]];\n"
+                                "\n"
+                                "[CODE]"
+                                "}\n";
+        mNlaSolveCallString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);";
+        mObjectiveFunctionMethodString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                         "{\n"
+                                         "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+                                         "\n"
+                                         "[CODE]"
+                                         "}\n";
+        mUArrayString = "u";
+        mFArrayString = "f";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
@@ -930,6 +962,21 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mExternalVariableMethodCallFamString = "external_variable(variables, [INDEX])";
         mExternalVariableMethodCallFdmString = "external_variable(voi, states, variables, [INDEX])";
+
+        mRootFindingInfoObjectString = "";
+        mExternNlaSolveMethodString = "";
+        mFindRootCallString = "find_root_[INDEX](variables)";
+        mFindRootMethodString = "def find_root_[INDEX](variables):\n"
+                                "    u = [nan]*[SIZE]\n"
+                                "\n"
+                                "[CODE]";
+        mNlaSolveCallString = "nla_solve(objective_function_[INDEX], u, [SIZE], (variables))";
+        mObjectiveFunctionMethodString = "def objective_function_[INDEX](u, f, data):\n"
+                                         "    variables = data[0]\n"
+                                         "\n"
+                                         "[CODE]";
+        mUArrayString = "u";
+        mFArrayString = "f";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
@@ -2406,6 +2453,86 @@ void GeneratorProfile::setExternalVariableMethodCallString(bool forDifferentialM
     } else {
         mPimpl->mExternalVariableMethodCallFamString = externalVariableMethodCallString;
     }
+}
+
+std::string GeneratorProfile::rootFindingInfoObjectString() const
+{
+    return mPimpl->mRootFindingInfoObjectString;
+}
+
+void GeneratorProfile::setRootFindingInfoObjectString(const std::string &rootFindingInfoObjectString)
+{
+    mPimpl->mRootFindingInfoObjectString = rootFindingInfoObjectString;
+}
+
+std::string GeneratorProfile::externNlaSolveMethodString() const
+{
+    return mPimpl->mExternNlaSolveMethodString;
+}
+
+void GeneratorProfile::setExternNlaSolveMethodString(const std::string &externNlaSolveMethodString)
+{
+    mPimpl->mExternNlaSolveMethodString = externNlaSolveMethodString;
+}
+
+std::string GeneratorProfile::findRootCallString() const
+{
+    return mPimpl->mFindRootCallString;
+}
+
+void GeneratorProfile::setFindRootCallString(const std::string &findRootCallString)
+{
+    mPimpl->mFindRootCallString = findRootCallString;
+}
+
+std::string GeneratorProfile::findRootMethodString() const
+{
+    return mPimpl->mFindRootMethodString;
+}
+
+void GeneratorProfile::setFindRootMethodString(const std::string &findRootMethodString)
+{
+    mPimpl->mFindRootMethodString = findRootMethodString;
+}
+
+std::string GeneratorProfile::nlaSolveCallString() const
+{
+    return mPimpl->mNlaSolveCallString;
+}
+
+void GeneratorProfile::setNlaSolveCallString(const std::string &nlaSolveCallString)
+{
+    mPimpl->mNlaSolveCallString = nlaSolveCallString;
+}
+
+std::string GeneratorProfile::objectiveFunctionMethodString() const
+{
+    return mPimpl->mObjectiveFunctionMethodString;
+}
+
+void GeneratorProfile::setObjectiveFunctionMethodString(const std::string &objectiveFunctionMethodString)
+{
+    mPimpl->mObjectiveFunctionMethodString = objectiveFunctionMethodString;
+}
+
+std::string GeneratorProfile::uArrayString() const
+{
+    return mPimpl->mUArrayString;
+}
+
+void GeneratorProfile::setUArrayString(const std::string &uArrayString)
+{
+    mPimpl->mUArrayString = uArrayString;
+}
+
+std::string GeneratorProfile::fArrayString() const
+{
+    return mPimpl->mFArrayString;
+}
+
+void GeneratorProfile::setFArrayString(const std::string &fArrayString)
+{
+    mPimpl->mFArrayString = fArrayString;
 }
 
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
