@@ -1607,6 +1607,78 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setExternalVariableMethodCallString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(True))
 
+    def test_root_finding_info_object_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('typedef struct {\n    double *variables;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString())
+        g.setRootFindingInfoObjectString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString())
+
+    def test_extern_nla_solve_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n                     double *u, int n, void *data);\n', g.externNlaSolveMethodString())
+        g.setExternNlaSolveMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externNlaSolveMethodString())
+
+    def test_find_root_call_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('findRoot[INDEX](variables);', g.findRootCallString())
+        g.setFindRootCallString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString())
+
+    def test_find_root_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('void findRoot[INDEX](double *variables)\n{\n    RootFindingInfo rfi = { variables };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString())
+        g.setFindRootMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString())
+
+    def test_nla_solve_call_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);', g.nlaSolveCallString())
+        g.setNlaSolveCallString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString())
+
+    def test_objective_function_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double *variables = ((RootFindingInfo *) data)->variables;\n\n[CODE]}\n', g.objectiveFunctionMethodString())
+        g.setObjectiveFunctionMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString())
+
+    def test_u_array_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('u', g.uArrayString())
+        g.setUArrayString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.uArrayString())
+
+    def test_f_array_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('f', g.fArrayString())
+        g.setFArrayString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.fArrayString())
+
     def test_voi_string(self):
         from libcellml import GeneratorProfile
 

@@ -3008,6 +3008,185 @@ public:
                                              const std::string &externalVariableMethodCallString);
 
     /**
+     * @brief Get the @c std::string for the data structure for the root finding
+     * information object.
+     *
+     * Return the @c std::string for the data structure for the root finding
+     * information object.
+     *
+     * @return The @c std::string for the data structure for the root finding
+     * information object.
+     */
+    std::string rootFindingInfoObjectString() const;
+
+    /**
+     * @brief Set the @c std::string for the data structure for the root finding
+     * information object.
+     *
+     * Set the @c std::string for the data structure for the root finding
+     * information object.
+     *
+     * @param rootFindingInfoObjectString The @c std::string to use for the data
+     * structure for the root finding information object.
+     */
+    void setRootFindingInfoObjectString(const std::string &rootFindingInfoObjectString);
+
+    /**
+     * @brief Get the @c std::string for the extern NLA solve method.
+     *
+     * Return the @c std::string for the extern NLA solve method.
+     *
+     * @return The @c std::string for the extern NLA solve method.
+     */
+    std::string externNlaSolveMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the extern NLA solve method.
+     *
+     * Set the @c std::string for the extern NLA solve method.
+     *
+     * @param externNlaSolveMethodString The @c std::string to use for the
+     * extern NLA solve method.
+     */
+    void setExternNlaSolveMethodString(const std::string &externNlaSolveMethodString);
+
+    /**
+     * @brief Get the @c std::string for the call to the find root method.
+     *
+     * Return the @c std::string for the call to the find root method.
+     *
+     * @return The @c std::string for the call to the find root method.
+     */
+    std::string findRootCallString() const;
+
+    /**
+     * @brief Set the @c std::string for the call to the find root method.
+     *
+     * Set the @c std::string for the call to the find root method. To be
+     * useful, the string should contain the [INDEX] tag, which will be replaced
+     * with the index of the NLA system for which we want to find the root(s).
+     *
+     * @param findRootCallString The @c std::string to use for the call to the
+     * find root method.
+     */
+    void setFindRootCallString(const std::string &findRootCallString);
+
+    /**
+     * @brief Get the @c std::string for the find root method.
+     *
+     * Return the @c std::string for the find root method.
+     *
+     * @return The @c std::string for the find root method.
+     */
+    std::string findRootMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the find root method.
+     *
+     * Set the @c std::string for the find root method. To be useful, the string
+     * should contain the [INDEX], [SIZE], and [CODE] tags, which will be
+     * replaced with the index of the NLA system for which we want to find the
+     * root(s), the size of the u array, and some code to find the root(s),
+     * respectively.
+     *
+     * @param findRootMethodString The @c std::string to use for the find root
+     * method.
+     */
+    void setFindRootMethodString(const std::string &findRootMethodString);
+
+    /**
+     * @brief Get the @c std::string for the call to the NLA solve method.
+     *
+     * Return the @c std::string for the call to the NLA solve method.
+     *
+     * @return The @c std::string for the call to the NLA solve method.
+     */
+    std::string nlaSolveCallString() const;
+
+    /**
+     * @brief Set the @c std::string for the call to the NLA solve method.
+     *
+     * Set the @c std::string for the call to the NLA solve method. To be
+     * useful, the string should contain the [INDEX] and [SIZE] tags, which will
+     * be replaced with the index of the NLA system for which we want to find
+     * the root(s) and the size of the u array, respectively.
+     *
+     * @param nlaSolveCallString The @c std::string to use for the call to the
+     * NLA solve method.
+     */
+    void setNlaSolveCallString(const std::string &nlaSolveCallString);
+
+    /**
+     * @brief Get the @c std::string for the objective function method.
+     *
+     * Return the @c std::string for the objective function method.
+     *
+     * @return The @c std::string for the objective function method.
+     */
+    std::string objectiveFunctionMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the objective function method.
+     *
+     * Set the @c std::string for the objective function method. To be useful,
+     * the string should contain the [INDEX] and [CODE] tags, which will be
+     * replaced with the index of the NLA system for which we want to find the
+     * root(s) and some code to compute the objective function, respectively.
+     *
+     * @param objectiveFunctionMethodString The @c std::string to use for the
+     * objective function method.
+     */
+    void setObjectiveFunctionMethodString(const std::string &objectiveFunctionMethodString);
+
+    /**
+     * @brief Get the @c std::string for the u array used in the objective
+     * function and find root methods.
+     *
+     * Return the @c std::string for the u array used in the objective function
+     * and find root methods.
+     *
+     * @return The @c std::string for the u array used in the objective function
+     * and find root methods.
+     */
+    std::string uArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the u array used in the objective
+     * function and find root methods.
+     *
+     * Set the @c std::string for the u array used in the objective function and
+     * find root methods.
+     *
+     * @param uArrayString The @c std::string to use for the u array used in the
+     * objective function and find root methods.
+     */
+    void setUArrayString(const std::string &uArrayString);
+
+    /**
+     * @brief Get the @c std::string for the f array used in the objective
+     * function and find root methods.
+     *
+     * Return the @c std::string for the f array used in the objective function
+     * and find root methods.
+     *
+     * @return The @c std::string for the f array used in the objective function
+     * and find root methods.
+     */
+    std::string fArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the f array used in the objective
+     * function and find root methods.
+     *
+     * Set the @c std::string for the f array used in the objective function and
+     * find root methods.
+     *
+     * @param fArrayString The @c std::string to use for the f array used in the
+     * objective function and find root methods.
+     */
+    void setFArrayString(const std::string &fArrayString);
+
+    /**
      * @brief Get the @c std::string for the interface to create the states
      * array.
      *

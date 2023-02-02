@@ -482,6 +482,15 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->externalVariableMethodCallString(false)
                        + generatorProfile->externalVariableMethodCallString(true);
 
+    profileContents += generatorProfile->rootFindingInfoObjectString()
+                       + generatorProfile->externNlaSolveMethodString()
+                       + generatorProfile->findRootCallString()
+                       + generatorProfile->findRootMethodString()
+                       + generatorProfile->nlaSolveCallString()
+                       + generatorProfile->objectiveFunctionMethodString()
+                       + generatorProfile->uArrayString()
+                       + generatorProfile->fArrayString();
+
     profileContents += generatorProfile->interfaceCreateStatesArrayMethodString()
                        + generatorProfile->implementationCreateStatesArrayMethodString();
 
