@@ -926,6 +926,7 @@ TEST(Equality, namedEntityNotEqualNonNamedEntity)
     libcellml::ImportSourcePtr is1 = libcellml::ImportSource::create();
 
     EXPECT_FALSE(v1->equals(is1));
+    EXPECT_FALSE(is1->equals(v1));
 }
 
 TEST(Equality, componentNotEqualVariable)
