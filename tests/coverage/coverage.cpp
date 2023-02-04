@@ -106,6 +106,16 @@ TEST(Coverage, unitsItem)
     EXPECT_FALSE(unitsItem->isValid());
 }
 
+TEST(Coverage, variablePair)
+{
+    auto v = libcellml::Variable::create("var");
+    auto unitsItem1 = libcellml::VariablePair::create(nullptr, v);
+    auto unitsItem2 = libcellml::VariablePair::create(v, nullptr);
+
+    EXPECT_FALSE(unitsItem1->isValid());
+    EXPECT_FALSE(unitsItem2->isValid());
+}
+
 TEST(Coverage, parserBranchesCellml10RelationshipRef)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create(false);
