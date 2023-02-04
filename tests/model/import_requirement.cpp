@@ -57,3 +57,17 @@ TEST(ImportRequirement, requirementsEncapsulationUnitsWithChildren)
     auto requirements = model->importRequirements();
     EXPECT_EQ(e, requirements);
 }
+
+TEST(ImportRequirement, requirementsRepeatedImports)
+{
+    const std::vector<std::string> e = {
+        "importExample2components.cellml",
+        "importExample2units.cellml",
+    };
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("import-requirements/importExample2.cellml"));
+
+    auto requirements = model->importRequirements();
+    EXPECT_EQ(e, requirements);
+}
