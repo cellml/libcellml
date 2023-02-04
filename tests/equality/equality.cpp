@@ -398,6 +398,17 @@ TEST(Equality, resetEqual)
     EXPECT_TRUE(r2->equals(r1));
 }
 
+TEST(Equality, resetNotEqualById)
+{
+    libcellml::ResetPtr r1 = createInitialisedReset();
+    libcellml::ResetPtr r2 = createInitialisedReset();
+
+    r2->setId("id");
+
+    EXPECT_FALSE(r1->equals(r2));
+    EXPECT_FALSE(r2->equals(r1));
+}
+
 TEST(Equality, resetNotEqualByOrder)
 {
     libcellml::ResetPtr r1 = createInitialisedReset();
@@ -924,9 +935,13 @@ TEST(Equality, namedEntityNotEqualNonNamedEntity)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create("variableA");
     libcellml::ImportSourcePtr is1 = libcellml::ImportSource::create();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
 
     EXPECT_FALSE(v1->equals(is1));
     EXPECT_FALSE(is1->equals(v1));
+
+    EXPECT_FALSE(v1->equals(r1));
+    EXPECT_FALSE(r1->equals(v1));
 }
 
 TEST(Equality, componentNotEqualVariable)
