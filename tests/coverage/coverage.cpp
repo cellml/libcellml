@@ -218,6 +218,54 @@ TEST(Coverage, sha1)
     }
 }
 
+TEST(Importer, importingComponentWithCnUnitsThatAreEmpty)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
+        "  <units name=\"a\">\n"
+        "    <unit units=\"\"/>\n"
+        "  </units>\n"
+        "   <component name=\"myComponent\">\n"
+        "       <variable name=\"a\" units=\"\"/>\n"
+        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "           <apply>"
+        "             <eq/>\n"
+        "             <ci>a</ci>\n"
+        "             <cn cellml:bobs=\"\">1</cn>\n"
+        "           </apply>\n"
+        "       </math>\n"
+        "   </component>\n"
+        "</model>";
+
+    // Create the model by parsing the string above.
+    auto parser = libcellml::Parser::create();
+    auto importedModel = parser->parseModel(in);
+    auto importer = libcellml::Importer::create();
+    auto validator = libcellml::Validator::create();
+
+    auto model = libcellml::Model::create("myModel");
+    auto u = libcellml::Units::create("");
+    u->addUnit("metre");
+    model->addUnits(u);
+
+    auto c = libcellml::Component::create("c");
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("not_required_resolving_import_manually");
+    importSource->setModel(importedModel);
+
+    c->setImportReference("myComponent");
+    c->setImportSource(importSource);
+    model->addComponent(c);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model = importer->flattenModel(model);
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(3), validator->errorCount());
+}
+
 TEST(Coverage, analyser)
 {
     auto analyser = libcellml::Analyser::create();
