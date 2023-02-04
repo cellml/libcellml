@@ -944,10 +944,19 @@ TEST(Equality, namedEntityNotEqualNonNamedEntity)
     EXPECT_FALSE(r1->equals(v1));
 }
 
+TEST(Equality, modelNotEqualComponent)
+{
+    libcellml::ModelPtr m = libcellml::Model::create("name");
+    libcellml::ComponentPtr c = libcellml::Component::create("name");
+
+    EXPECT_FALSE(m->equals(c));
+    EXPECT_FALSE(c->equals(m));
+}
+
 TEST(Equality, componentNotEqualVariable)
 {
-    libcellml::ComponentPtr c = libcellml::Component::create("comp");
-    libcellml::VariablePtr v = libcellml::Variable::create("comp");
+    libcellml::ComponentPtr c = libcellml::Component::create("name");
+    libcellml::VariablePtr v = libcellml::Variable::create("name");
 
     EXPECT_FALSE(c->equals(v));
     EXPECT_FALSE(v->equals(c));

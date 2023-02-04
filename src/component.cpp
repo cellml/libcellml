@@ -146,7 +146,7 @@ bool Component::doAddComponent(const ComponentPtr &component)
         if (parent != newParent) {
             removeComponentFromEntity(parent, component);
         }
-    } else if (!hasParent && hasAncestor(component)) {
+    } else if (hasAncestor(component)) {
         return false;
     } else if (newParent == component) {
         return false;
