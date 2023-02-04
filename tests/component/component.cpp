@@ -153,6 +153,28 @@ TEST(Component, contains)
     EXPECT_TRUE(c->containsComponent(c21));
 }
 
+TEST(Component, containsEncapsulatedComponent)
+{
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    c->setName("child0");
+    libcellml::ComponentPtr c1 = libcellml::Component::create("child1");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("child2");
+    libcellml::ComponentPtr c3 = libcellml::Component::create("child3");
+    libcellml::ComponentPtr c4 = libcellml::Component::create("child4");
+    libcellml::ComponentPtr c5 = libcellml::Component::create("child5");
+    libcellml::ComponentPtr c6 = libcellml::Component::create("child6");
+
+    c->addComponent(c1);
+    c->addComponent(c2);
+    c1->addComponent(c4);
+    c1->addComponent(c5);
+    c1->addComponent(c6);
+
+    EXPECT_FALSE(m->containsComponent("child4", false));
+    EXPECT_TRUE(m->containsComponent(c4, true));
+}
+
 TEST(Component, addChildrenAndSerialise)
 {
     const std::string e1 =
@@ -287,6 +309,30 @@ TEST(Component, removeComponentMethods)
     EXPECT_EQ(size_t(0), c->componentCount());
 }
 
+TEST(Component, removeEncapsulatedComponent)
+{
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    c->setName("child0");
+    libcellml::ComponentPtr c1 = libcellml::Component::create("child1");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("child2");
+    libcellml::ComponentPtr c3 = libcellml::Component::create("child3");
+    libcellml::ComponentPtr c4 = libcellml::Component::create("child4");
+    libcellml::ComponentPtr c5 = libcellml::Component::create("child5");
+    libcellml::ComponentPtr c6 = libcellml::Component::create("child6");
+
+    c->addComponent(c1);
+    c->addComponent(c2);
+    c1->addComponent(c4);
+    c1->addComponent(c5);
+    c1->addComponent(c6);
+
+    EXPECT_FALSE(m->removeComponent("child4", false));
+    EXPECT_TRUE(m->removeComponent("child4", true));
+    EXPECT_FALSE(m->removeComponent(c5, false));
+    EXPECT_TRUE(m->removeComponent(c5, true));
+}
+
 TEST(Component, componentMethods)
 {
     const std::string e1 =
@@ -357,6 +403,8 @@ TEST(Component, componentMethods)
     libcellml::ComponentPtr cSn = c->component("gus");
     EXPECT_EQ("gus", cSn->name());
 
+    EXPECT_EQ(nullptr, c->component("child1", false));
+
     a = printer->printModel(m);
     EXPECT_EQ(e2, a);
 }
@@ -394,6 +442,28 @@ TEST(Component, takeComponentMethods)
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
+}
+
+TEST(Component, takeEncapsulatedComponent)
+{
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    c->setName("child0");
+    libcellml::ComponentPtr c1 = libcellml::Component::create("child1");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("child2");
+    libcellml::ComponentPtr c3 = libcellml::Component::create("child3");
+    libcellml::ComponentPtr c4 = libcellml::Component::create("child4");
+    libcellml::ComponentPtr c5 = libcellml::Component::create("child5");
+    libcellml::ComponentPtr c6 = libcellml::Component::create("child6");
+
+    c->addComponent(c1);
+    c->addComponent(c2);
+    c1->addComponent(c4);
+    c1->addComponent(c5);
+    c1->addComponent(c6);
+
+    EXPECT_EQ(nullptr, m->takeComponent("child4", false));
+    EXPECT_EQ(c4, m->takeComponent("child4", true));
 }
 
 TEST(Component, addComponentMultipleTimes)
@@ -491,6 +561,31 @@ TEST(Component, replaceComponentMethods)
     EXPECT_TRUE(c->replaceComponent(c4, c1));
     a = printer->printModel(m);
     EXPECT_EQ(e_after, a);
+}
+
+TEST(Component, replaceEncapsulatedComponent)
+{
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    c->setName("child0");
+    libcellml::ComponentPtr c1 = libcellml::Component::create("child1");
+    libcellml::ComponentPtr c2 = libcellml::Component::create("child2");
+    libcellml::ComponentPtr c3 = libcellml::Component::create("child3");
+    libcellml::ComponentPtr c4 = libcellml::Component::create("child4");
+    libcellml::ComponentPtr c5 = libcellml::Component::create("child5");
+    libcellml::ComponentPtr c6 = libcellml::Component::create("child6");
+
+    c->addComponent(c1);
+    c->addComponent(c2);
+    c1->addComponent(c4);
+    c1->addComponent(c5);
+    c1->addComponent(c6);
+
+    EXPECT_FALSE(m->replaceComponent("child4", c3, false));
+    EXPECT_FALSE(m->replaceComponent(c4, c3, false));
+
+    EXPECT_TRUE(m->replaceComponent("child4", c3));
+    EXPECT_TRUE(m->replaceComponent(c6, c4));
 }
 
 TEST(Component, constructors)
