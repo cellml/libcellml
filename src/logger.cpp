@@ -112,7 +112,8 @@ void Logger::LoggerImpl::addIssue(const IssuePtr &issue)
     case libcellml::Issue::Level::WARNING:
         mWarnings.push_back(index);
         break;
-    case libcellml::Issue::Level::MESSAGE:
+    default:
+        // Only remaining level is MESSAGE.
         mMessages.push_back(index);
         break;
     }
