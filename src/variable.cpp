@@ -123,10 +123,13 @@ bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &v
 
 bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    bool equivalence_1 = variable1 != nullptr ? variable1->pFunc()->unsetEquivalentTo(variable2) : false;
-    bool equivalence_2 = variable2 != nullptr ? variable2->pFunc()->unsetEquivalentTo(variable1) : false;
+    if (variable1 != nullptr && variable2 != nullptr) {
+        if (variable1->pFunc()->unsetEquivalentTo(variable2)) {
+            return variable2->pFunc()->unsetEquivalentTo(variable1);
+        }
+    }
 
-    return equivalence_1 && equivalence_2;
+    return false;
 }
 
 void Variable::removeAllEquivalences()
@@ -384,7 +387,7 @@ bool Variable::permitsInterfaceType(InterfaceType interfaceType) const
 {
     std::string testString = interfaceTypeToString.find(interfaceType)->second;
 
-    if ((testString == "none") || testString.empty()) {
+    if (testString == "none") {
         return true;
     }
     if (pFunc()->mInterfaceType == "public_and_private") {
@@ -395,23 +398,27 @@ bool Variable::permitsInterfaceType(InterfaceType interfaceType) const
 
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
 {
-    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        variable1->pFunc()->setEquivalentMappingId(variable2, mappingId);
-        variable2->pFunc()->setEquivalentMappingId(variable1, mappingId);
+    if (variable1 != nullptr && variable2 != nullptr) {
+        if (variable1->hasEquivalentVariable(variable2, true)) {
+            variable1->pFunc()->setEquivalentMappingId(variable2, mappingId);
+            variable2->pFunc()->setEquivalentMappingId(variable1, mappingId);
+        }
     }
 }
 
 void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &connectionId)
 {
-    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        auto map = createConnectionMap(variable1, variable2);
-        for (auto &it : map) {
-            it.first->pFunc()->setEquivalentConnectionId(it.second, connectionId);
-            it.second->pFunc()->setEquivalentConnectionId(it.first, connectionId);
-        }
-        if (map.empty()) {
-            variable1->pFunc()->setEquivalentConnectionId(variable2, connectionId);
-            variable2->pFunc()->setEquivalentConnectionId(variable1, connectionId);
+    if (variable1 != nullptr && variable2 != nullptr) {
+        if (variable1->hasEquivalentVariable(variable2, true)) {
+            auto map = createConnectionMap(variable1, variable2);
+            for (auto &it : map) {
+                it.first->pFunc()->setEquivalentConnectionId(it.second, connectionId);
+                it.second->pFunc()->setEquivalentConnectionId(it.first, connectionId);
+            }
+            if (map.empty()) {
+                variable1->pFunc()->setEquivalentConnectionId(variable2, connectionId);
+                variable2->pFunc()->setEquivalentConnectionId(variable1, connectionId);
+            }
         }
     }
 }
@@ -419,8 +426,10 @@ void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const Va
 std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
-    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        id = variable1->pFunc()->equivalentMappingId(variable2);
+    if (variable1 != nullptr && variable2 != nullptr) {
+        if (variable1->hasEquivalentVariable(variable2, true)) {
+            id = variable1->pFunc()->equivalentMappingId(variable2);
+        }
     }
     return id;
 }
@@ -428,13 +437,15 @@ std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const V
 std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
-    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        auto map = createConnectionMap(variable1, variable2);
-        for (auto &it : map) {
-            id = it.first->pFunc()->equivalentConnectionId(it.second);
-        }
-        if (id.empty()) {
-            id = variable1->pFunc()->equivalentConnectionId(variable2);
+    if (variable1 != nullptr && variable2 != nullptr) {
+        if (variable1->hasEquivalentVariable(variable2, true)) {
+            auto map = createConnectionMap(variable1, variable2);
+            for (auto &it : map) {
+                id = it.first->pFunc()->equivalentConnectionId(it.second);
+            }
+            if (id.empty()) {
+                id = variable1->pFunc()->equivalentConnectionId(variable2);
+            }
         }
     }
     return id;
@@ -442,17 +453,21 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 
 void Variable::removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        variable1->pFunc()->setEquivalentConnectionId(variable2, "");
-        variable2->pFunc()->setEquivalentConnectionId(variable1, "");
+    if (variable1 != nullptr && variable2 != nullptr) {
+        if (variable1->hasEquivalentVariable(variable2, true)) {
+            variable1->pFunc()->setEquivalentConnectionId(variable2, "");
+            variable2->pFunc()->setEquivalentConnectionId(variable1, "");
+        }
     }
 }
 
 void Variable::removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        variable1->pFunc()->setEquivalentMappingId(variable2, "");
-        variable2->pFunc()->setEquivalentMappingId(variable1, "");
+    if (variable1 != nullptr && variable2 != nullptr) {
+        if (variable1->hasEquivalentVariable(variable2, true)) {
+            variable1->pFunc()->setEquivalentMappingId(variable2, "");
+            variable2->pFunc()->setEquivalentMappingId(variable1, "");
+        }
     }
 }
 
