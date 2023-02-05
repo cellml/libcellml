@@ -118,6 +118,21 @@ void printConnectionMap(const ConnectionMap &map)
     }
 }
 
+void printComponentMap(const ComponentMap &map)
+{
+    Debug() << "Print out of component map";
+    for (const auto &iter : map) {
+        auto key = iter.first;
+        auto value = iter.second;
+        Debug() << "first: " << key->name();
+        if (value) {
+            Debug() << "second: " << value->name();
+        } else {
+            Debug() << "second: null";
+        }
+    }
+}
+
 void printStringStringMap(const StringStringMap &map)
 {
     Debug() << "Print out of string -> string map";
