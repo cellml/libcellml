@@ -753,7 +753,7 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         applyEquivalenceMapToModel(rebasedMap, model);
 
         // Copy over units used in imported component to this model.
-        std::map<std::string, std::string> unitsNamesToReplace;
+        StringStringMap unitsNamesToReplace;
         for (const auto &u : requiredUnits) {
             if (!model->hasUnits(u)) {
                 auto originalName = u->name();
