@@ -266,7 +266,7 @@ XmlAttributePtr XmlNode::firstAttribute() const
     return attributeHandle;
 }
 
-bool XmlNode::is(const XmlNodePtr &node) const
+bool XmlNode::equals(const XmlNodePtr &node) const
 {
     return mPimpl->mXmlNodePtr == node->mPimpl->mXmlNodePtr;
 }
