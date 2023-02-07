@@ -609,6 +609,70 @@ TEST(Connection, removeEquivalentVariableMethods)
     EXPECT_EQ(e3, a);
 }
 
+TEST(Connection, setMappingIdForConnection)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    libcellml::Variable::setEquivalenceMappingId(v1, v2, "mappingId");
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(v1, v2));
+    libcellml::Variable::setEquivalenceMappingId(v1, nullptr, "mappingId");
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(v1, nullptr));
+    libcellml::Variable::setEquivalenceMappingId(nullptr, v2, "mappingId");
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(nullptr, v2));
+    libcellml::Variable::setEquivalenceMappingId(nullptr, nullptr, "mappingId");
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(nullptr, nullptr));
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    libcellml::Variable::setEquivalenceMappingId(v1, v2, "mappingId");
+    EXPECT_EQ("mappingId", libcellml::Variable::equivalenceMappingId(v1, v2));
+}
+
+TEST(Connection, setConnectionIdForConnection)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "mappingId");
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
+    libcellml::Variable::setEquivalenceConnectionId(v1, nullptr, "mappingId");
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, nullptr));
+    libcellml::Variable::setEquivalenceConnectionId(nullptr, v2, "mappingId");
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(nullptr, v2));
+    libcellml::Variable::setEquivalenceConnectionId(nullptr, nullptr, "mappingId");
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(nullptr, nullptr));
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    libcellml::Variable::setEquivalenceMappingId(v1, v2, "mappingId");
+    EXPECT_EQ("mappingId", libcellml::Variable::equivalenceMappingId(v1, v2));
+}
+
 TEST(Connection, removeConnectionIdFromConnection)
 {
     const std::string eWithConnectionId =
@@ -664,6 +728,17 @@ TEST(Connection, removeConnectionIdFromConnection)
 
     a = printer->printModel(m);
     EXPECT_EQ(eWithOutConnectionId, a);
+
+    libcellml::Variable::removeEquivalence(v1, v2);
+
+    libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
+    libcellml::Variable::removeEquivalenceConnectionId(v1, nullptr);
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, nullptr));
+    libcellml::Variable::removeEquivalenceConnectionId(nullptr, v2);
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(nullptr, v2));
+    libcellml::Variable::removeEquivalenceConnectionId(nullptr, nullptr);
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(nullptr, nullptr));
 }
 
 TEST(Connection, removeMappingIdFromConnection)
@@ -721,6 +796,17 @@ TEST(Connection, removeMappingIdFromConnection)
 
     a = printer->printModel(m);
     EXPECT_EQ(eWithOutMappingId, a);
+
+    libcellml::Variable::removeEquivalence(v1, v2);
+
+    libcellml::Variable::removeEquivalenceMappingId(v1, v2);
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(v1, v2));
+    libcellml::Variable::removeEquivalenceMappingId(v1, nullptr);
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(v1, nullptr));
+    libcellml::Variable::removeEquivalenceMappingId(nullptr, v2);
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(nullptr, v2));
+    libcellml::Variable::removeEquivalenceMappingId(nullptr, nullptr);
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(nullptr, nullptr));
 }
 
 TEST(Connection, removeVariablesFromConnections)
