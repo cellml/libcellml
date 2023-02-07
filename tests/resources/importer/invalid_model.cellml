@@ -13,4 +13,8 @@
   <component name="component3">
     <reset name="variable2" />
   </component>
+  <component name="component4" />
+  <component name="component5">
+    <notlegal/>
+  </component>
 </model>
