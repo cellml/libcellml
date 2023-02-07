@@ -138,6 +138,28 @@ TEST(Equality, variableNotEqualByUnits)
     EXPECT_FALSE(v2->equals(v1));
 }
 
+TEST(Equality, variableNotEqualByInitialCondition)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create("variable");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("variable");
+
+    v1->setInitialValue(3.2);
+
+    EXPECT_FALSE(v1->equals(v2));
+    EXPECT_FALSE(v2->equals(v1));
+}
+
+TEST(Equality, variableNotEqualByInterfaceType)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create("variable");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("variable");
+
+    v1->setInterfaceType("public");
+
+    EXPECT_FALSE(v1->equals(v2));
+    EXPECT_FALSE(v2->equals(v1));
+}
+
 TEST(Equality, unitsEqualByNameOnly)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create("units");
