@@ -136,17 +136,11 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
-        for (size_t u = 0; u < units->unitCount(); ++u) {
-            std::string ref;
-            std::string prefix;
-            std::string id;
-            double multiplier;
-            double exponent;
-
-            units->unitAttributes(u, ref, prefix, exponent, multiplier, id);
+        for (size_t index  = 0; index < units->unitCount(); ++index) {
+            std::string ref = units->unitAttributeReference(index);
             // If the child units are imported, check them too.
             auto model = owningModel(units);
-            if ((model != nullptr) && model->hasUnits(ref)) {
+            if (model->hasUnits(ref)) {
                 if (checkUnitsForCycles(model->units(ref), history)) {
                     return true;
                 }
@@ -202,29 +196,27 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
     history.push_back(h);
 
     // If the dependencies have not been recorded already, then check it.
-    if (component->isImport()) {
-        auto model = component->importSource()->model();
-        if (model == nullptr) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
-            issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
-            addIssue(issue);
-            return true;
-        }
-        auto importedComponent = model->component(component->importReference(), true);
-        if (importedComponent == nullptr) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
-            issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
-            addIssue(issue);
-            return true;
-        }
+    auto model = component->importSource()->model();
+    if (model == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
+        issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+        addIssue(issue);
+        return true;
+    }
+    auto importedComponent = model->component(component->importReference(), true);
+    if (importedComponent == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
+        issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
+        addIssue(issue);
+        return true;
+    }
 
-        if (importedComponent->isImport() && checkComponentForCycles(importedComponent, history)) {
-            return true;
-        }
+    if (importedComponent->isImport() && checkComponentForCycles(importedComponent, history)) {
+        return true;
     }
 
     return false;
@@ -755,17 +747,21 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         // Copy over units used in imported component to this model.
         StringStringMap unitsNamesToReplace;
         for (const auto &u : requiredUnits) {
-            if (!model->hasUnits(u)) {
+            bool modelHasUnits = model->hasUnits(u);
+            if (!modelHasUnits) {
                 auto originalName = u->name();
                 size_t count = 0;
-                while (!model->hasUnits(u) && model->hasUnits(u->name())) {
-                    auto name = u->name();
-                    name += "_" + convertToString(++count);
-                    u->setName(name);
+                auto newName = originalName;
+                while (!modelHasUnits && model->hasUnits(newName)) {
+                    newName = originalName + "_" + convertToString(++count);
+                    u->setName(newName);
+                    modelHasUnits = model->hasUnits(u);
                 }
-                model->addUnits(u);
-                if (originalName != u->name()) {
-                    unitsNamesToReplace.emplace(originalName, u->name());
+                if (!modelHasUnits) {
+                    model->addUnits(u);
+                    if (originalName != newName) {
+                        unitsNamesToReplace.emplace(originalName, newName);
+                    }
                 }
             }
         }
