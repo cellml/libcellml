@@ -718,12 +718,13 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         // Make a map of component name to component pointer.
         ComponentNameMap newComponentNames = createComponentNamesMap(importedComponentCopy);
         for (const auto &entry : newComponentNames) {
-            std::string newName = entry.first;
+            std::string originalName = entry.first;
             size_t count = 0;
+            std::string newName = originalName;
             while (std::find(compNames.begin(), compNames.end(), newName) != compNames.end()) {
-                newName += "_" + convertToString(++count);
+                newName = originalName + "_" + convertToString(++count);
             }
-            if (newName != entry.first) {
+            if (newName != originalName) {
                 entry.second->setName(newName);
             }
         }
