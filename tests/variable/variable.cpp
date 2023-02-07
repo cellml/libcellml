@@ -1413,6 +1413,48 @@ TEST(Variable, removeEquivalenceBothParametersNullptr)
     EXPECT_FALSE(libcellml::Variable::removeEquivalence(nullptr, nullptr));
 }
 
+TEST(Variable, removeEquivalenceFromNonEquivalentVariables)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create("var1");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("var2");
+
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(v1, v2));
+}
+
+TEST(Variable, removeAllEquivalences)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create("var1");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("var2");
+    libcellml::VariablePtr v3 = libcellml::Variable::create("var2");
+
+    EXPECT_TRUE(libcellml::Variable::addEquivalence(v1, v2));
+    EXPECT_TRUE(libcellml::Variable::addEquivalence(v1, v3));
+
+    EXPECT_EQ(size_t(2), v1->equivalentVariableCount());
+
+    v1->removeAllEquivalences();
+
+    EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
+}
+
+TEST(Variable, removeAllEquivalencesWithDeletedVariable)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create("var1");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("var2");
+    libcellml::VariablePtr v3 = libcellml::Variable::create("var2");
+
+    EXPECT_TRUE(libcellml::Variable::addEquivalence(v1, v2));
+    EXPECT_TRUE(libcellml::Variable::addEquivalence(v1, v3));
+
+    EXPECT_EQ(size_t(2), v1->equivalentVariableCount());
+
+    v3 = nullptr;
+
+    v1->removeAllEquivalences();
+
+    EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
+}
+
 TEST(Variable, hasEquivalentVariableWithNullptr)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
