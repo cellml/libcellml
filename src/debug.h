@@ -99,6 +99,7 @@ void printEquivalenceMap(const EquivalenceMap &map);
 void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model);
 void printStringStringMap(const StringStringMap &map);
 void printConnectionMap(const ConnectionMap &map);
+void printComponentMap(const ComponentMap &map);
 void printAst(const AnalyserEquationAstPtr &ast);
 void printHistory(const History &history);
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch);
