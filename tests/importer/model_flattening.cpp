@@ -1003,86 +1003,108 @@ TEST(ModelFlattening, resolveFlattenMissingUnits)
     EXPECT_EQ(e, importer->issue(0)->description());
 }
 
-TEST(ModelFlattening, importSameUnitsMultipleTimes)
+TEST(ModelFlattening, importSimilarEntitiesMultipleTimes)
 {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <units name=\"similar_units\">\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"similar_units_1\">\n"
+        "    <unit exponent=\"-2\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"similar_units_2\">\n"
+        "    <unit exponent=\"-0.5\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"base_component\">\n"
+        "    <variable name=\"variable_similar\" units=\"similar_units\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component1\"/>\n"
+        "  <component name=\"base_component_1\">\n"
+        "    <variable name=\"variable_similar\" units=\"similar_units_1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\"/>\n"
+        "  <component name=\"base_component_2\">\n"
+        "    <variable name=\"variable_similar\" units=\"similar_units_2\"/>\n"
+        "  </component>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"component1\">\n"
+        "      <component_ref component=\"base_component_1\"/>\n"
+        "    </component_ref>\n"
+        "    <component_ref component=\"component2\">\n"
+        "      <component_ref component=\"base_component_2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
     auto importer = libcellml::Importer::create();
 
     auto model = libcellml::Model::create("model");
-    auto modelDefinitions = libcellml::Model::create("definitions");
     auto importModel1 = libcellml::Model::create("importModel1");
     auto importModel2 = libcellml::Model::create("importModel2");
 
-    auto metresPerSecondUnits = libcellml::Units::create("metres_per_second");
-    metresPerSecondUnits->addUnit("metre");
-    metresPerSecondUnits->addUnit("second", -1.0);
+    auto similarUnits = libcellml::Units::create("similar_units");
+    similarUnits->addUnit("second", -1.0);
 
-    modelDefinitions->addUnits(metresPerSecondUnits);
+    auto similarUnits1 = libcellml::Units::create("similar_units");
+    similarUnits1->addUnit("second", -2.0);
 
-    auto modelUnits = libcellml::Units::create("m_p_s");
-    modelUnits->addUnit("metres_per_second");
+    auto similarUnits2 = libcellml::Units::create("similar_units");
+    similarUnits2->addUnit("second", -0.5);
 
-    auto importedUnitsDefinitions = libcellml::Units::create("metres_per_second");
+    auto component = libcellml::Component::create("base_component");
+    auto variable = libcellml::Variable::create("variable_similar");
+    variable->setUnits("similar_units");
+    component->addVariable(variable);
 
-    auto importedUnits1 = libcellml::Units::create("mps");
-//    importedUnits1->addUnit("metres_per_second");
+    model->addUnits(similarUnits);
+    model->addComponent(component);
 
-    auto importedUnits2 = libcellml::Units::create("m_per_s");
-//    importedUnits2->addUnit("metres_per_second");
+    auto component1 = libcellml::Component::create("component_1");
+    component1->addComponent(component->clone());
+    importModel1->addUnits(similarUnits1);
+    importModel1->addComponent(component1);
+    importModel1->linkUnits();
+
+    auto component2 = libcellml::Component::create("component_2");
+    component2->addComponent(component->clone());
+    importModel2->addUnits(similarUnits2);
+    importModel2->addComponent(component2);
+    importModel2->linkUnits();
+
+    auto importedComponent1 = libcellml::Component::create("component1");
+    auto importedComponent2 = libcellml::Component::create("component2");
+
+    model->addComponent(importedComponent1);
+    model->addComponent(importedComponent2);
 
     auto printer = libcellml::Printer::create();
-
-    model->addUnits(modelUnits);
-//    importModel1->addUnits(modelUnits->clone());
-    auto b = importedUnits1->clone();
-    b->addUnit("metres_per_second");
-    importModel1->addUnits(b);
-    importModel1->addUnits(importedUnitsDefinitions);
-//    importModel2->addUnits(modelUnits->clone());
-    auto a = importedUnits2->clone();
-    a->addUnit("metres_per_second");
-    importModel2->addUnits(a);
-    importModel2->addUnits(importedUnitsDefinitions);
-
-    auto importSourceDefinitions = libcellml::ImportSource::create();
-    importSourceDefinitions->setUrl("modelDefinitions.cellml");
-    importSourceDefinitions->setModel(modelDefinitions);
-
-    importedUnitsDefinitions->setImportSource(importSourceDefinitions);
-    importedUnitsDefinitions->setImportReference("metres_per_second");
 
     auto importSource1 = libcellml::ImportSource::create();
     importSource1->setUrl("model1.cellml");
     importSource1->setModel(importModel1);
 
-    importedUnits1->setImportSource(importSource1);
-    importedUnits1->setImportReference("mps");
-
     auto importSource2 = libcellml::ImportSource::create();
     importSource2->setUrl("model2.cellml");
     importSource2->setModel(importModel2);
 
-    importedUnits2->setImportSource(importSource2);
-    importedUnits2->setImportReference("m_per_s");
+    importedComponent1->setImportSource(importSource1);
+    importedComponent1->setImportReference("component_1");
 
-    model->addUnits(importedUnits1);
-    model->addUnits(importedUnits2);
-    model->addUnits(importedUnitsDefinitions);
-//    model->addUnits(mps1);
-//    model->addUnits(mps2);
-    auto v = libcellml::Validator::create();
-    v->validateModel(model);
-    printIssues(v);
+    importedComponent2->setImportSource(importSource2);
+    importedComponent2->setImportReference("component_2");
 
-    Debug() << printer->printModel(model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     auto flatModel = importer->flattenModel(model);
     EXPECT_EQ(size_t(0), importer->issueCount());
 
-    Debug() << printer->printModel(flatModel);
+    const std::string a = printer->printModel(flatModel);
+    EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, proposedImportedUnitsAlreadyDefinedInModel)
+TEST(ModelFlattening, proposedImportedUnitsAlreadyDefinedInModel)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
