@@ -871,6 +871,42 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
     EXPECT_EQ(nullptr, flatModel);
 }
 
+TEST(ModelFlattening, resolveFlattenNonCircularImportsUnits)
+{
+    auto importer = libcellml::Importer::create();
+    auto model = libcellml::Model::create("model");
+    auto importModel = libcellml::Model::create("importModel");
+
+    auto unitsWithImportedUnit = libcellml::Units::create("one_imported_unit");
+    unitsWithImportedUnit->addUnit("metre");
+    unitsWithImportedUnit->addUnit("importedUnit");
+
+    auto fancyUnits = libcellml::Units::create("fancyUnits");
+    fancyUnits->addUnit("per_becquerel");
+
+    auto perBecquerel = libcellml::Units::create("per_becquerel");
+    perBecquerel->addUnit(libcellml::Units::StandardUnit::BECQUEREL, -1.0);
+
+    importModel->addUnits(fancyUnits);
+    importModel->addUnits(perBecquerel);
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("here.cellml");
+    importSource->setModel(importModel);
+
+    auto importedUnit = libcellml::Units::create("importedUnit");
+    importedUnit->setImportReference("fancyUnits");
+    importedUnit->setImportSource(importSource);
+
+    model->addUnits(unitsWithImportedUnit);
+    model->addUnits(importedUnit);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+}
+
 TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
 {
     const std::string resolveError =
@@ -965,4 +1001,122 @@ TEST(ModelFlattening, resolveFlattenMissingUnits)
     auto flatModel = importer->flattenModel(originalModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(ModelFlattening, importSameUnitsMultipleTimes)
+{
+    auto importer = libcellml::Importer::create();
+
+    auto model = libcellml::Model::create("model");
+    auto modelDefinitions = libcellml::Model::create("definitions");
+    auto importModel1 = libcellml::Model::create("importModel1");
+    auto importModel2 = libcellml::Model::create("importModel2");
+
+    auto metresPerSecondUnits = libcellml::Units::create("metres_per_second");
+    metresPerSecondUnits->addUnit("metre");
+    metresPerSecondUnits->addUnit("second", -1.0);
+
+    modelDefinitions->addUnits(metresPerSecondUnits);
+
+    auto modelUnits = libcellml::Units::create("m_p_s");
+    modelUnits->addUnit("metres_per_second");
+
+    auto importedUnitsDefinitions = libcellml::Units::create("metres_per_second");
+
+    auto importedUnits1 = libcellml::Units::create("mps");
+//    importedUnits1->addUnit("metres_per_second");
+
+    auto importedUnits2 = libcellml::Units::create("m_per_s");
+//    importedUnits2->addUnit("metres_per_second");
+
+    auto printer = libcellml::Printer::create();
+
+    model->addUnits(modelUnits);
+//    importModel1->addUnits(modelUnits->clone());
+    auto b = importedUnits1->clone();
+    b->addUnit("metres_per_second");
+    importModel1->addUnits(b);
+    importModel1->addUnits(importedUnitsDefinitions);
+//    importModel2->addUnits(modelUnits->clone());
+    auto a = importedUnits2->clone();
+    a->addUnit("metres_per_second");
+    importModel2->addUnits(a);
+    importModel2->addUnits(importedUnitsDefinitions);
+
+    auto importSourceDefinitions = libcellml::ImportSource::create();
+    importSourceDefinitions->setUrl("modelDefinitions.cellml");
+    importSourceDefinitions->setModel(modelDefinitions);
+
+    importedUnitsDefinitions->setImportSource(importSourceDefinitions);
+    importedUnitsDefinitions->setImportReference("metres_per_second");
+
+    auto importSource1 = libcellml::ImportSource::create();
+    importSource1->setUrl("model1.cellml");
+    importSource1->setModel(importModel1);
+
+    importedUnits1->setImportSource(importSource1);
+    importedUnits1->setImportReference("mps");
+
+    auto importSource2 = libcellml::ImportSource::create();
+    importSource2->setUrl("model2.cellml");
+    importSource2->setModel(importModel2);
+
+    importedUnits2->setImportSource(importSource2);
+    importedUnits2->setImportReference("m_per_s");
+
+    model->addUnits(importedUnits1);
+    model->addUnits(importedUnits2);
+    model->addUnits(importedUnitsDefinitions);
+//    model->addUnits(mps1);
+//    model->addUnits(mps2);
+    auto v = libcellml::Validator::create();
+    v->validateModel(model);
+    printIssues(v);
+
+    Debug() << printer->printModel(model);
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    Debug() << printer->printModel(flatModel);
+}
+
+TEST(Coverage, proposedImportedUnitsAlreadyDefinedInModel)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <units name=\"common_units\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"common_units_1\">\n"
+        "    <unit prefix=\"hecto\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"my_component\">\n"
+        "    <variable name=\"v\" units=\"common_units_1\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"best_component\">\n"
+        "    <variable name=\"v\" units=\"common_units\" initial_value=\"1\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/importedunitswithnameclashes.xml"));
+    auto importer = libcellml::Importer::create();
+
+    auto u = libcellml::Units::create("common_units_1");
+    u->addUnit(libcellml::Units::StandardUnit::SECOND, libcellml::Units::Prefix::HECTO);
+    model->addUnits(u);
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model = importer->flattenModel(model);
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
 }
