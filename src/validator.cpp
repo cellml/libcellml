@@ -1802,7 +1802,7 @@ bool Validator::ValidatorImpl::isFirstMathmlChild(const XmlNodePtr &parentNode,
                                                   const XmlNodePtr &node,
                                                   const ComponentPtr &component)
 {
-    if (!mathmlChildNode(parentNode, 0)->is(node)) {
+    if (!mathmlChildNode(parentNode, 0)->equals(node)) {
         addMathMLIssue("Math has a '" + node->name() + "' element which is not the first MathML sibling.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
@@ -1817,7 +1817,7 @@ bool Validator::ValidatorImpl::isSecondMathmlChild(const XmlNodePtr &parentNode,
                                                    const XmlNodePtr &node,
                                                    const ComponentPtr &component)
 {
-    if (!mathmlChildNode(parentNode, 1)->is(node)) {
+    if (!mathmlChildNode(parentNode, 1)->equals(node)) {
         addMathMLIssue("Math has a '" + node->name() + "' element which is not the second MathML sibling.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
@@ -1836,7 +1836,7 @@ bool Validator::ValidatorImpl::hasFirstMathmlSiblingWithName(const XmlNodePtr &p
     auto index = 0;
     auto childNode = mathmlChildNode(parentNode, index);
 
-    while (childNode->is(node)) {
+    while (childNode->equals(node)) {
         childNode = mathmlChildNode(parentNode, ++index);
     }
 

@@ -337,7 +337,7 @@ public:
      *
      * @return true if this @c XmlNode is the given node, false otherwise.
      */
-    bool is(const XmlNodePtr &node) const;
+    bool equals(const XmlNodePtr &node) const;
 
     /**
      * @brief Get the first child for this @c XmlNode.
