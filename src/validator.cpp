@@ -2107,7 +2107,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
 
         if (!ok) {
             addMathMLIssue("Math has a 'ci' element with no identifier as a child.",
-                           Issue::ReferenceRule::MATH_CI,
+                           Issue::ReferenceRule::MATH_CI_VARIABLE_REF,
                            component);
         }
     } else if (node->isMathmlElement("cn")) {
