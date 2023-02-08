@@ -136,7 +136,7 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
-        for (size_t index  = 0; index < units->unitCount(); ++index) {
+        for (size_t index = 0; index < units->unitCount(); ++index) {
             std::string ref = units->unitAttributeReference(index);
             // If the child units are imported, check them too.
             auto model = owningModel(units);
