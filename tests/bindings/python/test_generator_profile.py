@@ -1630,7 +1630,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('findRoot[INDEX](variables);', g.findRootCallString())
+        self.assertEqual('findRoot[INDEX](variables);\n', g.findRootCallString())
         g.setFindRootCallString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString())
 
@@ -1648,7 +1648,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);', g.nlaSolveCallString())
+        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString())
         g.setNlaSolveCallString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString())
 

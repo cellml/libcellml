@@ -20,6 +20,8 @@ limitations under the License.
 
 #include "libcellml/generatorprofile.h"
 
+#include "utilities.h"
+
 namespace libcellml {
 
 using AnalyserModelWeakPtr = std::weak_ptr<AnalyserModel>; /**< Type definition for weak analyser model pointer. */
@@ -38,6 +40,8 @@ struct Generator::GeneratorImpl
     AnalyserModelPtr mLockedModel;
 
     std::string mCode;
+
+    size_t mNlaSystemIndex = MAX_SIZE_T;
 
     GeneratorProfilePtr mOwnedProfile = GeneratorProfile::create();
     GeneratorProfileWeakPtr mProfile;
@@ -109,6 +113,7 @@ struct Generator::GeneratorImpl
 
     void addRootFindingInfoObjectCode();
     void addExternNlaSolveMethodCode();
+    void addNlaSystemsCode();
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
@@ -129,10 +134,12 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value) const;
     std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
+    bool isStateRateBasedAlgebraicEqnOrExternalEqn(const AnalyserEquationPtr &equation) const;
+
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool forComputeVariables = false) const;
+                                     bool forComputeVariables = false);
 
     void addInterfaceComputeModelMethodsCode();
     void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
