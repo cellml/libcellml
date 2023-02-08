@@ -61,6 +61,12 @@ struct AnalyserInternalVariable;
 using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
 using AnalyserInternalVariablePtr = std::shared_ptr<AnalyserInternalVariable>;
 
+using AnalyserInternalEquationPtrs = std::vector<AnalyserInternalEquationPtr>;
+using AnalyserInternalVariablePtrs = std::vector<AnalyserInternalVariablePtr>;
+
+using AnalyserEquationPtrs = std::vector<AnalyserEquationPtr>;
+using AnalyserExternalVariablePtrs = std::vector<AnalyserExternalVariablePtr>;
+
 struct AnalyserInternalVariable
 {
     enum struct Type
@@ -152,12 +158,13 @@ struct AnalyserInternalEquation
 
     AnalyserEquationAstPtr mAst;
 
-    std::vector<AnalyserInternalVariablePtr> mVariables;
-    std::vector<AnalyserInternalVariablePtr> mOdeVariables;
-    std::vector<AnalyserInternalVariablePtr> mAllVariables;
-
-    AnalyserInternalVariablePtr mVariable;
     ComponentPtr mComponent = nullptr;
+
+    AnalyserInternalVariablePtrs mVariables;
+    AnalyserInternalVariablePtrs mOdeVariables;
+    AnalyserInternalVariablePtrs mAllVariables;
+
+    AnalyserInternalVariablePtr mUnknownVariable;
 
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
@@ -171,12 +178,12 @@ struct AnalyserInternalEquation
     static bool isKnownVariable(const AnalyserInternalVariablePtr &variable);
     static bool isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
 
-    static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    static bool hasKnownVariables(const AnalyserInternalVariablePtrs &variables);
     bool hasKnownVariables();
 
     static bool isNonConstantVariable(const AnalyserInternalVariablePtr &variable);
 
-    static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    static bool hasNonConstantVariables(const AnalyserInternalVariablePtrs &variables);
     bool hasNonConstantVariables();
 
     bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex,
@@ -197,8 +204,8 @@ AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInter
 {
     auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
 
-    res->mVariable = variable;
     res->mComponent = owningComponent(variable->mVariable);
+    res->mUnknownVariable = variable;
 
     return res;
 }
@@ -229,7 +236,7 @@ bool AnalyserInternalEquation::isKnownOdeVariable(const AnalyserInternalVariable
     return odeVariable->mIndex != MAX_SIZE_T;
 }
 
-bool AnalyserInternalEquation::hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
+bool AnalyserInternalEquation::hasKnownVariables(const AnalyserInternalVariablePtrs &variables)
 {
     return std::any_of(variables.begin(), variables.end(), [](const auto &v) {
         return isKnownVariable(v);
@@ -257,7 +264,7 @@ bool AnalyserInternalEquation::isNonConstantVariable(const AnalyserInternalVaria
                && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT));
 }
 
-bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
+bool AnalyserInternalEquation::hasNonConstantVariables(const AnalyserInternalVariablePtrs &variables)
 {
     return std::any_of(variables.begin(), variables.end(), [](const auto &v) {
         return isNonConstantVariable(v);
@@ -388,7 +395,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
                     (variable == initialisedVariable) ?
                         Type::NLA :
                         Type::ALGEBRAIC;
-            mVariable = variable;
+            mUnknownVariable = variable;
 
             return true;
         }
@@ -413,10 +420,10 @@ public:
 
     AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
 
-    std::vector<AnalyserExternalVariablePtr> mExternalVariables;
+    AnalyserExternalVariablePtrs mExternalVariables;
 
-    std::vector<AnalyserInternalVariablePtr> mInternalVariables;
-    std::vector<AnalyserInternalEquationPtr> mInternalEquations;
+    AnalyserInternalVariablePtrs mInternalVariables;
+    AnalyserInternalEquationPtrs mInternalEquations;
 
     GeneratorPtr mGenerator = libcellml::Generator::create();
 
@@ -505,14 +512,14 @@ public:
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
     bool isStateRateBased(const AnalyserEquationPtr &equation,
-                          std::vector<AnalyserEquationPtr> &checkedEquations);
+                          AnalyserEquationPtrs &checkedEquations);
 
     void analyseModel(const ModelPtr &model);
 
-    std::vector<AnalyserExternalVariablePtr>::const_iterator findExternalVariable(const ModelPtr &model,
-                                                                                  const std::string &componentName,
-                                                                                  const std::string &variableName) const;
-    std::vector<AnalyserExternalVariablePtr>::const_iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const;
+    AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const ModelPtr &model,
+                                                                      const std::string &componentName,
+                                                                      const std::string &variableName) const;
+    AnalyserExternalVariablePtrs::const_iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const;
 };
 
 Analyser::AnalyserImpl::AnalyserImpl()
@@ -1147,8 +1154,8 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
                 if (voi != nullptr) {
                     // We have found the first occurrence of our variable of
-                    // integration, but now we must ensure neither it (nor any
-                    // of its equivalent variables) is initialised.
+                    // integration, but now we must ensure that it (or any of
+                    // its equivalent variables) is not initialised.
 
                     bool isVoiInitialised = false;
 
@@ -2128,7 +2135,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 }
 
 bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equation,
-                                              std::vector<AnalyserEquationPtr> &checkedEquations)
+                                              AnalyserEquationPtrs &checkedEquations)
 {
     if (std::find(checkedEquations.begin(), checkedEquations.end(), equation) != checkedEquations.end()) {
         return false;
@@ -2360,7 +2367,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             internalVariable->mIndex = ++variableIndex;
 
-            if (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mVariable == internalVariable; }) != mInternalEquations.end()) {
+            if (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mUnknownVariable == internalVariable; }) != mInternalEquations.end()) {
                 internalVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
             } else {
                 internalVariable->mType = AnalyserInternalVariable::Type::CONSTANT;
@@ -2429,7 +2436,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     std::map<VariablePtr, AnalyserEquationPtr> equationMappings;
 
     for (const auto &internalEquation : mInternalEquations) {
-        equationMappings.emplace(internalEquation->mVariable->mVariable, std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}});
+        equationMappings.emplace(internalEquation->mUnknownVariable->mVariable, std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}});
     }
 
     // Make our internal variables available through our API.
@@ -2490,7 +2497,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     for (const auto &internalEquation : mInternalEquations) {
         // Determine the type of the equation.
 
-        auto equation = equationMappings[internalEquation->mVariable->mVariable];
+        auto equation = equationMappings[internalEquation->mUnknownVariable->mVariable];
         auto stateOrVariable = variableMappings[equation];
         AnalyserEquation::Type type;
 
@@ -2529,11 +2536,11 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             auto astRightChild = ast->rightChild();
 
             if (astRightChild->type() == AnalyserEquationAst::Type::CI) {
-                if (astRightChild->variable()->name() == internalEquation->mVariable->mVariable->name()) {
+                if (astRightChild->variable()->name() == internalEquation->mUnknownVariable->mVariable->name()) {
                     ast->swapLeftAndRightChildren();
                 }
             } else if (astRightChild->type() == AnalyserEquationAst::Type::DIFF) {
-                if (astRightChild->rightChild()->variable()->name() == internalEquation->mVariable->mVariable->name()) {
+                if (astRightChild->rightChild()->variable()->name() == internalEquation->mUnknownVariable->mVariable->name()) {
                     ast->swapLeftAndRightChildren();
                 }
             }
@@ -2543,9 +2550,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // variables on which this equation depends.
 
         VariablePtrs variableDependencies = (type == AnalyserEquation::Type::EXTERNAL) ?
-                                                internalEquation->mVariable->mDependencies :
+                                                internalEquation->mUnknownVariable->mDependencies :
                                                 internalEquation->mDependencies;
-        std::vector<AnalyserEquationPtr> equationDependencies;
+        AnalyserEquationPtrs equationDependencies;
 
         for (const auto &variableDependency : variableDependencies) {
             equationDependencies.push_back(equationMappings[variableDependency]);
@@ -2578,15 +2585,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Note: obviously, this can only be done once all our equations are ready.
 
     for (const auto &equation : mModel->mPimpl->mEquations) {
-        std::vector<AnalyserEquationPtr> checkedEquations;
+        AnalyserEquationPtrs checkedEquations;
 
         equation->mPimpl->mIsStateRateBased = isStateRateBased(equation, checkedEquations);
     }
 }
 
-std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
-                                                                                                      const std::string &componentName,
-                                                                                                      const std::string &variableName) const
+AnalyserExternalVariablePtrs::const_iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
+                                                                                          const std::string &componentName,
+                                                                                          const std::string &variableName) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
         auto variable = ev->variable();
@@ -2597,7 +2604,7 @@ std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl:
     });
 }
 
-std::vector<AnalyserExternalVariablePtr>::const_iterator Analyser::AnalyserImpl::findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
+AnalyserExternalVariablePtrs::const_iterator Analyser::AnalyserImpl::findExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
 {
     return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const auto &ev) {
         return ev == externalVariable;

@@ -46,6 +46,11 @@ limitations under the License.
 
 namespace libcellml {
 
+void Generator::GeneratorImpl::reset()
+{
+    mCode = {};
+}
+
 bool Generator::GeneratorImpl::retrieveLockedModelAndProfile()
 {
     mLockedModel = mGenerator->model();
@@ -1410,7 +1415,9 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
         scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mLockedProfile->timesString();
     }
 
-    return mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+    return mLockedProfile->indentString()
+           + generateVariableNameCode(variable->variable())
+           + mLockedProfile->assignmentString()
            + scalingFactorCode + generateDoubleOrConstantVariableNameCode(initialisingVariable)
            + mLockedProfile->commandSeparatorString() + "\n";
 }
@@ -1422,9 +1429,8 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
     std::string res;
 
     if (std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end()) {
-        if ((equation->type() == AnalyserEquation::Type::ODE)
-            || (equation->type() == AnalyserEquation::Type::ALGEBRAIC)
-            || (equation->type() == AnalyserEquation::Type::EXTERNAL)) {
+        if ((equation->type() != AnalyserEquation::Type::TRUE_CONSTANT)
+            && (equation->type() != AnalyserEquation::Type::VARIABLE_BASED_CONSTANT)) {
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::ODE)
                     && (!forComputeVariables
@@ -1442,7 +1448,9 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
             index << variable->index();
 
-            res += mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+            res += mLockedProfile->indentString()
+                   + generateVariableNameCode(variable->variable())
+                   + mLockedProfile->assignmentString()
                    + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
                              "[INDEX]", index.str())
                    + mLockedProfile->commandSeparatorString() + "\n";
@@ -1652,9 +1660,11 @@ std::string Generator::interfaceCode() const
         return {};
     }
 
-    // Add code for the origin comment.
+    // Get ourselves ready.
 
-    mPimpl->mCode = {};
+    mPimpl->reset();
+
+    // Add code for the origin comment.
 
     mPimpl->addOriginCommentCode();
 
@@ -1706,9 +1716,11 @@ std::string Generator::implementationCode() const
         return {};
     }
 
-    // Add code for the origin comment.
+    // Get ourselves ready.
 
-    mPimpl->mCode = {};
+    mPimpl->reset();
+
+    // Add code for the origin comment.
 
     mPimpl->addOriginCommentCode();
 
