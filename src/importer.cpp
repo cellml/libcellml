@@ -595,7 +595,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
                 addIssue(issue);
                 return false;
             }
-            if (sourceUnit->isImport() && !sourceUnit->isResolved()) {
+            if (sourceUnit->isImport()) {
                 if (!fetchUnits(sourceUnit, newBase, history)) {
                     return false;
                 }
