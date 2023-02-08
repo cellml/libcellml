@@ -447,12 +447,14 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
 
     size_t endIndex = mImporter->errorCount();
     bool encounteredRelatedError = false;
-    for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
-        auto error = mImporter->error(index);
-        removeError(index);
+    if (endIndex > startIndex) {
+        for (size_t index = endIndex; startIndex < index; --index) {
+            auto error = mImporter->error(index - 1);
+            removeError(index - 1);
 
-        if (!encounteredRelatedError && isErrorRelatedToComponent(error, sourceComponent)) {
-            encounteredRelatedError = true;
+            if (!encounteredRelatedError && isErrorRelatedToComponent(error, sourceComponent)) {
+                encounteredRelatedError = true;
+            }
         }
     }
 
@@ -536,12 +538,14 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
 
     bool encounteredRelatedError = false;
     size_t endIndex = mImporter->errorCount();
-    for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
-        auto error = mImporter->error(index);
-        auto errorUnits = error->item()->units();
-        removeError(index);
-        if (!encounteredRelatedError && (errorUnits != nullptr) && (errorUnits->name() == importUnits->importReference())) {
-            encounteredRelatedError = true;
+    if (endIndex > startIndex) {
+        for (size_t index = endIndex; startIndex < index; --index) {
+            auto error = mImporter->error(index - 1);
+            auto errorUnits = error->item()->units();
+            removeError(index - 1);
+            if (!encounteredRelatedError && (errorUnits != nullptr) && (errorUnits->name() == importUnits->importReference())) {
+                encounteredRelatedError = true;
+            }
         }
     }
 
@@ -577,13 +581,8 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
             return false;
         }
 
-        for (size_t u = 0; u < sourceUnits->unitCount(); ++u) {
-            std::string reference;
-            std::string prefix;
-            std::string id;
-            double exponent;
-            double multiplier;
-            sourceUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
+        for (size_t unit_index = 0; unit_index < sourceUnits->unitCount(); ++unit_index) {
+            std::string reference = sourceUnits->unitAttributeReference(unit_index);
             if (isStandardUnitName(reference)) {
                 continue;
             }
@@ -668,6 +667,25 @@ void Importer::clearImports(ModelPtr &model)
     }
 }
 
+std::string addUnitsAvoidingNameClash(const ModelPtr &model, const UnitsPtr &units)
+{
+    bool modelHasUnits = model->hasUnits(units);
+    if (!modelHasUnits) {
+        auto originalName = units->name();
+        size_t count = 0;
+        auto newName = originalName;
+        while (!modelHasUnits && model->hasUnits(newName)) {
+            newName = originalName + "_" + convertToString(++count);
+            units->setName(newName);
+            modelHasUnits = model->hasUnits(units);
+        }
+        if (!modelHasUnits) {
+            model->addUnits(units);
+        }
+    }
+    return units->name();
+}
+
 void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -748,22 +766,10 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         // Copy over units used in imported component to this model.
         StringStringMap unitsNamesToReplace;
         for (const auto &u : requiredUnits) {
-            bool modelHasUnits = model->hasUnits(u);
-            if (!modelHasUnits) {
-                auto originalName = u->name();
-                size_t count = 0;
-                auto newName = originalName;
-                while (!modelHasUnits && model->hasUnits(newName)) {
-                    newName = originalName + "_" + convertToString(++count);
-                    u->setName(newName);
-                    modelHasUnits = model->hasUnits(u);
-                }
-                if (!modelHasUnits) {
-                    model->addUnits(u);
-                    if (originalName != newName) {
-                        unitsNamesToReplace.emplace(originalName, newName);
-                    }
-                }
+            const std::string originalName = u->name();
+            const std::string newName = addUnitsAvoidingNameClash(model, u);
+            if (originalName != newName) {
+                unitsNamesToReplace.emplace(originalName, newName);
             }
         }
         findAndReplaceComponentsCnUnitsNames(importedComponentCopy, unitsNamesToReplace);
@@ -777,6 +783,29 @@ void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &compon
     for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
         auto c = flattenedComponent->component(index);
         flattenComponentTree(flattenedComponent, c, index);
+    }
+}
+
+void flattenUnitsTree(const ModelPtr &model, const UnitsPtr &u, size_t index)
+{
+    if (u->isImport()) {
+        auto importSource = u->importSource();
+        auto importingModel = importSource->model();
+        auto importedUnits = importingModel->units(u->importReference());
+        auto importedUnitsCopy = importedUnits->clone();
+        importedUnitsCopy->setName(u->name());
+        model->replaceUnits(index, importedUnitsCopy);
+        for (size_t unitIndex = 0; unitIndex < importedUnits->unitCount(); ++unitIndex) {
+            const std::string reference = importedUnits->unitAttributeReference(unitIndex);
+            if (!reference.empty() && !isStandardUnitName(reference)) {
+                if (importingModel->hasUnits(reference)) {
+                    auto childUnits = importingModel->units(reference)->clone();
+                    addUnitsAvoidingNameClash(model, childUnits);
+                    flattenUnitsTree(model, childUnits, model->unitsCount() - 1);
+                }
+            }
+        }
+        flattenUnitsTree(model, importedUnits, index);
     }
 }
 
@@ -803,13 +832,7 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
         // Go through Units and instantiate any imported Units.
         for (size_t index = 0; index < flatModel->unitsCount(); ++index) {
             auto u = flatModel->units(index);
-            if (u->isImport()) {
-                auto importSource = u->importSource();
-                auto importedUnits = importSource->model()->units(u->importReference());
-                auto importedUnitsCopy = importedUnits->clone();
-                importedUnitsCopy->setName(u->name());
-                flatModel->replaceUnits(index, importedUnitsCopy);
-            }
+            flattenUnitsTree(flatModel, u, index);
         }
 
         // Go through Components and instantiate any imported Components.
