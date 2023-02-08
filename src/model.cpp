@@ -298,14 +298,27 @@ bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
     return importsPresent;
 }
 
+bool hasUnitsImports(const UnitsPtr &units)
+{
+    bool importPresent = units->isImport();
+    auto model = owningModel(units);
+    for (size_t index = 0; !importPresent && (index < units->unitCount()); ++index) {
+        std::string reference = units->unitAttributeReference(index);
+        if (!reference.empty() && !isStandardUnitName(reference)) {
+            if (model->hasUnits(reference)) {
+                importPresent = hasUnitsImports(model->units(reference));
+            }
+        }
+    }
+    return importPresent;
+}
+
 bool Model::hasImports() const
 {
     bool importsPresent = false;
     for (size_t n = 0; (n < unitsCount()) && !importsPresent; ++n) {
         libcellml::UnitsPtr units = Model::units(n);
-        if (units->isImport()) {
-            importsPresent = true;
-        }
+        importsPresent = hasUnitsImports(units);
     }
 
     if (!importsPresent) {
