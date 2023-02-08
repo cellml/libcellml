@@ -1266,8 +1266,29 @@ TEST(Importer, isResolvedUnitsChildUnresolvedII)
     EXPECT_EQ(size_t(0), importer->issueCount());
  }
 
-TEST(Importer, cascadedUnitsManuallyImported)
+TEST(Importer, cascadedUnitsManuallyImportedMissingUnitReferences)
 {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <units name=\"first_units\">\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "    <unit units=\"units1_import\"/>\n"
+        "  </units>\n"
+        "  <units name=\"units1_import\">\n"
+        "    <unit exponent=\"-2\" units=\"second\"/>\n"
+        "    <unit units=\"units2_import\"/>\n"
+        "  </units>\n"
+        "  <units name=\"units2_import\">\n"
+        "    <unit exponent=\"-0.5\" units=\"second\"/>\n"
+        "    <unit units=\"\"/>\n"
+        "    <unit units=\"missing_units\"/>\n"
+        "  </units>\n"
+        "  <component name=\"base_component\">\n"
+        "    <variable name=\"variable\" units=\"first_units\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
     auto importer = libcellml::Importer::create();
 
     auto model = libcellml::Model::create("model");
@@ -1284,6 +1305,8 @@ TEST(Importer, cascadedUnitsManuallyImported)
 
     auto thirdUnits = libcellml::Units::create("third_units");
     thirdUnits->addUnit("second", -0.5);
+    thirdUnits->addUnit("");
+    thirdUnits->addUnit("missing_units");
 
     auto component1 = libcellml::Component::create("base_component");
     auto variable = libcellml::Variable::create("variable");
@@ -1317,13 +1340,16 @@ TEST(Importer, cascadedUnitsManuallyImported)
     importedUnits2->setImportSource(importSource2);
     importedUnits2->setImportReference("third_units");
 
-    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_TRUE(model->hasUnresolvedImports());
 
     importer->addModel(importModel1, "model1.cellml");
     importer->addModel(importModel2, "model2.cellml");
 
     auto flatModel = importer->flattenModel(model);
     EXPECT_EQ(size_t(0), importer->issueCount());
+
+    const std::string a = printer->printModel(flatModel);
+    EXPECT_EQ(e, a);
  }
 
 TEST(Importer, importCascadingUnitsImports)
