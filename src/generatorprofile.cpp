@@ -576,7 +576,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                        "} RootFindingInfo;\n";
         mExternNlaSolveMethodString = "extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
                                       "                     double *u, int n, void *data);\n";
-        mFindRootCallString = "findRoot[INDEX](variables);";
+        mFindRootCallString = "findRoot[INDEX](variables);\n";
         mFindRootMethodString = "void findRoot[INDEX](double *variables)\n"
                                 "{\n"
                                 "    RootFindingInfo rfi = { variables };\n"
@@ -584,7 +584,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                 "\n"
                                 "[CODE]"
                                 "}\n";
-        mNlaSolveCallString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);";
+        mNlaSolveCallString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
         mObjectiveFunctionMethodString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
                                          "{\n"
                                          "    double *variables = ((RootFindingInfo *) data)->variables;\n"
@@ -965,13 +965,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mRootFindingInfoObjectString = "";
         mExternNlaSolveMethodString = "";
-        mFindRootCallString = "find_root_[INDEX](variables)";
-        mFindRootMethodString = "def find_root_[INDEX](variables):\n"
+        mFindRootCallString = "find_root_[INDEX](variables)\n";
+        mFindRootMethodString = "\n"
+                                "def find_root_[INDEX](variables):\n"
                                 "    u = [nan]*[SIZE]\n"
                                 "\n"
                                 "[CODE]";
-        mNlaSolveCallString = "nla_solve(objective_function_[INDEX], u, [SIZE], (variables))";
-        mObjectiveFunctionMethodString = "def objective_function_[INDEX](u, f, data):\n"
+        mNlaSolveCallString = "nla_solve(objective_function_[INDEX], u, [SIZE], (variables))\n";
+        mObjectiveFunctionMethodString = "\n"
+                                         "def objective_function_[INDEX](u, f, data):\n"
                                          "    variables = data[0]\n"
                                          "\n"
                                          "[CODE]";

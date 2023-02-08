@@ -57,7 +57,8 @@ def convert(base, enum, variables, new_base=None):
 convert(AnalyserEquation, 'Type', [
     'TRUE_CONSTANT',
     'VARIABLE_BASED_CONSTANT',
-    'RATE',
+    'ODE',
+    'NLA',
     'ALGEBRAIC',
 ])
 convert(AnalyserEquationAst, 'Type', [

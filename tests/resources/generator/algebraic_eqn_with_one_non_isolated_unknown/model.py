@@ -33,7 +33,7 @@ def objective_function_0(u, f, data):
 
     variables[3] = u[0]
 
-    f[0] = variables[0]+variables[1]-(variables[3]+variables[2])
+    f[0] = variables[3]+variables[0]-(variables[1]+variables[2])
 
 
 def find_root_0(variables):

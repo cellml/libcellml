@@ -371,7 +371,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
               "                     double *u, int n, void *data);\n",
               generatorProfile->externNlaSolveMethodString());
-    EXPECT_EQ("findRoot[INDEX](variables);",
+    EXPECT_EQ("findRoot[INDEX](variables);\n",
               generatorProfile->findRootCallString());
     EXPECT_EQ("void findRoot[INDEX](double *variables)\n"
               "{\n"
@@ -381,7 +381,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "[CODE]"
               "}\n",
               generatorProfile->findRootMethodString());
-    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);",
+    EXPECT_EQ("nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n",
               generatorProfile->nlaSolveCallString());
     EXPECT_EQ("void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
               "{\n"
@@ -867,6 +867,12 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setRootFindingInfoObjectString(value);
     generatorProfile->setExternNlaSolveMethodString(value);
+    generatorProfile->setFindRootCallString(value);
+    generatorProfile->setFindRootMethodString(value);
+    generatorProfile->setNlaSolveCallString(value);
+    generatorProfile->setObjectiveFunctionMethodString(value);
+    generatorProfile->setUArrayString(value);
+    generatorProfile->setFArrayString(value);
 
     generatorProfile->setInterfaceCreateVariablesArrayMethodString(value);
     generatorProfile->setImplementationCreateVariablesArrayMethodString(value);
@@ -985,6 +991,12 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->rootFindingInfoObjectString());
     EXPECT_EQ(value, generatorProfile->externNlaSolveMethodString());
+    EXPECT_EQ(value, generatorProfile->findRootCallString());
+    EXPECT_EQ(value, generatorProfile->findRootMethodString());
+    EXPECT_EQ(value, generatorProfile->nlaSolveCallString());
+    EXPECT_EQ(value, generatorProfile->objectiveFunctionMethodString());
+    EXPECT_EQ(value, generatorProfile->uArrayString());
+    EXPECT_EQ(value, generatorProfile->fArrayString());
 
     EXPECT_EQ(value, generatorProfile->interfaceCreateVariablesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationCreateVariablesArrayMethodString());

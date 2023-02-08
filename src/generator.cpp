@@ -49,6 +49,7 @@ namespace libcellml {
 void Generator::GeneratorImpl::reset()
 {
     mCode = {};
+    mNlaSystemIndex = MAX_SIZE_T;
 }
 
 bool Generator::GeneratorImpl::retrieveLockedModelAndProfile()
@@ -742,6 +743,67 @@ void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
     }
 }
 
+void Generator::GeneratorImpl::addNlaSystemsCode()
+{
+    if ((mLockedModel->type() == AnalyserModel::Type::NLA)
+        && !mLockedProfile->objectiveFunctionMethodString().empty()
+        && !mLockedProfile->findRootMethodString().empty()
+        && !mLockedProfile->nlaSolveCallString().empty()) {
+        auto nlaSystemIndex = MAX_SIZE_T;
+
+        for (const auto &equation : mLockedModel->equations()) {
+            if (equation->type() == AnalyserEquation::Type::NLA) {
+                std::string methodBody;
+
+                methodBody += mLockedProfile->indentString()
+                              + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(equation->variable()->index()) + mLockedProfile->closeArrayString()
+                              + mLockedProfile->assignmentString()
+                              + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + "0" + mLockedProfile->closeArrayString()
+                              + mLockedProfile->commandSeparatorString() + "\n";
+
+                methodBody += newLineIfNeeded()
+                              + mLockedProfile->indentString()
+                              + mLockedProfile->fArrayString() + mLockedProfile->openArrayString() + "0" + mLockedProfile->closeArrayString()
+                              + mLockedProfile->assignmentString()
+                              + generateCode(equation->ast())
+                              + mLockedProfile->commandSeparatorString() + "\n";
+
+                mCode += newLineIfNeeded()
+                         + replace(replace(mLockedProfile->objectiveFunctionMethodString(),
+                                           "[INDEX]", convertToString(++nlaSystemIndex)),
+                                   "[CODE]", generateMethodBodyCode(methodBody));
+
+                methodBody = {};
+
+                methodBody += mLockedProfile->indentString()
+                              + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + "0" + mLockedProfile->closeArrayString()
+                              + mLockedProfile->assignmentString()
+                              + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(equation->variable()->index()) + mLockedProfile->closeArrayString()
+                              + mLockedProfile->commandSeparatorString() + "\n";
+
+                methodBody += newLineIfNeeded()
+                              + mLockedProfile->indentString()
+                              + replace(replace(mLockedProfile->nlaSolveCallString(),
+                                                "[INDEX]", convertToString(nlaSystemIndex)),
+                                        "[SIZE]", convertToString(1));
+
+                methodBody += newLineIfNeeded()
+                              + mLockedProfile->indentString()
+                              + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(equation->variable()->index()) + mLockedProfile->closeArrayString()
+                              + mLockedProfile->assignmentString()
+                              + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + "0" + mLockedProfile->closeArrayString()
+                              + mLockedProfile->commandSeparatorString() + "\n";
+
+                mCode += newLineIfNeeded()
+                         + replace(replace(replace(mLockedProfile->findRootMethodString(),
+                                                   "[INDEX]", convertToString(nlaSystemIndex)),
+                                           "[SIZE]", convertToString(1)),
+                                   "[CODE]", generateMethodBodyCode(methodBody));
+            }
+        }
+    }
+}
+
 std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody) const
 {
     return methodBody.empty() ?
@@ -1405,6 +1467,13 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     return code;
 }
 
+bool Generator::GeneratorImpl::isStateRateBasedAlgebraicEqnOrExternalEqn(const AnalyserEquationPtr &equation) const
+{
+    return ((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+            && equation->isStateRateBased())
+           || (equation->type() == AnalyserEquation::Type::EXTERNAL);
+}
+
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
 {
     auto initialisingVariable = variable->initialisingVariable();
@@ -1424,7 +1493,7 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
-                                                           bool forComputeVariables) const
+                                                           bool forComputeVariables)
 {
     std::string res;
 
@@ -1434,9 +1503,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::ODE)
                     && (!forComputeVariables
-                        || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
-                            && dependency->isStateRateBased())
-                        || (dependency->type() == AnalyserEquation::Type::EXTERNAL))) {
+                        || isStateRateBasedAlgebraicEqnOrExternalEqn(dependency))) {
                     res += generateEquationCode(dependency, remainingEquations, forComputeVariables);
                 }
             }
@@ -1454,8 +1521,14 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
                    + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
                              "[INDEX]", index.str())
                    + mLockedProfile->commandSeparatorString() + "\n";
-        } else {
+        } else if (equation->type() != AnalyserEquation::Type::NLA) {
             res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
+        } else {
+            if (!mLockedProfile->findRootCallString().empty()) {
+                res += mLockedProfile->indentString()
+                       + replace(mLockedProfile->findRootCallString(),
+                                 "[INDEX]", convertToString(++mNlaSystemIndex));
+            }
         }
 
         remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
@@ -1596,9 +1669,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
 
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || ((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
-                    && equation->isStateRateBased())
-                || (equation->type() == AnalyserEquation::Type::EXTERNAL)) {
+                || isStateRateBasedAlgebraicEqnOrExternalEqn(equation)) {
                 methodBody += generateEquationCode(equation, newRemainingEquations, true);
             }
         }
@@ -1764,12 +1835,14 @@ std::string Generator::implementationCode() const
 
     // Add code for the NLA solver.
 
+    auto equations = mPimpl->mLockedModel->equations();
+
     mPimpl->addRootFindingInfoObjectCode();
     mPimpl->addExternNlaSolveMethodCode();
+    mPimpl->addNlaSystemsCode();
 
     // Add code for the implementation to initialise our variables.
 
-    auto equations = mPimpl->mLockedModel->equations();
     std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
 
     mPimpl->addImplementationInitialiseVariablesMethodCode(remainingEquations);

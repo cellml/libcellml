@@ -40,8 +40,8 @@ describe("Analyser Variable tests", () => {
         expect(am.variableCount()).toBe(18)
     });
     test('Checking Analyser Variable type.', () => {
-        const av = am.variable(5)
-        expect(av.type().value).toBe(libcellml.AnalyserVariable.Type.CONSTANT.value)
+        const av = am.variable(0)
+        expect(av.type().value).toBe(libcellml.AnalyserVariable.Type.ALGEBRAIC.value)
     });
     test('Checking Analyser Variable index.', () => {
         const av = am.variable(7)
@@ -52,11 +52,11 @@ describe("Analyser Variable tests", () => {
         expect(av.initialisingVariable().name()).toBe("g_K")
     });
     test('Checking Analyser Variable variable.', () => {
-        const av = am.variable(5)
+        const av = am.variable(10)
         expect(av.variable().name()).toBe("alpha_m")
     });
     test('Checking Analyser Variable equation.', () => {
-        const av = am.variable(9)
+        const av = am.variable(14)
         expect(av.equation().type().value).toBe(libcellml.AnalyserEquation.Type.VARIABLE_BASED_CONSTANT.value)
     });
  })
