@@ -24,8 +24,7 @@ namespace libcellml {
  * @brief The AnalyserVariable class.
  *
  * The AnalyserVariable class is for representing a variable in the context of a
- * CellML Analyser, i.e. a constant, a computed constant or an algebraic
- * variable.
+ * CellML Analyser.
  */
 class LIBCELLML_EXPORT AnalyserVariable
 {

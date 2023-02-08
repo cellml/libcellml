@@ -43,6 +43,8 @@ struct Generator::GeneratorImpl
     GeneratorProfileWeakPtr mProfile;
     GeneratorProfilePtr mLockedProfile;
 
+    void reset();
+
     bool retrieveLockedModelAndProfile();
     void resetLockedModelAndProfile();
 
