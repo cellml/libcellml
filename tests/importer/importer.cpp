@@ -1264,7 +1264,7 @@ TEST(Importer, isResolvedUnitsChildUnresolvedII)
 
     auto flatModel = importer->flattenModel(model);
     EXPECT_EQ(size_t(0), importer->issueCount());
- }
+}
 
 TEST(Importer, cascadedUnitsManuallyImportedMissingUnitReferences)
 {
@@ -1350,7 +1350,7 @@ TEST(Importer, cascadedUnitsManuallyImportedMissingUnitReferences)
 
     const std::string a = printer->printModel(flatModel);
     EXPECT_EQ(e, a);
- }
+}
 
 TEST(Importer, importCascadingUnitsImports)
 {
