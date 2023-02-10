@@ -336,6 +336,28 @@ TEST(Coverage, analyser)
     analyser->analyseModel(model);
 }
 
+TEST(Coverage, analyserConvertToInt)
+{
+    auto analyser = libcellml::Analyser::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/converttoint.cellml"));
+
+    auto printer = libcellml::Printer::create();
+
+    Debug() << printer->printModel(model);
+
+    analyser->analyseModel(model);
+}
+
+TEST(Coverage, analyserConvertToDouble)
+{
+    auto analyser = libcellml::Analyser::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/converttodouble.cellml"));
+
+    analyser->analyseModel(model);
+}
+
 TEST(Coverage, analyserExternalVariable)
 {
     auto externalVariable = libcellml::AnalyserExternalVariable::create(nullptr);
