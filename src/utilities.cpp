@@ -1111,7 +1111,7 @@ bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entitie
                 }
             }
         }
-        if (entityFound)) {
+        if (entityFound) {
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 units to this component. And much more than
             // that in a 64-bit environment.
