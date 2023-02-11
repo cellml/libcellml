@@ -345,7 +345,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && (units->unitCount() == 0) && isStandardUnitName(units->name());
+    return (units->unitCount() == 0) && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
@@ -388,7 +388,7 @@ bool isEntityChildOf(const ParentedEntityPtr &entity1, const ParentedEntityPtr &
 bool areEntitiesSiblings(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     auto entity1Parent = entity1->parent();
-    return entity1Parent != nullptr && entity1Parent == entity2->parent();
+    return entity1Parent == entity2->parent();
 }
 
 using PublicPrivateRequiredPair = std::pair<bool, bool>;
@@ -413,7 +413,7 @@ PublicPrivateRequiredPair publicAndOrPrivateInterfaceTypeRequired(const Variable
         auto equivalentVariable = variable->equivalentVariable(index);
         auto componentOfVariable = variable->parent();
         auto componentOfEquivalentVariable = equivalentVariable->parent();
-        if (componentOfVariable == nullptr || componentOfEquivalentVariable == nullptr) {
+        if (componentOfEquivalentVariable == nullptr) {
             return std::make_pair(false, false);
         }
         if (areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)
@@ -464,9 +464,7 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     for (size_t index = 0; index < component->variableCount(); ++index) {
         auto variable = component->variable(index);
         if (variable->equivalentVariableCount() > 0) {
-            if (std::find(variables.begin(), variables.end(), variable) == variables.end()) {
-                variables.push_back(variable);
-            }
+            variables.push_back(variable);
         }
     }
     for (size_t index = 0; index < component->componentCount(); ++index) {
@@ -474,8 +472,29 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
+/**
+ * @brief Return a list of names taken from MathML cn units attribute.
+ *
+ * Search the given @p node for MathML @c cn elements.
+ * For all @c cn elements return the units reference if it is not empty
+ * or a reference to a standard unit.
+ *
+ * @param node The node to search for MathML @c cn elements.
+ * @return A list of units references.
+ */
 NameList findCnUnitsNames(const XmlNodePtr &node);
+
+/**
+ * @brief Find all MathML @c cn elements units attributes in the given components math string.
+ *
+ * Search through the @p component's math string and return a list of units references found
+ * on MathML @c cn elements units attribute.
+ *
+ * @param component The component to search.
+ * @return A list of units references.
+ */
 NameList findComponentCnUnitsNames(const ComponentPtr &component);
+
 void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
 void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
@@ -581,7 +600,7 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
 {
     size_t index = 0;
     bool found = false;
-    while ((index < componentParent->componentCount()) && !found) {
+    while (!found) {
         if (componentParent->component(index) == component) {
             found = true;
         } else {
@@ -721,7 +740,7 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
     auto componentCnUnitsNames = findComponentCnUnitsNames(component);
     for (const auto &unitsName : componentCnUnitsNames) {
         auto u = model->units(unitsName);
-        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+        if (u != nullptr) {
             auto requiredUnits = referencedUnits(model, u);
             usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
             usedUnits.push_back(u);
