@@ -914,20 +914,19 @@ IdList listIds(const ModelPtr &model)
             idList.insert(id);
         }
         // Imports.
-        if (units->isImport()) {
-            if (units->importSource() != nullptr) {
-                id = units->importSource()->id();
-                if (!id.empty()) {
-                    idList.insert(id);
-                }
+        auto importSource = units->importSource();
+        if (importSource != nullptr) {
+            id = importSource->id();
+            if (!id.empty()) {
+                idList.insert(id);
             }
         }
-        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
+        for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string prefix;
             std::string reference;
             double exponent;
             double multiplier;
-            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
             if (!id.empty()) {
                 idList.insert(id);
             }
