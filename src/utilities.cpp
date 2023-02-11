@@ -839,12 +839,11 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
         idList.insert(id);
     }
     // Imports.
-    if (component->isImport()) {
-        if (component->importSource() != nullptr) {
-            id = component->importSource()->id();
-            if (!id.empty()) {
-                idList.insert(id);
-            }
+    auto importSource = component->importSource();
+    if (importSource != nullptr) {
+        id = component->importSource()->id();
+        if (!id.empty()) {
+            idList.insert(id);
         }
     }
     // Component reference in encapsulation structure.
@@ -854,19 +853,20 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
     }
     // Variables.
     for (size_t v = 0; v < component->variableCount(); ++v) {
-        id = component->variable(v)->id();
+        auto variable = component->variable(v);
+        id = variable->id();
         if (!id.empty()) {
             idList.insert(id);
         }
 
-        for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+        for (size_t e = 0; e < variable->equivalentVariableCount(); ++e) {
             // Equivalent variable mappings.
-            id = Variable::equivalenceMappingId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            id = Variable::equivalenceMappingId(variable, variable->equivalentVariable(e));
             if (!id.empty()) {
                 idList.insert(id);
             }
             // Connections.
-            id = Variable::equivalenceConnectionId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            id = Variable::equivalenceConnectionId(variable, variable->equivalentVariable(e));
             if (!id.empty()) {
                 idList.insert(id);
             }
@@ -874,15 +874,16 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
     }
     // Resets.
     for (size_t r = 0; r < component->resetCount(); ++r) {
-        id = component->reset(r)->id();
+        auto reset = component->reset(r);
+        id = reset->id();
         if (!id.empty()) {
             idList.insert(id);
         }
-        id = component->reset(r)->testValueId();
+        id = reset->testValueId();
         if (!id.empty()) {
             idList.insert(id);
         }
-        id = component->reset(r)->resetValueId();
+        id = reset->resetValueId();
         if (!id.empty()) {
             idList.insert(id);
         }
