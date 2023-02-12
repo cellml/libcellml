@@ -344,8 +344,6 @@ TEST(Coverage, analyserConvertToInt)
 
     auto printer = libcellml::Printer::create();
 
-    Debug() << printer->printModel(model);
-
     analyser->analyseModel(model);
 }
 
@@ -690,8 +688,6 @@ TEST(Importer, unitsUsedByComponentMathNotFoundInModel)
             "  </apply>\n"
             "</math>\n";
 
-    auto parser = libcellml::Parser::create();
-
     auto variable = libcellml::Variable::create("a");
     auto uBobs = libcellml::Units::create("bobs");
     uBobs->addUnit("daves");
@@ -739,8 +735,6 @@ TEST(Importer, notMathMLMathNodesInComponentMath)
         "    <cn cellml:units=\"bobs\">1</cn>\n"
         "  </apply>\n"
         "</notmath>\n";
-
-    auto parser = libcellml::Parser::create();
 
     auto variable = libcellml::Variable::create("a");
     auto uBobs = libcellml::Units::create("bobs");

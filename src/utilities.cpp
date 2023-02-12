@@ -644,23 +644,21 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
     for (const auto &entry : map) {
         auto key = entry.first;
         auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
-        if (!rebasedKey.empty()) {
-            auto vector = entry.second;
-            std::vector<IndexStack> rebasedVector;
-            for (auto stack : vector) {
-                // Temporarily remove the variable index whilst we rebase the component part of the stack.
-                size_t variableIndex = stack.back();
-                stack.pop_back();
-                auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
-                if (!rebasedTarget.empty()) {
-                    rebasedTarget.push_back(variableIndex);
-                    rebasedVector.push_back(rebasedTarget);
-                }
+        auto vector = entry.second;
+        std::vector<IndexStack> rebasedVector;
+        for (auto stack : vector) {
+            // Temporarily remove the variable index whilst we rebase the component part of the stack.
+            size_t variableIndex = stack.back();
+            stack.pop_back();
+            auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
+            if (!rebasedTarget.empty()) {
+                rebasedTarget.push_back(variableIndex);
+                rebasedVector.push_back(rebasedTarget);
             }
+        }
 
-            if (!rebasedVector.empty()) {
-                rebasedMap.emplace(rebasedKey, rebasedVector);
-            }
+        if (!rebasedVector.empty()) {
+            rebasedMap.emplace(rebasedKey, rebasedVector);
         }
     }
 
