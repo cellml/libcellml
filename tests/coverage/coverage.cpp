@@ -680,13 +680,13 @@ TEST(Generator, coverage)
 TEST(Importer, unitsUsedByComponentMathNotFoundInModel)
 {
     const std::string math =
-            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <apply>"
-            "    <eq/>\n"
-            "    <ci>a</ci>\n"
-            "    <cn cellml:units=\"bobs\">1</cn>\n"
-            "  </apply>\n"
-            "</math>\n";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>"
+        "    <eq/>\n"
+        "    <ci>a</ci>\n"
+        "    <cn cellml:units=\"bobs\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
 
     auto variable = libcellml::Variable::create("a");
     auto uBobs = libcellml::Units::create("bobs");
