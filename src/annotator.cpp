@@ -332,7 +332,7 @@ ItemList Annotator::AnnotatorImpl::listIdsAndItems(const ModelPtr &model)
                 idList.insert(std::make_pair(id, convertToWeak(entry)));
             }
         }
-        if (units->isImport() && units->importSource() != nullptr) {
+        if (units->isImport()) {
             ImportSourcePtr importSource = units->importSource();
             id = importSource->id();
             if (!id.empty()) {
