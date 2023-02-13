@@ -584,7 +584,7 @@ std::vector<std::string> Annotator::duplicateIds()
     for (auto i = pFunc()->mIdList.begin(), end = pFunc()->mIdList.end(); i != end; i = pFunc()->mIdList.upper_bound(i->first)) {
         auto next = i;
         ++next;
-        if ((next != end) && (next->first == i->first) && !i->first.empty()) {
+        if ((next != end) && (next->first == i->first)) {
             ids.push_back(i->first);
         }
     }
@@ -596,9 +596,7 @@ std::vector<std::string> Annotator::ids()
     pFunc()->update();
     std::vector<std::string> ids;
     for (auto i = pFunc()->mIdList.begin(), end = pFunc()->mIdList.end(); i != end; i = pFunc()->mIdList.upper_bound(i->first)) {
-        if (!i->first.empty()) {
-            ids.push_back(i->first);
-        }
+        ids.push_back(i->first);
     }
     return ids;
 }
@@ -879,7 +877,7 @@ bool Annotator::assignIds(CellmlElementType type)
             }
             break;
         case CellmlElementType::MATH:
-        case CellmlElementType::UNDEFINED:
+        default: /* case CellmlElementType::UNDEFINED */
             changed = false;
             break;
         }
