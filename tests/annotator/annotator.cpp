@@ -1722,6 +1722,43 @@ TEST(Annotator, listAllIds)
     EXPECT_EQ(std::vector<std::string>(), ids);
 }
 
+TEST(Coverage, crossComponentConnectionAndMappingIds)
+{
+    auto model = libcellml::Model::create("model");
+
+    auto component1 = libcellml::Component::create("component1");
+    auto component2 = libcellml::Component::create("component2");
+    auto component3 = libcellml::Component::create("component3");
+
+    auto variable1 = libcellml::Variable::create("variable1");
+    auto variable2 = libcellml::Variable::create("variable2");
+    auto variable3 = libcellml::Variable::create("variable3");
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    model->addComponent(component3);
+
+    component1->addVariable(variable1);
+    component2->addVariable(variable2);
+    component3->addVariable(variable3);
+
+    libcellml::Variable::addEquivalence(variable1, variable2);
+    libcellml::Variable::addEquivalence(variable1, variable3);
+
+    libcellml::Variable::setEquivalenceMappingId(variable1, variable2, "mapping_id");
+    libcellml::Variable::setEquivalenceMappingId(variable1, variable3, "mapping_id");
+
+    libcellml::Variable::setEquivalenceConnectionId(variable1, variable2, "connection_id");
+    libcellml::Variable::setEquivalenceConnectionId(variable1, variable3, "connection_id");
+
+    auto annotater = libcellml::Annotator::create();
+
+    annotater->setModel(model);
+
+    EXPECT_EQ(size_t(2), annotater->itemCount("mapping_id"));
+    EXPECT_EQ(size_t(2), annotater->itemCount("connection_id"));
+}
+
 TEST(Annotator, retrieveDuplicateIdItemLists)
 {
     std::vector<std::string> ids = {
