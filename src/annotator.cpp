@@ -23,8 +23,6 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
-#include "libcellml/namedentity.h"
-#include "libcellml/printer.h"
 #include "libcellml/reset.h"
 #include "libcellml/types.h"
 #include "libcellml/units.h"
@@ -34,7 +32,6 @@ limitations under the License.
 #include "internaltypes.h"
 #include "issue_p.h"
 #include "logger_p.h"
-#include "namespaces.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -179,7 +176,7 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
     }
     // Imports.
     ImportSourcePtr importSource = component->importSource();
-    if (component->isImport() && (importSource != nullptr)) {
+    if (importSource != nullptr) {
         id = importSource->id();
         if (!id.empty()) {
             auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
@@ -221,12 +218,10 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
                         // Make sure it's also a MAP_VARIABLES item.
                         if (it->second->type() == CellmlElementType::MAP_VARIABLES) {
                             auto testPair = it->second->variablePair();
-                            if (testPair) {
-                                VariableWeakPtr variable1Weak = testPair->variable1();
-                                VariableWeakPtr variable2Weak = testPair->variable2();
-                                if (equals(variable1Weak, weakEquivalentVariable) && equals(variable2Weak, weakVariable)) {
-                                    found = true;
-                                }
+                            VariableWeakPtr variable1Weak = testPair->variable1();
+                            VariableWeakPtr variable2Weak = testPair->variable2();
+                            if (equals(variable1Weak, weakEquivalentVariable) && equals(variable2Weak, weakVariable)) {
+                                found = true;
                             }
                         }
                     }
@@ -252,12 +247,10 @@ void Annotator::AnnotatorImpl::listComponentIdsAndItems(const ComponentPtr &comp
                         // Make sure it's also a CONNECTION item.
                         if (it->second->type() == CellmlElementType::CONNECTION) {
                             auto testPair = it->second->variablePair();
-                            if (testPair) {
-                                if ((owningComponent(testPair->variable1()) == owningComponent(equivalentVariable)) && (owningComponent(testPair->variable2()) == owningComponent(variable))) {
-                                    found = true;
-                                } else if ((owningComponent(testPair->variable2()) == owningComponent(equivalentVariable)) && (owningComponent(testPair->variable1()) == owningComponent(variable))) {
-                                    found = true;
-                                }
+                            if ((owningComponent(testPair->variable1()) == owningComponent(equivalentVariable)) && (owningComponent(testPair->variable2()) == owningComponent(variable))) {
+                                found = true;
+                            } else if ((owningComponent(testPair->variable2()) == owningComponent(equivalentVariable)) && (owningComponent(testPair->variable1()) == owningComponent(variable))) {
+                                found = true;
                             }
                         }
                     }
