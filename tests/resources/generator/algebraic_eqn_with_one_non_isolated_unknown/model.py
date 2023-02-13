@@ -54,8 +54,8 @@ def initialise_variables(variables):
 
 
 def compute_computed_constants(variables):
-    find_root_0(variables)
+    pass
 
 
 def compute_variables(variables):
-    pass
+    find_root_0(variables)
