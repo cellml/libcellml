@@ -333,7 +333,7 @@ void objectiveFunction0(double *u, double *f, void *data)
 
     variables[203] = u[0];
 
-    f[0] = variables[203]+variables[1]-(variables[2]+variables[6]);
+    f[0] = variables[203]+states[0]-(variables[2]+variables[6]);
 }
 
 void findRoot0(double *variables)

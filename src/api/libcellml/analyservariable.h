@@ -109,13 +109,33 @@ public:
     VariablePtr variable() const;
 
     /**
-     * @brief Get the @c AnalyserEquation for this @c AnalyserVariable.
+     * @brief Get the number of equations used to compute this @c AnalyserVariable.
      *
-     * Return the @c AnalyserEquation for this @c AnalyserVariable.
+     * Return the number of equations used to compute this @c AnalyserVariable.
      *
-     * @return The @c AnalyserEquation.
+     * @return The number of equations used to compute this @c AnalyserVariable.
      */
-    AnalyserEquationPtr equation() const;
+    size_t equationCount() const;
+
+    /**
+     * @brief Get the equations used to compute this @c AnalyserVariable.
+     *
+     * Return the equations used to compute this @c AnalyserVariable.
+     *
+     * @return The equations.
+     */
+    std::vector<AnalyserEquationPtr> equations() const;
+
+    /**
+     * @brief Get the equation, at @p index, used to compute this @c AnalyserVariable.
+     *
+     * Return the equation, at @p index, used to compute this @c AnalyserVariable..
+     *
+     * @param index The index of the equation to return.
+     *
+     * @return The equation, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserEquationPtr equation(size_t index) const;
 
 private:
     AnalyserVariable(); /**< Constructor, @private. */

@@ -72,6 +72,15 @@ public:
     AnalyserEquationAstPtr ast() const;
 
     /**
+     * @brief Get the number of dependencies for this @c AnalyserEquation.
+     *
+     * Return the number of dependencies for this @c AnalyserEquation.
+     *
+     * @return The number of dependencies for this @c AnalyserEquation.
+     */
+    size_t dependencyCount() const;
+
+    /**
      * @brief Get the list of @c AnalyserEquation dependencies.
      *
      * Return the list of @c AnalyserEquation items which correspond to the
@@ -80,6 +89,17 @@ public:
      * @return The list of @c AnalyserEquation dependencies.
      */
     std::vector<AnalyserEquationPtr> dependencies() const;
+
+    /**
+     * @brief Get the dependency, at @p index, for this @c AnalyserEquation.
+     *
+     * Return the dependency, at @p index, for this @c AnalyserEquation.
+     *
+     * @param index The index of the dependency to return.
+     *
+     * @return The dependency, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserEquationPtr dependency(size_t index) const;
 
     /**
      * @brief Test to determine if this @c AnalyserEquation relies on states
@@ -94,13 +114,33 @@ public:
     bool isStateRateBased() const;
 
     /**
-     * @brief Get the @c AnalyserVariable for this @c AnalyserEquation.
+     * @brief Get the number of variables computed by this @c AnalyserEquation.
      *
-     * Return the @c AnalyserVariable for this @c AnalyserEquation.
+     * Return the number of variables computed by this @c AnalyserEquation.
      *
-     * @return The @c AnalyserVariable.
+     * @return The number of variables.
      */
-    AnalyserVariablePtr variable() const;
+    size_t variableCount() const;
+
+    /**
+     * @brief Get the variables computed by this @c AnalyserEquation.
+     *
+     * Return the variables computed by this @c AnalyserEquation.
+     *
+     * @return The variables.
+     */
+    std::vector<AnalyserVariablePtr> variables() const;
+
+    /**
+     * @brief Get the variable, at @p index, computed by this @c AnalyserEquation.
+     *
+     * Return the variable, at @p index, computed by this @c AnalyserEquation.
+     *
+     * @param index The index of the variable to return.
+     *
+     * @return The variable, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserVariablePtr variable(size_t index) const;
 
 private:
     AnalyserEquation(); /**< Constructor, @private. */

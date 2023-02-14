@@ -40,7 +40,7 @@ def objective_function_0(u, f, data):
 
 
 def find_root_0(variables):
-    u = [nan] * 3
+    u = [nan]*3
 
     u[0] = variables[0]
     u[1] = variables[1]

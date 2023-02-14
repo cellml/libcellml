@@ -36,8 +36,12 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequation)
         .smart_ptr<std::shared_ptr<libcellml::AnalyserEquation>>("AnalyserEquation")
         .function("type", &libcellml::AnalyserEquation::type)
         .function("ast", &libcellml::AnalyserEquation::ast)
+        .function("dependencyCount", &libcellml::AnalyserEquation::dependencyCount)
         .function("dependencies", &libcellml::AnalyserEquation::dependencies)
+        .function("dependency", &libcellml::AnalyserEquation::dependency)
         .function("isStateRateBased", &libcellml::AnalyserEquation::isStateRateBased)
+        .function("variableCount", &libcellml::AnalyserEquation::variableCount)
+        .function("variables", &libcellml::AnalyserEquation::variables)
         .function("variable", &libcellml::AnalyserEquation::variable)
     ;
 
