@@ -58,9 +58,9 @@ convert(AnalyserEquation, 'Type', [
     'TRUE_CONSTANT',
     'VARIABLE_BASED_CONSTANT',
     'ODE',
-    'DAE',
     'NLA',
     'ALGEBRAIC',
+    'EXTERNAL',
 ])
 convert(AnalyserEquationAst, 'Type', [
     'EQUALITY',
@@ -155,8 +155,10 @@ convert(AnalyserEquationAst, 'Type', [
 ])
 convert(AnalyserModel, 'Type', [
     'UNKNOWN',
-    'ALGEBRAIC',
     'ODE',
+    'DAE',
+    'NLA',
+    'ALGEBRAIC',
     'INVALID',
     'UNDERCONSTRAINED',
     'OVERCONSTRAINED',
