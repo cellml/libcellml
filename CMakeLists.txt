@@ -279,4 +279,7 @@ endif()
 add_custom_target(print_version
   COMMAND ${CMAKE_COMMAND} -E echo "version=v${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}")
 
-message(STATUS "System endianess: ${CMAKE_CXX_BYTE_ORDER}")
+if (NOT _ENDIANESS_DISPLAYED_ALREADY)
+  message(STATUS "System endianess: ${CMAKE_CXX_BYTE_ORDER}")
+  set(_ENDIANESS_DISPLAYED_ALREADY TRUE CACHE INTERNAL "Endianess display.")
+endif()
