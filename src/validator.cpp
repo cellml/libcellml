@@ -1809,7 +1809,7 @@ IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string 
     } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM) {
         // Does not start with numeric character.
         issue->mPimpl->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");
-    } else {  /* referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM) */
+    } else { /* referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM */
         // Basic Latin alphanumeric characters and underscores.
         issue->mPimpl->setDescription("CellML identifiers must not contain any characters other than [a-zA-Z0-9_].");
     }
