@@ -20,6 +20,7 @@ limitations under the License.
 #include <cmath>
 #include <libxml/uri.h>
 #include <map>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -1828,43 +1829,41 @@ bool unitsAreEquivalent(const ModelPtr &model,
         unitMap.emplace(baseUnits, 0.0);
     }
 
-    std::string ref;
     hints = "";
     multiplier = 0.0;
 
-    if (model->hasUnits(v1->units()->name())) {
+    std::string v1UnitsName = v1->units()->name();
+    if (model->hasUnits(v1UnitsName)) {
         UnitsPtr u1 = Units::create();
-        u1 = model->units(v1->units()->name());
+        u1 = model->units(v1UnitsName);
         updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
-        ref = v1->units()->name();
-        unitMap.at(ref) += 1.0;
-    } else if (isStandardUnitName(v1->units()->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v1->units()->name(), 1, 0, 1);
+    } else if (unitMap.find(v1UnitsName) != unitMap.end()) {
+        unitMap.at(v1UnitsName) += 1.0;
+    } else if (isStandardUnitName(v1UnitsName)) {
+        updateBaseUnitCount(model, unitMap, multiplier, v1UnitsName, 1, 0, 1);
     }
 
-    if (model->hasUnits(v2->units()->name())) {
+    std::string v2UnitsName = v2->units()->name();
+    if (model->hasUnits(v2UnitsName)) {
         UnitsPtr u2 = Units::create();
-        u2 = model->units(v2->units()->name());
+        u2 = model->units(v2UnitsName);
         updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
-        ref = v2->units()->name();
-        unitMap.at(v2->units()->name()) -= 1.0;
-    } else if (isStandardUnitName(v2->units()->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v2->units()->name(), 1, 0, -1);
+    } else if (unitMap.find(v2UnitsName) != unitMap.end()) {
+        unitMap.at(v2UnitsName) -= 1.0;
+    } else if (isStandardUnitName(v2UnitsName)) {
+        updateBaseUnitCount(model, unitMap, multiplier, v2UnitsName, 1, 0, -1);
     }
 
     // Remove "dimensionless" from base unit testing.
     unitMap.erase("dimensionless");
+    static const std::regex fullStopAtEndRegex(".$");
 
     bool status = true;
     for (const auto &basePair : unitMap) {
         if (basePair.second != 0.0) {
             std::string num = std::to_string(basePair.second);
             num.erase(num.find_last_not_of('0') + 1, num.length());
-            if (num.back() == '.') {
-                num.pop_back();
-            }
+            num = std::regex_replace(num, fullStopAtEndRegex, "");
             hints += basePair.first + "^" + num + ", ";
             status = false;
         }
@@ -1876,9 +1875,7 @@ bool unitsAreEquivalent(const ModelPtr &model,
 
         std::string num = std::to_string(multiplier);
         num.erase(num.find_last_not_of('0') + 1, num.length());
-        if (num.back() == '.') {
-            num.pop_back();
-        }
+        num = std::regex_replace(num, fullStopAtEndRegex, "");
         hints += "multiplication factor of 10^" + num + ", ";
     }
 
