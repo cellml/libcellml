@@ -168,7 +168,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         aea = ae.ast()
 
-        self.assertEqual(AnalyserEquationAst.Type.ASSIGNMENT, aea.type())
+        self.assertEqual(AnalyserEquationAst.Type.EQUALITY, aea.type())
         self.assertEqual('', aea.value())
         self.assertIsNone(aea.variable())
         self.assertIsNone(aea.parent())

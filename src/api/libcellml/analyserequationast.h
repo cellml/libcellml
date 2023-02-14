@@ -45,9 +45,9 @@ public:
      */
     enum class Type
     {
-        // Assignment.
+        // Equality.
 
-        ASSIGNMENT, /**< The assignment operator. */
+        EQUALITY, /**< The assignment operator. */
 
         // Relational and logical operators.
 
