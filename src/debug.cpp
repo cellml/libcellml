@@ -184,7 +184,7 @@ std::string doPrintAst(const AnalyserEquationAstPtr &ast)
         // Assignment.
 
     case AnalyserEquationAst::Type::EQUALITY:
-        res = "ASSIGNMENT";
+        res = "EQUALITY";
 
         break;
 

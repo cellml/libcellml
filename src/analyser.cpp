@@ -739,7 +739,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         // "math" element then it means that it is used to describe "a = b"
         // otherwise it is used to describe "a == b". In the former case, there
         // is nothing more we need to do since `ast` is already of
-        // AnalyserEquationAst::Type::ASSIGNMENT type.
+        // AnalyserEquationAst::Type::EQUALITY type.
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
             ast->mPimpl->populate(AnalyserEquationAst::Type::EQ, astParent);
@@ -1061,6 +1061,20 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                     //       be created by analyseNode().
 
                     analyseNode(node, internalEquation->mAst, internalEquation->mAst->parent(), component, internalEquation);
+
+                    // Make sure that our internal equation is an equality
+                    // statement.
+
+                    if (internalEquation->mAst->mPimpl->mType != AnalyserEquationAst::Type::EQUALITY) {
+                        auto issue = Issue::IssueImpl::create();
+
+                        issue->mPimpl->setDescription("Equation " + expression(internalEquation->mAst)
+                                                      + " is not an equality statement (i.e. LHS = RHS).");
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT);
+                        issue->mPimpl->mItem->mPimpl->setComponent(component);
+
+                        addIssue(issue);
+                    }
                 }
             }
         }
