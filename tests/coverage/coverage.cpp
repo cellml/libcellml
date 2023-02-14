@@ -690,7 +690,7 @@ TEST(Coverage, componentMathWithRepeatedVariableNames)
         "    <apply>\n"
         "      <plus/>\n"
         "      <ci>A</ci>\n"
-        "      <ci>B</ci>\n"
+        "      <ci id=\"ciid\" />\n"
         "    </apply>\n"
         "  </apply>\n"
         "</math>\n";
