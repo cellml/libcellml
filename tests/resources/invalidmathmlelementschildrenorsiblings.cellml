@@ -677,7 +677,15 @@
                 <cn cellml:units="dimensionless" type="real">1</cn>
             </apply>
             <apply>
-                <!-- 'cn' element of 'real' type with no text node (representing a number) as a child. -->
+                <!-- 'cn' element of 'real' type with no valid text node (representing a basic number) as a child. -->
+                <cn cellml:units="dimensionless">3.21e5</cn>
+            </apply>
+            <apply>
+                <!-- 'cn' element of 'real' type with no valid text node (representing a basic number) as a child. -->
+                <cn cellml:units="dimensionless">1789000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</cn>
+            </apply>
+            <apply>
+                <!-- 'cn' element of 'real' type with no valid text node (representing a basic number) as a child. -->
                 <cn cellml:units="dimensionless">
                     1
                     <sep/>
@@ -685,31 +693,31 @@
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">3</cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     <sep/>
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     Three
                     <sep/>
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     <sep/>
                     Five
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     Three
                     <sep/>
@@ -717,7 +725,7 @@
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     3
                     <!-- Separator. -->
@@ -727,11 +735,27 @@
                 </cn>
             </apply>
             <apply>
-                <!-- 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children. -->
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
                 <cn cellml:units="dimensionless" type="e-notation">
                     3
                     <sep/>
                     Five
+                </cn>
+            </apply>
+            <apply>
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
+                <cn cellml:units="dimensionless" type="e-notation">
+                    1.234e5
+                    <sep/>
+                    6
+                </cn>
+            </apply>
+            <apply>
+                <!-- 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children. -->
+                <cn cellml:units="dimensionless" type="e-notation">
+                    1.234
+                    <sep/>
+                    5.678e9
                 </cn>
             </apply>
         </math>
