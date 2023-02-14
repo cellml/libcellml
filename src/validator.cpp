@@ -940,7 +940,7 @@ bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(NameList names) const
 {
     std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
     bool found = false;
-    for (size_t i = 0; (i < mValidator->issueCount()) && !found; ++i) {
+    for (size_t i = 0; !found && (i < mValidator->issueCount()); ++i) {
         auto issue = mValidator->issue(i);
         if (issue->description().substr(0, 20) == "Cyclic units exist: ") {
             // Remove prefix to loop information.
@@ -1040,7 +1040,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
 
         // Check if we already have another import from the same source with the same units_ref.
         // (This looks for matching entries at the same position in the source and ref vectors).
-        if ((unitsWithImportSource > 1) && !foundImportIssue) {
+        if (!foundImportIssue && (unitsWithImportSource > 1)) {
             auto description = "Model '" + model->name() + "' contains multiple imported units from '" + unitsImportUrl + "' with the same units_ref attribute '" + unitsRef + "'.";
             if (!checkIssuesForDuplications(description)) {
                 auto issue = Issue::IssueImpl::create();
