@@ -372,11 +372,11 @@ TEST(Coverage, generator)
 
     auto analyserModel = analyser->model();
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::DAE, analyserModel->type());
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(203), analyserModel->variableCount());
-    EXPECT_EQ(size_t(197), analyserModel->equationCount());
+    EXPECT_EQ(size_t(204), analyserModel->variableCount());
+    EXPECT_EQ(size_t(198), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(nullptr, analyserModel->voi()->equation());
@@ -398,7 +398,7 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        EXPECT_EQ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 177) || (i == 178) || (i == 180),
+        EXPECT_EQ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 177) || (i == 178) || (i == 180) || (i == 203),
                   analyserModel->variable(i)->initialisingVariable() != nullptr);
     }
 
@@ -608,6 +608,7 @@ TEST(Coverage, generator)
     profile->setInterfaceHeaderString("");
     profile->setMaxFunctionString("");
     profile->setMinFunctionString("");
+    profile->setObjectiveFunctionMethodString("");
     profile->setSecFunctionString("");
     profile->setSechFunctionString("");
     profile->setVariableInfoEntryString("");
@@ -617,12 +618,17 @@ TEST(Coverage, generator)
 
     profile->setArrayElementSeparatorString("");
     profile->setCommentString("xxx");
+    profile->setFindRootMethodString("");
+    profile->setObjectiveFunctionMethodString("xxx");
     profile->setOriginCommentString("");
     profile->setVariableInfoEntryString("xxx");
 
     generator->implementationCode();
 
     profile->setArrayElementSeparatorString("xxx");
+    profile->setFindRootMethodString("xxx");
+    profile->setFindRootCallString("");
+    profile->setNlaSolveCallString("");
     profile->setVariableOfIntegrationVariableTypeString("");
 
     generator->implementationCode();

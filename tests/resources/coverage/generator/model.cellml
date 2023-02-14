@@ -208,6 +208,7 @@
         <variable name="eqnCoverageForPowerOperator" units="dimensionless"/>
         <variable name="eqnCoverageForRootOperator" units="dimensionless"/>
         <variable name="eqnCoverageForMinusUnary" units="dimensionless"/>
+        <variable name="eqnNlaVariable" initial_value="4" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
         <variable initial_value="3" name="o" units="dimensionless"/>
@@ -3336,6 +3337,21 @@
                             </piece>
                         </piecewise>
                     </apply>
+                </apply>
+            </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>eqnNlaVariable</ci>
+                    <ci>m</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>n</ci>
+                    <ci>o</ci>
                 </apply>
             </apply>
         </math>

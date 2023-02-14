@@ -58,6 +58,7 @@ convert(AnalyserEquation, 'Type', [
     'TRUE_CONSTANT',
     'VARIABLE_BASED_CONSTANT',
     'ODE',
+    'DAE',
     'NLA',
     'ALGEBRAIC',
 ])

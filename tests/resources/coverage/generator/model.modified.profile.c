@@ -9,7 +9,7 @@ const char VERSION[] = "0.3.2.post0";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 1;
-const size_t VARIABLE_COUNT = 203;
+const size_t VARIABLE_COUNT = 204;
 
 const VariableInfo VOI_INFO = {"t", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
@@ -220,7 +220,8 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnCoverageForXorOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForPowerOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForRootOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT}
+    {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnNlaVariable", "dimensionless", "my_component", ALGEBRAIC}
 };
 
 double xor(double x, double y)
@@ -319,6 +320,34 @@ void deleteArray(double *array)
     free(array);
 }
 
+typedef struct {
+    double *variables;
+} RootFindingInfo;
+
+extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
+                     double *u, int n, void *data);
+
+void objectiveFunction0(double *u, double *f, void *data)
+{
+    double *variables = ((RootFindingInfo *) data)->variables;
+
+    variables[203] = u[0];
+
+    f[0] = variables[203]+variables[1]-(variables[2]+variables[6]);
+}
+
+void findRoot0(double *variables)
+{
+    RootFindingInfo rfi = { variables };
+    double u[1];
+
+    u[0] = variables[203];
+
+    nlaSolve(objectiveFunction0, u, 1, &rfi);
+
+    variables[203] = u[0];
+}
+
 void initialiseVariables(double *states, double *variables)
 {
     variables[1] = 1.0;
@@ -328,6 +357,7 @@ void initialiseVariables(double *states, double *variables)
     variables[177] = 5.0;
     variables[178] = 6.0;
     variables[180] = 7.0;
+    variables[203] = 4.0;
     variables[182] = 123.0;
     variables[183] = 123.456789;
     variables[184] = 123.0e99;
@@ -538,4 +568,5 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
+    findRoot0(variables);
 }

@@ -42,8 +42,9 @@ public:
     enum class Type
     {
         UNKNOWN, /**< The type of the model is unknown. */
-        ODE, /**< The model defines a system of ordinary differential equations that require an external solver to solve (e.g., CVODE). */
-        NLA, /**< The model defines a system of (potentially non-linear) algebraic equations that require an external solver to solve (e.g., KINSOL). */
+        ODE, /**< The model defines a system of ordinary differential equations that require an external ODE solver (e.g., CVODE) to solve. */
+        DAE, /**< The model defines a system of differential algebraic equations that require both an external ODE solver (e.g., CVODE) and an external NLA solver (e.g., KINSOL) to solve. */
+        NLA, /**< The model defines a system of (potentially non-linear) algebraic equations that require an external NLA solver (e.g., KINSOL) to solve. */
         ALGEBRAIC, /**< The model defines a system of algebraic equations that can be solved directly. */
         INVALID, /**< The model is invalid. */
         UNDERCONSTRAINED, /**< The model is underconstrainted. */

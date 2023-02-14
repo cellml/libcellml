@@ -66,6 +66,18 @@ void Generator::GeneratorImpl::resetLockedModelAndProfile()
     mLockedProfile = nullptr;
 }
 
+bool Generator::GeneratorImpl::modelHasOdes() const
+{
+    return (mLockedModel->type() == AnalyserModel::Type::ODE)
+            || (mLockedModel->type() == AnalyserModel::Type::DAE);
+}
+
+bool Generator::GeneratorImpl::modelHasNlas() const
+{
+    return (mLockedModel->type() == AnalyserModel::Type::NLA)
+            || (mLockedModel->type() == AnalyserModel::Type::DAE);
+}
+
 AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable) const
 {
     // Find and return the analyser variable associated with the given variable.
@@ -310,7 +322,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 {
     std::string stateAndVariableCountCode;
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && ((interface && !mLockedProfile->interfaceStateCountString().empty())
             || (!interface && !mLockedProfile->implementationStateCountString().empty()))) {
         stateAndVariableCountCode += interface ?
@@ -336,7 +348,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 
 void Generator::GeneratorImpl::addVariableTypeObjectCode()
 {
-    auto variableTypeObjectString = mLockedProfile->variableTypeObjectString(mLockedModel->type() == AnalyserModel::Type::ODE,
+    auto variableTypeObjectString = mLockedProfile->variableTypeObjectString(modelHasOdes(),
                                                                              mLockedModel->hasExternalVariables());
 
     if (!variableTypeObjectString.empty()) {
@@ -351,7 +363,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
-    if (mLockedModel->type() == AnalyserModel::Type::ODE) {
+    if (modelHasOdes()) {
         updateVariableInfoSizes(componentSize, nameSize, unitsSize, mLockedModel->voi());
 
         for (const auto &state : mLockedModel->states()) {
@@ -393,12 +405,12 @@ void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
 {
     std::string interfaceVoiStateAndVariableInfoCode;
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && !mLockedProfile->interfaceVoiInfoString().empty()) {
         interfaceVoiStateAndVariableInfoCode += mLockedProfile->interfaceVoiInfoString();
     }
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && !mLockedProfile->interfaceStateInfoString().empty()) {
         interfaceVoiStateAndVariableInfoCode += mLockedProfile->interfaceStateInfoString();
     }
@@ -416,7 +428,7 @@ void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
 
 void Generator::GeneratorImpl::addImplementationVoiInfoCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && !mLockedProfile->implementationVoiInfoString().empty()
         && !mLockedProfile->variableInfoEntryString().empty()
         && !mLockedProfile->variableOfIntegrationVariableTypeString().empty()) {
@@ -434,7 +446,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode()
 
 void Generator::GeneratorImpl::addImplementationStateInfoCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && !mLockedProfile->implementationStateInfoString().empty()
         && !mLockedProfile->variableInfoEntryString().empty()
         && !mLockedProfile->stateVariableTypeString().empty()
@@ -668,7 +680,7 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
 {
     std::string interfaceCreateDeleteArraysCode;
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && !mLockedProfile->interfaceCreateStatesArrayMethodString().empty()) {
         interfaceCreateDeleteArraysCode += mLockedProfile->interfaceCreateStatesArrayMethodString();
     }
@@ -691,7 +703,7 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
 void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
 {
     if (mLockedModel->hasExternalVariables()) {
-        auto externalVariableMethodTypeDefinitionString = mLockedProfile->externalVariableMethodTypeDefinitionString(mLockedModel->type() == AnalyserModel::Type::ODE);
+        auto externalVariableMethodTypeDefinitionString = mLockedProfile->externalVariableMethodTypeDefinitionString(modelHasOdes());
 
         if (!externalVariableMethodTypeDefinitionString.empty()) {
             mCode += "\n"
@@ -702,7 +714,7 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
 
 void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && !mLockedProfile->implementationCreateStatesArrayMethodString().empty()) {
         mCode += newLineIfNeeded()
                  + mLockedProfile->implementationCreateStatesArrayMethodString();
@@ -727,7 +739,7 @@ void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
 
 void Generator::GeneratorImpl::addRootFindingInfoObjectCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::NLA)
+    if (modelHasNlas()
         && !mLockedProfile->rootFindingInfoObjectString().empty()) {
         mCode += newLineIfNeeded()
                  + mLockedProfile->rootFindingInfoObjectString();
@@ -736,7 +748,7 @@ void Generator::GeneratorImpl::addRootFindingInfoObjectCode()
 
 void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::NLA)
+    if (modelHasNlas()
         && !mLockedProfile->externNlaSolveMethodString().empty()) {
         mCode += newLineIfNeeded()
                  + mLockedProfile->externNlaSolveMethodString();
@@ -745,7 +757,7 @@ void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
 
 void Generator::GeneratorImpl::addNlaSystemsCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::NLA)
+    if (modelHasNlas()
         && !mLockedProfile->objectiveFunctionMethodString().empty()
         && !mLockedProfile->findRootMethodString().empty()
         && !mLockedProfile->nlaSolveCallString().empty()) {
@@ -1518,17 +1530,17 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             res += mLockedProfile->indentString()
                    + generateVariableNameCode(variable->variable())
                    + mLockedProfile->assignmentString()
-                   + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
+                   + replace(mLockedProfile->externalVariableMethodCallString(modelHasOdes()),
                              "[INDEX]", index.str())
                    + mLockedProfile->commandSeparatorString() + "\n";
-        } else if (equation->type() != AnalyserEquation::Type::NLA) {
-            res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
-        } else {
+        } else if (equation->type() == AnalyserEquation::Type::NLA) {
             if (!mLockedProfile->findRootCallString().empty()) {
                 res += mLockedProfile->indentString()
                        + replace(mLockedProfile->findRootCallString(),
                                  "[INDEX]", convertToString(++mNlaSystemIndex));
             }
+        } else {
+            res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
         }
 
         remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
@@ -1539,7 +1551,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
-    auto interfaceInitialiseVariablesMethodString = mLockedProfile->interfaceInitialiseVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
+    auto interfaceInitialiseVariablesMethodString = mLockedProfile->interfaceInitialiseVariablesMethodString(modelHasOdes(),
                                                                                                              mLockedModel->hasExternalVariables());
     std::string interfaceComputeModelMethodsCode;
 
@@ -1553,12 +1565,12 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 
     auto interfaceComputeRatesMethodString = mLockedProfile->interfaceComputeRatesMethodString(mLockedModel->hasExternalVariables());
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && !interfaceComputeRatesMethodString.empty()) {
         interfaceComputeModelMethodsCode += interfaceComputeRatesMethodString;
     }
 
-    auto interfaceComputeVariablesMethodString = mLockedProfile->interfaceComputeVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
+    auto interfaceComputeVariablesMethodString = mLockedProfile->interfaceComputeVariablesMethodString(modelHasOdes(),
                                                                                                        mLockedModel->hasExternalVariables());
 
     if (!interfaceComputeVariablesMethodString.empty()) {
@@ -1574,7 +1586,7 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 
 void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    auto implementationInitialiseVariablesMethodString = mLockedProfile->implementationInitialiseVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
+    auto implementationInitialiseVariablesMethodString = mLockedProfile->implementationInitialiseVariablesMethodString(modelHasOdes(),
                                                                                                                        mLockedModel->hasExternalVariables());
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
@@ -1641,7 +1653,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
 {
     auto implementationComputeRatesMethodString = mLockedProfile->implementationComputeRatesMethodString(mLockedModel->hasExternalVariables());
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if (modelHasOdes()
         && !implementationComputeRatesMethodString.empty()) {
         std::string methodBody;
 
@@ -1659,7 +1671,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
 
 void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    auto implementationComputeVariablesMethodString = mLockedProfile->implementationComputeVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
+    auto implementationComputeVariablesMethodString = mLockedProfile->implementationComputeVariablesMethodString(modelHasOdes(),
                                                                                                                  mLockedModel->hasExternalVariables());
 
     if (!implementationComputeVariablesMethodString.empty()) {
