@@ -1947,7 +1947,7 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
                     desc += ";\n";
                 } else if (i == iMax - 1) {
                     desc += "; and\n";
-                } else if (i == iMax) {
+                } else { /* i == iMax */
                     desc += ".\n";
                 }
             }
