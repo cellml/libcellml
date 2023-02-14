@@ -2267,6 +2267,35 @@ TEST(Validator, unitNonStandardUnitsWhichAreBaseUnits)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
+TEST(Validator, multipleEquivalentUnitStandardUnitsWhichAreNotBaseUnits)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
+        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v3' in component 'c1' with non-matching units of 'ampere'. The mismatch is: ampere^-1, metre^3, multiplication factor of 10^-3.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+    auto v3 = libcellml::Variable::create("v3");
+    v3->setInterfaceType("public");
+    c1->addVariable(v3);
+
+    v1->setUnits("litre");
+    v2->setUnits("gram");
+    v3->setUnits("ampere");
+
+    libcellml::Variable::addEquivalence(v1, v2); // litre != gram.
+    libcellml::Variable::addEquivalence(v1, v3); // litre != ampere.
+
+    validator->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
 TEST(Validator, unitSimpleCycle)
 {
     // Testing that indirect dependence is caught in the unit cycles. The network is:
