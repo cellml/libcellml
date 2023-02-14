@@ -2243,6 +2243,30 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
+TEST(Validator, unitNonStandardUnitsWhichAreBaseUnits)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has a units reference 'orange' which is neither standard nor defined in the parent model.",
+        "Variable 'v2' in component 'c2' has a units reference 'apple' which is neither standard nor defined in the parent model.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+
+    v1->setUnits("orange");
+    v2->setUnits("apple");
+
+    libcellml::Variable::addEquivalence(v1, v2); // orange != apple.
+
+    validator->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
 TEST(Validator, unitSimpleCycle)
 {
     // Testing that indirect dependence is caught in the unit cycles. The network is:
