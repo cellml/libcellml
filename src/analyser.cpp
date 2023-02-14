@@ -154,7 +154,6 @@ struct AnalyserInternalEquation
         TRUE_CONSTANT,
         VARIABLE_BASED_CONSTANT,
         ODE,
-        DAE,
         NLA,
         ALGEBRAIC
     };
