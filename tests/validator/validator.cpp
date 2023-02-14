@@ -2289,6 +2289,50 @@ TEST(Validator, unitSimpleCycle)
     EXPECT_EQ("grandfather", issue->item()->units()->name());
 }
 
+TEST(Validator, unitSimpleCycleWithAdditionalIssue)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Model '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Cyclic units exist: 'grandfather' -> 'child' -> 'father' -> 'grandfather'.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = libcellml::Model::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+
+    m->setName("model");
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
+
+    u1->setName("grandfather"); // Base unit.
+
+    u2->setName("father"); // First generation.
+    u2->addUnit("grandfather");
+
+    u3->setName("child"); // Second generation.
+    u3->addUnit("father");
+
+    // Network valid at this stage.
+    v->validateModel(m);
+    EXPECT_EQ(size_t(0), v->issueCount());
+
+    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u3 -> u2 -> u1.
+    u1->addUnit("child");
+    // Add additional validation error.
+    m->removeName();
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+    auto issue = v->issue(1);
+    EXPECT_EQ("grandfather", issue->item()->units()->name());
+}
+
 libcellml::ModelPtr unitComplexCycle(bool order)
 {
     // Simple testing for the directional dependency of units. The first network is:
