@@ -28,6 +28,7 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include <cmath>
+#include <iterator>
 
 #include "analyserequation_p.h"
 #include "analyserequationast_p.h"
@@ -79,6 +80,7 @@ struct AnalyserInternalVariable
         CONSTANT,
         COMPUTED_TRUE_CONSTANT,
         COMPUTED_VARIABLE_BASED_CONSTANT,
+        INITIALISED_ALGEBRAIC,
         ALGEBRAIC,
         OVERCONSTRAINED
     };
@@ -306,10 +308,9 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
                                      size_t &variableIndex,
                                      const AnalyserModelPtr &model)
 {
-    // Nothing to check if the equation has already been given an order (i.e.
-    // everything is fine).
+    // Nothing to check if the equation has a known type.
 
-    if (mOrder != MAX_SIZE_T) {
+    if (mType != Type::UNKNOWN) {
         return false;
     }
 
@@ -343,13 +344,14 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     if (unknownVariablesOrOdeVariablesLeft == 0) {
         for (const auto &variable : mAllVariables) {
-            if (variable->mType == AnalyserInternalVariable::Type::INITIALISED) {
+            if ((variable->mType == AnalyserInternalVariable::Type::INITIALISED)
+                || (variable->mType == AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC)) {
                 // The equation contains an initialised variable, so track it
                 // and consider it as an algebraic variable.
 
                 initialisedVariables.push_back(variable);
 
-                variable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
+                variable->mType = AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC;
             }
         }
 
@@ -402,6 +404,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
             if ((variable->mType == AnalyserInternalVariable::Type::STATE)
                 || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                 || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
+                || (variable->mType == AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC)
                 || (variable->mType == AnalyserInternalVariable::Type::ALGEBRAIC)) {
                 variable->mIndex = (variable->mType == AnalyserInternalVariable::Type::STATE) ?
                                        ++stateIndex :
@@ -1239,7 +1242,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                         mModel->mPimpl->mVoi = AnalyserVariable::AnalyserVariableImpl::create();
 
                         mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
-                                                               0, nullptr, voi, nullptr);
+                                                               0, nullptr, voi, {});
                     }
                 }
             } while (voi == nullptr);
@@ -2441,17 +2444,23 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    // Make sure that equations that are used to compute one or more NLA
-    // variables form a valid NLA system of equations.
+    // Make NLA equations that compute the same variables aware of one another.
 
     for (const auto &internalEquation : mInternalEquations) {
-        if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
-            // If one unknown variable is computed by this equation then we are
-            // fine, but if there are more than one then we need at least that
-            // many other equations that also compute those unknown variables.
+        if ((internalEquation->mType == AnalyserInternalEquation::Type::NLA)
+            && (internalEquation->mUnknownVariables.size() != 1)) {
+            for (const auto &otherInternalEquation : mInternalEquations) {
+                if (otherInternalEquation != internalEquation) {
+                    AnalyserInternalVariablePtrs commonUnknownVariables;
 
-            if (internalEquation->mUnknownVariables.size() != 1) {
-                //---GRY--- TO BE DONE!
+                    std::set_intersection(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(),
+                                          otherInternalEquation->mUnknownVariables.begin(), otherInternalEquation->mUnknownVariables.end(),
+                                          std::back_inserter(commonUnknownVariables));
+
+                    if (!commonUnknownVariables.empty()) {
+                        //---GRY--- TO BE DONE!
+                    }
+                }
             }
         }
     }
@@ -2537,7 +2546,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         } else if ((internalVariable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                    || (internalVariable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
             type = AnalyserVariable::Type::COMPUTED_CONSTANT;
-        } else if (internalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC) {
+        } else if ((internalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC)
+                   || (internalVariable->mType == AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC)) {
             type = AnalyserVariable::Type::ALGEBRAIC;
         } else { // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
             // This is the variable of integration, so skip it.
@@ -2547,25 +2557,25 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         // Populate and keep track of the state/variable.
 
-        auto stateOrVariable = AnalyserVariable::AnalyserVariableImpl::create();
+        auto variable = AnalyserVariable::AnalyserVariableImpl::create();
         auto equation = equationMappings[internalVariable->mVariable];
 
-        stateOrVariable->mPimpl->populate(type,
-                                          (type == AnalyserVariable::Type::STATE) ?
-                                              ++stateIndex :
-                                              ++variableIndex,
-                                          (type == AnalyserVariable::Type::EXTERNAL) ?
-                                              nullptr :
-                                              internalVariable->mInitialisingVariable,
-                                          internalVariable->mVariable,
-                                          equation);
+        variable->mPimpl->populate(type,
+                                   (type == AnalyserVariable::Type::STATE) ?
+                                       ++stateIndex :
+                                       ++variableIndex,
+                                   (type == AnalyserVariable::Type::EXTERNAL) ?
+                                       nullptr :
+                                       internalVariable->mInitialisingVariable,
+                                   internalVariable->mVariable,
+                                   {equation});
 
-        variableMappings.emplace(equation, stateOrVariable);
+        variableMappings.emplace(equation, variable);
 
         if (type == AnalyserVariable::Type::STATE) {
-            mModel->mPimpl->mStates.push_back(stateOrVariable);
+            mModel->mPimpl->mStates.push_back(variable);
         } else {
-            mModel->mPimpl->mVariables.push_back(stateOrVariable);
+            mModel->mPimpl->mVariables.push_back(variable);
         }
     }
 
@@ -2575,10 +2585,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // Determine the type of the equation.
 
         auto equation = equationMappings[internalEquation->mUnknownVariables.front()->mVariable];
-        auto stateOrVariable = variableMappings[equation];
+        auto variable = variableMappings[equation];
         AnalyserEquation::Type type;
 
-        if (stateOrVariable->type() == AnalyserVariable::Type::EXTERNAL) {
+        if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
             type = AnalyserEquation::Type::EXTERNAL;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
             type = AnalyserEquation::Type::TRUE_CONSTANT;
@@ -2625,10 +2635,20 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // Determine the equation's dependencies, i.e. the equations for the
         // variables on which this equation depends.
 
-        VariablePtrs variableDependencies = (type == AnalyserEquation::Type::EXTERNAL) ?
-                                                internalEquation->mUnknownVariables.front()->mDependencies :
-                                                internalEquation->mDependencies;
+        VariablePtrs variableDependencies;
         AnalyserEquationPtrs equationDependencies;
+
+        if (type == AnalyserEquation::Type::EXTERNAL) {
+            for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+                for (const auto &dependency : unknownVariable->mDependencies) {
+                    if (std::find(variableDependencies.begin(), variableDependencies.end(), dependency) == variableDependencies.end()) {
+                        variableDependencies.push_back(dependency);
+                    }
+                }
+            }
+        } else {
+            variableDependencies = internalEquation->mDependencies;
+        }
 
         for (const auto &variableDependency : variableDependencies) {
             equationDependencies.push_back(equationMappings[variableDependency]);
@@ -2641,7 +2661,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                        nullptr :
                                        internalEquation->mAst,
                                    equationDependencies,
-                                   stateOrVariable);
+                                   {variable});
 
         mModel->mPimpl->mEquations.push_back(equation);
     }

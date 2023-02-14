@@ -48,11 +48,23 @@ describe("Analyser Equation tests", () => {
     test('Checking Analyser Equation isStateRateBased.', () => {
         expect(eqn.isStateRateBased()).toBe(false)
     });
+    test('Checking Analyser Equation dependencyCount.', () => {
+        expect(eqn.dependencyCount()).toBe(0)
+    });
     test('Checking Analyser Equation dependencies.', () => {
         expect(eqn.dependencies().size()).toBe(0)
     });
+    test('Checking Analyser Equation dependency.', () => {
+        expect(eqn.dependency(0)).toBe(null)
+    });
+    test('Checking Analyser Equation variableCount.', () => {
+        expect(eqn.variableCount()).toBe(1)
+    });
+    test('Checking Analyser Equation variables.', () => {
+        expect(eqn.variables().size()).toBe(1)
+    });
     test('Checking Analyser Equation variable.', () => {
-        expect(eqn.variable().variable().name()).toBe("x")
+        expect(eqn.variable(0).variable().name()).toBe("x")
     });
     test('Checking Analyser Equation AST.', () => {
         expect(eqn.ast().value()).toBe("")

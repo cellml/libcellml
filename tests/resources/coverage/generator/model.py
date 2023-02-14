@@ -348,7 +348,7 @@ def objective_function_0(u, f, data):
 
     variables[203] = u[0]
 
-    f[0] = variables[203]+variables[1]-(variables[2]+variables[6])
+    f[0] = variables[203]+states[0]-(variables[2]+variables[6])
 
 
 def find_root_0(variables):

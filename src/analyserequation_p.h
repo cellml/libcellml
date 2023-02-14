@@ -35,12 +35,12 @@ struct AnalyserEquation::AnalyserEquationImpl
     AnalyserEquationAstWeakPtr mAst;
     std::vector<AnalyserEquationWeakPtr> mDependencies;
     bool mIsStateRateBased = false;
-    AnalyserVariableWeakPtr mVariable;
+    std::vector<AnalyserVariableWeakPtr> mVariables;
 
     void populate(AnalyserEquation::Type type,
                   const AnalyserEquationAstPtr &ast,
                   const std::vector<AnalyserEquationPtr> &dependencies,
-                  const AnalyserVariablePtr &variable);
+                  const std::vector<AnalyserVariablePtr> &variables);
 
     static bool isEmptyDependency(const AnalyserEquationWeakPtr &dependency);
 

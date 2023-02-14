@@ -55,8 +55,16 @@ describe("Analyser Variable tests", () => {
         const av = am.variable(10)
         expect(av.variable().name()).toBe("alpha_m")
     });
+    test('Checking Analyser Equation equationCount.', () => {
+        const av = am.variable(14)
+        expect(av.equationCount()).toBe(1)
+    });
+    test('Checking Analyser Variable equations.', () => {
+        const av = am.variable(14)
+        expect(av.equations().size()).toBe(1)
+    });
     test('Checking Analyser Variable equation.', () => {
         const av = am.variable(14)
-        expect(av.equation().type().value).toBe(libcellml.AnalyserEquation.Type.VARIABLE_BASED_CONSTANT.value)
+        expect(av.equation(0).type().value).toBe(libcellml.AnalyserEquation.Type.VARIABLE_BASED_CONSTANT.value)
     });
  })

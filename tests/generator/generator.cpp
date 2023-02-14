@@ -464,6 +464,9 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.py"), generator->implementationCode());
+
+    //---GRY--- Test when "a" is marked as an external variable. In that case,
+    //          the NLA equation should be ignored.
 }
 
 /*---GRY---
@@ -509,6 +512,11 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.py"), generator->implementationCode());
+
+    //---GRY--- Test when "x" is marked as an external variable. In that case,
+    //          all the NLA equations should be still taken into account.
+    //---GRY--- Test when "x", "y", and "z" are marked as external variables. In
+    //          that case, all the NLA equations should be ignored.
 }
 */
 
