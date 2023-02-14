@@ -89,6 +89,16 @@ else ()
     mark_as_advanced(CCACHE_EXE)
   endif()
 
+  if(CMAKE_VERSION VERSION_LESS 3.20)
+    include(TestBigEndian)
+    test_big_endian(_BIG_ENDIAN)
+    if (_BIG_ENDIAN)
+      set(CMAKE_CXX_BYTE_ORDER BIG_ENDIAN)
+    else()
+      set(CMAKE_CXX_BYTE_ORDER LITTLE_ENDIAN)
+    endif()
+  endif()
+
   mark_as_advanced(
     BUILDCACHE_EXE
     CLANG_TIDY_EXE
