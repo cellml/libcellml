@@ -58,6 +58,31 @@ TEST(Analyser, unlinkedUnitsInModel)
                                                                    analyser);
 }
 
+TEST(Analyser, notEqualityStatement)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/not_equality_statement.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Equation 'x+y+z' in component 'my_component' is not an equality statement (i.e. LHS = RHS).",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::COMPONENT),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+}
+
 TEST(Analyser, initialisedVariableOfIntegration)
 {
     auto parser = libcellml::Parser::create();

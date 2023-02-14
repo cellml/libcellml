@@ -63,7 +63,7 @@ convert(AnalyserEquation, 'Type', [
     'ALGEBRAIC',
 ])
 convert(AnalyserEquationAst, 'Type', [
-    'ASSIGNMENT',
+    'EQUALITY',
 
     # Relational and logical operators.
 

@@ -176,6 +176,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::IMPORTER_NULL_MODEL, {"IMPORTER_NULL_MODEL", "", docsUrl, ""}},
 
     // Analyser issues:
+    {Issue::ReferenceRule::ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT, {"ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_UNITS, {"ANALYSER_UNITS", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS, {"ANALYSER_UNLINKED_UNITS", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE, {"ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE", "", docsUrl, ""}},
