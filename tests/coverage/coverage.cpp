@@ -656,3 +656,25 @@ TEST(Generator, coverage)
 
     generator->implementationCode();
 }
+
+TEST(Coverage, validXmlIds)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/validxmlids.cellml"));
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
+TEST(Coverage, invalidXmlIds)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/invalidxmlids.cellml"));
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+}
