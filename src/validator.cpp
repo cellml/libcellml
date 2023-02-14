@@ -2140,7 +2140,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     buildMathIdMap(info, idMap, component->math());
 
     // Imports.
-    if (component->isImport() && (component->importSource() != nullptr) && !component->importSource()->id().empty()) {
+    if ((component->importSource() != nullptr) && !component->importSource()->id().empty()) {
         info = " - import source for component '" + component->name() + "'";
         addIdMapItem(component->importSource()->id(), info, idMap);
     }
