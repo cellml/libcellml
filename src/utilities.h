@@ -172,6 +172,24 @@ static const std::map<Variable::InterfaceType, std::string> interfaceTypeToStrin
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
 /**
+ * @brief Convert the @p in @c std::string to a basic @c double.
+ *
+ * Convert the @p in @c std::string to a basic @c double.
+ * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * and @c false if it didn't.
+ *
+ * If the @p in is not a CellML basic real the conversion will not succeed.
+ *
+ * @sa isCellMLBasicReal
+ *
+ * @param in The @c std::string value to convert to a basic @c double.
+ * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
+ *
+ * @return The basic double value of @p in.
+ */
+double convertToBasicDouble(const std::string &in, bool *ok = nullptr);
+
+/**
  * @brief Convert the @p in @c std::string to a @c double.
  *
  * Convert the @p in @c std::string to a @c double.
@@ -294,6 +312,19 @@ bool isNonNegativeCellMLInteger(const std::string &candidate);
  * @return @c true if the @p candidate is a CellML integer and @c false otherwise.
  */
 bool isCellMLInteger(const std::string &candidate);
+
+/**
+ * @brief Test if the @p candidate @c std::string is in the form of a CellML basic real.
+ *
+ * The candidate string must consist of european numeric characters.  It may optionally
+ * have a basic Latin hyphen character '-' to indicate sign.  It may also optianally
+ * use the basic Latin fullstop character '.' to indicate a decimal point.  The candidate
+ * string must represent a number in base 10.
+ *
+ * @param candidate The string to test and determine whether or not it is a CellML basic real.
+ * @return @c true if the @p candidate is a CellML basic real and @c false otherwise.
+ */
+bool isCellMLBasicReal(const std::string &candidate);
 
 /**
  * @brief Test if the @p candidate @c std::string is in the form of a CellML real.
