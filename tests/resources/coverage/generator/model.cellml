@@ -3346,7 +3346,7 @@
                 <apply>
                     <plus/>
                     <ci>eqnNlaVariable</ci>
-                    <ci>m</ci>
+                    <ci>x</ci>
                 </apply>
                 <apply>
                     <plus/>

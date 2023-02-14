@@ -17,24 +17,27 @@ limitations under the License.
 #include "libcellml/analyserequation.h"
 
 #include <algorithm>
+#include <iterator>
 
 #include "analyserequation_p.h"
 
 namespace libcellml {
 
+AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
+{
+    return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
+}
+
 void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
                                                       const AnalyserEquationAstPtr &ast,
                                                       const std::vector<AnalyserEquationPtr> &dependencies,
-                                                      const AnalyserVariablePtr &variable)
+                                                      const std::vector<AnalyserVariablePtr> &variables)
 {
     mType = type;
     mAst = ast;
 
-    for (const auto &dependency : dependencies) {
-        mDependencies.push_back(dependency);
-    }
-
-    mVariable = variable;
+    std::copy(dependencies.begin(), dependencies.end(), back_inserter(mDependencies));
+    std::copy(variables.begin(), variables.end(), back_inserter(mVariables));
 }
 
 bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
@@ -42,7 +45,11 @@ bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEqu
     auto dep = dependency.lock();
 
     if (dep != nullptr) {
-        return dep->variable() == nullptr;
+        auto variables = dep->variables();
+
+        if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
+            return false;
+        }
     }
 
     return true;
@@ -73,6 +80,11 @@ AnalyserEquationAstPtr AnalyserEquation::ast() const
     return mPimpl->mAst.lock();
 }
 
+size_t AnalyserEquation::dependencyCount() const
+{
+    return mPimpl->mDependencies.size();
+}
+
 std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
 {
     std::vector<AnalyserEquationPtr> res;
@@ -84,14 +96,43 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
     return res;
 }
 
+AnalyserEquationPtr AnalyserEquation::dependency(size_t index) const
+{
+    if (index >= mPimpl->mDependencies.size()) {
+        return {};
+    }
+
+    return mPimpl->mDependencies[index].lock();
+}
+
 bool AnalyserEquation::isStateRateBased() const
 {
     return mPimpl->mIsStateRateBased;
 }
 
-AnalyserVariablePtr AnalyserEquation::variable() const
+size_t AnalyserEquation::variableCount() const
 {
-    return mPimpl->mVariable.lock();
+    return mPimpl->mVariables.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::variables() const
+{
+    std::vector<AnalyserVariablePtr> res;
+
+    for (const auto &variable : mPimpl->mVariables) {
+        res.push_back(variable.lock());
+    }
+
+    return res;
+}
+
+AnalyserVariablePtr AnalyserEquation::variable(size_t index) const
+{
+    if (index >= mPimpl->mVariables.size()) {
+        return {};
+    }
+
+    return mPimpl->mVariables[index].lock();
 }
 
 } // namespace libcellml

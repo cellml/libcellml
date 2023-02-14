@@ -69,13 +69,13 @@ void Generator::GeneratorImpl::resetLockedModelAndProfile()
 bool Generator::GeneratorImpl::modelHasOdes() const
 {
     return (mLockedModel->type() == AnalyserModel::Type::ODE)
-            || (mLockedModel->type() == AnalyserModel::Type::DAE);
+           || (mLockedModel->type() == AnalyserModel::Type::DAE);
 }
 
 bool Generator::GeneratorImpl::modelHasNlas() const
 {
     return (mLockedModel->type() == AnalyserModel::Type::NLA)
-            || (mLockedModel->type() == AnalyserModel::Type::DAE);
+           || (mLockedModel->type() == AnalyserModel::Type::DAE);
 }
 
 AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable) const
@@ -766,19 +766,27 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
         for (const auto &equation : mLockedModel->equations()) {
             if (equation->type() == AnalyserEquation::Type::NLA) {
                 std::string methodBody;
+                auto i = MAX_SIZE_T;
+                auto variables = equation->variables();
+                auto variablesSize = variables.size();
 
-                methodBody += mLockedProfile->indentString()
-                              + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(equation->variable()->index()) + mLockedProfile->closeArrayString()
-                              + mLockedProfile->assignmentString()
-                              + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + "0" + mLockedProfile->closeArrayString()
-                              + mLockedProfile->commandSeparatorString() + "\n";
+                for (i = 0; i < variablesSize; ++i) {
+                    methodBody += mLockedProfile->indentString()
+                                  + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(variables[i]->index()) + mLockedProfile->closeArrayString()
+                                  + mLockedProfile->assignmentString()
+                                  + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + convertToString(i) + mLockedProfile->closeArrayString()
+                                  + mLockedProfile->commandSeparatorString() + "\n";
+                }
 
-                methodBody += newLineIfNeeded()
-                              + mLockedProfile->indentString()
-                              + mLockedProfile->fArrayString() + mLockedProfile->openArrayString() + "0" + mLockedProfile->closeArrayString()
-                              + mLockedProfile->assignmentString()
-                              + generateCode(equation->ast())
-                              + mLockedProfile->commandSeparatorString() + "\n";
+                methodBody += newLineIfNeeded();
+
+                for (i = 0; i < variablesSize; ++i) {
+                    methodBody += mLockedProfile->indentString()
+                                  + mLockedProfile->fArrayString() + mLockedProfile->openArrayString() + convertToString(i) + mLockedProfile->closeArrayString()
+                                  + mLockedProfile->assignmentString()
+                                  + generateCode(equation->ast())
+                                  + mLockedProfile->commandSeparatorString() + "\n";
+                }
 
                 mCode += newLineIfNeeded()
                          + replace(replace(mLockedProfile->objectiveFunctionMethodString(),
@@ -787,11 +795,13 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 methodBody = {};
 
-                methodBody += mLockedProfile->indentString()
-                              + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + "0" + mLockedProfile->closeArrayString()
-                              + mLockedProfile->assignmentString()
-                              + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(equation->variable()->index()) + mLockedProfile->closeArrayString()
-                              + mLockedProfile->commandSeparatorString() + "\n";
+                for (i = 0; i < variablesSize; ++i) {
+                    methodBody += mLockedProfile->indentString()
+                                  + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + convertToString(i) + mLockedProfile->closeArrayString()
+                                  + mLockedProfile->assignmentString()
+                                  + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(variables[i]->index()) + mLockedProfile->closeArrayString()
+                                  + mLockedProfile->commandSeparatorString() + "\n";
+                }
 
                 methodBody += newLineIfNeeded()
                               + mLockedProfile->indentString()
@@ -799,17 +809,20 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                                                 "[INDEX]", convertToString(nlaSystemIndex)),
                                         "[SIZE]", convertToString(1));
 
-                methodBody += newLineIfNeeded()
-                              + mLockedProfile->indentString()
-                              + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(equation->variable()->index()) + mLockedProfile->closeArrayString()
-                              + mLockedProfile->assignmentString()
-                              + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + "0" + mLockedProfile->closeArrayString()
-                              + mLockedProfile->commandSeparatorString() + "\n";
+                methodBody += newLineIfNeeded();
+
+                for (i = 0; i < variablesSize; ++i) {
+                    methodBody += mLockedProfile->indentString()
+                                  + mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(variables[i]->index()) + mLockedProfile->closeArrayString()
+                                  + mLockedProfile->assignmentString()
+                                  + mLockedProfile->uArrayString() + mLockedProfile->openArrayString() + convertToString(i) + mLockedProfile->closeArrayString()
+                                  + mLockedProfile->commandSeparatorString() + "\n";
+                }
 
                 mCode += newLineIfNeeded()
                          + replace(replace(replace(mLockedProfile->findRootMethodString(),
                                                    "[INDEX]", convertToString(nlaSystemIndex)),
-                                           "[SIZE]", convertToString(1)),
+                                           "[SIZE]", convertToString(variablesSize)),
                                    "[CODE]", generateMethodBodyCode(methodBody));
             }
         }
@@ -848,11 +861,8 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
 
     auto initValueVariable = owningComponent(variable)->variable(variable->initialValue());
     auto analyserInitialValueVariable = analyserVariable(initValueVariable);
-    std::ostringstream index;
 
-    index << analyserInitialValueVariable->index();
-
-    return mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + index.str() + mLockedProfile->closeArrayString();
+    return mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mLockedProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
@@ -885,11 +895,7 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
         arrayName = mLockedProfile->variablesArrayString();
     }
 
-    std::ostringstream index;
-
-    index << analyserVariable->index();
-
-    return arrayName + mLockedProfile->openArrayString() + index.str() + mLockedProfile->closeArrayString();
+    return arrayName + mLockedProfile->openArrayString() + convertToString(analyserVariable->index()) + mLockedProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
@@ -1522,17 +1528,14 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         }
 
         if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
-            std::ostringstream index;
-            auto variable = equation->variable();
-
-            index << variable->index();
-
-            res += mLockedProfile->indentString()
-                   + generateVariableNameCode(variable->variable())
-                   + mLockedProfile->assignmentString()
-                   + replace(mLockedProfile->externalVariableMethodCallString(modelHasOdes()),
-                             "[INDEX]", index.str())
-                   + mLockedProfile->commandSeparatorString() + "\n";
+            for (const auto &variable : equation->variables()) {
+                res += mLockedProfile->indentString()
+                       + generateVariableNameCode(variable->variable())
+                       + mLockedProfile->assignmentString()
+                       + replace(mLockedProfile->externalVariableMethodCallString(modelHasOdes()),
+                                 "[INDEX]", convertToString(variable->index()))
+                       + mLockedProfile->commandSeparatorString() + "\n";
+            }
         } else if (equation->type() == AnalyserEquation::Type::NLA) {
             if (!mLockedProfile->findRootCallString().empty()) {
                 res += mLockedProfile->indentString()

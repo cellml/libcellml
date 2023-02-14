@@ -379,14 +379,25 @@ TEST(Coverage, generator)
     EXPECT_EQ(size_t(198), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
-    EXPECT_EQ(nullptr, analyserModel->voi()->equation());
+    EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
+    EXPECT_EQ(size_t(0), analyserModel->voi()->equations().size());
+    EXPECT_EQ(nullptr, analyserModel->voi()->equation(0));
     EXPECT_NE(nullptr, analyserModel->state(0));
-    EXPECT_NE(nullptr, analyserModel->state(0)->equation());
+    EXPECT_NE(size_t(0), analyserModel->state(0)->equationCount());
+    EXPECT_NE(size_t(0), analyserModel->state(0)->equations().size());
+    EXPECT_NE(nullptr, analyserModel->state(0)->equation(0));
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->variable(0));
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(0));
-    EXPECT_NE(nullptr, analyserModel->equation(0)->variable());
+    EXPECT_NE(nullptr, analyserModel->equation(197));
+    EXPECT_NE(size_t(0), analyserModel->equation(197)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(197)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->equation(197)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(197)->dependency(analyserModel->equation(197)->dependencyCount()));
+    EXPECT_NE(size_t(0), analyserModel->equation(197)->variableCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(197)->variables().size());
+    EXPECT_NE(nullptr, analyserModel->equation(197)->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(197)->variable(analyserModel->equation(197)->variableCount()));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
