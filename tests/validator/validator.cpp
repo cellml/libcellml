@@ -2697,8 +2697,58 @@ TEST(Validator, variableEquivalenceUnreachable)
     c2->addVariable(v2);
     c3->addVariable(v3);
 
-    // invalid equivalence, too far away
+    // Invalid equivalence, too far away.
     libcellml::Variable::addEquivalence(v1, v3);
+    validator->validateModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, multipleVariableEquivalencesUnreachable)
+{
+    const std::vector<std::string> expectedIssues {
+        "The equivalence between 'v1' in component 'c1'  and 'v3' in component 'c3' is invalid. Component 'c1' and 'c3' are neither siblings nor in a parent/child relationship.",
+        "The equivalence between 'v1' in component 'c1'  and 'v4' in component 'c4' is invalid. Component 'c1' and 'c4' are neither siblings nor in a parent/child relationship.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::ComponentPtr c4 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+    c4->setName("c4");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    c2->addComponent(c3);
+    c2->addComponent(c4);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+    v4->setName("v4");
+    v4->setUnits("dimensionless");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c4->addVariable(v4);
+    c3->addVariable(v3);
+
+    // Invalid equivalence, too far away.
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v1, v4);
     validator->validateModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
