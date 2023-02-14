@@ -2124,10 +2124,10 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
         auto cnType = node->attribute("type");
 
         if (cnType.empty() || (cnType == "real")) {
-            auto ok = (nonCommentChildCount(node) != 1) ? false : nonCommentChildNode(node, 0)->isNumber();
+            auto ok = (nonCommentChildCount(node) != 1) ? false : nonCommentChildNode(node, 0)->isBasicNumber();
 
             if (!ok) {
-                addMathMLIssue("Math has a 'cn' element of 'real' type with no text node (representing a number) as a child.",
+                addMathMLIssue("Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
                                Issue::ReferenceRule::MATH_CN_FORMAT,
                                component);
             }
@@ -2135,13 +2135,13 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
             auto ok = false;
 
             if (nonCommentChildCount(node) == 3) {
-                ok = nonCommentChildNode(node, 0)->isNumber()
+                ok = nonCommentChildNode(node, 0)->isBasicNumber()
                      && nonCommentChildNode(node, 1)->isMathmlElement("sep")
-                     && nonCommentChildNode(node, 2)->isNumber();
+                     && nonCommentChildNode(node, 2)->isInteger();
             }
 
             if (!ok) {
-                addMathMLIssue("Math has a 'cn' element of type 'e-notation' with no text node (representing a number), no 'sep' element, and/or no text node (representing a number) as children.",
+                addMathMLIssue("Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
                                Issue::ReferenceRule::MATH_CN_FORMAT,
                                component);
             }
