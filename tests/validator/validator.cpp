@@ -2680,7 +2680,9 @@ TEST(Validator, variableInterfaceShouldBePublic)
 {
     const std::vector<std::string> expectedIssues = {
         "Variable 'v1' in component 'c1' has an interface type set to 'none' which is not the correct interface type for this variable. The interface type required is 'public'.",
+        "Variable 'v3' in component 'c1' has no interface type set. The interface type required is 'public'.",
         "Variable 'v2' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
+        "Variable 'v4' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2704,13 +2706,25 @@ TEST(Validator, variableInterfaceShouldBePublic)
     v2->setName("v2");
     v2->setUnits("dimensionless");
 
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+    v4->setName("v4");
+    v4->setUnits("dimensionless");
+
     c1->addVariable(v1);
+    c1->addVariable(v3);
     c2->addVariable(v2);
+    c2->addVariable(v4);
 
     libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v3, v4);
 
     v1->setInterfaceType("none");
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    v4->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
 
     validator->validateModel(model);
 
