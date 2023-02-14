@@ -172,22 +172,20 @@ static const std::map<Variable::InterfaceType, std::string> interfaceTypeToStrin
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
 /**
- * @brief Convert the @p in @c std::string to a basic @c double.
+ * @brief Check whether the @p in @c std::string can be converted to a basic @c double.
  *
- * Convert the @p in @c std::string to a basic @c double.
- * If given, sets the parameter @p ok to @c true if the conversion succeeded
- * and @c false if it didn't.
+ * Try to convert the @p in @c std::string to a basic @c double. Return true if the conversion succeeded and @c false
+ * if it didn't.
  *
  * If the @p in is not a CellML basic real the conversion will not succeed.
  *
  * @sa isCellMLBasicReal
  *
  * @param in The @c std::string value to convert to a basic @c double.
- * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
  *
- * @return The basic double value of @p in.
+ * @return @c true if @p in could be converted to a basic @c double and @c false otherwise.
  */
-double convertToBasicDouble(const std::string &in, bool *ok = nullptr);
+bool canConvertToBasicDouble(const std::string &in);
 
 /**
  * @brief Convert the @p in @c std::string to a @c double.
