@@ -220,15 +220,6 @@ bool XmlNode::isInteger() const
     return validConversion;
 }
 
-bool XmlNode::isInteger() const
-{
-    bool validConversion;
-
-    convertToInt(convertToStrippedString(), &validConversion);
-
-    return validConversion;
-}
-
 bool XmlNode::isComment() const
 {
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;

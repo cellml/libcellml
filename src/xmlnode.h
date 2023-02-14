@@ -269,17 +269,6 @@ public:
     bool isInteger() const;
 
     /**
-     * @brief Check if this @c XmlNode is a text node representing an integer.
-     *
-     * Checks whether this @c XmlNode is a text node representing an integer.
-     * Returns @ true if so, and @c false otherwise.
-     *
-     * @return @c true if this @c XmlNode is a text node representing an integer
-     * and @c false otherwise.
-     */
-    bool isInteger() const;
-
-    /**
      * @brief Check if this @c XmlNode is a comment node.
      *
      * Checks whether this @c XmlNode is a comment node.
