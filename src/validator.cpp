@@ -1757,15 +1757,13 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
 {
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
-        if (equivalentVariable->hasEquivalentVariable(variable)) {
-            auto component = owningComponent(equivalentVariable);
-            if (component == nullptr) {
-                IssuePtr err = Issue::IssueImpl::create();
-                err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
-                err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
-                addIssue(err);
-            }
+        auto component = owningComponent(equivalentVariable);
+        if (component == nullptr) {
+            IssuePtr err = Issue::IssueImpl::create();
+            err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
+            err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
+            err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
+            addIssue(err);
         }
     }
 }
