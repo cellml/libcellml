@@ -22,11 +22,11 @@
             <apply>
                 <eq/>
                 <apply>
-                    <!-- <diff/> -->
+                    <diff/>
                     <bvar>
                         <ci>u</ci>
                         <degree>
-                            <cn cellml:units="dimensionless">2</cn>
+                            <cn cellml:units="dimensionless" type="e-notation">1.7977<sep/>308</cn>
                         </degree>
                     </bvar>
                     <ci>y</ci>
@@ -40,7 +40,7 @@
                     <bvar>
                         <ci>v</ci>
                         <degree>
-                            <cn cellml:units="dimensionless" type="e-notation">1</cn>
+                            <cn cellml:units="dimensionless" type="e-notation">XXYY</cn>
                         </degree>
                     </bvar>
                     <ci>z</ci>

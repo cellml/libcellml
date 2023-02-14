@@ -2038,6 +2038,7 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "    <unit multiplier=\"AB8\" exponent=\"4.87eE32\" units=\"bananas\"/>\n"
         "    <unit multiplier=\"e7\" exponent=\"4.87e\" units=\"mangoes\"/>\n"
         "    <unit multiplier=\"3.4e7.8\" units=\"fruit\"/>\n"
+        "    <unit exponent=\"\" units=\"strawberries\"/>\n"
         "  </units>\n"
         "</model>\n";
 
@@ -2054,6 +2055,7 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "    <unit units=\"bananas\"/>\n"
         "    <unit units=\"mangoes\"/>\n"
         "    <unit units=\"fruit\"/>\n"
+        "    <unit units=\"strawberries\"/>\n"
         "  </units>\n"
         "</model>\n";
 

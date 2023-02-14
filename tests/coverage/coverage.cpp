@@ -336,6 +336,26 @@ TEST(Coverage, analyser)
     analyser->analyseModel(model);
 }
 
+TEST(Coverage, analyserConvertToInt)
+{
+    auto analyser = libcellml::Analyser::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/converttoint.cellml"));
+
+    auto printer = libcellml::Printer::create();
+
+    analyser->analyseModel(model);
+}
+
+TEST(Coverage, analyserConvertToDouble)
+{
+    auto analyser = libcellml::Analyser::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/converttodouble.cellml"));
+
+    analyser->analyseModel(model);
+}
+
 TEST(Coverage, analyserExternalVariable)
 {
     auto externalVariable = libcellml::AnalyserExternalVariable::create(nullptr);
@@ -655,4 +675,100 @@ TEST(Generator, coverage)
     profile->setXorFunctionString("");
 
     generator->implementationCode();
+}
+
+TEST(Importer, unitsUsedByComponentMathNotFoundInModel)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>"
+        "    <eq/>\n"
+        "    <ci>a</ci>\n"
+        "    <cn cellml:units=\"bobs\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    auto variable = libcellml::Variable::create("a");
+    auto uBobs = libcellml::Units::create("bobs");
+    uBobs->addUnit("daves");
+    variable->setUnits(uBobs);
+    auto component = libcellml::Component::create("myComponent");
+    component->addVariable(variable);
+    component->appendMath(math);
+    auto importedModel = libcellml::Model::create("myImportedModel");
+    importedModel->addComponent(component);
+
+    auto importer = libcellml::Importer::create();
+    auto validator = libcellml::Validator::create();
+
+    importer->addModel(importedModel, "myImportedModel.cellml");
+
+    auto model = libcellml::Model::create("myModel");
+    auto u = libcellml::Units::create("meter");
+    u->addUnit("metre");
+    model->addUnits(u);
+
+    auto c = libcellml::Component::create("c");
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("not_required_resolving_import_manually");
+    importSource->setModel(importedModel);
+
+    c->setImportReference("myComponent");
+    c->setImportSource(importSource);
+    model->addComponent(c);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model = importer->flattenModel(model);
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+}
+
+TEST(Importer, notMathMLMathNodesInComponentMath)
+{
+    const std::string math =
+        "<notmath xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>"
+        "    <eq/>\n"
+        "    <ci>a</ci>\n"
+        "    <cn cellml:units=\"bobs\">1</cn>\n"
+        "  </apply>\n"
+        "</notmath>\n";
+
+    auto variable = libcellml::Variable::create("a");
+    auto uBobs = libcellml::Units::create("bobs");
+    uBobs->addUnit("daves");
+    variable->setUnits(uBobs);
+    auto component = libcellml::Component::create("myComponent");
+    component->addVariable(variable);
+    component->appendMath(math);
+    auto importedModel = libcellml::Model::create("myImportedModel");
+    importedModel->addComponent(component);
+
+    auto importer = libcellml::Importer::create();
+    auto validator = libcellml::Validator::create();
+
+    importer->addModel(importedModel, "myImportedModel.cellml");
+
+    auto model = libcellml::Model::create("myModel");
+    auto u = libcellml::Units::create("meter");
+    u->addUnit("metre");
+    model->addUnits(u);
+
+    auto c = libcellml::Component::create("c");
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("not_required_resolving_import_manually");
+    importSource->setModel(importedModel);
+
+    c->setImportReference("myComponent");
+    c->setImportSource(importSource);
+    model->addComponent(c);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model = importer->flattenModel(model);
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(2), validator->errorCount());
 }

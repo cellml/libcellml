@@ -363,6 +363,19 @@ TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToVariableButNotModel)
     EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
+TEST(Units, hasUnlinkedUnitsWhenVariableHasNoUnits)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    EXPECT_FALSE(m->hasUnlinkedUnits());
+}
+
 TEST(Units, hasLinkedUnitsWhenUnitsObjectAddedToBothModelAndVariable)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
