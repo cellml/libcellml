@@ -8,7 +8,7 @@ __version__ = "0.3.2.post0"
 LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 1
-VARIABLE_COUNT = 203
+VARIABLE_COUNT = 204
 
 
 class VariableType(Enum):
@@ -228,7 +228,8 @@ VARIABLE_INFO = [
     {"name": "eqnCoverageForXorOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnCoverageForPowerOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnCoverageForRootOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnCoverageForMinusUnary", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "eqnCoverageForMinusUnary", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "eqnNlaVariable", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -342,6 +343,24 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
+def objective_function_0(u, f, data):
+    variables = data[0]
+
+    variables[203] = u[0]
+
+    f[0] = variables[203]+variables[1]-(variables[2]+variables[6])
+
+
+def find_root_0(variables):
+    u = [nan]*1
+
+    u[0] = variables[203]
+
+    nla_solve(objective_function_0, u, 1, (variables))
+
+    variables[203] = u[0]
+
+
 def initialise_variables(states, variables):
     variables[1] = 1.0
     variables[2] = 2.0
@@ -350,6 +369,7 @@ def initialise_variables(states, variables):
     variables[177] = 5.0
     variables[178] = 6.0
     variables[180] = 7.0
+    variables[203] = 4.0
     variables[182] = 123.0
     variables[183] = 123.456789
     variables[184] = 123.0e99
@@ -557,4 +577,4 @@ def compute_rates(voi, states, rates, variables):
 
 
 def compute_variables(voi, states, rates, variables):
-    pass
+    find_root_0(variables)

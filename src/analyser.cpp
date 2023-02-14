@@ -154,6 +154,7 @@ struct AnalyserInternalEquation
         TRUE_CONSTANT,
         VARIABLE_BASED_CONSTANT,
         ODE,
+        DAE,
         NLA,
         ALGEBRAIC
     };
@@ -417,7 +418,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
         // well as consider any (still) initialised variable as a constant.
         // Note: an equation may be used to compute one variable, but if it is
         //       not on its own on the LHS/RHS of the equation then it needs to
-        //       be solved as a NLA equation.
+        //       be solved as an NLA equation.
 
         if (validEquation) {
             mOrder = ++equationOrder;
@@ -2428,7 +2429,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 
     // Make sure that equations that are used to compute one or more NLA
-    // variables form a NLA system of equations.
+    // variables form a valid NLA system of equations.
 
     for (const auto &internalEquation : mInternalEquations) {
         if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
@@ -2451,6 +2452,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
         return iv->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
     });
+    auto hasNlaEquations = std::any_of(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) {
+        return ie->mType == AnalyserInternalEquation::Type::NLA;
+    });
 
     if (hasUnderconstrainedVariables) {
         if (hasOverconstrainedVariables) {
@@ -2461,9 +2465,11 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     } else if (hasOverconstrainedVariables) {
         mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
     } else if (mModel->mPimpl->mVoi != nullptr) {
-        mModel->mPimpl->mType = AnalyserModel::Type::ODE;
+        mModel->mPimpl->mType = hasNlaEquations ?
+                                    AnalyserModel::Type::DAE :
+                                    AnalyserModel::Type::ODE;
     } else if (!mInternalVariables.empty()) {
-        mModel->mPimpl->mType = (std::find_if(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) { return ie->mType == AnalyserInternalEquation::Type::NLA; }) != mInternalEquations.end()) ?
+        mModel->mPimpl->mType = hasNlaEquations ?
                                     AnalyserModel::Type::NLA :
                                     AnalyserModel::Type::ALGEBRAIC;
     }

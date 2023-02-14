@@ -52,6 +52,9 @@ struct Generator::GeneratorImpl
     bool retrieveLockedModelAndProfile();
     void resetLockedModelAndProfile();
 
+    bool modelHasOdes() const;
+    bool modelHasNlas() const;
+
     AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
     double scalingFactor(const VariablePtr &variable) const;
