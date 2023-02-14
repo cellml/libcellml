@@ -2143,7 +2143,6 @@ TEST(Validator, unitMissingEquivalentUnits)
     auto v2 = c2->variable(0);
 
     v2->setUnits("second");
-    v2->setInterfaceType("public");
 
     libcellml::Variable::addEquivalence(v1, v2);
     validator->validateModel(m);
@@ -2680,7 +2679,7 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 TEST(Validator, variableInterfaceShouldBePublic)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'v1' in component 'c1' has no interface type set. The interface type required is 'public'.",
+        "Variable 'v1' in component 'c1' has an interface type set to 'none' which is not the correct interface type for this variable. The interface type required is 'public'.",
         "Variable 'v2' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
     };
 
@@ -2710,6 +2709,7 @@ TEST(Validator, variableInterfaceShouldBePublic)
 
     libcellml::Variable::addEquivalence(v1, v2);
 
+    v1->setInterfaceType("none");
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
 
     validator->validateModel(model);
