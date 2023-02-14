@@ -101,19 +101,26 @@ TEST(Annotator, automaticIdsUndefined)
 
 TEST(Coverage, unitsItem)
 {
-    auto unitsItem = libcellml::UnitsItem::create(nullptr, 0);
+    auto units = libcellml::Units::create("units");
+    units->addUnit("second");
 
-    EXPECT_FALSE(unitsItem->isValid());
+    auto unitsItemValid = libcellml::UnitsItem::create(units, 0);
+    auto unitsItemInvalid = libcellml::UnitsItem::create(nullptr, 0);
+
+    EXPECT_TRUE(unitsItemValid->isValid());
+    EXPECT_FALSE(unitsItemInvalid->isValid());
 }
 
 TEST(Coverage, variablePair)
 {
     auto v = libcellml::Variable::create("var");
-    auto unitsItem1 = libcellml::VariablePair::create(nullptr, v);
-    auto unitsItem2 = libcellml::VariablePair::create(v, nullptr);
+    auto variablePair1 = libcellml::VariablePair::create(nullptr, v);
+    auto variablePair2 = libcellml::VariablePair::create(v, nullptr);
+    auto variablePair3 = libcellml::VariablePair::create(v, v);
 
-    EXPECT_FALSE(unitsItem1->isValid());
-    EXPECT_FALSE(unitsItem2->isValid());
+    EXPECT_FALSE(variablePair1->isValid());
+    EXPECT_FALSE(variablePair2->isValid());
+    EXPECT_TRUE(variablePair3->isValid());
 }
 
 TEST(Coverage, parserBranchesCellml10RelationshipRef)
