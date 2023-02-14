@@ -150,18 +150,42 @@ bool isNameStartChar(uint32_t startChar)
            || ((0x41U <= startChar) && (startChar <= 0x5AU))
            || (startChar == 0x5FU)
            || ((0x61U <= startChar) && (startChar <= 0x7AU))
-           || ((0xC0U <= startChar) && (startChar <= 0xD6U))
-           || ((0xD8U <= startChar) && (startChar <= 0xF6U))
-           || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
-           || ((0x370U <= startChar) && (startChar <= 0x37DU))
-           || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
-           || ((0x200CU <= startChar) && (startChar <= 0x200DU))
-           || ((0x2070U <= startChar) && (startChar <= 0x218FU))
-           || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
-           || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
-           || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
-           || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
-           || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
+           || ((0xC380U <= startChar) && (startChar <= 0xC396U))
+           || ((0xC398U <= startChar) && (startChar <= 0xC3B6U))
+           || ((0xC3B8U <= startChar) && (startChar <= 0xCBBFU))
+           || ((0xCDB0U <= startChar) && (startChar <= 0xCDBDU))
+           || ((0xCDBFU <= startChar) && (startChar <= 0xE1BFBFU))
+           || ((0xE2808CU <= startChar) && (startChar <= 0xE2808DU))
+           || ((0xE281B0U <= startChar) && (startChar <= 0xE2868FU))
+           || ((0xE2B080U <= startChar) && (startChar <= 0xE2BFAFU))
+           || ((0xE38081U <= startChar) && (startChar <= 0xED9FBFU))
+           || ((0xEFA480U <= startChar) && (startChar <= 0xEFB78FU))
+           || ((0xEFB7B0U <= startChar) && (startChar <= 0xEFBFBDU))
+           || ((0xF0908080U <= startChar) && (startChar <= 0xF3AFBFBFU));
+}
+
+/**
+ * @brief Test to determine if @p nameChar is a valid XML name character.
+ *
+ * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
+ *
+ * @param nameChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for an XML name character.
+ */
+bool isNameChar(uint32_t nameChar)
+{
+    if (isNameStartChar(nameChar)) {
+        return true;
+    }
+
+    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
+           || (nameChar == 0x2DU)
+           || (nameChar == 0x2EU)
+           || (nameChar == 0xC2B7U)
+           || ((0xCC80U <= nameChar) && (nameChar <= 0xCDAFU))
+           || ((0xE280BFU <= nameChar) && (nameChar <= 0xE28180U));
 }
 
 /**
@@ -180,7 +204,7 @@ uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
     uint32_t value = 0;
     size_t index = 0;
     for (size_t j = initialValue; j < 4; ++j) {
-        auto tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
+        auto tempValue = static_cast<uint32_t>((unsigned char)text[index++]) << bitShifts[j];
         value |= tempValue;
     }
 
@@ -204,7 +228,7 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
     for (size_t i = 0; i < text.length();) {
         size_t codePointLength = 1;
         uint32_t value = 0;
-        auto unsignedText = static_cast<uint8_t>(text[i]);
+        auto unsignedText = static_cast<uint8_t>((unsigned char)text[i]);
         if ((unsignedText & 0xf8U) == 0xf0U) {
             codePointLength = 4;
             breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
@@ -224,29 +248,6 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
     }
 
     return breakdown;
-}
-
-/**
- * @brief Test to determine if @p nameChar is a valid XML name character.
- *
- * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
- *
- * @param nameChar The character to test.
- *
- * @return True if the character is in the allowed Unicode ranges for an XML name character.
- */
-bool isNameChar(uint32_t nameChar)
-{
-    if (isNameStartChar(nameChar)) {
-        return true;
-    }
-    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
-           || (nameChar == 0x2DU)
-           || (nameChar == 0x2EU)
-           || (nameChar == 0xB7U)
-           || ((0x0300U <= nameChar) && (nameChar <= 0x036FU))
-           || ((0x203FU <= nameChar) && (nameChar <= 0x2040U));
 }
 
 /**
