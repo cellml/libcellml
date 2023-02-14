@@ -227,7 +227,9 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
         "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "Variable 'margie' in component 'fargo' does not have any units specified.",
         "Variable 'ransom' in component 'fargo' has a units reference 'dollars' which is neither standard nor defined in the parent model.",
-        "Variable 'mullah' in component 'fargo' does not have a valid units attribute. The attribute given is '$$'. CellML identifiers must not contain any characters other than [a-zA-Z0-9_]."};
+        "Variable 'mullah' in component 'fargo' does not have a valid units attribute. The attribute given is '$$'. CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
+        "Variable '' in component 'fargo' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+    };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -237,6 +239,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::VariablePtr v4 = libcellml::Variable::create();
     libcellml::VariablePtr v5 = libcellml::Variable::create();
+    libcellml::VariablePtr v6 = libcellml::Variable::create();
 
     model->addComponent(c1);
     c1->addVariable(v1);
@@ -244,6 +247,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     c1->addVariable(v3);
     c1->addVariable(v4);
     c1->addVariable(v5);
+    c1->addVariable(v6);
 
     model->setName("minnesota");
     c1->setName("fargo");
@@ -256,6 +260,8 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     v4->setUnits("dollars");
     v5->setName("mullah");
     v5->setUnits("$$");
+    v6->setName("");
+    v6->setUnits("second");
 
     validator->validateModel(model);
 
