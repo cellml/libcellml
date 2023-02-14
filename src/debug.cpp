@@ -183,7 +183,7 @@ std::string doPrintAst(const AnalyserEquationAstPtr &ast)
     switch (ast->type()) {
         // Assignment.
 
-    case AnalyserEquationAst::Type::ASSIGNMENT:
+    case AnalyserEquationAst::Type::EQUALITY:
         res = "ASSIGNMENT";
 
         break;

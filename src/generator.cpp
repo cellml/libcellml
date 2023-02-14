@@ -1229,7 +1229,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     std::string code;
     auto astType = ast->type();
 
-    if (astType == AnalyserEquationAst::Type::ASSIGNMENT) {
+    if (astType == AnalyserEquationAst::Type::EQUALITY) {
         code = generateOperatorCode(mLockedProfile->assignmentString(), ast);
     } else if (astType == AnalyserEquationAst::Type::EQ) {
         if (mLockedProfile->hasEqOperator()) {

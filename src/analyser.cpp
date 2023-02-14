@@ -1867,7 +1867,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers, issueDescriptions);
     analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers, issueDescriptions);
 
-    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
+    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::EQUALITY)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::EQ)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::NEQ)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::LT)
@@ -2152,7 +2152,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
                 auto astGrandparent = astParent->parent();
 
-                if (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT) {
+                if (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::EQUALITY) {
                     scaleAst(astGrandparent->mPimpl->mOwnedRightChild, astGrandparent, 1.0 / scalingFactor);
                 } else {
                     scaleAst(astParent, astGrandparent, 1.0 / scalingFactor);
@@ -2160,7 +2160,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
             }
         }
 
-        if (((astParent->mPimpl->mType != AnalyserEquationAst::Type::ASSIGNMENT)
+        if (((astParent->mPimpl->mType != AnalyserEquationAst::Type::EQUALITY)
              || (astParent->mPimpl->mOwnedLeftChild != ast))
             && (astParent->mPimpl->mType != AnalyserEquationAst::Type::BVAR)) {
             // We are dealing with a variable which is neither a computed

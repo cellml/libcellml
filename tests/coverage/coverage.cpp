@@ -325,7 +325,7 @@ TEST(Coverage, analyser)
 
     EXPECT_NE(nullptr, ast);
 
-    ast->setType(libcellml::AnalyserEquationAst::Type::ASSIGNMENT);
+    ast->setType(libcellml::AnalyserEquationAst::Type::EQUALITY);
     ast->setValue({});
     ast->setVariable(libcellml::Variable::create());
     ast->setParent(libcellml::AnalyserEquationAst::create());

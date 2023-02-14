@@ -31,7 +31,7 @@ using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type
  */
 struct AnalyserEquationAst::AnalyserEquationAstImpl
 {
-    AnalyserEquationAst::Type mType = Type::ASSIGNMENT;
+    AnalyserEquationAst::Type mType = Type::EQUALITY;
     std::string mValue;
     VariableWeakPtr mVariable;
     AnalyserEquationAstWeakPtr mParent;

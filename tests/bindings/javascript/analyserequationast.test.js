@@ -25,8 +25,8 @@ describe("Analyser Equation AST tests", () => {
     test('Checking Analyser Equation AST type.', () => {
         const aea = new libcellml.AnalyserEquationAst()
 
-        expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.ASSIGNMENT.value)
-        expect(aea.type()).toStrictEqual(libcellml.AnalyserEquationAst.Type.ASSIGNMENT)
+        expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.EQUALITY.value)
+        expect(aea.type()).toStrictEqual(libcellml.AnalyserEquationAst.Type.EQUALITY)
         expect(aea.type()).not.toStrictEqual(libcellml.AnalyserEquationAst.Type.OTHERWISE)
 
         aea.setType(libcellml.AnalyserEquationAst.Type.OTHERWISE)
