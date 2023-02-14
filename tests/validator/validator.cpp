@@ -193,6 +193,33 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
+TEST(Validator, unitsHasReferenceToStandardUnitsDefinedInModel)
+{
+    const std::string e = "Units is named 'second' which is a protected standard unit name.";
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    model->addComponent(c1);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    model->setName("model");
+    c1->setName("michael");
+    u1->setName("keaton");
+    u2->setName("second");
+
+    u1->addUnit("second");
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(e, validator->error(0)->description());
+}
+
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
 {
     const std::vector<std::string> expectedIssues = {
