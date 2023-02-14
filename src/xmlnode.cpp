@@ -208,18 +208,14 @@ bool XmlNode::isText() const
 
 bool XmlNode::isBasicNumber() const
 {
-    bool validConversion;
-
-    convertToBasicDouble(convertToStrippedString(), &validConversion);
-
-    return validConversion;
+    return canConvertToBasicDouble(convertToStrippedString());
 }
 
-bool XmlNode::isNumber() const
+bool XmlNode::isInteger() const
 {
     bool validConversion;
 
-    convertToDouble(convertToStrippedString(), &validConversion);
+    convertToInt(convertToStrippedString(), &validConversion);
 
     return validConversion;
 }

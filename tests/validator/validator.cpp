@@ -3612,6 +3612,7 @@ TEST(Validator, invalidMathMLElementsChildrenOrSiblings)
         "Math has a 'cn' element which is not of 'real' or 'e-notation' type.",
         "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
         "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
         "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
         "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
         "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
