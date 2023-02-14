@@ -682,6 +682,10 @@
             </apply>
             <apply>
                 <!-- 'cn' element of 'real' type with no valid text node (representing a basic number) as a child. -->
+                <cn cellml:units="dimensionless">1789000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</cn>
+            </apply>
+            <apply>
+                <!-- 'cn' element of 'real' type with no valid text node (representing a basic number) as a child. -->
                 <cn cellml:units="dimensionless">
                     1
                     <sep/>

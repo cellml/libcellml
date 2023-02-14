@@ -39,29 +39,19 @@ limitations under the License.
 
 namespace libcellml {
 
-double convertToBasicDouble(const std::string &in, bool *ok)
+bool canConvertToBasicDouble(const std::string &in)
 {
-    double out = 0.0;
-    if (ok != nullptr) {
-        *ok = true;
-    }
-
     if (!isCellMLBasicReal(in)) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
-
-        return out;
+        return false;
     }
 
     try {
-        out = std::stod(in);
+        std::stod(in);
     } catch (std::out_of_range &) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
+        return false;
     }
-    return out;
+
+    return true;
 }
 
 double convertToDouble(const std::string &in, bool *ok)
