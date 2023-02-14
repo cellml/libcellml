@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/analyservariable.h"
 
+#include <iterator>
+
 #include "analyservariable_p.h"
 
 namespace libcellml {
@@ -29,13 +31,14 @@ void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type typ
                                                       size_t index,
                                                       const VariablePtr &initialisingVariable,
                                                       const VariablePtr &variable,
-                                                      const AnalyserEquationPtr &equation)
+                                                      const std::vector<AnalyserEquationPtr> &equations)
 {
     mType = type;
     mIndex = index;
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
-    mEquation = equation;
+
+    std::copy(equations.begin(), equations.end(), back_inserter(mEquations));
 }
 
 AnalyserVariable::AnalyserVariable()
@@ -68,9 +71,29 @@ VariablePtr AnalyserVariable::variable() const
     return mPimpl->mVariable.lock();
 }
 
-AnalyserEquationPtr AnalyserVariable::equation() const
+size_t AnalyserVariable::equationCount() const
 {
-    return mPimpl->mEquation.lock();
+    return mPimpl->mEquations.size();
+}
+
+std::vector<AnalyserEquationPtr> AnalyserVariable::equations() const
+{
+    std::vector<AnalyserEquationPtr> res;
+
+    for (const auto &equation : mPimpl->mEquations) {
+        res.push_back(equation.lock());
+    }
+
+    return res;
+}
+
+AnalyserEquationPtr AnalyserVariable::equation(size_t index) const
+{
+    if (index >= mPimpl->mEquations.size()) {
+        return {};
+    }
+
+    return mPimpl->mEquations[index].lock();
 }
 
 } // namespace libcellml

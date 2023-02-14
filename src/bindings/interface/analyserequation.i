@@ -16,15 +16,26 @@
 %feature("docstring") libcellml::AnalyserEquation::ast
 "Returns the :class:`AnalyserEquationAst` object for this :class:`AnalyserEquation` object.";
 
+%feature("docstring") libcellml::AnalyserEquation::dependencyCount
+"Returns the number of dependencies for this :class:`AnalyserEquation` object.";
+
 %feature("docstring") libcellml::AnalyserEquation::dependencies
-"Returns the list of :class:`AnalyserEquation` objects which corresponds to the equations on which this
-:class:`AnalyserEquation` object depends.";
+"Returns the dependencies for this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::dependency
+"Returns the dependency, at the given index, for this :class:`AnalyserEquation` object.";
 
 %feature("docstring") libcellml::AnalyserEquation::isStateRateBased
 "Tests if this :class:`AnalyserEquation` object relies on states and/or rates.";
 
+%feature("docstring") libcellml::AnalyserEquation::variableCount
+"Returns the number of variables computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::variables
+"Returns the variables computed by this :class:`AnalyserEquation` object.";
+
 %feature("docstring") libcellml::AnalyserEquation::variable
-"Returns the :class:`AnalyserVariable` object for this :class:`AnalyserEquation` object.";
+"Returns the variable, at the given index, computed by this :class:`AnalyserEquation` object.";
 
 %{
 #include "libcellml/analyserequation.h"
