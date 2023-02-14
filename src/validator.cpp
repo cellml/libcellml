@@ -926,11 +926,11 @@ std::set<std::string> namesInCycle(NameList allNames)
     allNames.pop_back();
     std::reverse(allNames.begin(), allNames.end());
     std::set<std::string> namesInCycle = {cycleStartName};
-    for (const auto &name : allNames) {
-        if (name == cycleStartName) {
-            break;
-        }
+    std::string name = *allNames.begin();
+    while (name != cycleStartName) {
         namesInCycle.emplace(name);
+        allNames.erase(allNames.begin());
+        name = *allNames.begin();
     }
 
     return namesInCycle;
