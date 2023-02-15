@@ -485,7 +485,7 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
 NameList findCnUnitsNames(const XmlNodePtr &node);
 
 /**
- * @brief Find all MathML @c cn elements units attributes in the given components math string.
+ * @brief Find all MathML @c cn elements units attributes in the given component's math string.
  *
  * Search through the @p component's math string and return a list of units references found
  * on MathML @c cn elements units attribute.
