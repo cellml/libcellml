@@ -1244,8 +1244,6 @@ TEST(Importer, isResolvedUnitsChildUnresolvedII)
     model->addComponent(importedComponent1);
     importModel1->addComponent(importedComponent2);
 
-    auto printer = libcellml::Printer::create();
-
     auto importSource1 = libcellml::ImportSource::create();
     importSource1->setUrl("model1.cellml");
     importSource1->setModel(importModel1);
