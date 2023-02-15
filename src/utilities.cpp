@@ -858,7 +858,7 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
     // Imports.
     auto importSource = component->importSource();
     if (importSource != nullptr) {
-        id = component->importSource()->id();
+        id = importSource->id();
         if (!id.empty()) {
             idList.insert(id);
         }
