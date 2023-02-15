@@ -302,7 +302,8 @@ bool hasUnitsImports(const UnitsPtr &units)
 {
     bool importPresent = units->isImport();
     auto model = owningModel(units);
-    for (size_t index = 0; !importPresent && (index < units->unitCount()); ++index) {
+    size_t unistCount = units->unitCount();
+    for (size_t index = 0; !importPresent && (index < unistCount); ++index) {
         std::string reference = units->unitAttributeReference(index);
         if (!reference.empty() && !isStandardUnitName(reference)) {
             if (model->hasUnits(reference)) {
