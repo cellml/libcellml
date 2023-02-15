@@ -1279,7 +1279,7 @@ TEST(Importer, cascadedUnitsManuallyImported)
 
     const std::string a = printer->printModel(flatModel);
     EXPECT_EQ(e, a);
- }
+}
 
 TEST(Importer, cascadedUnitsManuallyImportedWithoutImportSourcesAddedToImporter)
 {
@@ -1343,7 +1343,7 @@ TEST(Importer, cascadedUnitsManuallyImportedWithoutImportSourcesAddedToImporter)
     Debug() << importer->issue(0)->description();
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
- }
+}
 
 TEST(Importer, cascadedUnitsManuallyImportedMissingUnitReferences)
 {
