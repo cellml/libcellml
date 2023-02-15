@@ -342,8 +342,6 @@ TEST(Coverage, analyserConvertToInt)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("coverage/converttoint.cellml"));
 
-    auto printer = libcellml::Printer::create();
-
     analyser->analyseModel(model);
 }
 
