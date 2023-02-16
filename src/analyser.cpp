@@ -66,6 +66,7 @@ using AnalyserInternalEquationPtrs = std::vector<AnalyserInternalEquationPtr>;
 using AnalyserInternalVariablePtrs = std::vector<AnalyserInternalVariablePtr>;
 
 using AnalyserEquationPtrs = std::vector<AnalyserEquationPtr>;
+using AnalyserVariablePtrs = std::vector<AnalyserVariablePtr>;
 using AnalyserExternalVariablePtrs = std::vector<AnalyserExternalVariablePtr>;
 
 struct AnalyserInternalVariable
@@ -2527,7 +2528,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Make our internal variables available through our API.
 
-    std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
+    std::map<AnalyserInternalVariablePtr, AnalyserVariablePtr> variableMappings;
 
     stateIndex = MAX_SIZE_T;
     variableIndex = MAX_SIZE_T;
@@ -2570,7 +2571,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                    internalVariable->mVariable,
                                    {equation});
 
-        variableMappings.emplace(equation, variable);
+        variableMappings.emplace(internalVariable, variable);
 
         if (type == AnalyserVariable::Type::STATE) {
             mModel->mPimpl->mStates.push_back(variable);
@@ -2582,13 +2583,28 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make our internal equations available through our API.
 
     for (const auto &internalEquation : mInternalEquations) {
+        // Retrieve all the variables for our internal equation and determine
+        // whether our equation is an external one.
+
+        AnalyserVariablePtrs variables;
+        auto externalEquation = true;
+
+        for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+            auto variable = variableMappings[unknownVariable];
+
+            variables.push_back(variable);
+
+            if (variable->type() != AnalyserVariable::Type::EXTERNAL) {
+                externalEquation = false;
+            }
+        }
+
         // Determine the type of the equation.
 
         auto equation = equationMappings[internalEquation->mUnknownVariables.front()->mVariable];
-        auto variable = variableMappings[equation];
         AnalyserEquation::Type type;
 
-        if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
+        if (externalEquation) {
             type = AnalyserEquation::Type::EXTERNAL;
         } else if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
             type = AnalyserEquation::Type::TRUE_CONSTANT;
@@ -2661,7 +2677,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                        nullptr :
                                        internalEquation->mAst,
                                    equationDependencies,
-                                   {variable});
+                                   variables);
 
         mModel->mPimpl->mEquations.push_back(equation);
     }
