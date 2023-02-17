@@ -2520,13 +2520,13 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Create a mapping between our internal equations and our future equations
     // in the API.
 
-    std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> aie2aeequationMappings;
+    std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> aie2aeMappings;
     std::map<VariablePtr, AnalyserEquationPtr> v2aeMappings;
 
     for (const auto &internalEquation : mInternalEquations) {
         auto equation = AnalyserEquation::AnalyserEquationImpl::create();
 
-        aie2aeequationMappings.emplace(internalEquation, equation);
+        aie2aeMappings.emplace(internalEquation, equation);
         v2aeMappings.emplace(internalEquation->mUnknownVariables.front()->mVariable, equation);
     }
 
@@ -2565,6 +2565,12 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         auto variable = AnalyserVariable::AnalyserVariableImpl::create();
         AnalyserEquationPtrs equations;
+
+        for (const auto &internalEquation : mInternalEquations) {
+            if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) == internalEquation->mUnknownVariables.end()) {
+                equations.push_back(aie2aeMappings[internalEquation]);
+            }
+        }
 
         variable->mPimpl->populate(type,
                                    (type == AnalyserVariable::Type::STATE) ?
@@ -2675,16 +2681,19 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         for (const auto &variableDependency : variableDependencies) {
             auto variable = v2avMappings[variableDependency];
 
-            for (const auto &equation : variable->equations()) {
-                if (std::find(equationDependencies.begin(), equationDependencies.end(), equation) == equationDependencies.end()) {
-                    equationDependencies.push_back(equation);
+            if (variable != nullptr) {
+printf("    %ld equations\n", variable->equations().size());
+                for (const auto &equation : variable->equations()) {
+                    if (std::find(equationDependencies.begin(), equationDependencies.end(), equation) == equationDependencies.end()) {
+                        equationDependencies.push_back(equation);
+                    }
                 }
             }
         }
 
         // Populate and keep track of the equation.
 
-        auto equation = aie2aeequationMappings[internalEquation];
+        auto equation = aie2aeMappings[internalEquation];
 
         equation->mPimpl->populate(type,
                                    (type == AnalyserEquation::Type::EXTERNAL) ?
