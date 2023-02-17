@@ -23,6 +23,11 @@ limitations under the License.
 
 namespace libcellml {
 
+AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
+{
+    return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
+}
+
 void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
                                                       const AnalyserEquationAstPtr &ast,
                                                       const std::vector<AnalyserEquationPtr> &dependencies,

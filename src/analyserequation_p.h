@@ -37,6 +37,8 @@ struct AnalyserEquation::AnalyserEquationImpl
     bool mIsStateRateBased = false;
     std::vector<AnalyserVariableWeakPtr> mVariables;
 
+    static AnalyserEquationPtr create();
+
     void populate(AnalyserEquation::Type type,
                   const AnalyserEquationAstPtr &ast,
                   const std::vector<AnalyserEquationPtr> &dependencies,
