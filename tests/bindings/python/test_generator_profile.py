@@ -19,10 +19,12 @@ class GeneratorProfileTestCase(unittest.TestCase):
         # Create a default, i.e. C, profile.
         p = GeneratorProfile()
         self.assertEqual(GeneratorProfile.Profile.C, p.profile())
+        self.assertEqual("C", p.profileAsString())
 
         # Make the profile a Python profile.
         p.setProfile(GeneratorProfile.Profile.PYTHON)
         self.assertEqual(GeneratorProfile.Profile.PYTHON, p.profile())
+        self.assertEqual("PYTHON", p.profileAsString())
 
         # Create a Python profile.
         pp = GeneratorProfile(GeneratorProfile.Profile.PYTHON)

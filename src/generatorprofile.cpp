@@ -1038,6 +1038,17 @@ GeneratorProfile::Profile GeneratorProfile::profile() const
     return mPimpl->mProfile;
 }
 
+std::string GeneratorProfile::profileAsString() const
+{
+    if (mPimpl->mProfile == Profile::C) {
+        return "C";
+    }
+
+    // mPimpl->mProfile == Profile::PYTHON.
+
+    return "PYTHON";
+}
+
 void GeneratorProfile::setProfile(Profile profile)
 {
     mPimpl->loadProfile(profile);
