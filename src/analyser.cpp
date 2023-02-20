@@ -2584,6 +2584,12 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         aiv2avMappings.emplace(internalVariable, variable);
         v2avMappings.emplace(internalVariable->mVariable, variable);
+printf(">>> %s ---> %p\n", internalVariable->mVariable->name().c_str(), variable.get());
+printf("    %ld equations\n", equations.size());
+for (const auto &eqn : mInternalEquations) {
+    auto x = expression(eqn->mAst, false);
+    printf("     - %s\n", x.substr(1, x.length() - 2).c_str());
+}
 
         if (type == AnalyserVariable::Type::STATE) {
             mModel->mPimpl->mStates.push_back(variable);
@@ -2680,11 +2686,18 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         for (const auto &variableDependency : variableDependencies) {
             auto variable = v2avMappings[variableDependency];
+printf("<<< %s ---> %p\n", variableDependency->name().c_str(), variable.get());
 
             if (variable != nullptr) {
-printf("    %ld equations\n", variable->equations().size());
+printf("    %ld equations for %s\n", variable->equations().size(), variable->variable()->name().c_str());
                 for (const auto &equation : variable->equations()) {
                     if (std::find(equationDependencies.begin(), equationDependencies.end(), equation) == equationDependencies.end()) {
+if (equation->ast() != nullptr) {
+    auto x = expression(equation->ast(), false);
+    printf("     - %s\n", x.substr(1, x.length() - 2).c_str());
+} else {
+    printf("     - N/A\n");
+}
                         equationDependencies.push_back(equation);
                     }
                 }
@@ -2701,6 +2714,17 @@ printf("    %ld equations\n", variable->equations().size());
                                        internalEquation->mAst,
                                    equationDependencies,
                                    variables);
+auto expr = expression(internalEquation->mAst, false);
+printf(">>> %s\n", expr.substr(1, expr.length() - 2).c_str());
+printf("    %ld unknown variables\n", variables.size());
+for (const auto &v : variables) {
+    printf("     - %s\n", v->variable()->name().c_str());
+}
+printf("    %ld dependencies\n", equationDependencies.size());
+for (const auto &d : equationDependencies) {
+    auto x = expression(d->ast(), false);
+    printf("     - %s\n", x.substr(1, x.length() - 2).c_str());
+}
 
         mModel->mPimpl->mEquations.push_back(equation);
     }
