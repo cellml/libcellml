@@ -511,7 +511,7 @@ void Annotator::AnnotatorImpl::addIssueNoModel()
 void Annotator::AnnotatorImpl::addIssueInvalidArgument(CellmlElementType type)
 {
     auto issue = Issue::IssueImpl::create();
-    auto description = "The item is internally inconsistent: the enum type '" + cellmlElementTypeAsString(type) + "' cannot be used with the stored item.";
+    auto description = "The item is internally inconsistent: the enum type '" + enumerationAsString(type) + "' cannot be used with the stored item.";
     issue->mPimpl->setDescription(description);
     issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_INCONSISTENT_TYPE);
     addIssue(issue);

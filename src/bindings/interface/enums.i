@@ -4,8 +4,8 @@
 
 %include <std_string.i>
 
-%feature("docstring") libcellml::cellmlElementTypeAsString
-"Convert a CellmlElementType enumeration value into its string form.";
+%feature("docstring") libcellml::enumerationAsString
+"Convert an enumeration value into its string form.";
 
 %{
 #include "libcellml/enums.h"

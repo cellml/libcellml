@@ -502,4 +502,6 @@ private:
     AnalyserModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
+LIBCELLML_EXPORT std::string enumerationAsString(AnalyserModel::Type value);
+
 } // namespace libcellml

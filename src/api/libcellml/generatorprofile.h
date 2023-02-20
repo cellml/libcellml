@@ -34,14 +34,13 @@ public:
     /**
      * @brief The type of a profile.
      *
-     * A profile can be of one of the following types:
-     *  - C: a profile that targets the C language; or
-     *  - PYTHON: a profile that targets the Python language.
+     * This enumeration lists the predefined profiles
+     * that the @ref Generator can generate code for.
      */
     enum class Profile
     {
-        C,
-        PYTHON
+        C, /**< A profile that targets the C language. */
+        PYTHON /**< a profile that targets the Python language. */
     };
 
     ~GeneratorProfile(); /**< Destructor, @private. */
@@ -3541,5 +3540,7 @@ private:
     struct GeneratorProfileImpl;
     GeneratorProfileImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
+
+LIBCELLML_EXPORT std::string enumerationAsString(GeneratorProfile::Profile value);
 
 } // namespace libcellml

@@ -18,6 +18,9 @@ limitations under the License.
 
 #include <map>
 
+#include "libcellml/analysermodel.h"
+#include "libcellml/generatorprofile.h"
+
 namespace libcellml {
 
 static const std::map<CellmlElementType, std::string> cellmlElementTypeToString = {
@@ -37,9 +40,34 @@ static const std::map<CellmlElementType, std::string> cellmlElementTypeToString 
     {CellmlElementType::UNITS, "units"},
     {CellmlElementType::VARIABLE, "variable"}};
 
-std::string cellmlElementTypeAsString(CellmlElementType value)
+static const std::map<AnalyserModel::Type, std::string> analyserModelTypeStringMap = {
+    {AnalyserModel::Type::ALGEBRAIC, "Algebriac"},
+    {AnalyserModel::Type::INVALID, "Invalid"},
+    {AnalyserModel::Type::ODE, "ODE"},
+    {AnalyserModel::Type::OVERCONSTRAINED, "Overconstrained"},
+    {AnalyserModel::Type::UNDERCONSTRAINED, "Underconstrained"},
+    {AnalyserModel::Type::UNKNOWN, "Unknown"},
+    {AnalyserModel::Type::UNSUITABLY_CONSTRAINED, "Unsuitable constrained"},
+};
+
+static const std::map<GeneratorProfile::Profile, std::string> generatorProfileProfileStringMap = {
+    {GeneratorProfile::Profile::C, "C"},
+    {GeneratorProfile::Profile::PYTHON, "Python"},
+};
+
+std::string enumerationAsString(CellmlElementType value)
 {
     return cellmlElementTypeToString.at(value);
+}
+
+std::string enumerationAsString(AnalyserModel::Type value)
+{
+    return analyserModelTypeStringMap.at(value);
+}
+
+std::string enumerationAsString(GeneratorProfile::Profile value)
+{
+    return generatorProfileProfileStringMap.at(value);
 }
 
 } // namespace libcellml
