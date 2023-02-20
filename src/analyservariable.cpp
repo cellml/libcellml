@@ -53,6 +53,33 @@ AnalyserVariable::Type AnalyserVariable::type() const
     return mPimpl->mType;
 }
 
+std::string AnalyserVariable::typeAsString() const
+{
+    if (mPimpl->mType == Type::VARIABLE_OF_INTEGRATION) {
+        return "VARIABLE_OF_INTEGRATION";
+    }
+
+    if (mPimpl->mType == Type::STATE) {
+        return "STATE";
+    }
+
+    if (mPimpl->mType == Type::CONSTANT) {
+        return "CONSTANT";
+    }
+
+    if (mPimpl->mType == Type::COMPUTED_CONSTANT) {
+        return "COMPUTED_CONSTANT";
+    }
+
+    if (mPimpl->mType == Type::ALGEBRAIC) {
+        return "ALGEBRAIC";
+    }
+
+    // mPimpl->mType == Type::EXTERNAL.
+
+    return "EXTERNAL";
+}
+
 size_t AnalyserVariable::index() const
 {
     return mPimpl->mIndex;

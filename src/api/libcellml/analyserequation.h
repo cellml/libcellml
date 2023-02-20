@@ -62,6 +62,15 @@ public:
     Type type() const;
 
     /**
+     * @brief Get the @c Type as a string of this @c AnalyserEquation.
+     *
+     * Return the @c Type as a string of this @c AnalyserEquation.
+     *
+     * @return The @c Type as a string.
+     */
+    std::string typeAsString() const;
+
+    /**
      * @brief Get the @c AnalyserEquationAst for this @c AnalyserEquation.
      *
      * Return the @c AnalyserEquationAst for this @c AnalyserEquation.

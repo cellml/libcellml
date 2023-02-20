@@ -44,6 +44,7 @@ describe("Analyser Equation tests", () => {
     });
     test('Checking Analyser Equation type.', () => {
         expect(eqn.type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
+        expect(eqn.typeAsString()).toBe("RATE")
     });
     test('Checking Analyser Equation isStateRateBased.', () => {
         expect(eqn.isStateRateBased()).toBe(false)
