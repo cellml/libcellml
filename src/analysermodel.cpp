@@ -47,6 +47,37 @@ AnalyserModel::Type AnalyserModel::type() const
     return mPimpl->mType;
 }
 
+std::string AnalyserModel::typeAsString() const
+{
+    if (mPimpl->mType == Type::UNKNOWN) {
+        return "UNKNOWN";
+    }
+
+    if (mPimpl->mType == Type::ALGEBRAIC) {
+        return "ALGEBRAIC";
+    }
+
+    if (mPimpl->mType == Type::ODE) {
+        return "ODE";
+    }
+
+    if (mPimpl->mType == Type::INVALID) {
+        return "INVALID";
+    }
+
+    if (mPimpl->mType == Type::UNDERCONSTRAINED) {
+        return "UNDERCONSTRAINED";
+    }
+
+    if (mPimpl->mType == Type::OVERCONSTRAINED) {
+        return "OVERCONSTRAINED";
+    }
+
+    // mPimpl->mType == Type::UNSUITABLY_CONSTRAINED.
+
+    return "UNSUITABLY_CONSTRAINED";
+}
+
 bool AnalyserModel::hasExternalVariables() const
 {
     if (!isValid()) {

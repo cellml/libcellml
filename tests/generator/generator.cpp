@@ -56,6 +56,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
+    EXPECT_EQ("ALGEBRAIC", analyserModel->typeAsString());
 
     EXPECT_EQ(size_t(0), analyserModel->stateCount());
     EXPECT_EQ(size_t(2), analyserModel->variableCount());
@@ -67,6 +68,9 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::TRUE_CONSTANT, analyserModel->equation(0)->type());
+    EXPECT_EQ("TRUE_CONSTANT", analyserModel->equation(0)->typeAsString());
 
     auto generator = libcellml::Generator::create();
 
@@ -160,6 +164,15 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::CONSTANT, analyserModel->variable(0)->type());
+    EXPECT_EQ("CONSTANT", analyserModel->variable(0)->typeAsString());
+
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::COMPUTED_CONSTANT, analyserModel->variable(1)->type());
+    EXPECT_EQ("COMPUTED_CONSTANT", analyserModel->variable(1)->typeAsString());
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::VARIABLE_BASED_CONSTANT, analyserModel->equation(0)->type());
+    EXPECT_EQ("VARIABLE_BASED_CONSTANT", analyserModel->equation(0)->typeAsString());
+
     auto generator = libcellml::Generator::create();
 
     generator->setModel(analyserModel);
@@ -234,6 +247,7 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
     auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+    EXPECT_EQ("ODE", analyserModel->typeAsString());
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
     EXPECT_EQ(size_t(2), analyserModel->variableCount());
@@ -246,6 +260,21 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::VARIABLE_OF_INTEGRATION, analyserModel->voi()->type());
+    EXPECT_EQ("VARIABLE_OF_INTEGRATION", analyserModel->voi()->typeAsString());
+
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::STATE, analyserModel->state(0)->type());
+    EXPECT_EQ("STATE", analyserModel->state(0)->typeAsString());
+
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::ALGEBRAIC, analyserModel->variable(1)->type());
+    EXPECT_EQ("ALGEBRAIC", analyserModel->variable(1)->typeAsString());
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::RATE, analyserModel->equation(0)->type());
+    EXPECT_EQ("RATE", analyserModel->equation(0)->typeAsString());
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::ALGEBRAIC, analyserModel->equation(2)->type());
+    EXPECT_EQ("ALGEBRAIC", analyserModel->equation(2)->typeAsString());
 
     auto generator = libcellml::Generator::create();
 
@@ -1356,6 +1385,12 @@ TEST(Generator, cellGeometryModelWithExternalVariables)
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::EXTERNAL, analyserModel->variable(0)->type());
+    EXPECT_EQ("EXTERNAL", analyserModel->variable(0)->typeAsString());
+
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::EXTERNAL, analyserModel->equation(0)->type());
+    EXPECT_EQ("EXTERNAL", analyserModel->equation(0)->typeAsString());
 
     auto generator = libcellml::Generator::create();
 

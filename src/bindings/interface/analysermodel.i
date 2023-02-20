@@ -16,6 +16,9 @@
 %feature("docstring") libcellml::AnalyserModel::type
 "Returns the :enum:`AnalyserModel::Type`.";
 
+%feature("docstring") libcellml::AnalyserModel::typeAsString
+"Returns the :enum:`AnalyserModel::Type` as a string.";
+
 %feature("docstring") libcellml::AnalyserModel::hasExternalVariables
 "Tests if this :class:`AnalyserModel` object has external variables.";
 

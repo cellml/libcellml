@@ -81,6 +81,7 @@ TEST(Analyser, initialisedVariableOfIntegration)
                                                                    analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ("INVALID", analyser->model()->typeAsString());
 }
 
 TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
@@ -286,6 +287,7 @@ TEST(Analyser, nonInitialisedState)
     EXPECT_EQ(expectedVariableName, analyser->issue(0)->item()->variable()->name());
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ("UNDERCONSTRAINED", analyser->model()->typeAsString());
 }
 
 TEST(Analyser, underconstrained)
@@ -336,6 +338,7 @@ TEST(Analyser, overconstrainedOneVariable)
                                                                    analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
+    EXPECT_EQ("OVERCONSTRAINED", analyser->model()->typeAsString());
 }
 
 TEST(Analyser, overconstrainedTwoVariables)
@@ -423,6 +426,7 @@ TEST(Analyser, unsuitablyConstrained)
                                                                    analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
+    EXPECT_EQ("UNSUITABLY_CONSTRAINED", analyser->model()->typeAsString());
 }
 
 TEST(Analyser, addSameExternalVariable)

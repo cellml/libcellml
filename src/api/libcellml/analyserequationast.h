@@ -167,6 +167,15 @@ public:
     Type type() const;
 
     /**
+     * @brief Get the @c Type as a string of this @ref AnalyserEquationAst.
+     *
+     * Return the @c Type as a string of this @ref AnalyserEquationAst.
+     *
+     * @return The @c Type as a string.
+     */
+    std::string typeAsString() const;
+
+    /**
      * @brief Set the type of this @ref AnalyserEquationAst.
      *
      * Set the type of this @ref AnalyserEquationAst.

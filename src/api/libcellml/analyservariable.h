@@ -64,6 +64,15 @@ public:
     Type type() const;
 
     /**
+     * @brief Get the @c Type as a string of this @c AnalyserVariable.
+     *
+     * Return the @c Type as a string of this @c AnalyserVariable.
+     *
+     * @return The @c Type as a string.
+     */
+    std::string typeAsString() const;
+
+    /**
      * @brief Get the index of this @c AnalyserVariable.
      *
      * Return the index of this @c AnalyserVariable.
