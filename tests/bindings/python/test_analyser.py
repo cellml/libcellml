@@ -29,6 +29,7 @@ class AnalyserTestCase(unittest.TestCase):
         from libcellml import Analyser
         from libcellml import AnalyserModel
         from libcellml import Model
+        from libcellml.analysermodel import AnalyserModel_typeAsString
 
         # Analyse an empty model and make sure that we get no errors and an
         # UNKNOWN type for the analyser model.
@@ -41,6 +42,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(0, a.errorCount())
         self.assertEqual(AnalyserModel.Type.UNKNOWN, a.model().type())
         self.assertEqual("unknown", AnalyserModel.typeAsString(a.model().type()))
+        self.assertEqual("unknown", AnalyserModel_typeAsString(a.model().type()))
 
     def test_coverage(self):
         from libcellml import Analyser
@@ -51,6 +53,9 @@ class AnalyserTestCase(unittest.TestCase):
         from libcellml import AnalyserVariable
         from libcellml import Model
         from libcellml import Parser
+        from libcellml.analyserequation import AnalyserEquation_typeAsString
+        from libcellml.analyserequationast import AnalyserEquationAst_typeAsString
+        from libcellml.analyservariable import AnalyserVariable_typeAsString
         from test_resources import file_contents
 
         # Try to create an analyser equation/model/variable, something that is not allowed.
@@ -151,6 +156,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
         self.assertEqual("constant", AnalyserVariable.typeAsString(av.type()))
+        self.assertEqual("constant", AnalyserVariable_typeAsString(av.type()))
         self.assertEqual(3, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
@@ -162,6 +168,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         self.assertEqual(AnalyserEquation.Type.RATE, ae.type())
         self.assertEqual("rate", AnalyserEquation.typeAsString(ae.type()))
+        self.assertEqual("rate", AnalyserEquation_typeAsString(ae.type()))
         self.assertIsNotNone(ae.ast())
         self.assertIsNotNone(ae.dependencies())
         self.assertTrue(ae.isStateRateBased())
@@ -173,6 +180,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         self.assertEqual(AnalyserEquationAst.Type.ASSIGNMENT, aea.type())
         self.assertEqual("assignment", AnalyserEquationAst.typeAsString(aea.type()))
+        self.assertEqual("assignment", AnalyserEquationAst_typeAsString(aea.type()))
         self.assertEqual('', aea.value())
         self.assertIsNone(aea.variable())
         self.assertIsNone(aea.parent())
@@ -189,6 +197,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         self.assertEqual(AnalyserEquationAst.Type.EQ, aea.type())
         self.assertEqual("eq", AnalyserEquationAst.typeAsString(aea.type()))
+        self.assertEqual("eq", AnalyserEquationAst_typeAsString(aea.type()))
         self.assertEqual(AnalyserTestCase.VALUE, aea.value())
         self.assertIsNotNone(aea.variable())
         self.assertIsNotNone(aea.parent())
