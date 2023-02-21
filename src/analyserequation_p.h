@@ -18,11 +18,9 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 
-namespace libcellml {
+#include "internaltypes.h"
 
-using AnalyserEquationWeakPtr = std::weak_ptr<AnalyserEquation>; /**< Type definition for weak analyser equation pointer. */
-using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type definition for weak analyser equation AST pointer. */
-using AnalyserVariableWeakPtr = std::weak_ptr<AnalyserVariable>; /**< Type definition for weak analyser variable pointer. */
+namespace libcellml {
 
 /**
  * @brief The AnalyserEquation::AnalyserEquationImpl struct.
@@ -35,7 +33,7 @@ struct AnalyserEquation::AnalyserEquationImpl
     AnalyserEquationAstPtr mAst;
     std::vector<AnalyserEquationWeakPtr> mDependencies;
     bool mIsStateRateBased = false;
-    AnalyserVariableWeakPtr mVariable;
+    AnalyserVariablePtr mVariable;
 
     void populate(AnalyserEquation::Type type,
                   const AnalyserEquationAstPtr &ast,

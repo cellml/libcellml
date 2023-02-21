@@ -38,18 +38,13 @@ limitations under the License.
 
 namespace libcellml {
 
-bool Generator::GeneratorImpl::retrieveLockedModelAndProfile()
+GeneratorProfilePtr Generator::GeneratorImpl::profile() const
 {
-    mLockedModel = mGenerator->model();
-    mLockedProfile = mGenerator->profile();
+    if (mOwnedProfile != nullptr) {
+        return mOwnedProfile;
+    }
 
-    return (mLockedModel != nullptr) && (mLockedProfile != nullptr);
-}
-
-void Generator::GeneratorImpl::resetLockedModelAndProfile()
-{
-    mLockedModel = nullptr;
-    mLockedProfile = nullptr;
+    return mProfile;
 }
 
 AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable) const
@@ -57,15 +52,15 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
     // Find and return the analyser variable associated with the given variable.
 
     AnalyserVariablePtr res;
-    auto modelVoi = mLockedModel->voi();
+    auto modelVoi = mModel->voi();
     VariablePtr modelVoiVariable = (modelVoi != nullptr) ? modelVoi->variable() : nullptr;
 
     if ((modelVoiVariable != nullptr)
-        && mLockedModel->areEquivalentVariables(variable, modelVoiVariable)) {
+        && mModel->areEquivalentVariables(variable, modelVoiVariable)) {
         res = modelVoi;
     } else {
-        for (const auto &modelState : mLockedModel->states()) {
-            if (mLockedModel->areEquivalentVariables(variable, modelState->variable())) {
+        for (const auto &modelState : mModel->states()) {
+            if (mModel->areEquivalentVariables(variable, modelState->variable())) {
                 res = modelState;
 
                 break;
@@ -75,8 +70,8 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         if (res == nullptr) {
             // Normally, we would have:
             //
-            //     for (const auto &modelVariable : mLockedModel->variables()) {
-            //         if (mLockedModel->areEquivalentVariables(variable, modelVariable->variable())) {
+            //     for (const auto &modelVariable : mModel->variables()) {
+            //         if (mModel->areEquivalentVariables(variable, modelVariable->variable())) {
             //             res = modelVariable;
             //
             //             break;
@@ -87,11 +82,11 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
             // false branch of our for loop is never reached. The below code is
             // a bit more verbose but at least it makes llvm-cov happy.
 
-            auto modelVariables = mLockedModel->variables();
+            auto modelVariables = mModel->variables();
             auto modelVariable = modelVariables.begin();
 
             do {
-                if (mLockedModel->areEquivalentVariables(variable, (*modelVariable)->variable())) {
+                if (mModel->areEquivalentVariables(variable, (*modelVariable)->variable())) {
                     res = *modelVariable;
                 } else {
                     ++modelVariable;
@@ -114,30 +109,30 @@ bool Generator::GeneratorImpl::isRelationalOperator(const AnalyserEquationAstPtr
 {
     auto astType = ast->type();
 
-    return ((astType == AnalyserEquationAst::Type::EQ) && mLockedProfile->hasEqOperator())
-           || ((astType == AnalyserEquationAst::Type::NEQ) && mLockedProfile->hasNeqOperator())
-           || ((astType == AnalyserEquationAst::Type::LT) && mLockedProfile->hasLtOperator())
-           || ((astType == AnalyserEquationAst::Type::LEQ) && mLockedProfile->hasLeqOperator())
-           || ((astType == AnalyserEquationAst::Type::GT) && mLockedProfile->hasGtOperator())
-           || ((astType == AnalyserEquationAst::Type::GEQ) && mLockedProfile->hasGeqOperator());
+    return ((astType == AnalyserEquationAst::Type::EQ) && mUsedProfile->hasEqOperator())
+           || ((astType == AnalyserEquationAst::Type::NEQ) && mUsedProfile->hasNeqOperator())
+           || ((astType == AnalyserEquationAst::Type::LT) && mUsedProfile->hasLtOperator())
+           || ((astType == AnalyserEquationAst::Type::LEQ) && mUsedProfile->hasLeqOperator())
+           || ((astType == AnalyserEquationAst::Type::GT) && mUsedProfile->hasGtOperator())
+           || ((astType == AnalyserEquationAst::Type::GEQ) && mUsedProfile->hasGeqOperator());
 }
 
 bool Generator::GeneratorImpl::isAndOperator(const AnalyserEquationAstPtr &ast) const
 {
     return (ast->type() == AnalyserEquationAst::Type::AND)
-           && mLockedProfile->hasAndOperator();
+           && mUsedProfile->hasAndOperator();
 }
 
 bool Generator::GeneratorImpl::isOrOperator(const AnalyserEquationAstPtr &ast) const
 {
     return (ast->type() == AnalyserEquationAst::Type::OR)
-           && mLockedProfile->hasOrOperator();
+           && mUsedProfile->hasOrOperator();
 }
 
 bool Generator::GeneratorImpl::isXorOperator(const AnalyserEquationAstPtr &ast) const
 {
     return (ast->type() == AnalyserEquationAst::Type::XOR)
-           && mLockedProfile->hasXorOperator();
+           && mUsedProfile->hasXorOperator();
 }
 
 bool Generator::GeneratorImpl::isLogicalOperator(const AnalyserEquationAstPtr &ast) const
@@ -172,19 +167,19 @@ bool Generator::GeneratorImpl::isDivideOperator(const AnalyserEquationAstPtr &as
 bool Generator::GeneratorImpl::isPowerOperator(const AnalyserEquationAstPtr &ast) const
 {
     return (ast->type() == AnalyserEquationAst::Type::POWER)
-           && mLockedProfile->hasPowerOperator();
+           && mUsedProfile->hasPowerOperator();
 }
 
 bool Generator::GeneratorImpl::isRootOperator(const AnalyserEquationAstPtr &ast) const
 {
     return (ast->type() == AnalyserEquationAst::Type::ROOT)
-           && mLockedProfile->hasPowerOperator();
+           && mUsedProfile->hasPowerOperator();
 }
 
 bool Generator::GeneratorImpl::isPiecewiseStatement(const AnalyserEquationAstPtr &ast) const
 {
     return (ast->type() == AnalyserEquationAst::Type::PIECEWISE)
-           && mLockedProfile->hasConditionalOperator();
+           && mUsedProfile->hasConditionalOperator();
 }
 
 void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
@@ -205,9 +200,9 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
 
 bool Generator::GeneratorImpl::modifiedProfile() const
 {
-    std::string profileContents = generatorProfileAsString(mLockedProfile);
+    std::string profileContents = generatorProfileAsString(mUsedProfile);
 
-    return (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
+    return (mUsedProfile->profile() == GeneratorProfile::Profile::C) ?
                sha1(profileContents) != C_GENERATOR_PROFILE_SHA1 :
                sha1(profileContents) != PYTHON_GENERATOR_PROFILE_SHA1;
 }
@@ -219,42 +214,42 @@ std::string Generator::GeneratorImpl::newLineIfNeeded()
 
 void Generator::GeneratorImpl::addOriginCommentCode()
 {
-    if (!mLockedProfile->commentString().empty()
-        && !mLockedProfile->originCommentString().empty()) {
+    if (!mUsedProfile->commentString().empty()
+        && !mUsedProfile->originCommentString().empty()) {
         std::string profileInformation = modifiedProfile() ?
                                              "a modified " :
                                              "the ";
 
-        profileInformation += (mLockedProfile->profile() == GeneratorProfile::Profile::C) ?
+        profileInformation += (mUsedProfile->profile() == GeneratorProfile::Profile::C) ?
                                   "C" :
                                   "Python";
         profileInformation += " profile of";
 
-        mCode += replace(mLockedProfile->commentString(),
-                         "[CODE]", replace(replace(mLockedProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
+        mCode += replace(mUsedProfile->commentString(),
+                         "[CODE]", replace(replace(mUsedProfile->originCommentString(), "[PROFILE_INFORMATION]", profileInformation), "[LIBCELLML_VERSION]", versionString()));
     }
 }
 
 void Generator::GeneratorImpl::addInterfaceHeaderCode()
 {
-    if (!mLockedProfile->interfaceHeaderString().empty()) {
+    if (!mUsedProfile->interfaceHeaderString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->interfaceHeaderString();
+                 + mUsedProfile->interfaceHeaderString();
     }
 }
 
 void Generator::GeneratorImpl::addImplementationHeaderCode()
 {
-    bool hasInterfaceFileName = mLockedProfile->implementationHeaderString().empty() ?
+    bool hasInterfaceFileName = mUsedProfile->implementationHeaderString().empty() ?
                                     false :
-                                    (mLockedProfile->implementationHeaderString().find("[INTERFACE_FILE_NAME]") != std::string::npos);
+                                    (mUsedProfile->implementationHeaderString().find("[INTERFACE_FILE_NAME]") != std::string::npos);
 
-    if (!mLockedProfile->implementationHeaderString().empty()
-        && ((hasInterfaceFileName && !mLockedProfile->interfaceFileNameString().empty())
+    if (!mUsedProfile->implementationHeaderString().empty()
+        && ((hasInterfaceFileName && !mUsedProfile->interfaceFileNameString().empty())
             || !hasInterfaceFileName)) {
         mCode += newLineIfNeeded()
-                 + replace(mLockedProfile->implementationHeaderString(),
-                           "[INTERFACE_FILE_NAME]", mLockedProfile->interfaceFileNameString());
+                 + replace(mUsedProfile->implementationHeaderString(),
+                           "[INTERFACE_FILE_NAME]", mUsedProfile->interfaceFileNameString());
     }
 }
 
@@ -262,26 +257,26 @@ void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
 {
     std::string versionAndLibcellmlCode;
 
-    if ((interface && !mLockedProfile->interfaceVersionString().empty())
-        || (!interface && !mLockedProfile->implementationVersionString().empty())) {
+    if ((interface && !mUsedProfile->interfaceVersionString().empty())
+        || (!interface && !mUsedProfile->implementationVersionString().empty())) {
         if (interface) {
-            versionAndLibcellmlCode += mLockedProfile->interfaceVersionString();
+            versionAndLibcellmlCode += mUsedProfile->interfaceVersionString();
         } else {
             if (modifiedProfile()) {
                 std::regex regEx("([0-9]+\\.[0-9]+\\.[0-9]+)");
 
-                versionAndLibcellmlCode += std::regex_replace(mLockedProfile->implementationVersionString(), regEx, "$1.post0");
+                versionAndLibcellmlCode += std::regex_replace(mUsedProfile->implementationVersionString(), regEx, "$1.post0");
             } else {
-                versionAndLibcellmlCode += mLockedProfile->implementationVersionString();
+                versionAndLibcellmlCode += mUsedProfile->implementationVersionString();
             }
         }
     }
 
-    if ((interface && !mLockedProfile->interfaceLibcellmlVersionString().empty())
-        || (!interface && !mLockedProfile->implementationLibcellmlVersionString().empty())) {
+    if ((interface && !mUsedProfile->interfaceLibcellmlVersionString().empty())
+        || (!interface && !mUsedProfile->implementationLibcellmlVersionString().empty())) {
         versionAndLibcellmlCode += interface ?
-                                       mLockedProfile->interfaceLibcellmlVersionString() :
-                                       replace(mLockedProfile->implementationLibcellmlVersionString(),
+                                       mUsedProfile->interfaceLibcellmlVersionString() :
+                                       replace(mUsedProfile->implementationLibcellmlVersionString(),
                                                "[LIBCELLML_VERSION]", versionString());
     }
 
@@ -296,21 +291,21 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 {
     std::string stateAndVariableCountCode;
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && ((interface && !mLockedProfile->interfaceStateCountString().empty())
-            || (!interface && !mLockedProfile->implementationStateCountString().empty()))) {
+    if ((mModel->type() == AnalyserModel::Type::ODE)
+        && ((interface && !mUsedProfile->interfaceStateCountString().empty())
+            || (!interface && !mUsedProfile->implementationStateCountString().empty()))) {
         stateAndVariableCountCode += interface ?
-                                         mLockedProfile->interfaceStateCountString() :
-                                         replace(mLockedProfile->implementationStateCountString(),
-                                                 "[STATE_COUNT]", std::to_string(mLockedModel->stateCount()));
+                                         mUsedProfile->interfaceStateCountString() :
+                                         replace(mUsedProfile->implementationStateCountString(),
+                                                 "[STATE_COUNT]", std::to_string(mModel->stateCount()));
     }
 
-    if ((interface && !mLockedProfile->interfaceVariableCountString().empty())
-        || (!interface && !mLockedProfile->implementationVariableCountString().empty())) {
+    if ((interface && !mUsedProfile->interfaceVariableCountString().empty())
+        || (!interface && !mUsedProfile->implementationVariableCountString().empty())) {
         stateAndVariableCountCode += interface ?
-                                         mLockedProfile->interfaceVariableCountString() :
-                                         replace(mLockedProfile->implementationVariableCountString(),
-                                                 "[VARIABLE_COUNT]", std::to_string(mLockedModel->variableCount()));
+                                         mUsedProfile->interfaceVariableCountString() :
+                                         replace(mUsedProfile->implementationVariableCountString(),
+                                                 "[VARIABLE_COUNT]", std::to_string(mModel->variableCount()));
     }
 
     if (!stateAndVariableCountCode.empty()) {
@@ -322,8 +317,8 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 
 void Generator::GeneratorImpl::addVariableTypeObjectCode()
 {
-    auto variableTypeObjectString = mLockedProfile->variableTypeObjectString(mLockedModel->type() == AnalyserModel::Type::ODE,
-                                                                             mLockedModel->hasExternalVariables());
+    auto variableTypeObjectString = mUsedProfile->variableTypeObjectString(mModel->type() == AnalyserModel::Type::ODE,
+                                                                           mModel->hasExternalVariables());
 
     if (!variableTypeObjectString.empty()) {
         mCode += newLineIfNeeded()
@@ -337,15 +332,15 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
-    if (mLockedModel->type() == AnalyserModel::Type::ODE) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mLockedModel->voi());
+    if (mModel->type() == AnalyserModel::Type::ODE) {
+        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mModel->voi());
 
-        for (const auto &state : mLockedModel->states()) {
+        for (const auto &state : mModel->states()) {
             updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
         }
     }
 
-    for (const auto &variable : mLockedModel->variables()) {
+    for (const auto &variable : mModel->variables()) {
         updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
     }
 
@@ -357,9 +352,9 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
 
 void Generator::GeneratorImpl::addVariableInfoObjectCode()
 {
-    if (!mLockedProfile->variableInfoObjectString().empty()) {
+    if (!mUsedProfile->variableInfoObjectString().empty()) {
         mCode += newLineIfNeeded()
-                 + generateVariableInfoObjectCode(mLockedProfile->variableInfoObjectString());
+                 + generateVariableInfoObjectCode(mUsedProfile->variableInfoObjectString());
     }
 }
 
@@ -368,7 +363,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                                                                     const std::string &component,
                                                                     const std::string &type) const
 {
-    return replace(replace(replace(replace(mLockedProfile->variableInfoEntryString(),
+    return replace(replace(replace(replace(mUsedProfile->variableInfoEntryString(),
                                            "[NAME]", name),
                                    "[UNITS]", units),
                            "[COMPONENT]", component),
@@ -379,18 +374,18 @@ void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
 {
     std::string interfaceVoiStateAndVariableInfoCode;
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->interfaceVoiInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mLockedProfile->interfaceVoiInfoString();
+    if ((mModel->type() == AnalyserModel::Type::ODE)
+        && !mUsedProfile->interfaceVoiInfoString().empty()) {
+        interfaceVoiStateAndVariableInfoCode += mUsedProfile->interfaceVoiInfoString();
     }
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->interfaceStateInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mLockedProfile->interfaceStateInfoString();
+    if ((mModel->type() == AnalyserModel::Type::ODE)
+        && !mUsedProfile->interfaceStateInfoString().empty()) {
+        interfaceVoiStateAndVariableInfoCode += mUsedProfile->interfaceStateInfoString();
     }
 
-    if (!mLockedProfile->interfaceVariableInfoString().empty()) {
-        interfaceVoiStateAndVariableInfoCode += mLockedProfile->interfaceVariableInfoString();
+    if (!mUsedProfile->interfaceVariableInfoString().empty()) {
+        interfaceVoiStateAndVariableInfoCode += mUsedProfile->interfaceVariableInfoString();
     }
 
     if (!interfaceVoiStateAndVariableInfoCode.empty()) {
@@ -402,40 +397,40 @@ void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
 
 void Generator::GeneratorImpl::addImplementationVoiInfoCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->implementationVoiInfoString().empty()
-        && !mLockedProfile->variableInfoEntryString().empty()
-        && !mLockedProfile->variableOfIntegrationVariableTypeString().empty()) {
-        auto voiVariable = mLockedModel->voi()->variable();
+    if ((mModel->type() == AnalyserModel::Type::ODE)
+        && !mUsedProfile->implementationVoiInfoString().empty()
+        && !mUsedProfile->variableInfoEntryString().empty()
+        && !mUsedProfile->variableOfIntegrationVariableTypeString().empty()) {
+        auto voiVariable = mModel->voi()->variable();
         auto name = voiVariable->name();
         auto units = voiVariable->units()->name();
         auto component = owningComponent(voiVariable)->name();
-        auto type = mLockedProfile->variableOfIntegrationVariableTypeString();
+        auto type = mUsedProfile->variableOfIntegrationVariableTypeString();
 
         mCode += newLineIfNeeded()
-                 + replace(mLockedProfile->implementationVoiInfoString(),
+                 + replace(mUsedProfile->implementationVoiInfoString(),
                            "[CODE]", generateVariableInfoEntryCode(name, units, component, type));
     }
 }
 
 void Generator::GeneratorImpl::addImplementationStateInfoCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->implementationStateInfoString().empty()
-        && !mLockedProfile->variableInfoEntryString().empty()
-        && !mLockedProfile->stateVariableTypeString().empty()
-        && !mLockedProfile->arrayElementSeparatorString().empty()) {
+    if ((mModel->type() == AnalyserModel::Type::ODE)
+        && !mUsedProfile->implementationStateInfoString().empty()
+        && !mUsedProfile->variableInfoEntryString().empty()
+        && !mUsedProfile->stateVariableTypeString().empty()
+        && !mUsedProfile->arrayElementSeparatorString().empty()) {
         std::string infoElementsCode;
-        auto type = mLockedProfile->stateVariableTypeString();
+        auto type = mUsedProfile->stateVariableTypeString();
 
-        for (const auto &state : mLockedModel->states()) {
+        for (const auto &state : mModel->states()) {
             if (!infoElementsCode.empty()) {
-                infoElementsCode += mLockedProfile->arrayElementSeparatorString() + "\n";
+                infoElementsCode += mUsedProfile->arrayElementSeparatorString() + "\n";
             }
 
             auto stateVariable = state->variable();
 
-            infoElementsCode += mLockedProfile->indentString()
+            infoElementsCode += mUsedProfile->indentString()
                                 + generateVariableInfoEntryCode(stateVariable->name(),
                                                                 stateVariable->units()->name(),
                                                                 owningComponent(stateVariable)->name(),
@@ -445,45 +440,45 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode()
         infoElementsCode += "\n";
 
         mCode += newLineIfNeeded()
-                 + replace(mLockedProfile->implementationStateInfoString(),
+                 + replace(mUsedProfile->implementationStateInfoString(),
                            "[CODE]", infoElementsCode);
     }
 }
 
 void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 {
-    if (!mLockedProfile->implementationVariableInfoString().empty()
-        && !mLockedProfile->variableInfoEntryString().empty()
-        && !mLockedProfile->arrayElementSeparatorString().empty()
-        && !mLockedProfile->variableOfIntegrationVariableTypeString().empty()
-        && !mLockedProfile->stateVariableTypeString().empty()
-        && !mLockedProfile->constantVariableTypeString().empty()
-        && !mLockedProfile->computedConstantVariableTypeString().empty()
-        && !mLockedProfile->algebraicVariableTypeString().empty()
-        && !mLockedProfile->externalVariableTypeString().empty()) {
+    if (!mUsedProfile->implementationVariableInfoString().empty()
+        && !mUsedProfile->variableInfoEntryString().empty()
+        && !mUsedProfile->arrayElementSeparatorString().empty()
+        && !mUsedProfile->variableOfIntegrationVariableTypeString().empty()
+        && !mUsedProfile->stateVariableTypeString().empty()
+        && !mUsedProfile->constantVariableTypeString().empty()
+        && !mUsedProfile->computedConstantVariableTypeString().empty()
+        && !mUsedProfile->algebraicVariableTypeString().empty()
+        && !mUsedProfile->externalVariableTypeString().empty()) {
         std::string infoElementsCode;
 
-        for (const auto &variable : mLockedModel->variables()) {
+        for (const auto &variable : mModel->variables()) {
             if (!infoElementsCode.empty()) {
-                infoElementsCode += mLockedProfile->arrayElementSeparatorString() + "\n";
+                infoElementsCode += mUsedProfile->arrayElementSeparatorString() + "\n";
             }
 
             std::string variableType;
 
             if (variable->type() == AnalyserVariable::Type::CONSTANT) {
-                variableType = mLockedProfile->constantVariableTypeString();
+                variableType = mUsedProfile->constantVariableTypeString();
             } else if (variable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
-                variableType = mLockedProfile->computedConstantVariableTypeString();
+                variableType = mUsedProfile->computedConstantVariableTypeString();
             } else if (variable->type() == AnalyserVariable::Type::ALGEBRAIC) {
-                variableType = mLockedProfile->algebraicVariableTypeString();
+                variableType = mUsedProfile->algebraicVariableTypeString();
             } else { // AnalyserVariable::Type::EXTERNAL.
-                variableType = mLockedProfile->externalVariableTypeString();
+                variableType = mUsedProfile->externalVariableTypeString();
             }
 
             auto variableVariable = variable->variable();
 
-            infoElementsCode += mLockedProfile->indentString()
-                                + replace(replace(replace(replace(mLockedProfile->variableInfoEntryString(),
+            infoElementsCode += mUsedProfile->indentString()
+                                + replace(replace(replace(replace(mUsedProfile->variableInfoEntryString(),
                                                                   "[NAME]", variableVariable->name()),
                                                           "[UNITS]", variableVariable->units()->name()),
                                                   "[COMPONENT]", owningComponent(variableVariable)->name()),
@@ -495,158 +490,158 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
         }
 
         mCode += newLineIfNeeded()
-                 + replace(mLockedProfile->implementationVariableInfoString(),
+                 + replace(mUsedProfile->implementationVariableInfoString(),
                            "[CODE]", infoElementsCode);
     }
 }
 
 void Generator::GeneratorImpl::addArithmeticFunctionsCode()
 {
-    if (mLockedModel->needEqFunction() && !mLockedProfile->hasEqOperator()
-        && !mLockedProfile->eqFunctionString().empty()) {
+    if (mModel->needEqFunction() && !mUsedProfile->hasEqOperator()
+        && !mUsedProfile->eqFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->eqFunctionString();
+                 + mUsedProfile->eqFunctionString();
     }
 
-    if (mLockedModel->needNeqFunction() && !mLockedProfile->hasNeqOperator()
-        && !mLockedProfile->neqFunctionString().empty()) {
+    if (mModel->needNeqFunction() && !mUsedProfile->hasNeqOperator()
+        && !mUsedProfile->neqFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->neqFunctionString();
+                 + mUsedProfile->neqFunctionString();
     }
 
-    if (mLockedModel->needLtFunction() && !mLockedProfile->hasLtOperator()
-        && !mLockedProfile->ltFunctionString().empty()) {
+    if (mModel->needLtFunction() && !mUsedProfile->hasLtOperator()
+        && !mUsedProfile->ltFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->ltFunctionString();
+                 + mUsedProfile->ltFunctionString();
     }
 
-    if (mLockedModel->needLeqFunction() && !mLockedProfile->hasLeqOperator()
-        && !mLockedProfile->leqFunctionString().empty()) {
+    if (mModel->needLeqFunction() && !mUsedProfile->hasLeqOperator()
+        && !mUsedProfile->leqFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->leqFunctionString();
+                 + mUsedProfile->leqFunctionString();
     }
 
-    if (mLockedModel->needGtFunction() && !mLockedProfile->hasGtOperator()
-        && !mLockedProfile->gtFunctionString().empty()) {
+    if (mModel->needGtFunction() && !mUsedProfile->hasGtOperator()
+        && !mUsedProfile->gtFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->gtFunctionString();
+                 + mUsedProfile->gtFunctionString();
     }
 
-    if (mLockedModel->needGeqFunction() && !mLockedProfile->hasGeqOperator()
-        && !mLockedProfile->geqFunctionString().empty()) {
+    if (mModel->needGeqFunction() && !mUsedProfile->hasGeqOperator()
+        && !mUsedProfile->geqFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->geqFunctionString();
+                 + mUsedProfile->geqFunctionString();
     }
 
-    if (mLockedModel->needAndFunction() && !mLockedProfile->hasAndOperator()
-        && !mLockedProfile->andFunctionString().empty()) {
+    if (mModel->needAndFunction() && !mUsedProfile->hasAndOperator()
+        && !mUsedProfile->andFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->andFunctionString();
+                 + mUsedProfile->andFunctionString();
     }
 
-    if (mLockedModel->needOrFunction() && !mLockedProfile->hasOrOperator()
-        && !mLockedProfile->orFunctionString().empty()) {
+    if (mModel->needOrFunction() && !mUsedProfile->hasOrOperator()
+        && !mUsedProfile->orFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->orFunctionString();
+                 + mUsedProfile->orFunctionString();
     }
 
-    if (mLockedModel->needXorFunction() && !mLockedProfile->hasXorOperator()
-        && !mLockedProfile->xorFunctionString().empty()) {
+    if (mModel->needXorFunction() && !mUsedProfile->hasXorOperator()
+        && !mUsedProfile->xorFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->xorFunctionString();
+                 + mUsedProfile->xorFunctionString();
     }
 
-    if (mLockedModel->needNotFunction() && !mLockedProfile->hasNotOperator()
-        && !mLockedProfile->notFunctionString().empty()) {
+    if (mModel->needNotFunction() && !mUsedProfile->hasNotOperator()
+        && !mUsedProfile->notFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->notFunctionString();
+                 + mUsedProfile->notFunctionString();
     }
 
-    if (mLockedModel->needMinFunction()
-        && !mLockedProfile->minFunctionString().empty()) {
+    if (mModel->needMinFunction()
+        && !mUsedProfile->minFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->minFunctionString();
+                 + mUsedProfile->minFunctionString();
     }
 
-    if (mLockedModel->needMaxFunction()
-        && !mLockedProfile->maxFunctionString().empty()) {
+    if (mModel->needMaxFunction()
+        && !mUsedProfile->maxFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->maxFunctionString();
+                 + mUsedProfile->maxFunctionString();
     }
 }
 
 void Generator::GeneratorImpl::addTrigonometricFunctionsCode()
 {
-    if (mLockedModel->needSecFunction()
-        && !mLockedProfile->secFunctionString().empty()) {
+    if (mModel->needSecFunction()
+        && !mUsedProfile->secFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->secFunctionString();
+                 + mUsedProfile->secFunctionString();
     }
 
-    if (mLockedModel->needCscFunction()
-        && !mLockedProfile->cscFunctionString().empty()) {
+    if (mModel->needCscFunction()
+        && !mUsedProfile->cscFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->cscFunctionString();
+                 + mUsedProfile->cscFunctionString();
     }
 
-    if (mLockedModel->needCotFunction()
-        && !mLockedProfile->cotFunctionString().empty()) {
+    if (mModel->needCotFunction()
+        && !mUsedProfile->cotFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->cotFunctionString();
+                 + mUsedProfile->cotFunctionString();
     }
 
-    if (mLockedModel->needSechFunction()
-        && !mLockedProfile->sechFunctionString().empty()) {
+    if (mModel->needSechFunction()
+        && !mUsedProfile->sechFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->sechFunctionString();
+                 + mUsedProfile->sechFunctionString();
     }
 
-    if (mLockedModel->needCschFunction()
-        && !mLockedProfile->cschFunctionString().empty()) {
+    if (mModel->needCschFunction()
+        && !mUsedProfile->cschFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->cschFunctionString();
+                 + mUsedProfile->cschFunctionString();
     }
 
-    if (mLockedModel->needCothFunction()
-        && !mLockedProfile->cothFunctionString().empty()) {
+    if (mModel->needCothFunction()
+        && !mUsedProfile->cothFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->cothFunctionString();
+                 + mUsedProfile->cothFunctionString();
     }
 
-    if (mLockedModel->needAsecFunction()
-        && !mLockedProfile->asecFunctionString().empty()) {
+    if (mModel->needAsecFunction()
+        && !mUsedProfile->asecFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->asecFunctionString();
+                 + mUsedProfile->asecFunctionString();
     }
 
-    if (mLockedModel->needAcscFunction()
-        && !mLockedProfile->acscFunctionString().empty()) {
+    if (mModel->needAcscFunction()
+        && !mUsedProfile->acscFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->acscFunctionString();
+                 + mUsedProfile->acscFunctionString();
     }
 
-    if (mLockedModel->needAcotFunction()
-        && !mLockedProfile->acotFunctionString().empty()) {
+    if (mModel->needAcotFunction()
+        && !mUsedProfile->acotFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->acotFunctionString();
+                 + mUsedProfile->acotFunctionString();
     }
 
-    if (mLockedModel->needAsechFunction()
-        && !mLockedProfile->asechFunctionString().empty()) {
+    if (mModel->needAsechFunction()
+        && !mUsedProfile->asechFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->asechFunctionString();
+                 + mUsedProfile->asechFunctionString();
     }
 
-    if (mLockedModel->needAcschFunction()
-        && !mLockedProfile->acschFunctionString().empty()) {
+    if (mModel->needAcschFunction()
+        && !mUsedProfile->acschFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->acschFunctionString();
+                 + mUsedProfile->acschFunctionString();
     }
 
-    if (mLockedModel->needAcothFunction()
-        && !mLockedProfile->acothFunctionString().empty()) {
+    if (mModel->needAcothFunction()
+        && !mUsedProfile->acothFunctionString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->acothFunctionString();
+                 + mUsedProfile->acothFunctionString();
     }
 }
 
@@ -654,17 +649,17 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
 {
     std::string interfaceCreateDeleteArraysCode;
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->interfaceCreateStatesArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mLockedProfile->interfaceCreateStatesArrayMethodString();
+    if ((mModel->type() == AnalyserModel::Type::ODE)
+        && !mUsedProfile->interfaceCreateStatesArrayMethodString().empty()) {
+        interfaceCreateDeleteArraysCode += mUsedProfile->interfaceCreateStatesArrayMethodString();
     }
 
-    if (!mLockedProfile->interfaceCreateVariablesArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mLockedProfile->interfaceCreateVariablesArrayMethodString();
+    if (!mUsedProfile->interfaceCreateVariablesArrayMethodString().empty()) {
+        interfaceCreateDeleteArraysCode += mUsedProfile->interfaceCreateVariablesArrayMethodString();
     }
 
-    if (!mLockedProfile->interfaceDeleteArrayMethodString().empty()) {
-        interfaceCreateDeleteArraysCode += mLockedProfile->interfaceDeleteArrayMethodString();
+    if (!mUsedProfile->interfaceDeleteArrayMethodString().empty()) {
+        interfaceCreateDeleteArraysCode += mUsedProfile->interfaceDeleteArrayMethodString();
     }
 
     if (!interfaceCreateDeleteArraysCode.empty()) {
@@ -676,8 +671,8 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
 
 void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
 {
-    if (mLockedModel->hasExternalVariables()) {
-        auto externalVariableMethodTypeDefinitionString = mLockedProfile->externalVariableMethodTypeDefinitionString(mLockedModel->type() == AnalyserModel::Type::ODE);
+    if (mModel->hasExternalVariables()) {
+        auto externalVariableMethodTypeDefinitionString = mUsedProfile->externalVariableMethodTypeDefinitionString(mModel->type() == AnalyserModel::Type::ODE);
 
         if (!externalVariableMethodTypeDefinitionString.empty()) {
             mCode += "\n"
@@ -688,35 +683,35 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
 
 void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode()
 {
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
-        && !mLockedProfile->implementationCreateStatesArrayMethodString().empty()) {
+    if ((mModel->type() == AnalyserModel::Type::ODE)
+        && !mUsedProfile->implementationCreateStatesArrayMethodString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->implementationCreateStatesArrayMethodString();
+                 + mUsedProfile->implementationCreateStatesArrayMethodString();
     }
 }
 
 void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode()
 {
-    if (!mLockedProfile->implementationCreateVariablesArrayMethodString().empty()) {
+    if (!mUsedProfile->implementationCreateVariablesArrayMethodString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->implementationCreateVariablesArrayMethodString();
+                 + mUsedProfile->implementationCreateVariablesArrayMethodString();
     }
 }
 
 void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
 {
-    if (!mLockedProfile->implementationDeleteArrayMethodString().empty()) {
+    if (!mUsedProfile->implementationDeleteArrayMethodString().empty()) {
         mCode += newLineIfNeeded()
-                 + mLockedProfile->implementationDeleteArrayMethodString();
+                 + mUsedProfile->implementationDeleteArrayMethodString();
     }
 }
 
 std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody) const
 {
     return methodBody.empty() ?
-               mLockedProfile->emptyMethodString().empty() ?
+               mUsedProfile->emptyMethodString().empty() ?
                "" :
-               mLockedProfile->indentString() + mLockedProfile->emptyMethodString() :
+               mUsedProfile->indentString() + mUsedProfile->emptyMethodString() :
                methodBody;
 }
 
@@ -747,7 +742,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
 
     index << analyserInitialValueVariable->index();
 
-    return mLockedProfile->variablesArrayString() + mLockedProfile->openArrayString() + index.str() + mLockedProfile->closeArrayString();
+    return mUsedProfile->variablesArrayString() + mUsedProfile->openArrayString() + index.str() + mUsedProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
@@ -758,14 +753,14 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
     // analyser, in which case we just want to return the original name of the
     // variable.
 
-    if (mLockedModel == nullptr) {
+    if (mModel == nullptr) {
         return variable->name();
     }
 
     auto analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
 
     if (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
-        return mLockedProfile->voiString();
+        return mUsedProfile->voiString();
     }
 
     std::string arrayName;
@@ -774,21 +769,21 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
         auto astParent = (ast != nullptr) ? ast->parent() : nullptr;
 
         arrayName = ((astParent != nullptr) && (astParent->type() == AnalyserEquationAst::Type::DIFF)) ?
-                        mLockedProfile->ratesArrayString() :
-                        mLockedProfile->statesArrayString();
+                        mUsedProfile->ratesArrayString() :
+                        mUsedProfile->statesArrayString();
     } else {
-        arrayName = mLockedProfile->variablesArrayString();
+        arrayName = mUsedProfile->variablesArrayString();
     }
 
     std::ostringstream index;
 
     index << analyserVariable->index();
 
-    return arrayName + mLockedProfile->openArrayString() + index.str() + mLockedProfile->closeArrayString();
+    return arrayName + mUsedProfile->openArrayString() + index.str() + mUsedProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
-                                                           const AnalyserEquationAstPtr &ast) const
+                                                           const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the left and right branches of the given AST.
 
@@ -1065,7 +1060,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     return astLeftChildCode + op + astRightChildCode;
 }
 
-std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const
+std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the left branch of the given AST.
 
@@ -1082,17 +1077,17 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
         code = "(" + code + ")";
     }
 
-    return mLockedProfile->minusString() + code;
+    return mUsedProfile->minusString() + code;
 }
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
-                                                                       const AnalyserEquationAstPtr &ast) const
+                                                                       const AnalyserEquationAstPtr &ast)
 {
     return function + "(" + generateCode(ast->leftChild()) + ")";
 }
 
 std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std::string &function,
-                                                                       const AnalyserEquationAstPtr &ast) const
+                                                                       const AnalyserEquationAstPtr &ast)
 {
     return function + "(" + generateCode(ast->leftChild()) + ", " + generateCode(ast->rightChild()) + ")";
 }
@@ -1100,22 +1095,22 @@ std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
                                                               const std::string &value) const
 {
-    return replace(replace(mLockedProfile->hasConditionalOperator() ?
-                               mLockedProfile->conditionalOperatorIfString() :
-                               mLockedProfile->piecewiseIfString(),
+    return replace(replace(mUsedProfile->hasConditionalOperator() ?
+                               mUsedProfile->conditionalOperatorIfString() :
+                               mUsedProfile->piecewiseIfString(),
                            "[CONDITION]", condition),
                    "[IF_STATEMENT]", value);
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value) const
 {
-    return replace(mLockedProfile->hasConditionalOperator() ?
-                       mLockedProfile->conditionalOperatorElseString() :
-                       mLockedProfile->piecewiseElseString(),
+    return replace(mUsedProfile->hasConditionalOperator() ?
+                       mUsedProfile->conditionalOperatorElseString() :
+                       mUsedProfile->piecewiseElseString(),
                    "[ELSE_STATEMENT]", value);
 }
 
-std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast) const
+std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the given AST.
     // Note: we don't handle the case of AnalyserEquationAst::Type::BVAR since
@@ -1124,98 +1119,100 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     std::string code;
     auto astType = ast->type();
 
+    mUsedProfile = profile();
+
     if (astType == AnalyserEquationAst::Type::ASSIGNMENT) {
-        code = generateOperatorCode(mLockedProfile->assignmentString(), ast);
+        code = generateOperatorCode(mUsedProfile->assignmentString(), ast);
     } else if (astType == AnalyserEquationAst::Type::EQ) {
-        if (mLockedProfile->hasEqOperator()) {
-            code = generateOperatorCode(mLockedProfile->eqString(), ast);
+        if (mUsedProfile->hasEqOperator()) {
+            code = generateOperatorCode(mUsedProfile->eqString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->eqString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->eqString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::NEQ) {
-        if (mLockedProfile->hasNeqOperator()) {
-            code = generateOperatorCode(mLockedProfile->neqString(), ast);
+        if (mUsedProfile->hasNeqOperator()) {
+            code = generateOperatorCode(mUsedProfile->neqString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->neqString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->neqString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::LT) {
-        if (mLockedProfile->hasLtOperator()) {
-            code = generateOperatorCode(mLockedProfile->ltString(), ast);
+        if (mUsedProfile->hasLtOperator()) {
+            code = generateOperatorCode(mUsedProfile->ltString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->ltString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->ltString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::LEQ) {
-        if (mLockedProfile->hasLeqOperator()) {
-            code = generateOperatorCode(mLockedProfile->leqString(), ast);
+        if (mUsedProfile->hasLeqOperator()) {
+            code = generateOperatorCode(mUsedProfile->leqString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->leqString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->leqString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::GT) {
-        if (mLockedProfile->hasGtOperator()) {
-            code = generateOperatorCode(mLockedProfile->gtString(), ast);
+        if (mUsedProfile->hasGtOperator()) {
+            code = generateOperatorCode(mUsedProfile->gtString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->gtString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->gtString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::GEQ) {
-        if (mLockedProfile->hasGeqOperator()) {
-            code = generateOperatorCode(mLockedProfile->geqString(), ast);
+        if (mUsedProfile->hasGeqOperator()) {
+            code = generateOperatorCode(mUsedProfile->geqString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->geqString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->geqString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::AND) {
-        if (mLockedProfile->hasAndOperator()) {
-            code = generateOperatorCode(mLockedProfile->andString(), ast);
+        if (mUsedProfile->hasAndOperator()) {
+            code = generateOperatorCode(mUsedProfile->andString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->andString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->andString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::OR) {
-        if (mLockedProfile->hasOrOperator()) {
-            code = generateOperatorCode(mLockedProfile->orString(), ast);
+        if (mUsedProfile->hasOrOperator()) {
+            code = generateOperatorCode(mUsedProfile->orString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->orString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->orString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::XOR) {
-        if (mLockedProfile->hasXorOperator()) {
-            code = generateOperatorCode(mLockedProfile->xorString(), ast);
+        if (mUsedProfile->hasXorOperator()) {
+            code = generateOperatorCode(mUsedProfile->xorString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mLockedProfile->xorString(), ast);
+            code = generateTwoParameterFunctionCode(mUsedProfile->xorString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::NOT) {
-        if (mLockedProfile->hasNotOperator()) {
-            code = mLockedProfile->notString() + generateCode(ast->leftChild());
+        if (mUsedProfile->hasNotOperator()) {
+            code = mUsedProfile->notString() + generateCode(ast->leftChild());
         } else {
-            code = generateOneParameterFunctionCode(mLockedProfile->notString(), ast);
+            code = generateOneParameterFunctionCode(mUsedProfile->notString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::PLUS) {
         if (ast->rightChild() != nullptr) {
-            code = generateOperatorCode(mLockedProfile->plusString(), ast);
+            code = generateOperatorCode(mUsedProfile->plusString(), ast);
         } else {
             code = generateCode(ast->leftChild());
         }
     } else if (astType == AnalyserEquationAst::Type::MINUS) {
         if (ast->rightChild() != nullptr) {
-            code = generateOperatorCode(mLockedProfile->minusString(), ast);
+            code = generateOperatorCode(mUsedProfile->minusString(), ast);
         } else {
             code = generateMinusUnaryCode(ast);
         }
     } else if (astType == AnalyserEquationAst::Type::TIMES) {
-        code = generateOperatorCode(mLockedProfile->timesString(), ast);
+        code = generateOperatorCode(mUsedProfile->timesString(), ast);
     } else if (astType == AnalyserEquationAst::Type::DIVIDE) {
-        code = generateOperatorCode(mLockedProfile->divideString(), ast);
+        code = generateOperatorCode(mUsedProfile->divideString(), ast);
     } else if (astType == AnalyserEquationAst::Type::POWER) {
         auto stringValue = generateCode(ast->rightChild());
         bool validConversion;
         double doubleValue = convertToDouble(stringValue, &validConversion);
 
         if (validConversion && areEqual(doubleValue, 0.5)) {
-            code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
+            code = generateOneParameterFunctionCode(mUsedProfile->squareRootString(), ast);
         } else if (validConversion && areEqual(doubleValue, 2.0)
-                   && !mLockedProfile->squareString().empty()) {
-            code = generateOneParameterFunctionCode(mLockedProfile->squareString(), ast);
+                   && !mUsedProfile->squareString().empty()) {
+            code = generateOneParameterFunctionCode(mUsedProfile->squareString(), ast);
         } else {
-            code = mLockedProfile->hasPowerOperator() ?
-                       generateOperatorCode(mLockedProfile->powerString(), ast) :
-                       mLockedProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
+            code = mUsedProfile->hasPowerOperator() ?
+                       generateOperatorCode(mUsedProfile->powerString(), ast) :
+                       mUsedProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
         }
     } else if (astType == AnalyserEquationAst::Type::ROOT) {
         auto astRightChild = ast->rightChild();
@@ -1227,10 +1224,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
             double doubleValue = convertToDouble(generateCode(astLeftChild), &validConversion);
 
             if (validConversion && areEqual(doubleValue, 2.0)) {
-                code = mLockedProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
+                code = mUsedProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
             } else {
-                if (mLockedProfile->hasPowerOperator()) {
-                    code = generateOperatorCode(mLockedProfile->powerString(), ast);
+                if (mUsedProfile->hasPowerOperator()) {
+                    code = generateOperatorCode(mUsedProfile->powerString(), ast);
                 } else {
                     auto rootValueAst = AnalyserEquationAst::create();
 
@@ -1246,18 +1243,18 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                     rootValueAst->setLeftChild(leftChild);
                     rootValueAst->setRightChild(astLeftChild->leftChild());
 
-                    code = mLockedProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mLockedProfile->divideString(), rootValueAst) + ")";
+                    code = mUsedProfile->powerString() + "(" + generateCode(astRightChild) + ", " + generateOperatorCode(mUsedProfile->divideString(), rootValueAst) + ")";
                 }
             }
         } else {
-            code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
+            code = generateOneParameterFunctionCode(mUsedProfile->squareRootString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::ABS) {
-        code = generateOneParameterFunctionCode(mLockedProfile->absoluteValueString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->absoluteValueString(), ast);
     } else if (astType == AnalyserEquationAst::Type::EXP) {
-        code = generateOneParameterFunctionCode(mLockedProfile->exponentialString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->exponentialString(), ast);
     } else if (astType == AnalyserEquationAst::Type::LN) {
-        code = generateOneParameterFunctionCode(mLockedProfile->naturalLogarithmString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->naturalLogarithmString(), ast);
     } else if (astType == AnalyserEquationAst::Type::LOG) {
         auto astRightChild = ast->rightChild();
 
@@ -1267,84 +1264,84 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
             double doubleValue = convertToDouble(stringValue, &validConversion);
 
             if (validConversion && areEqual(doubleValue, 10.0)) {
-                code = mLockedProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
+                code = mUsedProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
             } else {
-                code = mLockedProfile->naturalLogarithmString() + "(" + generateCode(astRightChild) + ")/" + mLockedProfile->naturalLogarithmString() + "(" + stringValue + ")";
+                code = mUsedProfile->naturalLogarithmString() + "(" + generateCode(astRightChild) + ")/" + mUsedProfile->naturalLogarithmString() + "(" + stringValue + ")";
             }
         } else {
-            code = generateOneParameterFunctionCode(mLockedProfile->commonLogarithmString(), ast);
+            code = generateOneParameterFunctionCode(mUsedProfile->commonLogarithmString(), ast);
         }
     } else if (astType == AnalyserEquationAst::Type::CEILING) {
-        code = generateOneParameterFunctionCode(mLockedProfile->ceilingString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->ceilingString(), ast);
     } else if (astType == AnalyserEquationAst::Type::FLOOR) {
-        code = generateOneParameterFunctionCode(mLockedProfile->floorString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->floorString(), ast);
     } else if (astType == AnalyserEquationAst::Type::MIN) {
-        code = generateTwoParameterFunctionCode(mLockedProfile->minString(), ast);
+        code = generateTwoParameterFunctionCode(mUsedProfile->minString(), ast);
     } else if (astType == AnalyserEquationAst::Type::MAX) {
-        code = generateTwoParameterFunctionCode(mLockedProfile->maxString(), ast);
+        code = generateTwoParameterFunctionCode(mUsedProfile->maxString(), ast);
     } else if (astType == AnalyserEquationAst::Type::REM) {
-        code = generateTwoParameterFunctionCode(mLockedProfile->remString(), ast);
+        code = generateTwoParameterFunctionCode(mUsedProfile->remString(), ast);
     } else if (astType == AnalyserEquationAst::Type::DIFF) {
         code = generateCode(ast->rightChild());
     } else if (astType == AnalyserEquationAst::Type::SIN) {
-        code = generateOneParameterFunctionCode(mLockedProfile->sinString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->sinString(), ast);
     } else if (astType == AnalyserEquationAst::Type::COS) {
-        code = generateOneParameterFunctionCode(mLockedProfile->cosString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->cosString(), ast);
     } else if (astType == AnalyserEquationAst::Type::TAN) {
-        code = generateOneParameterFunctionCode(mLockedProfile->tanString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->tanString(), ast);
     } else if (astType == AnalyserEquationAst::Type::SEC) {
-        code = generateOneParameterFunctionCode(mLockedProfile->secString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->secString(), ast);
     } else if (astType == AnalyserEquationAst::Type::CSC) {
-        code = generateOneParameterFunctionCode(mLockedProfile->cscString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->cscString(), ast);
     } else if (astType == AnalyserEquationAst::Type::COT) {
-        code = generateOneParameterFunctionCode(mLockedProfile->cotString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->cotString(), ast);
     } else if (astType == AnalyserEquationAst::Type::SINH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->sinhString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->sinhString(), ast);
     } else if (astType == AnalyserEquationAst::Type::COSH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->coshString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->coshString(), ast);
     } else if (astType == AnalyserEquationAst::Type::TANH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->tanhString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->tanhString(), ast);
     } else if (astType == AnalyserEquationAst::Type::SECH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->sechString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->sechString(), ast);
     } else if (astType == AnalyserEquationAst::Type::CSCH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->cschString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->cschString(), ast);
     } else if (astType == AnalyserEquationAst::Type::COTH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->cothString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->cothString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ASIN) {
-        code = generateOneParameterFunctionCode(mLockedProfile->asinString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->asinString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ACOS) {
-        code = generateOneParameterFunctionCode(mLockedProfile->acosString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->acosString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ATAN) {
-        code = generateOneParameterFunctionCode(mLockedProfile->atanString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->atanString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ASEC) {
-        code = generateOneParameterFunctionCode(mLockedProfile->asecString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->asecString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ACSC) {
-        code = generateOneParameterFunctionCode(mLockedProfile->acscString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->acscString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ACOT) {
-        code = generateOneParameterFunctionCode(mLockedProfile->acotString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->acotString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ASINH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->asinhString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->asinhString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ACOSH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->acoshString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->acoshString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ATANH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->atanhString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->atanhString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ASECH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->asechString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->asechString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ACSCH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->acschString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->acschString(), ast);
     } else if (astType == AnalyserEquationAst::Type::ACOTH) {
-        code = generateOneParameterFunctionCode(mLockedProfile->acothString(), ast);
+        code = generateOneParameterFunctionCode(mUsedProfile->acothString(), ast);
     } else if (astType == AnalyserEquationAst::Type::PIECEWISE) {
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
             if (astRightChild->type() == AnalyserEquationAst::Type::PIECE) {
-                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(astRightChild) + generatePiecewiseElseCode(mLockedProfile->nanString()));
+                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(astRightChild) + generatePiecewiseElseCode(mUsedProfile->nanString()));
             } else {
                 code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(astRightChild));
             }
         } else {
-            code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mLockedProfile->nanString());
+            code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mUsedProfile->nanString());
         }
     } else if (astType == AnalyserEquationAst::Type::PIECE) {
         code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
@@ -1358,17 +1355,17 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                || (astType == AnalyserEquationAst::Type::LOGBASE)) {
         code = generateCode(ast->leftChild());
     } else if (astType == AnalyserEquationAst::Type::TRUE) {
-        code = mLockedProfile->trueString();
+        code = mUsedProfile->trueString();
     } else if (astType == AnalyserEquationAst::Type::FALSE) {
-        code = mLockedProfile->falseString();
+        code = mUsedProfile->falseString();
     } else if (astType == AnalyserEquationAst::Type::E) {
-        code = mLockedProfile->eString();
+        code = mUsedProfile->eString();
     } else if (astType == AnalyserEquationAst::Type::PI) {
-        code = mLockedProfile->piString();
+        code = mUsedProfile->piString();
     } else if (astType == AnalyserEquationAst::Type::INF) {
-        code = mLockedProfile->infString();
+        code = mUsedProfile->infString();
     } else { // AnalyserEquationAst::Type::NAN.
-        code = mLockedProfile->nanString();
+        code = mUsedProfile->nanString();
     }
 
     return code;
@@ -1381,17 +1378,17 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
     std::string scalingFactorCode;
 
     if (!areNearlyEqual(scalingFactor, 1.0)) {
-        scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mLockedProfile->timesString();
+        scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mUsedProfile->timesString();
     }
 
-    return mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+    return mUsedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
            + scalingFactorCode + generateDoubleOrConstantVariableNameCode(initialisingVariable)
-           + mLockedProfile->commandSeparatorString() + "\n";
+           + mUsedProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
-                                                           bool forComputeVariables) const
+                                                           bool forComputeVariables)
 {
     std::string res;
 
@@ -1416,12 +1413,12 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
             index << variable->index();
 
-            res += mLockedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
-                   + replace(mLockedProfile->externalVariableMethodCallString(mLockedModel->type() == AnalyserModel::Type::ODE),
+            res += mUsedProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+                   + replace(mUsedProfile->externalVariableMethodCallString(mModel->type() == AnalyserModel::Type::ODE),
                              "[INDEX]", index.str())
-                   + mLockedProfile->commandSeparatorString() + "\n";
+                   + mUsedProfile->commandSeparatorString() + "\n";
         } else {
-            res += mLockedProfile->indentString() + generateCode(equation->ast()) + mLockedProfile->commandSeparatorString() + "\n";
+            res += mUsedProfile->indentString() + generateCode(equation->ast()) + mUsedProfile->commandSeparatorString() + "\n";
         }
 
         remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
@@ -1432,27 +1429,27 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
-    auto interfaceInitialiseVariablesMethodString = mLockedProfile->interfaceInitialiseVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
-                                                                                                             mLockedModel->hasExternalVariables());
+    auto interfaceInitialiseVariablesMethodString = mUsedProfile->interfaceInitialiseVariablesMethodString(mModel->type() == AnalyserModel::Type::ODE,
+                                                                                                           mModel->hasExternalVariables());
     std::string interfaceComputeModelMethodsCode;
 
     if (!interfaceInitialiseVariablesMethodString.empty()) {
         interfaceComputeModelMethodsCode += interfaceInitialiseVariablesMethodString;
     }
 
-    if (!mLockedProfile->interfaceComputeComputedConstantsMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mLockedProfile->interfaceComputeComputedConstantsMethodString();
+    if (!mUsedProfile->interfaceComputeComputedConstantsMethodString().empty()) {
+        interfaceComputeModelMethodsCode += mUsedProfile->interfaceComputeComputedConstantsMethodString();
     }
 
-    auto interfaceComputeRatesMethodString = mLockedProfile->interfaceComputeRatesMethodString(mLockedModel->hasExternalVariables());
+    auto interfaceComputeRatesMethodString = mUsedProfile->interfaceComputeRatesMethodString(mModel->hasExternalVariables());
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if ((mModel->type() == AnalyserModel::Type::ODE)
         && !interfaceComputeRatesMethodString.empty()) {
         interfaceComputeModelMethodsCode += interfaceComputeRatesMethodString;
     }
 
-    auto interfaceComputeVariablesMethodString = mLockedProfile->interfaceComputeVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
-                                                                                                       mLockedModel->hasExternalVariables());
+    auto interfaceComputeVariablesMethodString = mUsedProfile->interfaceComputeVariablesMethodString(mModel->type() == AnalyserModel::Type::ODE,
+                                                                                                     mModel->hasExternalVariables());
 
     if (!interfaceComputeVariablesMethodString.empty()) {
         interfaceComputeModelMethodsCode += interfaceComputeVariablesMethodString;
@@ -1467,37 +1464,37 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 
 void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    auto implementationInitialiseVariablesMethodString = mLockedProfile->implementationInitialiseVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
-                                                                                                                       mLockedModel->hasExternalVariables());
+    auto implementationInitialiseVariablesMethodString = mUsedProfile->implementationInitialiseVariablesMethodString(mModel->type() == AnalyserModel::Type::ODE,
+                                                                                                                     mModel->hasExternalVariables());
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
         std::string methodBody;
 
-        for (const auto &variable : mLockedModel->variables()) {
+        for (const auto &variable : mModel->variables()) {
             if (variable->type() == AnalyserVariable::Type::CONSTANT) {
                 methodBody += generateInitialisationCode(variable);
             }
         }
 
-        for (const auto &equation : mLockedModel->equations()) {
+        for (const auto &equation : mModel->equations()) {
             if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
-        for (const auto &state : mLockedModel->states()) {
+        for (const auto &state : mModel->states()) {
             methodBody += generateInitialisationCode(state);
         }
 
-        if (mLockedModel->hasExternalVariables()) {
-            auto equations = mLockedModel->equations();
+        if (mModel->hasExternalVariables()) {
+            auto equations = mModel->equations();
             std::vector<AnalyserEquationPtr> remainingExternalEquations;
 
             std::copy_if(equations.begin(), equations.end(),
                          std::back_inserter(remainingExternalEquations),
                          [](const AnalyserEquationPtr &equation) { return equation->type() == AnalyserEquation::Type::EXTERNAL; });
 
-            for (const auto &equation : mLockedModel->equations()) {
+            for (const auto &equation : mModel->equations()) {
                 if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
                     methodBody += generateEquationCode(equation, remainingExternalEquations);
                 }
@@ -1512,30 +1509,30 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
 
 void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    if (!mLockedProfile->implementationComputeComputedConstantsMethodString().empty()) {
+    if (!mUsedProfile->implementationComputeComputedConstantsMethodString().empty()) {
         std::string methodBody;
 
-        for (const auto &equation : mLockedModel->equations()) {
+        for (const auto &equation : mModel->equations()) {
             if (equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
         mCode += newLineIfNeeded()
-                 + replace(mLockedProfile->implementationComputeComputedConstantsMethodString(),
+                 + replace(mUsedProfile->implementationComputeComputedConstantsMethodString(),
                            "[CODE]", generateMethodBodyCode(methodBody));
     }
 }
 
 void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    auto implementationComputeRatesMethodString = mLockedProfile->implementationComputeRatesMethodString(mLockedModel->hasExternalVariables());
+    auto implementationComputeRatesMethodString = mUsedProfile->implementationComputeRatesMethodString(mModel->hasExternalVariables());
 
-    if ((mLockedModel->type() == AnalyserModel::Type::ODE)
+    if ((mModel->type() == AnalyserModel::Type::ODE)
         && !implementationComputeRatesMethodString.empty()) {
         std::string methodBody;
 
-        for (const auto &equation : mLockedModel->equations()) {
+        for (const auto &equation : mModel->equations()) {
             if (equation->type() == AnalyserEquation::Type::RATE) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
@@ -1549,12 +1546,12 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
 
 void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    auto implementationComputeVariablesMethodString = mLockedProfile->implementationComputeVariablesMethodString(mLockedModel->type() == AnalyserModel::Type::ODE,
-                                                                                                                 mLockedModel->hasExternalVariables());
+    auto implementationComputeVariablesMethodString = mUsedProfile->implementationComputeVariablesMethodString(mModel->type() == AnalyserModel::Type::ODE,
+                                                                                                               mModel->hasExternalVariables());
 
     if (!implementationComputeVariablesMethodString.empty()) {
         std::string methodBody;
-        auto equations = mLockedModel->equations();
+        auto equations = mModel->equations();
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
 
         for (const auto &equation : equations) {
@@ -1590,11 +1587,7 @@ GeneratorPtr Generator::create() noexcept
 
 GeneratorProfilePtr Generator::profile()
 {
-    if (mPimpl->mOwnedProfile != nullptr) {
-        return mPimpl->mOwnedProfile;
-    }
-
-    return mPimpl->mProfile.lock();
+    return mPimpl->profile();
 }
 
 void Generator::setProfile(const GeneratorProfilePtr &profile)
@@ -1605,7 +1598,7 @@ void Generator::setProfile(const GeneratorProfilePtr &profile)
 
 AnalyserModelPtr Generator::model()
 {
-    return mPimpl->mModel.lock();
+    return mPimpl->mModel;
 }
 
 void Generator::setModel(const AnalyserModelPtr &model)
@@ -1613,13 +1606,14 @@ void Generator::setModel(const AnalyserModelPtr &model)
     mPimpl->mModel = model;
 }
 
-std::string Generator::interfaceCode() const
+std::string Generator::interfaceCode()
 {
-    if (!mPimpl->retrieveLockedModelAndProfile()
-        || !mPimpl->mLockedModel->isValid()
-        || !mPimpl->mLockedProfile->hasInterface()) {
-        mPimpl->resetLockedModelAndProfile();
+    mPimpl->mUsedProfile = profile();
 
+    if ((mPimpl->mModel == nullptr)
+        || (mPimpl->mUsedProfile == nullptr)
+        || !mPimpl->mModel->isValid()
+        || !mPimpl->mUsedProfile->hasInterface()) {
         return {};
     }
 
@@ -1663,17 +1657,16 @@ std::string Generator::interfaceCode() const
 
     mPimpl->addInterfaceComputeModelMethodsCode();
 
-    mPimpl->resetLockedModelAndProfile();
-
     return mPimpl->mCode;
 }
 
-std::string Generator::implementationCode() const
+std::string Generator::implementationCode()
 {
-    if (!mPimpl->retrieveLockedModelAndProfile()
-        || !mPimpl->mLockedModel->isValid()) {
-        mPimpl->resetLockedModelAndProfile();
+    mPimpl->mUsedProfile = profile();
 
+    if ((mPimpl->mModel == nullptr)
+        || (mPimpl->mUsedProfile == nullptr)
+        || !mPimpl->mModel->isValid()) {
         return {};
     }
 
@@ -1698,7 +1691,7 @@ std::string Generator::implementationCode() const
 
     // Add code for the variable information related objects.
 
-    if (!mPimpl->mLockedProfile->hasInterface()) {
+    if (!mPimpl->mUsedProfile->hasInterface()) {
         mPimpl->addVariableTypeObjectCode();
         mPimpl->addVariableInfoObjectCode();
     }
@@ -1723,7 +1716,7 @@ std::string Generator::implementationCode() const
 
     // Add code for the implementation to initialise our variables.
 
-    auto equations = mPimpl->mLockedModel->equations();
+    auto equations = mPimpl->mModel->equations();
     std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
 
     mPimpl->addImplementationInitialiseVariablesMethodCode(remainingEquations);
@@ -1746,8 +1739,6 @@ std::string Generator::implementationCode() const
     //       states/rates are up to date.
 
     mPimpl->addImplementationComputeVariablesMethodCode(remainingEquations);
-
-    mPimpl->resetLockedModelAndProfile();
 
     return mPimpl->mCode;
 }

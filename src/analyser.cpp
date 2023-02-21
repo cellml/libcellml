@@ -380,10 +380,9 @@ public:
     GeneratorPtr mGenerator = libcellml::Generator::create();
 
     std::map<std::string, UnitsPtr> mStandardUnits;
-    std::map<AnalyserEquationAstPtr, UnitsWeakPtr> mCiCnUnits;
+    std::map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;
 
     AnalyserImpl();
-    ~AnalyserImpl();
 
     static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
                                                    const AnalyserInternalVariablePtr &variable2);
@@ -517,17 +516,6 @@ Analyser::AnalyserImpl::AnalyserImpl()
     profile->setPiString("pi");
     profile->setInfString("infinity");
     profile->setNanString("notanumber");
-
-    // Retrieve our generator's profile.
-
-    mGenerator->mPimpl->retrieveLockedModelAndProfile();
-}
-
-Analyser::AnalyserImpl::~AnalyserImpl()
-{
-    // Reset our generator's profile.
-
-    mGenerator->mPimpl->resetLockedModelAndProfile();
 }
 
 bool Analyser::AnalyserImpl::compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
@@ -1845,7 +1833,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
-        auto units = mCiCnUnits[ast].lock();
+        auto units = mCiCnUnits[ast];
         auto model = owningModel(units);
 
         defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);

@@ -91,7 +91,7 @@ bool AnalyserEquation::isStateRateBased() const
 
 AnalyserVariablePtr AnalyserEquation::variable() const
 {
-    return mPimpl->mVariable.lock();
+    return mPimpl->mVariable;
 }
 
 } // namespace libcellml

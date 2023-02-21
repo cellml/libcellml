@@ -22,9 +22,6 @@ limitations under the License.
 
 namespace libcellml {
 
-using AnalyserModelWeakPtr = std::weak_ptr<AnalyserModel>; /**< Type definition for weak analyser model pointer. */
-using GeneratorProfileWeakPtr = std::weak_ptr<GeneratorProfile>; /**< Type definition for weak generator profile pointer. */
-
 /**
  * @brief The Generator::GeneratorImpl struct.
  *
@@ -34,17 +31,15 @@ struct Generator::GeneratorImpl
 {
     Generator *mGenerator = nullptr;
 
-    AnalyserModelWeakPtr mModel;
-    AnalyserModelPtr mLockedModel;
+    AnalyserModelPtr mModel;
 
     std::string mCode;
 
     GeneratorProfilePtr mOwnedProfile = GeneratorProfile::create();
-    GeneratorProfileWeakPtr mProfile;
-    GeneratorProfilePtr mLockedProfile;
+    GeneratorProfilePtr mProfile;
+    GeneratorProfilePtr mUsedProfile;
 
-    bool retrieveLockedModelAndProfile();
-    void resetLockedModelAndProfile();
+    GeneratorProfilePtr profile() const;
 
     AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
@@ -113,21 +108,21 @@ struct Generator::GeneratorImpl
                                          const AnalyserEquationAstPtr &ast = nullptr) const;
 
     std::string generateOperatorCode(const std::string &op,
-                                     const AnalyserEquationAstPtr &ast) const;
-    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const;
+                                     const AnalyserEquationAstPtr &ast);
+    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast);
     std::string generateOneParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast) const;
+                                                 const AnalyserEquationAstPtr &ast);
     std::string generateTwoParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast) const;
+                                                 const AnalyserEquationAstPtr &ast);
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
-    std::string generateCode(const AnalyserEquationAstPtr &ast) const;
+    std::string generateCode(const AnalyserEquationAstPtr &ast);
 
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool forComputeVariables = false) const;
+                                     bool forComputeVariables = false);
 
     void addInterfaceComputeModelMethodsCode();
     void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
