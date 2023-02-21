@@ -2146,3 +2146,28 @@ TEST(Generator, sineImports)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/sine_model_imports/model.py"), generator->implementationCode());
 }
+
+TEST(Generator, analyserModelScopeTest)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    libcellml::AnalyserModelPtr analyserModel = nullptr;
+
+    {
+        auto analyser = libcellml::Analyser::create();
+
+        analyser->analyseModel(model);
+
+        EXPECT_EQ(size_t(0), analyser->errorCount());
+
+        analyserModel = analyser->model();
+    }
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+}
