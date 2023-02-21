@@ -360,9 +360,7 @@ void Variable::setInterfaceType(const std::string &interfaceType)
 
 void Variable::setInterfaceType(Variable::InterfaceType interfaceType)
 {
-    auto search = interfaceTypeToString.find(interfaceType);
-    const std::string interfaceTypeString = search->second;
-    setInterfaceType(interfaceTypeString);
+    setInterfaceType(interfaceTypeToString.at(interfaceType));
 }
 
 std::string Variable::interfaceType() const
@@ -380,12 +378,12 @@ bool Variable::hasInterfaceType(InterfaceType interfaceType) const
     if (interfaceType == Variable::InterfaceType::NONE && pFunc()->mInterfaceType.empty()) {
         return true;
     }
-    return pFunc()->mInterfaceType == interfaceTypeToString.find(interfaceType)->second;
+    return pFunc()->mInterfaceType == interfaceTypeToString.at(interfaceType);
 }
 
 bool Variable::permitsInterfaceType(InterfaceType interfaceType) const
 {
-    std::string testString = interfaceTypeToString.find(interfaceType)->second;
+    std::string testString = interfaceTypeToString.at(interfaceType);
 
     if (testString == "none") {
         return true;

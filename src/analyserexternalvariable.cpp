@@ -16,9 +16,8 @@ limitations under the License.
 
 #include "libcellml/analyserexternalvariable.h"
 
-#include "libcellml/component.h"
-
 #include "analyserexternalvariable_p.h"
+#include "commonutils.h"
 #include "utilities.h"
 
 namespace libcellml {
