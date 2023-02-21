@@ -70,7 +70,7 @@ AnalyserEquation::Type AnalyserEquation::type() const
 
 AnalyserEquationAstPtr AnalyserEquation::ast() const
 {
-    return mPimpl->mAst.lock();
+    return mPimpl->mAst;
 }
 
 std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const

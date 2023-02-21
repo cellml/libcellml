@@ -32,7 +32,7 @@ using AnalyserVariableWeakPtr = std::weak_ptr<AnalyserVariable>; /**< Type defin
 struct AnalyserEquation::AnalyserEquationImpl
 {
     AnalyserEquation::Type mType = AnalyserEquation::Type::ALGEBRAIC;
-    AnalyserEquationAstWeakPtr mAst;
+    AnalyserEquationAstPtr mAst;
     std::vector<AnalyserEquationWeakPtr> mDependencies;
     bool mIsStateRateBased = false;
     AnalyserVariableWeakPtr mVariable;
