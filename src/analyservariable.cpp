@@ -55,29 +55,15 @@ AnalyserVariable::Type AnalyserVariable::type() const
 
 std::string AnalyserVariable::typeAsString() const
 {
-    if (mPimpl->mType == Type::VARIABLE_OF_INTEGRATION) {
-        return "VARIABLE_OF_INTEGRATION";
-    }
+    static const std::map<AnalyserVariable::Type, std::string> typeToString = {
+        {Type::VARIABLE_OF_INTEGRATION, "VARIABLE_OF_INTEGRATION"},
+        {Type::STATE, "STATE"},
+        {Type::CONSTANT, "CONSTANT"},
+        {Type::COMPUTED_CONSTANT, "COMPUTED_CONSTANT"},
+        {Type::ALGEBRAIC, "ALGEBRAIC"},
+        {Type::EXTERNAL, "EXTERNAL"}};
 
-    if (mPimpl->mType == Type::STATE) {
-        return "STATE";
-    }
-
-    if (mPimpl->mType == Type::CONSTANT) {
-        return "CONSTANT";
-    }
-
-    if (mPimpl->mType == Type::COMPUTED_CONSTANT) {
-        return "COMPUTED_CONSTANT";
-    }
-
-    if (mPimpl->mType == Type::ALGEBRAIC) {
-        return "ALGEBRAIC";
-    }
-
-    // mPimpl->mType == Type::EXTERNAL.
-
-    return "EXTERNAL";
+    return typeToString.at(mPimpl->mType);
 }
 
 size_t AnalyserVariable::index() const
