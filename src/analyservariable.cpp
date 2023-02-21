@@ -53,7 +53,7 @@ AnalyserVariable::Type AnalyserVariable::type() const
     return mPimpl->mType;
 }
 
-std::string AnalyserVariable::typeAsString() const
+std::string AnalyserVariable::typeAsString(Type type)
 {
     static const std::map<AnalyserVariable::Type, std::string> typeToString = {
         {Type::VARIABLE_OF_INTEGRATION, "VARIABLE_OF_INTEGRATION"},
@@ -63,7 +63,7 @@ std::string AnalyserVariable::typeAsString() const
         {Type::ALGEBRAIC, "ALGEBRAIC"},
         {Type::EXTERNAL, "EXTERNAL"}};
 
-    return typeToString.at(mPimpl->mType);
+    return typeToString.at(type);
 }
 
 size_t AnalyserVariable::index() const

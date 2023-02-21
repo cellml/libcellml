@@ -279,7 +279,7 @@ TEST(Coverage, analyser)
     EXPECT_FALSE(analyserModel->isValid());
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNKNOWN, analyserModel->type());
-    EXPECT_EQ("UNKNOWN", analyserModel->typeAsString());
+    EXPECT_EQ("UNKNOWN", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(nullptr, analyserModel->voi());
 
@@ -359,7 +359,7 @@ TEST(Coverage, analyserExternalVariable)
 void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
 {
     if (ast != nullptr) {
-        ast->typeAsString();
+        libcellml::AnalyserEquationAst::typeAsString(ast->type());
 
         checkAstTypeAsString(ast->leftChild());
         checkAstTypeAsString(ast->rightChild());
@@ -384,7 +384,7 @@ TEST(Generator, coverage)
     auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
-    EXPECT_EQ("ODE", analyserModel->typeAsString());
+    EXPECT_EQ("ODE", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
     EXPECT_EQ(size_t(203), analyserModel->variableCount());

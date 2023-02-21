@@ -69,7 +69,7 @@ AnalyserEquationAst::Type AnalyserEquationAst::type() const
     return mPimpl->mType;
 }
 
-std::string AnalyserEquationAst::typeAsString() const
+std::string AnalyserEquationAst::typeAsString(Type type)
 {
     static const std::map<AnalyserEquationAst::Type, std::string> typeToString = {
         {Type::ASSIGNMENT, "ASSIGNMENT"},
@@ -138,7 +138,7 @@ std::string AnalyserEquationAst::typeAsString() const
         {Type::INF, "INF"},
         {Type::NAN, "NAN"}};
 
-    return typeToString.at(mPimpl->mType);
+    return typeToString.at(type);
 }
 
 void AnalyserEquationAst::setType(Type type)

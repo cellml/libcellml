@@ -47,7 +47,7 @@ AnalyserModel::Type AnalyserModel::type() const
     return mPimpl->mType;
 }
 
-std::string AnalyserModel::typeAsString() const
+std::string AnalyserModel::typeAsString(Type type)
 {
     static const std::map<AnalyserModel::Type, std::string> typeToString = {
         {Type::UNKNOWN, "UNKNOWN"},
@@ -58,7 +58,7 @@ std::string AnalyserModel::typeAsString() const
         {Type::OVERCONSTRAINED, "OVERCONSTRAINED"},
         {Type::UNSUITABLY_CONSTRAINED, "UNSUITABLY_CONSTRAINED"}};
 
-    return typeToString.at(mPimpl->mType);
+    return typeToString.at(type);
 }
 
 bool AnalyserModel::hasExternalVariables() const
