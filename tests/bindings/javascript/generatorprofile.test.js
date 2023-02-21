@@ -24,11 +24,11 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.profile.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
     expect(x.profile()).toBe(libcellml.GeneratorProfile.Profile.C)
-    expect(x.profileAsString()).toBe("C")
+    expect(libcellml.GeneratorProfile.profileAsString(x.profile())).toBe("C")
 
     x.setProfile(libcellml.GeneratorProfile.Profile.PYTHON)
     expect(x.profile()).toBe(libcellml.GeneratorProfile.Profile.PYTHON)
-    expect(x.profileAsString()).toBe("PYTHON")
+    expect(libcellml.GeneratorProfile.profileAsString(x.profile())).toBe("PYTHON")
   });
   test("Checking GeneratorProfile.hasInterface.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

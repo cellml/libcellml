@@ -73,13 +73,15 @@ public:
     Profile profile() const;
 
     /**
-     * @brief Get the @c Profile as a string for this @c GeneratorProfile.
+     * @brief Get the string version of a @c Profile.
      *
-     * Return the @c Profile as a string for this @c GeneratorProfile.
+     * Return the string version of a @c Profile.
      *
-     * @return The @c Profile as a string for this @c GeneratorProfile.
+     * @param profile The profile for which we want the string version.
+     *
+     * @return The string version of the @c Profile.
      */
-    std::string profileAsString() const;
+    static std::string profileAsString(Profile profile);
 
     /**
      * @brief Set the @c Profile.

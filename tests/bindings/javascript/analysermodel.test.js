@@ -39,7 +39,7 @@ describe("Analyser Model tests", () => {
     });
     test('Checking Analyser Model type.', () => {
         expect(am.type().value).toBe(libcellml.AnalyserModel.Type.ODE.value)
-        expect(am.typeAsString()).toBe("ODE")
+        expect(libcellml.AnalyserModel.typeAsString(am.type())).toBe("ODE")
     });
     test('Checking Analyser Model isValid.', () => {
         expect(am.isValid()).toBe(true)

@@ -68,7 +68,7 @@ AnalyserEquation::Type AnalyserEquation::type() const
     return mPimpl->mType;
 }
 
-std::string AnalyserEquation::typeAsString() const
+std::string AnalyserEquation::typeAsString(Type type)
 {
     static const std::map<AnalyserEquation::Type, std::string> typeToString = {
         {Type::TRUE_CONSTANT, "TRUE_CONSTANT"},
@@ -77,7 +77,7 @@ std::string AnalyserEquation::typeAsString() const
         {Type::ALGEBRAIC, "ALGEBRAIC"},
         {Type::EXTERNAL, "EXTERNAL"}};
 
-    return typeToString.at(mPimpl->mType);
+    return typeToString.at(type);
 }
 
 AnalyserEquationAstPtr AnalyserEquation::ast() const
