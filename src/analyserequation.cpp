@@ -70,25 +70,14 @@ AnalyserEquation::Type AnalyserEquation::type() const
 
 std::string AnalyserEquation::typeAsString() const
 {
-    if (mPimpl->mType == Type::TRUE_CONSTANT) {
-        return "TRUE_CONSTANT";
-    }
+    static const std::map<AnalyserEquation::Type, std::string> typeToString = {
+        {Type::TRUE_CONSTANT, "TRUE_CONSTANT"},
+        {Type::VARIABLE_BASED_CONSTANT, "VARIABLE_BASED_CONSTANT"},
+        {Type::RATE, "RATE"},
+        {Type::ALGEBRAIC, "ALGEBRAIC"},
+        {Type::EXTERNAL, "EXTERNAL"}};
 
-    if (mPimpl->mType == Type::VARIABLE_BASED_CONSTANT) {
-        return "VARIABLE_BASED_CONSTANT";
-    }
-
-    if (mPimpl->mType == Type::RATE) {
-        return "RATE";
-    }
-
-    if (mPimpl->mType == Type::ALGEBRAIC) {
-        return "ALGEBRAIC";
-    }
-
-    // mPimpl->mType == Type::EXTERNAL.
-
-    return "EXTERNAL";
+    return typeToString.at(mPimpl->mType);
 }
 
 AnalyserEquationAstPtr AnalyserEquation::ast() const

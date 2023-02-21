@@ -1040,13 +1040,11 @@ GeneratorProfile::Profile GeneratorProfile::profile() const
 
 std::string GeneratorProfile::profileAsString() const
 {
-    if (mPimpl->mProfile == Profile::C) {
-        return "C";
-    }
+    static const std::map<GeneratorProfile::Profile, std::string> profileToString = {
+        {Profile::C, "C"},
+        {Profile::PYTHON, "PYTHON"}};
 
-    // mPimpl->mProfile == Profile::PYTHON.
-
-    return "PYTHON";
+    return profileToString.at(mPimpl->mProfile);
 }
 
 void GeneratorProfile::setProfile(Profile profile)
