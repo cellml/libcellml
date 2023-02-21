@@ -40,7 +40,7 @@ class AnalyserTestCase(unittest.TestCase):
 
         self.assertEqual(0, a.errorCount())
         self.assertEqual(AnalyserModel.Type.UNKNOWN, a.model().type())
-        self.assertEqual("UNKNOWN", AnalyserModel.typeAsString(a.model().type()))
+        self.assertEqual("unknown", AnalyserModel.typeAsString(a.model().type()))
 
     def test_coverage(self):
         from libcellml import Analyser
@@ -150,7 +150,7 @@ class AnalyserTestCase(unittest.TestCase):
         av = am.variable(3)
 
         self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
-        self.assertEqual("CONSTANT", AnalyserVariable.typeAsString(av.type()))
+        self.assertEqual("constant", AnalyserVariable.typeAsString(av.type()))
         self.assertEqual(3, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
@@ -161,7 +161,7 @@ class AnalyserTestCase(unittest.TestCase):
         ae = am.equation(3)
 
         self.assertEqual(AnalyserEquation.Type.RATE, ae.type())
-        self.assertEqual("RATE", AnalyserEquation.typeAsString(ae.type()))
+        self.assertEqual("rate", AnalyserEquation.typeAsString(ae.type()))
         self.assertIsNotNone(ae.ast())
         self.assertIsNotNone(ae.dependencies())
         self.assertTrue(ae.isStateRateBased())
@@ -172,7 +172,7 @@ class AnalyserTestCase(unittest.TestCase):
         aea = ae.ast()
 
         self.assertEqual(AnalyserEquationAst.Type.ASSIGNMENT, aea.type())
-        self.assertEqual("ASSIGNMENT", AnalyserEquationAst.typeAsString(aea.type()))
+        self.assertEqual("assignment", AnalyserEquationAst.typeAsString(aea.type()))
         self.assertEqual('', aea.value())
         self.assertIsNone(aea.variable())
         self.assertIsNone(aea.parent())
@@ -188,7 +188,7 @@ class AnalyserTestCase(unittest.TestCase):
         aea.setRightChild(None)
 
         self.assertEqual(AnalyserEquationAst.Type.EQ, aea.type())
-        self.assertEqual("EQ", AnalyserEquationAst.typeAsString(aea.type()))
+        self.assertEqual("eq", AnalyserEquationAst.typeAsString(aea.type()))
         self.assertEqual(AnalyserTestCase.VALUE, aea.value())
         self.assertIsNotNone(aea.variable())
         self.assertIsNotNone(aea.parent())

@@ -71,11 +71,11 @@ AnalyserEquation::Type AnalyserEquation::type() const
 std::string AnalyserEquation::typeAsString(Type type)
 {
     static const std::map<AnalyserEquation::Type, std::string> typeToString = {
-        {Type::TRUE_CONSTANT, "TRUE_CONSTANT"},
-        {Type::VARIABLE_BASED_CONSTANT, "VARIABLE_BASED_CONSTANT"},
-        {Type::RATE, "RATE"},
-        {Type::ALGEBRAIC, "ALGEBRAIC"},
-        {Type::EXTERNAL, "EXTERNAL"}};
+        {Type::TRUE_CONSTANT, "true_constant"},
+        {Type::VARIABLE_BASED_CONSTANT, "variable_based_constant"},
+        {Type::RATE, "rate"},
+        {Type::ALGEBRAIC, "algebraic"},
+        {Type::EXTERNAL, "external"}};
 
     return typeToString.at(type);
 }

@@ -1041,8 +1041,8 @@ GeneratorProfile::Profile GeneratorProfile::profile() const
 std::string GeneratorProfile::profileAsString(Profile profile)
 {
     static const std::map<GeneratorProfile::Profile, std::string> profileToString = {
-        {Profile::C, "C"},
-        {Profile::PYTHON, "PYTHON"}};
+        {Profile::C, "c"},
+        {Profile::PYTHON, "python"}};
 
     return profileToString.at(profile);
 }

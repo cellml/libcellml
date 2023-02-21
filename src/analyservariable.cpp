@@ -56,12 +56,12 @@ AnalyserVariable::Type AnalyserVariable::type() const
 std::string AnalyserVariable::typeAsString(Type type)
 {
     static const std::map<AnalyserVariable::Type, std::string> typeToString = {
-        {Type::VARIABLE_OF_INTEGRATION, "VARIABLE_OF_INTEGRATION"},
-        {Type::STATE, "STATE"},
-        {Type::CONSTANT, "CONSTANT"},
-        {Type::COMPUTED_CONSTANT, "COMPUTED_CONSTANT"},
-        {Type::ALGEBRAIC, "ALGEBRAIC"},
-        {Type::EXTERNAL, "EXTERNAL"}};
+        {Type::VARIABLE_OF_INTEGRATION, "variable_of_integration"},
+        {Type::STATE, "state"},
+        {Type::CONSTANT, "constant"},
+        {Type::COMPUTED_CONSTANT, "computed_constant"},
+        {Type::ALGEBRAIC, "algebraic"},
+        {Type::EXTERNAL, "external"}};
 
     return typeToString.at(type);
 }
