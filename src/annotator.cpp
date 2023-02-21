@@ -23,39 +23,21 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
-#include "libcellml/namedentity.h"
-#include "libcellml/printer.h"
 #include "libcellml/reset.h"
 #include "libcellml/types.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"
+#include "commonutils.h"
 #include "internaltypes.h"
 #include "issue_p.h"
 #include "logger_p.h"
-#include "namespaces.h"
 #include "utilities.h"
 
 namespace libcellml {
 
 using ItemList = std::multimap<std::string, AnyCellmlElementPtr>;
-
-static const std::map<CellmlElementType, std::string> typeToString = {
-    {CellmlElementType::COMPONENT, "component"},
-    {CellmlElementType::COMPONENT_REF, "component_ref"},
-    {CellmlElementType::CONNECTION, "connection"},
-    {CellmlElementType::ENCAPSULATION, "encapsulation"},
-    {CellmlElementType::IMPORT, "import"},
-    {CellmlElementType::MAP_VARIABLES, "map_variables"},
-    {CellmlElementType::MODEL, "model"},
-    {CellmlElementType::RESET, "reset"},
-    {CellmlElementType::RESET_VALUE, "reset_value"},
-    {CellmlElementType::TEST_VALUE, "test_value"},
-    {CellmlElementType::UNDEFINED, "undefined"},
-    {CellmlElementType::UNIT, "unit"},
-    {CellmlElementType::UNITS, "units"},
-    {CellmlElementType::VARIABLE, "variable"}};
 
 /**
  * @brief The Annotator::AnnotatorImpl class.
