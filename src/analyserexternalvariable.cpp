@@ -31,11 +31,9 @@ std::vector<VariablePtr>::iterator AnalyserExternalVariable::AnalyserExternalVar
                                                                                                           const std::string &variableName)
 {
     return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const auto &v) {
-        auto variable = v;
-
-        return (owningModel(variable) == model)
-               && (owningComponent(variable)->name() == componentName)
-               && (variable->name() == variableName);
+        return (owningModel(v) == model)
+               && (owningComponent(v)->name() == componentName)
+               && (v->name() == variableName);
     });
 }
 
