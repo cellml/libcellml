@@ -50,13 +50,13 @@ AnalyserModel::Type AnalyserModel::type() const
 std::string AnalyserModel::typeAsString(Type type)
 {
     static const std::map<AnalyserModel::Type, std::string> typeToString = {
-        {Type::UNKNOWN, "UNKNOWN"},
-        {Type::ALGEBRAIC, "ALGEBRAIC"},
-        {Type::ODE, "ODE"},
-        {Type::INVALID, "INVALID"},
-        {Type::UNDERCONSTRAINED, "UNDERCONSTRAINED"},
-        {Type::OVERCONSTRAINED, "OVERCONSTRAINED"},
-        {Type::UNSUITABLY_CONSTRAINED, "UNSUITABLY_CONSTRAINED"}};
+        {Type::UNKNOWN, "unknown"},
+        {Type::ALGEBRAIC, "algebraic"},
+        {Type::ODE, "ode"},
+        {Type::INVALID, "invalid"},
+        {Type::UNDERCONSTRAINED, "underconstrained"},
+        {Type::OVERCONSTRAINED, "overconstrained"},
+        {Type::UNSUITABLY_CONSTRAINED, "unsuitably_constrained"}};
 
     return typeToString.at(type);
 }
