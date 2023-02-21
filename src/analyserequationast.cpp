@@ -82,7 +82,7 @@ void AnalyserEquationAst::setValue(const std::string &value)
 
 VariablePtr AnalyserEquationAst::variable() const
 {
-    return mPimpl->mVariable.lock();
+    return mPimpl->mVariable;
 }
 
 void AnalyserEquationAst::setVariable(const VariablePtr &variable)
@@ -106,7 +106,7 @@ AnalyserEquationAstPtr AnalyserEquationAst::leftChild() const
         return mPimpl->mOwnedLeftChild;
     }
 
-    return mPimpl->mLeftChild.lock();
+    return mPimpl->mLeftChild;
 }
 
 void AnalyserEquationAst::setLeftChild(const AnalyserEquationAstPtr &leftChild)
@@ -121,7 +121,7 @@ AnalyserEquationAstPtr AnalyserEquationAst::rightChild() const
         return mPimpl->mOwnedRightChild;
     }
 
-    return mPimpl->mRightChild.lock();
+    return mPimpl->mRightChild;
 }
 
 void AnalyserEquationAst::setRightChild(const AnalyserEquationAstPtr &rightChild)

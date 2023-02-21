@@ -22,8 +22,6 @@ limitations under the License.
 
 namespace libcellml {
 
-using AnalyserEquationWeakPtr = std::weak_ptr<AnalyserEquation>; /**< Type definition for weak analyser equation pointer. */
-
 /**
  * @brief The AnalyserVariable::AnalyserVariableImpl struct.
  *
@@ -33,8 +31,8 @@ struct AnalyserVariable::AnalyserVariableImpl
 {
     AnalyserVariable::Type mType = Type::CONSTANT;
     size_t mIndex = 0;
-    VariableWeakPtr mInitialisingVariable;
-    VariableWeakPtr mVariable;
+    VariablePtr mInitialisingVariable;
+    VariablePtr mVariable;
     AnalyserEquationWeakPtr mEquation;
 
     static AnalyserVariablePtr create();
