@@ -155,7 +155,7 @@ struct AnalyserInternalEquation
     std::vector<AnalyserInternalVariablePtr> mAllVariables;
 
     AnalyserInternalVariablePtr mVariable;
-    ComponentPtr mComponent = nullptr;
+    ComponentPtr mComponent;
 
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
@@ -608,7 +608,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // Find and return, if there is one, the internal variable associated with
     // the given variable.
 
-    AnalyserInternalVariablePtr res = nullptr;
+    AnalyserInternalVariablePtr res;
 
     for (const auto &internalVariable : mInternalVariables) {
         if (mModel->areEquivalentVariables(variable, internalVariable->mVariable)) {
@@ -646,7 +646,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
         }
     }
 
-    VariablePtr res = nullptr;
+    VariablePtr res;
 
     for (size_t i = 0; (res == nullptr) && (i < component->componentCount()); ++i) {
         res = voiFirstOccurrence(variable, component->component(i));
