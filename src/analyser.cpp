@@ -2682,7 +2682,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             auto variable = v2avMappings[variableDependency];
 
             if (variable != nullptr) {
-printf("    %ld equations\n", variable->equations().size());
                 for (const auto &equation : variable->equations()) {
                     if (std::find(equationDependencies.begin(), equationDependencies.end(), equation) == equationDependencies.end()) {
                         equationDependencies.push_back(equation);
