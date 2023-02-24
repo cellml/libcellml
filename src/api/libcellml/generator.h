@@ -95,7 +95,7 @@ public:
      *
      * @return The interface code as a @c std::string.
      */
-    std::string interfaceCode();
+    std::string interfaceCode() const;
 
     /**
      * @brief Get the implementation code for the @c AnalyserModel.
@@ -105,7 +105,7 @@ public:
      *
      * @return The implementation code as a @c std::string.
      */
-    std::string implementationCode();
+    std::string implementationCode() const;
 
 private:
     Generator(); /**< Constructor, @private. */

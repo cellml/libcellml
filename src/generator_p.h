@@ -35,11 +35,7 @@ struct Generator::GeneratorImpl
 
     std::string mCode;
 
-    GeneratorProfilePtr mOwnedProfile = GeneratorProfile::create();
-    GeneratorProfilePtr mProfile;
-    GeneratorProfilePtr mUsedProfile;
-
-    GeneratorProfilePtr profile() const;
+    GeneratorProfilePtr mProfile = GeneratorProfile::create();
 
     AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
@@ -108,21 +104,21 @@ struct Generator::GeneratorImpl
                                          const AnalyserEquationAstPtr &ast = nullptr) const;
 
     std::string generateOperatorCode(const std::string &op,
-                                     const AnalyserEquationAstPtr &ast);
-    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast);
+                                     const AnalyserEquationAstPtr &ast) const;
+    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const;
     std::string generateOneParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast);
+                                                 const AnalyserEquationAstPtr &ast) const;
     std::string generateTwoParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast);
+                                                 const AnalyserEquationAstPtr &ast) const;
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
-    std::string generateCode(const AnalyserEquationAstPtr &ast);
+    std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool forComputeVariables = false);
+                                     bool forComputeVariables = false) const;
 
     void addInterfaceComputeModelMethodsCode();
     void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
