@@ -309,7 +309,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 void Generator::GeneratorImpl::addVariableTypeObjectCode()
 {
     auto variableTypeObjectString = mProfile->variableTypeObjectString(mModel->type() == AnalyserModel::Type::ODE,
-                                                                           mModel->hasExternalVariables());
+                                                                       mModel->hasExternalVariables());
 
     if (!variableTypeObjectString.empty()) {
         mCode += newLineIfNeeded()
@@ -1419,7 +1419,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
     auto interfaceInitialiseVariablesMethodString = mProfile->interfaceInitialiseVariablesMethodString(mModel->type() == AnalyserModel::Type::ODE,
-                                                                                                           mModel->hasExternalVariables());
+                                                                                                       mModel->hasExternalVariables());
     std::string interfaceComputeModelMethodsCode;
 
     if (!interfaceInitialiseVariablesMethodString.empty()) {
@@ -1438,7 +1438,7 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
     }
 
     auto interfaceComputeVariablesMethodString = mProfile->interfaceComputeVariablesMethodString(mModel->type() == AnalyserModel::Type::ODE,
-                                                                                                     mModel->hasExternalVariables());
+                                                                                                 mModel->hasExternalVariables());
 
     if (!interfaceComputeVariablesMethodString.empty()) {
         interfaceComputeModelMethodsCode += interfaceComputeVariablesMethodString;
@@ -1454,7 +1454,7 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     auto implementationInitialiseVariablesMethodString = mProfile->implementationInitialiseVariablesMethodString(mModel->type() == AnalyserModel::Type::ODE,
-                                                                                                                     mModel->hasExternalVariables());
+                                                                                                                 mModel->hasExternalVariables());
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
         std::string methodBody;
@@ -1536,7 +1536,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
 void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     auto implementationComputeVariablesMethodString = mProfile->implementationComputeVariablesMethodString(mModel->type() == AnalyserModel::Type::ODE,
-                                                                                                               mModel->hasExternalVariables());
+                                                                                                           mModel->hasExternalVariables());
 
     if (!implementationComputeVariablesMethodString.empty()) {
         std::string methodBody;
