@@ -119,29 +119,28 @@ public:
      */
     void setHasInterface(bool hasInterface);
 
-    // Assignment.
+    // Equality.
 
     /**
-     * @brief Get the @c std::string representing the MathML "assignment"
+     * @brief Get the @c std::string representing the MathML "equality"
      * operator.
      *
-     * Return the @c std::string representing the MathML "assignment" operator.
+     * Return the @c std::string representing the MathML "equality" operator.
      *
-     * @return The @c std::string representing the MathML "assignment"
-     * operator.
+     * @return The @c std::string representing the MathML "equality" operator.
      */
-    std::string assignmentString() const;
+    std::string equalityString() const;
 
     /**
-     * @brief Set the @c std::string representing the MathML "assignment"
+     * @brief Set the @c std::string representing the MathML "equality"
      * operator.
      *
-     * Set the @c std::string representing the MathML "assignment" operator.
+     * Set the @c std::string representing the MathML "equality" operator.
      *
-     * @param assignmentString The @c std::string representing the MathML
-     * "assignment" operator.
+     * @param equalityString The @c std::string representing the MathML
+     * "equality" operator.
      */
-    void setAssignmentString(const std::string &assignmentString);
+    void setEqualityString(const std::string &equalityString);
 
     // Relational and logical operators.
 

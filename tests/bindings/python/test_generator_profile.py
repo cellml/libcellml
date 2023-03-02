@@ -315,14 +315,14 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setAsinhString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.asinhString())
 
-    def test_assignment_string(self):
+    def test_equality_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual(' = ', g.assignmentString())
-        g.setAssignmentString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.assignmentString())
+        self.assertEqual(' = ', g.equalityString())
+        g.setEqualityString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.equalityString())
 
     def test_atan_string(self):
         from libcellml import GeneratorProfile

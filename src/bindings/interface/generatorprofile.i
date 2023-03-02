@@ -25,11 +25,11 @@
 %feature("docstring") libcellml::GeneratorProfile::setHasInterface
 "Sets whether this :class:`GeneratorProfile` requires an interface.";
 
-%feature("docstring") libcellml::GeneratorProfile::assignmentString
-"Returns the string representing the MathML \"assigment\" operator.";
+%feature("docstring") libcellml::GeneratorProfile::equalityString
+"Returns the string representing the MathML \"equality\" operator.";
 
-%feature("docstring") libcellml::GeneratorProfile::setAssignmentString
-"Sets the string representing the MathML \"assigment\" operator.";
+%feature("docstring") libcellml::GeneratorProfile::setEqualityString
+"Sets the string representing the MathML \"equality\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::eqString
 "Returns the string representing the MathML \"equal to\" operator.";

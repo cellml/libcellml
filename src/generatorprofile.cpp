@@ -41,9 +41,9 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     bool mHasInterface = true;
 
-    // Assignment.
+    // Equality.
 
-    std::string mAssignmentString;
+    std::string mEqualityString;
 
     // Relational and logical operators.
 
@@ -303,9 +303,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mHasInterface = true;
 
-        // Assignment.
+        // Equality.
 
-        mAssignmentString = " = ";
+        mEqualityString = " = ";
 
         // Relational and logical operators.
 
@@ -696,9 +696,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mHasInterface = false;
 
-        // Assignment.
+        // Equality.
 
-        mAssignmentString = " = ";
+        mEqualityString = " = ";
 
         // Relational and logical operators.
 
@@ -1111,14 +1111,14 @@ void GeneratorProfile::setHasInterface(bool hasInterface)
     mPimpl->mHasInterface = hasInterface;
 }
 
-std::string GeneratorProfile::assignmentString() const
+std::string GeneratorProfile::equalityString() const
 {
-    return mPimpl->mAssignmentString;
+    return mPimpl->mEqualityString;
 }
 
-void GeneratorProfile::setAssignmentString(const std::string &assignmentString)
+void GeneratorProfile::setEqualityString(const std::string &equalityString)
 {
-    mPimpl->mAssignmentString = assignmentString;
+    mPimpl->mEqualityString = equalityString;
 }
 
 std::string GeneratorProfile::eqString() const
