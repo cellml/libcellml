@@ -15,14 +15,19 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
     def test_generator_profile(self):
         from libcellml import GeneratorProfile
+        from libcellml.generatorprofile import GeneratorProfile_profileAsString
 
         # Create a default, i.e. C, profile.
         p = GeneratorProfile()
         self.assertEqual(GeneratorProfile.Profile.C, p.profile())
+        self.assertEqual("c", GeneratorProfile.profileAsString(p.profile()))
+        self.assertEqual("c", GeneratorProfile_profileAsString(p.profile()))
 
         # Make the profile a Python profile.
         p.setProfile(GeneratorProfile.Profile.PYTHON)
         self.assertEqual(GeneratorProfile.Profile.PYTHON, p.profile())
+        self.assertEqual("python", GeneratorProfile.profileAsString(p.profile()))
+        self.assertEqual("python", GeneratorProfile_profileAsString(p.profile()))
 
         # Create a Python profile.
         pp = GeneratorProfile(GeneratorProfile.Profile.PYTHON)

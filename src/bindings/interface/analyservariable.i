@@ -12,6 +12,9 @@
 %feature("docstring") libcellml::AnalyserVariable::type
 "Returns the :enum:`AnalyserVariable::Type`.";
 
+%feature("docstring") libcellml::AnalyserVariable::typeAsString
+"Returns the :enum:`AnalyserVariable::Type` as a string.";
+
 %feature("docstring") libcellml::AnalyserVariable::index
 "Returns the index.";
 

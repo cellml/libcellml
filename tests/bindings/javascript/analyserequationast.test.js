@@ -26,12 +26,14 @@ describe("Analyser Equation AST tests", () => {
         const aea = new libcellml.AnalyserEquationAst()
 
         expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.EQUALITY.value)
+        expect(libcellml.AnalyserEquationAst.typeAsString(aea.type())).toBe("equality")
         expect(aea.type()).toStrictEqual(libcellml.AnalyserEquationAst.Type.EQUALITY)
         expect(aea.type()).not.toStrictEqual(libcellml.AnalyserEquationAst.Type.OTHERWISE)
 
         aea.setType(libcellml.AnalyserEquationAst.Type.OTHERWISE)
 
         expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.OTHERWISE.value)
+        expect(libcellml.AnalyserEquationAst.typeAsString(aea.type())).toBe("otherwise")
     });
     test('Checking Analyser Equation AST value.', () => {
         const aea = new libcellml.AnalyserEquationAst()

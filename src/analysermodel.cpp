@@ -49,6 +49,20 @@ AnalyserModel::Type AnalyserModel::type() const
     return mPimpl->mType;
 }
 
+static const std::map<AnalyserModel::Type, std::string> typeToString = {
+    {AnalyserModel::Type::UNKNOWN, "unknown"},
+    {AnalyserModel::Type::ALGEBRAIC, "algebraic"},
+    {AnalyserModel::Type::ODE, "ode"},
+    {AnalyserModel::Type::INVALID, "invalid"},
+    {AnalyserModel::Type::UNDERCONSTRAINED, "underconstrained"},
+    {AnalyserModel::Type::OVERCONSTRAINED, "overconstrained"},
+    {AnalyserModel::Type::UNSUITABLY_CONSTRAINED, "unsuitably_constrained"}};
+
+std::string AnalyserModel::typeAsString(Type type)
+{
+    return typeToString.at(type);
+}
+
 bool AnalyserModel::hasExternalVariables() const
 {
     if (!isValid()) {

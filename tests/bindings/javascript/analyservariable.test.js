@@ -42,6 +42,7 @@ describe("Analyser Variable tests", () => {
     test('Checking Analyser Variable type.', () => {
         const av = am.variable(0)
         expect(av.type().value).toBe(libcellml.AnalyserVariable.Type.ALGEBRAIC.value)
+        expect(libcellml.AnalyserVariable.typeAsString(av.type())).toBe("algebraic")
     });
     test('Checking Analyser Variable index.', () => {
         const av = am.variable(7)

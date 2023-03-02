@@ -78,6 +78,17 @@ public:
     Type type() const;
 
     /**
+     * @brief Get the string version of a @c Type.
+     *
+     * Return the string version of a @c Type.
+     *
+     * @param type The type for which we want the string version.
+     *
+     * @return The string version of the @c Type.
+     */
+    static std::string typeAsString(Type type);
+
+    /**
      * @brief Test to determine if this @c AnalyserModel has external variables.
      *
      * Test to determine if this @c AnalyserModel has external variables, return

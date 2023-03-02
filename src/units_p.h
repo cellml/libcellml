@@ -18,75 +18,10 @@ limitations under the License.
 
 #include "libcellml/units.h"
 
+#include "internaltypes.h"
 #include "namedentity_p.h"
-#include "utilities.h"
 
 namespace libcellml {
-
-/**
- * @brief Map Prefix to their string forms.
- *
- * An internal map used to convert a Prefix into its string form.
- */
-static const std::map<Units::Prefix, const std::string> prefixToString = {
-    {Units::Prefix::ATTO, "atto"},
-    {Units::Prefix::CENTI, "centi"},
-    {Units::Prefix::DECA, "deca"},
-    {Units::Prefix::DECI, "deci"},
-    {Units::Prefix::EXA, "exa"},
-    {Units::Prefix::FEMTO, "femto"},
-    {Units::Prefix::GIGA, "giga"},
-    {Units::Prefix::HECTO, "hecto"},
-    {Units::Prefix::KILO, "kilo"},
-    {Units::Prefix::MEGA, "mega"},
-    {Units::Prefix::MICRO, "micro"},
-    {Units::Prefix::MILLI, "milli"},
-    {Units::Prefix::NANO, "nano"},
-    {Units::Prefix::PETA, "peta"},
-    {Units::Prefix::PICO, "pico"},
-    {Units::Prefix::TERA, "tera"},
-    {Units::Prefix::YOCTO, "yocto"},
-    {Units::Prefix::YOTTA, "yotta"},
-    {Units::Prefix::ZEPTO, "zepto"},
-    {Units::Prefix::ZETTA, "zetta"}};
-
-/**
- * @brief Map StandardUnit to their string forms.
- *
- * An internal map used to convert a standard unit into its string form.
- */
-static const std::map<Units::StandardUnit, const std::string> standardUnitToString = {
-    {Units::StandardUnit::AMPERE, "ampere"},
-    {Units::StandardUnit::BECQUEREL, "becquerel"},
-    {Units::StandardUnit::CANDELA, "candela"},
-    {Units::StandardUnit::COULOMB, "coulomb"},
-    {Units::StandardUnit::DIMENSIONLESS, "dimensionless"},
-    {Units::StandardUnit::FARAD, "farad"},
-    {Units::StandardUnit::GRAM, "gram"},
-    {Units::StandardUnit::GRAY, "gray"},
-    {Units::StandardUnit::HENRY, "henry"},
-    {Units::StandardUnit::HERTZ, "hertz"},
-    {Units::StandardUnit::JOULE, "joule"},
-    {Units::StandardUnit::KATAL, "katal"},
-    {Units::StandardUnit::KELVIN, "kelvin"},
-    {Units::StandardUnit::KILOGRAM, "kilogram"},
-    {Units::StandardUnit::LITRE, "litre"},
-    {Units::StandardUnit::LUMEN, "lumen"},
-    {Units::StandardUnit::LUX, "lux"},
-    {Units::StandardUnit::METRE, "metre"},
-    {Units::StandardUnit::MOLE, "mole"},
-    {Units::StandardUnit::NEWTON, "newton"},
-    {Units::StandardUnit::OHM, "ohm"},
-    {Units::StandardUnit::PASCAL, "pascal"},
-    {Units::StandardUnit::RADIAN, "radian"},
-    {Units::StandardUnit::SECOND, "second"},
-    {Units::StandardUnit::SIEMENS, "siemens"},
-    {Units::StandardUnit::SIEVERT, "sievert"},
-    {Units::StandardUnit::STERADIAN, "steradian"},
-    {Units::StandardUnit::TESLA, "tesla"},
-    {Units::StandardUnit::VOLT, "volt"},
-    {Units::StandardUnit::WATT, "watt"},
-    {Units::StandardUnit::WEBER, "weber"}};
 
 /**
  * @brief The UnitDefinition struct.

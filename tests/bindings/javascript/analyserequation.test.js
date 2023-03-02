@@ -44,6 +44,7 @@ describe("Analyser Equation tests", () => {
     });
     test('Checking Analyser Equation type.', () => {
         expect(eqn.type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
+        expect(libcellml.AnalyserEquation.typeAsString(eqn.type())).toBe("ode")
     });
     test('Checking Analyser Equation isStateRateBased.', () => {
         expect(eqn.isStateRateBased()).toBe(false)
