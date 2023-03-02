@@ -18,6 +18,10 @@ limitations under the License.
 
 #include "analyserequationast_p.h"
 
+#ifdef NAN
+#    undef NAN
+#endif
+
 namespace libcellml {
 
 void AnalyserEquationAst::AnalyserEquationAstImpl::populate(AnalyserEquationAst::Type type,
@@ -63,6 +67,78 @@ AnalyserEquationAstPtr AnalyserEquationAst::create() noexcept
 AnalyserEquationAst::Type AnalyserEquationAst::type() const
 {
     return mPimpl->mType;
+}
+
+static const std::map<AnalyserEquationAst::Type, std::string> typeToString = {
+    {AnalyserEquationAst::Type::ASSIGNMENT, "assignment"},
+    {AnalyserEquationAst::Type::EQ, "eq"},
+    {AnalyserEquationAst::Type::NEQ, "neq"},
+    {AnalyserEquationAst::Type::LT, "lt"},
+    {AnalyserEquationAst::Type::LEQ, "leq"},
+    {AnalyserEquationAst::Type::GT, "gt"},
+    {AnalyserEquationAst::Type::GEQ, "geq"},
+    {AnalyserEquationAst::Type::AND, "and"},
+    {AnalyserEquationAst::Type::OR, "or"},
+    {AnalyserEquationAst::Type::XOR, "xor"},
+    {AnalyserEquationAst::Type::NOT, "not"},
+    {AnalyserEquationAst::Type::PLUS, "plus"},
+    {AnalyserEquationAst::Type::MINUS, "minus"},
+    {AnalyserEquationAst::Type::TIMES, "times"},
+    {AnalyserEquationAst::Type::DIVIDE, "divide"},
+    {AnalyserEquationAst::Type::POWER, "power"},
+    {AnalyserEquationAst::Type::ROOT, "root"},
+    {AnalyserEquationAst::Type::ABS, "abs"},
+    {AnalyserEquationAst::Type::EXP, "exp"},
+    {AnalyserEquationAst::Type::LN, "ln"},
+    {AnalyserEquationAst::Type::LOG, "log"},
+    {AnalyserEquationAst::Type::CEILING, "ceiling"},
+    {AnalyserEquationAst::Type::FLOOR, "floor"},
+    {AnalyserEquationAst::Type::MIN, "min"},
+    {AnalyserEquationAst::Type::MAX, "max"},
+    {AnalyserEquationAst::Type::REM, "rem"},
+    {AnalyserEquationAst::Type::DIFF, "diff"},
+    {AnalyserEquationAst::Type::SIN, "sin"},
+    {AnalyserEquationAst::Type::COS, "cos"},
+    {AnalyserEquationAst::Type::TAN, "tan"},
+    {AnalyserEquationAst::Type::SEC, "sec"},
+    {AnalyserEquationAst::Type::CSC, "csc"},
+    {AnalyserEquationAst::Type::COT, "cot"},
+    {AnalyserEquationAst::Type::SINH, "sinh"},
+    {AnalyserEquationAst::Type::COSH, "cosh"},
+    {AnalyserEquationAst::Type::TANH, "tanh"},
+    {AnalyserEquationAst::Type::SECH, "sech"},
+    {AnalyserEquationAst::Type::CSCH, "csch"},
+    {AnalyserEquationAst::Type::COTH, "coth"},
+    {AnalyserEquationAst::Type::ASIN, "asin"},
+    {AnalyserEquationAst::Type::ACOS, "acos"},
+    {AnalyserEquationAst::Type::ATAN, "atan"},
+    {AnalyserEquationAst::Type::ASEC, "asec"},
+    {AnalyserEquationAst::Type::ACSC, "acsc"},
+    {AnalyserEquationAst::Type::ACOT, "acot"},
+    {AnalyserEquationAst::Type::ASINH, "asinh"},
+    {AnalyserEquationAst::Type::ACOSH, "acosh"},
+    {AnalyserEquationAst::Type::ATANH, "atanh"},
+    {AnalyserEquationAst::Type::ASECH, "asech"},
+    {AnalyserEquationAst::Type::ACSCH, "acsch"},
+    {AnalyserEquationAst::Type::ACOTH, "acoth"},
+    {AnalyserEquationAst::Type::PIECEWISE, "piecewise"},
+    {AnalyserEquationAst::Type::PIECE, "piece"},
+    {AnalyserEquationAst::Type::OTHERWISE, "otherwise"},
+    {AnalyserEquationAst::Type::CI, "ci"},
+    {AnalyserEquationAst::Type::CN, "cn"},
+    {AnalyserEquationAst::Type::DEGREE, "degree"},
+    {AnalyserEquationAst::Type::LOGBASE, "logbase"},
+    {AnalyserEquationAst::Type::BVAR, "bvar"},
+    {AnalyserEquationAst::Type::TRUE, "true"},
+    {AnalyserEquationAst::Type::FALSE, "false"},
+    {AnalyserEquationAst::Type::E, "e"},
+    {AnalyserEquationAst::Type::PI, "pi"},
+    {AnalyserEquationAst::Type::INF, "inf"},
+    {AnalyserEquationAst::Type::NAN, "nan"}};
+
+std::string AnalyserEquationAst::typeAsString(Type type)
+{
+    return typeToString.at(type);
 }
 
 void AnalyserEquationAst::setType(Type type)

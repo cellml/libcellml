@@ -13,6 +13,9 @@
 %feature("docstring") libcellml::GeneratorProfile::profile
 "Returns the :enum:`GeneratorProfile::Profile` for this :class:`GeneratorProfile`.";
 
+%feature("docstring") libcellml::GeneratorProfile::profileAsString
+"Returns the :enum:`GeneratorProfile::Profile` as a string for this :class:`GeneratorProfile`.";
+
 %feature("docstring") libcellml::GeneratorProfile::setProfile
 "Sets the :enum:`GeneratorProfile::Profile` for this :class:`GeneratorProfile`.";
 

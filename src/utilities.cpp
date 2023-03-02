@@ -34,10 +34,33 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
 
 namespace libcellml {
+
+static const std::map<std::string, int> standardPrefixList = {
+    {"yotta", 24},
+    {"zetta", 21},
+    {"exa", 18},
+    {"peta", 15},
+    {"tera", 12},
+    {"giga", 9},
+    {"mega", 6},
+    {"kilo", 3},
+    {"hecto", 2},
+    {"deca", 1},
+    {"deci", -1},
+    {"centi", -2},
+    {"milli", -3},
+    {"micro", -6},
+    {"nano", -9},
+    {"pico", -12},
+    {"femto", -15},
+    {"atto", -18},
+    {"zepto", -21},
+    {"yocto", -24}};
 
 bool canConvertToBasicDouble(const std::string &in)
 {
