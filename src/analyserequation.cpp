@@ -78,7 +78,8 @@ AnalyserEquation::Type AnalyserEquation::type() const
 static const std::map<AnalyserEquation::Type, std::string> typeToString = {
     {AnalyserEquation::Type::TRUE_CONSTANT, "true_constant"},
     {AnalyserEquation::Type::VARIABLE_BASED_CONSTANT, "variable_based_constant"},
-    {AnalyserEquation::Type::RATE, "rate"},
+    {AnalyserEquation::Type::ODE, "ode"},
+    {AnalyserEquation::Type::NLA, "nla"},
     {AnalyserEquation::Type::ALGEBRAIC, "algebraic"},
     {AnalyserEquation::Type::EXTERNAL, "external"}};
 

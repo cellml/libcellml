@@ -51,8 +51,10 @@ AnalyserModel::Type AnalyserModel::type() const
 
 static const std::map<AnalyserModel::Type, std::string> typeToString = {
     {AnalyserModel::Type::UNKNOWN, "unknown"},
-    {AnalyserModel::Type::ALGEBRAIC, "algebraic"},
     {AnalyserModel::Type::ODE, "ode"},
+    {AnalyserModel::Type::DAE, "dae"},
+    {AnalyserModel::Type::NLA, "nla"},
+    {AnalyserModel::Type::ALGEBRAIC, "algebraic"},
     {AnalyserModel::Type::INVALID, "invalid"},
     {AnalyserModel::Type::UNDERCONSTRAINED, "underconstrained"},
     {AnalyserModel::Type::OVERCONSTRAINED, "overconstrained"},
