@@ -1354,7 +1354,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                        generateOperatorCode(mProfile->powerString(), ast) :
                        mProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
         }
-
     } break;
     case AnalyserEquationAst::Type::ROOT: {
         auto astRightChild = ast->rightChild();
@@ -1553,7 +1552,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mProfile->nanString());
         }
-
     } break;
     case AnalyserEquationAst::Type::PIECE:
         code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
