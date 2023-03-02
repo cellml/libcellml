@@ -107,7 +107,7 @@ struct AnalyserInternalVariable
 
 AnalyserInternalVariablePtr AnalyserInternalVariable::create(const VariablePtr &variable)
 {
-    auto res = std::make_shared<AnalyserInternalVariable>();
+    auto res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {}};
 
     res->setVariable(variable);
 
@@ -206,7 +206,7 @@ struct AnalyserInternalEquation
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
 {
-    auto res = std::make_shared<AnalyserInternalEquation>();
+    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
 
     res->mAst = AnalyserEquationAst::create();
     res->mComponent = component;
@@ -216,7 +216,7 @@ AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr 
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInternalVariablePtr &variable)
 {
-    auto res = std::make_shared<AnalyserInternalEquation>();
+    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
 
     res->mComponent = owningComponent(variable->mVariable);
 
