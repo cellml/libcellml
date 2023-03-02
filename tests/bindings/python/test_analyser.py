@@ -160,9 +160,9 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(3, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
-        self.assertEqual(1, av.equationCount())
+        self.assertEqual(20, av.equationCount())
         self.assertIsNotNone(av.equations())
-        self.assertIsNone(av.equation(0))
+        self.assertIsNotNone(av.equation(0))
 
         # Ensure coverage for AnalyserEquation.
 
@@ -172,7 +172,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual("algebraic", AnalyserEquation.typeAsString(ae.type()))
         self.assertEqual("algebraic", AnalyserEquation_typeAsString(ae.type()))
         self.assertIsNotNone(ae.ast())
-        self.assertEqual(2, ae.dependencyCount())
+        self.assertEqual(16, ae.dependencyCount())
         self.assertIsNotNone(ae.dependencies())
         self.assertIsNotNone(ae.dependency(0))
         self.assertTrue(ae.isStateRateBased())

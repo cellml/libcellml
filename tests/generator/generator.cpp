@@ -270,8 +270,8 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
     EXPECT_EQ(libcellml::AnalyserVariable::Type::ALGEBRAIC, analyserModel->variable(1)->type());
     EXPECT_EQ("algebraic", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(1)->type()));
 
-    EXPECT_EQ(libcellml::AnalyserEquation::Type::RATE, analyserModel->equation(0)->type());
-    EXPECT_EQ("rate", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::ODE, analyserModel->equation(0)->type());
+    EXPECT_EQ("ode", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
 
     EXPECT_EQ(libcellml::AnalyserEquation::Type::ALGEBRAIC, analyserModel->equation(2)->type());
     EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(2)->type()));
