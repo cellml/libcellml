@@ -181,7 +181,7 @@ std::string doPrintAst(const AnalyserEquationAstPtr &ast)
     std::string res;
 
     switch (ast->type()) {
-        // Assignment.
+        // Equality.
 
     case AnalyserEquationAst::Type::EQUALITY:
         res = "EQUALITY";

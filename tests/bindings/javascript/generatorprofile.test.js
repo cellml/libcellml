@@ -36,11 +36,11 @@ describe("GeneratorProfile tests", () => {
     x.setHasInterface(true)
     expect(x.hasInterface()).toBe(true)
   });
-  test("Checking GeneratorProfile.assignmentString.", () => {
+  test("Checking GeneratorProfile.equalityString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setAssignmentString("something")
-    expect(x.assignmentString()).toBe("something")
+    x.setEqualityString("something")
+    expect(x.equalityString()).toBe("something")
   });
   test("Checking GeneratorProfile.eqString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

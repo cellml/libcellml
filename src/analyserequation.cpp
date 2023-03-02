@@ -90,7 +90,7 @@ std::string AnalyserEquation::typeAsString(Type type)
 
 AnalyserEquationAstPtr AnalyserEquation::ast() const
 {
-    return mPimpl->mAst.lock();
+    return mPimpl->mAst;
 }
 
 size_t AnalyserEquation::dependencyCount() const
@@ -130,13 +130,7 @@ size_t AnalyserEquation::variableCount() const
 
 std::vector<AnalyserVariablePtr> AnalyserEquation::variables() const
 {
-    std::vector<AnalyserVariablePtr> res;
-
-    for (const auto &variable : mPimpl->mVariables) {
-        res.push_back(variable.lock());
-    }
-
-    return res;
+    return mPimpl->mVariables;
 }
 
 AnalyserVariablePtr AnalyserEquation::variable(size_t index) const
@@ -145,7 +139,7 @@ AnalyserVariablePtr AnalyserEquation::variable(size_t index) const
         return {};
     }
 
-    return mPimpl->mVariables[index].lock();
+    return mPimpl->mVariables[index];
 }
 
 } // namespace libcellml

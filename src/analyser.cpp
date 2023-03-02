@@ -107,7 +107,7 @@ struct AnalyserInternalVariable
 
 AnalyserInternalVariablePtr AnalyserInternalVariable::create(const VariablePtr &variable)
 {
-    auto res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {}};
+    auto res = std::make_shared<AnalyserInternalVariable>();
 
     res->setVariable(variable);
 
@@ -169,7 +169,7 @@ struct AnalyserInternalEquation
 
     AnalyserEquationAstPtr mAst;
 
-    ComponentPtr mComponent = nullptr;
+    ComponentPtr mComponent;
 
     AnalyserInternalVariablePtrs mVariables;
     AnalyserInternalVariablePtrs mOdeVariables;
@@ -206,7 +206,7 @@ struct AnalyserInternalEquation
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
 {
-    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+    auto res = std::make_shared<AnalyserInternalEquation>();
 
     res->mAst = AnalyserEquationAst::create();
     res->mComponent = component;
@@ -216,7 +216,7 @@ AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr 
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInternalVariablePtr &variable)
 {
-    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+    auto res = std::make_shared<AnalyserInternalEquation>();
 
     res->mComponent = owningComponent(variable->mVariable);
 
@@ -479,10 +479,9 @@ public:
     GeneratorPtr mGenerator = libcellml::Generator::create();
 
     std::map<std::string, UnitsPtr> mStandardUnits;
-    std::map<AnalyserEquationAstPtr, UnitsWeakPtr> mCiCnUnits;
+    std::map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;
 
     AnalyserImpl();
-    ~AnalyserImpl();
 
     AnalyserInternalVariablePtr internalVariable(const VariablePtr &variable);
 
@@ -601,17 +600,6 @@ Analyser::AnalyserImpl::AnalyserImpl()
     profile->setPiString("pi");
     profile->setInfString("infinity");
     profile->setNanString("notanumber");
-
-    // Retrieve our generator's profile.
-
-    mGenerator->mPimpl->retrieveLockedModelAndProfile();
-}
-
-Analyser::AnalyserImpl::~AnalyserImpl()
-{
-    // Reset our generator's profile.
-
-    mGenerator->mPimpl->resetLockedModelAndProfile();
 }
 
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)
@@ -619,7 +607,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // Find and return, if there is one, the internal variable associated with
     // the given variable.
 
-    AnalyserInternalVariablePtr res = nullptr;
+    AnalyserInternalVariablePtr res;
 
     for (const auto &internalVariable : mInternalVariables) {
         if (mModel->areEquivalentVariables(variable, internalVariable->mVariable)) {
@@ -657,7 +645,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
         }
     }
 
-    VariablePtr res = nullptr;
+    VariablePtr res;
 
     for (size_t i = 0; (res == nullptr) && (i < component->componentCount()); ++i) {
         res = voiFirstOccurrence(variable, component->component(i));
@@ -735,7 +723,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             ast->mPimpl->mOwnedRightChild = astRightChild;
         }
 
-        // Assignment, and relational and logical operators.
+        // Equality, and relational and logical operators.
 
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
@@ -1855,7 +1843,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
-        auto units = mCiCnUnits[ast].lock();
+        auto units = mCiCnUnits[ast];
         auto model = owningModel(units);
 
         defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
@@ -2647,8 +2635,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         if (type == AnalyserEquation::Type::NLA) {
             // The equation is currently of the form LHS = RHS, but we want it
-            // in the form LHS-RHS, so replace the assignment element with a
-            // minus one.
+            // in the form LHS-RHS, so replace the equality element with a minus
+            // one.
 
             internalEquation->mAst->setType(AnalyserEquationAst::Type::MINUS);
         } else if (type != AnalyserEquation::Type::EXTERNAL) {
@@ -2757,7 +2745,7 @@ const Analyser::AnalyserImpl *Analyser::pFunc() const
 }
 
 Analyser::Analyser()
-    : Logger(new Analyser::AnalyserImpl())
+    : Logger(new AnalyserImpl())
 {
     pFunc()->mAnalyser = this;
 }

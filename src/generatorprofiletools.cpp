@@ -274,9 +274,9 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
                                TRUE_VALUE :
                                FALSE_VALUE;
 
-    // Assignment.
+    // Equality.
 
-    profileContents += generatorProfile->assignmentString();
+    profileContents += generatorProfile->equalityString();
 
     // Relational and logical operators.
 

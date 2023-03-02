@@ -22,8 +22,6 @@ limitations under the License.
 
 namespace libcellml {
 
-using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type definition for weak analyser equation AST pointer. */
-
 /**
  * @brief The AnalyserEquationAst::AnalyserEquationAstImpl struct.
  *
@@ -33,12 +31,12 @@ struct AnalyserEquationAst::AnalyserEquationAstImpl
 {
     AnalyserEquationAst::Type mType = Type::EQUALITY;
     std::string mValue;
-    VariableWeakPtr mVariable;
+    VariablePtr mVariable;
     AnalyserEquationAstWeakPtr mParent;
-    AnalyserEquationAstPtr mOwnedLeftChild = nullptr;
-    AnalyserEquationAstPtr mOwnedRightChild = nullptr;
-    AnalyserEquationAstWeakPtr mLeftChild;
-    AnalyserEquationAstWeakPtr mRightChild;
+    AnalyserEquationAstPtr mOwnedLeftChild;
+    AnalyserEquationAstPtr mOwnedRightChild;
+    AnalyserEquationAstPtr mLeftChild;
+    AnalyserEquationAstPtr mRightChild;
 
     void populate(AnalyserEquationAst::Type type,
                   const AnalyserEquationAstPtr &parent);
