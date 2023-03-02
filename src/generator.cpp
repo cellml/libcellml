@@ -1256,7 +1256,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                        generateOperatorCode(mLockedProfile->powerString(), ast) :
                        mLockedProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
         }
-
     } break;
     case AnalyserEquationAst::Type::ROOT: {
         auto astRightChild = ast->rightChild();
@@ -1293,7 +1292,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
         }
-
     } break;
     case AnalyserEquationAst::Type::ABS:
         code = generateOneParameterFunctionCode(mLockedProfile->absoluteValueString(), ast);
@@ -1323,7 +1321,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->commonLogarithmString(), ast);
         }
-
     } break;
     case AnalyserEquationAst::Type::CEILING:
         code = generateOneParameterFunctionCode(mLockedProfile->ceilingString(), ast);
@@ -1457,7 +1454,6 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mLockedProfile->nanString());
         }
-
     } break;
     case AnalyserEquationAst::Type::PIECE:
         code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
