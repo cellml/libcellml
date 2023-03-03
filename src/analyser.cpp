@@ -162,7 +162,6 @@ struct AnalyserInternalEquation
         ALGEBRAIC
     };
 
-    size_t mOrder = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
     VariablePtrs mDependencies;
@@ -200,8 +199,7 @@ struct AnalyserInternalEquation
     bool unknownVariableOnLhs();
     bool unknownVariableOnRhs();
 
-    bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex,
-               const AnalyserModelPtr &model);
+    bool check(size_t &stateIndex, size_t &variableIndex, const AnalyserModelPtr &model);
 };
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
@@ -306,8 +304,7 @@ bool AnalyserInternalEquation::unknownVariableOnRhs()
     return unknownVariableOnLhsRhs(false);
 }
 
-bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
-                                     size_t &variableIndex,
+bool AnalyserInternalEquation::check(size_t &stateIndex, size_t &variableIndex,
                                      const AnalyserModelPtr &model)
 {
     // Nothing to check if the equation has a known type.
@@ -425,8 +422,6 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
         //       be solved as an NLA equation.
 
         if (validEquation) {
-            mOrder = ++equationOrder;
-
             auto variable = (variables.size() == 1) ?
                                 variables.front() :
                                 nullptr;
@@ -2404,7 +2399,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
 
-    auto equationOrder = MAX_SIZE_T;
     auto stateIndex = MAX_SIZE_T;
     auto variableIndex = MAX_SIZE_T;
     bool relevantCheck;
@@ -2413,7 +2407,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         relevantCheck = false;
 
         for (const auto &internalEquation : mInternalEquations) {
-            relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex, mModel)
+            relevantCheck = internalEquation->check(stateIndex, variableIndex, mModel)
                             || relevantCheck;
         }
     } while (relevantCheck);
