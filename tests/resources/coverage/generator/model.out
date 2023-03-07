@@ -79,6 +79,9 @@ double acoth(double x)
 }
 
 typedef struct {
+    double voi;
+    double *states;
+    double *rates;
     double *variables;
 } RootFindingInfo;
 
@@ -87,23 +90,30 @@ extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
 
 void objectiveFunction0(double *u, double *f, void *data)
 {
+    double voi = ((RootFindingInfo *) data)->voi;
+    double *states = ((RootFindingInfo *) data)->states;
+    double *rates = ((RootFindingInfo *) data)->rates;
     double *variables = ((RootFindingInfo *) data)->variables;
 
     variables[203] = u[0];
+    variables[204] = u[1];
 
-    f[0] = variables[203]+states[0]-(variables[2]+variables[6]);
+    f[0] = variables[203]+variables[204]+states[0]-0.0;
+    f[1] = variables[203]-variables[204]-(variables[2]+variables[6]);
 }
 
-void findRoot0(double *variables)
+void findRoot0(double voi, double *states, double *rates, double *variables)
 {
-    RootFindingInfo rfi = { variables };
-    double u[1];
+    RootFindingInfo rfi = { voi, states, rates, variables };
+    double u[2];
 
     u[0] = variables[203];
+    u[1] = variables[204];
 
-    nlaSolve(objectiveFunction0, u, 1, &rfi);
+    nlaSolve(objectiveFunction0, u, 2, &rfi);
 
     variables[203] = u[0];
+    variables[204] = u[1];
 }
 
 void initialiseVariables(double *states, double *variables)
@@ -115,7 +125,8 @@ void initialiseVariables(double *states, double *variables)
     variables[177] = 5.0;
     variables[178] = 6.0;
     variables[180] = 7.0;
-    variables[203] = 4.0;
+    variables[203] = 1.0;
+    variables[204] = 2.0;
     variables[182] = 123.0;
     variables[183] = 123.456789;
     variables[184] = 123.0e99;

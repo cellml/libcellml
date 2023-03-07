@@ -38,14 +38,17 @@
                 <apply>
                     <minus/>
                     <apply>
-                        <times/>
-                        <cn cellml:units="dimensionless">3</cn>
-                        <ci>x</ci>
-                    </apply>
-                    <apply>
-                        <times/>
-                        <cn cellml:units="dimensionless">3</cn>
-                        <ci>y</ci>
+                        <minus/>
+                        <apply>
+                            <times/>
+                            <cn cellml:units="dimensionless">3</cn>
+                            <ci>x</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <cn cellml:units="dimensionless">3</cn>
+                            <ci>y</ci>
+                        </apply>
                     </apply>
                     <ci>z</ci>
                 </apply>

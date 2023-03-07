@@ -482,12 +482,17 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->externalVariableMethodCallString(false)
                        + generatorProfile->externalVariableMethodCallString(true);
 
-    profileContents += generatorProfile->rootFindingInfoObjectString()
+    profileContents += generatorProfile->rootFindingInfoObjectString(false)
+                       + generatorProfile->rootFindingInfoObjectString(true)
                        + generatorProfile->externNlaSolveMethodString()
-                       + generatorProfile->findRootCallString()
-                       + generatorProfile->findRootMethodString()
-                       + generatorProfile->nlaSolveCallString()
-                       + generatorProfile->objectiveFunctionMethodString()
+                       + generatorProfile->findRootCallString(false)
+                       + generatorProfile->findRootCallString(true)
+                       + generatorProfile->findRootMethodString(false)
+                       + generatorProfile->findRootMethodString(true)
+                       + generatorProfile->nlaSolveCallString(false)
+                       + generatorProfile->nlaSolveCallString(true)
+                       + generatorProfile->objectiveFunctionMethodString(false)
+                       + generatorProfile->objectiveFunctionMethodString(true)
                        + generatorProfile->uArrayString()
                        + generatorProfile->fArrayString();
 

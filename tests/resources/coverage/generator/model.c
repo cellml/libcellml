@@ -9,7 +9,7 @@ const char VERSION[] = "0.3.2";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 1;
-const size_t VARIABLE_COUNT = 204;
+const size_t VARIABLE_COUNT = 205;
 
 const VariableInfo VOI_INFO = {"t", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
@@ -221,7 +221,8 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnCoverageForPowerOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForRootOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnNlaVariable", "dimensionless", "my_component", ALGEBRAIC}
+    {"eqnNlaVariable1", "dimensionless", "my_component", ALGEBRAIC},
+    {"eqnNlaVariable2", "dimensionless", "my_component", ALGEBRAIC}
 };
 
 double xor(double x, double y)
@@ -321,6 +322,9 @@ void deleteArray(double *array)
 }
 
 typedef struct {
+    double voi;
+    double *states;
+    double *rates;
     double *variables;
 } RootFindingInfo;
 
@@ -329,23 +333,30 @@ extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
 
 void objectiveFunction0(double *u, double *f, void *data)
 {
+    double voi = ((RootFindingInfo *) data)->voi;
+    double *states = ((RootFindingInfo *) data)->states;
+    double *rates = ((RootFindingInfo *) data)->rates;
     double *variables = ((RootFindingInfo *) data)->variables;
 
     variables[203] = u[0];
+    variables[204] = u[1];
 
-    f[0] = variables[203]+states[0]-(variables[2]+variables[6]);
+    f[0] = variables[203]+variables[204]+states[0]-0.0;
+    f[1] = variables[203]-variables[204]-(variables[2]+variables[6]);
 }
 
-void findRoot0(double *variables)
+void findRoot0(double voi, double *states, double *rates, double *variables)
 {
-    RootFindingInfo rfi = { variables };
-    double u[1];
+    RootFindingInfo rfi = { voi, states, rates, variables };
+    double u[2];
 
     u[0] = variables[203];
+    u[1] = variables[204];
 
-    nlaSolve(objectiveFunction0, u, 1, &rfi);
+    nlaSolve(objectiveFunction0, u, 2, &rfi);
 
     variables[203] = u[0];
+    variables[204] = u[1];
 }
 
 void initialiseVariables(double *states, double *variables)
@@ -357,7 +368,8 @@ void initialiseVariables(double *states, double *variables)
     variables[177] = 5.0;
     variables[178] = 6.0;
     variables[180] = 7.0;
-    variables[203] = 4.0;
+    variables[203] = 1.0;
+    variables[204] = 2.0;
     variables[182] = 123.0;
     variables[183] = 123.456789;
     variables[184] = 123.0e99;
@@ -568,5 +580,5 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-    findRoot0(variables);
+    findRoot0(voi, states, rates, variables);
 }

@@ -28,6 +28,15 @@
 %feature("docstring") libcellml::AnalyserEquation::dependency
 "Returns the dependency, at the given index, for this :class:`AnalyserEquation` object.";
 
+%feature("docstring") libcellml::AnalyserEquation::nlaSiblingCount
+"Returns the number of NLA siblings for this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::nlaSiblings
+"Returns the NLA siblings for this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::nlaSibling
+"Returns the NLA sibling, at the given index, for this :class:`AnalyserEquation` object.";
+
 %feature("docstring") libcellml::AnalyserEquation::isStateRateBased
 "Tests if this :class:`AnalyserEquation` object relies on states and/or rates.";
 

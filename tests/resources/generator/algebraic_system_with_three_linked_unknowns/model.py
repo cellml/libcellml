@@ -59,5 +59,9 @@ def initialise_variables(variables):
     variables[2] = 1.0
 
 
+def compute_computed_constants(variables):
+    pass
+
+
 def compute_variables(variables):
     find_root_0(variables)

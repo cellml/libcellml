@@ -387,8 +387,8 @@ TEST(Coverage, generator)
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(204), analyserModel->variableCount());
-    EXPECT_EQ(size_t(198), analyserModel->equationCount());
+    EXPECT_EQ(size_t(205), analyserModel->variableCount());
+    EXPECT_EQ(size_t(199), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
@@ -406,6 +406,10 @@ TEST(Coverage, generator)
     EXPECT_NE(size_t(0), analyserModel->equation(197)->dependencies().size());
     EXPECT_NE(nullptr, analyserModel->equation(197)->dependency(0));
     EXPECT_EQ(nullptr, analyserModel->equation(197)->dependency(analyserModel->equation(197)->dependencyCount()));
+    EXPECT_EQ(size_t(1), analyserModel->equation(197)->nlaSiblingCount());
+    EXPECT_EQ(size_t(1), analyserModel->equation(197)->nlaSiblings().size());
+    EXPECT_NE(nullptr, analyserModel->equation(197)->nlaSibling(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(197)->nlaSibling(analyserModel->equation(197)->nlaSiblingCount()));
     EXPECT_NE(size_t(0), analyserModel->equation(197)->variableCount());
     EXPECT_NE(size_t(0), analyserModel->equation(197)->variables().size());
     EXPECT_NE(nullptr, analyserModel->equation(197)->variable(0));
@@ -425,7 +429,7 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        EXPECT_EQ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 177) || (i == 178) || (i == 180) || (i == 203),
+        EXPECT_EQ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 177) || (i == 178) || (i == 180) || (i == 203) || (i == 204),
                   analyserModel->variable(i)->initialisingVariable() != nullptr);
     }
 
@@ -635,7 +639,8 @@ TEST(Coverage, generator)
     profile->setInterfaceHeaderString("");
     profile->setMaxFunctionString("");
     profile->setMinFunctionString("");
-    profile->setObjectiveFunctionMethodString("");
+    profile->setObjectiveFunctionMethodString(false, "");
+    profile->setObjectiveFunctionMethodString(true, "");
     profile->setSecFunctionString("");
     profile->setSechFunctionString("");
     profile->setVariableInfoEntryString("");
@@ -645,17 +650,22 @@ TEST(Coverage, generator)
 
     profile->setArrayElementSeparatorString("");
     profile->setCommentString("xxx");
-    profile->setFindRootMethodString("");
-    profile->setObjectiveFunctionMethodString("xxx");
+    profile->setFindRootMethodString(false, "");
+    profile->setFindRootMethodString(true, "");
+    profile->setObjectiveFunctionMethodString(false, "xxx");
+    profile->setObjectiveFunctionMethodString(true, "xxx");
     profile->setOriginCommentString("");
     profile->setVariableInfoEntryString("xxx");
 
     generator->implementationCode();
 
     profile->setArrayElementSeparatorString("xxx");
-    profile->setFindRootMethodString("xxx");
-    profile->setFindRootCallString("");
-    profile->setNlaSolveCallString("");
+    profile->setFindRootMethodString(false, "xxx");
+    profile->setFindRootMethodString(true, "xxx");
+    profile->setFindRootCallString(false, "");
+    profile->setFindRootCallString(true, "");
+    profile->setNlaSolveCallString(false, "");
+    profile->setNlaSolveCallString(true, "");
     profile->setVariableOfIntegrationVariableTypeString("");
 
     generator->implementationCode();

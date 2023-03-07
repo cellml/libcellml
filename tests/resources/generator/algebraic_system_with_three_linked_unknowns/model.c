@@ -69,6 +69,10 @@ void initialiseVariables(double *variables)
     variables[2] = 1.0;
 }
 
+void computeComputedConstants(double *variables)
+{
+}
+
 void computeVariables(double *variables)
 {
     findRoot0(variables);

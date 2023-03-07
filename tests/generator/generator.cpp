@@ -69,8 +69,8 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
-    EXPECT_EQ(libcellml::AnalyserEquation::Type::TRUE_CONSTANT, analyserModel->equation(0)->type());
-    EXPECT_EQ("true_constant", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::VARIABLE_BASED_CONSTANT, analyserModel->equation(0)->type());
+    EXPECT_EQ("variable_based_constant", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
 
     auto generator = libcellml::Generator::create();
 
@@ -164,11 +164,11 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
-    EXPECT_EQ(libcellml::AnalyserVariable::Type::CONSTANT, analyserModel->variable(0)->type());
-    EXPECT_EQ("constant", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(0)->type()));
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::COMPUTED_CONSTANT, analyserModel->variable(0)->type());
+    EXPECT_EQ("computed_constant", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(0)->type()));
 
-    EXPECT_EQ(libcellml::AnalyserVariable::Type::COMPUTED_CONSTANT, analyserModel->variable(1)->type());
-    EXPECT_EQ("computed_constant", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(1)->type()));
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::CONSTANT, analyserModel->variable(1)->type());
+    EXPECT_EQ("constant", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(1)->type()));
 
     EXPECT_EQ(libcellml::AnalyserEquation::Type::VARIABLE_BASED_CONSTANT, analyserModel->equation(0)->type());
     EXPECT_EQ("variable_based_constant", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
@@ -498,7 +498,6 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
     //          the NLA equation should be ignored.
 }
 
-/*---GRY---
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 {
     auto parser = libcellml::Parser::create();
@@ -547,7 +546,9 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
     //---GRY--- Test when "x", "y", and "z" are marked as external variables. In
     //          that case, all the NLA equations should be ignored.
 }
-*/
+
+//---GRY--- Create a test where an NLA system has a dependency on one or several
+//          other equations.
 
 TEST(Generator, odeComputedVarOnRhs)
 {
@@ -1484,11 +1485,11 @@ TEST(Generator, cellGeometryModelWithExternalVariables)
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
-    EXPECT_EQ(libcellml::AnalyserVariable::Type::EXTERNAL, analyserModel->variable(0)->type());
-    EXPECT_EQ("external", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(0)->type()));
+    EXPECT_EQ(libcellml::AnalyserVariable::Type::EXTERNAL, analyserModel->variable(1)->type());
+    EXPECT_EQ("external", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(1)->type()));
 
-    EXPECT_EQ(libcellml::AnalyserEquation::Type::EXTERNAL, analyserModel->equation(0)->type());
-    EXPECT_EQ("external", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
+    EXPECT_EQ(libcellml::AnalyserEquation::Type::EXTERNAL, analyserModel->equation(2)->type());
+    EXPECT_EQ("external", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(2)->type()));
 
     auto generator = libcellml::Generator::create();
 
@@ -2184,11 +2185,10 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode());
 }
 
-/*---GRY---
 TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
 {
     // Same as the hodgkinHuxleySquidAxonModel1952 test, except that all the
-    // equations are to be computed using a NLA equation.
+    // equations are to be computed using NLA equations.
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model_nla.cellml"));
@@ -2203,7 +2203,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
 
     auto analyserModel = analyser->model();
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::NLA, analyserModel->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::DAE, analyserModel->type());
 
     EXPECT_EQ(size_t(4), analyserModel->stateCount());
     EXPECT_EQ(size_t(18), analyserModel->variableCount());
@@ -2231,7 +2231,6 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model_nla.py"), generator->implementationCode());
 }
-*/
 
 TEST(Generator, nobleModel1962)
 {

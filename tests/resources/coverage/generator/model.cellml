@@ -208,7 +208,8 @@
         <variable name="eqnCoverageForPowerOperator" units="dimensionless"/>
         <variable name="eqnCoverageForRootOperator" units="dimensionless"/>
         <variable name="eqnCoverageForMinusUnary" units="dimensionless"/>
-        <variable name="eqnNlaVariable" initial_value="4" units="dimensionless"/>
+        <variable name="eqnNlaVariable1" initial_value="1" units="dimensionless"/>
+        <variable name="eqnNlaVariable2" initial_value="2" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
         <variable initial_value="3" name="o" units="dimensionless"/>
@@ -3345,8 +3346,18 @@
                 <eq/>
                 <apply>
                     <plus/>
-                    <ci>eqnNlaVariable</ci>
+                    <ci>eqnNlaVariable1</ci>
+                    <ci>eqnNlaVariable2</ci>
                     <ci>x</ci>
+                </apply>
+                <cn cellml:units="dimensionless">0</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <minus/>
+                    <ci>eqnNlaVariable1</ci>
+                    <ci>eqnNlaVariable2</ci>
                 </apply>
                 <apply>
                     <plus/>

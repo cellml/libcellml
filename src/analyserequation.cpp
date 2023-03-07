@@ -31,25 +31,23 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
 void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
                                                       const AnalyserEquationAstPtr &ast,
                                                       const std::vector<AnalyserEquationPtr> &dependencies,
+                                                      const std::vector<AnalyserEquationPtr> &nlaSiblings,
                                                       const std::vector<AnalyserVariablePtr> &variables)
 {
     mType = type;
     mAst = ast;
 
     std::copy(dependencies.begin(), dependencies.end(), back_inserter(mDependencies));
+    std::copy(nlaSiblings.begin(), nlaSiblings.end(), back_inserter(mNlaSiblings));
     std::copy(variables.begin(), variables.end(), back_inserter(mVariables));
 }
 
 bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    auto dep = dependency.lock();
+    auto variables = dependency.lock()->variables();
 
-    if (dep != nullptr) {
-        auto variables = dep->variables();
-
-        if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
-            return false;
-        }
+    if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
+        return false;
     }
 
     return true;
@@ -116,6 +114,31 @@ AnalyserEquationPtr AnalyserEquation::dependency(size_t index) const
     }
 
     return mPimpl->mDependencies[index].lock();
+}
+
+size_t AnalyserEquation::nlaSiblingCount() const
+{
+    return mPimpl->mNlaSiblings.size();
+}
+
+std::vector<AnalyserEquationPtr> AnalyserEquation::nlaSiblings() const
+{
+    std::vector<AnalyserEquationPtr> res;
+
+    for (const auto &nlaSibling : mPimpl->mNlaSiblings) {
+        res.push_back(nlaSibling.lock());
+    }
+
+    return res;
+}
+
+AnalyserEquationPtr AnalyserEquation::nlaSibling(size_t index) const
+{
+    if (index >= mPimpl->mNlaSiblings.size()) {
+        return {};
+    }
+
+    return mPimpl->mNlaSiblings[index].lock();
 }
 
 bool AnalyserEquation::isStateRateBased() const

@@ -60,9 +60,11 @@ namespace libcellml {
 struct AnalyserInternalEquation;
 struct AnalyserInternalVariable;
 
+using AnalyserInternalEquationWeakPtr = std::weak_ptr<AnalyserInternalEquation>;
 using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
 using AnalyserInternalVariablePtr = std::shared_ptr<AnalyserInternalVariable>;
 
+using AnalyserInternalEquationWeakPtrs = std::vector<AnalyserInternalEquationWeakPtr>;
 using AnalyserInternalEquationPtrs = std::vector<AnalyserInternalEquationPtr>;
 using AnalyserInternalVariablePtrs = std::vector<AnalyserInternalVariablePtr>;
 
@@ -107,7 +109,7 @@ struct AnalyserInternalVariable
 
 AnalyserInternalVariablePtr AnalyserInternalVariable::create(const VariablePtr &variable)
 {
-    auto res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {}};
+    auto res = AnalyserInternalVariablePtr {new AnalyserInternalVariable {}};
 
     res->setVariable(variable);
 
@@ -175,6 +177,8 @@ struct AnalyserInternalEquation
     AnalyserInternalVariablePtrs mAllVariables;
     AnalyserInternalVariablePtrs mUnknownVariables;
 
+    AnalyserInternalEquationWeakPtrs mNlaSiblings;
+
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
 
@@ -204,7 +208,7 @@ struct AnalyserInternalEquation
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
 {
-    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+    auto res = AnalyserInternalEquationPtr {new AnalyserInternalEquation {}};
 
     res->mAst = AnalyserEquationAst::create();
     res->mComponent = component;
@@ -214,7 +218,7 @@ AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr 
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInternalVariablePtr &variable)
 {
-    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+    auto res = AnalyserInternalEquationPtr {new AnalyserInternalEquation {}};
 
     res->mComponent = owningComponent(variable->mVariable);
 
@@ -2462,7 +2466,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                           std::back_inserter(commonUnknownVariables));
 
                     if (!commonUnknownVariables.empty()) {
-                        //---GRY--- TO BE DONE!
+                        internalEquation->mNlaSiblings.push_back(otherInternalEquation);
                     }
                 }
             }
@@ -2581,7 +2585,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         AnalyserEquationPtrs equations;
 
         for (const auto &internalEquation : mInternalEquations) {
-            if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) == internalEquation->mUnknownVariables.end()) {
+            if (std::find(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), internalVariable) != internalEquation->mUnknownVariables.end()) {
                 equations.push_back(aie2aeMappings[internalEquation]);
             }
         }
@@ -2694,9 +2698,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         if (type == AnalyserEquation::Type::EXTERNAL) {
             for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
                 for (const auto &dependency : unknownVariable->mDependencies) {
-                    if (std::find(variableDependencies.begin(), variableDependencies.end(), dependency) == variableDependencies.end()) {
-                        variableDependencies.push_back(dependency);
-                    }
+                    variableDependencies.push_back(dependency);
                 }
             }
         } else {
@@ -2717,6 +2719,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
         }
 
+        // Determine the equation's NLA siblings, i.e. the equations that should
+        // be computed as part of an NLA system, should this equation be an NLA
+        // one.
+
+        AnalyserEquationPtrs equationNlaSiblings;
+
+        for (const auto &nlaSibling : internalEquation->mNlaSiblings) {
+            equationNlaSiblings.push_back(aie2aeMappings[nlaSibling.lock()]);
+        }
+
         // Populate and keep track of the equation.
 
         auto equation = aie2aeMappings[internalEquation];
@@ -2726,6 +2738,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                        nullptr :
                                        internalEquation->mAst,
                                    equationDependencies,
+                                   equationNlaSiblings,
                                    variables);
 
         mModel->mPimpl->mEquations.push_back(equation);
