@@ -129,7 +129,7 @@ bool Generator::GeneratorImpl::isNegativeNumber(const AnalyserEquationAstPtr &as
         bool validConversion;
         double doubleValue = convertToDouble(ast->value(), &validConversion);
 
-        return validConversion && (doubleValue < 0.0);
+        return doubleValue < 0.0;
     }
 
     return false;
@@ -748,9 +748,9 @@ void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
 void Generator::GeneratorImpl::addRootFindingInfoObjectCode()
 {
     if (modelHasNlas()
-        && !mProfile->rootFindingInfoObjectString().empty()) {
+        && !mProfile->rootFindingInfoObjectString(modelHasOdes()).empty()) {
         mCode += newLineIfNeeded()
-                 + mProfile->rootFindingInfoObjectString();
+                 + mProfile->rootFindingInfoObjectString(modelHasOdes());
     }
 }
 
@@ -766,13 +766,15 @@ void Generator::GeneratorImpl::addExternNlaSolveMethodCode()
 void Generator::GeneratorImpl::addNlaSystemsCode()
 {
     if (modelHasNlas()
-        && !mProfile->objectiveFunctionMethodString().empty()
-        && !mProfile->findRootMethodString().empty()
-        && !mProfile->nlaSolveCallString().empty()) {
+        && !mProfile->objectiveFunctionMethodString(modelHasOdes()).empty()
+        && !mProfile->findRootMethodString(modelHasOdes()).empty()
+        && !mProfile->nlaSolveCallString(modelHasOdes()).empty()) {
         auto nlaSystemIndex = MAX_SIZE_T;
+        std::vector<AnalyserEquationPtr> handledNlaEquations;
 
         for (const auto &equation : mModel->equations()) {
-            if (equation->type() == AnalyserEquation::Type::NLA) {
+            if ((equation->type() == AnalyserEquation::Type::NLA)
+                && (std::find(handledNlaEquations.begin(), handledNlaEquations.end(), equation) == handledNlaEquations.end())) {
                 std::string methodBody;
                 auto i = MAX_SIZE_T;
                 auto variables = equation->variables();
@@ -788,16 +790,28 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 methodBody += newLineIfNeeded();
 
-                for (i = 0; i < variablesSize; ++i) {
+                i = MAX_SIZE_T;
+
+                methodBody += mProfile->indentString()
+                              + mProfile->fArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
+                              + mProfile->equalityString()
+                              + generateCode(equation->ast())
+                              + mProfile->commandSeparatorString() + "\n";
+
+                handledNlaEquations.push_back(equation);
+
+                for (const auto &nlaSibling : equation->nlaSiblings()) {
                     methodBody += mProfile->indentString()
-                                  + mProfile->fArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
+                                  + mProfile->fArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + generateCode(equation->ast())
+                                  + generateCode(nlaSibling->ast())
                                   + mProfile->commandSeparatorString() + "\n";
+
+                    handledNlaEquations.push_back(nlaSibling);
                 }
 
                 mCode += newLineIfNeeded()
-                         + replace(replace(mProfile->objectiveFunctionMethodString(),
+                         + replace(replace(mProfile->objectiveFunctionMethodString(modelHasOdes()),
                                            "[INDEX]", convertToString(++nlaSystemIndex)),
                                    "[CODE]", generateMethodBodyCode(methodBody));
 
@@ -813,9 +827,9 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 methodBody += newLineIfNeeded()
                               + mProfile->indentString()
-                              + replace(replace(mProfile->nlaSolveCallString(),
+                              + replace(replace(mProfile->nlaSolveCallString(modelHasOdes()),
                                                 "[INDEX]", convertToString(nlaSystemIndex)),
-                                        "[SIZE]", convertToString(1));
+                                        "[SIZE]", convertToString(1 + equation->nlaSiblingCount()));
 
                 methodBody += newLineIfNeeded();
 
@@ -828,7 +842,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 }
 
                 mCode += newLineIfNeeded()
-                         + replace(replace(replace(mProfile->findRootMethodString(),
+                         + replace(replace(replace(mProfile->findRootMethodString(modelHasOdes()),
                                                    "[INDEX]", convertToString(nlaSystemIndex)),
                                            "[SIZE]", convertToString(variablesSize)),
                                    "[CODE]", generateMethodBodyCode(methodBody));
@@ -1668,9 +1682,9 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
                        + mProfile->commandSeparatorString() + "\n";
             }
         } else if (equation->type() == AnalyserEquation::Type::NLA) {
-            if (!mProfile->findRootCallString().empty()) {
+            if (!mProfile->findRootCallString(modelHasOdes()).empty()) {
                 res += mProfile->indentString()
-                       + replace(mProfile->findRootCallString(),
+                       + replace(mProfile->findRootCallString(modelHasOdes()),
                                  "[INDEX]", convertToString(++mNlaSystemIndex));
             }
         } else {
@@ -1678,6 +1692,10 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         }
 
         remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
+
+        for (const auto &nlaSibling : equation->nlaSiblings()) {
+            remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), nlaSibling));
+        }
     }
 
     return res;

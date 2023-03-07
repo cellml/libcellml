@@ -58,6 +58,15 @@ describe("Analyser Equation tests", () => {
     test('Checking Analyser Equation dependency.', () => {
         expect(eqn.dependency(0)).toBe(null)
     });
+    test('Checking Analyser Equation nlaSiblingCount.', () => {
+        expect(eqn.nlaSiblingCount()).toBe(0)
+    });
+    test('Checking Analyser Equation nlaSiblings.', () => {
+        expect(eqn.nlaSiblings().size()).toBe(0)
+    });
+    test('Checking Analyser Equation nlaSibling.', () => {
+        expect(eqn.nlaSibling(0)).toBe(null)
+    });
     test('Checking Analyser Equation variableCount.', () => {
         expect(eqn.variableCount()).toBe(1)
     });

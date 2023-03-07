@@ -113,6 +113,36 @@ public:
     AnalyserEquationPtr dependency(size_t index) const;
 
     /**
+     * @brief Get the number of NLA siblings for this @c AnalyserEquation.
+     *
+     * Return the number of NLA siblings for this @c AnalyserEquation.
+     *
+     * @return The number of NLA siblings for this @c AnalyserEquation.
+     */
+    size_t nlaSiblingCount() const;
+
+    /**
+     * @brief Get the list of @c AnalyserEquation NLA siblings.
+     *
+     * Return the list of @c AnalyserEquation items which are NLA siblings of
+     * this @c AnalyserEquation.
+     *
+     * @return The list of @c AnalyserEquation NLA siblings.
+     */
+    std::vector<AnalyserEquationPtr> nlaSiblings() const;
+
+    /**
+     * @brief Get the NLA sibling, at @p index, for this @c AnalyserEquation.
+     *
+     * Return the NLA sibling, at @p index, for this @c AnalyserEquation.
+     *
+     * @param index The index of the NLA sibling to return.
+     *
+     * @return The NLA sibling, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserEquationPtr nlaSibling(size_t index) const;
+
+    /**
      * @brief Test to determine if this @c AnalyserEquation relies on states
      * and/or rates.
      *

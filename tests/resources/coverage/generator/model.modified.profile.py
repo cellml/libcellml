@@ -8,7 +8,7 @@ __version__ = "0.3.2.post0"
 LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 1
-VARIABLE_COUNT = 204
+VARIABLE_COUNT = 205
 
 
 class VariableType(Enum):
@@ -229,7 +229,8 @@ VARIABLE_INFO = [
     {"name": "eqnCoverageForPowerOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnCoverageForRootOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnCoverageForMinusUnary", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnNlaVariable", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC}
+    {"name": "eqnNlaVariable1", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC},
+    {"name": "eqnNlaVariable2", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -344,21 +345,28 @@ def create_variables_array():
 
 
 def objective_function_0(u, f, data):
-    variables = data[0]
+    voi = data[0]
+    states = data[1]
+    rates = data[2]
+    variables = data[3]
 
     variables[203] = u[0]
+    variables[204] = u[1]
 
-    f[0] = variables[203]+states[0]-(variables[2]+variables[6])
+    f[0] = variables[203]+variables[204]+states[0]-0.0
+    f[1] = variables[203]-variables[204]-(variables[2]+variables[6])
 
 
-def find_root_0(variables):
-    u = [nan]*1
+def find_root_0(voi, states, rates, variables):
+    u = [nan]*2
 
     u[0] = variables[203]
+    u[1] = variables[204]
 
-    nla_solve(objective_function_0, u, 1, (variables))
+    nla_solve(objective_function_0, u, 2, (voi, states, rates, variables))
 
     variables[203] = u[0]
+    variables[204] = u[1]
 
 
 def initialise_variables(states, variables):
@@ -369,7 +377,8 @@ def initialise_variables(states, variables):
     variables[177] = 5.0
     variables[178] = 6.0
     variables[180] = 7.0
-    variables[203] = 4.0
+    variables[203] = 1.0
+    variables[204] = 2.0
     variables[182] = 123.0
     variables[183] = 123.456789
     variables[184] = 123.0e99
@@ -577,4 +586,4 @@ def compute_rates(voi, states, rates, variables):
 
 
 def compute_variables(voi, states, rates, variables):
-    find_root_0(variables)
+    find_root_0(voi, states, rates, variables)

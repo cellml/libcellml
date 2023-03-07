@@ -224,12 +224,17 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mExternalVariableMethodCallFamString;
     std::string mExternalVariableMethodCallFdmString;
 
-    std::string mRootFindingInfoObjectString;
+    std::string mRootFindingInfoObjectFamString;
+    std::string mRootFindingInfoObjectFdmString;
     std::string mExternNlaSolveMethodString;
-    std::string mFindRootCallString;
-    std::string mFindRootMethodString;
-    std::string mNlaSolveCallString;
-    std::string mObjectiveFunctionMethodString;
+    std::string mFindRootCallFamString;
+    std::string mFindRootCallFdmString;
+    std::string mFindRootMethodFamString;
+    std::string mFindRootMethodFdmString;
+    std::string mNlaSolveCallFamString;
+    std::string mNlaSolveCallFdmString;
+    std::string mObjectiveFunctionMethodFamString;
+    std::string mObjectiveFunctionMethodFdmString;
     std::string mUArrayString;
     std::string mFArrayString;
 
@@ -571,26 +576,50 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodCallFamString = "externalVariable(variables, [INDEX])";
         mExternalVariableMethodCallFdmString = "externalVariable(voi, states, variables, [INDEX])";
 
-        mRootFindingInfoObjectString = "typedef struct {\n"
-                                       "    double *variables;\n"
-                                       "} RootFindingInfo;\n";
+        mRootFindingInfoObjectFamString = "typedef struct {\n"
+                                          "    double *variables;\n"
+                                          "} RootFindingInfo;\n";
+        mRootFindingInfoObjectFdmString = "typedef struct {\n"
+                                          "    double voi;\n"
+                                          "    double *states;\n"
+                                          "    double *rates;\n"
+                                          "    double *variables;\n"
+                                          "} RootFindingInfo;\n";
         mExternNlaSolveMethodString = "extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
                                       "                     double *u, int n, void *data);\n";
-        mFindRootCallString = "findRoot[INDEX](variables);\n";
-        mFindRootMethodString = "void findRoot[INDEX](double *variables)\n"
-                                "{\n"
-                                "    RootFindingInfo rfi = { variables };\n"
-                                "    double u[[SIZE]];\n"
-                                "\n"
-                                "[CODE]"
-                                "}\n";
-        mNlaSolveCallString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
-        mObjectiveFunctionMethodString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
-                                         "{\n"
-                                         "    double *variables = ((RootFindingInfo *) data)->variables;\n"
-                                         "\n"
-                                         "[CODE]"
-                                         "}\n";
+        mFindRootCallFamString = "findRoot[INDEX](variables);\n";
+        mFindRootCallFdmString = "findRoot[INDEX](voi, states, rates, variables);\n";
+        mFindRootMethodFamString = "void findRoot[INDEX](double *variables)\n"
+                                   "{\n"
+                                   "    RootFindingInfo rfi = { variables };\n"
+                                   "    double u[[SIZE]];\n"
+                                   "\n"
+                                   "[CODE]"
+                                   "}\n";
+        mFindRootMethodFdmString = "void findRoot[INDEX](double voi, double *states, double *rates, double *variables)\n"
+                                   "{\n"
+                                   "    RootFindingInfo rfi = { voi, states, rates, variables };\n"
+                                   "    double u[[SIZE]];\n"
+                                   "\n"
+                                   "[CODE]"
+                                   "}\n";
+        mNlaSolveCallFamString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
+        mNlaSolveCallFdmString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
+        mObjectiveFunctionMethodFamString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                            "{\n"
+                                            "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+                                            "\n"
+                                            "[CODE]"
+                                            "}\n";
+        mObjectiveFunctionMethodFdmString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                            "{\n"
+                                            "    double voi = ((RootFindingInfo *) data)->voi;\n"
+                                            "    double *states = ((RootFindingInfo *) data)->states;\n"
+                                            "    double *rates = ((RootFindingInfo *) data)->rates;\n"
+                                            "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+                                            "\n"
+                                            "[CODE]"
+                                            "}\n";
         mUArrayString = "u";
         mFArrayString = "f";
 
@@ -963,20 +992,36 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodCallFamString = "external_variable(variables, [INDEX])";
         mExternalVariableMethodCallFdmString = "external_variable(voi, states, variables, [INDEX])";
 
-        mRootFindingInfoObjectString = "";
+        mRootFindingInfoObjectFamString = "";
+        mRootFindingInfoObjectFdmString = "";
         mExternNlaSolveMethodString = "";
-        mFindRootCallString = "find_root_[INDEX](variables)\n";
-        mFindRootMethodString = "\n"
-                                "def find_root_[INDEX](variables):\n"
-                                "    u = [nan]*[SIZE]\n"
-                                "\n"
-                                "[CODE]";
-        mNlaSolveCallString = "nla_solve(objective_function_[INDEX], u, [SIZE], (variables))\n";
-        mObjectiveFunctionMethodString = "\n"
-                                         "def objective_function_[INDEX](u, f, data):\n"
-                                         "    variables = data[0]\n"
-                                         "\n"
-                                         "[CODE]";
+        mFindRootCallFamString = "find_root_[INDEX](variables)\n";
+        mFindRootCallFdmString = "find_root_[INDEX](voi, states, rates, variables)\n";
+        mFindRootMethodFamString = "\n"
+                                   "def find_root_[INDEX](variables):\n"
+                                   "    u = [nan]*[SIZE]\n"
+                                   "\n"
+                                   "[CODE]";
+        mFindRootMethodFdmString = "\n"
+                                   "def find_root_[INDEX](voi, states, rates, variables):\n"
+                                   "    u = [nan]*[SIZE]\n"
+                                   "\n"
+                                   "[CODE]";
+        mNlaSolveCallFamString = "nla_solve(objective_function_[INDEX], u, [SIZE], (variables))\n";
+        mNlaSolveCallFdmString = "nla_solve(objective_function_[INDEX], u, [SIZE], (voi, states, rates, variables))\n";
+        mObjectiveFunctionMethodFamString = "\n"
+                                            "def objective_function_[INDEX](u, f, data):\n"
+                                            "    variables = data[0]\n"
+                                            "\n"
+                                            "[CODE]";
+        mObjectiveFunctionMethodFdmString = "\n"
+                                            "def objective_function_[INDEX](u, f, data):\n"
+                                            "    voi = data[0]\n"
+                                            "    states = data[1]\n"
+                                            "    rates = data[2]\n"
+                                            "    variables = data[3]\n"
+                                            "\n"
+                                            "[CODE]";
         mUArrayString = "u";
         mFArrayString = "f";
 
@@ -2466,14 +2511,23 @@ void GeneratorProfile::setExternalVariableMethodCallString(bool forDifferentialM
     }
 }
 
-std::string GeneratorProfile::rootFindingInfoObjectString() const
+std::string GeneratorProfile::rootFindingInfoObjectString(bool forDifferentialModel) const
 {
-    return mPimpl->mRootFindingInfoObjectString;
+    if (forDifferentialModel) {
+        return mPimpl->mRootFindingInfoObjectFdmString;
+    }
+
+    return mPimpl->mRootFindingInfoObjectFamString;
 }
 
-void GeneratorProfile::setRootFindingInfoObjectString(const std::string &rootFindingInfoObjectString)
+void GeneratorProfile::setRootFindingInfoObjectString(bool forDifferentialModel,
+                                                      const std::string &rootFindingInfoObjectString)
 {
-    mPimpl->mRootFindingInfoObjectString = rootFindingInfoObjectString;
+    if (forDifferentialModel) {
+        mPimpl->mRootFindingInfoObjectFdmString = rootFindingInfoObjectString;
+    } else {
+        mPimpl->mRootFindingInfoObjectFamString = rootFindingInfoObjectString;
+    }
 }
 
 std::string GeneratorProfile::externNlaSolveMethodString() const
@@ -2486,44 +2540,80 @@ void GeneratorProfile::setExternNlaSolveMethodString(const std::string &externNl
     mPimpl->mExternNlaSolveMethodString = externNlaSolveMethodString;
 }
 
-std::string GeneratorProfile::findRootCallString() const
+std::string GeneratorProfile::findRootCallString(bool forDifferentialModel) const
 {
-    return mPimpl->mFindRootCallString;
+    if (forDifferentialModel) {
+        return mPimpl->mFindRootCallFdmString;
+    }
+
+    return mPimpl->mFindRootCallFamString;
 }
 
-void GeneratorProfile::setFindRootCallString(const std::string &findRootCallString)
+void GeneratorProfile::setFindRootCallString(bool forDifferentialModel,
+                                             const std::string &findRootCallString)
 {
-    mPimpl->mFindRootCallString = findRootCallString;
+    if (forDifferentialModel) {
+        mPimpl->mFindRootCallFdmString = findRootCallString;
+    } else {
+        mPimpl->mFindRootCallFamString = findRootCallString;
+    }
 }
 
-std::string GeneratorProfile::findRootMethodString() const
+std::string GeneratorProfile::findRootMethodString(bool forDifferentialModel) const
 {
-    return mPimpl->mFindRootMethodString;
+    if (forDifferentialModel) {
+        return mPimpl->mFindRootMethodFdmString;
+    }
+
+    return mPimpl->mFindRootMethodFamString;
 }
 
-void GeneratorProfile::setFindRootMethodString(const std::string &findRootMethodString)
+void GeneratorProfile::setFindRootMethodString(bool forDifferentialModel,
+                                               const std::string &findRootMethodString)
 {
-    mPimpl->mFindRootMethodString = findRootMethodString;
+    if (forDifferentialModel) {
+        mPimpl->mFindRootMethodFdmString = findRootMethodString;
+    } else {
+        mPimpl->mFindRootMethodFamString = findRootMethodString;
+    }
 }
 
-std::string GeneratorProfile::nlaSolveCallString() const
+std::string GeneratorProfile::nlaSolveCallString(bool forDifferentialModel) const
 {
-    return mPimpl->mNlaSolveCallString;
+    if (forDifferentialModel) {
+        return mPimpl->mNlaSolveCallFdmString;
+    }
+
+    return mPimpl->mNlaSolveCallFamString;
 }
 
-void GeneratorProfile::setNlaSolveCallString(const std::string &nlaSolveCallString)
+void GeneratorProfile::setNlaSolveCallString(bool forDifferentialModel,
+                                             const std::string &nlaSolveCallString)
 {
-    mPimpl->mNlaSolveCallString = nlaSolveCallString;
+    if (forDifferentialModel) {
+        mPimpl->mNlaSolveCallFdmString = nlaSolveCallString;
+    } else {
+        mPimpl->mNlaSolveCallFamString = nlaSolveCallString;
+    }
 }
 
-std::string GeneratorProfile::objectiveFunctionMethodString() const
+std::string GeneratorProfile::objectiveFunctionMethodString(bool forDifferentialModel) const
 {
-    return mPimpl->mObjectiveFunctionMethodString;
+    if (forDifferentialModel) {
+        return mPimpl->mObjectiveFunctionMethodFdmString;
+    }
+
+    return mPimpl->mObjectiveFunctionMethodFamString;
 }
 
-void GeneratorProfile::setObjectiveFunctionMethodString(const std::string &objectiveFunctionMethodString)
+void GeneratorProfile::setObjectiveFunctionMethodString(bool forDifferentialModel,
+                                                        const std::string &objectiveFunctionMethodString)
 {
-    mPimpl->mObjectiveFunctionMethodString = objectiveFunctionMethodString;
+    if (forDifferentialModel) {
+        mPimpl->mObjectiveFunctionMethodFdmString = objectiveFunctionMethodString;
+    } else {
+        mPimpl->mObjectiveFunctionMethodFamString = objectiveFunctionMethodString;
+    }
 }
 
 std::string GeneratorProfile::uArrayString() const

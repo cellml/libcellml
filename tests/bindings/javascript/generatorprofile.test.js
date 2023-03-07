@@ -795,8 +795,11 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.rootFindingInfoObjectString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setRootFindingInfoObjectString("something")
-    expect(x.rootFindingInfoObjectString()).toBe("something")
+    x.setRootFindingInfoObjectString(false, "something")
+    expect(x.rootFindingInfoObjectString(false)).toBe("something")
+
+    x.setRootFindingInfoObjectString(true, "something")
+    expect(x.rootFindingInfoObjectString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.externNlaSolveMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
@@ -807,26 +810,38 @@ describe("GeneratorProfile tests", () => {
   test("Checking GeneratorProfile.findRootCallString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setFindRootCallString("something")
-    expect(x.findRootCallString()).toBe("something")
+    x.setFindRootCallString(false, "something")
+    expect(x.findRootCallString(false)).toBe("something")
+
+    x.setFindRootCallString(true, "something")
+    expect(x.findRootCallString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.findRootMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setFindRootMethodString("something")
-    expect(x.findRootMethodString()).toBe("something")
+    x.setFindRootMethodString(false, "something")
+    expect(x.findRootMethodString(false)).toBe("something")
+
+    x.setFindRootMethodString(true, "something")
+    expect(x.findRootMethodString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.nlaSolveCallString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setNlaSolveCallString("something")
-    expect(x.nlaSolveCallString()).toBe("something")
+    x.setNlaSolveCallString(false, "something")
+    expect(x.nlaSolveCallString(false)).toBe("something")
+
+    x.setNlaSolveCallString(true, "something")
+    expect(x.nlaSolveCallString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.objectiveFunctionMethodString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setObjectiveFunctionMethodString("something")
-    expect(x.objectiveFunctionMethodString()).toBe("something")
+    x.setObjectiveFunctionMethodString(false, "something")
+    expect(x.objectiveFunctionMethodString(false)).toBe("something")
+
+    x.setObjectiveFunctionMethodString(true, "something")
+    expect(x.objectiveFunctionMethodString(true)).toBe("something")
   });
   test("Checking GeneratorProfile.uArrayString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
