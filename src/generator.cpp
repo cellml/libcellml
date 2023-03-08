@@ -123,6 +123,18 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) cons
     return Units::scalingFactor(variable->units(), analyserVariable(variable)->variable()->units());
 }
 
+bool Generator::GeneratorImpl::isNegativeNumber(const AnalyserEquationAstPtr &ast) const
+{
+    if (ast->type() == AnalyserEquationAst::Type::CN) {
+        bool validConversion;
+        double doubleValue = convertToDouble(ast->value(), &validConversion);
+
+        return validConversion && (doubleValue < 0.0);
+    }
+
+    return false;
+}
+
 bool Generator::GeneratorImpl::isRelationalOperator(const AnalyserEquationAstPtr &ast) const
 {
     auto astType = ast->type();
@@ -940,7 +952,8 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             astLeftChildCode = "(" + astLeftChildCode + ")";
         }
 
-        if (isRelationalOperator(astRightChild)
+        if (isNegativeNumber(astRightChild)
+            || isRelationalOperator(astRightChild)
             || isLogicalOperator(astRightChild)
             || isMinusOperator(astRightChild)
             || isPiecewiseStatement(astRightChild)) {
