@@ -50,6 +50,8 @@ struct Generator::GeneratorImpl
 
     double scalingFactor(const VariablePtr &variable) const;
 
+    bool isNegativeNumber(const AnalyserEquationAstPtr &ast) const;
+
     bool isRelationalOperator(const AnalyserEquationAstPtr &ast) const;
     bool isAndOperator(const AnalyserEquationAstPtr &ast) const;
     bool isOrOperator(const AnalyserEquationAstPtr &ast) const;
