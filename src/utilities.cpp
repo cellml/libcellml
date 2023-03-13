@@ -42,14 +42,13 @@ namespace libcellml {
 
 bool stringToDoube(const std::string &in, double *out)
 {
-    bool success = true;
     try {
         *out = std::stod(in);
     } catch (std::out_of_range &) {
-        success = false;
+        return false;
     }
 
-    return success;
+    return true;
 }
 
 bool canConvertToBasicDouble(const std::string &in)
