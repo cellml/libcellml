@@ -39,27 +39,32 @@ limitations under the License.
 
 namespace libcellml {
 
+
+bool stringToDoube(const std::string &in, double *out)
+{
+    bool success = true;
+    try {
+        *out = std::stod(in);
+    } catch (std::out_of_range &) {
+        success = false;
+    }
+
+    return success;
+}
+
 bool canConvertToBasicDouble(const std::string &in)
 {
     if (!isCellMLBasicReal(in)) {
         return false;
     }
 
-    try {
-        std::stod(in);
-    } catch (std::out_of_range &) {
-        return false;
-    }
-
-    return true;
+    double temp;
+    return stringToDoube(in, &temp);
 }
 
 double convertToDouble(const std::string &in, bool *ok)
 {
     double out = 0.0;
-    if (ok != nullptr) {
-        *ok = true;
-    }
 
     if (!isCellMLReal(in)) {
         if (ok != nullptr) {
@@ -69,13 +74,11 @@ double convertToDouble(const std::string &in, bool *ok)
         return out;
     }
 
-    try {
-        out = std::stod(in);
-    } catch (std::out_of_range &) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
+    bool success = stringToDoube(in, &out);
+    if (ok != nullptr) {
+        *ok = success;
     }
+
     return out;
 }
 
