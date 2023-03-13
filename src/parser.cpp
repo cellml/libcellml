@@ -775,11 +775,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             prefix = attribute->value();
         } else if (attribute->isType("exponent")) {
             if (isCellMLReal(attribute->value())) {
-                bool validConversion;
-                double tmpExponent = convertToDouble(attribute->value(), &validConversion);
-                if (validConversion) {
-                    exponent = tmpExponent;
-                } else {
+                if (!convertToDouble(attribute->value(), &exponent)) {
                     // This value won't be saved for validation later, so it does need to be reported now.
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");
@@ -797,11 +793,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             }
         } else if (attribute->isType("multiplier")) {
             if (isCellMLReal(attribute->value())) {
-                bool validConversion;
-                double tmpMultiplier = convertToDouble(attribute->value(), &validConversion);
-                if (validConversion) {
-                    multiplier = tmpMultiplier;
-                } else {
+                if (convertToDouble(attribute->value(), &multiplier)) {
                     // This value won't be saved for validation later, so it does need to be reported now.
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");

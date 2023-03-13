@@ -62,24 +62,13 @@ bool canConvertToBasicDouble(const std::string &in)
     return stringToDoube(in, &temp);
 }
 
-double convertToDouble(const std::string &in, bool *ok)
+bool convertToDouble(const std::string &in, double *out)
 {
-    double out = 0.0;
-
     if (!isCellMLReal(in)) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
-
-        return out;
+        return false;
     }
 
-    bool success = stringToDoube(in, &out);
-    if (ok != nullptr) {
-        *ok = success;
-    }
-
-    return out;
+    return stringToDoube(in, out);
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
