@@ -212,19 +212,21 @@ bool convertToDouble(const std::string &in, double *out);
  * @brief Convert the @p in @c std::string to an @c int.
  *
  * Convert the @p in @c std::string to an @c int.
- * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * Returns @c true if the conversion succeeded
  * and @c false if it didn't.
  *
  * If @p in is not a CellML integer the conversion will not succeed.
+ * If @p in is a number bigger than an int can represent the conversion
+ * will also not succeed.
  *
  * @sa isCellMLInteger
  *
  * @param in The @c std::string value to convert to an @c int.
- * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
+ * @param out The integer value of the @p in.
  *
- * @return The integer value of @p in.
+ * @return @c true if the conversion was successful and @c false if it wasn't.
  */
-int convertToInt(const std::string &in, bool *ok = nullptr);
+bool convertToInt(const std::string &in, int *out);
 
 /**
  * @brief Convert a units prefix to an int.
