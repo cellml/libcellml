@@ -206,7 +206,7 @@ bool canConvertToBasicDouble(const std::string &in);
  *
  * @return The @c true if the conversion succeeded, @c false otherwise.
  */
-bool convertToDouble(const std::string &in, double *out);
+bool convertToDouble(const std::string &in, double &out);
 
 /**
  * @brief Convert the @p in @c std::string to an @c int.
