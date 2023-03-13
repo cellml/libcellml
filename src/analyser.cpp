@@ -1217,10 +1217,10 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
         && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
         && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)) {
-        double value = 0.0;
-        convertToDouble(ast->mPimpl->mValue, &value);
+        double value;
 
-        if (!areEqual(value, 1.0)) {
+        if (convertToDouble(ast->mPimpl->mValue, value)
+            && !areEqual(value, 1.0)) {
             auto variable = astGreatGrandparent->mPimpl->mOwnedRightChild->variable();
             auto issue = Issue::IssueImpl::create();
 
