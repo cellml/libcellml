@@ -213,11 +213,8 @@ bool XmlNode::isBasicReal() const
 
 bool XmlNode::isInteger() const
 {
-    bool validConversion;
-
-    convertToInt(convertToStrippedString(), &validConversion);
-
-    return validConversion;
+    int dummyInt;
+    return convertToInt(convertToStrippedString(), &dummyInt);
 }
 
 bool XmlNode::isComment() const

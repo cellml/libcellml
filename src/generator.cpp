@@ -1212,8 +1212,8 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateOperatorCode(mLockedProfile->divideString(), ast);
     } else if (astType == AnalyserEquationAst::Type::POWER) {
         auto stringValue = generateCode(ast->rightChild());
-        bool validConversion;
-        double doubleValue = convertToDouble(stringValue, &validConversion);
+        double doubleValue = 0.0;
+        bool validConversion = convertToDouble(stringValue, &doubleValue);
 
         if (validConversion && areEqual(doubleValue, 0.5)) {
             code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
@@ -1230,9 +1230,8 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         if (astRightChild != nullptr) {
             auto astLeftChild = ast->leftChild();
-
-            bool validConversion;
-            double doubleValue = convertToDouble(generateCode(astLeftChild), &validConversion);
+            double doubleValue = 0.0;
+            bool validConversion = convertToDouble(generateCode(astLeftChild), &doubleValue);
 
             if (validConversion && areEqual(doubleValue, 2.0)) {
                 code = mLockedProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
@@ -1271,8 +1270,8 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         if (astRightChild != nullptr) {
             auto stringValue = generateCode(ast->leftChild());
-            bool validConversion;
-            double doubleValue = convertToDouble(stringValue, &validConversion);
+            double doubleValue = 0.0;
+            bool validConversion = convertToDouble(stringValue, &doubleValue);
 
             if (validConversion && areEqual(doubleValue, 10.0)) {
                 code = mLockedProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
