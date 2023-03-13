@@ -2124,7 +2124,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
         auto cnType = node->attribute("type");
 
         if (cnType.empty() || (cnType == "real")) {
-            auto ok = (nonCommentChildCount(node) != 1) ? false : nonCommentChildNode(node, 0)->isBasicNumber();
+            auto ok = (nonCommentChildCount(node) != 1) ? false : nonCommentChildNode(node, 0)->isBasicReal();
 
             if (!ok) {
                 addMathMLIssue("Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
@@ -2135,7 +2135,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
             auto ok = false;
 
             if (nonCommentChildCount(node) == 3) {
-                ok = nonCommentChildNode(node, 0)->isBasicNumber()
+                ok = nonCommentChildNode(node, 0)->isBasicReal()
                      && nonCommentChildNode(node, 1)->isMathmlElement("sep")
                      && nonCommentChildNode(node, 2)->isInteger();
             }

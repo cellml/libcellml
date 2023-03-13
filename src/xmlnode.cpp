@@ -206,7 +206,7 @@ bool XmlNode::isText() const
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
 }
 
-bool XmlNode::isBasicNumber() const
+bool XmlNode::isBasicReal() const
 {
     return canConvertToBasicDouble(convertToStrippedString());
 }
