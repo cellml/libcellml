@@ -191,19 +191,22 @@ bool canConvertToBasicDouble(const std::string &in);
  * @brief Convert the @p in @c std::string to a @c double.
  *
  * Convert the @p in @c std::string to a @c double.
- * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * Returns @c true if the conversion succeeded
  * and @c false if it didn't.
  *
  * If the @p in is not a CellML real the conversion will not succeed.
+ * If the @p in is a number bigger than a double can represent the
+ * conversion will also not succeed.
  *
  * @sa isCellMLReal
  *
  * @param in The @c std::string value to convert to a @c double.
- * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
+ * @param out The value of the @p in as a doulbe if the conversion was successful,
+ * left unchanged if the conversion fails.
  *
- * @return The double value of @p in.
+ * @return The @c true if the conversion succeeded, @c false otherwise.
  */
-double convertToDouble(const std::string &in, bool *ok = nullptr);
+bool convertToDouble(const std::string &in, double *out);
 
 /**
  * @brief Convert the @p in @c std::string to an @c int.
