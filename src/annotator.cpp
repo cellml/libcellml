@@ -1256,10 +1256,9 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) c
     ModelPtr itemModel = nullptr;
     switch (item->type()) {
     case CellmlElementType::COMPONENT:
-    case CellmlElementType::COMPONENT_REF: {
+    case CellmlElementType::COMPONENT_REF:
         itemModel = owningModel(item->component());
         break;
-    }
     case CellmlElementType::CONNECTION:
     case CellmlElementType::MAP_VARIABLES: {
         auto variablePair = item->variablePair();
@@ -1269,34 +1268,27 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) c
         break;
     }
     case CellmlElementType::ENCAPSULATION:
-    case CellmlElementType::MODEL: {
+    case CellmlElementType::MODEL:
         itemModel = item->model();
         break;
-    }
-    case CellmlElementType::IMPORT: {
+    case CellmlElementType::IMPORT:
         itemModel = model;
         break;
-    }
     case CellmlElementType::RESET:
     case CellmlElementType::RESET_VALUE:
-    case CellmlElementType::TEST_VALUE: {
+    case CellmlElementType::TEST_VALUE:
         itemModel = owningModel(item->reset());
         break;
-    }
-    case CellmlElementType::UNIT: {
+    case CellmlElementType::UNIT:
         // Unit is not actually stored as a weak pointer so we can compare shared pointers directly.
         itemModel = owningModel(item->unitsItem()->units());
         break;
-    }
-    case CellmlElementType::UNITS: {
+    case CellmlElementType::UNITS:
         itemModel = owningModel(item->units());
         break;
-    }
     default: /* CellmlElementType::VARIABLE */
-    {
         itemModel = owningModel(item->variable());
         break;
-    }
     }
 
     return itemModel == model;
@@ -1308,52 +1300,43 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyCellmlElementPtr &itemWeak, c
     auto item = convertToWeak(itemShared);
     switch (itemWeak->type()) {
     case CellmlElementType::COMPONENT:
-    case CellmlElementType::COMPONENT_REF: {
+    case CellmlElementType::COMPONENT_REF:
         itemsEqual = equals(std::any_cast<ComponentWeakPtr>(itemWeak->mPimpl->mItem),
                             std::any_cast<ComponentWeakPtr>(item->mPimpl->mItem));
         break;
-    }
     case CellmlElementType::CONNECTION:
-    case CellmlElementType::MAP_VARIABLES: {
+    case CellmlElementType::MAP_VARIABLES:
         // Connections and map variables are not stored as a weak pointer so we can compare
         // shared pointers directly.
         itemsEqual = itemWeak->variablePair() == item->variablePair();
         break;
-    }
     case CellmlElementType::ENCAPSULATION:
-    case CellmlElementType::MODEL: {
+    case CellmlElementType::MODEL:
         itemsEqual = equals(std::any_cast<ModelWeakPtr>(itemWeak->mPimpl->mItem),
                             std::any_cast<ModelWeakPtr>(item->mPimpl->mItem));
         break;
-    }
-    case CellmlElementType::IMPORT: {
+    case CellmlElementType::IMPORT:
         itemsEqual = equals(std::any_cast<ImportSourceWeakPtr>(itemWeak->mPimpl->mItem),
                             std::any_cast<ImportSourceWeakPtr>(item->mPimpl->mItem));
         break;
-    }
     case CellmlElementType::RESET:
     case CellmlElementType::RESET_VALUE:
-    case CellmlElementType::TEST_VALUE: {
+    case CellmlElementType::TEST_VALUE:
         itemsEqual = equals(std::any_cast<ResetWeakPtr>(itemWeak->mPimpl->mItem),
                             std::any_cast<ResetWeakPtr>(item->mPimpl->mItem));
         break;
-    }
-    case CellmlElementType::UNIT: {
+    case CellmlElementType::UNIT:
         // Unit is not actually stored as a weak pointer so we can compare shared pointers directly.
         itemsEqual = itemWeak->unitsItem() == itemShared->unitsItem();
         break;
-    }
-    case CellmlElementType::UNITS: {
+    case CellmlElementType::UNITS:
         itemsEqual = equals(std::any_cast<UnitsWeakPtr>(itemWeak->mPimpl->mItem),
                             std::any_cast<UnitsWeakPtr>(item->mPimpl->mItem));
         break;
-    }
     default: /* CellmlElementType::VARIABLE */
-    {
         itemsEqual = equals(std::any_cast<VariableWeakPtr>(itemWeak->mPimpl->mItem),
                             std::any_cast<VariableWeakPtr>(item->mPimpl->mItem));
         break;
-    }
     }
 
     return itemsEqual;
@@ -1364,10 +1347,9 @@ bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
     bool result = false;
     switch (item->type()) {
     case CellmlElementType::COMPONENT:
-    case CellmlElementType::COMPONENT_REF: {
+    case CellmlElementType::COMPONENT_REF:
         result = item->component() != nullptr;
         break;
-    }
     case CellmlElementType::CONNECTION:
     case CellmlElementType::MAP_VARIABLES: {
         auto variablePair = item->variablePair();
@@ -1377,34 +1359,28 @@ bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
         break;
     }
     case CellmlElementType::ENCAPSULATION:
-    case CellmlElementType::MODEL: {
+    case CellmlElementType::MODEL:
         result = item->model() != nullptr;
         break;
-    }
-    case CellmlElementType::IMPORT: {
+    case CellmlElementType::IMPORT:
         result = item->importSource() != nullptr;
         break;
-    }
     case CellmlElementType::RESET:
     case CellmlElementType::RESET_VALUE:
-    case CellmlElementType::TEST_VALUE: {
+    case CellmlElementType::TEST_VALUE:
         result = item->reset() != nullptr;
         break;
-    }
     case CellmlElementType::UNIT: {
         auto unitsItem = item->unitsItem();
         result = (unitsItem != nullptr) && (unitsItem->units() != nullptr);
         break;
     }
-    case CellmlElementType::UNITS: {
+    case CellmlElementType::UNITS:
         result = item->units() != nullptr;
         break;
-    }
     default: /* CellmlElementType::VARIABLE */
-    {
         result = item->variable() != nullptr;
         break;
-    }
     }
 
     return result;
