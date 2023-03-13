@@ -493,9 +493,56 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.py"), generator->implementationCode());
+}
 
-    //---GRY--- Test when "a" is marked as an external variable. In that case,
-    //          the NLA equation should be ignored.
+TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_eqn")->variable("a")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
+
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(4), analyserModel->variableCount());
+    EXPECT_EQ(size_t(4), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.external.h");
+
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.py"), generator->implementationCode());
 }
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
@@ -540,11 +587,107 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.py"), generator->implementationCode());
+}
+TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithOneExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.cellml"));
 
-    //---GRY--- Test when "x" is marked as an external variable. In that case,
-    //          all the NLA equations should be still taken into account.
-    //---GRY--- Test when "x", "y", and "z" are marked as external variables. In
-    //          that case, all the NLA equations should be ignored.
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("x")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::NLA, analyserModel->type());
+
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(3), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.one.external.h");
+
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.one.external.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.one.external.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.one.external.py"), generator->implementationCode());
+}
+
+TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("x")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("y")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("z")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
+
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(3), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.three.externals.h");
+
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.py"), generator->implementationCode());
 }
 
 //---GRY--- Create a test where an NLA system has a dependency on one or several

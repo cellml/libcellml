@@ -2483,7 +2483,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return iv->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
     });
     auto hasNlaEquations = std::any_of(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) {
-        return ie->mType == AnalyserInternalEquation::Type::NLA;
+        if (ie->mType == AnalyserInternalEquation::Type::NLA) {
+            // Make sure that not all the variables involved in the NLA system
+            // have been marked as external
+
+            return std::any_of(ie->mUnknownVariables.begin(), ie->mUnknownVariables.end(), [](const auto &uv) {
+                return !uv->mIsExternal;
+            });
+        }
+
+        return false;
     });
 
     if (hasUnderconstrainedVariables) {
