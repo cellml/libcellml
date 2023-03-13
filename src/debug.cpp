@@ -160,20 +160,20 @@ AnalyserEquationAstTrunk::AnalyserEquationAstTrunk(AnalyserEquationAstTrunk *pre
 {
 }
 
-void doPrintAst(AnalyserEquationAstTrunk *trunk)
+std::string doPrintAst(AnalyserEquationAstTrunk *trunk)
 {
     if (trunk == nullptr) {
-        return;
+        return {};
     }
 
-    doPrintAst(trunk->mPrev);
+    auto res = doPrintAst(trunk->mPrev);
 
     if ((trunk->mPrev != nullptr) && (trunk->mPrev->mStr == SPACES)
         && ((trunk->mStr == SPACES) || (trunk->mStr == TRUNK))) {
-        std::cout << " ";
+        res += " ";
     }
 
-    std::cout << trunk->mStr;
+    return res + trunk->mStr;
 }
 
 std::string doPrintAst(const AnalyserEquationAstPtr &ast)
@@ -477,20 +477,20 @@ std::string doPrintAst(const AnalyserEquationAstPtr &ast)
     return res;
 }
 
-void doPrintAst(const AnalyserEquationAstPtr &ast,
+std::string doPrintAst(const AnalyserEquationAstPtr &ast,
                 AnalyserEquationAstTrunk *prevTrunk, bool isLeft)
 {
     if (ast == nullptr) {
-        return;
+        return {};
     }
 
+    std::string res;
     std::string prevStr = SPACES;
     AnalyserEquationAstTrunk trunk(prevTrunk, prevStr);
-
     auto astLeftChild = ast->leftChild();
 
     if (astLeftChild != nullptr) {
-        doPrintAst(astLeftChild, &trunk, true);
+        res += doPrintAst(astLeftChild, &trunk, true);
     }
 
     if (prevTrunk == nullptr) {
@@ -503,9 +503,7 @@ void doPrintAst(const AnalyserEquationAstPtr &ast,
         prevTrunk->mStr = prevStr;
     }
 
-    doPrintAst(&trunk);
-
-    std::cout << doPrintAst(ast) << std::endl;
+    res += doPrintAst(&trunk) + doPrintAst(ast) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
@@ -516,13 +514,15 @@ void doPrintAst(const AnalyserEquationAstPtr &ast,
     auto astRightChild = ast->rightChild();
 
     if (astRightChild != nullptr) {
-        doPrintAst(astRightChild, &trunk, false);
+        res += doPrintAst(astRightChild, &trunk, false);
     }
+
+    return res;
 }
 
 void printAst(const AnalyserEquationAstPtr &ast)
 {
-    doPrintAst(ast, nullptr, false);
+    Debug() << doPrintAst(ast, nullptr, false);
 }
 
 void printImportLibrary(const ImportLibrary &importlibrary)
