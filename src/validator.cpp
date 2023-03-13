@@ -1833,11 +1833,10 @@ bool Validator::ValidatorImpl::hasFirstMathmlSiblingWithName(const XmlNodePtr &p
                                                              const std::string &name,
                                                              const ComponentPtr &component)
 {
-    auto index = 0;
-    auto childNode = mathmlChildNode(parentNode, index);
+    auto childNode = mathmlChildNode(parentNode, 0);
 
-    while (childNode->equals(node)) {
-        childNode = mathmlChildNode(parentNode, ++index);
+    if (childNode->equals(node)) {
+        childNode = mathmlChildNode(parentNode, 1);
     }
 
     if (childNode->name() != name) {
