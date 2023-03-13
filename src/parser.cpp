@@ -1579,8 +1579,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             orderDefined = true;
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
-                order = convertToInt(attribute->value(), &orderValid);
-                if (!orderValid) {
+                if (!convertToInt(attribute->value(), &order)) {
                     std::string variableName;
                     if (reset->variable() != nullptr) {
                         variableName = reset->variable()->name();
