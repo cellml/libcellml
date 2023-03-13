@@ -87,7 +87,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode());
 }
 
-TEST(Generator, algebraicEqnComputedVarOnRhsWithExternalVariables)
+TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
@@ -1454,7 +1454,7 @@ TEST(Generator, cellGeometryModel)
     EXPECT_EQ(fileContents("generator/cell_geometry_model/model.py"), generator->implementationCode());
 }
 
-TEST(Generator, cellGeometryModelWithExternalVariables)
+TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/cell_geometry_model/model.cellml"));
@@ -1670,7 +1670,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
 }
 
-TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateAsExternalVariable)
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariable)
 {
     // Generate some code for the HH52 model with sodium_channel.m (i.e. not a
     // primary variable) as an external variable.
@@ -1723,7 +1723,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateAsExternalVariable)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.py"), generator->implementationCode());
 }
 
-TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariable)
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVariablesIncludingOneDependingOnTheOther)
 {
     // Generate some code for the HH52 model with sodium_channel.m (i.e. not a
     // primary variable) as an external variable which has a dependency on
@@ -1836,7 +1836,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.py"), generator->implementationCode());
 }
 
-TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentConstantAsExternalVariable)
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesIncludingOneDependingOnTheOther)
 {
     // Generate some code for the HH52 model with membrane.Cm as an external
     // variable which has a dependency on sodium_channel.g_Na, another constant
@@ -1948,7 +1948,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.py"), generator->implementationCode());
 }
 
-TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsExternalVariable)
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVariablesIncludingOneDependingOnTheOther)
 {
     // Generate some code for the HH52 model with leakage_current.E_R as an
     // external variable which has a dependency on potassium_channel.E_K,
@@ -2060,7 +2060,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.py"), generator->implementationCode());
 }
 
-TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsExternalVariable)
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalVariablesIncludingOneDependingOnTheOther)
 {
     // Generate some code for the HH52 model with membrane.i_Stim as an external
     // variable which has a dependency on potassium_channel_n_gate.beta_n,
@@ -2119,7 +2119,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsE
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py"), generator->implementationCode());
 }
 
-TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
 {
     // Generate some code for the HH52 model with sodium_channel.i_Na as an
     // external variable which has a dependency on
