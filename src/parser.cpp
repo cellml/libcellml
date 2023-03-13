@@ -793,7 +793,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             }
         } else if (attribute->isType("multiplier")) {
             if (isCellMLReal(attribute->value())) {
-                if (convertToDouble(attribute->value(), &multiplier)) {
+                if (!convertToDouble(attribute->value(), &multiplier)) {
                     // This value won't be saved for validation later, so it does need to be reported now.
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");
