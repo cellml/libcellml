@@ -31,8 +31,6 @@ namespace libcellml {
  */
 struct Generator::GeneratorImpl
 {
-    Generator *mGenerator = nullptr;
-
     AnalyserModelPtr mModel;
 
     std::string mCode;
