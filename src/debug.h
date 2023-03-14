@@ -100,7 +100,11 @@ void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr 
 void printStringStringMap(const StringStringMap &map);
 void printConnectionMap(const ConnectionMap &map);
 void printComponentMap(const ComponentMap &map);
-void printAst(const AnalyserEquationAstPtr &ast);
+void printAstAsTree(const AnalyserEquationAstPtr &ast);
+std::string astAsCode(const AnalyserEquationAstPtr &ast);
+void printAstAsCode(const AnalyserEquationAstPtr &ast);
+void printAnalyserModelVariables(const AnalyserModelPtr &model);
+void printAnalyserModelEquations(const AnalyserModelPtr &model);
 void printHistory(const History &history);
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch);
 void printImportLibrary(const ImportLibrary &importlibrary);
