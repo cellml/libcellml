@@ -30,8 +30,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Generator
 {
-    friend class Analyser;
-
 public:
     ~Generator(); /**< Destructor, @private. */
     Generator(const Generator &rhs) = delete; /**< Copy constructor, @private. */
@@ -106,6 +104,28 @@ public:
      * @return The implementation code as a @c std::string.
      */
     std::string implementationCode() const;
+
+    /**
+     * @brief Get the equation code for the given @c AnalyserEquationAst.
+     *
+     * Return the equation code for the given @c AnalyserEquationAst using @c GeneratorProfile, if present, or the
+     * default @c GeneratorProfile.
+     *
+     * @param ast The @c AnalyserEquationAst for which we want to generate some code.
+     * @param generatorProfile The @c GeneratorProfile, if any, to use to generate the equation code. If no
+     * @c GeneratorProfile is provided then the default @c GeneratorProfile is used.
+     */
+    static std::string equationCode(const AnalyserEquationAstPtr &ast,
+                                    const GeneratorProfilePtr &generatorProfile);
+
+    /**
+     * @brief Get the equation code for the given @c AnalyserEquationAst using a default @c GeneratorProfile.
+     *
+     * Return the equation code for the given @c AnalyserEquationAst using a default @c GeneratorProfile.
+     *
+     * @param ast The @c AnalyserEquationAst for which we want to generate some code.
+     */
+    static std::string equationCode(const AnalyserEquationAstPtr &ast);
 
 private:
     Generator(); /**< Constructor, @private. */

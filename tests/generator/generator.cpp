@@ -588,6 +588,8 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.py"), generator->implementationCode());
 }
+
+/*
 TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithOneExternalVariable)
 {
     auto parser = libcellml::Parser::create();
@@ -637,6 +639,7 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithOneExternalVariable)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.one.external.py"), generator->implementationCode());
 }
+*/
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables)
 {

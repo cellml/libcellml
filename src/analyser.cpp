@@ -22,6 +22,8 @@ limitations under the License.
 #include "libcellml/analysermodel.h"
 #include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
+#include "libcellml/generator.h"
+#include "libcellml/generatorprofile.h"
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 #include "libcellml/validator.h"
@@ -36,7 +38,6 @@ limitations under the License.
 #include "analyservariable_p.h"
 #include "anycellmlelement_p.h"
 #include "commonutils.h"
-#include "generator_p.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"
@@ -475,7 +476,7 @@ public:
     AnalyserInternalVariablePtrs mInternalVariables;
     AnalyserInternalEquationPtrs mInternalEquations;
 
-    GeneratorPtr mGenerator = libcellml::Generator::create();
+    GeneratorProfilePtr mGeneratorProfile = libcellml::GeneratorProfile::create();
 
     std::map<std::string, UnitsPtr> mStandardUnits;
     std::map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;
@@ -575,30 +576,28 @@ Analyser::AnalyserImpl::AnalyserImpl()
 {
     // Customise our generator's profile.
 
-    auto profile = mGenerator->profile();
-
-    profile->setAbsoluteValueString("abs");
-    profile->setNaturalLogarithmString("ln");
-    profile->setCommonLogarithmString("log");
-    profile->setRemString("rem");
-    profile->setAsinString("arcsin");
-    profile->setAcosString("arccos");
-    profile->setAtanString("arctan");
-    profile->setAsecString("arcsec");
-    profile->setAcscString("arccsc");
-    profile->setAcotString("arccot");
-    profile->setAsinhString("arcsinh");
-    profile->setAcoshString("arccosh");
-    profile->setAtanhString("arctanh");
-    profile->setAsechString("arcsech");
-    profile->setAcschString("arccsch");
-    profile->setAcothString("arccoth");
-    profile->setTrueString("true");
-    profile->setFalseString("false");
-    profile->setEString("exponentiale");
-    profile->setPiString("pi");
-    profile->setInfString("infinity");
-    profile->setNanString("notanumber");
+    mGeneratorProfile->setAbsoluteValueString("abs");
+    mGeneratorProfile->setNaturalLogarithmString("ln");
+    mGeneratorProfile->setCommonLogarithmString("log");
+    mGeneratorProfile->setRemString("rem");
+    mGeneratorProfile->setAsinString("arcsin");
+    mGeneratorProfile->setAcosString("arccos");
+    mGeneratorProfile->setAtanString("arctan");
+    mGeneratorProfile->setAsecString("arcsec");
+    mGeneratorProfile->setAcscString("arccsc");
+    mGeneratorProfile->setAcotString("arccot");
+    mGeneratorProfile->setAsinhString("arcsinh");
+    mGeneratorProfile->setAcoshString("arccosh");
+    mGeneratorProfile->setAtanhString("arctanh");
+    mGeneratorProfile->setAsechString("arcsech");
+    mGeneratorProfile->setAcschString("arccsch");
+    mGeneratorProfile->setAcothString("arccoth");
+    mGeneratorProfile->setTrueString("true");
+    mGeneratorProfile->setFalseString("false");
+    mGeneratorProfile->setEString("exponentiale");
+    mGeneratorProfile->setPiString("pi");
+    mGeneratorProfile->setInfString("infinity");
+    mGeneratorProfile->setNanString("notanumber");
 }
 
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)
@@ -1658,7 +1657,7 @@ std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast
     // Return the generated code for the given AST, specifying the equation and
     // component in which it is, if needed and requested.
 
-    std::string res = "'" + mGenerator->mPimpl->generateCode(ast) + "'";
+    std::string res = "'" + Generator::equationCode(ast, mGeneratorProfile) + "'";
 
     if (includeHierarchy) {
         AnalyserEquationAstPtr equationAst = ast;
@@ -1672,7 +1671,7 @@ std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast
 
             res += std::string(" in")
                    + ((equationAstParent == nullptr) ? " equation" : "")
-                   + " '" + mGenerator->mPimpl->generateCode(equationAst) + "'";
+                   + " '" + Generator::equationCode(equationAst, mGeneratorProfile) + "'";
         }
 
         res += " in component '" + componentName(equationAst) + "'";
