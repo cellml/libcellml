@@ -699,4 +699,6 @@ TEST(Coverage, generator)
     profile->setXorFunctionString("");
 
     generator->implementationCode();
+
+    libcellml::Generator::equationCode(analyser->model()->equation(0)->ast());
 }

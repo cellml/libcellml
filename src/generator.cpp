@@ -2023,4 +2023,21 @@ std::string Generator::implementationCode() const
     return mPimpl->mCode;
 }
 
+std::string Generator::equationCode(const AnalyserEquationAstPtr &ast,
+                                    const GeneratorProfilePtr &generatorProfile)
+{
+    GeneratorPtr generator = libcellml::Generator::create();
+
+    if (generatorProfile != nullptr) {
+        generator->setProfile(generatorProfile);
+    }
+
+    return generator->mPimpl->generateCode(ast);
+}
+
+std::string Generator::equationCode(const AnalyserEquationAstPtr &ast)
+{
+    return Generator::equationCode(ast, nullptr);
+}
+
 } // namespace libcellml
