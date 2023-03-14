@@ -1847,7 +1847,6 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
 Generator::Generator()
     : mPimpl(new GeneratorImpl())
 {
-    mPimpl->mGenerator = this;
 }
 
 Generator::~Generator()
