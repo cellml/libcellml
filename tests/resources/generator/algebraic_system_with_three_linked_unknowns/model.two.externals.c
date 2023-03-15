@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.4.0. */
 
-#include "model.one.external.h"
+#include "model.two.externals.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -13,7 +13,7 @@ const size_t VARIABLE_COUNT = 3;
 const VariableInfo VARIABLE_INFO[] = {
     {"x", "dimensionless", "my_algebraic_system", EXTERNAL},
     {"y", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"z", "dimensionless", "my_algebraic_system", ALGEBRAIC}
+    {"z", "dimensionless", "my_algebraic_system", EXTERNAL}
 };
 
 double * createVariablesArray()
@@ -38,32 +38,69 @@ void objectiveFunction0(double *u, double *f, void *data)
     double *variables = ((RootFindingInfo *) data)->variables;
 
     variables[1] = u[0];
-    variables[2] = u[1];
 
     f[0] = 2.0*variables[0]+variables[1]-2.0*variables[2]-(-1.0);
-    f[1] = 3.0*variables[0]-3.0*variables[1]-variables[2]-5.0;
-    f[2] = variables[0]-2.0*variables[1]+3.0*variables[2]-6.0;
 }
 
 void findRoot0(double *variables)
 {
     RootFindingInfo rfi = { variables };
-    double u[2];
+    double u[1];
 
     u[0] = variables[1];
-    u[1] = variables[2];
 
-    nlaSolve(objectiveFunction0, u, 2, &rfi);
+    nlaSolve(objectiveFunction0, u, 1, &rfi);
 
     variables[1] = u[0];
-    variables[2] = u[1];
+}
+
+void objectiveFunction1(double *u, double *f, void *data)
+{
+    double *variables = ((RootFindingInfo *) data)->variables;
+
+    variables[1] = u[0];
+
+    f[0] = 3.0*variables[0]-3.0*variables[1]-variables[2]-5.0;
+}
+
+void findRoot1(double *variables)
+{
+    RootFindingInfo rfi = { variables };
+    double u[1];
+
+    u[0] = variables[1];
+
+    nlaSolve(objectiveFunction1, u, 1, &rfi);
+
+    variables[1] = u[0];
+}
+
+void objectiveFunction2(double *u, double *f, void *data)
+{
+    double *variables = ((RootFindingInfo *) data)->variables;
+
+    variables[1] = u[0];
+
+    f[0] = variables[0]-2.0*variables[1]+3.0*variables[2]-6.0;
+}
+
+void findRoot2(double *variables)
+{
+    RootFindingInfo rfi = { variables };
+    double u[1];
+
+    u[0] = variables[1];
+
+    nlaSolve(objectiveFunction2, u, 1, &rfi);
+
+    variables[1] = u[0];
 }
 
 void initialiseVariables(double *variables, ExternalVariable externalVariable)
 {
     variables[1] = 1.0;
-    variables[2] = 1.0;
     variables[0] = externalVariable(variables, 0);
+    variables[2] = externalVariable(variables, 2);
 }
 
 void computeComputedConstants(double *variables)
@@ -73,5 +110,8 @@ void computeComputedConstants(double *variables)
 void computeVariables(double *variables, ExternalVariable externalVariable)
 {
     variables[0] = externalVariable(variables, 0);
+    variables[2] = externalVariable(variables, 2);
     findRoot0(variables);
+    findRoot1(variables);
+    findRoot2(variables);
 }

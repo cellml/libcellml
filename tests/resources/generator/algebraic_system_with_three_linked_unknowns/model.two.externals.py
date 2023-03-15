@@ -20,7 +20,7 @@ class VariableType(Enum):
 VARIABLE_INFO = [
     {"name": "x", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL},
     {"name": "y", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC},
-    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC}
+    {"name": "z", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.EXTERNAL}
 ]
 
 
@@ -32,29 +32,60 @@ def objective_function_0(u, f, data):
     variables = data[0]
 
     variables[1] = u[0]
-    variables[2] = u[1]
 
     f[0] = 2.0*variables[0]+variables[1]-2.0*variables[2]-(-1.0)
-    f[1] = 3.0*variables[0]-3.0*variables[1]-variables[2]-5.0
-    f[2] = variables[0]-2.0*variables[1]+3.0*variables[2]-6.0
 
 
 def find_root_0(variables):
-    u = [nan]*2
+    u = [nan]*1
 
     u[0] = variables[1]
-    u[1] = variables[2]
 
-    nla_solve(objective_function_0, u, 2, (variables))
+    nla_solve(objective_function_0, u, 1, (variables))
 
     variables[1] = u[0]
-    variables[2] = u[1]
+
+
+def objective_function_1(u, f, data):
+    variables = data[0]
+
+    variables[1] = u[0]
+
+    f[0] = 3.0*variables[0]-3.0*variables[1]-variables[2]-5.0
+
+
+def find_root_1(variables):
+    u = [nan]*1
+
+    u[0] = variables[1]
+
+    nla_solve(objective_function_1, u, 1, (variables))
+
+    variables[1] = u[0]
+
+
+def objective_function_2(u, f, data):
+    variables = data[0]
+
+    variables[1] = u[0]
+
+    f[0] = variables[0]-2.0*variables[1]+3.0*variables[2]-6.0
+
+
+def find_root_2(variables):
+    u = [nan]*1
+
+    u[0] = variables[1]
+
+    nla_solve(objective_function_2, u, 1, (variables))
+
+    variables[1] = u[0]
 
 
 def initialise_variables(variables, external_variable):
     variables[1] = 1.0
-    variables[2] = 1.0
     variables[0] = external_variable(variables, 0)
+    variables[2] = external_variable(variables, 2)
 
 
 def compute_computed_constants(variables):
@@ -63,4 +94,7 @@ def compute_computed_constants(variables):
 
 def compute_variables(variables, external_variable):
     variables[0] = external_variable(variables, 0)
+    variables[2] = external_variable(variables, 2)
     find_root_0(variables)
+    find_root_1(variables)
+    find_root_2(variables)

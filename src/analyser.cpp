@@ -93,10 +93,10 @@ struct AnalyserInternalVariable
     size_t mIndex = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
     bool mIsExternal = false;
-    VariablePtrs mDependencies;
 
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
+    VariablePtrs mDependencies;
 
     static AnalyserInternalVariablePtr create(const VariablePtr &variable);
 
@@ -561,8 +561,13 @@ public:
                   double scalingFactor);
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
+    static bool isExternalVariable(const AnalyserInternalVariablePtr &variable);
+
     bool isStateRateBased(const AnalyserEquationPtr &equation,
                           AnalyserEquationPtrs &checkedEquations);
+
+    void addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,
+                                 Issue::ReferenceRule referenceRule);
 
     void analyseModel(const ModelPtr &model);
 
@@ -2205,6 +2210,11 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
     }
 }
 
+bool Analyser::AnalyserImpl::isExternalVariable(const AnalyserInternalVariablePtr &variable)
+{
+    return variable->mIsExternal;
+}
+
 bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equation,
                                               AnalyserEquationPtrs &checkedEquations)
 {
@@ -2222,6 +2232,38 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equatio
     }
 
     return false;
+}
+
+void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,
+                                                     Issue::ReferenceRule referenceRule)
+{
+    std::string issueType;
+
+    switch (variable->mType) {
+    case AnalyserInternalVariable::Type::UNKNOWN:
+        issueType = "is unused";
+
+        break;
+    case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
+        issueType = "is used in an ODE, but it is not initialised";
+
+        break;
+    default: // AnalyserInternalVariable::Type::OVERCONSTRAINED.
+        issueType = "is computed more than once";
+
+        break;
+    }
+
+    auto issue = Issue::IssueImpl::create();
+    auto realVariable = variable->mVariable;
+
+    issue->mPimpl->setDescription("Variable '" + realVariable->name()
+                                  + "' in component '" + owningComponent(realVariable)->name()
+                                  + "' " + issueType + ".");
+    issue->mPimpl->setReferenceRule(referenceRule);
+    issue->mPimpl->mItem->mPimpl->setVariable(realVariable);
+
+    addIssue(issue);
 }
 
 void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
@@ -2418,54 +2460,119 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make sure that our variables are valid.
 
     for (const auto &internalVariable : mInternalVariables) {
-        std::string issueType;
-        Issue::ReferenceRule referenceRule = Issue::ReferenceRule::UNSPECIFIED;
-
         if (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN) {
-            issueType = "is unused";
-            referenceRule = Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED;
+            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED);
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE) {
-            issueType = "is used in an ODE, but it is not initialised";
-            referenceRule = Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED;
+            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED);
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
             // The variable is (still) initialised so, in the end, it has to be
             // a constant, so consider it as such.
 
             internalVariable->makeConstant(variableIndex);
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
-            issueType = "is computed more than once";
-            referenceRule = Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE;
-        }
-
-        if (!issueType.empty()) {
-            auto issue = Issue::IssueImpl::create();
-            auto realVariable = internalVariable->mVariable;
-
-            issue->mPimpl->setDescription("Variable '" + realVariable->name()
-                                          + "' in component '" + owningComponent(realVariable)->name()
-                                          + "' " + issueType + ".");
-            issue->mPimpl->setReferenceRule(referenceRule);
-            issue->mPimpl->mItem->mPimpl->setVariable(realVariable);
-
-            addIssue(issue);
+            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE);
         }
     }
 
-    // Make NLA equations that compute the same variables aware of one another.
+    // Make sure that our equations are valid.
+
+    AnalyserInternalVariablePtrs addedExternalVariables;
+    AnalyserInternalEquationPtrs addedInternalEquations;
+    AnalyserInternalEquationPtrs removedInternalEquations;
 
     for (const auto &internalEquation : mInternalEquations) {
-        if ((internalEquation->mType == AnalyserInternalEquation::Type::NLA)
-            && (internalEquation->mUnknownVariables.size() != 1)) {
+        // Account for the unknown variables, in an NLA equation, that have been
+        // marked as an external variable. This means removing them from
+        // mUnknownVariables and adding a new equation for them so that the NLA
+        // equation can have a dependency on them.
+
+        if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
+            for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+                if (unknownVariable->mIsExternal
+                    && (std::find(addedExternalVariables.begin(), addedExternalVariables.end(), unknownVariable) == addedExternalVariables.end())) {
+                    addedExternalVariables.push_back(unknownVariable);
+                    addedInternalEquations.push_back(AnalyserInternalEquation::create(unknownVariable));
+                }
+            }
+
+            internalEquation->mUnknownVariables.erase(std::remove_if(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(), isExternalVariable), internalEquation->mUnknownVariables.end());
+        }
+
+        // Discard the equation if we have no unknown variables left.
+
+        if (internalEquation->mUnknownVariables.empty()) {
+            removedInternalEquations.push_back(internalEquation);
+        }
+
+        // Make our NLA equations that compute the same variables aware of one
+        // another.
+
+        if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
             for (const auto &otherInternalEquation : mInternalEquations) {
-                if (otherInternalEquation != internalEquation) {
+                if ((otherInternalEquation != internalEquation)
+                    && (otherInternalEquation->mType == AnalyserInternalEquation::Type::NLA)) {
+                    // Check what common unknown variables there are between
+                    // internalEquation and otherInternalEquation, if any.
+                    // Note: we would normally use std::set_intersection() for
+                    //       this, but this would require
+                    //       internalEquation->mUnknownVariables and
+                    //       otherInternalEquation->mUnknownVariables to be
+                    //       sorted which neither of them is and it's not worth
+                    //       sorting them for such a trivial case, hence we do
+                    //       the intersection ourselves.
+
                     AnalyserInternalVariablePtrs commonUnknownVariables;
 
-                    std::set_intersection(internalEquation->mUnknownVariables.begin(), internalEquation->mUnknownVariables.end(),
-                                          otherInternalEquation->mUnknownVariables.begin(), otherInternalEquation->mUnknownVariables.end(),
-                                          std::back_inserter(commonUnknownVariables));
+                    for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+                        if (std::find(otherInternalEquation->mUnknownVariables.begin(), otherInternalEquation->mUnknownVariables.end(), unknownVariable) != otherInternalEquation->mUnknownVariables.end()) {
+                            commonUnknownVariables.push_back(unknownVariable);
+                        }
+                    }
+
+                    // Consider otherInternalEquation as an NLA sibling of
+                    // internalEquation if there are some common unknown
+                    // variables.
 
                     if (!commonUnknownVariables.empty()) {
                         internalEquation->mNlaSiblings.push_back(otherInternalEquation);
+                    }
+                }
+            }
+        }
+    }
+
+    // Add/remove some internal equations.
+
+    for (const auto &addedInternalEquation : addedInternalEquations) {
+        mInternalEquations.push_back(addedInternalEquation);
+    }
+
+    for (const auto &removedInternalEquation : removedInternalEquations) {
+        mInternalEquations.erase(std::find(mInternalEquations.begin(), mInternalEquations.end(), removedInternalEquation));
+    }
+
+    // Confirm that the variables in an NLA system are not overconstrained.
+    // Note: this may happen if an NLA system contains too many NLA equations
+    //       to compute its unknown variables and/or if some internal equations
+    //       were removed (as a result of some variables in an NLA equation
+    //       having been marked as external).
+
+    AnalyserInternalVariablePtrs overconstrainedVariables;
+
+    for (const auto &internalEquation : mInternalEquations) {
+        if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
+            if (internalEquation->mNlaSiblings.size() + 1 > internalEquation->mUnknownVariables.size()) {
+                // There are more NLA equations than unknown variables, so all
+                // the unknown variables involved in the NLA system should be
+                // considered as overconstrained.
+
+                for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+                    if (std::find(overconstrainedVariables.begin(), overconstrainedVariables.end(), unknownVariable) == overconstrainedVariables.end()) {
+                        unknownVariable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
+
+                        addInvalidVariableIssue(unknownVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE);
+
+                        overconstrainedVariables.push_back(unknownVariable);
                     }
                 }
             }
