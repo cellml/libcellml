@@ -829,7 +829,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                               + mProfile->indentString()
                               + replace(replace(mProfile->nlaSolveCallString(modelHasOdes()),
                                                 "[INDEX]", convertToString(nlaSystemIndex)),
-                                        "[SIZE]", convertToString(1 + equation->nlaSiblingCount()));
+                                        "[SIZE]", convertToString(equation->variableCount()));
 
                 methodBody += newLineIfNeeded();
 

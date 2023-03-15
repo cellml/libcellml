@@ -233,6 +233,7 @@ target_include_directories(cellml_debug_utilities
 set_target_properties(cellml_debug_utilities PROPERTIES
   CXX_VISIBILITY_PRESET hidden
   DEBUG_POSTFIX d
+  POSITION_INDEPENDENT_CODE 1
   VISIBILITY_INLINES_HIDDEN 1
 )
 
