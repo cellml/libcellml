@@ -643,8 +643,6 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
 
 //---GRY--- Create a test where:
 //           - An NLA system has a dependency on one or several other equations.
-//           - An NLA system contains 3 equations for 2 unknowns, i.e. the 2
-//             unknowns should be considered as overconstrained.
 
 TEST(Generator, odeComputedVarOnRhs)
 {
