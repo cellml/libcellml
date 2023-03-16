@@ -385,7 +385,6 @@ bool AnalyserInternalEquation::check(size_t &stateIndex, size_t &variableIndex,
                              initialisedVariables :
                              mOdeVariables :
                              mVariables;
-        auto validEquation = true;
 
         for (const auto &variable : variables) {
             auto i = MAX_SIZE_T;
@@ -416,40 +415,38 @@ bool AnalyserInternalEquation::check(size_t &stateIndex, size_t &variableIndex,
 
                 mUnknownVariables.push_back(variable);
             } else {
-                validEquation = false;
+                return false;
             }
         }
 
-        // Set the equation's order and type, if we have a valid equation, as
-        // well as consider any (still) initialised variable as a constant.
+        // Set the equation's order and type, as well as consider any (still)
+        // initialised variable as a constant.
         // Note: an equation may be used to compute one variable, but if it is
         //       not on its own on the LHS/RHS of the equation then it needs to
         //       be solved as an NLA equation.
 
-        if (validEquation) {
-            auto variable = (variables.size() == 1) ?
-                                variables.front() :
-                                nullptr;
+        auto variable = (variables.size() == 1) ?
+                            variables.front() :
+                            nullptr;
 
-            mType = ((variable == nullptr)
-                     || (!unknownVariableOnLhs() && !unknownVariableOnRhs())) ?
-                        Type::NLA :
-                    (variable->mType == AnalyserInternalVariable::Type::STATE) ?
-                        Type::ODE :
-                    (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
-                        Type::TRUE_CONSTANT :
-                    (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
-                        Type::VARIABLE_BASED_CONSTANT :
-                        Type::ALGEBRAIC;
+        mType = ((variable == nullptr)
+                 || (!unknownVariableOnLhs() && !unknownVariableOnRhs())) ?
+                    Type::NLA :
+                (variable->mType == AnalyserInternalVariable::Type::STATE) ?
+                    Type::ODE :
+                (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
+                    Type::TRUE_CONSTANT :
+                (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
+                    Type::VARIABLE_BASED_CONSTANT :
+                    Type::ALGEBRAIC;
 
-            for (const auto &allVariable : mAllVariables) {
-                if (allVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
-                    allVariable->makeConstant(variableIndex);
-                }
+        for (const auto &allVariable : mAllVariables) {
+            if (allVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
+                allVariable->makeConstant(variableIndex);
             }
-
-            return true;
         }
+
+        return true;
     }
 
     return false;
@@ -2504,7 +2501,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             removedInternalEquations.push_back(internalEquation);
         }
 
-        // Make our NLA equations that compute the same variables aware of one
+        // Make the NLA equations that compute the same variables aware of one
         // another.
 
         if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
