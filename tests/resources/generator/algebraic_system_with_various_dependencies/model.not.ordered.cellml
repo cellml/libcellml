@@ -1,15 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Algebraic system with various dependencies (not ordered)
-   d = b + c
-   b: 1 -> 4
-   c: 1 -> 7
-   3a + 2b + c = 57
-   a + 3b - c = 19
-   x: 3
-   y: 5
-   a = 3x + y
-   -->
+    Variables:
+     • a
+     • b: 1 -> 4
+     • c: 1 -> 7
+     • d
+     • x: 3
+     • y: 5
+    Equations:
+     • d = b + c
+     • 3a + 2b + c = 57
+     • a + 3b - c = 19
+     • a = 3x + y
+    -->
     <component name="my_algebraic_system">
         <variable name="a" units="dimensionless"/>
         <variable initial_value="1" name="b" units="dimensionless"/>
