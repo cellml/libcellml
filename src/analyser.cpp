@@ -77,17 +77,17 @@ struct AnalyserInternalVariable
 {
     enum struct Type
     {
-        UNKNOWN,
-        SHOULD_BE_STATE,
-        INITIALISED,
-        VARIABLE_OF_INTEGRATION,
-        STATE,
-        CONSTANT,
-        COMPUTED_TRUE_CONSTANT,
-        COMPUTED_VARIABLE_BASED_CONSTANT,
-        INITIALISED_ALGEBRAIC,
-        ALGEBRAIC,
-        OVERCONSTRAINED
+        UNKNOWN, // 0
+        SHOULD_BE_STATE, // 1
+        INITIALISED, // 2
+        VARIABLE_OF_INTEGRATION, // 3
+        STATE, // 4
+        CONSTANT, // 5
+        COMPUTED_TRUE_CONSTANT, // 6
+        COMPUTED_VARIABLE_BASED_CONSTANT, // 7
+        INITIALISED_ALGEBRAIC, // 8
+        ALGEBRAIC, // 9
+        OVERCONSTRAINED // 10
     };
 
     size_t mIndex = MAX_SIZE_T;
@@ -157,12 +157,12 @@ struct AnalyserInternalEquation
 {
     enum struct Type
     {
-        UNKNOWN,
-        TRUE_CONSTANT,
-        VARIABLE_BASED_CONSTANT,
-        ODE,
-        NLA,
-        ALGEBRAIC
+        UNKNOWN, // 0
+        TRUE_CONSTANT, // 1
+        VARIABLE_BASED_CONSTANT, // 2
+        ODE, // 3
+        NLA, // 4
+        ALGEBRAIC // 5
     };
 
     Type mType = Type::UNKNOWN;
@@ -204,7 +204,7 @@ struct AnalyserInternalEquation
     bool unknownVariableOnLhs();
     bool unknownVariableOnRhs();
 
-    bool check(size_t &stateIndex, size_t &variableIndex, const AnalyserModelPtr &model);
+    bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &variableIndex);
 };
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
@@ -309,8 +309,8 @@ bool AnalyserInternalEquation::unknownVariableOnRhs()
     return unknownVariableOnLhsRhs(false);
 }
 
-bool AnalyserInternalEquation::check(size_t &stateIndex, size_t &variableIndex,
-                                     const AnalyserModelPtr &model)
+bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
+                                     size_t &stateIndex, size_t &variableIndex)
 {
     // Nothing to check if the equation has a known type.
 
@@ -2449,7 +2449,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         relevantCheck = false;
 
         for (const auto &internalEquation : mInternalEquations) {
-            relevantCheck = internalEquation->check(stateIndex, variableIndex, mModel)
+            relevantCheck = internalEquation->check(mModel, stateIndex, variableIndex)
                             || relevantCheck;
         }
     } while (relevantCheck);

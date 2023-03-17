@@ -1,11 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Algebraic equation with one non-isolated unknown
-   a: 1 -> 9
-   b = 3
-   c = 5
-   d = 7
-   a + b = c + d-->
+    Variables:
+     • a: 1 -> 9
+     • b
+     • c
+     • d
+    Equation:
+     • a + b = c + d
+    -->
     <component name="my_algebraic_eqn">
         <variable initial_value="1" name="a" units="dimensionless"/>
         <variable name="b" units="dimensionless"/>
