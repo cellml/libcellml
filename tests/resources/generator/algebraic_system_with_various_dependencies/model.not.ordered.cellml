@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-    <!-- Algebraic system with various dependencies
-   x: 3
-   y: 5
-   a = 3x + y
+    <!-- Algebraic system with various dependencies (not ordered)
+   d = b + c
    b: 1 -> 4
    c: 1 -> 7
    3a + 2b + c = 57
    a + 3b - c = 19
-   d = b + c
+   x: 3
+   y: 5
+   a = 3x + y
    -->
     <component name="my_algebraic_system">
         <variable name="a" units="dimensionless"/>
@@ -20,15 +20,11 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>a</ci>
+                <ci>d</ci>
                 <apply>
                     <plus/>
-                    <apply>
-                        <times/>
-                        <cn cellml:units="dimensionless">3</cn>
-                        <ci>x</ci>
-                    </apply>
-                    <ci>y</ci>
+                    <ci>b</ci>
+                    <ci>c</ci>
                 </apply>
             </apply>
             <apply>
@@ -68,11 +64,15 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>d</ci>
+                <ci>a</ci>
                 <apply>
                     <plus/>
-                    <ci>b</ci>
-                    <ci>c</ci>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">3</cn>
+                        <ci>x</ci>
+                    </apply>
+                    <ci>y</ci>
                 </apply>
             </apply>
         </math>
