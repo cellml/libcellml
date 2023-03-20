@@ -1252,8 +1252,11 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
 std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the given AST.
-    // Note: we don't handle the case of AnalyserEquationAst::Type::BVAR since
-    //       we don't need to generate any code for it.
+    // Note: AnalyserEquationAst::Type::BVAR is only relevant when there is no
+    //       model (in which case we want to generate something like dx/dt, as
+    //       is in the case of the analyser when we want to mention an equation)
+    //       since otherwise we don't need to generate any code for it (since we
+    //       will, instead, want to generate something like RATES[0]).
 
     std::string code;
 
@@ -1468,7 +1471,11 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         break;
     case AnalyserEquationAst::Type::DIFF:
-        code = generateCode(ast->rightChild());
+        if (mModel != nullptr) {
+            code = generateCode(ast->rightChild());
+        } else {
+            code = "d" + generateCode(ast->rightChild()) + "/d" + generateCode(ast->leftChild());
+        }
 
         break;
     case AnalyserEquationAst::Type::SIN:
@@ -1598,6 +1605,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         break;
     case AnalyserEquationAst::Type::DEGREE:
     case AnalyserEquationAst::Type::LOGBASE:
+        code = generateCode(ast->leftChild());
+
+        break;
+    case AnalyserEquationAst::Type::BVAR:
         code = generateCode(ast->leftChild());
 
         break;
