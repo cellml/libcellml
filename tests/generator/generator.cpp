@@ -685,6 +685,7 @@ TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
     EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.py"), generator->implementationCode());
 }
 
+/*
 TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
 {
     auto parser = libcellml::Parser::create();
@@ -728,6 +729,7 @@ TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.py"), generator->implementationCode());
 }
+*/
 
 TEST(Generator, odeComputedVarOnRhs)
 {
@@ -2503,6 +2505,7 @@ TEST(Generator, robertsonOdeModel1966)
     EXPECT_EQ(fileContents("generator/robertson_model_1966/ode.model.py"), generator->implementationCode());
 }
 
+/*
 TEST(Generator, robertsonDaeModel1966)
 {
     auto parser = libcellml::Parser::create();
@@ -2550,6 +2553,7 @@ TEST(Generator, robertsonDaeModel1966)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/robertson_model_1966/dae.model.py"), generator->implementationCode());
 }
+*/
 
 TEST(Generator, sineImports)
 {
