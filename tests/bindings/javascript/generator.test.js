@@ -68,10 +68,10 @@ describe("Generator tests", () => {
         expect(implementation_lines.length).toBe(55)
 
         const equation_line_1 = libcellml.Generator.equationCodeUsingDefaultProfile(a.model().equation(0).ast())
-        expect(equation_line_1.length).toBe(7)
+        expect(equation_line_1.length).toBe(14)
 
         const gp = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.PYTHON)
         const equation_line_2 = libcellml.Generator.equationCodeUsingGivenProfile(a.model().equation(0).ast(), gp)
-        expect(equation_line_2.length).toBe(7)
+        expect(equation_line_2.length).toBe(14)
     })
 })
