@@ -58,6 +58,9 @@ describe("Analyser Equation tests", () => {
     test('Checking Analyser Equation dependency.', () => {
         expect(eqn.dependency(0)).toBe(null)
     });
+    test('Checking Analyser Equation nlaSystemIndex.', () => {
+        expect(eqn.nlaSystemIndex()).toBe(4294967295)
+    });
     test('Checking Analyser Equation nlaSiblingCount.', () => {
         expect(eqn.nlaSiblingCount()).toBe(0)
     });

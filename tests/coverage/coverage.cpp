@@ -387,8 +387,8 @@ TEST(Coverage, generator)
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(205), analyserModel->variableCount());
-    EXPECT_EQ(size_t(199), analyserModel->equationCount());
+    EXPECT_EQ(size_t(207), analyserModel->variableCount());
+    EXPECT_EQ(size_t(201), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());

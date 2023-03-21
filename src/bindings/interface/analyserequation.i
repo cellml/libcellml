@@ -28,6 +28,9 @@
 %feature("docstring") libcellml::AnalyserEquation::dependency
 "Returns the dependency, at the given index, for this :class:`AnalyserEquation` object.";
 
+%feature("docstring") libcellml::AnalyserEquation::nlaSystemIndex
+"Returns the index of the NLA system for this :class:`AnalyserEquation` object.";
+
 %feature("docstring") libcellml::AnalyserEquation::nlaSiblingCount
 "Returns the number of NLA siblings for this :class:`AnalyserEquation` object.";
 

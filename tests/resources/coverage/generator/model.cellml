@@ -210,6 +210,8 @@
         <variable name="eqnCoverageForMinusUnary" units="dimensionless"/>
         <variable name="eqnNlaVariable1" initial_value="1" units="dimensionless"/>
         <variable name="eqnNlaVariable2" initial_value="2" units="dimensionless"/>
+        <variable name="eqnComputedConstant1" units="dimensionless"/>
+        <variable name="eqnComputedConstant2" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
         <variable initial_value="3" name="o" units="dimensionless"/>
@@ -3361,9 +3363,21 @@
                 </apply>
                 <apply>
                     <plus/>
-                    <ci>n</ci>
-                    <ci>o</ci>
+                    <ci>eqnComputedConstant1</ci>
+                    <ci>eqnComputedConstant2</ci>
                 </apply>
+            </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>eqnComputedConstant1</ci>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnComputedConstant2</ci>
+                <cn cellml:units="dimensionless">3</cn>
             </apply>
         </math>
     </component>

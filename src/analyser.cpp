@@ -178,6 +178,7 @@ struct AnalyserInternalEquation
     AnalyserInternalVariablePtrs mAllVariables;
     AnalyserInternalVariablePtrs mUnknownVariables;
 
+    size_t mNlaSystemIndex = MAX_SIZE_T;
     AnalyserInternalEquationWeakPtrs mNlaSiblings;
 
     bool mComputedTrueConstant = true;
@@ -419,8 +420,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
             }
         }
 
-        // Set the equation's order and type, as well as consider any (still)
-        // initialised variable as a constant.
+        // Set the equation's order and type.
         // Note: an equation may be used to compute one variable, but if it is
         //       not on its own on the LHS/RHS of the equation then it needs to
         //       be solved as an NLA equation.
@@ -440,9 +440,16 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
                     Type::VARIABLE_BASED_CONSTANT :
                     Type::ALGEBRAIC;
 
-        for (const auto &allVariable : mAllVariables) {
-            if (allVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
-                allVariable->makeConstant(variableIndex);
+        // An ODE equation may have a dependency on the state of that ODE (e.g.,
+        // dx/dt = x+3). Similarly, an NLA equation will have a "dependency" on
+        // its unknown variables. Either way, we must remove our "depenencies"
+        // on our unknown variables or we will end in a circular dependency.
+
+        for (const auto &unknownVariable : mUnknownVariables) {
+            auto it = std::find(mDependencies.begin(), mDependencies.end(), unknownVariable->mVariable);
+
+            if (it != mDependencies.end()) {
+                mDependencies.erase(it);
             }
         }
 
@@ -2476,6 +2483,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     AnalyserInternalVariablePtrs addedExternalVariables;
     AnalyserInternalEquationPtrs addedInternalEquations;
     AnalyserInternalEquationPtrs removedInternalEquations;
+    auto nlaSystemIndex = MAX_SIZE_T;
 
     for (const auto &internalEquation : mInternalEquations) {
         // Account for the unknown variables, in an NLA equation, that have been
@@ -2502,9 +2510,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
 
         // Make the NLA equations that compute the same variables aware of one
-        // another.
+        // another and assign them an index for the NLA system in which they are
+        // used.
 
         if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
+            if (internalEquation->mNlaSystemIndex == MAX_SIZE_T) {
+                internalEquation->mNlaSystemIndex = ++nlaSystemIndex;
+            }
+
             for (const auto &otherInternalEquation : mInternalEquations) {
                 if ((otherInternalEquation != internalEquation)
                     && (otherInternalEquation->mType == AnalyserInternalEquation::Type::NLA)) {
@@ -2527,11 +2540,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     }
 
                     // Consider otherInternalEquation as an NLA sibling of
-                    // internalEquation if there are some common unknown
-                    // variables.
+                    // internalEquation, if there are some common unknown
+                    // variables, and make sure that it has the same NLA system
+                    // index as internalEquation.
 
                     if (!commonUnknownVariables.empty()) {
                         internalEquation->mNlaSiblings.push_back(otherInternalEquation);
+
+                        otherInternalEquation->mNlaSystemIndex = internalEquation->mNlaSystemIndex;
                     }
                 }
             }
@@ -2850,6 +2866,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                        nullptr :
                                        internalEquation->mAst,
                                    equationDependencies,
+                                   internalEquation->mNlaSystemIndex,
                                    equationNlaSiblings,
                                    variables);
 

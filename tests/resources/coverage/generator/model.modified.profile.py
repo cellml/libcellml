@@ -8,7 +8,7 @@ __version__ = "0.3.2.post0"
 LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 1
-VARIABLE_COUNT = 205
+VARIABLE_COUNT = 207
 
 
 class VariableType(Enum):
@@ -230,7 +230,9 @@ VARIABLE_INFO = [
     {"name": "eqnCoverageForRootOperator", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnCoverageForMinusUnary", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnNlaVariable1", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC},
-    {"name": "eqnNlaVariable2", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC}
+    {"name": "eqnNlaVariable2", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC},
+    {"name": "eqnComputedConstant1", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "eqnComputedConstant2", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT}
 ]
 
 
@@ -354,7 +356,7 @@ def objective_function_0(u, f, data):
     variables[204] = u[1]
 
     f[0] = variables[203]+variables[204]+states[0]-0.0
-    f[1] = variables[203]-variables[204]-(variables[2]+variables[6])
+    f[1] = variables[203]-variables[204]-(variables[205]+variables[206])
 
 
 def find_root_0(voi, states, rates, variables):
@@ -389,6 +391,8 @@ def initialise_variables(states, variables):
     variables[190] = 3.14159265358979
     variables[191] = inf
     variables[192] = nan
+    variables[205] = 1.0
+    variables[206] = 3.0
     states[0] = 0.0
 
 
