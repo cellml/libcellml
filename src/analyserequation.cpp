@@ -31,11 +31,13 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
 void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
                                                       const AnalyserEquationAstPtr &ast,
                                                       const std::vector<AnalyserEquationPtr> &dependencies,
+                                                      size_t nlaSystemIndex,
                                                       const std::vector<AnalyserEquationPtr> &nlaSiblings,
                                                       const std::vector<AnalyserVariablePtr> &variables)
 {
     mType = type;
     mAst = ast;
+    mNlaSystemIndex = nlaSystemIndex;
 
     std::copy(dependencies.begin(), dependencies.end(), back_inserter(mDependencies));
     std::copy(nlaSiblings.begin(), nlaSiblings.end(), back_inserter(mNlaSiblings));
@@ -114,6 +116,11 @@ AnalyserEquationPtr AnalyserEquation::dependency(size_t index) const
     }
 
     return mPimpl->mDependencies[index].lock();
+}
+
+size_t AnalyserEquation::nlaSystemIndex() const
+{
+    return mPimpl->mNlaSystemIndex;
 }
 
 size_t AnalyserEquation::nlaSiblingCount() const

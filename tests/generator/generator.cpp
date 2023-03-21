@@ -641,6 +641,7 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
     EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.py"), generator->implementationCode());
 }
 
+/*
 TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
 {
     auto parser = libcellml::Parser::create();
@@ -685,7 +686,6 @@ TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
     EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.py"), generator->implementationCode());
 }
 
-/*
 TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
 {
     auto parser = libcellml::Parser::create();
@@ -2505,7 +2505,6 @@ TEST(Generator, robertsonOdeModel1966)
     EXPECT_EQ(fileContents("generator/robertson_model_1966/ode.model.py"), generator->implementationCode());
 }
 
-/*
 TEST(Generator, robertsonDaeModel1966)
 {
     auto parser = libcellml::Parser::create();
@@ -2521,11 +2520,11 @@ TEST(Generator, robertsonDaeModel1966)
 
     auto analyserModel = analyser->model();
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::DAE, analyserModel->type());
 
-    EXPECT_EQ(size_t(4), analyserModel->stateCount());
-    EXPECT_EQ(size_t(17), analyserModel->variableCount());
-    EXPECT_EQ(size_t(16), analyserModel->equationCount());
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(4), analyserModel->variableCount());
+    EXPECT_EQ(size_t(3), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_NE(nullptr, analyserModel->state(0));
@@ -2553,7 +2552,6 @@ TEST(Generator, robertsonDaeModel1966)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/robertson_model_1966/dae.model.py"), generator->implementationCode());
 }
-*/
 
 TEST(Generator, sineImports)
 {

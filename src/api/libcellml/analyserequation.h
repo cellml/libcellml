@@ -113,6 +113,17 @@ public:
     AnalyserEquationPtr dependency(size_t index) const;
 
     /**
+     * @brief Get the index of the NLA system of this @c AnalyserEquation.
+     *
+     * Return the index of the NLA system where this @c AnalyserEquation is
+     * used. A value of MAX_SIZE_T indicates that this @c AnalyserEquation is
+     * not used in an NLA system.
+     *
+     * @return The index of the NLA system.
+     */
+    size_t nlaSystemIndex() const;
+
+    /**
      * @brief Get the number of NLA siblings for this @c AnalyserEquation.
      *
      * Return the number of NLA siblings for this @c AnalyserEquation.

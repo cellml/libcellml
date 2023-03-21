@@ -50,7 +50,6 @@ namespace libcellml {
 void Generator::GeneratorImpl::reset()
 {
     mCode = {};
-    mNlaSystemIndex = MAX_SIZE_T;
 }
 
 bool Generator::GeneratorImpl::modelHasOdes() const
@@ -769,7 +768,6 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
         && !mProfile->objectiveFunctionMethodString(modelHasOdes()).empty()
         && !mProfile->findRootMethodString(modelHasOdes()).empty()
         && !mProfile->nlaSolveCallString(modelHasOdes()).empty()) {
-        auto nlaSystemIndex = MAX_SIZE_T;
         std::vector<AnalyserEquationPtr> handledNlaEquations;
 
         for (const auto &equation : mModel->equations()) {
@@ -812,7 +810,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 mCode += newLineIfNeeded()
                          + replace(replace(mProfile->objectiveFunctionMethodString(modelHasOdes()),
-                                           "[INDEX]", convertToString(++nlaSystemIndex)),
+                                           "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                    "[CODE]", generateMethodBodyCode(methodBody));
 
                 methodBody = {};
@@ -828,7 +826,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 methodBody += newLineIfNeeded()
                               + mProfile->indentString()
                               + replace(replace(mProfile->nlaSolveCallString(modelHasOdes()),
-                                                "[INDEX]", convertToString(nlaSystemIndex)),
+                                                "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                         "[SIZE]", convertToString(equation->variableCount()));
 
                 methodBody += newLineIfNeeded();
@@ -843,7 +841,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 mCode += newLineIfNeeded()
                          + replace(replace(replace(mProfile->findRootMethodString(modelHasOdes()),
-                                                   "[INDEX]", convertToString(nlaSystemIndex)),
+                                                   "[INDEX]", convertToString(equation->nlaSystemIndex())),
                                            "[SIZE]", convertToString(variablesSize)),
                                    "[CODE]", generateMethodBodyCode(methodBody));
             }
@@ -1641,9 +1639,13 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     return code;
 }
 
-bool Generator::GeneratorImpl::isStateRateBasedAlgebraicEqnOrExternalEqn(const AnalyserEquationPtr &equation) const
+bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &equation) const
 {
-    return ((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+    // NLA and algebraic equations that are state/rate-based and external
+    // equations are to be computed again (in the computeVariables() method).
+
+    return (((equation->type() == AnalyserEquation::Type::NLA)
+             || (equation->type() == AnalyserEquation::Type::ALGEBRAIC))
             && equation->isStateRateBased())
            || (equation->type() == AnalyserEquation::Type::EXTERNAL);
 }
@@ -1676,8 +1678,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             && (equation->type() != AnalyserEquation::Type::VARIABLE_BASED_CONSTANT)) {
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::ODE)
-                    && (!forComputeVariables
-                        || isStateRateBasedAlgebraicEqnOrExternalEqn(dependency))) {
+                    && (!forComputeVariables || isToBeComputedAgain(dependency))) {
                     res += generateEquationCode(dependency, remainingEquations, forComputeVariables);
                 }
             }
@@ -1696,7 +1697,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             if (!mProfile->findRootCallString(modelHasOdes()).empty()) {
                 res += mProfile->indentString()
                        + replace(mProfile->findRootCallString(modelHasOdes()),
-                                 "[INDEX]", convertToString(++mNlaSystemIndex));
+                                 "[INDEX]", convertToString(equation->nlaSystemIndex()));
             }
         } else {
             res += mProfile->indentString() + generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
@@ -1844,7 +1845,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
 
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || isStateRateBasedAlgebraicEqnOrExternalEqn(equation)) {
+                || isToBeComputedAgain(equation)) {
                 methodBody += generateEquationCode(equation, newRemainingEquations, true);
             }
         }

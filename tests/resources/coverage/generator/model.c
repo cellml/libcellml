@@ -9,7 +9,7 @@ const char VERSION[] = "0.3.2";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 1;
-const size_t VARIABLE_COUNT = 205;
+const size_t VARIABLE_COUNT = 207;
 
 const VariableInfo VOI_INFO = {"t", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
@@ -222,7 +222,9 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnCoverageForRootOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNlaVariable1", "dimensionless", "my_component", ALGEBRAIC},
-    {"eqnNlaVariable2", "dimensionless", "my_component", ALGEBRAIC}
+    {"eqnNlaVariable2", "dimensionless", "my_component", ALGEBRAIC},
+    {"eqnComputedConstant1", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnComputedConstant2", "dimensionless", "my_component", COMPUTED_CONSTANT}
 };
 
 double xor(double x, double y)
@@ -342,7 +344,7 @@ void objectiveFunction0(double *u, double *f, void *data)
     variables[204] = u[1];
 
     f[0] = variables[203]+variables[204]+states[0]-0.0;
-    f[1] = variables[203]-variables[204]-(variables[2]+variables[6]);
+    f[1] = variables[203]-variables[204]-(variables[205]+variables[206]);
 }
 
 void findRoot0(double voi, double *states, double *rates, double *variables)
@@ -380,6 +382,8 @@ void initialiseVariables(double *states, double *variables)
     variables[190] = 3.14159265358979;
     variables[191] = INFINITY;
     variables[192] = NAN;
+    variables[205] = 1.0;
+    variables[206] = 3.0;
     states[0] = 0.0;
 }
 

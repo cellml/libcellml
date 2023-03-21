@@ -175,6 +175,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(2, ae.dependencyCount())
         self.assertIsNotNone(ae.dependencies())
         self.assertIsNotNone(ae.dependency(0))
+        self.assertEqual(18446744073709551615, ae.nlaSystemIndex())
         self.assertEqual(0, ae.nlaSiblingCount())
         self.assertIsNotNone(ae.nlaSiblings())
         self.assertIsNone(ae.nlaSibling(0))

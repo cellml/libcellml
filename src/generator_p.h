@@ -35,8 +35,6 @@ struct Generator::GeneratorImpl
 
     std::string mCode;
 
-    size_t mNlaSystemIndex = MAX_SIZE_T;
-
     GeneratorProfilePtr mProfile = GeneratorProfile::create();
 
     void reset();
@@ -128,7 +126,7 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value) const;
     std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
-    bool isStateRateBasedAlgebraicEqnOrExternalEqn(const AnalyserEquationPtr &equation) const;
+    bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
 
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
