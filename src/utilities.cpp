@@ -101,14 +101,14 @@ std::string convertToString(double value, bool fullPrecision)
     return strs.str();
 }
 
-bool convertToInt(const std::string &in, int *out)
+bool convertToInt(const std::string &in, int &out)
 {
     if (!isCellMLInteger(in)) {
         return false;
     }
 
     try {
-        *out = std::stoi(in);
+        out = std::stoi(in);
     } catch (std::out_of_range &) {
         return false;
     }
@@ -126,7 +126,7 @@ int convertPrefixToInt(const std::string &in, bool *ok)
     if (isStandardPrefixName(in)) {
         prefixInt = standardPrefixList.at(in);
     } else if (!in.empty()) {
-        bool success = convertToInt(in, &prefixInt);
+        bool success = convertToInt(in, prefixInt);
         if (ok != nullptr) {
             *ok = success;
         }
