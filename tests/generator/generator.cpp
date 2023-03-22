@@ -675,15 +675,19 @@ TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.c"), generator->implementationCode());
+    auto profile = generator->profile();
 
-    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile->setInterfaceFileNameString("model.ordered.h");
+
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.ordered.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.ordered.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.py"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.ordered.py"), generator->implementationCode());
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
@@ -719,15 +723,19 @@ TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.c"), generator->implementationCode());
+    auto profile = generator->profile();
 
-    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile->setInterfaceFileNameString("model.not.ordered.h");
+
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.not.ordered.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.not.ordered.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.py"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.not.ordered.py"), generator->implementationCode());
 }
 */
 
