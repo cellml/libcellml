@@ -340,10 +340,10 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
 
-TEST(Analyser, overconstrainedOneVariable)
+TEST(Analyser, overconstrained)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/overconstrained_one_variable.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/overconstrained.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -364,59 +364,6 @@ TEST(Analyser, overconstrainedOneVariable)
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
     EXPECT_EQ("overconstrained", libcellml::AnalyserModel::typeAsString(analyser->model()->type()));
-}
-
-TEST(Analyser, overconstrainedTwoVariables)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/overconstrained_two_variables.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'y' in component 'my_component' is computed more than once.",
-        "Variable 'x' in component 'my_component' is computed more than once.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
-                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
-                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE),
-                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
-                                                                   analyser);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
-}
-
-TEST(Analyser, overconstrainedThreeVariables)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/overconstrained_three_variables.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'z' in component 'my_component' is computed more than once.",
-        "Variable 'x' in component 'my_component' is computed more than once.",
-        "Variable 'y' in component 'my_component' is computed more than once.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
-                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
-                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE),
-                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
-                                                                   analyser);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
 
 TEST(Analyser, unsuitablyConstrained)
