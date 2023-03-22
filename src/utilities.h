@@ -204,7 +204,7 @@ bool canConvertToBasicDouble(const std::string &in);
  * @param out The value of the @p in as a doulbe if the conversion was successful,
  * left unchanged if the conversion fails.
  *
- * @return The @c true if the conversion succeeded, @c false otherwise.
+ * @return @c true if the conversion succeeded, @c false otherwise.
  */
 bool convertToDouble(const std::string &in, double &out);
 
