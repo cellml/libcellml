@@ -641,7 +641,6 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
     EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.py"), generator->implementationCode());
 }
 
-/*
 TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
 {
     auto parser = libcellml::Parser::create();
@@ -737,7 +736,6 @@ TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.not.ordered.py"), generator->implementationCode());
 }
-*/
 
 TEST(Generator, odeComputedVarOnRhs)
 {
