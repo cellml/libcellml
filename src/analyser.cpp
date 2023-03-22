@@ -201,11 +201,11 @@ struct AnalyserInternalEquation
     static bool hasNonConstantVariables(const AnalyserInternalVariablePtrs &variables);
     bool hasNonConstantVariables();
 
-    bool unknownVariableOnLhsRhs(bool lhs);
-    bool unknownVariableOnLhs();
-    bool unknownVariableOnRhs();
+    bool variableOnLhsRhs(const AnalyserInternalVariablePtr &variable, bool lhs);
+    bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
+    bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
 
-    bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &variableIndex);
+    bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &variableIndex, bool checkNlaSystems);
 };
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
@@ -269,10 +269,14 @@ bool AnalyserInternalEquation::hasKnownVariables()
 
 bool AnalyserInternalEquation::isNonConstantVariable(const AnalyserInternalVariablePtr &variable)
 {
+    // Note: we don't check for AnalyserInternalVariable::Type::CONSTANT because
+    //       a variable's type becomes constant at the very end, i.e. once we
+    //       know for sure that it's neither a state variable nor a variable
+    //       that is computed using an NLA system.
+
     return variable->mIsExternal
            || ((variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
                && (variable->mType != AnalyserInternalVariable::Type::INITIALISED)
-               && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
                && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT));
 }
@@ -289,29 +293,32 @@ bool AnalyserInternalEquation::hasNonConstantVariables()
     return hasNonConstantVariables(mVariables) || hasNonConstantVariables(mOdeVariables);
 }
 
-bool AnalyserInternalEquation::unknownVariableOnLhsRhs(bool lhs)
+bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserInternalVariablePtr &variable,
+                                                bool lhs)
 {
     auto ast = mAst;
     auto astChild = lhs ? ast->leftChild() : ast->rightChild();
 
     return ((astChild->type() == AnalyserEquationAst::Type::CI)
-            && (astChild->variable()->name() == mUnknownVariables.front()->mVariable->name()))
+            && (astChild->variable()->name() == variable->mVariable->name()))
            || ((astChild->type() == AnalyserEquationAst::Type::DIFF)
-               && (astChild->rightChild()->variable()->name() == mUnknownVariables.front()->mVariable->name()));
+               && (astChild->rightChild()->variable()->name() == variable->mVariable->name()));
 }
 
-bool AnalyserInternalEquation::unknownVariableOnLhs()
+bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable)
 {
-    return unknownVariableOnLhsRhs(true);
+    return variableOnLhsRhs(variable, true)
+           || variableOnRhs(variable);
 }
 
-bool AnalyserInternalEquation::unknownVariableOnRhs()
+bool AnalyserInternalEquation::variableOnRhs(const AnalyserInternalVariablePtr &variable)
 {
-    return unknownVariableOnLhsRhs(false);
+    return variableOnLhsRhs(variable, false);
 }
 
 bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
-                                     size_t &stateIndex, size_t &variableIndex)
+                                     size_t &stateIndex, size_t &variableIndex,
+                                     bool checkNlaSystems)
 {
     // Nothing to check if the equation has a known type.
 
@@ -347,7 +354,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
     auto unknownVariablesOrOdeVariablesLeft = mVariables.size() + mOdeVariables.size();
     AnalyserInternalVariablePtrs initialisedVariables;
 
-    if (unknownVariablesOrOdeVariablesLeft == 0) {
+    if (checkNlaSystems && (unknownVariablesOrOdeVariablesLeft == 0)) {
         for (const auto &variable : mAllVariables) {
             if ((variable->mType == AnalyserInternalVariable::Type::INITIALISED)
                 || (variable->mType == AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC)) {
@@ -372,14 +379,22 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
         }
     }
 
-    // If there is one (ODE) variable left or some initialised variables then
-    // update its variable (to be the corresponding one in the component in
-    // which the equation is), as well as set its type (if it is currently
-    // unknown) and index (if its type is one of the expected ones). Finally,
-    // set the type and order of the equation, should everything have gone as
-    // planned.
+    // If there is one (ODE) variable left (on its own on the LHS/RHS of the
+    // equation or in case we check for NLA systems) or some initialised
+    // variables then update its variable (to be the corresponding one in the
+    // component in which the equation is), as well as set its type (if it is
+    // currently unknown) and index (if its type is one of the expected ones).
+    // Finally, set the type and order of the equation, should everything have
+    // gone as planned.
 
-    if ((unknownVariablesOrOdeVariablesLeft == 1)
+    auto unknownVariableLeft = (unknownVariablesOrOdeVariablesLeft == 1) ?
+                                   mVariables.empty() ?
+                                   mOdeVariables.front() :
+                                   mVariables.front() :
+                                   nullptr;
+
+    if (((unknownVariableLeft != nullptr)
+         && (checkNlaSystems || variableOnLhsOrRhs(unknownVariableLeft)))
         || !initialisedVariables.empty()) {
         auto variables = mVariables.empty() ?
                              mOdeVariables.empty() ?
@@ -425,25 +440,21 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
         //       not on its own on the LHS/RHS of the equation then it needs to
         //       be solved as an NLA equation.
 
-        auto variable = (variables.size() == 1) ?
-                            variables.front() :
-                            nullptr;
-
-        mType = ((variable == nullptr)
-                 || (!unknownVariableOnLhs() && !unknownVariableOnRhs())) ?
+        mType = ((unknownVariableLeft == nullptr)
+                 || !variableOnLhsOrRhs(unknownVariableLeft)) ?
                     Type::NLA :
-                (variable->mType == AnalyserInternalVariable::Type::STATE) ?
+                (unknownVariableLeft->mType == AnalyserInternalVariable::Type::STATE) ?
                     Type::ODE :
-                (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
+                (unknownVariableLeft->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
                     Type::TRUE_CONSTANT :
-                (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
+                (unknownVariableLeft->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
                     Type::VARIABLE_BASED_CONSTANT :
                     Type::ALGEBRAIC;
 
         // An ODE equation may have a dependency on the state of that ODE (e.g.,
         // dx/dt = x+3). Similarly, an NLA equation will have a "dependency" on
         // its unknown variables. Either way, we must remove our "depenencies"
-        // on our unknown variables or we will end in a circular dependency.
+        // on our unknown variables or we will end up in a circular dependency.
 
         for (const auto &unknownVariable : mUnknownVariables) {
             auto it = std::find(mDependencies.begin(), mDependencies.end(), unknownVariable->mVariable);
@@ -2447,17 +2458,29 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
+    // Note: we are actually looping twice. The first time, we don't check for
+    //       NLA systems while we do the second time round. The first time we
+    //       loop, we want to handle all the equations that have one unknown
+    //       variable which is is on its own either on the LHS or RHS of an
+    //       equation. Once we have done that then we can see whether what is
+    //       left can be used in one or several NLA systems.
 
     auto stateIndex = MAX_SIZE_T;
     auto variableIndex = MAX_SIZE_T;
     bool relevantCheck;
+    auto checkNlaSystems = false;
 
     do {
         relevantCheck = false;
 
         for (const auto &internalEquation : mInternalEquations) {
-            relevantCheck = internalEquation->check(mModel, stateIndex, variableIndex)
+            relevantCheck = internalEquation->check(mModel, stateIndex, variableIndex, checkNlaSystems)
                             || relevantCheck;
+        }
+
+        if (!relevantCheck && !checkNlaSystems) {
+            relevantCheck = true;
+            checkNlaSystems = true;
         }
     } while (relevantCheck);
 
@@ -2813,7 +2836,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             // Swap the LHS and RHS of the equation if its unknown variable is
             // on its RHS.
 
-            if (internalEquation->unknownVariableOnRhs()) {
+            if (internalEquation->variableOnRhs(internalEquation->mUnknownVariables.front())) {
                 internalEquation->mAst->swapLeftAndRightChildren();
             }
         }
