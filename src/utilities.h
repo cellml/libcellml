@@ -226,7 +226,7 @@ bool convertToDouble(const std::string &in, double &out);
  *
  * @return @c true if the conversion was successful and @c false if it wasn't.
  */
-bool convertToInt(const std::string &in, int *out);
+bool convertToInt(const std::string &in, int &out);
 
 /**
  * @brief Convert a units prefix to an int.
