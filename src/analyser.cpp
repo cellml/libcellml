@@ -1278,7 +1278,9 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CN)
         && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DEGREE)
         && (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)) {
-        double value = convertToDouble(ast->mPimpl->mValue);
+        double value;
+
+        convertToDouble(ast->mPimpl->mValue, value);
 
         if (!areEqual(value, 1.0)) {
             auto variable = astGreatGrandparent->mPimpl->mOwnedRightChild->variable();
