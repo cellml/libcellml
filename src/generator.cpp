@@ -125,8 +125,9 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) cons
 bool Generator::GeneratorImpl::isNegativeNumber(const AnalyserEquationAstPtr &ast) const
 {
     if (ast->type() == AnalyserEquationAst::Type::CN) {
-        bool validConversion;
-        double doubleValue = convertToDouble(ast->value(), &validConversion);
+        double doubleValue;
+
+        convertToDouble(ast->value(), doubleValue);
 
         return doubleValue < 0.0;
     }
