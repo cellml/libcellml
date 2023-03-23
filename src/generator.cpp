@@ -1369,8 +1369,8 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         break;
     case AnalyserEquationAst::Type::POWER: {
         auto stringValue = generateCode(ast->rightChild());
-        bool validConversion;
-        double doubleValue = convertToDouble(stringValue, &validConversion);
+        double doubleValue;
+        bool validConversion = convertToDouble(stringValue, doubleValue);
 
         if (validConversion && areEqual(doubleValue, 0.5)) {
             code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
@@ -1388,11 +1388,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         if (astRightChild != nullptr) {
             auto astLeftChild = ast->leftChild();
+            double doubleValue;
 
-            bool validConversion;
-            double doubleValue = convertToDouble(generateCode(astLeftChild), &validConversion);
-
-            if (validConversion && areEqual(doubleValue, 2.0)) {
+            if (convertToDouble(generateCode(astLeftChild), doubleValue)
+                && areEqual(doubleValue, 2.0)) {
                 code = mProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
             } else {
                 if (mProfile->hasPowerOperator()) {
@@ -1436,10 +1435,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         if (astRightChild != nullptr) {
             auto stringValue = generateCode(ast->leftChild());
-            bool validConversion;
-            double doubleValue = convertToDouble(stringValue, &validConversion);
+            double doubleValue;
 
-            if (validConversion && areEqual(doubleValue, 10.0)) {
+            if (convertToDouble(stringValue, doubleValue)
+                && areEqual(doubleValue, 10.0)) {
                 code = mProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
             } else {
                 code = mProfile->naturalLogarithmString() + "(" + generateCode(astRightChild) + ")/" + mProfile->naturalLogarithmString() + "(" + stringValue + ")";
