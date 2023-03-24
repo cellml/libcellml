@@ -17,7 +17,7 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "d", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "d", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC},
     {"name": "b", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC},
     {"name": "c", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC},
     {"name": "a", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.COMPUTED_CONSTANT},
@@ -60,9 +60,9 @@ def initialise_variables(variables):
 
 
 def compute_computed_constants(variables):
-    variables[0] = variables[1]+variables[2]
     variables[3] = 3.0*variables[4]+variables[5]
 
 
 def compute_variables(variables):
     find_root_0(variables)
+    variables[0] = variables[1]+variables[2]

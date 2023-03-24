@@ -2,10 +2,10 @@
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Algebraic system with various dependencies (not ordered)
     Variables:
-     • a
+     • a: / -> 14
      • b: 1 -> 4
      • c: 1 -> 7
-     • d
+     • d: / -> 11
      • x: 3
      • y: 5
     Equations:

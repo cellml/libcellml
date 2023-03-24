@@ -16,7 +16,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"y", "dimensionless", "my_algebraic_system", CONSTANT},
     {"c", "dimensionless", "my_algebraic_system", ALGEBRAIC},
     {"b", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"d", "dimensionless", "my_algebraic_system", COMPUTED_CONSTANT}
+    {"d", "dimensionless", "my_algebraic_system", ALGEBRAIC}
 };
 
 double * createVariablesArray()
@@ -72,10 +72,10 @@ void initialiseVariables(double *variables)
 void computeComputedConstants(double *variables)
 {
     variables[0] = 3.0*variables[1]+variables[2];
-    variables[5] = variables[4]+variables[3];
 }
 
 void computeVariables(double *variables)
 {
     findRoot0(variables);
+    variables[5] = variables[4]+variables[3];
 }
