@@ -22,7 +22,7 @@ VARIABLE_INFO = [
     {"name": "y", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.CONSTANT},
     {"name": "c", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC},
     {"name": "b", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC},
-    {"name": "d", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "d", "units": "dimensionless", "component": "my_algebraic_system", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -61,8 +61,8 @@ def initialise_variables(variables):
 
 def compute_computed_constants(variables):
     variables[0] = 3.0*variables[1]+variables[2]
-    variables[5] = variables[4]+variables[3]
 
 
 def compute_variables(variables):
     find_root_0(variables)
+    variables[5] = variables[4]+variables[3]
