@@ -1650,6 +1650,12 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &eq
            || (equation->type() == AnalyserEquation::Type::EXTERNAL);
 }
 
+bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equation) const
+{
+    return (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT)
+           || (equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT);
+}
+
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
 {
     auto initialisingVariable = variable->initialisingVariable();
@@ -1669,20 +1675,39 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
-                                                           bool forComputeVariables)
+                                                           std::vector<AnalyserEquationPtr> &equationsForComputeVariables)
 {
     std::string res;
 
     if (std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end()) {
-        if ((equation->type() != AnalyserEquation::Type::TRUE_CONSTANT)
-            && (equation->type() != AnalyserEquation::Type::VARIABLE_BASED_CONSTANT)) {
+        // Stop tracking the equation and its NLA siblings, if any.
+        // Note: we need to do this as soon as possible to avoid recursive
+        //       calls, something that would happen if we were to do this at the
+        //       end of this if statement.
+
+        remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
+
+        for (const auto &nlaSibling : equation->nlaSiblings()) {
+            remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), nlaSibling));
+        }
+
+        // Generate any dependency that this equation may have.
+        // Note: this accounts for the special case of the computeVariables()
+        //       method.
+
+        if (!isSomeConstant(equation)) {
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::ODE)
-                    && (!forComputeVariables || isToBeComputedAgain(dependency))) {
-                    res += generateEquationCode(dependency, remainingEquations, forComputeVariables);
+                    && !isSomeConstant(dependency)
+                    && (equationsForComputeVariables.empty()
+                        || isToBeComputedAgain(dependency)
+                        || (std::find(equationsForComputeVariables.begin(), equationsForComputeVariables.end(), dependency) != equationsForComputeVariables.end()))) {
+                    res += generateEquationCode(dependency, remainingEquations, equationsForComputeVariables);
                 }
             }
         }
+
+        // Generate the equation code itself, based on the equation type.
 
         if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
             for (const auto &variable : equation->variables()) {
@@ -1702,15 +1727,17 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         } else {
             res += mProfile->indentString() + generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
         }
-
-        remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
-
-        for (const auto &nlaSibling : equation->nlaSiblings()) {
-            remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), nlaSibling));
-        }
     }
 
     return res;
+}
+
+std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
+                                                           std::vector<AnalyserEquationPtr> &remainingEquations)
+{
+    std::vector<AnalyserEquationPtr> dummyEquationsForComputeVariables;
+
+    return generateEquationCode(equation, remainingEquations, dummyEquationsForComputeVariables);
 }
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
@@ -1846,7 +1873,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
                 || isToBeComputedAgain(equation)) {
-                methodBody += generateEquationCode(equation, newRemainingEquations, true);
+                methodBody += generateEquationCode(equation, newRemainingEquations, remainingEquations);
             }
         }
 

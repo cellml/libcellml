@@ -127,11 +127,14 @@ struct Generator::GeneratorImpl
     std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
     bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
+    bool isSomeConstant(const AnalyserEquationPtr &equation) const;
 
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool forComputeVariables = false);
+                                     std::vector<AnalyserEquationPtr> &equationsForComputeVariables);
+    std::string generateEquationCode(const AnalyserEquationPtr &equation,
+                                     std::vector<AnalyserEquationPtr> &remainingEquations);
 
     void addInterfaceComputeModelMethodsCode();
     void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
