@@ -52,5 +52,5 @@ def compute_rates(voi, states, rates, variables):
 
 
 def compute_variables(voi, states, rates, variables):
-    variables[0] = 3.0*variables[1]
     variables[1] = 2.0*voi
+    variables[0] = 3.0*variables[1]

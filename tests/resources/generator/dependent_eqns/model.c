@@ -53,6 +53,6 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-    variables[0] = 3.0*variables[1];
     variables[1] = 2.0*voi;
+    variables[0] = 3.0*variables[1];
 }
