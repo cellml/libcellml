@@ -2494,8 +2494,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE) {
             addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED);
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
-            // The variable is (still) initialised so, in the end, it has to be
-            // a constant, so consider it as such.
+            // The variable is (still) initialised so it has to be a constant.
 
             internalVariable->makeConstant(variableIndex);
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
@@ -2589,6 +2588,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         mInternalEquations.erase(std::find(mInternalEquations.begin(), mInternalEquations.end(), removedInternalEquation));
     }
 
+    // Confirm that equations that compute a variable-based constant are still
+    // of that type.
+    // Note: indeed, when originally qualifying such an equation, all we know
+    //       about the variables on which the equation depends is that they have
+    //       an initial value. However, those variables may then have been
+    //       proven to be computed using an NLA system, in which case the
+    //       equation should now be considered as an algebraic equation and the
+    //       variable it computes an algebraic variable.
+
     // Confirm that the variables in an NLA system are not overconstrained.
     // Note: this may happen if an NLA system contains too many NLA equations
     //       to compute its unknown variables and/or if some internal equations
@@ -2598,7 +2606,27 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     AnalyserInternalVariablePtrs overconstrainedVariables;
 
     for (const auto &internalEquation : mInternalEquations) {
-        if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
+        if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+            auto unknownVariable = internalEquation->mUnknownVariables.front();
+
+            for (const auto &variable : internalEquation->mAllVariables) {
+                if ((variable != unknownVariable)
+                    && (variable->mType != AnalyserInternalVariable::Type::CONSTANT)
+                    && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+                    && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
+                    // We are supposed to compute a variable-based constant, yet
+                    // we have come across a variable which is not some kind of
+                    // a constant. In fact, it was an algebraic variable (with
+                    // an initial guess) that needs to be computed using an NLA
+                    // system. So, requalify the unknown variable and equation.
+
+                    unknownVariable->mType = AnalyserInternalVariable::Type::ALGEBRAIC;
+                    internalEquation->mType = AnalyserInternalEquation::Type::ALGEBRAIC;
+
+                    break;
+                }
+            }
+        } else if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
             if (internalEquation->mNlaSiblings.size() + 1 > internalEquation->mUnknownVariables.size()) {
                 // There are more NLA equations than unknown variables, so all
                 // the unknown variables involved in the NLA system should be
