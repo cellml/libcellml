@@ -498,20 +498,20 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
     findRoot0(voi, states, rates, variables);
-    findRoot1(voi, states, rates, variables);
     findRoot2(voi, states, rates, variables);
     findRoot3(voi, states, rates, variables);
-    findRoot4(voi, states, rates, variables);
-    findRoot5(voi, states, rates, variables);
-    findRoot6(voi, states, rates, variables);
-    findRoot7(voi, states, rates, variables);
-    findRoot8(voi, states, rates, variables);
-    findRoot9(voi, states, rates, variables);
-    findRoot10(voi, states, rates, variables);
-    findRoot11(voi, states, rates, variables);
-    findRoot12(voi, states, rates, variables);
-    findRoot13(voi, states, rates, variables);
     findRoot14(voi, states, rates, variables);
     findRoot15(voi, states, rates, variables);
     findRoot16(voi, states, rates, variables);
+    findRoot12(voi, states, rates, variables);
+    findRoot13(voi, states, rates, variables);
+    findRoot9(voi, states, rates, variables);
+    findRoot10(voi, states, rates, variables);
+    findRoot11(voi, states, rates, variables);
+    findRoot6(voi, states, rates, variables);
+    findRoot7(voi, states, rates, variables);
+    findRoot8(voi, states, rates, variables);
+    findRoot4(voi, states, rates, variables);
+    findRoot5(voi, states, rates, variables);
+    findRoot1(voi, states, rates, variables);
 }
