@@ -531,6 +531,10 @@ void printAstAsTree(const AnalyserEquationAstPtr &ast)
 
 std::string astAsCode(const AnalyserEquationAstPtr &ast)
 {
+    if (ast == nullptr) {
+        return "nullptr";
+    }
+
     static GeneratorProfilePtr generatorProfile = nullptr;
 
     if (generatorProfile == nullptr) {
