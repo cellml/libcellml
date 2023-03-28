@@ -2019,7 +2019,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
         //     <log/>
         //     <logbase>
         //       <cn cellml:units="dimensionless">3</cn>
-        //     </degree>
+        //     </logbase>
         //     <ci>a</ci>
         //   </apply>
 
