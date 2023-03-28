@@ -3605,7 +3605,7 @@ TEST(Validator, invalidMathMLElementsChildrenOrSiblings)
         "Math has a 'arccsch' element which is not the first MathML sibling.",
         "Math has a 'arccoth' element without exactly one MathML sibling.",
         "Math has a 'arccoth' element which is not the first MathML sibling.",
-        "Math has a 'piece' element without two MathML children.",
+        "Math has a 'piece' element without exactly two MathML children.",
         "Math has a 'otherwise' element without exactly one MathML child.",
         "Math has a 'ci' element with no identifier as a child.",
         "Math has a 'cn' element which is not in base 10.",

@@ -1882,7 +1882,7 @@ bool Validator::ValidatorImpl::hasTwoMathmlChildren(const XmlNodePtr &node,
                                                     const ComponentPtr &component)
 {
     if (mathmlChildCount(node) != 2) {
-        addMathmlIssue("Math has a '" + node->name() + "' element without two MathML children.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly two MathML children.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
