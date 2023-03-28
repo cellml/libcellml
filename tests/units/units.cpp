@@ -1057,6 +1057,7 @@ TEST(Units, compareScalingFactorWithNullptrAsFirstParameter)
     u->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
 
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, u));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, u, false));
 }
 
 TEST(Units, compareScalingFactorWithNullptrAsSecondParameter)
@@ -1066,11 +1067,13 @@ TEST(Units, compareScalingFactorWithNullptrAsSecondParameter)
     u->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
 
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u, nullptr));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u, nullptr, false));
 }
 
 TEST(Units, compareScalingFactorWithNullptrAsBothParameters)
 {
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr, false));
 }
 
 TEST(Units, compareScalingFactorWithUnitBasedOnUnknownUnit)

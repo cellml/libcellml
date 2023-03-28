@@ -871,6 +871,42 @@ TEST(ModelFlattening, resolveFlattenCircularImportsComponents)
     EXPECT_EQ(nullptr, flatModel);
 }
 
+TEST(ModelFlattening, resolveFlattenNonCircularImportsUnits)
+{
+    auto importer = libcellml::Importer::create();
+    auto model = libcellml::Model::create("model");
+    auto importModel = libcellml::Model::create("importModel");
+
+    auto unitsWithImportedUnit = libcellml::Units::create("one_imported_unit");
+    unitsWithImportedUnit->addUnit("metre");
+    unitsWithImportedUnit->addUnit("importedUnit");
+
+    auto fancyUnits = libcellml::Units::create("fancyUnits");
+    fancyUnits->addUnit("per_becquerel");
+
+    auto perBecquerel = libcellml::Units::create("per_becquerel");
+    perBecquerel->addUnit(libcellml::Units::StandardUnit::BECQUEREL, -1.0);
+
+    importModel->addUnits(fancyUnits);
+    importModel->addUnits(perBecquerel);
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("here.cellml");
+    importSource->setModel(importModel);
+
+    auto importedUnit = libcellml::Units::create("importedUnit");
+    importedUnit->setImportReference("fancyUnits");
+    importedUnit->setImportSource(importSource);
+
+    model->addUnits(unitsWithImportedUnit);
+    model->addUnits(importedUnit);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+}
+
 TEST(ModelFlattening, resolveFlattenCircularImportsUnits)
 {
     const std::string resolveError =
@@ -965,4 +1001,144 @@ TEST(ModelFlattening, resolveFlattenMissingUnits)
     auto flatModel = importer->flattenModel(originalModel);
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(ModelFlattening, importSimilarEntitiesMultipleTimes)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <units name=\"similar_units\">\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"similar_units_1\">\n"
+        "    <unit exponent=\"-2\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"similar_units_2\">\n"
+        "    <unit exponent=\"-0.5\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"base_component\">\n"
+        "    <variable name=\"variable_similar\" units=\"similar_units\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component1\"/>\n"
+        "  <component name=\"base_component_1\">\n"
+        "    <variable name=\"variable_similar\" units=\"similar_units_1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\"/>\n"
+        "  <component name=\"base_component_2\">\n"
+        "    <variable name=\"variable_similar\" units=\"similar_units_2\"/>\n"
+        "  </component>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"component1\">\n"
+        "      <component_ref component=\"base_component_1\"/>\n"
+        "    </component_ref>\n"
+        "    <component_ref component=\"component2\">\n"
+        "      <component_ref component=\"base_component_2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto importer = libcellml::Importer::create();
+
+    auto model = libcellml::Model::create("model");
+    auto importModel1 = libcellml::Model::create("importModel1");
+    auto importModel2 = libcellml::Model::create("importModel2");
+
+    auto similarUnits = libcellml::Units::create("similar_units");
+    similarUnits->addUnit("second", -1.0);
+
+    auto similarUnits1 = libcellml::Units::create("similar_units");
+    similarUnits1->addUnit("second", -2.0);
+
+    auto similarUnits2 = libcellml::Units::create("similar_units");
+    similarUnits2->addUnit("second", -0.5);
+
+    auto component = libcellml::Component::create("base_component");
+    auto variable = libcellml::Variable::create("variable_similar");
+    variable->setUnits("similar_units");
+    component->addVariable(variable);
+
+    model->addUnits(similarUnits);
+    model->addComponent(component);
+
+    auto component1 = libcellml::Component::create("component_1");
+    component1->addComponent(component->clone());
+    importModel1->addUnits(similarUnits1);
+    importModel1->addComponent(component1);
+    importModel1->linkUnits();
+
+    auto component2 = libcellml::Component::create("component_2");
+    component2->addComponent(component->clone());
+    importModel2->addUnits(similarUnits2);
+    importModel2->addComponent(component2);
+    importModel2->linkUnits();
+
+    auto importedComponent1 = libcellml::Component::create("component1");
+    auto importedComponent2 = libcellml::Component::create("component2");
+
+    model->addComponent(importedComponent1);
+    model->addComponent(importedComponent2);
+
+    auto printer = libcellml::Printer::create();
+
+    auto importSource1 = libcellml::ImportSource::create();
+    importSource1->setUrl("model1.cellml");
+    importSource1->setModel(importModel1);
+
+    auto importSource2 = libcellml::ImportSource::create();
+    importSource2->setUrl("model2.cellml");
+    importSource2->setModel(importModel2);
+
+    importedComponent1->setImportSource(importSource1);
+    importedComponent1->setImportReference("component_1");
+
+    importedComponent2->setImportSource(importSource2);
+    importedComponent2->setImportReference("component_2");
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    const std::string a = printer->printModel(flatModel);
+    EXPECT_EQ(e, a);
+}
+
+TEST(ModelFlattening, proposedImportedUnitsAlreadyDefinedInModel)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <units name=\"common_units\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"common_units_1\">\n"
+        "    <unit prefix=\"hecto\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"my_component\">\n"
+        "    <variable name=\"v\" units=\"common_units_1\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"best_component\">\n"
+        "    <variable name=\"v\" units=\"common_units\" initial_value=\"1\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/importedunitswithnameclashes.xml"));
+    auto importer = libcellml::Importer::create();
+
+    auto u = libcellml::Units::create("common_units_1");
+    u->addUnit(libcellml::Units::StandardUnit::SECOND, libcellml::Units::Prefix::HECTO);
+    model->addUnits(u);
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model = importer->flattenModel(model);
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
 }

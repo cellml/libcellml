@@ -182,6 +182,36 @@ TEST(Equality, unitsNotEqualByNameOnly)
     EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
 }
 
+TEST(Equality, unitsNotEqualByUnitIdOnly)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second");
+    u2->addUnit("second");
+
+    u1->setUnitId(0, "UnitsASecond");
+
+    EXPECT_NE(u1, u2);
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
+}
+
+TEST(Equality, unitsNotEqualByUnitMultiplierOnly)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", 3, 2.0, 5.0);
+    u2->addUnit("second", 3, 2.0, 3.0);
+
+    EXPECT_NE(u1, u2);
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
+    EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
+}
+
 TEST(Equality, unitsEqualAllTestedConditionsVariant1)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
@@ -982,4 +1012,17 @@ TEST(Equality, componentNotEqualVariable)
 
     EXPECT_FALSE(c->equals(v));
     EXPECT_FALSE(v->equals(c));
+}
+
+TEST(Equality, unitsNotEqualImportedUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("name");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("name");
+
+    libcellml::ImportSourcePtr iS = libcellml::ImportSource::create();
+
+    u1->setImportSource(iS);
+
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
 }
