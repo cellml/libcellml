@@ -1788,7 +1788,7 @@ size_t Validator::ValidatorImpl::hasOneOrTwoMathmlSiblings(const XmlNodePtr &par
     auto childCount = mathmlChildCount(parentNode);
 
     if ((childCount != 2) && (childCount != 3)) {
-        addMathmlIssue("Math has a '" + node->name() + "' element without either exactly one or exactly two MathML siblings.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly one or two MathML siblings.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1898,7 +1898,7 @@ bool Validator::ValidatorImpl::hasOneOrTwoMathmlChildren(const XmlNodePtr &node,
     auto childCount = mathmlChildCount(node);
 
     if ((childCount != 1) && (childCount != 2)) {
-        addMathmlIssue("Math has a '" + node->name() + "' element without either exactly one or exactly two MathML children.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly one or two MathML children.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
