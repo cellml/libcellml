@@ -524,9 +524,9 @@ public:
     bool isFirstMathmlSibling(const XmlNodePtr &parentNode,
                               const XmlNodePtr &node,
                               const ComponentPtr &component);
-    bool isSecondMathmlChild(const XmlNodePtr &parentNode,
-                             const XmlNodePtr &node,
-                             const ComponentPtr &component);
+    bool isSecondMathmlSibling(const XmlNodePtr &parentNode,
+                               const XmlNodePtr &node,
+                               const ComponentPtr &component);
 
     bool hasFirstMathmlSiblingWithName(const XmlNodePtr &parentNode,
                                        const XmlNodePtr &node,
@@ -1813,9 +1813,9 @@ bool Validator::ValidatorImpl::isFirstMathmlSibling(const XmlNodePtr &parentNode
     return true;
 }
 
-bool Validator::ValidatorImpl::isSecondMathmlChild(const XmlNodePtr &parentNode,
-                                                   const XmlNodePtr &node,
-                                                   const ComponentPtr &component)
+bool Validator::ValidatorImpl::isSecondMathmlSibling(const XmlNodePtr &parentNode,
+                                                     const XmlNodePtr &node,
+                                                     const ComponentPtr &component)
 {
     if (!mathmlChildNode(parentNode, 1)->equals(node)) {
         addMathmlIssue("Math has a '" + node->name() + "' element which is not the second MathML sibling.",
@@ -2180,13 +2180,13 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
         if (siblingCount == 1) {
             // Used with a 'degree' element.
 
-            isSecondMathmlChild(parentNode, node, component)
+            isSecondMathmlSibling(parentNode, node, component)
                 && hasOneMathmlChild(node, component);
         } else if (siblingCount == 2) {
             // Used with a 'root' element.
 
             hasFirstMathmlSiblingWithName(parentNode, node, "root", component)
-                && isSecondMathmlChild(parentNode, node, component)
+                && isSecondMathmlSibling(parentNode, node, component)
                 && hasOneMathmlChild(node, component);
         }
     } else if (node->isMathmlElement("logbase")) {
@@ -2194,7 +2194,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
 
         hasTwoMathmlSiblings(parentNode, node, component)
             && hasFirstMathmlSiblingWithName(parentNode, node, "log", component)
-            && isSecondMathmlChild(parentNode, node, component)
+            && isSecondMathmlSibling(parentNode, node, component)
             && hasOneMathmlChild(node, component);
     } else if (node->isMathmlElement("bvar")) {
         // A 'bvar' element can have one or two children, e.g.
@@ -2224,7 +2224,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
 
         hasTwoMathmlSiblings(parentNode, node, component)
             && hasFirstMathmlSiblingWithName(parentNode, node, "diff", component)
-            && isSecondMathmlChild(parentNode, node, component)
+            && isSecondMathmlSibling(parentNode, node, component)
             && hasOneOrTwoMathmlChildren(node, component);
     }
 }
