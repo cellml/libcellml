@@ -2088,15 +2088,12 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
         }
     } else if (node->isMathmlElement("piece")) {
         if (hasTwoMathmlChildren(node, component)) {
-            for (size_t i = 0, iMax = mathmlChildCount(node); i < iMax; ++i) {
-                validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, i), component);
-            }
+            validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, 0), component);
+            validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, 1), component);
         }
     } else if (node->isMathmlElement("otherwise")) {
         if (hasOneMathmlChild(node, component)) {
-            for (size_t i = 0, iMax = mathmlChildCount(node); i < iMax; ++i) {
-                validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, i), component);
-            }
+            validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, 0), component);
         }
 
         // Token elements.
