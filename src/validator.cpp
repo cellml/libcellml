@@ -1756,7 +1756,7 @@ bool Validator::ValidatorImpl::hasTwoMathmlSiblings(const XmlNodePtr &parentNode
                                                     const ComponentPtr &component)
 {
     if (mathmlChildCount(parentNode) != 3) {
-        addMathmlIssue("Math has a '" + node->name() + "' element without two MathML siblings.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly two MathML siblings.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
