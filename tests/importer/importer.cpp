@@ -1340,7 +1340,6 @@ TEST(Importer, cascadedUnitsManuallyImportedWithoutImportSourcesAddedToImporter)
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     auto flatModel = importer->flattenModel(model);
-    Debug() << importer->issue(0)->description();
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
 }
