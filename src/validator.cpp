@@ -1854,7 +1854,7 @@ bool Validator::ValidatorImpl::hasOneMathmlChild(const XmlNodePtr &node,
                                                  const ComponentPtr &component)
 {
     if (mathmlChildCount(node) != 1) {
-        addMathmlIssue("Math has a '" + node->name() + "' element without a MathML child.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly one MathML child.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
