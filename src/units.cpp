@@ -134,19 +134,17 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(History &history, const UnitsConstP
 {
     if (mUnits->isImport()) {
         ImportSourcePtr importedSource = mUnits->importSource();
-        if (importedSource != nullptr) {
-            ModelPtr model = importedSource->model();
-            if (model != nullptr) {
-                auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
-                if (checkForImportCycles(history, h)) {
-                    return false;
-                }
-                history.push_back(h);
-                if (model->hasUnits(mUnits->importReference())) {
-                    auto importedUnits = model->units(mUnits->importReference());
-                    // Call isBaseUnit recursively until unit is no longer an import.
-                    return importedUnits->pFunc()->isBaseUnitWithHistory(history, importedUnits);
-                }
+        ModelPtr model = importedSource->model();
+        if (model != nullptr) {
+            auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
+            if (checkForImportCycles(history, h)) {
+                return false;
+            }
+            history.push_back(h);
+            if (model->hasUnits(mUnits->importReference())) {
+                auto importedUnits = model->units(mUnits->importReference());
+                // Call isBaseUnit recursively until unit is no longer an import.
+                return importedUnits->pFunc()->isBaseUnitWithHistory(history, importedUnits);
             }
         }
         return false;
@@ -312,9 +310,6 @@ bool Units::doEquals(const EntityPtr &other) const
         return false;
     }
 
-    // Check unit definitions match.
-    static const auto PTRDIFF_T_MAX = size_t(std::numeric_limits<ptrdiff_t>::max());
-
     std::string reference;
     std::string prefix;
     double exponent;
@@ -342,7 +337,7 @@ bool Units::doEquals(const EntityPtr &other) const
             }
         }
 
-        if (!unitFound || (index >= PTRDIFF_T_MAX)) {
+        if (!unitFound) {
             return false;
         }
 
@@ -625,7 +620,7 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                     unitsMap.emplace(ref, uExp * exp);
                 } else {
                     auto refUnits = model->units(ref);
-                    if ((refUnits == nullptr) || refUnits->isImport()) {
+                    if (refUnits == nullptr) {
                         return false;
                     }
                     if (!updateUnitsMap(refUnits, unitsMap, uExp * exp)) {
@@ -694,9 +689,6 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Initial checks.
     if ((units1 == nullptr) || (units2 == nullptr)) {
-        return false;
-    }
-    if ((units1->isImport()) || (units2->isImport())) {
         return false;
     }
     if ((units1->requiresImports()) || (units2->requiresImports())) {
