@@ -320,7 +320,7 @@ bool isCellMLInteger(const std::string &candidate);
  * @brief Test if the @p candidate @c std::string is in the form of a CellML basic real.
  *
  * The candidate string must consist of european numeric characters.  It may optionally
- * have a basic Latin hyphen character '-' to indicate sign.  It may also optianally
+ * have a basic Latin hyphen character '-' to indicate sign.  It may also optionally
  * use the basic Latin fullstop character '.' to indicate a decimal point.  The candidate
  * string must represent a number in base 10.
  *
