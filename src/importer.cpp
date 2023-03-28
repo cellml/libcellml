@@ -136,17 +136,11 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
-        for (size_t u = 0; u < units->unitCount(); ++u) {
-            std::string ref;
-            std::string prefix;
-            std::string id;
-            double multiplier;
-            double exponent;
-
-            units->unitAttributes(u, ref, prefix, exponent, multiplier, id);
+        for (size_t index = 0; index < units->unitCount(); ++index) {
+            std::string ref = units->unitAttributeReference(index);
             // If the child units are imported, check them too.
             auto model = owningModel(units);
-            if ((model != nullptr) && model->hasUnits(ref)) {
+            if (model->hasUnits(ref)) {
                 if (checkUnitsForCycles(model->units(ref), history)) {
                     return true;
                 }
@@ -202,29 +196,27 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
     history.push_back(h);
 
     // If the dependencies have not been recorded already, then check it.
-    if (component->isImport()) {
-        auto model = component->importSource()->model();
-        if (model == nullptr) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
-            issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
-            addIssue(issue);
-            return true;
-        }
-        auto importedComponent = model->component(component->importReference(), true);
-        if (importedComponent == nullptr) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
-            issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
-            addIssue(issue);
-            return true;
-        }
+    auto model = component->importSource()->model();
+    if (model == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
+        issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+        addIssue(issue);
+        return true;
+    }
+    auto importedComponent = model->component(component->importReference(), true);
+    if (importedComponent == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
+        issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
+        addIssue(issue);
+        return true;
+    }
 
-        if (importedComponent->isImport() && checkComponentForCycles(importedComponent, history)) {
-            return true;
-        }
+    if (importedComponent->isImport() && checkComponentForCycles(importedComponent, history)) {
+        return true;
     }
 
     return false;
@@ -455,12 +447,14 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
 
     size_t endIndex = mImporter->errorCount();
     bool encounteredRelatedError = false;
-    for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
-        auto error = mImporter->error(index);
-        removeError(index);
+    if (endIndex > startIndex) {
+        for (size_t index = endIndex; startIndex < index; --index) {
+            auto error = mImporter->error(index - 1);
+            removeError(index - 1);
 
-        if (!encounteredRelatedError && isErrorRelatedToComponent(error, sourceComponent)) {
-            encounteredRelatedError = true;
+            if (!encounteredRelatedError && isErrorRelatedToComponent(error, sourceComponent)) {
+                encounteredRelatedError = true;
+            }
         }
     }
 
@@ -544,12 +538,14 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
 
     bool encounteredRelatedError = false;
     size_t endIndex = mImporter->errorCount();
-    for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
-        auto error = mImporter->error(index);
-        auto errorUnits = error->item()->units();
-        removeError(index);
-        if (!encounteredRelatedError && (errorUnits != nullptr) && (errorUnits->name() == importUnits->importReference())) {
-            encounteredRelatedError = true;
+    if (endIndex > startIndex) {
+        for (size_t index = endIndex; startIndex < index; --index) {
+            auto error = mImporter->error(index - 1);
+            auto errorUnits = error->item()->units();
+            removeError(index - 1);
+            if (!encounteredRelatedError && (errorUnits != nullptr) && (errorUnits->name() == importUnits->importReference())) {
+                encounteredRelatedError = true;
+            }
         }
     }
 
@@ -585,13 +581,8 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
             return false;
         }
 
-        for (size_t u = 0; u < sourceUnits->unitCount(); ++u) {
-            std::string reference;
-            std::string prefix;
-            std::string id;
-            double exponent;
-            double multiplier;
-            sourceUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
+        for (size_t unit_index = 0; unit_index < sourceUnits->unitCount(); ++unit_index) {
+            std::string reference = sourceUnits->unitAttributeReference(unit_index);
             if (isStandardUnitName(reference)) {
                 continue;
             }
@@ -604,7 +595,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
                 addIssue(issue);
                 return false;
             }
-            if (sourceUnit->isImport() && !sourceUnit->isResolved()) {
+            if (sourceUnit->isImport()) {
                 if (!fetchUnits(sourceUnit, newBase, history)) {
                     return false;
                 }
@@ -676,6 +667,25 @@ void Importer::clearImports(ModelPtr &model)
     }
 }
 
+std::string addUnitsAvoidingNameClash(const ModelPtr &model, const UnitsPtr &units)
+{
+    bool modelHasUnits = model->hasUnits(units);
+    if (!modelHasUnits) {
+        auto originalName = units->name();
+        size_t count = 0;
+        auto newName = originalName;
+        while (!modelHasUnits && model->hasUnits(newName)) {
+            newName = originalName + "_" + convertToString(++count);
+            units->setName(newName);
+            modelHasUnits = model->hasUnits(units);
+        }
+        if (!modelHasUnits) {
+            model->addUnits(units);
+        }
+    }
+    return units->name();
+}
+
 void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -726,12 +736,13 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         // Make a map of component name to component pointer.
         ComponentNameMap newComponentNames = createComponentNamesMap(importedComponentCopy);
         for (const auto &entry : newComponentNames) {
-            std::string newName = entry.first;
+            std::string originalName = entry.first;
             size_t count = 0;
+            std::string newName = originalName;
             while (std::find(compNames.begin(), compNames.end(), newName) != compNames.end()) {
-                newName += "_" + convertToString(++count);
+                newName = originalName + "_" + convertToString(++count);
             }
-            if (newName != entry.first) {
+            if (originalName != newName) {
                 entry.second->setName(newName);
             }
         }
@@ -755,18 +766,10 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         // Copy over units used in imported component to this model.
         StringStringMap unitsNamesToReplace;
         for (const auto &u : requiredUnits) {
-            if (!model->hasUnits(u)) {
-                auto originalName = u->name();
-                size_t count = 0;
-                while (!model->hasUnits(u) && model->hasUnits(u->name())) {
-                    auto name = u->name();
-                    name += "_" + convertToString(++count);
-                    u->setName(name);
-                }
-                model->addUnits(u);
-                if (originalName != u->name()) {
-                    unitsNamesToReplace.emplace(originalName, u->name());
-                }
+            const std::string originalName = u->name();
+            const std::string newName = addUnitsAvoidingNameClash(model, u);
+            if (originalName != newName) {
+                unitsNamesToReplace.emplace(originalName, newName);
             }
         }
         findAndReplaceComponentsCnUnitsNames(importedComponentCopy, unitsNamesToReplace);
@@ -780,6 +783,28 @@ void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &compon
     for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
         auto c = flattenedComponent->component(index);
         flattenComponentTree(flattenedComponent, c, index);
+    }
+}
+
+void flattenUnitsTree(const ModelPtr &model, const UnitsPtr &u, size_t index)
+{
+    if (u->isImport()) {
+        auto importSource = u->importSource();
+        auto importingModel = importSource->model();
+        auto importedUnits = importingModel->units(u->importReference());
+        auto importedUnitsCopy = importedUnits->clone();
+        importedUnitsCopy->setName(u->name());
+        model->replaceUnits(index, importedUnitsCopy);
+        for (size_t unitIndex = 0; unitIndex < importedUnits->unitCount(); ++unitIndex) {
+            const std::string reference = importedUnits->unitAttributeReference(unitIndex);
+            if (!reference.empty() && !isStandardUnitName(reference)) {
+                if (importingModel->hasUnits(reference)) {
+                    auto childUnits = importingModel->units(reference)->clone();
+                    addUnitsAvoidingNameClash(model, childUnits);
+                    flattenUnitsTree(model, childUnits, model->unitsCount() - 1);
+                }
+            }
+        }
     }
 }
 
@@ -806,13 +831,7 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
         // Go through Units and instantiate any imported Units.
         for (size_t index = 0; index < flatModel->unitsCount(); ++index) {
             auto u = flatModel->units(index);
-            if (u->isImport()) {
-                auto importSource = u->importSource();
-                auto importedUnits = importSource->model()->units(u->importReference());
-                auto importedUnitsCopy = importedUnits->clone();
-                importedUnitsCopy->setName(u->name());
-                flatModel->replaceUnits(index, importedUnitsCopy);
-            }
+            flattenUnitsTree(flatModel, u, index);
         }
 
         // Go through Components and instantiate any imported Components.
