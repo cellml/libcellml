@@ -501,7 +501,7 @@ public:
      * @param referenceRule The reference rule for the MathML-related issue.
      * @param component The component where the MathML-related issue occurred.
      */
-    void addMathMLIssue(const std::string &description,
+    void addMathmlIssue(const std::string &description,
                         Issue::ReferenceRule referenceRule,
                         const ComponentPtr &component);
 
@@ -1708,7 +1708,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::addMathMLIssue(const std::string &description,
+void Validator::ValidatorImpl::addMathmlIssue(const std::string &description,
                                               Issue::ReferenceRule referenceRule,
                                               const ComponentPtr &component)
 {
@@ -1726,7 +1726,7 @@ bool Validator::ValidatorImpl::hasOneMathmlSibling(const XmlNodePtr &parentNode,
                                                    const ComponentPtr &component)
 {
     if (mathmlChildCount(parentNode) != 2) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without a MathML sibling.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without a MathML sibling.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1741,7 +1741,7 @@ bool Validator::ValidatorImpl::hasAtLeastOneMathmlSibling(const XmlNodePtr &pare
                                                           const ComponentPtr &component)
 {
     if (mathmlChildCount(parentNode) < 2) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without at least one MathML sibling.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without at least one MathML sibling.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1756,7 +1756,7 @@ bool Validator::ValidatorImpl::hasTwoMathmlSiblings(const XmlNodePtr &parentNode
                                                     const ComponentPtr &component)
 {
     if (mathmlChildCount(parentNode) != 3) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without two MathML siblings.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without two MathML siblings.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1771,7 +1771,7 @@ bool Validator::ValidatorImpl::hasAtLeastTwoMathmlSiblings(const XmlNodePtr &par
                                                            const ComponentPtr &component)
 {
     if (mathmlChildCount(parentNode) < 3) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without at least two MathML siblings.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without at least two MathML siblings.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1788,7 +1788,7 @@ size_t Validator::ValidatorImpl::hasOneOrTwoMathmlSiblings(const XmlNodePtr &par
     auto childCount = mathmlChildCount(parentNode);
 
     if ((childCount != 2) && (childCount != 3)) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without one or two MathML siblings.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without one or two MathML siblings.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1803,7 +1803,7 @@ bool Validator::ValidatorImpl::isFirstMathmlChild(const XmlNodePtr &parentNode,
                                                   const ComponentPtr &component)
 {
     if (!mathmlChildNode(parentNode, 0)->equals(node)) {
-        addMathMLIssue("Math has a '" + node->name() + "' element which is not the first MathML sibling.",
+        addMathmlIssue("Math has a '" + node->name() + "' element which is not the first MathML sibling.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1818,7 +1818,7 @@ bool Validator::ValidatorImpl::isSecondMathmlChild(const XmlNodePtr &parentNode,
                                                    const ComponentPtr &component)
 {
     if (!mathmlChildNode(parentNode, 1)->equals(node)) {
-        addMathMLIssue("Math has a '" + node->name() + "' element which is not the second MathML sibling.",
+        addMathmlIssue("Math has a '" + node->name() + "' element which is not the second MathML sibling.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1840,7 +1840,7 @@ bool Validator::ValidatorImpl::hasFirstMathmlSiblingWithName(const XmlNodePtr &p
     }
 
     if (childNode->name() != name) {
-        addMathMLIssue("Math has a '" + node->name() + "' element which first sibling is not a '" + name + "' element.",
+        addMathmlIssue("Math has a '" + node->name() + "' element which first sibling is not a '" + name + "' element.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1854,7 +1854,7 @@ bool Validator::ValidatorImpl::hasOneMathmlChild(const XmlNodePtr &node,
                                                  const ComponentPtr &component)
 {
     if (mathmlChildCount(node) != 1) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without a MathML child.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without a MathML child.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1868,7 +1868,7 @@ bool Validator::ValidatorImpl::hasAtLeastOneMathmlChild(const XmlNodePtr &node,
                                                         const ComponentPtr &component)
 {
     if (mathmlChildCount(node) < 1) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without at least one MathML child.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without at least one MathML child.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1882,7 +1882,7 @@ bool Validator::ValidatorImpl::hasTwoMathmlChildren(const XmlNodePtr &node,
                                                     const ComponentPtr &component)
 {
     if (mathmlChildCount(node) != 2) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without two MathML children.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without two MathML children.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -1898,7 +1898,7 @@ bool Validator::ValidatorImpl::hasOneOrTwoMathmlChildren(const XmlNodePtr &node,
     auto childCount = mathmlChildCount(node);
 
     if ((childCount != 1) && (childCount != 2)) {
-        addMathMLIssue("Math has a '" + node->name() + "' element without one or two MathML children.",
+        addMathmlIssue("Math has a '" + node->name() + "' element without one or two MathML children.",
                        Issue::ReferenceRule::MATH_MATHML,
                        component);
 
@@ -2105,7 +2105,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
         auto ok = (nonCommentChildCount(node) != 1) ? false : !nonCommentChildNode(node, 0)->convertToStrippedString().empty();
 
         if (!ok) {
-            addMathMLIssue("Math has a 'ci' element with no identifier as a child.",
+            addMathmlIssue("Math has a 'ci' element with no identifier as a child.",
                            Issue::ReferenceRule::MATH_CI_VARIABLE_REF,
                            component);
         }
@@ -2113,7 +2113,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
         auto cnBase = node->attribute("base");
 
         if (!cnBase.empty() && (cnBase != "10")) {
-            addMathMLIssue("Math has a 'cn' element which is not in base 10.",
+            addMathmlIssue("Math has a 'cn' element which is not in base 10.",
                            Issue::ReferenceRule::MATH_CN_BASE10,
                            component);
 
@@ -2126,7 +2126,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
             auto ok = (nonCommentChildCount(node) != 1) ? false : nonCommentChildNode(node, 0)->isBasicReal();
 
             if (!ok) {
-                addMathMLIssue("Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+                addMathmlIssue("Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
                                Issue::ReferenceRule::MATH_CN_FORMAT,
                                component);
             }
@@ -2140,12 +2140,12 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
             }
 
             if (!ok) {
-                addMathMLIssue("Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+                addMathmlIssue("Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
                                Issue::ReferenceRule::MATH_CN_FORMAT,
                                component);
             }
         } else {
-            addMathMLIssue("Math has a 'cn' element which is not of 'real' or 'e-notation' type.",
+            addMathmlIssue("Math has a 'cn' element which is not of 'real' or 'e-notation' type.",
                            Issue::ReferenceRule::MATH_CN_FORMAT,
                            component);
         }
