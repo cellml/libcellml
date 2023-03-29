@@ -1953,11 +1953,15 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
 
         // Arithmetic operators.
 
-    } else if (node->isMathmlElement("plus")
-               || node->isMathmlElement("minus")) {
+    } else if (node->isMathmlElement("plus")) {
         auto parentNode = node->parent();
 
         hasAtLeastOneMathmlSibling(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("minus")) {
+        auto parentNode = node->parent();
+
+        hasOneOrTwoMathmlSiblings(parentNode, node, component)
             && isFirstMathmlSibling(parentNode, node, component);
     } else if (node->isMathmlElement("times")
                || node->isMathmlElement("divide")) {
