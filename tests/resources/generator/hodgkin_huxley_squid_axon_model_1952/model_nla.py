@@ -99,7 +99,7 @@ def objective_function_1(u, f, data):
 
     variables[0] = u[0]
 
-    f[0] = rates[0]--(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4]-0.0
+    f[0] = rates[0]-(-(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4])-0.0
 
 
 def find_root_1(voi, states, rates, variables):

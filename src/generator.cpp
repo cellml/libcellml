@@ -969,7 +969,8 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isRelationalOperator(astRightChild)
             || isLogicalOperator(astRightChild)
             || isMinusOperator(astRightChild)
-            || isPiecewiseStatement(astRightChild)) {
+            || isPiecewiseStatement(astRightChild)
+            || (astRightChildCode.rfind(mProfile->minusString(), 0) == 0)) {
             astRightChildCode = "(" + astRightChildCode + ")";
         } else if (isPlusOperator(astRightChild)) {
             if (astRightChild->rightChild() != nullptr) {
