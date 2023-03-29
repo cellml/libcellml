@@ -13,7 +13,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- eq -->
             <apply>
-                <!-- 'eq' element without two MathML siblings. -->
+                <!-- 'eq' element without exactly two MathML siblings. -->
                 <eq/>
             </apply>
             <apply>
@@ -26,7 +26,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- neq -->
             <apply>
-                <!-- 'neq' element without two MathML siblings. -->
+                <!-- 'neq' element without exactly two MathML siblings. -->
                 <neq/>
             </apply>
             <apply>
@@ -39,7 +39,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- lt -->
             <apply>
-                <!-- 'lt' element without two MathML siblings. -->
+                <!-- 'lt' element without exactly two MathML siblings. -->
                 <lt/>
             </apply>
             <apply>
@@ -52,7 +52,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- leq -->
             <apply>
-                <!-- 'leq' element without two MathML siblings. -->
+                <!-- 'leq' element without exactly two MathML siblings. -->
                 <leq/>
             </apply>
             <apply>
@@ -65,7 +65,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- gt -->
             <apply>
-                <!-- 'gt' element without two MathML siblings. -->
+                <!-- 'gt' element without exactly two MathML siblings. -->
                 <gt/>
             </apply>
             <apply>
@@ -78,7 +78,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- geq -->
             <apply>
-                <!-- 'geq' element without two MathML siblings. -->
+                <!-- 'geq' element without exactly two MathML siblings. -->
                 <geq/>
             </apply>
             <apply>
@@ -130,7 +130,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- not -->
             <apply>
-                <!-- 'not' element without a MathML sibling. -->
+                <!-- 'not' element without exactly one MathML sibling. -->
                 <not/>
             </apply>
             <apply>
@@ -193,7 +193,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- power -->
             <apply>
-                <!-- 'power' element without two MathML siblings. -->
+                <!-- 'power' element without exactly two MathML siblings. -->
                 <power/>
             </apply>
             <apply>
@@ -206,7 +206,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- root -->
             <apply>
-                <!-- 'root' element without one or two MathML siblings. -->
+                <!-- 'root' element without exactly one or two MathML siblings. -->
                 <root/>
             </apply>
             <apply>
@@ -230,7 +230,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- abs -->
             <apply>
-                <!-- 'abs' element without a MathML sibling. -->
+                <!-- 'abs' element without exactly one MathML sibling. -->
                 <abs/>
             </apply>
             <apply>
@@ -242,7 +242,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- exp -->
             <apply>
-                <!-- 'exp' element without a MathML sibling. -->
+                <!-- 'exp' element without exactly one MathML sibling. -->
                 <exp/>
             </apply>
             <apply>
@@ -254,7 +254,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- ln -->
             <apply>
-                <!-- 'ln' element without a MathML sibling. -->
+                <!-- 'ln' element without exactly one MathML sibling. -->
                 <ln/>
             </apply>
             <apply>
@@ -266,7 +266,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- log -->
             <apply>
-                <!-- 'log' element without one or two MathML siblings. -->
+                <!-- 'log' element without exactly one or two MathML siblings. -->
                 <log/>
             </apply>
             <apply>
@@ -290,7 +290,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- ceiling -->
             <apply>
-                <!-- 'ceiling' element without a MathML sibling. -->
+                <!-- 'ceiling' element without exactly one MathML sibling. -->
                 <ceiling/>
             </apply>
             <apply>
@@ -302,7 +302,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- floor -->
             <apply>
-                <!-- 'floor' element without a MathML sibling. -->
+                <!-- 'floor' element without exactly one MathML sibling. -->
                 <floor/>
             </apply>
             <apply>
@@ -315,7 +315,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- diff -->
             <apply>
-                <!-- 'diff' element without two MathML siblings. -->
+                <!-- 'diff' element without exactly two MathML siblings. -->
                 <diff/>
             </apply>
             <apply>
@@ -335,7 +335,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- sin -->
             <apply>
-                <!-- 'sin' element without a MathML sibling. -->
+                <!-- 'sin' element without exactly one MathML sibling. -->
                 <sin/>
             </apply>
             <apply>
@@ -347,7 +347,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- cos -->
             <apply>
-                <!-- 'cos' element without a MathML sibling. -->
+                <!-- 'cos' element without exactly one MathML sibling. -->
                 <cos/>
             </apply>
             <apply>
@@ -359,7 +359,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- tan -->
             <apply>
-                <!-- 'tan' element without a MathML sibling. -->
+                <!-- 'tan' element without exactly one MathML sibling. -->
                 <tan/>
             </apply>
             <apply>
@@ -371,7 +371,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- sec -->
             <apply>
-                <!-- 'sec' element without a MathML sibling. -->
+                <!-- 'sec' element without exactly one MathML sibling. -->
                 <sec/>
             </apply>
             <apply>
@@ -383,7 +383,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- csc -->
             <apply>
-                <!-- 'csc' element without a MathML sibling. -->
+                <!-- 'csc' element without exactly one MathML sibling. -->
                 <csc/>
             </apply>
             <apply>
@@ -395,7 +395,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- cot -->
             <apply>
-                <!-- 'cot' element without a MathML sibling. -->
+                <!-- 'cot' element without exactly one MathML sibling. -->
                 <cot/>
             </apply>
             <apply>
@@ -407,7 +407,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- sinh -->
             <apply>
-                <!-- 'sinh' element without a MathML sibling. -->
+                <!-- 'sinh' element without exactly one MathML sibling. -->
                 <sinh/>
             </apply>
             <apply>
@@ -419,7 +419,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- cosh -->
             <apply>
-                <!-- 'cosh' element without a MathML sibling. -->
+                <!-- 'cosh' element without exactly one MathML sibling. -->
                 <cosh/>
             </apply>
             <apply>
@@ -431,7 +431,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- tanh -->
             <apply>
-                <!-- 'tanh' element without a MathML sibling. -->
+                <!-- 'tanh' element without exactly one MathML sibling. -->
                 <tanh/>
             </apply>
             <apply>
@@ -443,7 +443,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- sech -->
             <apply>
-                <!-- 'sech' element without a MathML sibling. -->
+                <!-- 'sech' element without exactly one MathML sibling. -->
                 <sech/>
             </apply>
             <apply>
@@ -455,7 +455,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- csch -->
             <apply>
-                <!-- 'csch' element without a MathML sibling. -->
+                <!-- 'csch' element without exactly one MathML sibling. -->
                 <csch/>
             </apply>
             <apply>
@@ -467,7 +467,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- coth -->
             <apply>
-                <!-- 'coth' element without a MathML sibling. -->
+                <!-- 'coth' element without exactly one MathML sibling. -->
                 <coth/>
             </apply>
             <apply>
@@ -479,7 +479,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arcsin -->
             <apply>
-                <!-- 'arcsin' element without a MathML sibling. -->
+                <!-- 'arcsin' element without exactly one MathML sibling. -->
                 <arcsin/>
             </apply>
             <apply>
@@ -491,7 +491,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arccos -->
             <apply>
-                <!-- 'arccos' element without a MathML sibling. -->
+                <!-- 'arccos' element without exactly one MathML sibling. -->
                 <arccos/>
             </apply>
             <apply>
@@ -503,7 +503,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arctan -->
             <apply>
-                <!-- 'arctan' element without a MathML sibling. -->
+                <!-- 'arctan' element without exactly one MathML sibling. -->
                 <arctan/>
             </apply>
             <apply>
@@ -515,7 +515,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arcsec -->
             <apply>
-                <!-- 'arcsec' element without a MathML sibling. -->
+                <!-- 'arcsec' element without exactly one MathML sibling. -->
                 <arcsec/>
             </apply>
             <apply>
@@ -527,7 +527,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arccsc -->
             <apply>
-                <!-- 'arccsc' element without a MathML sibling. -->
+                <!-- 'arccsc' element without exactly one MathML sibling. -->
                 <arccsc/>
             </apply>
             <apply>
@@ -539,7 +539,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arccot -->
             <apply>
-                <!-- 'arccot' element without a MathML sibling. -->
+                <!-- 'arccot' element without exactly one MathML sibling. -->
                 <arccot/>
             </apply>
             <apply>
@@ -551,7 +551,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arcsinh -->
             <apply>
-                <!-- 'arcsinh' element without a MathML sibling. -->
+                <!-- 'arcsinh' element without exactly one MathML sibling. -->
                 <arcsinh/>
             </apply>
             <apply>
@@ -563,7 +563,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arccosh -->
             <apply>
-                <!-- 'arccosh' element without a MathML sibling. -->
+                <!-- 'arccosh' element without exactly one MathML sibling. -->
                 <arccosh/>
             </apply>
             <apply>
@@ -575,7 +575,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arctanh -->
             <apply>
-                <!-- 'arctanh' element without a MathML sibling. -->
+                <!-- 'arctanh' element without exactly one MathML sibling. -->
                 <arctanh/>
             </apply>
             <apply>
@@ -587,7 +587,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arcsech -->
             <apply>
-                <!-- 'arcsech' element without a MathML sibling. -->
+                <!-- 'arcsech' element without exactly one MathML sibling. -->
                 <arcsech/>
             </apply>
             <apply>
@@ -599,7 +599,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arccsch -->
             <apply>
-                <!-- 'arccsch' element without a MathML sibling. -->
+                <!-- 'arccsch' element without exactly one MathML sibling. -->
                 <arccsch/>
             </apply>
             <apply>
@@ -611,7 +611,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- arccoth -->
             <apply>
-                <!-- 'arccoth' element without a MathML sibling. -->
+                <!-- 'arccoth' element without exactly one MathML sibling. -->
                 <arccoth/>
             </apply>
             <apply>
@@ -632,7 +632,7 @@
             <!-- piece -->
             <apply>
                 <piecewise>
-                    <!-- 'piece' element without two MathML children. -->
+                    <!-- 'piece' element without exactly two MathML children. -->
                     <piece>
                     </piece>
                 </piecewise>
@@ -642,7 +642,7 @@
             <!-- otherwise -->
             <apply>
                 <piecewise>
-                    <!-- 'otherwise' element without a MathML child. -->
+                    <!-- 'otherwise' element without exactly one MathML child. -->
                     <otherwise>
                     </otherwise>
                 </piecewise>
@@ -763,7 +763,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- degree -->
             <apply>
-                <!-- 'degree' element without one or two MathML siblings. -->
+                <!-- 'degree' element without exactly one or two MathML siblings. -->
                 <degree/>
             </apply>
             <apply>
@@ -798,7 +798,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- logbase -->
             <apply>
-                <!-- 'logbase' element without two MathML siblings. -->
+                <!-- 'logbase' element without exactly two MathML siblings. -->
                 <logbase/>
             </apply>
             <apply>
@@ -814,7 +814,7 @@
                 <logbase/>
             </apply>
             <apply>
-                <!-- 'logbase' element without a MathML child. -->
+                <!-- 'logbase' element without exactly one MathML child. -->
                 <log/>
                 <logbase/>
                 <ci>a</ci>
@@ -823,7 +823,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- bvar -->
             <apply>
-                <!-- 'bvar' element without two MathML siblings. -->
+                <!-- 'bvar' element without exactly two MathML siblings. -->
                 <bvar/>
             </apply>
             <apply>
@@ -839,7 +839,7 @@
                 <bvar/>
             </apply>
             <apply>
-                <!-- 'bvar' element without one or two MathML children. -->
+                <!-- 'bvar' element without exactly one or two MathML children. -->
                 <diff/>
                 <bvar/>
                 <ci>a</ci>
