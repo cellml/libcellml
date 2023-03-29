@@ -2378,7 +2378,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
     // equations are to be computed using NLA equations.
 
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model_nla.cellml"));
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.nla.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -2408,15 +2408,19 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
 
     generator->setModel(analyserModel);
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model_nla.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model_nla.c"), generator->implementationCode());
+    auto profile = generator->profile();
 
-    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile->setInterfaceFileNameString("model.nla.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.nla.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.nla.c"), generator->implementationCode());
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model_nla.py"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.nla.py"), generator->implementationCode());
 }
 
 TEST(Generator, nobleModel1962)
@@ -2466,7 +2470,7 @@ TEST(Generator, nobleModel1962)
 TEST(Generator, robertsonOdeModel1966)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/robertson_model_1966/ode.model.cellml"));
+    auto model = parser->parseModel(fileContents("generator/robertson_model_1966/model.ode.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -2498,23 +2502,23 @@ TEST(Generator, robertsonOdeModel1966)
 
     auto profile = generator->profile();
 
-    profile->setInterfaceFileNameString("ode.model.h");
+    profile->setInterfaceFileNameString("model.ode.h");
 
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/ode.model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/ode.model.c"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.ode.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.ode.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/ode.model.py"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.ode.py"), generator->implementationCode());
 }
 
 TEST(Generator, robertsonDaeModel1966)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/robertson_model_1966/dae.model.cellml"));
+    auto model = parser->parseModel(fileContents("generator/robertson_model_1966/model.dae.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -2546,17 +2550,17 @@ TEST(Generator, robertsonDaeModel1966)
 
     auto profile = generator->profile();
 
-    profile->setInterfaceFileNameString("dae.model.h");
+    profile->setInterfaceFileNameString("model.dae.h");
 
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/dae.model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/dae.model.c"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.dae.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.dae.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/robertson_model_1966/dae.model.py"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/robertson_model_1966/model.dae.py"), generator->implementationCode());
 }
 
 TEST(Generator, sineImports)
