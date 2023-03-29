@@ -180,7 +180,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- divide -->
             <apply>
-                <!-- 'divide' element without at least two MathML siblings. -->
+                <!-- 'divide' element without exactly two MathML siblings. -->
                 <divide/>
             </apply>
             <apply>

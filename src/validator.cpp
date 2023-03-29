@@ -1963,11 +1963,15 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
 
         hasOneOrTwoMathmlSiblings(parentNode, node, component)
             && isFirstMathmlSibling(parentNode, node, component);
-    } else if (node->isMathmlElement("times")
-               || node->isMathmlElement("divide")) {
+    } else if (node->isMathmlElement("times")) {
         auto parentNode = node->parent();
 
         hasAtLeastTwoMathmlSiblings(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("divide")) {
+        auto parentNode = node->parent();
+
+        hasTwoMathmlSiblings(parentNode, node, component)
             && isFirstMathmlSibling(parentNode, node, component);
     } else if (node->isMathmlElement("power")) {
         auto parentNode = node->parent();
