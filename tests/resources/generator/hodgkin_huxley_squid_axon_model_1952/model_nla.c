@@ -99,7 +99,7 @@ void objectiveFunction1(double *u, double *f, void *data)
 
     variables[0] = u[0];
 
-    f[0] = rates[0]--(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4]-0.0;
+    f[0] = rates[0]-(-(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4])-0.0;
 }
 
 void findRoot1(double voi, double *states, double *rates, double *variables)
