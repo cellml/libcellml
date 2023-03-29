@@ -3528,7 +3528,7 @@ TEST(Validator, invalidMathMLElementsChildrenOrSiblings)
         "Math has a 'not' element which is not the first MathML sibling.",
         "Math has a 'plus' element without at least one MathML sibling.",
         "Math has a 'plus' element which is not the first MathML sibling.",
-        "Math has a 'minus' element without at least one MathML sibling.",
+        "Math has a 'minus' element without exactly one or two MathML siblings.",
         "Math has a 'minus' element which is not the first MathML sibling.",
         "Math has a 'times' element without at least two MathML siblings.",
         "Math has a 'times' element which is not the first MathML sibling.",

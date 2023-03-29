@@ -155,7 +155,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <!-- minus -->
             <apply>
-                <!-- 'minus' element without at least one MathML sibling. -->
+                <!-- 'minus' element without exactly one or two MathML siblings. -->
                 <minus/>
             </apply>
             <apply>
