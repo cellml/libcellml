@@ -1,6 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.4.0. */
 
-#include "ode.model.h"
+#include "model.ode.h"
 
 #include <math.h>
 #include <stdlib.h>
