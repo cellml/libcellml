@@ -366,7 +366,7 @@ void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
     }
 }
 
-TEST(Generator, coverage)
+TEST(Coverage, generator)
 {
     static const std::string EMPTY_STRING;
 

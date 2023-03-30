@@ -62,29 +62,34 @@ static const std::map<std::string, int> standardPrefixList = {
     {"zepto", -21},
     {"yocto", -24}};
 
-double convertToDouble(const std::string &in, bool *ok)
+bool stringToDouble(const std::string &in, double &out)
 {
-    double out = 0.0;
-    if (ok != nullptr) {
-        *ok = true;
-    }
-
-    if (!isCellMLReal(in)) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
-
-        return out;
-    }
-
     try {
         out = std::stod(in);
     } catch (std::out_of_range &) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
+        return false;
     }
-    return out;
+
+    return true;
+}
+
+bool canConvertToBasicDouble(const std::string &in)
+{
+    if (!isCellMLBasicReal(in)) {
+        return false;
+    }
+
+    double temp;
+    return stringToDouble(in, temp);
+}
+
+bool convertToDouble(const std::string &in, double &out)
+{
+    if (!isCellMLReal(in)) {
+        return false;
+    }
+
+    return stringToDouble(in, out);
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
@@ -119,29 +124,18 @@ std::string convertToString(double value, bool fullPrecision)
     return strs.str();
 }
 
-int convertToInt(const std::string &in, bool *ok)
+bool convertToInt(const std::string &in, int &out)
 {
-    int out = 0;
-    if (ok != nullptr) {
-        *ok = true;
-    }
-
     if (!isCellMLInteger(in)) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
-
-        return out;
+        return false;
     }
 
     try {
         out = std::stoi(in);
     } catch (std::out_of_range &) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
+        return false;
     }
-    return out;
+    return true;
 }
 
 int convertPrefixToInt(const std::string &in, bool *ok)
@@ -155,7 +149,10 @@ int convertPrefixToInt(const std::string &in, bool *ok)
     if (isStandardPrefixName(in)) {
         prefixInt = standardPrefixList.at(in);
     } else if (!in.empty()) {
-        prefixInt = convertToInt(in, ok);
+        bool success = convertToInt(in, prefixInt);
+        if (ok != nullptr) {
+            *ok = success;
+        }
     }
     return prefixInt;
 }
@@ -1222,6 +1219,73 @@ std::string formDescriptionOfCyclicDependency(const History &history, const std:
     }
 
     return msgHeader + msgHistory;
+}
+
+size_t nonCommentChildCount(const XmlNodePtr &node)
+{
+    size_t res = 0;
+    auto childNode = node->firstChild();
+
+    while (childNode != nullptr) {
+        if (!childNode->isComment()) {
+            ++res;
+        }
+
+        childNode = childNode->next();
+    }
+
+    return res;
+}
+
+XmlNodePtr nonCommentChildNode(const XmlNodePtr &node, size_t index)
+{
+    // Note: we assume that there is always a non-comment child at the given
+    //       index, hence we never test res for nullptr.
+
+    auto res = node->firstChild();
+    auto childNodeIndex = res->isComment() ? MAX_SIZE_T : 0;
+
+    while (childNodeIndex != index) {
+        res = res->next();
+
+        if (!res->isComment()) {
+            ++childNodeIndex;
+        }
+    }
+
+    return res;
+}
+
+size_t mathmlChildCount(const XmlNodePtr &node)
+{
+    size_t res = 0;
+    auto childNode = node->firstChild();
+
+    while (childNode != nullptr) {
+        if (childNode->isMathmlElement()) {
+            ++res;
+        }
+
+        childNode = childNode->next();
+    }
+
+    return res;
+}
+
+XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
+{
+    auto res = node->firstChild();
+    auto childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
+
+    while ((res != nullptr) && (childNodeIndex != index)) {
+        res = res->next();
+
+        if ((res != nullptr) && res->isMathmlElement()) {
+            ++childNodeIndex;
+        }
+    }
+
+    return res;
 }
 
 } // namespace libcellml
