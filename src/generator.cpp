@@ -1212,8 +1212,8 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         code = generateOperatorCode(mLockedProfile->divideString(), ast);
     } else if (astType == AnalyserEquationAst::Type::POWER) {
         auto stringValue = generateCode(ast->rightChild());
-        bool validConversion;
-        double doubleValue = convertToDouble(stringValue, &validConversion);
+        double doubleValue;
+        bool validConversion = convertToDouble(stringValue, doubleValue);
 
         if (validConversion && areEqual(doubleValue, 0.5)) {
             code = generateOneParameterFunctionCode(mLockedProfile->squareRootString(), ast);
@@ -1230,11 +1230,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         if (astRightChild != nullptr) {
             auto astLeftChild = ast->leftChild();
+            double doubleValue;
 
-            bool validConversion;
-            double doubleValue = convertToDouble(generateCode(astLeftChild), &validConversion);
-
-            if (validConversion && areEqual(doubleValue, 2.0)) {
+            if (convertToDouble(generateCode(astLeftChild), doubleValue)
+                && areEqual(doubleValue, 2.0)) {
                 code = mLockedProfile->squareRootString() + "(" + generateCode(astRightChild) + ")";
             } else {
                 if (mLockedProfile->hasPowerOperator()) {
@@ -1271,10 +1270,10 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         if (astRightChild != nullptr) {
             auto stringValue = generateCode(ast->leftChild());
-            bool validConversion;
-            double doubleValue = convertToDouble(stringValue, &validConversion);
+            double doubleValue = 0.0;
 
-            if (validConversion && areEqual(doubleValue, 10.0)) {
+            if (convertToDouble(stringValue, doubleValue)
+                && areEqual(doubleValue, 10.0)) {
                 code = mLockedProfile->commonLogarithmString() + "(" + generateCode(astRightChild) + ")";
             } else {
                 code = mLockedProfile->naturalLogarithmString() + "(" + generateCode(astRightChild) + ")/" + mLockedProfile->naturalLogarithmString() + "(" + stringValue + ")";
