@@ -36,7 +36,7 @@ const std::string NON_EMPTY_MATH =
     "    <ci>var</ci>\n"
     "    <apply>\n"
     "      <plus/>\n"
-    "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+    "      <cn cellml:units=\"dimensionless\" type=\"e-notation\">3.44<sep/>2</cn>\n"
     "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
     "    </apply>\n"
     "  </apply>\n"
