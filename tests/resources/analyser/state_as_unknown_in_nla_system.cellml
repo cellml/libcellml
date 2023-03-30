@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- State as an unknown in an NLA system
+   x: 0
+   dx/dt - 1 = 0-->
+    <units name="per_second">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <component name="my_algebraic_system">
+        <variable name="t" units="second" interface="public"/>
+        <variable initial_value="0" name="x" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>x</ci>
+                    </apply>
+                    <cn cellml:units="per_second">1</cn>
+                </apply>
+                <cn cellml:units="per_second">0</cn>
+            </apply>
+        </math>
+    </component>
+</model>

@@ -9,10 +9,6 @@
     <units name="millivolt">
         <unit prefix="milli" units="volt"/>
     </units>
-    <units name="millivolt_per_millisecond">
-        <unit units="millivolt"/>
-        <unit units="per_millisecond"/>
-    </units>
     <units name="per_millivolt_millisecond">
         <unit exponent="-1" units="millivolt"/>
         <unit exponent="-1" prefix="milli" units="second"/>
@@ -77,33 +73,29 @@
             <apply>
                 <eq/>
                 <apply>
-                    <minus/>
-                    <apply>
-                        <diff/>
-                        <bvar>
-                            <ci>time</ci>
-                        </bvar>
-                        <ci>V</ci>
-                    </apply>
-                    <apply>
-                        <divide/>
-                        <apply>
-                            <minus/>
-                            <apply>
-                                <plus/>
-                                <apply>
-                                    <minus/>
-                                    <ci>i_Stim</ci>
-                                </apply>
-                                <ci>i_Na</ci>
-                                <ci>i_K</ci>
-                                <ci>i_L</ci>
-                            </apply>
-                        </apply>
-                        <ci>Cm</ci>
-                    </apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>V</ci>
                 </apply>
-                <cn cellml:units="millivolt_per_millisecond">0</cn>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <plus/>
+                            <apply>
+                                <minus/>
+                                <ci>i_Stim</ci>
+                            </apply>
+                            <ci>i_Na</ci>
+                            <ci>i_K</ci>
+                            <ci>i_L</ci>
+                        </apply>
+                    </apply>
+                    <ci>Cm</ci>
+                </apply>
             </apply>
         </math>
     </component>
@@ -221,33 +213,29 @@
             <apply>
                 <eq/>
                 <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>m</ci>
+                </apply>
+                <apply>
                     <minus/>
                     <apply>
-                        <diff/>
-                        <bvar>
-                            <ci>time</ci>
-                        </bvar>
-                        <ci>m</ci>
-                    </apply>
-                    <apply>
-                        <minus/>
+                        <times/>
+                        <ci>alpha_m</ci>
                         <apply>
-                            <times/>
-                            <ci>alpha_m</ci>
-                            <apply>
-                                <minus/>
-                                <cn cellml:units="dimensionless">1</cn>
-                                <ci>m</ci>
-                            </apply>
-                        </apply>
-                        <apply>
-                            <times/>
-                            <ci>beta_m</ci>
+                            <minus/>
+                            <cn cellml:units="dimensionless">1</cn>
                             <ci>m</ci>
                         </apply>
                     </apply>
+                    <apply>
+                        <times/>
+                        <ci>beta_m</ci>
+                        <ci>m</ci>
+                    </apply>
                 </apply>
-                <cn cellml:units="per_millisecond">0</cn>
             </apply>
         </math>
     </component>
@@ -309,33 +297,29 @@
             <apply>
                 <eq/>
                 <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>h</ci>
+                </apply>
+                <apply>
                     <minus/>
                     <apply>
-                        <diff/>
-                        <bvar>
-                            <ci>time</ci>
-                        </bvar>
-                        <ci>h</ci>
-                    </apply>
-                    <apply>
-                        <minus/>
+                        <times/>
+                        <ci>alpha_h</ci>
                         <apply>
-                            <times/>
-                            <ci>alpha_h</ci>
-                            <apply>
-                                <minus/>
-                                <cn cellml:units="dimensionless">1</cn>
-                                <ci>h</ci>
-                            </apply>
-                        </apply>
-                        <apply>
-                            <times/>
-                            <ci>beta_h</ci>
+                            <minus/>
+                            <cn cellml:units="dimensionless">1</cn>
                             <ci>h</ci>
                         </apply>
                     </apply>
+                    <apply>
+                        <times/>
+                        <ci>beta_h</ci>
+                        <ci>h</ci>
+                    </apply>
                 </apply>
-                <cn cellml:units="per_millisecond">0</cn>
             </apply>
         </math>
     </component>
@@ -451,33 +435,29 @@
             <apply>
                 <eq/>
                 <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>n</ci>
+                </apply>
+                <apply>
                     <minus/>
                     <apply>
-                        <diff/>
-                        <bvar>
-                            <ci>time</ci>
-                        </bvar>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <minus/>
+                        <times/>
+                        <ci>alpha_n</ci>
                         <apply>
-                            <times/>
-                            <ci>alpha_n</ci>
-                            <apply>
-                                <minus/>
-                                <cn cellml:units="dimensionless">1</cn>
-                                <ci>n</ci>
-                            </apply>
-                        </apply>
-                        <apply>
-                            <times/>
-                            <ci>beta_n</ci>
+                            <minus/>
+                            <cn cellml:units="dimensionless">1</cn>
                             <ci>n</ci>
                         </apply>
                     </apply>
+                    <apply>
+                        <times/>
+                        <ci>beta_n</ci>
+                        <ci>n</ci>
+                    </apply>
                 </apply>
-                <cn cellml:units="per_millisecond">0</cn>
             </apply>
         </math>
     </component>
