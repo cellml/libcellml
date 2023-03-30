@@ -387,8 +387,8 @@ TEST(Coverage, generator)
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(207), analyserModel->variableCount());
-    EXPECT_EQ(size_t(201), analyserModel->equationCount());
+    EXPECT_EQ(size_t(209), analyserModel->variableCount());
+    EXPECT_EQ(size_t(203), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
@@ -401,19 +401,19 @@ TEST(Coverage, generator)
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->variable(0));
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(197));
-    EXPECT_NE(size_t(0), analyserModel->equation(197)->dependencyCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(197)->dependencies().size());
-    EXPECT_NE(nullptr, analyserModel->equation(197)->dependency(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(197)->dependency(analyserModel->equation(197)->dependencyCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(197)->nlaSiblingCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(197)->nlaSiblings().size());
-    EXPECT_NE(nullptr, analyserModel->equation(197)->nlaSibling(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(197)->nlaSibling(analyserModel->equation(197)->nlaSiblingCount()));
-    EXPECT_NE(size_t(0), analyserModel->equation(197)->variableCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(197)->variables().size());
-    EXPECT_NE(nullptr, analyserModel->equation(197)->variable(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(197)->variable(analyserModel->equation(197)->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(199));
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->dependency(analyserModel->equation(199)->dependencyCount()));
+    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblingCount());
+    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblings().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->nlaSibling(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->nlaSibling(analyserModel->equation(199)->nlaSiblingCount()));
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->variableCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->variables().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->variable(analyserModel->equation(199)->variableCount()));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     for (const auto &equation : analyserModel->equations()) {
@@ -429,7 +429,7 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        EXPECT_EQ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 177) || (i == 178) || (i == 180) || (i == 203) || (i == 204),
+        EXPECT_EQ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206),
                   analyserModel->variable(i)->initialisingVariable() != nullptr);
     }
 

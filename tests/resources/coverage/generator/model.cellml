@@ -81,6 +81,8 @@
         <variable name="eqnMinusParentheses" units="dimensionless"/>
         <variable name="eqnMinusParenthesesPlusWith" units="dimensionless"/>
         <variable name="eqnMinusParenthesesPlusWithout" units="dimensionless"/>
+        <variable name="eqnMinusParenthesesDirectUnaryMinus" units="dimensionless"/>
+        <variable name="eqnMinusParenthesesIndirectUnaryMinus" units="dimensionless"/>
         <variable name="eqnMinusUnary" units="dimensionless"/>
         <variable name="eqnMinusUnaryParentheses" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
@@ -1254,6 +1256,34 @@
                     </apply>
                     <apply>
                         <plus/>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinusParenthesesDirectUnaryMinus</ci>
+                <apply>
+                    <minus/>
+                    <ci>m</ci>
+                    <apply>
+                        <minus/>
+                        <ci>n</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinusParenthesesIndirectUnaryMinus</ci>
+                <apply>
+                    <minus/>
+                    <ci>m</ci>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <minus/>
+                            <ci>n</ci>
+                        </apply>
                         <ci>o</ci>
                     </apply>
                 </apply>
