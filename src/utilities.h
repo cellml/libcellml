@@ -294,7 +294,7 @@ bool isCellMLInteger(const std::string &candidate);
  * @brief Test if the @p candidate @c std::string is in the form of a CellML basic real.
  *
  * The candidate string must consist of european numeric characters.  It may optionally
- * have a basic Latin hyphen character '-' to indicate sign.  It may also optianally
+ * have a basic Latin hyphen character '-' to indicate sign.  It may also optionally
  * use the basic Latin fullstop character '.' to indicate a decimal point.  The candidate
  * string must represent a number in base 10.
  *
@@ -844,14 +844,14 @@ XmlNodePtr nonCommentChildNode(const XmlNodePtr &node, size_t index);
 size_t mathmlChildCount(const XmlNodePtr &node);
 
 /**
- * @brief Return the MathML child at a given index.
+ * @brief Return the index'th MathML child for the given node.
  *
- * Return the MathML child, at @p index, of the given node.
+ * Return the @p index'th MathML child for the given node.
  *
- * @param node The node from which we want the MathML child at @p index.
+ * @param node The node from which we want the @p index'th MathML child.
  * @param index The index of the MathML child.
  *
- * @return The MathML child at @p index.
+ * @return The @p index'th MathML child.
  */
 XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index);
 

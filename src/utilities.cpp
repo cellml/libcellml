@@ -62,7 +62,7 @@ static const std::map<std::string, int> standardPrefixList = {
     {"zepto", -21},
     {"yocto", -24}};
 
-bool stringToDoube(const std::string &in, double &out)
+bool stringToDouble(const std::string &in, double &out)
 {
     try {
         out = std::stod(in);
@@ -80,7 +80,7 @@ bool canConvertToBasicDouble(const std::string &in)
     }
 
     double temp;
-    return stringToDoube(in, temp);
+    return stringToDouble(in, temp);
 }
 
 bool convertToDouble(const std::string &in, double &out)
@@ -89,7 +89,7 @@ bool convertToDouble(const std::string &in, double &out)
         return false;
     }
 
-    return stringToDoube(in, out);
+    return stringToDouble(in, out);
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
