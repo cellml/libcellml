@@ -240,17 +240,39 @@ public:
      * @brief Check if this @c XmlNode is a text node.
      *
      * Checks whether this @c XmlNode is a text node.
-     * Returns @ true if so, and @c false otherwise.
+     * Returns @c true if so, and @c false otherwise.
      *
      * @return @c true if this @c XmlNode is a text node and @c false otherwise.
      */
     bool isText() const;
 
     /**
+     * @brief Check if this @c XmlNode is a text node representing a basic real number.
+     *
+     * Checks whether this @c XmlNode is a text node representing a basic real number.
+     * Returns @c true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a text node representing a basic real number
+     * and @c false otherwise.
+     */
+    bool isBasicReal() const;
+
+    /**
+     * @brief Check if this @c XmlNode is a text node representing an integer.
+     *
+     * Checks whether this @c XmlNode is a text node representing an integer.
+     * Returns @c true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a text node representing an integer
+     * and @c false otherwise.
+     */
+    bool isInteger() const;
+
+    /**
      * @brief Check if this @c XmlNode is a comment node.
      *
      * Checks whether this @c XmlNode is a comment node.
-     * Returns @ true if so, and @c false otherwise.
+     * Returns @c true if so, and @c false otherwise.
      *
      * @return @c true if this @c XmlNode is a comment node and @c false
      * otherwise.
@@ -315,6 +337,18 @@ public:
      * for this @c XmlNode.
      */
     XmlAttributePtr firstAttribute() const;
+
+    /**
+     * @brief Test if this @c XmlNode is the given node.
+     *
+     * Test if this @c XmlNode is the given node. If it is true is returned,
+     * otherwise false is.
+     *
+     * @param node The @c XmlNode to test against.
+     *
+     * @return true if this @c XmlNode is the given node, false otherwise.
+     */
+    bool equals(const XmlNodePtr &node) const;
 
     /**
      * @brief Get the first child for this @c XmlNode.
