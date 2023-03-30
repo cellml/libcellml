@@ -206,18 +206,15 @@ bool XmlNode::isText() const
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
 }
 
-bool XmlNode::isBasicNumber() const
+bool XmlNode::isBasicReal() const
 {
     return canConvertToBasicDouble(convertToStrippedString());
 }
 
 bool XmlNode::isInteger() const
 {
-    bool validConversion;
-
-    convertToInt(convertToStrippedString(), &validConversion);
-
-    return validConversion;
+    int dummyInt;
+    return convertToInt(convertToStrippedString(), dummyInt);
 }
 
 bool XmlNode::isComment() const

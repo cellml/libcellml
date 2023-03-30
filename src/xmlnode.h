@@ -240,28 +240,28 @@ public:
      * @brief Check if this @c XmlNode is a text node.
      *
      * Checks whether this @c XmlNode is a text node.
-     * Returns @ true if so, and @c false otherwise.
+     * Returns @c true if so, and @c false otherwise.
      *
      * @return @c true if this @c XmlNode is a text node and @c false otherwise.
      */
     bool isText() const;
 
     /**
-     * @brief Check if this @c XmlNode is a text node representing a basic number.
+     * @brief Check if this @c XmlNode is a text node representing a basic real number.
      *
-     * Checks whether this @c XmlNode is a text node representing a basic number.
-     * Returns @ true if so, and @c false otherwise.
+     * Checks whether this @c XmlNode is a text node representing a basic real number.
+     * Returns @c true if so, and @c false otherwise.
      *
-     * @return @c true if this @c XmlNode is a text node representing a basic number
+     * @return @c true if this @c XmlNode is a text node representing a basic real number
      * and @c false otherwise.
      */
-    bool isBasicNumber() const;
+    bool isBasicReal() const;
 
     /**
      * @brief Check if this @c XmlNode is a text node representing an integer.
      *
      * Checks whether this @c XmlNode is a text node representing an integer.
-     * Returns @ true if so, and @c false otherwise.
+     * Returns @c true if so, and @c false otherwise.
      *
      * @return @c true if this @c XmlNode is a text node representing an integer
      * and @c false otherwise.
@@ -272,7 +272,7 @@ public:
      * @brief Check if this @c XmlNode is a comment node.
      *
      * Checks whether this @c XmlNode is a comment node.
-     * Returns @ true if so, and @c false otherwise.
+     * Returns @c true if so, and @c false otherwise.
      *
      * @return @c true if this @c XmlNode is a comment node and @c false
      * otherwise.
