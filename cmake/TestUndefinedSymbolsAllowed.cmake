@@ -26,6 +26,7 @@ function(Test_Undefined_Symbols_Allowed)
 
     file(WRITE "${test_project_dir}/CMakeLists.txt"
 "
+cmake_minimum_required(VERSION 3.18.0)
 project(undefined CXX)
 add_library(foo SHARED \"foo.cpp\")
 ")
