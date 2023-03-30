@@ -86,8 +86,9 @@ struct AnalyserInternalVariable
         COMPUTED_TRUE_CONSTANT, // 6
         COMPUTED_VARIABLE_BASED_CONSTANT, // 7
         INITIALISED_ALGEBRAIC, // 8
-        ALGEBRAIC, // 9
-        OVERCONSTRAINED // 10
+        STATE_ALGEBRAIC, // 9
+        ALGEBRAIC, // 10
+        OVERCONSTRAINED // 11
     };
 
     size_t mIndex = MAX_SIZE_T;
@@ -461,6 +462,29 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
 
             if (it != mDependencies.end()) {
                 mDependencies.erase(it);
+            }
+        }
+
+        // Make sure that if we have an NLA equation then none of its unknowns
+        // is a state.
+        // Note: to generate code for such an NLA equation is actually not a
+        //       problem, but this requires having the initial guess for its
+        //       rate, which we don't hence we can't allow NLA equations with
+        //       states as unknowns.
+
+        if (mType == Type::NLA) {
+            bool hasStateAlgebraicVariables = false;
+
+            for (const auto &unknownVariable : mUnknownVariables) {
+                if (unknownVariable->mType == AnalyserInternalVariable::Type::STATE) {
+                    unknownVariable->mType = AnalyserInternalVariable::Type::STATE_ALGEBRAIC;
+
+                    hasStateAlgebraicVariables = true;
+                }
+            }
+
+            if (hasStateAlgebraicVariables) {
+                return false;
             }
         }
 
@@ -2265,6 +2289,10 @@ void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVaria
         issueType = "is used in an ODE, but it is not initialised";
 
         break;
+    case AnalyserInternalVariable::Type::STATE_ALGEBRAIC:
+        issueType = "is used in an ODE, but its rate is computed using an NLA equation";
+
+        break;
     default: // AnalyserInternalVariable::Type::OVERCONSTRAINED.
         issueType = "is computed more than once";
 
@@ -2497,9 +2525,35 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             // The variable is (still) initialised so it has to be a constant.
 
             internalVariable->makeConstant(variableIndex);
+        } else if (internalVariable->mType == AnalyserInternalVariable::Type::STATE_ALGEBRAIC) {
+            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC);
         } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
             addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE);
         }
+    }
+
+    if (mAnalyser->errorCount() != 0) {
+        auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+            return (iv->mType == AnalyserInternalVariable::Type::UNKNOWN)
+                   || (iv->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
+        });
+        auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+            return iv->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
+        });
+
+        if (hasUnderconstrainedVariables) {
+            if (hasOverconstrainedVariables) {
+                mModel->mPimpl->mType = AnalyserModel::Type::UNSUITABLY_CONSTRAINED;
+            } else {
+                mModel->mPimpl->mType = AnalyserModel::Type::UNDERCONSTRAINED;
+            }
+        } else if (hasOverconstrainedVariables) {
+            mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
+        } else {
+            mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
+        }
+
+        return;
     }
 
     // Make sure that our equations are valid.
@@ -2645,15 +2699,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
+    if (mAnalyser->errorCount() != 0) {
+        mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
+
+        return;
+    }
+
     // Determine the type of our model.
 
-    auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
-        return (iv->mType == AnalyserInternalVariable::Type::UNKNOWN)
-               || (iv->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
-    });
-    auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
-        return iv->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
-    });
     auto hasNlaEquations = std::any_of(mInternalEquations.begin(), mInternalEquations.end(), [=](const auto &ie) {
         if (ie->mType == AnalyserInternalEquation::Type::NLA) {
             // Make sure that not all the variables involved in the NLA system
@@ -2667,15 +2720,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return false;
     });
 
-    if (hasUnderconstrainedVariables) {
-        if (hasOverconstrainedVariables) {
-            mModel->mPimpl->mType = AnalyserModel::Type::UNSUITABLY_CONSTRAINED;
-        } else {
-            mModel->mPimpl->mType = AnalyserModel::Type::UNDERCONSTRAINED;
-        }
-    } else if (hasOverconstrainedVariables) {
-        mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
-    } else if (mModel->mPimpl->mVoi != nullptr) {
+    if (mModel->mPimpl->mVoi != nullptr) {
         mModel->mPimpl->mType = hasNlaEquations ?
                                     AnalyserModel::Type::DAE :
                                     AnalyserModel::Type::ODE;
