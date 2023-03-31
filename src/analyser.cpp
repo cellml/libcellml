@@ -141,10 +141,17 @@ void AnalyserInternalVariable::makeVoi()
 
 void AnalyserInternalVariable::makeState()
 {
-    if (mType == Type::UNKNOWN) {
+    switch (mType) {
+    case Type::UNKNOWN:
         mType = Type::SHOULD_BE_STATE;
-    } else if (mType == Type::INITIALISED) {
+
+        break;
+    case Type::INITIALISED:
         mType = Type::STATE;
+
+        break;
+    default: // Other types we don't care about.
+        break;
     }
 }
 
@@ -297,13 +304,16 @@ bool AnalyserInternalEquation::hasNonConstantVariables()
 bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserInternalVariablePtr &variable,
                                                 bool lhs)
 {
-    auto ast = mAst;
-    auto astChild = lhs ? ast->leftChild() : ast->rightChild();
+    auto astChild = lhs ? mAst->leftChild() : mAst->rightChild();
 
-    return ((astChild->type() == AnalyserEquationAst::Type::CI)
-            && (astChild->variable()->name() == variable->mVariable->name()))
-           || ((astChild->type() == AnalyserEquationAst::Type::DIFF)
-               && (astChild->rightChild()->variable()->name() == variable->mVariable->name()));
+    switch (astChild->type()) {
+    case AnalyserEquationAst::Type::CI:
+        return astChild->variable()->name() == variable->mVariable->name();
+    case AnalyserEquationAst::Type::DIFF:
+        return astChild->rightChild()->variable()->name() == variable->mVariable->name();
+    default:
+        return false;
+    }
 }
 
 bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable)
@@ -357,14 +367,19 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
 
     if (checkNlaSystems && (unknownVariablesOrOdeVariablesLeft == 0)) {
         for (const auto &variable : mAllVariables) {
-            if ((variable->mType == AnalyserInternalVariable::Type::INITIALISED)
-                || (variable->mType == AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC)) {
+            switch (variable->mType) {
+            case AnalyserInternalVariable::Type::INITIALISED:
+            case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC:
                 // The equation contains an initialised variable, so track it
                 // and consider it as an algebraic variable.
 
                 initialisedVariables.push_back(variable);
 
                 variable->mType = AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC;
+
+                break;
+            default:
+                break;
             }
         }
 
@@ -421,17 +436,20 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
                                       AnalyserInternalVariable::Type::ALGEBRAIC;
             }
 
-            if ((variable->mType == AnalyserInternalVariable::Type::STATE)
-                || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-                || (variable->mType == AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC)
-                || (variable->mType == AnalyserInternalVariable::Type::ALGEBRAIC)) {
+            switch (variable->mType) {
+            case AnalyserInternalVariable::Type::STATE:
+            case AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
+            case AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
+            case AnalyserInternalVariable::Type::INITIALISED_ALGEBRAIC:
+            case AnalyserInternalVariable::Type::ALGEBRAIC:
                 variable->mIndex = (variable->mType == AnalyserInternalVariable::Type::STATE) ?
                                        ++stateIndex :
                                        ++variableIndex;
 
                 mUnknownVariables.push_back(variable);
-            } else {
+
+                break;
+            default:
                 return false;
             }
         }
@@ -441,16 +459,29 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
         //       not on its own on the LHS/RHS of the equation then it needs to
         //       be solved as an NLA equation.
 
-        mType = ((unknownVariableLeft == nullptr)
-                 || !variableOnLhsOrRhs(unknownVariableLeft)) ?
-                    Type::NLA :
-                (unknownVariableLeft->mType == AnalyserInternalVariable::Type::STATE) ?
-                    Type::ODE :
-                (unknownVariableLeft->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
-                    Type::TRUE_CONSTANT :
-                (unknownVariableLeft->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
-                    Type::VARIABLE_BASED_CONSTANT :
-                    Type::ALGEBRAIC;
+        if ((unknownVariableLeft == nullptr)
+            || !variableOnLhsOrRhs(unknownVariableLeft)) {
+            mType = Type::NLA;
+        } else {
+            switch (unknownVariableLeft->mType) {
+            case AnalyserInternalVariable::Type::STATE:
+                mType = Type::ODE;
+
+                break;
+            case AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
+                mType = Type::TRUE_CONSTANT;
+
+                break;
+            case AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
+                mType = Type::VARIABLE_BASED_CONSTANT;
+
+                break;
+            default:
+                mType = Type::ALGEBRAIC;
+
+                break;
+            }
+        }
 
         // An ODE equation may have a dependency on the state of that ODE (e.g.,
         // dx/dt = x+3). Similarly, an NLA equation will have a "dependency" on
@@ -473,7 +504,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
         //       states as unknowns.
 
         if (mType == Type::NLA) {
-            bool hasStateAlgebraicVariables = false;
+            auto hasStateAlgebraicVariables = false;
 
             for (const auto &unknownVariable : mUnknownVariables) {
                 if (unknownVariable->mType == AnalyserInternalVariable::Type::STATE) {
@@ -1252,7 +1283,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                     // integration, but now we must ensure that it (or any of
                     // its equivalent variables) is not initialised.
 
-                    bool isVoiInitialised = false;
+                    auto isVoiInitialised = false;
 
                     for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
                         if (!voiEquivalentVariable->initialValue().empty()) {
@@ -1405,8 +1436,8 @@ UnitsMap Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMap &firstUn
     // Multiply/divide the given units maps together, following a multiplication
     // (multiply = true) or a division (multiply = false).
 
-    UnitsMap res = firstUnitsMap;
-    double sign = multiply ? 1.0 : -1.0;
+    auto res = firstUnitsMap;
+    auto sign = multiply ? 1.0 : -1.0;
 
     for (const auto &units : secondUnitsMap) {
         auto it = res.find(units.first);
@@ -1453,8 +1484,8 @@ UnitsMaps Analyser::AnalyserImpl::multiplyDivideUnitsMaps(const UnitsMaps &units
     // Multiply/divide the given units maps by the given factor, following a
     // multiplication (multiply = true) or a division (multiply = false).
 
-    UnitsMaps res = unitsMaps;
-    double realFactor = multiply ? factor : 1.0 / factor;
+    auto res = unitsMaps;
+    auto realFactor = multiply ? factor : 1.0 / factor;
 
     for (auto &unitsMap : res) {
         for (auto &unitsItem : unitsMap) {
@@ -1521,7 +1552,7 @@ UnitsMultipliers Analyser::AnalyserImpl::powerRootUnitsMultipliers(const UnitsMu
     // power (power = true) or a root (power = false) operation.
 
     UnitsMultipliers res;
-    double realFactor = power ? factor : 1.0 / factor;
+    auto realFactor = power ? factor : 1.0 / factor;
 
     for (const auto &unitsMultiplier : unitsMultipliers) {
         res.push_back(realFactor * unitsMultiplier);
@@ -1605,7 +1636,7 @@ void Analyser::AnalyserImpl::updateUnitsMultiplier(const ModelPtr &model,
     if (isStandardUnitName(unitsName)) {
         newUnitsMultiplier += unitsMultiplier + standardMultiplierList.at(unitsName);
     } else {
-        UnitsPtr units = model->units(unitsName);
+        auto units = model->units(unitsName);
 
         if (units->isBaseUnit()) {
             newUnitsMultiplier += unitsMultiplier;
@@ -1669,29 +1700,22 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast)
             return 0.0;
         }
 
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES) {
+        switch (ast->mPimpl->mType) {
+        case AnalyserEquationAst::Type::TIMES:
             return powerValue(ast->mPimpl->mOwnedLeftChild) * powerValue(ast->mPimpl->mOwnedRightChild);
-        }
-
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIVIDE) {
+        case AnalyserEquationAst::Type::DIVIDE:
             return areNearlyEqual(powerValue(ast->mPimpl->mOwnedRightChild), 0.0) ?
                        0.0 :
                        powerValue(ast->mPimpl->mOwnedLeftChild) / powerValue(ast->mPimpl->mOwnedRightChild);
-        }
-
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::PLUS) {
+        case AnalyserEquationAst::Type::PLUS:
             return powerValue(ast->mPimpl->mOwnedLeftChild) + powerValue(ast->mPimpl->mOwnedRightChild);
-        }
-
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::MINUS) {
+        case AnalyserEquationAst::Type::MINUS:
             return powerValue(ast->mPimpl->mOwnedLeftChild) - powerValue(ast->mPimpl->mOwnedRightChild);
-        }
-
-        if (ast->mPimpl->mType == AnalyserEquationAst::Type::DEGREE) {
+        case AnalyserEquationAst::Type::DEGREE:
             return powerValue(ast->mPimpl->mOwnedLeftChild);
+        default:
+            return 0.0;
         }
-
-        return 0.0;
     }
 
     return std::stod(ast->value());
@@ -1706,9 +1730,9 @@ std::string Analyser::AnalyserImpl::expression(const AnalyserEquationAstPtr &ast
     std::string res = "'" + Generator::equationCode(ast, mGeneratorProfile) + "'";
 
     if (includeHierarchy) {
-        AnalyserEquationAstPtr equationAst = ast;
-        AnalyserEquationAstPtr equationAstParent = ast->parent();
-        AnalyserEquationAstPtr equationAstGrandparent = (equationAstParent != nullptr) ? equationAstParent->parent() : nullptr;
+        auto equationAst = ast;
+        auto equationAstParent = ast->parent();
+        auto equationAstGrandparent = (equationAstParent != nullptr) ? equationAstParent->parent() : nullptr;
 
         while (equationAstParent != nullptr) {
             equationAst = equationAstParent;
@@ -1885,8 +1909,9 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     // Check whether we are dealing with a CI/CN element and, if so, retrieve
     // both its units maps and multipliers.
 
-    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
+    switch (ast->mPimpl->mType) {
+    case AnalyserEquationAst::Type::CI:
+    case AnalyserEquationAst::Type::CN: {
         auto units = mCiCnUnits[ast];
         auto model = owningModel(units);
 
@@ -1905,6 +1930,9 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         }
 
         return;
+    }
+    default:
+        break;
     }
 
     // Check the left and right children.
@@ -1930,21 +1958,26 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     case AnalyserEquationAst::Type::MIN:
     case AnalyserEquationAst::Type::MAX:
     case AnalyserEquationAst::Type::REM: {
-        bool sameUnitsMaps = rightUnitsMaps.empty()
+        auto sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
-        bool sameUnitsMultipliers = rightUnitsMaps.empty()
+        auto sameUnitsMultipliers = rightUnitsMaps.empty()
                                     || areSameUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
 
         if (sameUnitsMaps && sameUnitsMultipliers) {
             // Relational operators result in a dimensionless unit.
 
-            if ((ast->mPimpl->mType == AnalyserEquationAst::Type::EQ)
-                || (ast->mPimpl->mType == AnalyserEquationAst::Type::NEQ)
-                || (ast->mPimpl->mType == AnalyserEquationAst::Type::LT)
-                || (ast->mPimpl->mType == AnalyserEquationAst::Type::LEQ)
-                || (ast->mPimpl->mType == AnalyserEquationAst::Type::GT)
-                || (ast->mPimpl->mType == AnalyserEquationAst::Type::GEQ)) {
+            switch (ast->mPimpl->mType) {
+            case AnalyserEquationAst::Type::EQ:
+            case AnalyserEquationAst::Type::NEQ:
+            case AnalyserEquationAst::Type::LT:
+            case AnalyserEquationAst::Type::LEQ:
+            case AnalyserEquationAst::Type::GT:
+            case AnalyserEquationAst::Type::GEQ:
                 defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
+
+                break;
+            default:
+                break;
             }
         } else if (issueDescriptions.size() == oldNbOfIssueDescriptions) {
             // Only report inner issues.
@@ -1984,10 +2017,10 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     case AnalyserEquationAst::Type::EXP:
     case AnalyserEquationAst::Type::LN:
     case AnalyserEquationAst::Type::LOG: {
-        bool isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
+        auto isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
 
         if (!isDimensionlessUnitsMaps) {
-            bool isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
+            auto isDimensionlessRightUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
             std::string issueDescription = "The unit";
 
             if (!isDimensionlessRightUnitsMaps) {
@@ -2020,36 +2053,35 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         }
     } break;
     case AnalyserEquationAst::Type::TIMES:
-    case AnalyserEquationAst::Type::DIVIDE:
-        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps,
-                                            ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
-        userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps,
-                                                ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
-        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers,
-                                                          ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
+    case AnalyserEquationAst::Type::DIVIDE: {
+        auto isTimes = ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES;
 
-        break;
+        unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps, isTimes);
+        userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps, isTimes);
+        unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers, isTimes);
+    } break;
     case AnalyserEquationAst::Type::POWER:
     case AnalyserEquationAst::Type::ROOT: {
-        bool isDimensionlessExponent = true;
+        auto isPower = ast->mPimpl->mType == AnalyserEquationAst::Type::POWER;
+        auto isDimensionlessExponent = true;
 
-        if ((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER)
+        if (isPower
             || (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE)) {
-            isDimensionlessExponent = Analyser::AnalyserImpl::isDimensionlessUnitsMaps((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+            isDimensionlessExponent = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(isPower ?
                                                                                            rightUnitsMaps :
                                                                                            unitsMaps);
 
             if (!isDimensionlessExponent) {
-                auto baseAst = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                auto baseAst = isPower ?
                                    ast->mPimpl->mOwnedRightChild :
                                    ast->mPimpl->mOwnedLeftChild;
-                auto exponentUnitsMaps = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                auto exponentUnitsMaps = isPower ?
                                              rightUnitsMaps :
                                              unitsMaps;
-                auto exponentUserUnitsMaps = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                auto exponentUserUnitsMaps = isPower ?
                                                  rightUserUnitsMaps :
                                                  userUnitsMaps;
-                auto exponentUnitsMultipliers = (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) ?
+                auto exponentUnitsMultipliers = isPower ?
                                                     rightUnitsMultipliers :
                                                     unitsMultipliers;
 
@@ -2062,9 +2094,9 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         // Retrieve the exponent and apply it to our units maps and multipliers.
 
         if (isDimensionlessExponent) {
-            double powerRootValue = 0.0;
+            auto powerRootValue = 0.0;
 
-            if (ast->mPimpl->mType == AnalyserEquationAst::Type::POWER) {
+            if (isPower) {
                 powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
             } else { // AnalyserEquationAst::Type::ROOT.
                 if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
@@ -2081,12 +2113,9 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                 }
             }
 
-            unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue,
-                                                ast->mPimpl->mType == AnalyserEquationAst::Type::POWER);
-            userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerRootValue,
-                                                    ast->mPimpl->mType == AnalyserEquationAst::Type::POWER);
-            unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue,
-                                                         ast->mPimpl->mType == AnalyserEquationAst::Type::POWER);
+            unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue, isPower);
+            userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerRootValue, isPower);
+            unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue, isPower);
         }
     } break;
     case AnalyserEquationAst::Type::SIN:
@@ -2517,25 +2546,43 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make sure that our variables are valid.
 
     for (const auto &internalVariable : mInternalVariables) {
-        if (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN) {
+        switch (internalVariable->mType) {
+        case AnalyserInternalVariable::Type::UNKNOWN:
             addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED);
-        } else if (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE) {
+
+            break;
+        case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
             addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED);
-        } else if (internalVariable->mType == AnalyserInternalVariable::Type::INITIALISED) {
+
+            break;
+        case AnalyserInternalVariable::Type::INITIALISED:
             // The variable is (still) initialised so it has to be a constant.
 
             internalVariable->makeConstant(variableIndex);
-        } else if (internalVariable->mType == AnalyserInternalVariable::Type::STATE_ALGEBRAIC) {
+
+            break;
+        case AnalyserInternalVariable::Type::STATE_ALGEBRAIC:
             addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC);
-        } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
+
+            break;
+        case AnalyserInternalVariable::Type::OVERCONSTRAINED:
             addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE);
+
+            break;
+        default: // Other types we don't care about.
+            break;
         }
     }
 
     if (mAnalyser->errorCount() != 0) {
         auto hasUnderconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
-            return (iv->mType == AnalyserInternalVariable::Type::UNKNOWN)
-                   || (iv->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
+            switch (iv->mType) {
+            case AnalyserInternalVariable::Type::UNKNOWN:
+            case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
+                return true;
+            default:
+                return false;
+            }
         });
         auto hasOverconstrainedVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
             return iv->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
@@ -2660,7 +2707,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     AnalyserInternalVariablePtrs overconstrainedVariables;
 
     for (const auto &internalEquation : mInternalEquations) {
-        if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+        switch (internalEquation->mType) {
+        case AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT: {
             auto unknownVariable = internalEquation->mUnknownVariables.front();
 
             for (const auto &variable : internalEquation->mAllVariables) {
@@ -2680,7 +2728,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     break;
                 }
             }
-        } else if (internalEquation->mType == AnalyserInternalEquation::Type::NLA) {
+        } break;
+        case AnalyserInternalEquation::Type::NLA:
             if (internalEquation->mNlaSiblings.size() + 1 > internalEquation->mUnknownVariables.size()) {
                 // There are more NLA equations than unknown variables, so all
                 // the unknown variables involved in the NLA system should be
@@ -2696,6 +2745,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     }
                 }
             }
+
+            break;
+        default: // Other types we don't care about.
+            break;
         }
     }
 
@@ -2901,19 +2954,28 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         // Manipulate the equation, if needed.
 
-        if (type == AnalyserEquation::Type::NLA) {
+        switch (type) {
+        case AnalyserEquation::Type::NLA:
             // The equation is currently of the form LHS = RHS, but we want it
             // in the form LHS-RHS, so replace the equality element with a minus
             // one.
 
             internalEquation->mAst->setType(AnalyserEquationAst::Type::MINUS);
-        } else if (type != AnalyserEquation::Type::EXTERNAL) {
+
+            break;
+        case AnalyserEquation::Type::EXTERNAL:
+            // Do nothing.
+
+            break;
+        default:
             // Swap the LHS and RHS of the equation if its unknown variable is
             // on its RHS.
 
             if (internalEquation->variableOnRhs(internalEquation->mUnknownVariables.front())) {
                 internalEquation->mAst->swapLeftAndRightChildren();
             }
+
+            break;
         }
 
         // Determine the equation's dependencies, i.e. the equations for the
