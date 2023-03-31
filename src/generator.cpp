@@ -54,14 +54,24 @@ void Generator::GeneratorImpl::reset()
 
 bool Generator::GeneratorImpl::modelHasOdes() const
 {
-    return (mModel->type() == AnalyserModel::Type::ODE)
-           || (mModel->type() == AnalyserModel::Type::DAE);
+    switch (mModel->type()) {
+    case AnalyserModel::Type::ODE:
+    case AnalyserModel::Type::DAE:
+        return true;
+    default:
+        return false;
+    }
 }
 
 bool Generator::GeneratorImpl::modelHasNlas() const
 {
-    return (mModel->type() == AnalyserModel::Type::NLA)
-           || (mModel->type() == AnalyserModel::Type::DAE);
+    switch (mModel->type()) {
+    case AnalyserModel::Type::NLA:
+    case AnalyserModel::Type::DAE:
+        return true;
+    default:
+        return false;
+    }
 }
 
 AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable) const
@@ -137,14 +147,22 @@ bool Generator::GeneratorImpl::isNegativeNumber(const AnalyserEquationAstPtr &as
 
 bool Generator::GeneratorImpl::isRelationalOperator(const AnalyserEquationAstPtr &ast) const
 {
-    auto astType = ast->type();
-
-    return ((astType == AnalyserEquationAst::Type::EQ) && mProfile->hasEqOperator())
-           || ((astType == AnalyserEquationAst::Type::NEQ) && mProfile->hasNeqOperator())
-           || ((astType == AnalyserEquationAst::Type::LT) && mProfile->hasLtOperator())
-           || ((astType == AnalyserEquationAst::Type::LEQ) && mProfile->hasLeqOperator())
-           || ((astType == AnalyserEquationAst::Type::GT) && mProfile->hasGtOperator())
-           || ((astType == AnalyserEquationAst::Type::GEQ) && mProfile->hasGeqOperator());
+    switch (ast->type()) {
+    case AnalyserEquationAst::Type::EQ:
+        return mProfile->hasEqOperator();
+    case AnalyserEquationAst::Type::NEQ:
+        return mProfile->hasNeqOperator();
+    case AnalyserEquationAst::Type::LT:
+        return mProfile->hasLtOperator();
+    case AnalyserEquationAst::Type::LEQ:
+        return mProfile->hasLeqOperator();
+    case AnalyserEquationAst::Type::GT:
+        return mProfile->hasGtOperator();
+    case AnalyserEquationAst::Type::GEQ:
+        return mProfile->hasGeqOperator();
+    default:
+        return false;
+    }
 }
 
 bool Generator::GeneratorImpl::isAndOperator(const AnalyserEquationAstPtr &ast) const
@@ -270,7 +288,7 @@ void Generator::GeneratorImpl::addInterfaceHeaderCode()
 
 void Generator::GeneratorImpl::addImplementationHeaderCode()
 {
-    bool hasInterfaceFileName = mProfile->implementationHeaderString().empty() ?
+    auto hasInterfaceFileName = mProfile->implementationHeaderString().empty() ?
                                     false :
                                     (mProfile->implementationHeaderString().find("[INTERFACE_FILE_NAME]") != std::string::npos);
 
@@ -1372,7 +1390,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     case AnalyserEquationAst::Type::POWER: {
         auto stringValue = generateCode(ast->rightChild());
         double doubleValue;
-        bool validConversion = convertToDouble(stringValue, doubleValue);
+        auto validConversion = convertToDouble(stringValue, doubleValue);
 
         if (validConversion && areEqual(doubleValue, 0.5)) {
             code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
@@ -1645,16 +1663,26 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &eq
     // NLA and algebraic equations that are state/rate-based and external
     // equations are to be computed again (in the computeVariables() method).
 
-    return (((equation->type() == AnalyserEquation::Type::NLA)
-             || (equation->type() == AnalyserEquation::Type::ALGEBRAIC))
-            && equation->isStateRateBased())
-           || (equation->type() == AnalyserEquation::Type::EXTERNAL);
+    switch (equation->type()) {
+    case AnalyserEquation::Type::NLA:
+    case AnalyserEquation::Type::ALGEBRAIC:
+        return equation->isStateRateBased();
+    case AnalyserEquation::Type::EXTERNAL:
+        return true;
+    default:
+        return false;
+    }
 }
 
 bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equation) const
 {
-    return (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT)
-           || (equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT);
+    switch (equation->type()) {
+    case AnalyserEquation::Type::TRUE_CONSTANT:
+    case AnalyserEquation::Type::VARIABLE_BASED_CONSTANT:
+        return true;
+    default:
+        return false;
+    }
 }
 
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
@@ -1710,7 +1738,8 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
         // Generate the equation code itself, based on the equation type.
 
-        if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
+        switch (equation->type()) {
+        case AnalyserEquation::Type::EXTERNAL:
             for (const auto &variable : equation->variables()) {
                 res += mProfile->indentString()
                        + generateVariableNameCode(variable->variable())
@@ -1719,14 +1748,20 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
                                  "[INDEX]", convertToString(variable->index()))
                        + mProfile->commandSeparatorString() + "\n";
             }
-        } else if (equation->type() == AnalyserEquation::Type::NLA) {
+
+            break;
+        case AnalyserEquation::Type::NLA:
             if (!mProfile->findRootCallString(modelHasOdes()).empty()) {
                 res += mProfile->indentString()
                        + replace(mProfile->findRootCallString(modelHasOdes()),
                                  "[INDEX]", convertToString(equation->nlaSystemIndex()));
             }
-        } else {
+
+            break;
+        default:
             res += mProfile->indentString() + generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
+
+            break;
         }
     }
 
@@ -1785,11 +1820,19 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         std::string methodBody;
 
         for (const auto &variable : mModel->variables()) {
-            if (variable->type() == AnalyserVariable::Type::CONSTANT) {
+            switch (variable->type()) {
+            case AnalyserVariable::Type::CONSTANT:
                 methodBody += generateInitialisationCode(variable);
-            } else if ((variable->type() == AnalyserVariable::Type::ALGEBRAIC)
-                       && (variable->initialisingVariable() != nullptr)) {
-                methodBody += generateInitialisationCode(variable);
+
+                break;
+            case AnalyserVariable::Type::ALGEBRAIC:
+                if (variable->initialisingVariable() != nullptr) {
+                    methodBody += generateInitialisationCode(variable);
+                }
+
+                break;
+            default: // Other types we don't care about.
+                break;
             }
         }
 
