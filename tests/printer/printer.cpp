@@ -978,3 +978,14 @@ TEST(Printer, prettyPrintSpacesWrongPlaceNewlines)
     component6->appendMath(MATH_FOOTER);
     EXPECT_EQ(PRETTY_MODEL_STRING, printer->printModel(model));
 }
+
+TEST(Printer, printComponentWithMultipleMathDocuments)
+{
+    auto printer = libcellml::Printer::create();
+    auto parser = libcellml::Parser::create();
+
+    const std::string e = fileContents("printer/component_with_multiple_math.cellml");
+    auto model = parser->parseModel(e);
+
+    EXPECT_EQ(e, printer->printModel(model));
+}
