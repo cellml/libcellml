@@ -142,11 +142,13 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
-    xmlDoc->parse("<" + wrapElementName + ">" + math + "</" + wrapElementName + ">");
+    // Remove any XML declarations from the string.
+    std::string normalisedMath = std::regex_replace(math, xmlDeclaration, "");
+    xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">");
     if (xmlDoc->xmlErrorCount() == 0) {
         auto result = xmlDoc->prettyPrint();
-        // Remove any XML declarations from the string.
-        result = std::regex_replace(result, xmlDeclaration, "");
+        // Remove XML declaration added by LibXml2.
+        result = std::regex_replace(math, xmlDeclaration, "");
         // Remove tags used to create a single root element.
         result = std::regex_replace(result, wrapBeginTag, "");
         result = std::regex_replace(result, wrapEndTag, "");
