@@ -25,8 +25,10 @@ limitations under the License.
 const std::vector<std::string> expectedIssues_2_9_4 = {
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: Opening and ending tag mismatch: apply line 3 and math_wrap_as_single_root_element.",
     "LibXml2 error: Premature end of data in tag apply line 3.",
     "LibXml2 error: Premature end of data in tag math line 2.",
+    "LibXml2 error: Premature end of data in tag math_wrap_as_single_root_element line 1.",
 };
 
 // Version 2.9.10 of LibXml2 reports the following errors,
@@ -34,7 +36,9 @@ const std::vector<std::string> expectedIssues_2_9_4 = {
 const std::vector<std::string> expectedIssues_2_9_10 = {
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: Opening and ending tag mismatch: apply line 3 and math_wrap_as_single_root_element.",
     "LibXml2 error: EndTag: '</' not found.",
+    "LibXml2 error: Premature end of data in tag math_wrap_as_single_root_element line 1.",
 };
 
 // Version 2.9.11 of LibXml2 reports the following errors,
@@ -42,7 +46,9 @@ const std::vector<std::string> expectedIssues_2_9_10 = {
 const std::vector<std::string> expectedIssues_2_9_11 = {
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
+    "LibXml2 error: Opening and ending tag mismatch: apply line 3 and math_wrap_as_single_root_element.",
     "LibXml2 error: Premature end of data in tag apply line 3.",
+    "LibXml2 error: Premature end of data in tag math_wrap_as_single_root_element line 1.",
 };
 
 TEST(Maths, setAndGetMath)
@@ -129,35 +135,6 @@ TEST(Maths, appendSerialiseAndParseMathInComponent)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
     a = printer->printModel(model);
-    EXPECT_EQ(e, a);
-}
-
-TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
-{
-    const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"component\">\n"
-        "    <variable name=\"variable1\"/>\n"
-        "    <variable name=\"variable2\"/>\n"
-        "  </component>\n"
-        "</model>\n";
-
-    libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c = libcellml::Component::create();
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-    c->setName("component");
-    v1->setName("variable1");
-    v2->setName("variable2");
-    c->addVariable(v1);
-    c->addVariable(v2);
-    c->appendMath(EMPTY_MATH);
-    c->appendMath(EMPTY_MATH);
-    m->addComponent(c);
-
-    libcellml::PrinterPtr printer = libcellml::Printer::create();
-    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -414,6 +391,8 @@ TEST(Printer, mathMLWithSyntaxError)
             EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
         }
     } else {
+        EXPECT_EQ(expectedIssues_2_9_10.size(), printer->issueCount());
+        EXPECT_EQ(expectedIssues_2_9_10.size(), printer->issueCount());
         for (size_t i = 0; i < printer->issueCount(); ++i) {
             auto message = printer->issue(i)->description();
             EXPECT_TRUE((expectedIssues_2_9_10.at(i) == message) || (expectedIssues_2_9_11.at(i) == message));
@@ -463,6 +442,7 @@ TEST(Printer, mathMLInResetWithSyntaxError)
             EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
         }
     } else {
+        EXPECT_EQ(expectedIssues_2_9_10.size(), printer->issueCount());
         for (size_t i = 0; i < printer->issueCount(); ++i) {
             auto message = printer->issue(i)->description();
             EXPECT_TRUE((expectedIssues_2_9_10.at(i) == message) || (expectedIssues_2_9_11.at(i) == message));

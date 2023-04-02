@@ -133,7 +133,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
 
 std::string Printer::PrinterImpl::printMath(const std::string &math)
 {
-    static const std::string wrapElementName = "math_wrapper_root";
+    static const std::string wrapElementName = "math_wrap_as_single_root_element";
     static const std::regex before(">[\\s\n\t]*");
     static const std::regex after("[\\s\n\t]*<");
     static const std::regex xmlDeclaration(R"|(<\?xml[[:space:]]+version=.*\?>)|");
