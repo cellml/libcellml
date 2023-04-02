@@ -166,9 +166,6 @@ else()
   endif()
 endif()
 
-message(STATUS "====================")
-message(STATUS "LIBXML2_VERSION_STRING: ${LIBXML2_VERSION_STRING}")
-
 if(BUILDCACHE_EXE OR CLCACHE_EXE OR CCACHE_EXE)
   set(COMPILER_CACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
 endif()
