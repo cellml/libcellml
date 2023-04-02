@@ -332,15 +332,6 @@ TEST(Printer, addMathMLAsCompleteXMLDoc)
 
 void compareLibXml2Issues(const libcellml::PrinterPtr &printer)
 {
-    Debug() << "========================";
-    for (size_t i = 0; i < printer->issueCount(); ++i) {
-        Debug() << "pair:";
-        Debug() << printer->issue(i)->description();
-        if (i < expectedLibXml2Issues.size()) {
-            Debug() << expectedLibXml2Issues.at(i);
-        }
-    }
-
     EXPECT_EQ(expectedLibXml2Issues.size(), printer->issueCount());
     for (size_t i = 0; i < printer->issueCount(); ++i) {
         EXPECT_EQ(expectedLibXml2Issues.at(i), printer->issue(i)->description());
