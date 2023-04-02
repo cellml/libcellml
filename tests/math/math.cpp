@@ -20,36 +20,7 @@ limitations under the License.
 
 #include <libcellml>
 
-// Version 2.9.4 of LibXml2 reports the following errors,
-// used on macOS and Linux CI machines.
-const std::vector<std::string> expectedIssues_2_9_4 = {
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
-    "LibXml2 error: Opening and ending tag mismatch: apply line 3 and math_wrap_as_single_root_element.",
-    "LibXml2 error: Premature end of data in tag apply line 3.",
-    "LibXml2 error: Premature end of data in tag math line 2.",
-    "LibXml2 error: Premature end of data in tag math_wrap_as_single_root_element line 1.",
-};
-
-// Version 2.9.10 of LibXml2 reports the following errors,
-// used on Windows CI machines.
-const std::vector<std::string> expectedIssues_2_9_10 = {
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
-    "LibXml2 error: Opening and ending tag mismatch: apply line 6 and math_wrap_as_single_root_element.",
-    "LibXml2 error: EndTag: '</' not found.",
-    "LibXml2 error: Premature end of data in tag math_wrap_as_single_root_element line 1.",
-};
-
-// Version 2.9.11 of LibXml2 reports the following errors,
-// used on macOS 13 machines.
-const std::vector<std::string> expectedIssues_2_9_11 = {
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
-    "LibXml2 error: Opening and ending tag mismatch: apply line 3 and math_wrap_as_single_root_element.",
-    "LibXml2 error: Premature end of data in tag math line 2.",
-    "LibXml2 error: Premature end of data in tag math_wrap_as_single_root_element line 1.",
-};
+#include "libxml2issues.h"
 
 TEST(Maths, setAndGetMath)
 {
@@ -359,6 +330,22 @@ TEST(Printer, addMathMLAsCompleteXMLDoc)
     EXPECT_EQ(e, printer->printModel(model));
 }
 
+void compareLibXml2Issues(const libcellml::PrinterPtr &printer)
+{
+    Debug() << "========================";
+    for (size_t i = 0; i < printer->issueCount(); ++i) {
+        Debug() << "pair:";
+        Debug() << printer->issue(i)->description();
+        if (i < expectedLibXml2Issues.size()) {
+            Debug() << expectedLibXml2Issues.at(i);
+        }
+    }
+
+    EXPECT_EQ(expectedLibXml2Issues.size(), printer->issueCount());
+    for (size_t i = 0; i < printer->issueCount(); ++i) {
+        EXPECT_EQ(expectedLibXml2Issues.at(i), printer->issue(i)->description());
+    }
+}
 TEST(Printer, mathMLWithSyntaxError)
 {
     const std::string e =
@@ -386,23 +373,7 @@ TEST(Printer, mathMLWithSyntaxError)
 
     EXPECT_EQ(e, printer->printModel(model));
 
-    Debug() << "========================";
-    for (size_t i = 0; i < printer->issueCount(); ++i) {
-        Debug() << printer->issue(i)->description();
-    }
-
-    if (expectedIssues_2_9_4.size() == printer->issueCount()) {
-        for (size_t i = 0; i < printer->issueCount(); ++i) {
-            EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
-        }
-    } else {
-        EXPECT_EQ(expectedIssues_2_9_10.size(), printer->issueCount());
-        EXPECT_EQ(expectedIssues_2_9_10.size(), printer->issueCount());
-        for (size_t i = 0; i < printer->issueCount(); ++i) {
-            auto message = printer->issue(i)->description();
-            EXPECT_TRUE((expectedIssues_2_9_10.at(i) == message) || (expectedIssues_2_9_11.at(i) == message));
-        }
-    }
+    compareLibXml2Issues(printer);
 
     auto itemComponent = printer->issue(printer->issueCount() - 1)->item()->component();
     EXPECT_NE(nullptr, itemComponent);
@@ -442,17 +413,8 @@ TEST(Printer, mathMLInResetWithSyntaxError)
     component->addReset(reset);
 
     EXPECT_EQ(e, printer->printModel(model));
-    if (expectedIssues_2_9_4.size() == printer->issueCount()) {
-        for (size_t i = 0; i < printer->issueCount(); ++i) {
-            EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
-        }
-    } else {
-        EXPECT_EQ(expectedIssues_2_9_10.size(), printer->issueCount());
-        for (size_t i = 0; i < printer->issueCount(); ++i) {
-            auto message = printer->issue(i)->description();
-            EXPECT_TRUE((expectedIssues_2_9_10.at(i) == message) || (expectedIssues_2_9_11.at(i) == message));
-        }
-    }
+
+    compareLibXml2Issues(printer);
 
     auto itemReset = printer->issue(printer->issueCount() - 1)->item()->reset();
     EXPECT_NE(nullptr, itemReset);
