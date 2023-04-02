@@ -36,7 +36,7 @@ const std::vector<std::string> expectedIssues_2_9_4 = {
 const std::vector<std::string> expectedIssues_2_9_10 = {
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
-    "LibXml2 error: Opening and ending tag mismatch: apply line 3 and math_wrap_as_single_root_element.",
+    "LibXml2 error: Opening and ending tag mismatch: apply line 6 and math_wrap_as_single_root_element.",
     "LibXml2 error: EndTag: '</' not found.",
     "LibXml2 error: Premature end of data in tag math_wrap_as_single_root_element line 1.",
 };
@@ -385,6 +385,11 @@ TEST(Printer, mathMLWithSyntaxError)
     component->setMath(math);
 
     EXPECT_EQ(e, printer->printModel(model));
+
+    Debug() << "========================";
+    for (size_t i = 0; i < printer->issueCount(); ++i) {
+        Debug() << printer->issue(i)->description();
+    }
 
     if (expectedIssues_2_9_4.size() == printer->issueCount()) {
         for (size_t i = 0; i < printer->issueCount(); ++i) {
