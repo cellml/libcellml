@@ -146,12 +146,13 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
     std::string normalisedMath = std::regex_replace(math, xmlDeclaration, "");
     xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">");
     if (xmlDoc->xmlErrorCount() == 0) {
-        auto result = xmlDoc->prettyPrint();
-        // Remove XML declaration added by LibXml2.
-        result = std::regex_replace(math, xmlDeclaration, "");
-        // Remove tags used to create a single root element.
-        result = std::regex_replace(result, wrapBeginTag, "");
-        result = std::regex_replace(result, wrapEndTag, "");
+        auto rootNode = xmlDoc->rootNode();
+        auto childNode = rootNode->firstChild();
+        std::string result;
+        while (childNode != nullptr) {
+            result += childNode->convertToStrippedString();
+            childNode = childNode->next();
+        }
         // Clean whitespace in the math.
         result = std::regex_replace(result, before, ">");
         return std::regex_replace(result, after, "<");
