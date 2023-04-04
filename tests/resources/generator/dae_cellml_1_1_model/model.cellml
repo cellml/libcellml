@@ -109,17 +109,17 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>u_3</ci>
                 <apply>
-                    <times/>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>v_3</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <ci>u_3</ci>
                     <ci>L</ci>
-                    <apply>
-                        <diff/>
-                        <bvar>
-                            <ci>t</ci>
-                        </bvar>
-                        <ci>v_3</ci>
-                    </apply>
                 </apply>
             </apply>
         </math>
