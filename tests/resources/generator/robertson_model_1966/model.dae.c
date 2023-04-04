@@ -9,7 +9,7 @@ const char VERSION[] = "0.3.2";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 2;
-const size_t VARIABLE_COUNT = 4;
+const size_t VARIABLE_COUNT = 5;
 
 const VariableInfo VOI_INFO = {"t", "dimensionless", "main", VARIABLE_OF_INTEGRATION};
 
@@ -22,7 +22,8 @@ const VariableInfo VARIABLE_INFO[] = {
     {"k1", "dimensionless", "main", CONSTANT},
     {"k3", "dimensionless", "main", CONSTANT},
     {"y3", "dimensionless", "main", ALGEBRAIC},
-    {"k2", "dimensionless", "main", CONSTANT}
+    {"k2", "dimensionless", "main", CONSTANT},
+    {"y2_scaled", "dimensionless", "main", ALGEBRAIC}
 };
 
 double * createStatesArray()
@@ -98,4 +99,5 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
     findRoot0(voi, states, rates, variables);
+    variables[4] = 10000.0*states[1];
 }
