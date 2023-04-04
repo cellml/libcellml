@@ -462,6 +462,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         }
         attribute = attribute->next();
     }
+
     // Get model children (CellML entities).
     XmlNodePtr childNode = node->firstChild();
     std::vector<XmlNodePtr> connectionNodes;

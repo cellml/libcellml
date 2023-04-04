@@ -143,3 +143,15 @@ TEST(ParserTransform, renameNonSiUnits)
     EXPECT_EQ("metre", v1->units()->name());
     EXPECT_EQ("litre", v2->units()->name());
 }
+
+TEST(ParserTransform, multipleMathInComponent)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/cardiac_constant_simplified.cellml"));
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
