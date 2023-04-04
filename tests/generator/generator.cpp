@@ -2485,8 +2485,8 @@ TEST(Generator, robertsonOdeModel1966)
     EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
     EXPECT_EQ(size_t(3), analyserModel->stateCount());
-    EXPECT_EQ(size_t(3), analyserModel->variableCount());
-    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+    EXPECT_EQ(size_t(4), analyserModel->variableCount());
+    EXPECT_EQ(size_t(4), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_NE(nullptr, analyserModel->state(0));
@@ -2533,8 +2533,8 @@ TEST(Generator, robertsonDaeModel1966)
     EXPECT_EQ(libcellml::AnalyserModel::Type::DAE, analyserModel->type());
 
     EXPECT_EQ(size_t(2), analyserModel->stateCount());
-    EXPECT_EQ(size_t(4), analyserModel->variableCount());
-    EXPECT_EQ(size_t(3), analyserModel->equationCount());
+    EXPECT_EQ(size_t(5), analyserModel->variableCount());
+    EXPECT_EQ(size_t(4), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_NE(nullptr, analyserModel->state(0));
