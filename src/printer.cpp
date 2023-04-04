@@ -137,8 +137,6 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
     static const std::regex before(">[\\s\n\t]*");
     static const std::regex after("[\\s\n\t]*<");
     static const std::regex xmlDeclaration(R"|(<\?xml[[:space:]]+version=.*\?>)|");
-    static const std::regex wrapBeginTag("<" + wrapElementName + ">");
-    static const std::regex wrapEndTag("</" + wrapElementName + ">");
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
