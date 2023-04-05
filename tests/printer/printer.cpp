@@ -978,3 +978,63 @@ TEST(Printer, prettyPrintSpacesWrongPlaceNewlines)
     component6->appendMath(MATH_FOOTER);
     EXPECT_EQ(PRETTY_MODEL_STRING, printer->printModel(model));
 }
+
+TEST(Printer, printComponentWithMultipleMathDocuments)
+{
+    auto printer = libcellml::Printer::create();
+    auto parser = libcellml::Parser::create();
+
+    const std::string e = fileContents("printer/component_with_multiple_math.cellml");
+    auto model = parser->parseModel(e);
+
+    EXPECT_EQ(e, printer->printModel(model));
+}
+
+TEST(Printer, printComponentWithMultipleFullyQualifiedMathDocuments)
+{
+    const std::string in =
+        "<?xml version='1.0'?>\n"
+        "<model name=\"multiple_math_in_component\"\n"
+        "    xmlns=\"http://www.cellml.org/cellml/2.0#\"\n"
+        "    xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "    <component name=\"environment\">\n"
+        "        <variable name=\"nK_stim\" units=\"dimensionless\"/>\n"
+        "        <variable name=\"stimPeriod\" units=\"second\"/>\n"
+        "    </component>\n"
+        "</model>\n";
+
+    const std::string math1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<math\n"
+        "    xmlns=\"http://www.w3.org/1998/Math/MathML\"\n"
+        "    xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "    <apply>\n"
+        "        <eq/>\n"
+        "        <ci>nK_stim</ci>\n"
+        "        <cn cellml:units=\"dimensionless\">0.3</cn>\n"
+        "    </apply>\n"
+        "</math>\n";
+
+    const std::string math2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<math\n"
+        "    xmlns=\"http://www.w3.org/1998/Math/MathML\"\n"
+        "    xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "    <apply>\n"
+        "        <eq/>\n"
+        "        <ci>stimPeriod</ci>\n"
+        "        <cn cellml:units=\"second\">42.6</cn>\n"
+        "    </apply>\n"
+        "</math>\n";
+
+    auto printer = libcellml::Printer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto model = parser->parseModel(in);
+
+    model->component(0)->appendMath(math1);
+    model->component(0)->appendMath(math2);
+
+    const std::string e = fileContents("printer/component_with_multiple_math.cellml");
+    EXPECT_EQ(e, printer->printModel(model));
+}
