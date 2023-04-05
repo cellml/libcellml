@@ -721,6 +721,7 @@ TEST(Importer, unitsUsedByComponentMathNotFoundInModel)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ("Units reference 'daves' in units 'bobs' is not a valid reference to a local units or a standard unit type.", validator->error(0)->description());
 }
 
 TEST(Importer, notMathMLMathNodesInComponentMath)
