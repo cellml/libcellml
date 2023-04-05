@@ -63,6 +63,7 @@ endif()
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/libxml2issues.${LIBXML2_VERSION_STRING}.h
   ${CMAKE_CURRENT_BINARY_DIR}/libxml2issues.h
+  COPYONLY
 )
 
 add_library(test_utils SHARED ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTDEFINITIONS_H})
