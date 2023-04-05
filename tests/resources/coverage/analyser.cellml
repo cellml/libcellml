@@ -11,7 +11,7 @@
             <apply>
                 <eq/>
                 <apply>
-                    <!-- <diff/> -->
+                    <diff/>
                     <bvar>
                         <ci>t</ci>
                     </bvar>
@@ -22,7 +22,7 @@
             <apply>
                 <eq/>
                 <apply>
-                    <!-- <diff/> -->
+                    <diff/>
                     <bvar>
                         <ci>u</ci>
                         <degree>
