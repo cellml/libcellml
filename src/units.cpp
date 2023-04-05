@@ -632,7 +632,7 @@ bool Units::requiresImports() const
         for (size_t u = 0; u < unitCount(); ++u) {
             unitAttributes(u, ref, prefix, exponent, multiplier, id);
             auto child = model->units(ref);
-            if (child == nullptr || this == child.get()) {
+            if ((child == nullptr) || (this == child.get())) {
                 continue;
             }
             if (child->requiresImports()) {
