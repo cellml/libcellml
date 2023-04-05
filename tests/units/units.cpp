@@ -2760,3 +2760,29 @@ TEST(Units, validateConnectionsWithBaseUnits)
 
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
+
+TEST(Units, equivalentUnitsMatchingBuiltinUnits)
+{
+    libcellml::UnitsPtr units = libcellml::Units::create("kelvin");
+    units->addUnit(libcellml::Units::StandardUnit::KELVIN);
+
+    libcellml::UnitsPtr unitsClone = units->clone();
+
+    EXPECT_TRUE(libcellml::Units::compatible(units, unitsClone));
+}
+
+TEST(Units, equivalentUnitsMatchingBuiltinUnitsFromVariable)
+{
+    libcellml::ModelPtr model = libcellml::Model::create("unit_compatible_test");
+
+    libcellml::VariablePtr variable = libcellml::Variable::create("T");
+    libcellml::UnitsPtr units = libcellml::Units::create("kelvin");
+    units->addUnit(libcellml::Units::StandardUnit::KELVIN);
+
+    model->addUnits(units);
+    variable->setUnits(units);
+
+    libcellml::VariablePtr variableParam = variable->clone();
+
+    EXPECT_TRUE(libcellml::Units::compatible(variable->units(), variableParam->units()));
+}
