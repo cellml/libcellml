@@ -102,7 +102,7 @@ public:
      *
      * Checks whether this XmlAttribute has the argument attribute type name in
      * the CellML 2.0 namespace.
-     * Returns @ true if so, and @c false otherwise.
+     * Returns @c true if so, and @c false otherwise.
      *
      * @param name The @c char attribute type name to check for.
      *
