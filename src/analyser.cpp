@@ -578,24 +578,16 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // Find and return, if there is one, the internal variable associated with
     // the given variable.
 
-    AnalyserInternalVariablePtr res = nullptr;
-
     for (const auto &internalVariable : mInternalVariables) {
         if (mModel->areEquivalentVariables(variable, internalVariable->mVariable)) {
-            res = internalVariable;
-
-            break;
+            return internalVariable;
         }
-    }
-
-    if (res != nullptr) {
-        return res;
     }
 
     // No internal variable exists for the given variable, so create one, track
     // it and return it.
 
-    res = AnalyserInternalVariable::create(variable);
+    auto res = AnalyserInternalVariable::create(variable);
 
     mInternalVariables.push_back(res);
 
