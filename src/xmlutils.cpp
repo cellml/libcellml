@@ -106,7 +106,7 @@ std::vector<XmlAttributePtr> attributesWithCellml1XNamespace(const XmlNodePtr &n
     return attributes;
 }
 
-void removeCellml1XNamespaces(const XmlNodePtr &node)
+void removeCellml1XNamespaces(const XmlNodePtr &node, bool childrenOnly)
 {
     auto tempNode = node;
     while (tempNode != nullptr) {
@@ -122,7 +122,11 @@ void removeCellml1XNamespaces(const XmlNodePtr &node)
 
         removeCellml1XNamespaces(tempNode->firstChild());
 
-        tempNode = tempNode->next();
+        if (childrenOnly) {
+            tempNode = nullptr;
+        } else {
+            tempNode = tempNode->next();
+        }
     }
 }
 
