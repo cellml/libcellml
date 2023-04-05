@@ -57,8 +57,9 @@ XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node);
  * CellML 1.0 or CellML 1.1 namespaces.
  *
  * @param node The root node of the tree to traverse.
+ * @param childrenOnly Only traverse children of the given @p node, **do not** traverse siblings [optional, default is false].
  */
-void removeCellml1XNamespaces(const XmlNodePtr &node);
+void removeCellml1XNamespaces(const XmlNodePtr &node, bool childrenOnly = false);
 
 /**
  * @brief Find all attributes that use the CellML 1.0 or CellML 1.1 namespace.
