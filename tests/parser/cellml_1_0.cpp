@@ -166,5 +166,4 @@ TEST(ParserTransform, multipleMathInComponentAlternativeFormulation)
     validator->validateModel(model);
 
     EXPECT_EQ(size_t(0), validator->errorCount());
-    printIssues(validator);
 }
