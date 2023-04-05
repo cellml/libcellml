@@ -155,3 +155,15 @@ TEST(ParserTransform, multipleMathInComponent)
 
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
+
+TEST(ParserTransform, multipleMathInComponentAlternativeFormulation)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("cellml1X/cardiac_constant_simplified_alternative.cellml"));
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}

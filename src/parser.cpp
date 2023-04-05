@@ -612,10 +612,10 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             // If transforming, manipulate the math sub-document CellML namespaces.
             if (mParsing1XVersion) {
                 // Find all attributes using old CellML namespace.
-                auto cellmlAttributes = attributesWithCellml1XNamespace(childNode);
+                auto cellmlAttributes = attributesWithCellml1XNamespace(childNode->firstChild());
 
                 // Remove all old CellML namespace definitions and references.
-                removeCellml1XNamespaces(childNode);
+                removeCellml1XNamespaces(childNode, true);
 
                 if (!cellmlAttributes.empty()) {
                     // Add CellML 2.0 namespace to MathML element.
@@ -630,7 +630,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             // Copy any namespaces that do not feature as a namespace definition
             // of the math node into the math node.
             auto mathElementDefinedNamespaces = childNode->definedNamespaces();
-            auto possiblyUndefinedNamespaces = traverseTreeForUndefinedNamespaces(childNode);
+            auto possiblyUndefinedNamespaces = traverseTreeForUndefinedNamespaces(childNode->firstChild());
             auto undefinedNamespaces = determineMissingNamespaces(possiblyUndefinedNamespaces, mathElementDefinedNamespaces);
             XmlNamespaceMap::const_iterator it;
             for (it = undefinedNamespaces.begin(); it != undefinedNamespaces.end(); ++it) {
