@@ -2779,13 +2779,10 @@ TEST(Units, equivalentUnitsMatchingBuiltinUnitsFromVariable)
     libcellml::UnitsPtr units = libcellml::Units::create("kelvin");
     units->addUnit(libcellml::Units::StandardUnit::KELVIN);
 
-    libcellml::UnitsPtr unitsClone = units->clone();
-
     model->addUnits(units);
     variable->setUnits(units);
 
     libcellml::VariablePtr variableParam = variable->clone();
-    variableParam->setInitialValue(293);
 
     EXPECT_TRUE(libcellml::Units::compatible(variable->units(), variableParam->units()));
 }
