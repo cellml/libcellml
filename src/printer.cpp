@@ -134,17 +134,24 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
 
 std::string Printer::PrinterImpl::printMath(const std::string &math)
 {
+    static const std::string wrapElementName = "math_wrap_as_single_root_element";
     static const std::regex before(">[\\s\n\t]*");
     static const std::regex after("[\\s\n\t]*<");
     static const std::regex xmlDeclaration(R"|(<\?xml[[:space:]]+version=.*\?>)|");
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
-    xmlDoc->parse(math);
+    // Remove any XML declarations from the string.
+    std::string normalisedMath = std::regex_replace(math, xmlDeclaration, "");
+    xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">");
     if (xmlDoc->xmlErrorCount() == 0) {
-        auto result = xmlDoc->prettyPrint();
-        // Remove any XML declarations from the string.
-        result = std::regex_replace(result, xmlDeclaration, "");
+        auto rootNode = xmlDoc->rootNode();
+        auto childNode = rootNode->firstChild();
+        std::string result;
+        while (childNode != nullptr) {
+            result += childNode->convertToStrippedString();
+            childNode = childNode->next();
+        }
         // Clean whitespace in the math.
         result = std::regex_replace(result, before, ">");
         return std::regex_replace(result, after, "<");
