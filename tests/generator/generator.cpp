@@ -2684,3 +2684,48 @@ TEST(Generator, daeModel)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/dae_cellml_1_1_model/model.py"), generator->implementationCode());
 }
+
+TEST(Generator, variableInitialisedUsingAConstant)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/variable_initialised_using_a_constant/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+    printIssues(analyser);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(2), analyserModel->stateCount());
+    EXPECT_EQ(size_t(15), analyserModel->variableCount());
+    EXPECT_EQ(size_t(9), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.c"), generator->implementationCode());
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.py"), generator->implementationCode());
+}
