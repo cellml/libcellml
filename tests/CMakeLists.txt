@@ -53,6 +53,19 @@ set(TEST_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/test_exportdefinitions
 set(TEST_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
 set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
 
+if (NOT DEFINED LIBXML2_VERSION_STRING)
+  set(LIBXML2_VERSION_STRING "2.9.10")
+endif()
+if (LIBXML2_VERSION_STRING VERSION_GREATER "2.9.11")
+  set(LIBXML2_VERSION_STRING "2.9.11")
+endif()
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/libxml2issues.${LIBXML2_VERSION_STRING}.h
+  ${CMAKE_CURRENT_BINARY_DIR}/libxml2issues.h
+  COPYONLY
+)
+
 add_library(test_utils SHARED ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTDEFINITIONS_H})
 target_link_libraries(test_utils PUBLIC cellml gtest)
 target_include_directories(test_utils PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
