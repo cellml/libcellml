@@ -1265,8 +1265,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyCellmlElementPtr &item) c
         if (model == owningModel(variablePair->variable1())) {
             itemModel = owningModel(variablePair->variable2());
         }
-        break;
-    }
+    } break;
     case CellmlElementType::ENCAPSULATION:
     case CellmlElementType::MODEL:
         itemModel = item->model();
@@ -1356,8 +1355,7 @@ bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
         result = (variablePair != nullptr)
                  && (variablePair->variable1() != nullptr)
                  && (variablePair->variable2() != nullptr);
-        break;
-    }
+    } break;
     case CellmlElementType::ENCAPSULATION:
     case CellmlElementType::MODEL:
         result = item->model() != nullptr;
@@ -1373,8 +1371,7 @@ bool Annotator::AnnotatorImpl::validItem(const AnyCellmlElementPtr &item)
     case CellmlElementType::UNIT: {
         auto unitsItem = item->unitsItem();
         result = (unitsItem != nullptr) && (unitsItem->units() != nullptr);
-        break;
-    }
+    } break;
     case CellmlElementType::UNITS:
         result = item->units() != nullptr;
         break;
