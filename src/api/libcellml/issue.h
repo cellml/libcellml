@@ -21,6 +21,10 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"
 
+#ifdef ERROR
+#    undef ERROR
+#endif
+
 namespace libcellml {
 
 /**
