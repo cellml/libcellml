@@ -395,8 +395,7 @@ AnyCellmlElementPtr Annotator::AnnotatorImpl::convertToWeak(const AnyCellmlEleme
         UnitsWeakPtr weakUnits = item->units();
         converted->mPimpl->mItem = weakUnits;
     } break;
-    default: /* CellmlElementType::VARIABLE */
-    {
+    default: { /* CellmlElementType::VARIABLE */
         VariableWeakPtr weakVariable = item->variable();
         converted->mPimpl->mItem = weakVariable;
     } break;
