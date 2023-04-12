@@ -1066,7 +1066,7 @@ void Annotator::AnnotatorImpl::doSetAllAutomaticIds()
     auto model = mModel.lock();
     for (size_t index = 0; index < model->componentCount(); ++index) {
         auto component = model->component(index);
-        doSetComponentTreeTypeIds(component, CellmlElementType::COMPONENT, true);
+        doSetComponentTreeTypeIds(component, CellmlElementType::UNDEFINED, true);
     }
     doSetEncapsulationIds();
 }
