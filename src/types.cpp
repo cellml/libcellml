@@ -22,6 +22,8 @@ limitations under the License.
 #include "anycellmlelement_p.h"
 #include "internaltypes.h"
 
+#include <limits>
+
 namespace libcellml {
 
 /**
