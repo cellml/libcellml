@@ -508,13 +508,13 @@ TEST(Annotator, automaticIdsOnEverything)
 
     EXPECT_EQ("b4da64", model->component("component2")->id());
     EXPECT_EQ("b4da65", model->component("component2")->encapsulationId());
-    EXPECT_EQ("b4da69", model->component("component2")->component(0)->id());
-    EXPECT_EQ("b4da6a", model->component("component3")->encapsulationId());
+    EXPECT_EQ("b4da6a", model->component("component2")->component(0)->id());
+    EXPECT_EQ("b4da6b", model->component("component3")->encapsulationId());
     EXPECT_EQ("b4da66", model->component("component2")->variable(0)->id());
     EXPECT_EQ("b4da67", model->component("component2")->variable(1)->id());
-    EXPECT_EQ("b4da6b", model->component("component2")->component(0)->variable(0)->id());
-    EXPECT_EQ("b4da6c", model->component("component2")->component(0)->variable(1)->id());
-    EXPECT_EQ("b4da6d", model->component("component2")->reset(0)->id());
+    EXPECT_EQ("b4da6c", model->component("component2")->component(0)->variable(0)->id());
+    EXPECT_EQ("b4da6d", model->component("component2")->component(0)->variable(1)->id());
+    EXPECT_EQ("b4da69", model->component("component2")->reset(0)->id());
     EXPECT_EQ("b4da6e", model->component("component2")->reset(0)->resetValueId());
     EXPECT_EQ("b4da6f", model->component("component2")->reset(0)->testValueId());
     EXPECT_EQ("b4da68", libcellml::Variable::equivalenceConnectionId(c2v1, c3v1));
