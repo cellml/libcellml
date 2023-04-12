@@ -839,7 +839,7 @@ bool Annotator::assignIds(CellmlElementType type)
     auto model = pFunc()->mModel.lock();
     bool changed = false;
     if (model != nullptr) {
-        changed = true;
+        size_t initialSize = pFunc()->idCount();
         switch (type) {
         case CellmlElementType::COMPONENT:
         case CellmlElementType::COMPONENT_REF:
@@ -870,10 +870,10 @@ bool Annotator::assignIds(CellmlElementType type)
             break;
         case CellmlElementType::MATH:
         case CellmlElementType::UNDEFINED:
-            changed = false;
             break;
         }
         setModel(model);
+        changed = pFunc()->idCount() > initialSize;
     } else {
         pFunc()->addIssueNoModel();
     }

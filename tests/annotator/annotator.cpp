@@ -543,7 +543,7 @@ TEST(Annotator, automaticIdsComponents)
     EXPECT_EQ("", component2->id());
     EXPECT_EQ("", component3->id());
 
-    annotator->assignIds(libcellml::CellmlElementType::COMPONENT);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::COMPONENT));
 
     EXPECT_TRUE(annotator->hasModel());
 
@@ -575,7 +575,7 @@ TEST(Annotator, automaticIdsComponentEncapsulations)
     EXPECT_EQ("", component2->encapsulationId());
     EXPECT_EQ("", component3->encapsulationId());
 
-    annotator->assignIds(libcellml::CellmlElementType::COMPONENT_REF);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::COMPONENT_REF));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -620,7 +620,7 @@ TEST(Annotator, automaticIdsConnection)
     EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(variable1, variable3));
     EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(variable4, variable2));
 
-    annotator->assignIds(libcellml::CellmlElementType::CONNECTION);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::CONNECTION));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -642,7 +642,7 @@ TEST(Annotator, automaticIdsEncapsulation)
     annotator->setModel(model);
 
     EXPECT_EQ("", model->encapsulationId());
-    annotator->assignIds(libcellml::CellmlElementType::ENCAPSULATION);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::ENCAPSULATION));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -673,7 +673,7 @@ TEST(Annotator, automaticIdsImportSource)
     EXPECT_EQ("", model->units(0)->id());
     EXPECT_EQ("", model->component(0)->id());
 
-    annotator->assignIds(libcellml::CellmlElementType::IMPORT);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::IMPORT));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -716,7 +716,7 @@ TEST(Annotator, automaticIdsMapVariables)
     EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(variable1, variable3));
     EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(variable2, variable4));
 
-    annotator->assignIds(libcellml::CellmlElementType::MAP_VARIABLES);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::MAP_VARIABLES));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -739,7 +739,7 @@ TEST(Annotator, automaticIdsModel)
 
     EXPECT_EQ("", model->id());
 
-    annotator->assignIds(libcellml::CellmlElementType::MODEL);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::MODEL));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("b4da55", model->id());
@@ -750,7 +750,7 @@ TEST(Annotator, automaticIdsNoModel)
     const std::string e = "This Annotator object does not have a model to work with.";
     auto annotator = libcellml::Annotator::create();
 
-    annotator->assignIds(libcellml::CellmlElementType::MODEL);
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::MODEL));
     EXPECT_FALSE(annotator->hasModel());
 
     EXPECT_EQ(size_t(1), annotator->errorCount());
@@ -786,7 +786,7 @@ TEST(Annotator, automaticIdsResets)
     EXPECT_EQ("", reset2->id());
     EXPECT_EQ("", reset3->id());
 
-    annotator->assignIds(libcellml::CellmlElementType::RESET);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::RESET));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -833,7 +833,7 @@ TEST(Annotator, automaticIdsResetValues)
     EXPECT_EQ("", reset2->resetValueId());
     EXPECT_EQ("", reset3->resetValueId());
 
-    annotator->assignIds(libcellml::CellmlElementType::RESET_VALUE);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::RESET_VALUE));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -883,7 +883,7 @@ TEST(Annotator, automaticIdsTestValues)
     EXPECT_EQ("", reset2->testValueId());
     EXPECT_EQ("", reset3->testValueId());
 
-    annotator->assignIds(libcellml::CellmlElementType::TEST_VALUE);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::TEST_VALUE));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -916,7 +916,7 @@ TEST(Annotator, automaticIdsUnits)
     EXPECT_EQ("", units->unitId(0));
     EXPECT_EQ("", units->unitId(1));
 
-    annotator->assignIds(libcellml::CellmlElementType::UNIT);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::UNIT));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -946,7 +946,7 @@ TEST(Annotator, automaticIdsUnitsItems)
     EXPECT_EQ("", units1->unitId(1));
     EXPECT_EQ("", units2->id());
 
-    annotator->assignIds(libcellml::CellmlElementType::UNITS);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::UNITS));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -984,7 +984,7 @@ TEST(Annotator, automaticIdsVariables)
     EXPECT_EQ("", variable3->id());
     EXPECT_EQ("", variable4->id());
 
-    annotator->assignIds(libcellml::CellmlElementType::VARIABLE);
+    EXPECT_TRUE(annotator->assignIds(libcellml::CellmlElementType::VARIABLE));
     EXPECT_TRUE(annotator->hasModel());
 
     EXPECT_EQ("", model->id());
@@ -1017,6 +1017,30 @@ TEST(Annotator, automaticIdsMath)
     annotator->setModel(model);
 
     EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::MATH));
+}
+
+TEST(Annotator, automaticIdsAlreadyExisting)
+{
+    // Adding test for coverage purposes.
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelStringUniqueIds);
+    auto annotator = libcellml::Annotator::create();
+
+    annotator->setModel(model);
+
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::COMPONENT));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::COMPONENT_REF));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::CONNECTION));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::ENCAPSULATION));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::IMPORT));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::MAP_VARIABLES));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::MODEL));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::RESET));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::RESET_VALUE));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::TEST_VALUE));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::UNIT));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::UNITS));
+    EXPECT_FALSE(annotator->assignIds(libcellml::CellmlElementType::VARIABLE));
 }
 
 TEST(Annotator, automaticIdAllItemsNoId)
