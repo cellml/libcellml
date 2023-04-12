@@ -507,20 +507,20 @@ TEST(Annotator, automaticIdsOnEverything)
     EXPECT_EQ("b4da5c", model->units(1)->unitId(0));
 
     EXPECT_EQ("b4da64", model->component("component2")->id());
-    EXPECT_EQ("b4da65", model->component("component2")->component(0)->id());
-    EXPECT_EQ("b4da66", model->component("component2")->variable(0)->id());
-    EXPECT_EQ("b4da67", model->component("component2")->variable(1)->id());
-    EXPECT_EQ("b4da68", model->component("component2")->component(0)->variable(0)->id());
-    EXPECT_EQ("b4da69", model->component("component2")->component(0)->variable(1)->id());
-    EXPECT_EQ("b4da6a", model->component("component2")->reset(0)->id());
-    EXPECT_EQ("b4da6b", model->component("component2")->reset(0)->resetValueId());
-    EXPECT_EQ("b4da6c", model->component("component2")->reset(0)->testValueId());
-    EXPECT_EQ("b4da6d", libcellml::Variable::equivalenceConnectionId(c2v1, c3v1));
+    EXPECT_EQ("b4da65", model->component("component2")->encapsulationId());
+    EXPECT_EQ("b4da66", model->component("component2")->component(0)->id());
+    EXPECT_EQ("b4da67", model->component("component3")->encapsulationId());
+    EXPECT_EQ("b4da68", model->component("component2")->variable(0)->id());
+    EXPECT_EQ("b4da69", model->component("component2")->variable(1)->id());
+    EXPECT_EQ("b4da6a", model->component("component2")->component(0)->variable(0)->id());
+    EXPECT_EQ("b4da6b", model->component("component2")->component(0)->variable(1)->id());
+    EXPECT_EQ("b4da6c", model->component("component2")->reset(0)->id());
+    EXPECT_EQ("b4da6d", model->component("component2")->reset(0)->resetValueId());
+    EXPECT_EQ("b4da6e", model->component("component2")->reset(0)->testValueId());
+    EXPECT_EQ("b4da6f", libcellml::Variable::equivalenceConnectionId(c2v1, c3v1));
     EXPECT_EQ("b4da61", libcellml::Variable::equivalenceConnectionId(c2v1, c4v1));
-    EXPECT_EQ("b4da6e", libcellml::Variable::equivalenceMappingId(c2v1, c3v1));
-    EXPECT_EQ("b4da6f", libcellml::Variable::equivalenceMappingId(c2v2, c3v2));
-    EXPECT_EQ("b4da70", model->component("component2")->encapsulationId());
-    EXPECT_EQ("b4da71", model->component("component3")->encapsulationId());
+    EXPECT_EQ("b4da70", libcellml::Variable::equivalenceMappingId(c2v1, c3v1));
+    EXPECT_EQ("b4da71", libcellml::Variable::equivalenceMappingId(c2v2, c3v2));
     EXPECT_EQ("b4da72", model->encapsulationId());
 }
 
@@ -1583,11 +1583,11 @@ TEST(Annotator, assignAllIdsBlankModel)
     auto model = parser->parseModel(modelStringNoIds);
     auto annotator = libcellml::Annotator::create();
 
-    annotator->assignAllIds(model);
+    EXPECT_TRUE(annotator->assignAllIds(model));
     EXPECT_EQ(size_t(0), annotator->errorCount());
 
     libcellml::ModelPtr nullModel;
-    annotator->assignAllIds(nullModel);
+    EXPECT_FALSE(annotator->assignAllIds(nullModel));
     EXPECT_EQ(size_t(0), annotator->errorCount());
 }
 
@@ -1598,9 +1598,21 @@ TEST(Annotator, assignAllIdsNonblankModel)
     auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
 
-    annotator->assignAllIds(model);
+    EXPECT_FALSE(annotator->assignAllIds(model));
     EXPECT_EQ(size_t(0), annotator->errorCount());
     EXPECT_EQ(modelStringUniqueIds, printer->printModel(model));
+}
+
+TEST(Annotator, assignAllIdsDuplicateIdsModel)
+{
+    auto parser = libcellml::Parser::create();
+    auto printer = libcellml::Printer::create();
+    auto model = parser->parseModel(modelStringLotsOfDuplicateIds);
+    auto annotator = libcellml::Annotator::create();
+
+    EXPECT_FALSE(annotator->assignAllIds(model));
+    EXPECT_EQ(size_t(0), annotator->errorCount());
+    EXPECT_EQ(modelStringLotsOfDuplicateIds, printer->printModel(model));
 }
 
 TEST(Annotator, clearAllIdsNoModelPresent)
