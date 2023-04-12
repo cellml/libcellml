@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <cctype>
+#include <limits>
 #include <map>
 #include <string>
 #include <vector>
