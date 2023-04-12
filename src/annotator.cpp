@@ -99,8 +99,6 @@ public:
     void doSetImportSourceIds();
     void doSetUnitsIds();
     void doSetUnitsItemIds();
-    void doSetResetValueIds(const ComponentPtr &parent);
-    void doSetTestValueIds(const ComponentPtr &parent);
     void doSetEncapsulationIds();
     void doSetMapVariablesIds(const ComponentPtr &parent);
     void doClearComponentIds(const ComponentPtr &component);
@@ -847,6 +845,8 @@ bool Annotator::assignIds(CellmlElementType type)
         case CellmlElementType::COMPONENT_REF:
         case CellmlElementType::CONNECTION:
         case CellmlElementType::RESET:
+        case CellmlElementType::RESET_VALUE:
+        case CellmlElementType::TEST_VALUE:
         case CellmlElementType::VARIABLE:
             for (size_t index = 0; index < model->componentCount(); ++index) {
                 pFunc()->doSetComponentTreeTypeIds(model->component(index), type);
@@ -865,16 +865,6 @@ bool Annotator::assignIds(CellmlElementType type)
             break;
         case CellmlElementType::MODEL:
             pFunc()->doSetModelIds();
-            break;
-        case CellmlElementType::RESET_VALUE:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetResetValueIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::TEST_VALUE:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetTestValueIds(model->component(index));
-            }
             break;
         case CellmlElementType::UNIT:
             pFunc()->doSetUnitsItemIds();
@@ -943,16 +933,28 @@ void Annotator::AnnotatorImpl::doSetComponentTreeTypeIds(const ComponentPtr &com
             }
         }
     }
-    if (type == CellmlElementType::RESET || all) {
-        for (size_t rIndex = 0; rIndex < component->resetCount(); ++rIndex) {
-            auto r = component->reset(rIndex);
-            if (r->id().empty()) {
-                auto id = makeUniqueId();
-                r->setId(id);
-                auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-                entry->mPimpl->setReset(r);
-                mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-            }
+    for (size_t rIndex = 0; rIndex < component->resetCount(); ++rIndex) {
+        auto r = component->reset(rIndex);
+        if ((type == CellmlElementType::RESET || all) && r->id().empty()) {
+            auto id = makeUniqueId();
+            r->setId(id);
+            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+            entry->mPimpl->setReset(r);
+            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+        }
+        if ((type == CellmlElementType::RESET_VALUE || all) && r->resetValueId().empty()) {
+            auto id = makeUniqueId();
+            r->setResetValueId(id);
+            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+            entry->mPimpl->setResetValue(r);
+            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+        }
+        if ((type == CellmlElementType::TEST_VALUE || all) && r->testValueId().empty()) {
+            auto id = makeUniqueId();
+            r->setTestValueId(id);
+            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+            entry->mPimpl->setTestValue(r);
+            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
         }
     }
 
@@ -1010,38 +1012,6 @@ void Annotator::AnnotatorImpl::doSetUnitsItemIds()
     }
 }
 
-void Annotator::AnnotatorImpl::doSetResetValueIds(const ComponentPtr &parent)
-{
-    for (size_t r = 0; r < parent->resetCount(); ++r) {
-        if (parent->reset(r)->resetValueId().empty()) {
-            auto id = makeUniqueId();
-            parent->reset(r)->setResetValueId(id);
-            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-            entry->mPimpl->setResetValue(parent->reset(r));
-            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetResetValueIds(parent->component(c));
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetTestValueIds(const ComponentPtr &parent)
-{
-    for (size_t r = 0; r < parent->resetCount(); ++r) {
-        if (parent->reset(r)->testValueId().empty()) {
-            auto id = makeUniqueId();
-            parent->reset(r)->setTestValueId(id);
-            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-            entry->mPimpl->setTestValue(parent->reset(r));
-            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetTestValueIds(parent->component(c));
-    }
-}
-
 void Annotator::AnnotatorImpl::doSetMapVariablesIds(const ComponentPtr &parent)
 {
     for (size_t v = 0; v < parent->variableCount(); ++v) {
@@ -1096,8 +1066,6 @@ void Annotator::AnnotatorImpl::doSetAllAutomaticIds()
     for (size_t index = 0; index < model->componentCount(); ++index) {
         auto component = model->component(index);
         doSetComponentTreeTypeIds(component, CellmlElementType::COMPONENT, true);
-        doSetResetValueIds(component);
-        doSetTestValueIds(component);
         doSetMapVariablesIds(component);
     }
     doSetEncapsulationIds();
