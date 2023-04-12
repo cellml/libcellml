@@ -1820,18 +1820,19 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers, issueDescriptions);
     analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers, issueDescriptions);
 
-    if ((ast->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::EQ)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::NEQ)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::LT)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::LEQ)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::GT)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::GEQ)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::PLUS)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::MINUS)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::MIN)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::MAX)
-        || (ast->mPimpl->mType == AnalyserEquationAst::Type::REM)) {
+    switch (ast->mPimpl->mType) {
+    case AnalyserEquationAst::Type::ASSIGNMENT:
+    case AnalyserEquationAst::Type::EQ:
+    case AnalyserEquationAst::Type::NEQ:
+    case AnalyserEquationAst::Type::LT:
+    case AnalyserEquationAst::Type::LEQ:
+    case AnalyserEquationAst::Type::GT:
+    case AnalyserEquationAst::Type::GEQ:
+    case AnalyserEquationAst::Type::PLUS:
+    case AnalyserEquationAst::Type::MINUS:
+    case AnalyserEquationAst::Type::MIN:
+    case AnalyserEquationAst::Type::MAX:
+    case AnalyserEquationAst::Type::REM: {
         bool sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
         bool sameUnitsMultipliers = rightUnitsMaps.empty()
@@ -1858,7 +1859,8 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             issueDescriptions.push_back(issueDescription);
         }
-    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::PIECEWISE) {
+    } break;
+    case AnalyserEquationAst::Type::PIECEWISE:
         unitsMaps.insert(std::end(unitsMaps),
                          std::begin(rightUnitsMaps),
                          std::end(rightUnitsMaps));
@@ -1868,19 +1870,23 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         unitsMultipliers.insert(std::end(unitsMultipliers),
                                 std::begin(rightUnitsMultipliers),
                                 std::end(rightUnitsMultipliers));
-    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::PIECE) {
+
+        break;
+    case AnalyserEquationAst::Type::PIECE:
         if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps)) {
             issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedRightChild)
                                         + " is not dimensionless. "
                                         + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".");
         }
-    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::AND)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::OR)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::XOR)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::NOT)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::EXP)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::LN)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::LOG)) {
+
+        break;
+    case AnalyserEquationAst::Type::AND:
+    case AnalyserEquationAst::Type::OR:
+    case AnalyserEquationAst::Type::XOR:
+    case AnalyserEquationAst::Type::NOT:
+    case AnalyserEquationAst::Type::EXP:
+    case AnalyserEquationAst::Type::LN:
+    case AnalyserEquationAst::Type::LOG: {
         bool isDimensionlessUnitsMaps = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
 
         if (!isDimensionlessUnitsMaps) {
@@ -1915,16 +1921,19 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
             issueDescriptions.push_back(issueDescription);
         }
-    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::DIVIDE)) {
+    } break;
+    case AnalyserEquationAst::Type::TIMES:
+    case AnalyserEquationAst::Type::DIVIDE:
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps,
                                             ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
         userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps,
                                                 ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
         unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers,
                                                           ast->mPimpl->mType == AnalyserEquationAst::Type::TIMES);
-    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ROOT)) {
+
+        break;
+    case AnalyserEquationAst::Type::POWER:
+    case AnalyserEquationAst::Type::ROOT: {
         bool isDimensionlessExponent = true;
 
         if ((ast->mPimpl->mType == AnalyserEquationAst::Type::POWER)
@@ -1982,40 +1991,45 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue,
                                                          ast->mPimpl->mType == AnalyserEquationAst::Type::POWER);
         }
-    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::SIN)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::COS)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::TAN)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::SEC)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::CSC)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::COT)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::SINH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::COSH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::TANH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::SECH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::CSCH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::COTH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ASIN)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACOS)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ATAN)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ASEC)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACSC)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACOT)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ASINH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACOSH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ATANH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ASECH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACSCH)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::ACOTH)) {
+    } break;
+    case AnalyserEquationAst::Type::SIN:
+    case AnalyserEquationAst::Type::COS:
+    case AnalyserEquationAst::Type::TAN:
+    case AnalyserEquationAst::Type::SEC:
+    case AnalyserEquationAst::Type::CSC:
+    case AnalyserEquationAst::Type::COT:
+    case AnalyserEquationAst::Type::SINH:
+    case AnalyserEquationAst::Type::COSH:
+    case AnalyserEquationAst::Type::TANH:
+    case AnalyserEquationAst::Type::SECH:
+    case AnalyserEquationAst::Type::CSCH:
+    case AnalyserEquationAst::Type::COTH:
+    case AnalyserEquationAst::Type::ASIN:
+    case AnalyserEquationAst::Type::ACOS:
+    case AnalyserEquationAst::Type::ATAN:
+    case AnalyserEquationAst::Type::ASEC:
+    case AnalyserEquationAst::Type::ACSC:
+    case AnalyserEquationAst::Type::ACOT:
+    case AnalyserEquationAst::Type::ASINH:
+    case AnalyserEquationAst::Type::ACOSH:
+    case AnalyserEquationAst::Type::ATANH:
+    case AnalyserEquationAst::Type::ASECH:
+    case AnalyserEquationAst::Type::ACSCH:
+    case AnalyserEquationAst::Type::ACOTH:
         if (!Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps)) {
             issueDescriptions.push_back("The unit of " + expression(ast->mPimpl->mOwnedLeftChild)
                                         + " is not dimensionless. "
                                         + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + ".");
         }
-    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
+
+        break;
+    case AnalyserEquationAst::Type::DIFF:
         unitsMaps = multiplyDivideUnitsMaps(unitsMaps, rightUnitsMaps);
         userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, rightUserUnitsMaps);
         unitsMultipliers = multiplyDivideUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
-    } else if (ast->mPimpl->mType == AnalyserEquationAst::Type::BVAR) {
+
+        break;
+    case AnalyserEquationAst::Type::BVAR:
         for (auto &unitsMap : unitsMaps) {
             for (auto &unitsItem : unitsMap) {
                 unitsItem.second *= -1.0;
@@ -2029,13 +2043,19 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         }
 
         unitsMultipliers = multiplyDivideUnitsMultipliers(0.0, unitsMultipliers, false);
-    } else if ((ast->mPimpl->mType == AnalyserEquationAst::Type::TRUE)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::FALSE)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::E)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::PI)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::INF)
-               || (ast->mPimpl->mType == AnalyserEquationAst::Type::NAN)) {
+
+        break;
+    case AnalyserEquationAst::Type::TRUE:
+    case AnalyserEquationAst::Type::FALSE:
+    case AnalyserEquationAst::Type::E:
+    case AnalyserEquationAst::Type::PI:
+    case AnalyserEquationAst::Type::INF:
+    case AnalyserEquationAst::Type::NAN:
         defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
+
+        break;
+    default: // Other types we don't care about.
+        break;
     }
 }
 
@@ -2458,19 +2478,30 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         if (internalVariable->mIsExternal) {
             type = AnalyserVariable::Type::EXTERNAL;
-        } else if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
-            type = AnalyserVariable::Type::STATE;
-        } else if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
-            type = AnalyserVariable::Type::CONSTANT;
-        } else if ((internalVariable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                   || (internalVariable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
-            type = AnalyserVariable::Type::COMPUTED_CONSTANT;
-        } else if (internalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC) {
-            type = AnalyserVariable::Type::ALGEBRAIC;
-        } else { // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
-            // This is the variable of integration, so skip it.
+        } else {
+            switch (internalVariable->mType) {
+            case AnalyserInternalVariable::Type::STATE:
+                type = AnalyserVariable::Type::STATE;
 
-            continue;
+                break;
+            case AnalyserInternalVariable::Type::CONSTANT:
+                type = AnalyserVariable::Type::CONSTANT;
+
+                break;
+            case AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
+            case AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
+                type = AnalyserVariable::Type::COMPUTED_CONSTANT;
+
+                break;
+            case AnalyserInternalVariable::Type::ALGEBRAIC:
+                type = AnalyserVariable::Type::ALGEBRAIC;
+
+                break;
+            default: // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
+                // This is the variable of integration, so skip it.
+
+                continue;
+            }
         }
 
         // Populate and keep track of the state/variable.
@@ -2508,21 +2539,32 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         if (stateOrVariable->type() == AnalyserVariable::Type::EXTERNAL) {
             type = AnalyserEquation::Type::EXTERNAL;
-        } else if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
-            type = AnalyserEquation::Type::TRUE_CONSTANT;
-        } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
-            type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
-        } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
-            type = AnalyserEquation::Type::RATE;
-        } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
-            type = AnalyserEquation::Type::ALGEBRAIC;
-        } else { // AnalyserEquation::Type::UNKNOWN.
-            // The equation type is unknown, which means that it is a dummy
-            // equation for a true (i.e. non-computed) constant (so that it
-            // could have been marked as an external variable), so we skip it
-            // since the constant wasn't marked as an external variable.
+        } else {
+            switch (internalEquation->mType) {
+            case AnalyserInternalEquation::Type::TRUE_CONSTANT:
+                type = AnalyserEquation::Type::TRUE_CONSTANT;
 
-            continue;
+                break;
+            case AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT:
+                type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+
+                break;
+            case AnalyserInternalEquation::Type::RATE:
+                type = AnalyserEquation::Type::RATE;
+
+                break;
+            case AnalyserInternalEquation::Type::ALGEBRAIC:
+                type = AnalyserEquation::Type::ALGEBRAIC;
+
+                break;
+            default: // AnalyserEquation::Type::UNKNOWN.
+                // The equation type is unknown, which means that it is a dummy
+                // equation for a true (i.e. non-computed) constant (so that it
+                // could have been marked as an external variable), so we skip
+                // it since the constant wasn't marked as an external variable.
+
+                continue;
+            }
         }
 
         // Scale our internal equation's AST to take into account the fact that

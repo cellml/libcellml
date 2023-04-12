@@ -464,14 +464,23 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 
             std::string variableType;
 
-            if (variable->type() == AnalyserVariable::Type::CONSTANT) {
+            switch (variable->type()) {
+            case AnalyserVariable::Type::CONSTANT:
                 variableType = mProfile->constantVariableTypeString();
-            } else if (variable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
+
+                break;
+            case AnalyserVariable::Type::COMPUTED_CONSTANT:
                 variableType = mProfile->computedConstantVariableTypeString();
-            } else if (variable->type() == AnalyserVariable::Type::ALGEBRAIC) {
+
+                break;
+            case AnalyserVariable::Type::ALGEBRAIC:
                 variableType = mProfile->algebraicVariableTypeString();
-            } else { // AnalyserVariable::Type::EXTERNAL.
+
+                break;
+            default: // AnalyserVariable::Type::EXTERNAL.
                 variableType = mProfile->externalVariableTypeString();
+
+                break;
             }
 
             auto variableVariable = variable->variable();
@@ -1116,87 +1125,117 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     //       we don't need to generate any code for it.
 
     std::string code;
-    auto astType = ast->type();
 
-    if (astType == AnalyserEquationAst::Type::ASSIGNMENT) {
+    switch (ast->type()) {
+    case AnalyserEquationAst::Type::ASSIGNMENT:
         code = generateOperatorCode(mProfile->assignmentString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::EQ) {
+
+        break;
+    case AnalyserEquationAst::Type::EQ:
         if (mProfile->hasEqOperator()) {
             code = generateOperatorCode(mProfile->eqString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->eqString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::NEQ) {
+
+        break;
+    case AnalyserEquationAst::Type::NEQ:
         if (mProfile->hasNeqOperator()) {
             code = generateOperatorCode(mProfile->neqString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->neqString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::LT) {
+
+        break;
+    case AnalyserEquationAst::Type::LT:
         if (mProfile->hasLtOperator()) {
             code = generateOperatorCode(mProfile->ltString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->ltString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::LEQ) {
+
+        break;
+    case AnalyserEquationAst::Type::LEQ:
         if (mProfile->hasLeqOperator()) {
             code = generateOperatorCode(mProfile->leqString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->leqString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::GT) {
+
+        break;
+    case AnalyserEquationAst::Type::GT:
         if (mProfile->hasGtOperator()) {
             code = generateOperatorCode(mProfile->gtString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->gtString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::GEQ) {
+
+        break;
+    case AnalyserEquationAst::Type::GEQ:
         if (mProfile->hasGeqOperator()) {
             code = generateOperatorCode(mProfile->geqString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->geqString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::AND) {
+
+        break;
+    case AnalyserEquationAst::Type::AND:
         if (mProfile->hasAndOperator()) {
             code = generateOperatorCode(mProfile->andString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->andString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::OR) {
+
+        break;
+    case AnalyserEquationAst::Type::OR:
         if (mProfile->hasOrOperator()) {
             code = generateOperatorCode(mProfile->orString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->orString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::XOR) {
+
+        break;
+    case AnalyserEquationAst::Type::XOR:
         if (mProfile->hasXorOperator()) {
             code = generateOperatorCode(mProfile->xorString(), ast);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->xorString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::NOT) {
+
+        break;
+    case AnalyserEquationAst::Type::NOT:
         if (mProfile->hasNotOperator()) {
             code = mProfile->notString() + generateCode(ast->leftChild());
         } else {
             code = generateOneParameterFunctionCode(mProfile->notString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::PLUS) {
+
+        break;
+    case AnalyserEquationAst::Type::PLUS:
         if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mProfile->plusString(), ast);
         } else {
             code = generateCode(ast->leftChild());
         }
-    } else if (astType == AnalyserEquationAst::Type::MINUS) {
+
+        break;
+    case AnalyserEquationAst::Type::MINUS:
         if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mProfile->minusString(), ast);
         } else {
             code = generateMinusUnaryCode(ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::TIMES) {
+
+        break;
+    case AnalyserEquationAst::Type::TIMES:
         code = generateOperatorCode(mProfile->timesString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::DIVIDE) {
+
+        break;
+    case AnalyserEquationAst::Type::DIVIDE:
         code = generateOperatorCode(mProfile->divideString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::POWER) {
+
+        break;
+    case AnalyserEquationAst::Type::POWER: {
         auto stringValue = generateCode(ast->rightChild());
         double doubleValue;
         bool validConversion = convertToDouble(stringValue, doubleValue);
@@ -1211,7 +1250,8 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                        generateOperatorCode(mProfile->powerString(), ast) :
                        mProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
         }
-    } else if (astType == AnalyserEquationAst::Type::ROOT) {
+    } break;
+    case AnalyserEquationAst::Type::ROOT: {
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
@@ -1245,13 +1285,20 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::ABS) {
+    } break;
+    case AnalyserEquationAst::Type::ABS:
         code = generateOneParameterFunctionCode(mProfile->absoluteValueString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::EXP) {
+
+        break;
+    case AnalyserEquationAst::Type::EXP:
         code = generateOneParameterFunctionCode(mProfile->exponentialString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::LN) {
+
+        break;
+    case AnalyserEquationAst::Type::LN:
         code = generateOneParameterFunctionCode(mProfile->naturalLogarithmString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::LOG) {
+
+        break;
+    case AnalyserEquationAst::Type::LOG: {
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
@@ -1267,67 +1314,128 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateOneParameterFunctionCode(mProfile->commonLogarithmString(), ast);
         }
-    } else if (astType == AnalyserEquationAst::Type::CEILING) {
+    } break;
+    case AnalyserEquationAst::Type::CEILING:
         code = generateOneParameterFunctionCode(mProfile->ceilingString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::FLOOR) {
+
+        break;
+    case AnalyserEquationAst::Type::FLOOR:
         code = generateOneParameterFunctionCode(mProfile->floorString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::MIN) {
+
+        break;
+    case AnalyserEquationAst::Type::MIN:
         code = generateTwoParameterFunctionCode(mProfile->minString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::MAX) {
+
+        break;
+    case AnalyserEquationAst::Type::MAX:
         code = generateTwoParameterFunctionCode(mProfile->maxString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::REM) {
+
+        break;
+    case AnalyserEquationAst::Type::REM:
         code = generateTwoParameterFunctionCode(mProfile->remString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::DIFF) {
+
+        break;
+    case AnalyserEquationAst::Type::DIFF:
         code = generateCode(ast->rightChild());
-    } else if (astType == AnalyserEquationAst::Type::SIN) {
+
+        break;
+    case AnalyserEquationAst::Type::SIN:
         code = generateOneParameterFunctionCode(mProfile->sinString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::COS) {
+
+        break;
+    case AnalyserEquationAst::Type::COS:
         code = generateOneParameterFunctionCode(mProfile->cosString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::TAN) {
+
+        break;
+    case AnalyserEquationAst::Type::TAN:
         code = generateOneParameterFunctionCode(mProfile->tanString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::SEC) {
+
+        break;
+    case AnalyserEquationAst::Type::SEC:
         code = generateOneParameterFunctionCode(mProfile->secString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::CSC) {
+
+        break;
+    case AnalyserEquationAst::Type::CSC:
         code = generateOneParameterFunctionCode(mProfile->cscString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::COT) {
+
+        break;
+    case AnalyserEquationAst::Type::COT:
         code = generateOneParameterFunctionCode(mProfile->cotString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::SINH) {
+
+        break;
+    case AnalyserEquationAst::Type::SINH:
         code = generateOneParameterFunctionCode(mProfile->sinhString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::COSH) {
+
+        break;
+    case AnalyserEquationAst::Type::COSH:
         code = generateOneParameterFunctionCode(mProfile->coshString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::TANH) {
+
+        break;
+    case AnalyserEquationAst::Type::TANH:
         code = generateOneParameterFunctionCode(mProfile->tanhString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::SECH) {
+
+        break;
+    case AnalyserEquationAst::Type::SECH:
         code = generateOneParameterFunctionCode(mProfile->sechString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::CSCH) {
+
+        break;
+    case AnalyserEquationAst::Type::CSCH:
         code = generateOneParameterFunctionCode(mProfile->cschString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::COTH) {
+
+        break;
+    case AnalyserEquationAst::Type::COTH:
         code = generateOneParameterFunctionCode(mProfile->cothString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ASIN) {
+
+        break;
+    case AnalyserEquationAst::Type::ASIN:
         code = generateOneParameterFunctionCode(mProfile->asinString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ACOS) {
+
+        break;
+    case AnalyserEquationAst::Type::ACOS:
         code = generateOneParameterFunctionCode(mProfile->acosString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ATAN) {
+
+        break;
+    case AnalyserEquationAst::Type::ATAN:
         code = generateOneParameterFunctionCode(mProfile->atanString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ASEC) {
+
+        break;
+    case AnalyserEquationAst::Type::ASEC:
         code = generateOneParameterFunctionCode(mProfile->asecString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ACSC) {
+
+        break;
+    case AnalyserEquationAst::Type::ACSC:
         code = generateOneParameterFunctionCode(mProfile->acscString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ACOT) {
+
+        break;
+    case AnalyserEquationAst::Type::ACOT:
         code = generateOneParameterFunctionCode(mProfile->acotString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ASINH) {
+
+        break;
+    case AnalyserEquationAst::Type::ASINH:
         code = generateOneParameterFunctionCode(mProfile->asinhString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ACOSH) {
+
+        break;
+    case AnalyserEquationAst::Type::ACOSH:
         code = generateOneParameterFunctionCode(mProfile->acoshString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ATANH) {
+
+        break;
+    case AnalyserEquationAst::Type::ATANH:
         code = generateOneParameterFunctionCode(mProfile->atanhString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ASECH) {
+
+        break;
+    case AnalyserEquationAst::Type::ASECH:
         code = generateOneParameterFunctionCode(mProfile->asechString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ACSCH) {
+
+        break;
+    case AnalyserEquationAst::Type::ACSCH:
         code = generateOneParameterFunctionCode(mProfile->acschString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::ACOTH) {
+
+        break;
+    case AnalyserEquationAst::Type::ACOTH:
         code = generateOneParameterFunctionCode(mProfile->acothString(), ast);
-    } else if (astType == AnalyserEquationAst::Type::PIECEWISE) {
+
+        break;
+    case AnalyserEquationAst::Type::PIECEWISE: {
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
@@ -1339,29 +1447,52 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         } else {
             code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mProfile->nanString());
         }
-    } else if (astType == AnalyserEquationAst::Type::PIECE) {
+    } break;
+    case AnalyserEquationAst::Type::PIECE:
         code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
-    } else if (astType == AnalyserEquationAst::Type::OTHERWISE) {
+
+        break;
+    case AnalyserEquationAst::Type::OTHERWISE:
         code = generateCode(ast->leftChild());
-    } else if (astType == AnalyserEquationAst::Type::CI) {
+
+        break;
+    case AnalyserEquationAst::Type::CI:
         code = generateVariableNameCode(ast->variable(), ast);
-    } else if (astType == AnalyserEquationAst::Type::CN) {
+
+        break;
+    case AnalyserEquationAst::Type::CN:
         code = generateDoubleCode(ast->value());
-    } else if ((astType == AnalyserEquationAst::Type::DEGREE)
-               || (astType == AnalyserEquationAst::Type::LOGBASE)) {
+
+        break;
+    case AnalyserEquationAst::Type::DEGREE:
+    case AnalyserEquationAst::Type::LOGBASE:
         code = generateCode(ast->leftChild());
-    } else if (astType == AnalyserEquationAst::Type::TRUE) {
+
+        break;
+    case AnalyserEquationAst::Type::TRUE:
         code = mProfile->trueString();
-    } else if (astType == AnalyserEquationAst::Type::FALSE) {
+
+        break;
+    case AnalyserEquationAst::Type::FALSE:
         code = mProfile->falseString();
-    } else if (astType == AnalyserEquationAst::Type::E) {
+
+        break;
+    case AnalyserEquationAst::Type::E:
         code = mProfile->eString();
-    } else if (astType == AnalyserEquationAst::Type::PI) {
+
+        break;
+    case AnalyserEquationAst::Type::PI:
         code = mProfile->piString();
-    } else if (astType == AnalyserEquationAst::Type::INF) {
+
+        break;
+    case AnalyserEquationAst::Type::INF:
         code = mProfile->infString();
-    } else { // AnalyserEquationAst::Type::NAN.
+
+        break;
+    default: // AnalyserEquationAst::Type::NAN.
         code = mProfile->nanString();
+
+        break;
     }
 
     return code;
