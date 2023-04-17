@@ -116,12 +116,48 @@ Provides support for shared pointers declared in types.h.
 
 // Shared typemaps
 
+%typemap(in) libcellml::AnalyserEquation::Type (int val, int ecode) {
+  ecode = SWIG_AsVal(int)($input, &val);
+  if (!SWIG_IsOK(ecode)) {
+    %argument_fail(ecode, "$type", $symname, $argnum);
+  } else {
+    if (val < %static_cast($type::TRUE_CONSTANT, int) || %static_cast($type::EXTERNAL, int) < val) {
+      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
+    }
+    $1 = %static_cast(val, $basetype);
+  }
+}
+
 %typemap(in) libcellml::AnalyserEquationAst::Type (int val, int ecode) {
   ecode = SWIG_AsVal(int)($input, &val);
   if (!SWIG_IsOK(ecode)) {
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
     if (val < %static_cast($type::EQUALITY, int) || %static_cast($type::NAN, int) < val) {
+      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
+    }
+    $1 = %static_cast(val, $basetype);
+  }
+}
+
+%typemap(in) libcellml::AnalyserModel::Type (int val, int ecode) {
+  ecode = SWIG_AsVal(int)($input, &val);
+  if (!SWIG_IsOK(ecode)) {
+    %argument_fail(ecode, "$type", $symname, $argnum);
+  } else {
+    if (val < %static_cast($type::UNKNOWN, int) || %static_cast($type::UNSUITABLY_CONSTRAINED, int) < val) {
+      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
+    }
+    $1 = %static_cast(val, $basetype);
+  }
+}
+
+%typemap(in) libcellml::AnalyserVariable::Type (int val, int ecode) {
+  ecode = SWIG_AsVal(int)($input, &val);
+  if (!SWIG_IsOK(ecode)) {
+    %argument_fail(ecode, "$type", $symname, $argnum);
+  } else {
+    if (val < %static_cast($type::VARIABLE_OF_INTEGRATION, int) || %static_cast($type::EXTERNAL, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val, $basetype);
