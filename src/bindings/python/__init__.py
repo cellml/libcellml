@@ -170,6 +170,7 @@ convert(AnalyserVariable, 'Type', [
     'CONSTANT',
     'COMPUTED_CONSTANT',
     'ALGEBRAIC',
+    'EXTERNAL',
 ])
 convert(GeneratorProfile, 'Profile', [
     'C',
