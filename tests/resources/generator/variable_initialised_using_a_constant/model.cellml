@@ -1,182 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="BG_initTest">
-  <units name="fmol_per_sec">
-    <unit units="fmol"/>
-    <unit exponent="-1" units="second"/>
-  </units>
-  <units name="J_per_mol">
-    <unit units="joule"/>
-    <unit exponent="-1" units="mole"/>
-  </units>
-  <units name="per_fmol">
-    <unit exponent="-1" units="fmol"/>
-  </units>
-  <units name="J_per_K_per_mol">
-    <unit units="joule"/>
-    <unit exponent="-1" units="kelvin"/>
-    <unit exponent="-1" units="mole"/>
-  </units>
-  <units name="C_per_mol">
-    <unit units="coulomb"/>
-    <unit exponent="-1" units="mole"/>
-  </units>
-  <units name="fmol">
-    <unit prefix="femto" units="mole"/>
-  </units>
-  <component name="BG_initTest">
-    <variable name="t" units="second"/>
-    <variable name="K_Ai" units="per_fmol" interface="public"/>
-    <variable name="v_Ai" units="fmol_per_sec"/>
-    <variable name="q_Ai_init" units="fmol" interface="public"/>
-    <variable name="q_Ai" units="fmol" initial_value="q_Ai_init"/>
-    <variable name="mu_Ai" units="J_per_mol"/>
-    <variable name="K_Ao" units="per_fmol" interface="public"/>
-    <variable name="v_Ao" units="fmol_per_sec"/>
-    <variable name="q_Ao_init" units="fmol" interface="public"/>
-    <variable name="q_Ao" units="fmol" initial_value="q_Ao_init"/>
-    <variable name="mu_Ao" units="J_per_mol"/>
-    <variable name="kappa_Re1" units="fmol_per_sec" interface="public"/>
-    <variable name="v_Re1" units="fmol_per_sec"/>
-    <variable name="mu_Re1_in" units="J_per_mol"/>
-    <variable name="mu_Re1_out" units="J_per_mol"/>
-    <variable name="F" units="C_per_mol" interface="public"/>
-    <variable name="R" units="J_per_K_per_mol" interface="public"/>
-    <variable name="T" units="kelvin" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-      <apply>
-        <eq/>
-        <ci>mu_Ai</ci>
-        <apply>
-          <times/>
-          <ci>R</ci>
-          <ci>T</ci>
-          <apply>
-            <ln/>
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="per_second">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <component name="component_1">
+        <variable name="t" units="second"/>
+        <variable name="X_init" units="dimensionless" interface="public"/>
+        <variable name="X" units="dimensionless" initial_value="X_init"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
             <apply>
-              <times/>
-              <ci>K_Ai</ci>
-              <ci>q_Ai</ci>
-            </apply>
-          </apply>
-        </apply>
-      </apply>
-      <apply>
-        <eq/>
-        <apply>
-          <diff/>
-          <bvar>
-            <ci>t</ci>
-          </bvar>
-          <ci>q_Ai</ci>
-        </apply>
-        <ci>v_Ai</ci>
-      </apply>
-      <apply>
-        <eq/>
-        <ci>mu_Ao</ci>
-        <apply>
-          <times/>
-          <ci>R</ci>
-          <ci>T</ci>
-          <apply>
-            <ln/>
-            <apply>
-              <times/>
-              <ci>K_Ao</ci>
-              <ci>q_Ao</ci>
-            </apply>
-          </apply>
-        </apply>
-      </apply>
-      <apply>
-        <eq/>
-        <apply>
-          <diff/>
-          <bvar>
-            <ci>t</ci>
-          </bvar>
-          <ci>q_Ao</ci>
-        </apply>
-        <ci>v_Ao</ci>
-      </apply>
-      <apply>
-        <eq/>
-        <ci>v_Re1</ci>
-        <apply>
-          <times/>
-          <ci>kappa_Re1</ci>
-          <apply>
-            <minus/>
-            <apply>
-              <exp/>
-              <apply>
-                <divide/>
-                <ci>mu_Re1_in</ci>
+                <eq/>
                 <apply>
-                  <times/>
-                  <ci>R</ci>
-                  <ci>T</ci>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>X</ci>
                 </apply>
-              </apply>
+                <cn cellml:units="per_second">3</cn>
             </apply>
-            <apply>
-              <exp/>
-              <apply>
-                <divide/>
-                <ci>mu_Re1_out</ci>
-                <apply>
-                  <times/>
-                  <ci>R</ci>
-                  <ci>T</ci>
-                </apply>
-              </apply>
-            </apply>
-          </apply>
-        </apply>
-      </apply>
-      <apply>
-        <eq/>
-        <ci>v_Ai</ci>
-        <ci>v_Re1</ci>
-      </apply>
-      <apply>
-        <eq/>
-        <ci>v_Ao</ci>
-        <apply>
-          <minus/>
-          <ci>v_Re1</ci>
-        </apply>
-      </apply>
-      <apply>
-        <eq/>
-        <ci>mu_Re1_in</ci>
-        <ci>mu_Ao</ci>
-      </apply>
-      <apply>
-        <eq/>
-        <ci>mu_Re1_out</ci>
-        <ci>mu_Ai</ci>
-      </apply>
-    </math>
-  </component>
-  <component name="BG_initTest_param">
-    <variable name="K_Ai" units="per_fmol" initial_value="1" interface="public"/>
-    <variable name="q_Ai_init" units="fmol" initial_value="1" interface="public"/>
-    <variable name="K_Ao" units="per_fmol" initial_value="1" interface="public"/>
-    <variable name="q_Ao_init" units="fmol" initial_value="1" interface="public"/>
-    <variable name="kappa_Re1" units="fmol_per_sec" initial_value="1" interface="public"/>
-    <variable name="F" units="C_per_mol" initial_value="96485" interface="public"/>
-    <variable name="R" units="J_per_K_per_mol" initial_value="8.31" interface="public"/>
-    <variable name="T" units="kelvin" initial_value="293" interface="public"/>
-  </component>
-  <connection component_1="BG_initTest" component_2="BG_initTest_param">
-    <map_variables variable_1="K_Ai" variable_2="K_Ai"/>
-    <map_variables variable_1="q_Ai_init" variable_2="q_Ai_init"/>
-    <map_variables variable_1="K_Ao" variable_2="K_Ao"/>
-    <map_variables variable_1="q_Ao_init" variable_2="q_Ao_init"/>
-    <map_variables variable_1="kappa_Re1" variable_2="kappa_Re1"/>
-    <map_variables variable_1="F" variable_2="F"/>
-    <map_variables variable_1="R" variable_2="R"/>
-    <map_variables variable_1="T" variable_2="T"/>
-  </connection>
+        </math>
+    </component>
+    <component name="component_2">
+        <variable name="X_init" units="dimensionless" initial_value="7" interface="public"/>
+    </component>
+    <connection component_1="component_1" component_2="component_2">
+        <map_variables variable_1="X_init" variable_2="X_init"/>
+    </connection>
 </model>
