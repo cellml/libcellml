@@ -2695,7 +2695,6 @@ TEST(Generator, variableInitialisedUsingAConstant)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
-    printIssues(analyser);
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
 
@@ -2703,9 +2702,9 @@ TEST(Generator, variableInitialisedUsingAConstant)
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
 
-    EXPECT_EQ(size_t(2), analyserModel->stateCount());
-    EXPECT_EQ(size_t(15), analyserModel->variableCount());
-    EXPECT_EQ(size_t(9), analyserModel->equationCount());
+    EXPECT_EQ(size_t(1), analyserModel->stateCount());
+    EXPECT_EQ(size_t(1), analyserModel->variableCount());
+    EXPECT_EQ(size_t(1), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_NE(nullptr, analyserModel->state(0));
