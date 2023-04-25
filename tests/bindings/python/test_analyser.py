@@ -174,6 +174,13 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertTrue(ae.isStateRateBased())
         self.assertIsNotNone(ae.variable())
 
+        # Check Analyser Equation type with invalid values.
+
+        self.assertRaises(RuntimeError, AnalyserEquation.typeAsString, -1)
+        self.assertRaises(RuntimeError, AnalyserEquation_typeAsString, -1)
+        self.assertRaises(RuntimeError, AnalyserEquation.typeAsString, 999)
+        self.assertRaises(RuntimeError, AnalyserEquation_typeAsString, 999)
+
         # Ensure coverage for AnalyserEquationAst.
 
         aea = ae.ast()
