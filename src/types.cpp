@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/types.h"
 
+#include <limits>
+
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
