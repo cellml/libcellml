@@ -755,3 +755,40 @@ TEST(Importer, notMathMLMathNodesInComponentMath)
     EXPECT_EQ("Math root node is of invalid type 'notmath' on component 'c'. A valid math root node should be of type 'math'.", validator->error(0)->description());
     EXPECT_EQ("Units reference 'daves' in units 'bobs' is not a valid reference to a local units or a standard unit type.", validator->error(1)->description());
 }
+
+TEST(CoverageAnnotator, crossComponentConnectionAndMappingIds)
+{
+    auto model = libcellml::Model::create("model");
+
+    auto component1 = libcellml::Component::create("component1");
+    auto component2 = libcellml::Component::create("component2");
+    auto component3 = libcellml::Component::create("component3");
+
+    auto variable1 = libcellml::Variable::create("variable1");
+    auto variable2 = libcellml::Variable::create("variable2");
+    auto variable3 = libcellml::Variable::create("variable3");
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    model->addComponent(component3);
+
+    component1->addVariable(variable1);
+    component2->addVariable(variable2);
+    component3->addVariable(variable3);
+
+    libcellml::Variable::addEquivalence(variable1, variable2);
+    libcellml::Variable::addEquivalence(variable1, variable3);
+
+    libcellml::Variable::setEquivalenceMappingId(variable1, variable2, "mapping_id");
+    libcellml::Variable::setEquivalenceMappingId(variable1, variable3, "mapping_id");
+
+    libcellml::Variable::setEquivalenceConnectionId(variable1, variable2, "connection_id");
+    libcellml::Variable::setEquivalenceConnectionId(variable1, variable3, "connection_id");
+
+    auto annotater = libcellml::Annotator::create();
+
+    annotater->setModel(model);
+
+    EXPECT_EQ(size_t(2), annotater->itemCount("mapping_id"));
+    EXPECT_EQ(size_t(2), annotater->itemCount("connection_id"));
+}
