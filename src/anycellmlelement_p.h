@@ -18,8 +18,6 @@ limitations under the License.
 
 #include <any>
 
-#include "internaltypes.h"
-
 namespace libcellml {
 
 /**

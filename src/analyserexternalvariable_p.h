@@ -20,8 +20,6 @@ limitations under the License.
 
 namespace libcellml {
 
-using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
-
 /**
  * @brief The AnalyserExternalVariable::AnalyserExternalVariableImpl struct.
  *
@@ -29,15 +27,15 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
  */
 struct AnalyserExternalVariable::AnalyserExternalVariableImpl
 {
-    VariableWeakPtr mVariable;
-    std::vector<VariableWeakPtr> mDependencies;
+    VariablePtr mVariable;
+    std::vector<VariablePtr> mDependencies;
 
     explicit AnalyserExternalVariableImpl(const VariablePtr &variable);
 
-    std::vector<VariableWeakPtr>::iterator findDependency(const ModelPtr &model,
-                                                          const std::string &componentName,
-                                                          const std::string &variableName);
-    std::vector<VariableWeakPtr>::iterator findDependency(const VariablePtr &variable);
+    std::vector<VariablePtr>::iterator findDependency(const ModelPtr &model,
+                                                      const std::string &componentName,
+                                                      const std::string &variableName);
+    std::vector<VariablePtr>::iterator findDependency(const VariablePtr &variable);
 };
 
 } // namespace libcellml
