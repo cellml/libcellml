@@ -31,7 +31,7 @@ struct AnalyserModel::AnalyserModelImpl
 
     bool mHasExternalVariables = false;
 
-    AnalyserVariablePtr mVoi = nullptr;
+    AnalyserVariablePtr mVoi;
     std::vector<AnalyserVariablePtr> mStates;
     std::vector<AnalyserVariablePtr> mVariables;
     std::vector<AnalyserEquationPtr> mEquations;
