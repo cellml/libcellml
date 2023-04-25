@@ -1175,7 +1175,10 @@ TEST(Annotator, assignImportSourceIdBadInput)
 TEST(Annotator, assignVariablePairIdBadInput)
 {
     auto annotator = libcellml::Annotator::create();
+    auto dummyVariable = libcellml::Variable::create("dummy");
+
     EXPECT_EQ("", annotator->assignId(libcellml::VariablePair::create(nullptr, nullptr)));
+    EXPECT_EQ("", annotator->assignId(libcellml::VariablePair::create(dummyVariable, nullptr)));
     EXPECT_EQ("", annotator->assignId(libcellml::VariablePair::create(nullptr, nullptr), libcellml::CellmlElementType::MODEL));
 }
 
@@ -1754,7 +1757,6 @@ TEST(Annotator, listAllIds)
     ids = annotator->ids();
     EXPECT_EQ(std::vector<std::string>(), ids);
 }
-
 TEST(Annotator, retrieveDuplicateIdItemLists)
 {
     std::vector<std::string> ids = {
