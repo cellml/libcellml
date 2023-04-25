@@ -138,11 +138,9 @@ bool AnalyserExternalVariable::containsDependency(const VariablePtr &variable) c
 
 VariablePtr AnalyserExternalVariable::dependency(size_t index) const
 {
-    if (index < mPimpl->mDependencies.size()) {
-        return mPimpl->mDependencies.at(index);
-    }
-
-    return nullptr;
+    return (index < mPimpl->mDependencies.size()) ?
+               mPimpl->mDependencies.at(index) :
+               nullptr;
 }
 
 VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
@@ -151,11 +149,9 @@ VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
 {
     auto result = mPimpl->findDependency(model, componentName, variableName);
 
-    if (result != mPimpl->mDependencies.end()) {
-        return *result;
-    }
-
-    return nullptr;
+    return (result != mPimpl->mDependencies.end()) ?
+               *result :
+               nullptr;
 }
 
 std::vector<VariablePtr> AnalyserExternalVariable::dependencies() const
