@@ -749,10 +749,26 @@ TEST(Coverage, notMathMLMathNodesInComponentMath)
     EXPECT_EQ("Units reference 'daves' in units 'bobs' is not a valid reference to a local units or a standard unit type.", validator->error(1)->description());
 }
 
-TEST(CoverageValidator, validXmlIds)
+TEST(CoverageValidator, degreeElementWithOneSibling)
 {
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <root/>\n"
+        "    <degree><ci>n</ci></degree>\n"
+        "  </apply>\n"
+        "</math>\n";
+
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("coverage/validxmlids.cellml"));
+    auto model = libcellml::Model::create("degree");
+
+    auto component = libcellml::Component::create("c");
+    auto variable = libcellml::Variable::create("n");
+    variable->setUnits("second");
+    component->addVariable(variable);
+    component->appendMath(math);
+
+    model->addComponent(component);
 
     auto validator = libcellml::Validator::create();
 
