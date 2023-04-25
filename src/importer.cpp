@@ -687,7 +687,7 @@ std::string addUnitsAvoidingNameClash(const ModelPtr &model, const UnitsPtr &uni
     return units->name();
 }
 
-void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
+ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
         auto model = owningModel(component);
@@ -775,12 +775,13 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
         }
         findAndReplaceComponentsCnUnitsNames(importedComponentCopy, unitsNamesToReplace);
     }
+
+    return parent->component(index);
 }
 
 void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &component, size_t componentIndex)
 {
-    flattenComponent(parent, component, componentIndex);
-    auto flattenedComponent = parent->component(componentIndex);
+    auto flattenedComponent = flattenComponent(parent, component, componentIndex);
     for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
         auto c = flattenedComponent->component(index);
         flattenComponentTree(flattenedComponent, c, index);

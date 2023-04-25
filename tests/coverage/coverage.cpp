@@ -337,6 +337,24 @@ TEST(Coverage, analyser)
     analyser->analyseModel(model);
 }
 
+TEST(Coverage, analyserConvertToInt)
+{
+    auto analyser = libcellml::Analyser::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/converttoint.cellml"));
+
+    analyser->analyseModel(model);
+}
+
+TEST(Coverage, analyserConvertToDouble)
+{
+    auto analyser = libcellml::Analyser::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/converttodouble.cellml"));
+
+    analyser->analyseModel(model);
+}
+
 TEST(Coverage, analyserExternalVariable)
 {
     auto externalVariable = libcellml::AnalyserExternalVariable::create(nullptr);
@@ -671,4 +689,78 @@ TEST(Coverage, generator)
     profile->setXorFunctionString("");
 
     generator->implementationCode();
+}
+
+libcellml::ValidatorPtr validateMathPreparation(const std::string &math)
+{
+    auto variable = libcellml::Variable::create("a");
+    auto uBobs = libcellml::Units::create("bobs");
+    uBobs->addUnit("daves");
+    variable->setUnits(uBobs);
+    auto component = libcellml::Component::create("myComponent");
+    component->addVariable(variable);
+    component->appendMath(math);
+    auto importedModel = libcellml::Model::create("myImportedModel");
+    importedModel->addComponent(component);
+
+    auto importer = libcellml::Importer::create();
+    auto validator = libcellml::Validator::create();
+
+    importer->addModel(importedModel, "myImportedModel.cellml");
+
+    auto model = libcellml::Model::create("myModel");
+    auto u = libcellml::Units::create("meter");
+    u->addUnit("metre");
+    model->addUnits(u);
+
+    auto c = libcellml::Component::create("c");
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("not_required_resolving_import_manually");
+    importSource->setModel(importedModel);
+
+    c->setImportReference("myComponent");
+    c->setImportSource(importSource);
+    model->addComponent(c);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model = importer->flattenModel(model);
+
+    validator->validateModel(model);
+    return validator;
+}
+
+TEST(Importer, unitsUsedByComponentMathNotFoundInModel)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>"
+        "    <eq/>\n"
+        "    <ci>a</ci>\n"
+        "    <cn cellml:units=\"bobs\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    auto validator = validateMathPreparation(math);
+
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ("Units reference 'daves' in units 'bobs' is not a valid reference to a local units or a standard unit type.", validator->error(0)->description());
+}
+
+TEST(Importer, notMathMLMathNodesInComponentMath)
+{
+    const std::string math =
+        "<notmath xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>"
+        "    <eq/>\n"
+        "    <ci>a</ci>\n"
+        "    <cn cellml:units=\"bobs\">1</cn>\n"
+        "  </apply>\n"
+        "</notmath>\n";
+
+    auto validator = validateMathPreparation(math);
+
+    EXPECT_EQ(size_t(2), validator->errorCount());
+    EXPECT_EQ("Math root node is of invalid type 'notmath' on component 'c'. A valid math root node should be of type 'math'.", validator->error(0)->description());
+    EXPECT_EQ("Units reference 'daves' in units 'bobs' is not a valid reference to a local units or a standard unit type.", validator->error(1)->description());
 }
