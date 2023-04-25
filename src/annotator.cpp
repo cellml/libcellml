@@ -827,11 +827,8 @@ bool Annotator::assignAllIds(ModelPtr &model)
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ANNOTATOR_NULL_MODEL);
         return false;
     }
-    auto curModel = this->model();
     setModel(model);
-    bool changed = assignAllIds();
-    setModel(curModel);
-    return changed;
+    return assignAllIds();
 }
 
 bool Annotator::assignIds(CellmlElementType type)
