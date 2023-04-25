@@ -792,10 +792,17 @@ TEST(CoverageValidator, invalidXmlIds)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ("Units 'bob8' does not have a valid 'id' attribute, '\xF3\xBF\xBF\xBFid'.", validator->error(0)->description());
 }
 
 TEST(CoverageValidator, componentMathWithRepeatedVariableNames)
 {
+    const std::vector<std::string> expectedIssues = {
+        "Component 'componentName' contains multiple variables with the name 'A'. Valid variable names must be unique to their component.",
+        "MathML ci element has the child text 'C' which does not correspond with any variable names present in component 'componentName'.",
+        "Math has a 'ci' element with no identifier as a child.",
+    };
+
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\n"
@@ -836,6 +843,7 @@ TEST(CoverageValidator, componentMathWithRepeatedVariableNames)
 
     v->validateModel(m);
     EXPECT_EQ(size_t(3), v->issueCount());
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(CoverageAnnotator, crossComponentConnectionAndMappingIds)
