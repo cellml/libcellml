@@ -205,7 +205,7 @@ uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
     uint32_t value = 0;
     size_t index = 0;
     for (size_t j = initialValue; j < 4; ++j) {
-        auto tempValue = static_cast<uint32_t>((unsigned char)text[index++]) << bitShifts[j];
+        auto tempValue = static_cast<uint32_t>(static_cast<unsigned char>(text[index++])) << bitShifts[j];
         value |= tempValue;
     }
 
