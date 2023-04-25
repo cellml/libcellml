@@ -22,9 +22,6 @@ limitations under the License.
 
 namespace libcellml {
 
-using AnalyserModelWeakPtr = std::weak_ptr<AnalyserModel>; /**< Type definition for weak analyser model pointer. */
-using GeneratorProfileWeakPtr = std::weak_ptr<GeneratorProfile>; /**< Type definition for weak generator profile pointer. */
-
 /**
  * @brief The Generator::GeneratorImpl struct.
  *
@@ -34,17 +31,11 @@ struct Generator::GeneratorImpl
 {
     Generator *mGenerator = nullptr;
 
-    AnalyserModelWeakPtr mModel;
-    AnalyserModelPtr mLockedModel;
+    AnalyserModelPtr mModel;
 
     std::string mCode;
 
-    GeneratorProfilePtr mOwnedProfile = GeneratorProfile::create();
-    GeneratorProfileWeakPtr mProfile;
-    GeneratorProfilePtr mLockedProfile;
-
-    bool retrieveLockedModelAndProfile();
-    void resetLockedModelAndProfile();
+    GeneratorProfilePtr mProfile = GeneratorProfile::create();
 
     AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 

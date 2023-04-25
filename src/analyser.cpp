@@ -95,7 +95,7 @@ struct AnalyserInternalVariable
 
 AnalyserInternalVariablePtr AnalyserInternalVariable::create(const VariablePtr &variable)
 {
-    auto res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {}};
+    auto res = std::make_shared<AnalyserInternalVariable>();
 
     res->setVariable(variable);
 
@@ -155,7 +155,7 @@ struct AnalyserInternalEquation
     std::vector<AnalyserInternalVariablePtr> mAllVariables;
 
     AnalyserInternalVariablePtr mVariable;
-    ComponentPtr mComponent = nullptr;
+    ComponentPtr mComponent;
 
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
@@ -183,7 +183,7 @@ struct AnalyserInternalEquation
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
 {
-    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+    auto res = std::make_shared<AnalyserInternalEquation>();
 
     res->mAst = AnalyserEquationAst::create();
     res->mComponent = component;
@@ -193,7 +193,7 @@ AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr 
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const AnalyserInternalVariablePtr &variable)
 {
-    auto res = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {}};
+    auto res = std::make_shared<AnalyserInternalEquation>();
 
     res->mVariable = variable;
     res->mComponent = owningComponent(variable->mVariable);
@@ -380,10 +380,9 @@ public:
     GeneratorPtr mGenerator = libcellml::Generator::create();
 
     std::map<std::string, UnitsPtr> mStandardUnits;
-    std::map<AnalyserEquationAstPtr, UnitsWeakPtr> mCiCnUnits;
+    std::map<AnalyserEquationAstPtr, UnitsPtr> mCiCnUnits;
 
     AnalyserImpl();
-    ~AnalyserImpl();
 
     AnalyserInternalVariablePtr internalVariable(const VariablePtr &variable);
 
@@ -503,17 +502,6 @@ Analyser::AnalyserImpl::AnalyserImpl()
     profile->setPiString("pi");
     profile->setInfString("infinity");
     profile->setNanString("notanumber");
-
-    // Retrieve our generator's profile.
-
-    mGenerator->mPimpl->retrieveLockedModelAndProfile();
-}
-
-Analyser::AnalyserImpl::~AnalyserImpl()
-{
-    // Reset our generator's profile.
-
-    mGenerator->mPimpl->resetLockedModelAndProfile();
 }
 
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)
@@ -551,7 +539,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
         }
     }
 
-    VariablePtr res = nullptr;
+    VariablePtr res;
 
     for (size_t i = 0; (res == nullptr) && (i < component->componentCount()); ++i) {
         res = voiFirstOccurrence(variable, component->component(i));
@@ -1753,7 +1741,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         || (ast->mPimpl->mType == AnalyserEquationAst::Type::CN)) {
-        auto units = mCiCnUnits[ast].lock();
+        auto units = mCiCnUnits[ast];
         auto model = owningModel(units);
 
         defaultUnitsMapsAndMultipliers(unitsMaps, userUnitsMaps, unitsMultipliers);
@@ -2632,7 +2620,7 @@ const Analyser::AnalyserImpl *Analyser::pFunc() const
 }
 
 Analyser::Analyser()
-    : Logger(new Analyser::AnalyserImpl())
+    : Logger(new AnalyserImpl())
 {
     pFunc()->mAnalyser = this;
 }
