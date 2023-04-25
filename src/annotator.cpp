@@ -115,7 +115,7 @@ public:
      * @param type The type of id to set.
      * @param all Set @c true to ignore the type and apply ids to all types.
      */
-    void doSetComponentTreeTypeIds(const ComponentPtr &component, CellmlElementType type, bool all=false);
+    void doSetComponentTreeTypeIds(const ComponentPtr &component, CellmlElementType type, bool all = false);
 
     /**
      * @brief Test to determine if the given @p id at the given @p index exists.
@@ -915,7 +915,7 @@ void Annotator::AnnotatorImpl::doSetComponentTreeTypeIds(const ComponentPtr &com
         auto v1 = component->variable(vIndex);
         for (size_t eIndex = 0; eIndex < v1->equivalentVariableCount(); ++eIndex) {
             auto v2 = v1->equivalentVariable(eIndex);
-            if ( (type == CellmlElementType::CONNECTION || all) && Variable::equivalenceConnectionId(v1, v2).empty()) {
+            if ((type == CellmlElementType::CONNECTION || all) && Variable::equivalenceConnectionId(v1, v2).empty()) {
                 auto id = makeUniqueId();
                 Variable::setEquivalenceConnectionId(v1, v2, id);
                 auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
