@@ -101,19 +101,26 @@ TEST(AnnotatorCoverage, automaticIdsUndefined)
 
 TEST(Coverage, unitsItem)
 {
-    auto unitsItem = libcellml::UnitsItem::create(nullptr, 0);
+    auto units = libcellml::Units::create("units");
+    units->addUnit("second");
 
-    EXPECT_FALSE(unitsItem->isValid());
+    auto unitsItemValid = libcellml::UnitsItem::create(units, 0);
+    auto unitsItemInvalid = libcellml::UnitsItem::create(nullptr, 0);
+
+    EXPECT_TRUE(unitsItemValid->isValid());
+    EXPECT_FALSE(unitsItemInvalid->isValid());
 }
 
 TEST(Coverage, variablePair)
 {
     auto v = libcellml::Variable::create("var");
-    auto unitsItem1 = libcellml::VariablePair::create(nullptr, v);
-    auto unitsItem2 = libcellml::VariablePair::create(v, nullptr);
+    auto variablePair1 = libcellml::VariablePair::create(nullptr, v);
+    auto variablePair2 = libcellml::VariablePair::create(v, nullptr);
+    auto variablePair3 = libcellml::VariablePair::create(v, v);
 
-    EXPECT_FALSE(unitsItem1->isValid());
-    EXPECT_FALSE(unitsItem2->isValid());
+    EXPECT_FALSE(variablePair1->isValid());
+    EXPECT_FALSE(variablePair2->isValid());
+    EXPECT_TRUE(variablePair3->isValid());
 }
 
 TEST(Coverage, parserBranchesCellml10RelationshipRef)
@@ -714,7 +721,7 @@ libcellml::ValidatorPtr validateMathPreparation(const std::string &math)
     return validator;
 }
 
-TEST(Coverage, unitsUsedByComponentMathNotFoundInModel)
+TEST(CoverageValidator, unitsUsedByComponentMathNotFoundInModel)
 {
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -731,7 +738,7 @@ TEST(Coverage, unitsUsedByComponentMathNotFoundInModel)
     EXPECT_EQ("Units reference 'daves' in units 'bobs' is not a valid reference to a local units or a standard unit type.", validator->error(0)->description());
 }
 
-TEST(Coverage, notMathMLMathNodesInComponentMath)
+TEST(CoverageValidator, notMathMLMathNodesInComponentMath)
 {
     const std::string math =
         "<notmath xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -787,7 +794,7 @@ TEST(CoverageValidator, invalidXmlIds)
     EXPECT_EQ(size_t(1), validator->errorCount());
 }
 
-TEST(Coverage, componentMathWithRepeatedVariableNames)
+TEST(CoverageValidator, componentMathWithRepeatedVariableNames)
 {
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
@@ -829,4 +836,41 @@ TEST(Coverage, componentMathWithRepeatedVariableNames)
 
     v->validateModel(m);
     EXPECT_EQ(size_t(3), v->issueCount());
+}
+
+TEST(CoverageAnnotator, crossComponentConnectionAndMappingIds)
+{
+    auto model = libcellml::Model::create("model");
+
+    auto component1 = libcellml::Component::create("component1");
+    auto component2 = libcellml::Component::create("component2");
+    auto component3 = libcellml::Component::create("component3");
+
+    auto variable1 = libcellml::Variable::create("variable1");
+    auto variable2 = libcellml::Variable::create("variable2");
+    auto variable3 = libcellml::Variable::create("variable3");
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    model->addComponent(component3);
+
+    component1->addVariable(variable1);
+    component2->addVariable(variable2);
+    component3->addVariable(variable3);
+
+    libcellml::Variable::addEquivalence(variable1, variable2);
+    libcellml::Variable::addEquivalence(variable1, variable3);
+
+    libcellml::Variable::setEquivalenceMappingId(variable1, variable2, "mapping_id");
+    libcellml::Variable::setEquivalenceMappingId(variable1, variable3, "mapping_id");
+
+    libcellml::Variable::setEquivalenceConnectionId(variable1, variable2, "connection_id");
+    libcellml::Variable::setEquivalenceConnectionId(variable1, variable3, "connection_id");
+
+    auto annotator = libcellml::Annotator::create();
+
+    annotator->setModel(model);
+
+    EXPECT_EQ(size_t(2), annotator->itemCount("mapping_id"));
+    EXPECT_EQ(size_t(2), annotator->itemCount("connection_id"));
 }
