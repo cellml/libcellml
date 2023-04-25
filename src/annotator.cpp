@@ -100,7 +100,6 @@ public:
     void doSetUnitsIds();
     void doSetUnitsItemIds();
     void doSetEncapsulationIds();
-    void doSetMapVariablesIds(const ComponentPtr &parent);
     void doClearComponentIds(const ComponentPtr &component);
 
     /**
@@ -1007,26 +1006,6 @@ void Annotator::AnnotatorImpl::doSetUnitsItemIds()
                 mIdList.insert(std::make_pair(id, convertToWeak(entry)));
             }
         }
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetMapVariablesIds(const ComponentPtr &parent)
-{
-    for (size_t v = 0; v < parent->variableCount(); ++v) {
-        auto v1 = parent->variable(v);
-        for (size_t e = 0; e < v1->equivalentVariableCount(); ++e) {
-            auto v2 = v1->equivalentVariable(e);
-            if (Variable::equivalenceMappingId(v1, v2).empty()) {
-                auto id = makeUniqueId();
-                Variable::setEquivalenceMappingId(v1, v2, id);
-                auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-                entry->mPimpl->setMapVariables(v1, v2);
-                mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-            }
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetMapVariablesIds(parent->component(c));
     }
 }
 
