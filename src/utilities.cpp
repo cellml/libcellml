@@ -342,7 +342,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && (units->unitCount() == 0) && isStandardUnitName(units->name());
+    return (units->unitCount() == 0) && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
@@ -385,7 +385,7 @@ bool isEntityChildOf(const ParentedEntityPtr &entity1, const ParentedEntityPtr &
 bool areEntitiesSiblings(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     auto entity1Parent = entity1->parent();
-    return entity1Parent != nullptr && entity1Parent == entity2->parent();
+    return entity1Parent == entity2->parent();
 }
 
 using PublicPrivateRequiredPair = std::pair<bool, bool>;
@@ -410,7 +410,7 @@ PublicPrivateRequiredPair publicAndOrPrivateInterfaceTypeRequired(const Variable
         auto equivalentVariable = variable->equivalentVariable(index);
         auto componentOfVariable = variable->parent();
         auto componentOfEquivalentVariable = equivalentVariable->parent();
-        if (componentOfVariable == nullptr || componentOfEquivalentVariable == nullptr) {
+        if (componentOfEquivalentVariable == nullptr) {
             return std::make_pair(false, false);
         }
         if (areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)
@@ -461,9 +461,7 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     for (size_t index = 0; index < component->variableCount(); ++index) {
         auto variable = component->variable(index);
         if (variable->equivalentVariableCount() > 0) {
-            if (std::find(variables.begin(), variables.end(), variable) == variables.end()) {
-                variables.push_back(variable);
-            }
+            variables.push_back(variable);
         }
     }
     for (size_t index = 0; index < component->componentCount(); ++index) {
@@ -471,8 +469,29 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
+/**
+ * @brief Return a list of names taken from MathML cn units attribute.
+ *
+ * Search the given @p node for MathML @c cn elements.
+ * For all @c cn elements return the units reference if it is not empty
+ * or a reference to a standard unit.
+ *
+ * @param node The node to search for MathML @c cn elements.
+ * @return A list of units references.
+ */
 NameList findCnUnitsNames(const XmlNodePtr &node);
+
+/**
+ * @brief Find all MathML @c cn elements units attributes in the given component's math string.
+ *
+ * Search through the @p component's math string and return a list of units references found
+ * on MathML @c cn elements units attribute.
+ *
+ * @param component The component to search.
+ * @return A list of units references.
+ */
 NameList findComponentCnUnitsNames(const ComponentPtr &component);
+
 void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
 void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
@@ -578,7 +597,7 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
 {
     size_t index = 0;
     bool found = false;
-    while ((index < componentParent->componentCount()) && !found) {
+    while (!found) {
         if (componentParent->component(index) == component) {
             found = true;
         } else {
@@ -622,23 +641,21 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
     for (const auto &entry : map) {
         auto key = entry.first;
         auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
-        if (!rebasedKey.empty()) {
-            auto vector = entry.second;
-            std::vector<IndexStack> rebasedVector;
-            for (auto stack : vector) {
-                // Temporarily remove the variable index whilst we rebase the component part of the stack.
-                size_t variableIndex = stack.back();
-                stack.pop_back();
-                auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
-                if (!rebasedTarget.empty()) {
-                    rebasedTarget.push_back(variableIndex);
-                    rebasedVector.push_back(rebasedTarget);
-                }
+        auto vector = entry.second;
+        std::vector<IndexStack> rebasedVector;
+        for (auto stack : vector) {
+            // Temporarily remove the variable index whilst we rebase the component part of the stack.
+            size_t variableIndex = stack.back();
+            stack.pop_back();
+            auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
+            if (!rebasedTarget.empty()) {
+                rebasedTarget.push_back(variableIndex);
+                rebasedVector.push_back(rebasedTarget);
             }
+        }
 
-            if (!rebasedVector.empty()) {
-                rebasedMap.emplace(rebasedKey, rebasedVector);
-            }
+        if (!rebasedVector.empty()) {
+            rebasedMap.emplace(rebasedKey, rebasedVector);
         }
     }
 
@@ -718,7 +735,7 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
     auto componentCnUnitsNames = findComponentCnUnitsNames(component);
     for (const auto &unitsName : componentCnUnitsNames) {
         auto u = model->units(unitsName);
-        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+        if (u != nullptr) {
             auto requiredUnits = referencedUnits(model, u);
             usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
             usedUnits.push_back(u);
@@ -836,12 +853,11 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
         idList.insert(id);
     }
     // Imports.
-    if (component->isImport()) {
-        if (component->importSource() != nullptr) {
-            id = component->importSource()->id();
-            if (!id.empty()) {
-                idList.insert(id);
-            }
+    auto importSource = component->importSource();
+    if (importSource != nullptr) {
+        id = importSource->id();
+        if (!id.empty()) {
+            idList.insert(id);
         }
     }
     // Component reference in encapsulation structure.
@@ -851,19 +867,20 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
     }
     // Variables.
     for (size_t v = 0; v < component->variableCount(); ++v) {
-        id = component->variable(v)->id();
+        auto variable = component->variable(v);
+        id = variable->id();
         if (!id.empty()) {
             idList.insert(id);
         }
 
-        for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+        for (size_t e = 0; e < variable->equivalentVariableCount(); ++e) {
             // Equivalent variable mappings.
-            id = Variable::equivalenceMappingId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            id = Variable::equivalenceMappingId(variable, variable->equivalentVariable(e));
             if (!id.empty()) {
                 idList.insert(id);
             }
             // Connections.
-            id = Variable::equivalenceConnectionId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            id = Variable::equivalenceConnectionId(variable, variable->equivalentVariable(e));
             if (!id.empty()) {
                 idList.insert(id);
             }
@@ -871,15 +888,16 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
     }
     // Resets.
     for (size_t r = 0; r < component->resetCount(); ++r) {
-        id = component->reset(r)->id();
+        auto reset = component->reset(r);
+        id = reset->id();
         if (!id.empty()) {
             idList.insert(id);
         }
-        id = component->reset(r)->testValueId();
+        id = reset->testValueId();
         if (!id.empty()) {
             idList.insert(id);
         }
-        id = component->reset(r)->resetValueId();
+        id = reset->resetValueId();
         if (!id.empty()) {
             idList.insert(id);
         }
@@ -911,20 +929,19 @@ IdList listIds(const ModelPtr &model)
             idList.insert(id);
         }
         // Imports.
-        if (units->isImport()) {
-            if (units->importSource() != nullptr) {
-                id = units->importSource()->id();
-                if (!id.empty()) {
-                    idList.insert(id);
-                }
+        auto importSource = units->importSource();
+        if (importSource != nullptr) {
+            id = importSource->id();
+            if (!id.empty()) {
+                idList.insert(id);
             }
         }
-        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
+        for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string prefix;
             std::string reference;
             double exponent;
             double multiplier;
-            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
             if (!id.empty()) {
                 idList.insert(id);
             }
@@ -1109,7 +1126,7 @@ bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entitie
                 }
             }
         }
-        if (entityFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
+        if (entityFound) {
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 units to this component. And much more than
             // that in a 64-bit environment.
