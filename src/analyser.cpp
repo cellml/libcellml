@@ -407,6 +407,7 @@ public:
                      const ComponentPtr &component,
                      const AnalyserInternalEquationPtr &equation);
     void analyseComponent(const ComponentPtr &component);
+    void analyseComponentVariables(const ComponentPtr &component);
 
     void doEquivalentVariables(const VariablePtr &variable,
                                VariablePtrs &equivalentVariables) const;
@@ -578,24 +579,16 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // Find and return, if there is one, the internal variable associated with
     // the given variable.
 
-    AnalyserInternalVariablePtr res = nullptr;
-
     for (const auto &internalVariable : mInternalVariables) {
         if (mModel->areEquivalentVariables(variable, internalVariable->mVariable)) {
-            res = internalVariable;
-
-            break;
+            return internalVariable;
         }
-    }
-
-    if (res != nullptr) {
-        return res;
     }
 
     // No internal variable exists for the given variable, so create one, track
     // it and return it.
 
-    res = AnalyserInternalVariable::create(variable);
+    auto res = AnalyserInternalVariable::create(variable);
 
     mInternalVariables.push_back(res);
 
@@ -1029,26 +1022,52 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
         }
     }
 
-    // Go through the given component's variables and make sure that everything
-    // makes sense.
+    // Go through the given component's variables and internally keep track of
+    // the ones that have an initial value.
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        // Retrieve the variable's corresponding internal variable.
+        // If `variable` has an initial value and the variable held by
+        // `internalVariable` doesn't, then replace the variable held by
+        // `internalVariable`.
 
         auto variable = component->variable(i);
         auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
 
-        // If `variable` has an initial value and the variable held by
-        // `internalVariable` doesn't, then replace the variable held by
-        // `internalVariable`. If `variable` and the variable held by
-        // `internalVariable` are different and both of them have an initial
-        // value then generate an error.
-
         if (!variable->initialValue().empty()
             && internalVariable->mVariable->initialValue().empty()) {
             internalVariable->setVariable(variable);
-        } else if ((variable != internalVariable->mVariable)
-                   && !variable->initialValue().empty()) {
+        }
+    }
+
+    // Do the same for the components encapsulated by the given component.
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        analyseComponent(component->component(i));
+    }
+}
+
+void Analyser::AnalyserImpl::analyseComponentVariables(const ComponentPtr &component)
+{
+    // Go through the given component's variables and make sure that everything
+    // makes sense.
+
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        // If `variable` and the variable held by `internalVariable` are
+        // different then make sure that they don't both have an initial value.
+        // Alternatively, if the variable held by `internalVariable` has an
+        // initial value which is the name of another variable then make sure
+        // that it is of constant type.
+        // Note: we always have an initialising variable in the second case.
+        //       Indeed, if we were not to have one, it would mean that the
+        //       variable is initialised using a reference to a variable that is
+        //       not defined anywhere, something that is not allowed in CellML
+        //       and will therefore be reported when we validate the model.
+
+        auto variable = component->variable(i);
+        auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
+
+        if ((variable != internalVariable->mVariable)
+            && !variable->initialValue().empty()) {
             auto issue = Issue::IssueImpl::create();
             auto trackedVariableComponent = owningComponent(internalVariable->mVariable);
 
@@ -1061,18 +1080,8 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
 
             addIssue(issue);
-        }
-
-        if (!internalVariable->mVariable->initialValue().empty()
-            && !isCellMLReal(internalVariable->mVariable->initialValue())) {
-            // The initial value is not a double, so it has to be an existing
-            // variable of constant type.
-            // Note: we always have an initialising variable. Indeed, if we were
-            //       not to have one, it would mean that the variable is
-            //       initialised using a reference to a variable that is not
-            //       defined anywhere, something that is not allowed in CellML
-            //       and will therefore be reported when we validate the model.
-
+        } else if (!internalVariable->mVariable->initialValue().empty()
+                   && !isCellMLReal(internalVariable->mVariable->initialValue())) {
             auto initialisingComponent = owningComponent(internalVariable->mVariable);
             auto initialisingVariable = initialisingComponent->variable(internalVariable->mVariable->initialValue());
             auto initialisingInternalVariable = Analyser::AnalyserImpl::internalVariable(initialisingVariable);
@@ -1095,7 +1104,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
     // Do the same for the components encapsulated by the given component.
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
-        analyseComponent(component->component(i));
+        analyseComponentVariables(component->component(i));
     }
 }
 
@@ -2202,6 +2211,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         analyseComponent(model->component(i));
+    }
+
+    // Recursively analyse the model's components' variables.
+    // Note: we can't do this as part of analyseComponent() since we don't
+    //       necessarily know the state of all the variables.
+
+    for (size_t i = 0; i < model->componentCount(); ++i) {
+        analyseComponentVariables(model->component(i));
     }
 
     if (mAnalyser->errorCount() != 0) {
