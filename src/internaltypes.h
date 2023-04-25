@@ -52,6 +52,9 @@ using IdMap = std::map<std::string, std::pair<int, std::vector<std::string>>>; /
 using ImportLibrary = std::map<std::string, ModelPtr>; /** Type definition for library map of imported models. */
 using IdList = std::unordered_set<std::string>; /**< Type definition for list of identifiers. */
 
+using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type definition for weak analyser equation AST pointer. */
+using AnalyserEquationWeakPtr = std::weak_ptr<AnalyserEquation>; /**< Type definition for weak analyser equation pointer. */
+using AnalyserVariableWeakPtr = std::weak_ptr<AnalyserVariable>; /**< Type definition for weak analyser variable pointer. */
 using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
 using ImportSourceWeakPtr = std::weak_ptr<ImportSource>; /**< Type definition for weak import source pointer. */
 using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */

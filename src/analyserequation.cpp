@@ -82,7 +82,7 @@ std::string AnalyserEquation::typeAsString(Type type)
 
 AnalyserEquationAstPtr AnalyserEquation::ast() const
 {
-    return mPimpl->mAst.lock();
+    return mPimpl->mAst;
 }
 
 std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
@@ -103,7 +103,7 @@ bool AnalyserEquation::isStateRateBased() const
 
 AnalyserVariablePtr AnalyserEquation::variable() const
 {
-    return mPimpl->mVariable.lock();
+    return mPimpl->mVariable;
 }
 
 } // namespace libcellml
