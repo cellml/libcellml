@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="per_second">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <component name="component_1">
+        <variable name="t" units="second"/>
+        <variable name="X_init" units="dimensionless" interface="public"/>
+        <variable name="X" units="dimensionless" initial_value="X_init"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>X</ci>
+                </apply>
+                <cn cellml:units="per_second">3</cn>
+            </apply>
+        </math>
+    </component>
+    <component name="component_2">
+        <variable name="X_init" units="dimensionless" initial_value="7" interface="public"/>
+    </component>
+    <connection component_1="component_1" component_2="component_2">
+        <map_variables variable_1="X_init" variable_2="X_init"/>
+    </connection>
+</model>
