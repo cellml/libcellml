@@ -785,10 +785,10 @@ TEST(CoverageAnnotator, crossComponentConnectionAndMappingIds)
     libcellml::Variable::setEquivalenceConnectionId(variable1, variable2, "connection_id");
     libcellml::Variable::setEquivalenceConnectionId(variable1, variable3, "connection_id");
 
-    auto annotater = libcellml::Annotator::create();
+    auto annotator = libcellml::Annotator::create();
 
-    annotater->setModel(model);
+    annotator->setModel(model);
 
-    EXPECT_EQ(size_t(2), annotater->itemCount("mapping_id"));
-    EXPECT_EQ(size_t(2), annotater->itemCount("connection_id"));
+    EXPECT_EQ(size_t(2), annotator->itemCount("mapping_id"));
+    EXPECT_EQ(size_t(2), annotator->itemCount("connection_id"));
 }
