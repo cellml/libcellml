@@ -27,23 +27,21 @@ AnalyserExternalVariable::AnalyserExternalVariableImpl::AnalyserExternalVariable
 {
 }
 
-std::vector<VariableWeakPtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const ModelPtr &model,
-                                                                                                              const std::string &componentName,
-                                                                                                              const std::string &variableName)
+std::vector<VariablePtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const ModelPtr &model,
+                                                                                                          const std::string &componentName,
+                                                                                                          const std::string &variableName)
 {
-    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const VariableWeakPtr &v) {
-        auto variable = v.lock();
-
-        return (owningModel(variable) == model)
-               && (owningComponent(variable)->name() == componentName)
-               && (variable->name() == variableName);
+    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const auto &v) {
+        return (owningModel(v) == model)
+               && (owningComponent(v)->name() == componentName)
+               && (v->name() == variableName);
     });
 }
 
-std::vector<VariableWeakPtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const VariablePtr &variable)
+std::vector<VariablePtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const VariablePtr &variable)
 {
-    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const VariableWeakPtr &v) {
-        return v.lock() == variable;
+    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const auto &v) {
+        return v == variable;
     });
 }
 
@@ -64,7 +62,7 @@ AnalyserExternalVariablePtr AnalyserExternalVariable::create(const VariablePtr &
 
 VariablePtr AnalyserExternalVariable::variable() const
 {
-    return mPimpl->mVariable.lock();
+    return mPimpl->mVariable;
 }
 
 bool AnalyserExternalVariable::addDependency(const VariablePtr &variable)
@@ -141,11 +139,9 @@ bool AnalyserExternalVariable::containsDependency(const VariablePtr &variable) c
 
 VariablePtr AnalyserExternalVariable::dependency(size_t index) const
 {
-    if (index < mPimpl->mDependencies.size()) {
-        return mPimpl->mDependencies.at(index).lock();
-    }
-
-    return nullptr;
+    return (index < mPimpl->mDependencies.size()) ?
+               mPimpl->mDependencies.at(index) :
+               nullptr;
 }
 
 VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
@@ -154,22 +150,14 @@ VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
 {
     auto result = mPimpl->findDependency(model, componentName, variableName);
 
-    if (result != mPimpl->mDependencies.end()) {
-        return result->lock();
-    }
-
-    return nullptr;
+    return (result != mPimpl->mDependencies.end()) ?
+               *result :
+               nullptr;
 }
 
 std::vector<VariablePtr> AnalyserExternalVariable::dependencies() const
 {
-    std::vector<VariablePtr> res;
-
-    for (const auto &dependency : mPimpl->mDependencies) {
-        res.push_back(dependency.lock());
-    }
-
-    return res;
+    return mPimpl->mDependencies;
 }
 
 size_t AnalyserExternalVariable::dependencyCount() const

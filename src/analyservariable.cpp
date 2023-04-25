@@ -73,12 +73,12 @@ size_t AnalyserVariable::index() const
 
 VariablePtr AnalyserVariable::initialisingVariable() const
 {
-    return mPimpl->mInitialisingVariable.lock();
+    return mPimpl->mInitialisingVariable;
 }
 
 VariablePtr AnalyserVariable::variable() const
 {
-    return mPimpl->mVariable.lock();
+    return mPimpl->mVariable;
 }
 
 AnalyserEquationPtr AnalyserVariable::equation() const
