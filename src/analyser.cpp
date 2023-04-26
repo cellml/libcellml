@@ -385,18 +385,6 @@ public:
 
     AnalyserImpl();
 
-    static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
-                                                   const AnalyserInternalVariablePtr &variable2);
-
-    static bool isStateVariable(const AnalyserInternalVariablePtr &variable);
-    static bool isConstantOrAlgebraicVariable(const AnalyserInternalVariablePtr &variable);
-
-    static bool compareVariablesByTypeAndIndex(const AnalyserInternalVariablePtr &variable1,
-                                               const AnalyserInternalVariablePtr &variable2);
-
-    static bool compareEquationsByVariable(const AnalyserInternalEquationPtr &equation1,
-                                           const AnalyserInternalEquationPtr &equation2);
-
     AnalyserInternalVariablePtr internalVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
@@ -515,52 +503,6 @@ Analyser::AnalyserImpl::AnalyserImpl()
     profile->setPiString("pi");
     profile->setInfString("infinity");
     profile->setNanString("notanumber");
-}
-
-bool Analyser::AnalyserImpl::compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
-                                                                const AnalyserInternalVariablePtr &variable2)
-{
-    auto realComponent1 = owningComponent(variable1->mVariable);
-    auto realComponent2 = owningComponent(variable2->mVariable);
-
-    if (realComponent1->name() == realComponent2->name()) {
-        return variable1->mVariable->name() < variable2->mVariable->name();
-    }
-
-    return realComponent1->name() < realComponent2->name();
-}
-
-bool Analyser::AnalyserImpl::isStateVariable(const AnalyserInternalVariablePtr &variable)
-{
-    return variable->mType == AnalyserInternalVariable::Type::STATE;
-}
-
-bool Analyser::AnalyserImpl::isConstantOrAlgebraicVariable(const AnalyserInternalVariablePtr &variable)
-{
-    return (variable->mType == AnalyserInternalVariable::Type::CONSTANT)
-           || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-           || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-           || (variable->mType == AnalyserInternalVariable::Type::ALGEBRAIC);
-}
-
-bool Analyser::AnalyserImpl::compareVariablesByTypeAndIndex(const AnalyserInternalVariablePtr &variable1,
-                                                            const AnalyserInternalVariablePtr &variable2)
-{
-    if (isStateVariable(variable1) && isConstantOrAlgebraicVariable(variable2)) {
-        return true;
-    }
-
-    if (isConstantOrAlgebraicVariable(variable1) && isStateVariable(variable2)) {
-        return false;
-    }
-
-    return variable1->mIndex < variable2->mIndex;
-}
-
-bool Analyser::AnalyserImpl::compareEquationsByVariable(const AnalyserInternalEquationPtr &equation1,
-                                                        const AnalyserInternalEquationPtr &equation2)
-{
-    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
 
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)
@@ -2366,12 +2308,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
-    // Sort our variables, determine the index of our constant variables and
-    // then loop over our equations, checking which variables, if any, can be
-    // determined using a given equation.
-
-    std::sort(mInternalVariables.begin(), mInternalVariables.end(),
-              compareVariablesByComponentAndName);
+    // Determine the index of our constant variables and then loop over our
+    // equations, checking which variables, if any, can be determined using a
+    // given equation.
 
     auto variableIndex = MAX_SIZE_T;
 
@@ -2470,21 +2409,18 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         return iv->mIsExternal;
     });
 
-    // Sort our internal variables and equations.
-
-    std::sort(mInternalVariables.begin(), mInternalVariables.end(),
-              compareVariablesByTypeAndIndex);
-    std::sort(mInternalEquations.begin(), mInternalEquations.end(),
-              compareEquationsByVariable);
+    // Create a mapping between our internal equations and our future equations
+    // in the API.
 
     std::map<VariablePtr, AnalyserEquationPtr> equationMappings;
-    std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
 
     for (const auto &internalEquation : mInternalEquations) {
         equationMappings.emplace(internalEquation->mVariable->mVariable, std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}});
     }
 
     // Make our internal variables available through our API.
+
+    std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
 
     stateIndex = MAX_SIZE_T;
     variableIndex = MAX_SIZE_T;
