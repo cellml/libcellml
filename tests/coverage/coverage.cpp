@@ -86,7 +86,7 @@ TEST(Coverage, entityHasParent)
     EXPECT_FALSE(c3->hasParent());
 }
 
-TEST(Annotator, automaticIdsUndefined)
+TEST(AnnotatorCoverage, automaticIdsUndefined)
 {
     auto annotator = libcellml::Annotator::create();
     auto model = libcellml::Model::create();
@@ -225,7 +225,7 @@ TEST(Coverage, sha1)
     }
 }
 
-TEST(Importer, importingComponentWithCnUnitsThatAreEmpty)
+TEST(ImporterCoverage, importingComponentWithCnUnitsThatAreEmpty)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -286,6 +286,7 @@ TEST(Coverage, analyser)
     EXPECT_FALSE(analyserModel->isValid());
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNKNOWN, analyserModel->type());
+    EXPECT_EQ("unknown", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(nullptr, analyserModel->voi());
 
@@ -380,6 +381,16 @@ TEST(Coverage, analyserExternalVariable)
     EXPECT_EQ(false, externalVariable->removeDependency(model, "not_membrane", "Cm"));
 }
 
+void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
+{
+    if (ast != nullptr) {
+        libcellml::AnalyserEquationAst::typeAsString(ast->type());
+
+        checkAstTypeAsString(ast->leftChild());
+        checkAstTypeAsString(ast->rightChild());
+    }
+}
+
 TEST(Coverage, generator)
 {
     static const std::string EMPTY_STRING;
@@ -398,6 +409,7 @@ TEST(Coverage, generator)
     auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+    EXPECT_EQ("ode", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
     EXPECT_EQ(size_t(203), analyserModel->variableCount());
@@ -413,6 +425,10 @@ TEST(Coverage, generator)
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_NE(nullptr, analyserModel->equation(0)->variable());
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    for (const auto &equation : analyserModel->equations()) {
+        checkAstTypeAsString(equation->ast());
+    }
 
     auto generator = libcellml::Generator::create();
 
@@ -722,7 +738,7 @@ libcellml::ValidatorPtr validateMathPreparation(const std::string &math)
     return validator;
 }
 
-TEST(Importer, unitsUsedByComponentMathNotFoundInModel)
+TEST(CoverageValidator, unitsUsedByComponentMathNotFoundInModel)
 {
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -739,7 +755,7 @@ TEST(Importer, unitsUsedByComponentMathNotFoundInModel)
     EXPECT_EQ("Units reference 'daves' in units 'bobs' is not a valid reference to a local units or a standard unit type.", validator->error(0)->description());
 }
 
-TEST(Importer, notMathMLMathNodesInComponentMath)
+TEST(CoverageValidator, notMathMLMathNodesInComponentMath)
 {
     const std::string math =
         "<notmath xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -755,6 +771,96 @@ TEST(Importer, notMathMLMathNodesInComponentMath)
     EXPECT_EQ(size_t(2), validator->errorCount());
     EXPECT_EQ("Math root node is of invalid type 'notmath' on component 'c'. A valid math root node should be of type 'math'.", validator->error(0)->description());
     EXPECT_EQ("Units reference 'daves' in units 'bobs' is not a valid reference to a local units or a standard unit type.", validator->error(1)->description());
+}
+
+TEST(CoverageValidator, degreeElementWithOneSibling)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <root/>\n"
+        "    <degree><ci>n</ci></degree>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = libcellml::Model::create("degree");
+
+    auto component = libcellml::Component::create("c");
+    auto variable = libcellml::Variable::create("n");
+    variable->setUnits("second");
+    component->addVariable(variable);
+    component->appendMath(math);
+
+    model->addComponent(component);
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
+TEST(CoverageValidator, invalidXmlIds)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/invalidxmlids.cellml"));
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ("Units 'bob8' does not have a valid 'id' attribute, '\xF3\xBF\xBF\xBFid'.", validator->error(0)->description());
+}
+
+TEST(CoverageValidator, componentMathWithRepeatedVariableNames)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Component 'componentName' contains multiple variables with the name 'A'. Valid variable names must be unique to their component.",
+        "MathML ci element has the child text 'C' which does not correspond with any variable names present in component 'componentName'.",
+        "Math has a 'ci' element with no identifier as a child.",
+    };
+
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>C</ci>\n"
+        "<!-- valid comment in math -->\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>A</ci>\n"
+        "      <ci id=\"ciid\" />\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v3->setName("A");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v->validateModel(m);
+    EXPECT_EQ(size_t(3), v->issueCount());
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(CoverageAnnotator, crossComponentConnectionAndMappingIds)

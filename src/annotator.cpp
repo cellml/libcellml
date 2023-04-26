@@ -29,6 +29,7 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"
+#include "commonutils.h"
 #include "internaltypes.h"
 #include "issue_p.h"
 #include "logger_p.h"
@@ -37,22 +38,6 @@ limitations under the License.
 namespace libcellml {
 
 using ItemList = std::multimap<std::string, AnyCellmlElementPtr>;
-
-static const std::map<CellmlElementType, std::string> typeToString = {
-    {CellmlElementType::COMPONENT, "component"},
-    {CellmlElementType::COMPONENT_REF, "component_ref"},
-    {CellmlElementType::CONNECTION, "connection"},
-    {CellmlElementType::ENCAPSULATION, "encapsulation"},
-    {CellmlElementType::IMPORT, "import"},
-    {CellmlElementType::MAP_VARIABLES, "map_variables"},
-    {CellmlElementType::MODEL, "model"},
-    {CellmlElementType::RESET, "reset"},
-    {CellmlElementType::RESET_VALUE, "reset_value"},
-    {CellmlElementType::TEST_VALUE, "test_value"},
-    {CellmlElementType::UNDEFINED, "undefined"},
-    {CellmlElementType::UNIT, "unit"},
-    {CellmlElementType::UNITS, "units"},
-    {CellmlElementType::VARIABLE, "variable"}};
 
 /**
  * @brief The Annotator::AnnotatorImpl class.
@@ -79,6 +64,8 @@ public:
     void update();
     void buildIdList();
 
+    size_t idCount();
+
     std::string makeUniqueId();
 
     std::string id(const AnyCellmlElementPtr &item);
@@ -94,16 +81,22 @@ public:
     void doSetImportSourceIds();
     void doSetUnitsIds();
     void doSetUnitsItemIds();
-    void doSetComponentIds(const ComponentPtr &parent);
-    void doSetVariableIds(const ComponentPtr &parent);
-    void doSetResetIds(const ComponentPtr &parent);
-    void doSetResetValueIds(const ComponentPtr &parent);
-    void doSetTestValueIds(const ComponentPtr &parent);
     void doSetEncapsulationIds();
-    void doSetConnectionIds(const ComponentPtr &parent);
-    void doSetMapVariablesIds(const ComponentPtr &parent);
-    void doSetComponentEncapsulationIds(const ComponentPtr &parent);
     void doClearComponentIds(const ComponentPtr &component);
+
+    /**
+     * @brief Set ids for a type that resides within the component tree.
+     *
+     * Set ids for a type that resides within the component tree.
+     * If @p all is @c true it will override whatever is given for @p type
+     * and set ids to all types.
+     * If @p all is @c false only ids for the given @p type will be set.
+     *
+     * @param component The component in the tree to set ids to.
+     * @param type The type of id to set.
+     * @param all Set @c true to ignore the type and apply ids to all types.
+     */
+    void doSetComponentTreeTypeIds(const ComponentPtr &component, CellmlElementType type, bool all = false);
 
     /**
      * @brief Test to determine if the given @p id at the given @p index exists.
@@ -473,6 +466,11 @@ void Annotator::AnnotatorImpl::buildIdList()
     mIdList = listIdsAndItems(mModel.lock());
 }
 
+size_t Annotator::AnnotatorImpl::idCount()
+{
+    return mIdList.size();
+}
+
 void Annotator::AnnotatorImpl::update()
 {
     removeAllIssues();
@@ -795,8 +793,9 @@ bool Annotator::assignAllIds()
 {
     auto model = pFunc()->mModel.lock();
     if (model != nullptr) {
+        size_t initialSize = pFunc()->idCount();
         pFunc()->doSetAllAutomaticIds();
-        return true;
+        return pFunc()->idCount() > initialSize;
     }
     pFunc()->addIssueNoModel();
     return false;
@@ -817,75 +816,141 @@ bool Annotator::assignAllIds(ModelPtr &model)
 bool Annotator::assignIds(CellmlElementType type)
 {
     auto model = pFunc()->mModel.lock();
-    bool changed = false;
-    if (model != nullptr) {
-        changed = true;
-        switch (type) {
-        case CellmlElementType::COMPONENT:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetComponentIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::COMPONENT_REF:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetComponentEncapsulationIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::CONNECTION:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetConnectionIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::ENCAPSULATION:
-            pFunc()->doSetEncapsulationIds();
-            break;
-        case CellmlElementType::IMPORT:
-            pFunc()->doSetImportSourceIds();
-            break;
-        case CellmlElementType::MAP_VARIABLES:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetMapVariablesIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::MODEL:
-            pFunc()->doSetModelIds();
-            break;
-        case CellmlElementType::RESET:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetResetIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::RESET_VALUE:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetResetValueIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::TEST_VALUE:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetTestValueIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::UNIT:
-            pFunc()->doSetUnitsItemIds();
-            break;
-        case CellmlElementType::UNITS:
-            pFunc()->doSetUnitsIds();
-            break;
-        case CellmlElementType::VARIABLE:
-            for (size_t index = 0; index < model->componentCount(); ++index) {
-                pFunc()->doSetVariableIds(model->component(index));
-            }
-            break;
-        case CellmlElementType::MATH:
-        default: /* case CellmlElementType::UNDEFINED */
-            changed = false;
-            break;
-        }
-        setModel(model);
-    } else {
+    if (model == nullptr) {
         pFunc()->addIssueNoModel();
+        return false;
     }
-    return changed;
+
+    size_t initialSize = pFunc()->idCount();
+
+    switch (type) {
+    case CellmlElementType::COMPONENT:
+    case CellmlElementType::COMPONENT_REF:
+    case CellmlElementType::CONNECTION:
+    case CellmlElementType::MAP_VARIABLES:
+    case CellmlElementType::RESET:
+    case CellmlElementType::RESET_VALUE:
+    case CellmlElementType::TEST_VALUE:
+    case CellmlElementType::VARIABLE:
+        for (size_t index = 0; index < model->componentCount(); ++index) {
+            pFunc()->doSetComponentTreeTypeIds(model->component(index), type);
+        }
+        break;
+    case CellmlElementType::ENCAPSULATION:
+        pFunc()->doSetEncapsulationIds();
+        break;
+    case CellmlElementType::IMPORT:
+        pFunc()->doSetImportSourceIds();
+        break;
+    case CellmlElementType::MODEL:
+        pFunc()->doSetModelIds();
+        break;
+    case CellmlElementType::UNIT:
+        pFunc()->doSetUnitsItemIds();
+        break;
+    case CellmlElementType::UNITS:
+        pFunc()->doSetUnitsIds();
+        break;
+    case CellmlElementType::MATH:
+    default: /* case CellmlElementType::UNDEFINED */
+        break;
+    }
+
+    setModel(model);
+
+    return pFunc()->idCount() > initialSize;
+}
+
+bool assignEncapsulationId(const ComponentPtr &component, CellmlElementType type, bool all)
+{
+    bool inHierarchy = std::dynamic_pointer_cast<libcellml::Model>(component->parent()) == nullptr || component->componentCount() > 0;
+    return ((type == CellmlElementType::COMPONENT_REF) || all)
+           && component->encapsulationId().empty()
+           && inHierarchy;
+}
+
+void Annotator::AnnotatorImpl::doSetComponentTreeTypeIds(const ComponentPtr &component, CellmlElementType type, bool all)
+{
+    if (((type == CellmlElementType::COMPONENT) || all)
+        && component->id().empty()) {
+        auto id = makeUniqueId();
+        component->setId(id);
+        auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+        entry->mPimpl->setComponent(component);
+        mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+    }
+    if (assignEncapsulationId(component, type, all)) {
+        auto id = makeUniqueId();
+        component->setEncapsulationId(id);
+        auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+        entry->mPimpl->setComponentRef(component);
+        mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+    }
+    if ((type == CellmlElementType::VARIABLE) || all) {
+        for (size_t vIndex = 0; vIndex < component->variableCount(); ++vIndex) {
+            auto v = component->variable(vIndex);
+            if (v->id().empty()) {
+                auto id = makeUniqueId();
+                v->setId(id);
+                auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+                entry->mPimpl->setVariable(v);
+                mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+            }
+        }
+    }
+    for (size_t vIndex = 0; vIndex < component->variableCount(); ++vIndex) {
+        auto v1 = component->variable(vIndex);
+        for (size_t eIndex = 0; eIndex < v1->equivalentVariableCount(); ++eIndex) {
+            auto v2 = v1->equivalentVariable(eIndex);
+            if (((type == CellmlElementType::CONNECTION) || all)
+                && Variable::equivalenceConnectionId(v1, v2).empty()) {
+                auto id = makeUniqueId();
+                Variable::setEquivalenceConnectionId(v1, v2, id);
+                auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+                entry->mPimpl->setConnection(v1, v2);
+                mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+            }
+            if (((type == CellmlElementType::MAP_VARIABLES) || all)
+                && Variable::equivalenceMappingId(v1, v2).empty()) {
+                auto id = makeUniqueId();
+                Variable::setEquivalenceMappingId(v1, v2, id);
+                auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+                entry->mPimpl->setMapVariables(v1, v2);
+                mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+            }
+        }
+    }
+    for (size_t rIndex = 0; rIndex < component->resetCount(); ++rIndex) {
+        auto r = component->reset(rIndex);
+        if (((type == CellmlElementType::RESET) || all)
+            && r->id().empty()) {
+            auto id = makeUniqueId();
+            r->setId(id);
+            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+            entry->mPimpl->setReset(r);
+            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+        }
+        if (((type == CellmlElementType::RESET_VALUE) || all)
+            && r->resetValueId().empty()) {
+            auto id = makeUniqueId();
+            r->setResetValueId(id);
+            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+            entry->mPimpl->setResetValue(r);
+            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+        }
+        if (((type == CellmlElementType::TEST_VALUE) || all)
+            && r->testValueId().empty()) {
+            auto id = makeUniqueId();
+            r->setTestValueId(id);
+            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
+            entry->mPimpl->setTestValue(r);
+            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
+        }
+    }
+
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        doSetComponentTreeTypeIds(component->component(c), type, all);
+    }
 }
 
 void Annotator::AnnotatorImpl::doSetImportSourceIds()
@@ -937,152 +1002,6 @@ void Annotator::AnnotatorImpl::doSetUnitsItemIds()
     }
 }
 
-void Annotator::AnnotatorImpl::doSetComponentIds(const ComponentPtr &parent)
-{
-    if (parent->id().empty()) {
-        auto id = makeUniqueId();
-        parent->setId(id);
-        auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-        entry->mPimpl->setComponent(parent);
-        mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        if (parent->component(c)->id().empty()) {
-            auto id = makeUniqueId();
-            parent->component(c)->setId(id);
-            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-            entry->mPimpl->setComponent(parent->component(c));
-            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-        }
-        doSetComponentIds(parent->component(c));
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetVariableIds(const ComponentPtr &parent)
-{
-    for (size_t v = 0; v < parent->variableCount(); ++v) {
-        if (parent->variable(v)->id().empty()) {
-            auto id = makeUniqueId();
-            parent->variable(v)->setId(id);
-            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-            entry->mPimpl->setVariable(parent->variable(v));
-            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetVariableIds(parent->component(c));
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetResetIds(const ComponentPtr &parent)
-{
-    for (size_t r = 0; r < parent->resetCount(); ++r) {
-        if (parent->reset(r)->id().empty()) {
-            auto id = makeUniqueId();
-            parent->reset(r)->setId(id);
-            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-            entry->mPimpl->setReset(parent->reset(r));
-            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetResetIds(parent->component(c));
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetResetValueIds(const ComponentPtr &parent)
-{
-    for (size_t r = 0; r < parent->resetCount(); ++r) {
-        if (parent->reset(r)->resetValueId().empty()) {
-            auto id = makeUniqueId();
-            parent->reset(r)->setResetValueId(id);
-            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-            entry->mPimpl->setResetValue(parent->reset(r));
-            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetResetValueIds(parent->component(c));
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetTestValueIds(const ComponentPtr &parent)
-{
-    for (size_t r = 0; r < parent->resetCount(); ++r) {
-        if (parent->reset(r)->testValueId().empty()) {
-            auto id = makeUniqueId();
-            parent->reset(r)->setTestValueId(id);
-            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-            entry->mPimpl->setTestValue(parent->reset(r));
-            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetTestValueIds(parent->component(c));
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetConnectionIds(const ComponentPtr &parent)
-{
-    for (size_t v = 0; v < parent->variableCount(); ++v) {
-        auto v1 = parent->variable(v);
-        for (size_t e = 0; e < v1->equivalentVariableCount(); ++e) {
-            auto v2 = v1->equivalentVariable(e);
-            if (Variable::equivalenceConnectionId(v1, v2).empty()) {
-                auto id = makeUniqueId();
-                Variable::setEquivalenceConnectionId(v1, v2, id);
-                auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-                entry->mPimpl->setConnection(v1, v2);
-                mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-            }
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetConnectionIds(parent->component(c));
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetMapVariablesIds(const ComponentPtr &parent)
-{
-    for (size_t v = 0; v < parent->variableCount(); ++v) {
-        auto v1 = parent->variable(v);
-        for (size_t e = 0; e < v1->equivalentVariableCount(); ++e) {
-            auto v2 = v1->equivalentVariable(e);
-            if (Variable::equivalenceMappingId(v1, v2).empty()) {
-                auto id = makeUniqueId();
-                Variable::setEquivalenceMappingId(v1, v2, id);
-                auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-                entry->mPimpl->setMapVariables(v1, v2);
-                mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-            }
-        }
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        doSetMapVariablesIds(parent->component(c));
-    }
-}
-
-void Annotator::AnnotatorImpl::doSetComponentEncapsulationIds(const ComponentPtr &parent)
-{
-    if (parent->encapsulationId().empty() && parent->componentCount() > 0) {
-        auto id = makeUniqueId();
-        parent->setEncapsulationId(id);
-        auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-        entry->mPimpl->setComponentRef(parent);
-        mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-    }
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        if (parent->component(c)->encapsulationId().empty()) {
-            auto id = makeUniqueId();
-            parent->component(c)->setEncapsulationId(id);
-            auto entry = AnyCellmlElement::AnyCellmlElementImpl::create();
-            entry->mPimpl->setComponentRef(parent->component(c));
-            mIdList.insert(std::make_pair(id, convertToWeak(entry)));
-        }
-        doSetComponentEncapsulationIds(parent->component(c));
-    }
-}
-
 void Annotator::AnnotatorImpl::doSetEncapsulationIds()
 {
     auto model = mModel.lock();
@@ -1116,14 +1035,7 @@ void Annotator::AnnotatorImpl::doSetAllAutomaticIds()
     auto model = mModel.lock();
     for (size_t index = 0; index < model->componentCount(); ++index) {
         auto component = model->component(index);
-        doSetComponentIds(component);
-        doSetVariableIds(component);
-        doSetResetIds(component);
-        doSetResetValueIds(component);
-        doSetTestValueIds(component);
-        doSetConnectionIds(component);
-        doSetMapVariablesIds(component);
-        doSetComponentEncapsulationIds(component);
+        doSetComponentTreeTypeIds(component, CellmlElementType::UNDEFINED, true);
     }
     doSetEncapsulationIds();
 }
