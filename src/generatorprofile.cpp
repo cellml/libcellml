@@ -1038,6 +1038,15 @@ GeneratorProfile::Profile GeneratorProfile::profile() const
     return mPimpl->mProfile;
 }
 
+static const std::map<GeneratorProfile::Profile, std::string> profileToString = {
+    {GeneratorProfile::Profile::C, "c"},
+    {GeneratorProfile::Profile::PYTHON, "python"}};
+
+std::string GeneratorProfile::profileAsString(Profile profile)
+{
+    return profileToString.at(profile);
+}
+
 void GeneratorProfile::setProfile(Profile profile)
 {
     mPimpl->loadProfile(profile);

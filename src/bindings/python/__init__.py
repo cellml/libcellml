@@ -59,6 +59,7 @@ convert(AnalyserEquation, 'Type', [
     'VARIABLE_BASED_CONSTANT',
     'RATE',
     'ALGEBRAIC',
+    'EXTERNAL',
 ])
 convert(AnalyserEquationAst, 'Type', [
     'ASSIGNMENT',
@@ -166,6 +167,7 @@ convert(AnalyserVariable, 'Type', [
     'CONSTANT',
     'COMPUTED_CONSTANT',
     'ALGEBRAIC',
+    'EXTERNAL',
 ])
 convert(GeneratorProfile, 'Profile', [
     'C',
