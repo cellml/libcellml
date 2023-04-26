@@ -43,7 +43,7 @@ jobs:
           endforeach()
         endif()
         message(STATUS "Setting binaries destination to '${_OUTPUT_LOCATION}'.")
-        message("::set-output name=BINARIES-DESTINATION::${_OUTPUT_LOCATION}")
+        file(APPEND $ENV{GITHUB_OUTPUT} "binaries-destination=${_OUTPUT_LOCATION}")
 
     - name: Determine next jobs
       id: do-jobs
@@ -67,7 +67,7 @@ jobs:
           endforeach()
         endif()
         message(STATUS "Setting allowed jobs to '${_ALLOWED_JOBS}'.")
-        message("::set-output name=allowed-jobs::${_ALLOWED_JOBS}")
+        file(APPEND $ENV{GITHUB_OUTPUT} "allowed-jobs=${_ALLOWED_JOBS}")
 
   os-binaries:
     needs: setup-jobs
@@ -99,19 +99,19 @@ jobs:
 
     steps:
     - name: Checkout libCellML
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.event.release.tag_name }}
 
     - name: Checkout zlib
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: OpenCMISS-Dependencies/zlib
         path: zlib
         ref: v1.2.3
 
     - name: Checkout LibXml2
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: OpenCMISS-Dependencies/libxml2
         path: libxml2
@@ -257,8 +257,7 @@ jobs:
         # softprops action requires a list of newline separated files.
         # The %0A will be converted by GitHub actions into '\n'.
         string(REPLACE ";" "%0A" _DIST_FILES "${_DIST_FILES}")
-        execute_process(
-          COMMAND echo "::set-output name=files::${_DIST_FILES}")
+        file(APPEND $ENV{GITHUB_OUTPUT} "files=${_DIST_FILES}")
 
     - name: Publish libraries
       if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
@@ -296,7 +295,7 @@ jobs:
 
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.release.tag_name }}
 
@@ -308,22 +307,21 @@ jobs:
           cp src/bindings/python/README.rst src/bindings/python/libcellml/README.rst
           mv src/bindings/python/cibuildwheel.setup.py src/bindings/python/setup.py
           v=${{ matrix.py }}
-          echo "Setting tag as: TAG=${GITHUB_REF#refs/tags/}"
-          echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
-          #echo ::set-output name=TAG::v0.2.0-dev.21
-          echo "Setting build as: BUILD=cp${v/./}-*"
-          echo ::set-output name=BUILD::cp${v/./}-*
+          echo "Setting tag as: tag=${GITHUB_REF#refs/tags/}"
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "Setting build as: build=cp${v/./}-*"
+          echo "build=cp${v/./}-*" >> $GITHUB_OUTPUT
           if [[ "macOS" == "${{ matrix.name }}" ]]; then
             if [[ "${{ matrix.py }}" == "3.8" ]]; then
-              echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64'"
-              echo ::set-output name=MACOS_ARCHS::x86_64
+              echo "Setting macos_archs as: macos_archs='x86_64'"
+              echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
             else
-              echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64 arm64'"
-              echo ::set-output name=MACOS_ARCHS::"x86_64 arm64"
+              echo "Setting macos_archs as: macos_archs='x86_64 arm64'"
+              echo 'MACOS_ARCHS="x86_64 arm64"' >> $GITHUB_OUTPUT
             fi
           else
-            echo "Setting MACOS_ARCHS as: MACOS_ARCHS='x86_64'"
-            echo ::set-output name=MACOS_ARCHS::x86_64
+            echo "Setting macos_archs as: macos_archs='x86_64'"
+            echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
           fi
 
       - name: Configure MSVC
@@ -380,20 +378,20 @@ jobs:
     runs-on: macos-12
     steps:
       - name: Checkout libCellML
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: libcellml
           ref: ${{ github.event.release.tag_name }}
 
       - name: Checkout zlib
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: OpenCMISS-Dependencies/zlib
           path: zlib
           ref: v1.2.3
 
       - name: Checkout LibXml2
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: OpenCMISS-Dependencies/libxml2
           path: libxml2
@@ -435,7 +433,7 @@ jobs:
           cd build-libcellml-release/src/bindings/javascript
           npm pack
           package=`ls $PWD/libcellml.js-*.tgz`
-          echo "::set-output name=files::$package"
+          echo "files=$package" >> $GITHUB_OUTPUT
 
       - name: Upload libcellml.js as artifacts
         if: needs.setup-jobs.outputs.binaries-destination == 'Artifact'
