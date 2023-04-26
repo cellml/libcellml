@@ -13,6 +13,9 @@
 %feature("docstring") libcellml::AnalyserEquationAst::type
 "Returns the :enum:`AnalyserEquationAst::Type` for this :class:`AnalyserEquationAst` object.";
 
+%feature("docstring") libcellml::AnalyserEquationAst::typeAsString
+"Returns the :enum:`AnalyserEquationAst::Type` as a string for this :class:`AnalyserEquationAst` object.";
+
 %feature("docstring") libcellml::AnalyserEquationAst::setType
 "Sets the :enum:`AnalyserEquationAst::Type` for this :class:`AnalyserEquationAst` object.";
 

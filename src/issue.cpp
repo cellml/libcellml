@@ -16,7 +16,6 @@ limitations under the License.
 
 #include "libcellml/issue.h"
 
-#include "anycellmlelement_p.h"
 #include "issue_p.h"
 #include "utilities.h"
 
@@ -201,18 +200,18 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 
 std::string Issue::referenceHeading() const
 {
-    return ruleToInformation.find(referenceRule())->second[1];
+    return ruleToInformation.at(referenceRule())[1];
 }
 
 std::string Issue::url() const
 {
-    auto search = ruleToInformation.find(referenceRule());
+    auto search = ruleToInformation.at(referenceRule());
 
-    if (search->second[1].empty()) {
-        return search->second[2] + "?issue=" + search->second[0];
+    if (search[1].empty()) {
+        return search[2] + "?issue=" + search[0];
     }
 
-    return search->second[2] + search->second[3] + ".html?issue=" + search->second[0];
+    return search[2] + search[3] + ".html?issue=" + search[0];
 }
 
 } // namespace libcellml

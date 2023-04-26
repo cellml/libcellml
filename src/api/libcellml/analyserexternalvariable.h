@@ -40,31 +40,31 @@ public:
     AnalyserExternalVariable &operator=(AnalyserExternalVariable rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Create an @c AnalyserExternalVariable object.
+     * @brief Create an @ref AnalyserExternalVariable object.
      *
-     * Factory method to create an @c AnalyserExternalVariable. Create an
+     * Factory method to create an @ref AnalyserExternalVariable. Create an
      * analyser external variable with::
      *
      *   auto variable = libcellml::Variable::create();
      *   auto analyserExternalVariable = libcellml::AnalyserExternalVariable::create(variable);
      *
-     * @return A smart pointer to a @c AnalyserExternalVariable object.
+     * @return A smart pointer to a @ref AnalyserExternalVariable object.
      */
     static AnalyserExternalVariablePtr create(const VariablePtr &variable) noexcept;
 
     /**
      * @brief Get the @ref Variable associated with this
-     * @c AnalyserExternalVariable.
+     * @ref AnalyserExternalVariable.
      *
      * Return a reference to the @ref Variable associated with this
-     * @c AnalyserExternalVariable.
+     * @ref AnalyserExternalVariable.
      *
      * @return The @ref Variable associated with this @ref AnalyserExternalVariable.
      */
     VariablePtr variable() const;
 
     /**
-     * @brief Add a dependency to this @c AnalyserExternalVariable.
+     * @brief Add a dependency to this @ref AnalyserExternalVariable.
      *
      * Add the given @ref Variable as a dependency of this
      * @ref AnalyserExternalVariable, but only if the given @ref Variable or its
@@ -92,14 +92,14 @@ public:
      * @overload
      *
      * @brief Remove the dependency with the given @p variableName in the
-     * @c Component with the given @p componentName in the given @p model.
+     * @ref Component with the given @p componentName in the given @p model.
      *
      * Remove the dependency found that matches the given @p variableName in the
-     * @c Component with the given @p componentName in the given @p model.
+     * @ref Component with the given @p componentName in the given @p model.
      *
-     * @param model The pointer to the @c Model which contains the dependency to
+     * @param model The pointer to the @ref Model which contains the dependency to
      * remove.
-     * @param componentName The name of the @c Component which contains the
+     * @param componentName The name of the @ref Component which contains the
      * dependency to remove.
      * @param variableName The name of the dependency to remove.
      *
@@ -132,18 +132,18 @@ public:
 
     /**
      * @brief Test to see if the dependency with the given @p variableName in
-     * the @c Component with the given @p componentName in the given @p model is
+     * the @ref Component with the given @p componentName in the given @p model is
      * contained within this @ref AnalyserExternalVariable's list of dependencies.
      *
      * Test to see if the dependency with the the given @p variableName in the
-     * @c Component with the given @p componentName in the given @p model is
+     * @ref Component with the given @p componentName in the given @p model is
      * contained within this @ref AnalyserExternalVariable's list of dependencies.
      * Return @c true if the dependency is in this @ref AnalyserExternalVariable's
      * list of dependencies and @c false otherwise.
      *
-     * @param model The pointer to the @c Model which contains the dependency to
+     * @param model The pointer to the @ref Model which contains the dependency to
      * test.
-     * @param componentName The name of the @c Component which contains the
+     * @param componentName The name of the @ref Component which contains the
      * dependency to test.
      * @param variableName The name of the dependency to test.
      *
@@ -190,18 +190,18 @@ public:
      *
      * @brief Get the dependency with the given @p name.
      *
-     * Return the dependency with the given @p variableName in the @c Component
+     * Return the dependency with the given @p variableName in the @ref Component
      * with the given @p componentName in the given @p model. If no such
      * dependency is contained within the @ref AnalyserExternalVariable, a
      * @c nullptr is returned.
      *
-     * @param model The pointer to the @c Model which contains the dependency to
+     * @param model The pointer to the @ref Model which contains the dependency to
      * retrieve.
-     * @param componentName The name of the @c Component which contains the
+     * @param componentName The name of the @ref Component which contains the
      * dependency to retrieve.
      * @param variableName The name of the dependency to retrieve.
      *
-     * @return The dependency with the given @p variableName in the @c Component
+     * @return The dependency with the given @p variableName in the @ref Component
      * with the given @p componentName in the given @p model on success,
      * @c nullptr on failure.
      */
@@ -213,7 +213,7 @@ public:
      * @brief Get the list of @ref Variable dependencies.
      *
      * Return the list of @ref Variable items on which this
-     * @c AnalyserExternalVariable depends.
+     * @ref AnalyserExternalVariable depends.
      *
      * @return The list of @ref Variable dependencies.
      */

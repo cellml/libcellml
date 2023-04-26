@@ -286,6 +286,7 @@ TEST(Coverage, analyser)
     EXPECT_FALSE(analyserModel->isValid());
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNKNOWN, analyserModel->type());
+    EXPECT_EQ("unknown", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(nullptr, analyserModel->voi());
 
@@ -380,6 +381,16 @@ TEST(Coverage, analyserExternalVariable)
     EXPECT_EQ(false, externalVariable->removeDependency(model, "not_membrane", "Cm"));
 }
 
+void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
+{
+    if (ast != nullptr) {
+        libcellml::AnalyserEquationAst::typeAsString(ast->type());
+
+        checkAstTypeAsString(ast->leftChild());
+        checkAstTypeAsString(ast->rightChild());
+    }
+}
+
 TEST(Coverage, generator)
 {
     static const std::string EMPTY_STRING;
@@ -398,6 +409,7 @@ TEST(Coverage, generator)
     auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+    EXPECT_EQ("ode", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
     EXPECT_EQ(size_t(203), analyserModel->variableCount());
@@ -413,6 +425,10 @@ TEST(Coverage, generator)
     EXPECT_NE(nullptr, analyserModel->equation(0));
     EXPECT_NE(nullptr, analyserModel->equation(0)->variable());
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    for (const auto &equation : analyserModel->equations()) {
+        checkAstTypeAsString(equation->ast());
+    }
 
     auto generator = libcellml::Generator::create();
 

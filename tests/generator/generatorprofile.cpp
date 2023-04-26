@@ -38,6 +38,7 @@ TEST(GeneratorProfile, defaultGeneralValues)
     libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ(libcellml::GeneratorProfile::Profile::C, generatorProfile->profile());
+    EXPECT_EQ("c", libcellml::GeneratorProfile::profileAsString(generatorProfile->profile()));
 
     EXPECT_EQ(true, generatorProfile->hasInterface());
 }
@@ -497,6 +498,7 @@ TEST(GeneratorProfile, generalSettings)
     generatorProfile->setHasInterface(falseValue);
 
     EXPECT_EQ(profile, generatorProfile->profile());
+    EXPECT_EQ("python", libcellml::GeneratorProfile::profileAsString(generatorProfile->profile()));
 
     EXPECT_EQ(falseValue, generatorProfile->hasInterface());
 }
