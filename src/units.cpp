@@ -30,10 +30,66 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "commonutils.h"
 #include "units_p.h"
 #include "utilities.h"
 
 namespace libcellml {
+
+static const std::map<Units::Prefix, const std::string> prefixToString = {
+    {Units::Prefix::ATTO, "atto"},
+    {Units::Prefix::CENTI, "centi"},
+    {Units::Prefix::DECA, "deca"},
+    {Units::Prefix::DECI, "deci"},
+    {Units::Prefix::EXA, "exa"},
+    {Units::Prefix::FEMTO, "femto"},
+    {Units::Prefix::GIGA, "giga"},
+    {Units::Prefix::HECTO, "hecto"},
+    {Units::Prefix::KILO, "kilo"},
+    {Units::Prefix::MEGA, "mega"},
+    {Units::Prefix::MICRO, "micro"},
+    {Units::Prefix::MILLI, "milli"},
+    {Units::Prefix::NANO, "nano"},
+    {Units::Prefix::PETA, "peta"},
+    {Units::Prefix::PICO, "pico"},
+    {Units::Prefix::TERA, "tera"},
+    {Units::Prefix::YOCTO, "yocto"},
+    {Units::Prefix::YOTTA, "yotta"},
+    {Units::Prefix::ZEPTO, "zepto"},
+    {Units::Prefix::ZETTA, "zetta"}};
+
+static const std::map<Units::StandardUnit, const std::string> standardUnitToString = {
+    {Units::StandardUnit::AMPERE, "ampere"},
+    {Units::StandardUnit::BECQUEREL, "becquerel"},
+    {Units::StandardUnit::CANDELA, "candela"},
+    {Units::StandardUnit::COULOMB, "coulomb"},
+    {Units::StandardUnit::DIMENSIONLESS, "dimensionless"},
+    {Units::StandardUnit::FARAD, "farad"},
+    {Units::StandardUnit::GRAM, "gram"},
+    {Units::StandardUnit::GRAY, "gray"},
+    {Units::StandardUnit::HENRY, "henry"},
+    {Units::StandardUnit::HERTZ, "hertz"},
+    {Units::StandardUnit::JOULE, "joule"},
+    {Units::StandardUnit::KATAL, "katal"},
+    {Units::StandardUnit::KELVIN, "kelvin"},
+    {Units::StandardUnit::KILOGRAM, "kilogram"},
+    {Units::StandardUnit::LITRE, "litre"},
+    {Units::StandardUnit::LUMEN, "lumen"},
+    {Units::StandardUnit::LUX, "lux"},
+    {Units::StandardUnit::METRE, "metre"},
+    {Units::StandardUnit::MOLE, "mole"},
+    {Units::StandardUnit::NEWTON, "newton"},
+    {Units::StandardUnit::OHM, "ohm"},
+    {Units::StandardUnit::PASCAL, "pascal"},
+    {Units::StandardUnit::RADIAN, "radian"},
+    {Units::StandardUnit::SECOND, "second"},
+    {Units::StandardUnit::SIEMENS, "siemens"},
+    {Units::StandardUnit::SIEVERT, "sievert"},
+    {Units::StandardUnit::STERADIAN, "steradian"},
+    {Units::StandardUnit::TESLA, "tesla"},
+    {Units::StandardUnit::VOLT, "volt"},
+    {Units::StandardUnit::WATT, "watt"},
+    {Units::StandardUnit::WEBER, "weber"}};
 
 std::vector<UnitDefinition>::const_iterator Units::UnitsImpl::findUnit(const std::string &reference) const
 {
@@ -321,16 +377,13 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
 void Units::addUnit(const std::string &reference, Prefix prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    auto search = prefixToString.find(prefix);
-    const std::string prefixString = search->second;
-    addUnit(reference, prefixString, exponent, multiplier, id);
+    addUnit(reference, prefixToString.at(prefix), exponent, multiplier, id);
 }
 
 void Units::addUnit(const std::string &reference, int prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    const std::string prefixString = convertToString(prefix);
-    addUnit(reference, prefixString, exponent, multiplier, id);
+    addUnit(reference, convertToString(prefix), exponent, multiplier, id);
 }
 
 void Units::addUnit(const std::string &reference, double exponent, const std::string &id)
@@ -346,51 +399,41 @@ void Units::addUnit(const std::string &reference)
 void Units::addUnit(StandardUnit standardUnit, const std::string &prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    const std::string reference = standardUnitToString.find(standardUnit)->second;
-    addUnit(reference, prefix, exponent, multiplier, id);
+    addUnit(standardUnitToString.at(standardUnit), prefix, exponent, multiplier, id);
 }
 
 void Units::addUnit(StandardUnit standardUnit, Prefix prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    const std::string reference = standardUnitToString.find(standardUnit)->second;
-    const std::string prefixString = prefixToString.find(prefix)->second;
-    addUnit(reference, prefixString, exponent, multiplier, id);
+    addUnit(standardUnitToString.at(standardUnit), prefixToString.at(prefix), exponent, multiplier, id);
 }
 
 void Units::addUnit(StandardUnit standardUnit, int prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    const std::string reference = standardUnitToString.find(standardUnit)->second;
-    const std::string prefixString = convertToString(prefix);
-    addUnit(reference, prefixString, exponent, multiplier, id);
+    addUnit(standardUnitToString.at(standardUnit), convertToString(prefix), exponent, multiplier, id);
 }
 
 void Units::addUnit(StandardUnit standardUnit, double exponent, const std::string &id)
 {
-    const std::string reference = standardUnitToString.find(standardUnit)->second;
-    addUnit(reference, "0", exponent, 1.0, id);
+    addUnit(standardUnitToString.at(standardUnit), "0", exponent, 1.0, id);
 }
 
 void Units::addUnit(StandardUnit standardUnit)
 {
-    const std::string reference = standardUnitToString.find(standardUnit)->second;
-    addUnit(reference, "0", 1.0, 1.0, "");
+    addUnit(standardUnitToString.at(standardUnit), "0", 1.0, 1.0, "");
 }
 
 void Units::unitAttributes(StandardUnit standardUnit, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     std::string dummyReference;
-    const std::string reference = standardUnitToString.find(standardUnit)->second;
-    auto result = pFunc()->findUnit(reference);
-    unitAttributes(size_t(result - pFunc()->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
+    unitAttributes(static_cast<size_t>(pFunc()->findUnit(standardUnitToString.at(standardUnit)) - pFunc()->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
 void Units::unitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     std::string dummyReference;
-    auto result = pFunc()->findUnit(reference);
-    unitAttributes(size_t(result - pFunc()->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
+    unitAttributes(static_cast<size_t>(pFunc()->findUnit(reference) - pFunc()->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
 void Units::unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
@@ -538,8 +581,7 @@ using UnitsMap = std::map<std::string, double>;
 
 void updateUnitsMapWithStandardUnit(const std::string &name, UnitsMap &unitsMap, double exp)
 {
-    auto unitsListIter = standardUnitsList.find(name);
-    for (const auto &baseUnitsComponent : unitsListIter->second) {
+    for (const auto &baseUnitsComponent : standardUnitsList.at(name)) {
         auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
         if (unitsMapIter == unitsMap.end()) {
             unitsMap.emplace(baseUnitsComponent.first, 0.0);

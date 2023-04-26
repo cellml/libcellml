@@ -53,51 +53,62 @@ public:
     AnalyserEquation &operator=(AnalyserEquation rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Get the @c Type of this @c AnalyserEquation.
+     * @brief Get the @ref Type of this @ref AnalyserEquation.
      *
-     * Return the @c Type of this @c AnalyserEquation.
+     * Return the @ref Type of this @ref AnalyserEquation.
      *
-     * @return The @c Type.
+     * @return The @ref Type.
      */
     Type type() const;
 
     /**
-     * @brief Get the @c AnalyserEquationAst for this @c AnalyserEquation.
+     * @brief Get the string version of a @ref Type.
      *
-     * Return the @c AnalyserEquationAst for this @c AnalyserEquation.
+     * Return the string version of a @ref Type.
      *
-     * @return The @c AnalyserEquationAst.
+     * @param type The type for which we want the string version.
+     *
+     * @return The string version of the @ref Type.
+     */
+    static std::string typeAsString(Type type);
+
+    /**
+     * @brief Get the @ref AnalyserEquationAst for this @ref AnalyserEquation.
+     *
+     * Return the @ref AnalyserEquationAst for this @ref AnalyserEquation.
+     *
+     * @return The @ref AnalyserEquationAst.
      */
     AnalyserEquationAstPtr ast() const;
 
     /**
-     * @brief Get the list of @c AnalyserEquation dependencies.
+     * @brief Get the list of @ref AnalyserEquation dependencies.
      *
-     * Return the list of @c AnalyserEquation items which correspond to the
-     * equations on which this @c AnalyserEquation depends.
+     * Return the list of @ref AnalyserEquation items which correspond to the
+     * equations on which this @ref AnalyserEquation depends.
      *
-     * @return The list of @c AnalyserEquation dependencies.
+     * @return The list of @ref AnalyserEquation dependencies.
      */
     std::vector<AnalyserEquationPtr> dependencies() const;
 
     /**
-     * @brief Test to determine if this @c AnalyserEquation relies on states
+     * @brief Test to determine if this @ref AnalyserEquation relies on states
      * and/or rates.
      *
-     * Test to determine if this @c AnalyserEquation relies on states and/or
+     * Test to determine if this @ref AnalyserEquation relies on states and/or
      * rates, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if this @c AnalyserEquation relies on states and/or
+     * @return @c true if this @ref AnalyserEquation relies on states and/or
      * rates, @c false otherwise.
      */
     bool isStateRateBased() const;
 
     /**
-     * @brief Get the @c AnalyserVariable for this @c AnalyserEquation.
+     * @brief Get the @ref AnalyserVariable for this @ref AnalyserEquation.
      *
-     * Return the @c AnalyserVariable for this @c AnalyserEquation.
+     * Return the @ref AnalyserVariable for this @ref AnalyserEquation.
      *
-     * @return The @c AnalyserVariable.
+     * @return The @ref AnalyserVariable.
      */
     AnalyserVariablePtr variable() const;
 

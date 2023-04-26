@@ -39,69 +39,69 @@ public:
     Generator &operator=(Generator rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Create a @c Generator object.
+     * @brief Create a @ref Generator object.
      *
-     * Factory method to create a @c Generator. Create a generator with::
+     * Factory method to create a @ref Generator. Create a generator with::
      *
      * @code
      *   auto generator = libcellml::Generator::create();
      * @endcode
      *
-     * @return A smart pointer to a @c Generator object.
+     * @return A smart pointer to a @ref Generator object.
      */
     static GeneratorPtr create() noexcept;
 
     /**
-     * @brief Get the @c GeneratorProfile.
+     * @brief Get the @ref GeneratorProfile.
      *
-     * Get the @c GeneratorProfile used by this @c Generator.
+     * Get the @ref GeneratorProfile used by this @ref Generator.
      *
-     * @return The @c GeneratorProfile used.
+     * @return The @ref GeneratorProfile used.
      */
     GeneratorProfilePtr profile();
 
     /**
-     * @brief Set the @c GeneratorProfile.
+     * @brief Set the @ref GeneratorProfile.
      *
-     * Set the @c GeneratorProfile to be used by this @c Generator.
+     * Set the @ref GeneratorProfile to be used by this @ref Generator.
      *
-     * @param profile The @c GeneratorProfile to set.
+     * @param profile The @ref GeneratorProfile to set.
      */
     void setProfile(const GeneratorProfilePtr &profile);
 
     /**
-     * @brief Get the @c AnalyserModel.
+     * @brief Get the @ref AnalyserModel.
      *
-     * Get the @c AnalyserModel used by this @c Generator.
+     * Get the @ref AnalyserModel used by this @ref Generator.
      *
-     * @return The @c AnalyserModel used.
+     * @return The @ref AnalyserModel used.
      */
     AnalyserModelPtr model();
 
     /**
-     * @brief Set the @c AnalyserModel.
+     * @brief Set the @ref AnalyserModel.
      *
-     * Set the @c AnalyserModel to be used by this @c Generator.
+     * Set the @ref AnalyserModel to be used by this @ref Generator.
      *
-     * @param model The @c AnalyserModel to set.
+     * @param model The @ref AnalyserModel to set.
      */
     void setModel(const AnalyserModelPtr &model);
 
     /**
-     * @brief Get the interface code for the @c AnalyserModel.
+     * @brief Get the interface code for the @ref AnalyserModel.
      *
-     * Return the interface code for the @c AnalyserModel, using the
-     * @c GeneratorProfile.
+     * Return the interface code for the @ref AnalyserModel, using the
+     * @ref GeneratorProfile.
      *
      * @return The interface code as a @c std::string.
      */
     std::string interfaceCode() const;
 
     /**
-     * @brief Get the implementation code for the @c AnalyserModel.
+     * @brief Get the implementation code for the @ref AnalyserModel.
      *
-     * Return the implementation code for the @c AnalyserModel, using the
-     * @c GeneratorProfile.
+     * Return the implementation code for the @ref AnalyserModel, using the
+     * @ref GeneratorProfile.
      *
      * @return The implementation code as a @c std::string.
      */
