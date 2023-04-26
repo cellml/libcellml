@@ -50,11 +50,11 @@ public:
     static AnalyserPtr create() noexcept;
 
     /**
-     * @brief Analyse the @c Model.
+     * @brief Analyse the @ref Model.
      *
-     * Analyse the @c Model using this @ref Analyser.
+     * Analyse the @ref Model using this @ref Analyser.
      *
-     * @param model The @c Model to analyse.
+     * @param model The @ref Model to analyse.
      */
     void analyseModel(const ModelPtr &model);
 
@@ -87,16 +87,16 @@ public:
      * @overload
      *
      * @brief Remove the @ref AnalyserExternalVariable with the given
-     * @p variableName in the @c Component with the given @p componentName in
+     * @p variableName in the @ref Component with the given @p componentName in
      * the given @p model.
      *
      * Remove the @ref AnalyserExternalVariable found that matches the given
-     * @p variableName in the @c Component with the given @p componentName in
+     * @p variableName in the @ref Component with the given @p componentName in
      * the given @p model.
      *
-     * @param model The pointer to the @c Model which contains the
+     * @param model The pointer to the @ref Model which contains the
      * @ref AnalyserExternalVariable to remove.
-     * @param componentName The name of the @c Component which contains the
+     * @param componentName The name of the @ref Component which contains the
      * @ref AnalyserExternalVariable to remove.
      * @param variableName The name of the @ref AnalyserExternalVariable to
      * remove.
@@ -134,18 +134,18 @@ public:
 
     /**
      * @brief Test to see if the @ref AnalyserExternalVariable with the given
-     * @p variableName in the @c Component with the given @p componentName in
+     * @p variableName in the @ref Component with the given @p componentName in
      * the given @p model is contained within this @ref Analyser.
      *
      * Test to see if the @ref AnalyserExternalVariable with the the given
-     * @p variableName in the @c Component with the given @p componentName in
+     * @p variableName in the @ref Component with the given @p componentName in
      * the given @p model is contained within this @ref Analyser. Return @c true
      * if the @ref AnalyserExternalVariable is in the @ref Analyser and @c false
      * otherwise.
      *
-     * @param model The pointer to the @c Model which contains the
+     * @param model The pointer to the @ref Model which contains the
      * @ref AnalyserExternalVariable to test.
-     * @param componentName The name of the @c Component which contains the
+     * @param componentName The name of the @ref Component which contains the
      * @ref AnalyserExternalVariable to test.
      * @param variableName The name of the @ref AnalyserExternalVariable to test.
      *
@@ -192,19 +192,19 @@ public:
      * @brief Get the @ref AnalyserExternalVariable with the given @p name.
      *
      * Return the @ref AnalyserExternalVariable with the given @p variableName in
-     * the @c Component with the given @p componentName in the given @p model.
+     * the @ref Component with the given @p componentName in the given @p model.
      * If no such @ref AnalyserExternalVariable is contained within the
      * @ref Analyser, a @c nullptr is returned.
      *
-     * @param model The pointer to the @c Model which contains the
+     * @param model The pointer to the @ref Model which contains the
      * @ref AnalyserExternalVariable to retrieve.
-     * @param componentName The name of the @c Component which contains the
+     * @param componentName The name of the @ref Component which contains the
      * @ref AnalyserExternalVariable to retrieve.
      * @param variableName The name of the @ref AnalyserExternalVariable to
      * retrieve.
      *
      * @return The @ref AnalyserExternalVariable with the given @p variableName in
-     * the @c Component with the given @p componentName in the given @p model on
+     * the @ref Component with the given @p componentName in the given @p model on
      * success, @c nullptr on failure.
      */
     AnalyserExternalVariablePtr externalVariable(const ModelPtr &model,
@@ -230,7 +230,7 @@ public:
      * variable of integration, states, variables, equations, and whether it
      * needs some specific mathematical functions.
      *
-     * @return The analysed model for the @c Model analysed by this @ref Analyser.
+     * @return The analysed model for the @ref Model analysed by this @ref Analyser.
      */
     AnalyserModelPtr model() const;
 
