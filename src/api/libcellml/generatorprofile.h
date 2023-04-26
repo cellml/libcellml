@@ -50,72 +50,72 @@ public:
     GeneratorProfile &operator=(GeneratorProfile rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Create a @c GeneratorProfile object.
+     * @brief Create a @ref GeneratorProfile object.
      *
-     * Factory method to create a @c GeneratorProfile.  Create a
+     * Factory method to create a @ref GeneratorProfile.  Create a
      * generator profile with::
      *
      *   GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
      *
-     * @return A smart pointer to a @c GeneratorProfile object.
+     * @return A smart pointer to a @ref GeneratorProfile object.
      */
     static GeneratorProfilePtr create(Profile profile = Profile::C) noexcept;
 
     // Whether the profile is official.
 
     /**
-     * @brief Get the @c Profile for this @c GeneratorProfile.
+     * @brief Get the @ref Profile for this @ref GeneratorProfile.
      *
-     * Return the @c Profile for this @c GeneratorProfile.
+     * Return the @ref Profile for this @ref GeneratorProfile.
      *
-     * @return The @c Profile for this @c GeneratorProfile.
+     * @return The @ref Profile for this @ref GeneratorProfile.
      */
     Profile profile() const;
 
     /**
-     * @brief Get the string version of a @c Profile.
+     * @brief Get the string version of a @ref Profile.
      *
-     * Return the string version of a @c Profile.
+     * Return the string version of a @ref Profile.
      *
      * @param profile The profile for which we want the string version.
      *
-     * @return The string version of the @c Profile.
+     * @return The string version of the @ref Profile.
      */
     static std::string profileAsString(Profile profile);
 
     /**
-     * @brief Set the @c Profile.
+     * @brief Set the @ref Profile.
      *
-     * Set this @c GeneratorProfile to the given @c Profile .
+     * Set this @ref GeneratorProfile to the given @ref Profile .
      *
-     * @param profile The @c Profile to use.
+     * @param profile The @ref Profile to use.
      */
     void setProfile(Profile profile);
 
     // Whether the profile requires an interface to be generated.
 
     /**
-     * @brief Test if this @c GeneratorProfile requires an interface to be
+     * @brief Test if this @ref GeneratorProfile requires an interface to be
      * generated.
      *
-     * Test if this @c GeneratorProfile has an requires an interface to be
+     * Test if this @ref GeneratorProfile has an requires an interface to be
      * generated.
      *
-     * @return @c true if the @c GeneratorProfile has an requires an interface
+     * @return @c true if the @ref GeneratorProfile has an requires an interface
      * to be generated,
      * @c false otherwise.
      */
     bool hasInterface() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has an requires an interface
+     * @brief Set whether this @ref GeneratorProfile has an requires an interface
      * to be generated.
      *
-     * Set whether this @c GeneratorProfile has an requires an interface to be
+     * Set whether this @ref GeneratorProfile has an requires an interface to be
      * generated.
      *
      * @param hasInterface A @c bool to determine whether this
-     * @c GeneratorProfile has an requires an interface to be generated.
+     * @ref GeneratorProfile has an requires an interface to be generated.
      */
     void setHasInterface(bool hasInterface);
 
@@ -360,213 +360,213 @@ public:
     void setNotString(const std::string &notString);
 
     /**
-     * @brief Test if this @c GeneratorProfile has an "equal to" operator.
+     * @brief Test if this @ref GeneratorProfile has an "equal to" operator.
      *
-     * Test if this @c GeneratorProfile has an "equal to" operator.
+     * Test if this @ref GeneratorProfile has an "equal to" operator.
      *
-     * @return @c true if the @c GeneratorProfile has an "equal to" operator,
+     * @return @c true if the @ref GeneratorProfile has an "equal to" operator,
      * @c false otherwise.
      */
     bool hasEqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has an "equal to" operator.
+     * @brief Set whether this @ref GeneratorProfile has an "equal to" operator.
      *
-     * Set whether this @c GeneratorProfile has an "equal to" operator.
+     * Set whether this @ref GeneratorProfile has an "equal to" operator.
      *
      * @param hasEqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has an "equal to" operator.
+     * @ref GeneratorProfile has an "equal to" operator.
      */
     void setHasEqOperator(bool hasEqOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "not equal to" operator.
+     * @brief Test if this @ref GeneratorProfile has a "not equal to" operator.
      *
-     * Test if this @c GeneratorProfile has a "not equal to" operator.
+     * Test if this @ref GeneratorProfile has a "not equal to" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "not equal to"
+     * @return @c true if the @ref GeneratorProfile has a "not equal to"
      * operator, @c false otherwise.
      */
     bool hasNeqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "not equal to"
+     * @brief Set whether this @ref GeneratorProfile has a "not equal to"
      * operator.
      *
-     * Set whether this @c GeneratorProfile has a "not equal to" operator.
+     * Set whether this @ref GeneratorProfile has a "not equal to" operator.
      *
      * @param hasNeqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "not equal to" operator.
+     * @ref GeneratorProfile has a "not equal to" operator.
      */
     void setHasNeqOperator(bool hasNeqOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "less than" operator.
+     * @brief Test if this @ref GeneratorProfile has a "less than" operator.
      *
-     * Test if this @c GeneratorProfile has a "less than" operator.
+     * Test if this @ref GeneratorProfile has a "less than" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "less than" operator,
+     * @return @c true if the @ref GeneratorProfile has a "less than" operator,
      * @c false otherwise.
      */
     bool hasLtOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "less than" operator.
+     * @brief Set whether this @ref GeneratorProfile has a "less than" operator.
      *
-     * Set whether this @c GeneratorProfile has a "less than" operator.
+     * Set whether this @ref GeneratorProfile has a "less than" operator.
      *
      * @param hasLtOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "less than" operator.
+     * @ref GeneratorProfile has a "less than" operator.
      */
     void setHasLtOperator(bool hasLtOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "less than or equal to"
+     * @brief Test if this @ref GeneratorProfile has a "less than or equal to"
      * operator.
      *
-     * Test if this @c GeneratorProfile has a "less than or equal to" operator.
+     * Test if this @ref GeneratorProfile has a "less than or equal to" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "less than or equal to"
+     * @return @c true if the @ref GeneratorProfile has a "less than or equal to"
      * operator,
      * @c false otherwise.
      */
     bool hasLeqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "less than or equal to"
+     * @brief Set whether this @ref GeneratorProfile has a "less than or equal to"
      *  operator.
      *
-     * Set whether this @c GeneratorProfile has a "less than or equal to"
+     * Set whether this @ref GeneratorProfile has a "less than or equal to"
      * operator.
      *
      * @param hasLeqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "less than or equal to" operator.
+     * @ref GeneratorProfile has a "less than or equal to" operator.
      */
     void setHasLeqOperator(bool hasLeqOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "greater than" operator.
+     * @brief Test if this @ref GeneratorProfile has a "greater than" operator.
      *
-     * Test if this @c GeneratorProfile has a "greater than" operator.
+     * Test if this @ref GeneratorProfile has a "greater than" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "greater than" operator,
+     * @return @c true if the @ref GeneratorProfile has a "greater than" operator,
      * @c false otherwise.
      */
     bool hasGtOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "greater than"
+     * @brief Set whether this @ref GeneratorProfile has a "greater than"
      * operator.
      *
-     * Set whether this @c GeneratorProfile has a "greater than" operator.
+     * Set whether this @ref GeneratorProfile has a "greater than" operator.
      *
      * @param hasGtOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "greater than" operator.
+     * @ref GeneratorProfile has a "greater than" operator.
      */
     void setHasGtOperator(bool hasGtOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "greater than or equal to"
+     * @brief Test if this @ref GeneratorProfile has a "greater than or equal to"
      * operator.
      *
-     * Test if this @c GeneratorProfile has a "greater than or equal to" operator.
+     * Test if this @ref GeneratorProfile has a "greater than or equal to" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "greater than or equal
+     * @return @c true if the @ref GeneratorProfile has a "greater than or equal
      * to" operator,
      * @c false otherwise.
      */
     bool hasGeqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "greater than or equal
+     * @brief Set whether this @ref GeneratorProfile has a "greater than or equal
      * to" operator.
      *
-     * Set whether this @c GeneratorProfile has a "greater than or equal to"
+     * Set whether this @ref GeneratorProfile has a "greater than or equal to"
      * operator.
      *
      * @param hasGeqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "greater than or equal to" operator.
+     * @ref GeneratorProfile has a "greater than or equal to" operator.
      */
     void setHasGeqOperator(bool hasGeqOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has an "and" operator.
+     * @brief Test if this @ref GeneratorProfile has an "and" operator.
      *
-     * Test if this @c GeneratorProfile has an "and" operator.
+     * Test if this @ref GeneratorProfile has an "and" operator.
      *
-     * @return @c true if the @c GeneratorProfile has an "and" operator,
+     * @return @c true if the @ref GeneratorProfile has an "and" operator,
      * @c false otherwise.
      */
     bool hasAndOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has an "and" operator.
+     * @brief Set whether this @ref GeneratorProfile has an "and" operator.
      *
-     * Set whether this @c GeneratorProfile has an "and" operator.
+     * Set whether this @ref GeneratorProfile has an "and" operator.
      *
      * @param hasAndOperator A @c bool to determine whether this
-     * @c GeneratorProfile has an "and" operator.
+     * @ref GeneratorProfile has an "and" operator.
      */
     void setHasAndOperator(bool hasAndOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has an "or" operator.
+     * @brief Test if this @ref GeneratorProfile has an "or" operator.
      *
-     * Test if this @c GeneratorProfile has an "or" operator.
+     * Test if this @ref GeneratorProfile has an "or" operator.
      *
-     * @return @c true if the @c GeneratorProfile has an "or" operator,
+     * @return @c true if the @ref GeneratorProfile has an "or" operator,
      * @c false otherwise.
      */
     bool hasOrOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has an "or" operator.
+     * @brief Set whether this @ref GeneratorProfile has an "or" operator.
      *
-     * Set whether this @c GeneratorProfile has an "or" operator.
+     * Set whether this @ref GeneratorProfile has an "or" operator.
      *
      * @param hasOrOperator A @c bool to determine whether this
-     * @c GeneratorProfile has an "or" operator.
+     * @ref GeneratorProfile has an "or" operator.
      */
     void setHasOrOperator(bool hasOrOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "exclusive or" operator.
+     * @brief Test if this @ref GeneratorProfile has a "exclusive or" operator.
      *
-     * Test if this @c GeneratorProfile has a "exclusive or" operator.
+     * Test if this @ref GeneratorProfile has a "exclusive or" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "exclusive or" operator,
+     * @return @c true if the @ref GeneratorProfile has a "exclusive or" operator,
      * @c false otherwise.
      */
     bool hasXorOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "exclusive or"
+     * @brief Set whether this @ref GeneratorProfile has a "exclusive or"
      * operator.
      *
-     * Set whether this @c GeneratorProfile has a "exclusive or" operator.
+     * Set whether this @ref GeneratorProfile has a "exclusive or" operator.
      *
      * @param hasXorOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "exclusive or" operator.
+     * @ref GeneratorProfile has a "exclusive or" operator.
      */
     void setHasXorOperator(bool hasXorOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "not" operator.
+     * @brief Test if this @ref GeneratorProfile has a "not" operator.
      *
-     * Test if this @c GeneratorProfile has a "not" operator.
+     * Test if this @ref GeneratorProfile has a "not" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "not" operator,
+     * @return @c true if the @ref GeneratorProfile has a "not" operator,
      * @c false otherwise.
      */
     bool hasNotOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "not" operator.
+     * @brief Set whether this @ref GeneratorProfile has a "not" operator.
      *
-     * Set whether this @c GeneratorProfile has a "not" operator.
+     * Set whether this @ref GeneratorProfile has a "not" operator.
      *
      * @param hasNotOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "not" operator.
+     * @ref GeneratorProfile has a "not" operator.
      */
     void setHasNotOperator(bool hasNotOperator);
 
@@ -905,22 +905,22 @@ public:
     void setRemString(const std::string &remString);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "power" operator.
+     * @brief Test if this @ref GeneratorProfile has a "power" operator.
      *
-     * Test if this @c GeneratorProfile has a "power" operator.
+     * Test if this @ref GeneratorProfile has a "power" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "power" operator,
+     * @return @c true if the @ref GeneratorProfile has a "power" operator,
      * @c false otherwise.
      */
     bool hasPowerOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "power" operator.
+     * @brief Set whether this @ref GeneratorProfile has a "power" operator.
      *
-     * Set whether this @c GeneratorProfile has a "power" operator.
+     * Set whether this @ref GeneratorProfile has a "power" operator.
      *
      * @param hasPowerOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "power" operator.
+     * @ref GeneratorProfile has a "power" operator.
      */
     void setHasPowerOperator(bool hasPowerOperator);
 
@@ -1562,22 +1562,22 @@ public:
     void setPiecewiseElseString(const std::string &piecewiseElseString);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "conditional" operator.
+     * @brief Test if this @ref GeneratorProfile has a "conditional" operator.
      *
-     * Test if this @c GeneratorProfile has a "conditional" operator.
+     * Test if this @ref GeneratorProfile has a "conditional" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "conditional" operator,
+     * @return @c true if the @ref GeneratorProfile has a "conditional" operator,
      * @c false otherwise.
      */
     bool hasConditionalOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "conditional" operator.
+     * @brief Set whether this @ref GeneratorProfile has a "conditional" operator.
      *
-     * Set whether this @c GeneratorProfile has a "conditional" operator.
+     * Set whether this @ref GeneratorProfile has a "conditional" operator.
      *
      * @param hasConditionalOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "conditional" operator.
+     * @ref GeneratorProfile has a "conditional" operator.
      */
     void setHasConditionalOperator(bool hasConditionalOperator);
 
