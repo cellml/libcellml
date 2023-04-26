@@ -20,6 +20,7 @@ limitations under the License.
 #include <cmath>
 #include <libxml/uri.h>
 #include <map>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -151,18 +152,42 @@ bool isNameStartChar(uint32_t startChar)
            || ((0x41U <= startChar) && (startChar <= 0x5AU))
            || (startChar == 0x5FU)
            || ((0x61U <= startChar) && (startChar <= 0x7AU))
-           || ((0xC0U <= startChar) && (startChar <= 0xD6U))
-           || ((0xD8U <= startChar) && (startChar <= 0xF6U))
-           || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
-           || ((0x370U <= startChar) && (startChar <= 0x37DU))
-           || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
-           || ((0x200CU <= startChar) && (startChar <= 0x200DU))
-           || ((0x2070U <= startChar) && (startChar <= 0x218FU))
-           || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
-           || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
-           || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
-           || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
-           || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
+           || ((0xC380U <= startChar) && (startChar <= 0xC396U))
+           || ((0xC398U <= startChar) && (startChar <= 0xC3B6U))
+           || ((0xC3B8U <= startChar) && (startChar <= 0xCBBFU))
+           || ((0xCDB0U <= startChar) && (startChar <= 0xCDBDU))
+           || ((0xCDBFU <= startChar) && (startChar <= 0xE1BFBFU))
+           || ((0xE2808CU <= startChar) && (startChar <= 0xE2808DU))
+           || ((0xE281B0U <= startChar) && (startChar <= 0xE2868FU))
+           || ((0xE2B080U <= startChar) && (startChar <= 0xE2BFAFU))
+           || ((0xE38081U <= startChar) && (startChar <= 0xED9FBFU))
+           || ((0xEFA480U <= startChar) && (startChar <= 0xEFB78FU))
+           || ((0xEFB7B0U <= startChar) && (startChar <= 0xEFBFBDU))
+           || ((0xF0908080U <= startChar) && (startChar <= 0xF3AFBFBFU));
+}
+
+/**
+ * @brief Test to determine if @p nameChar is a valid XML name character.
+ *
+ * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
+ *
+ * @param nameChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for an XML name character.
+ */
+bool isNameChar(uint32_t nameChar)
+{
+    if (isNameStartChar(nameChar)) {
+        return true;
+    }
+
+    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
+           || (nameChar == 0x2DU)
+           || (nameChar == 0x2EU)
+           || (nameChar == 0xC2B7U)
+           || ((0xCC80U <= nameChar) && (nameChar <= 0xCDAFU))
+           || ((0xE280BFU <= nameChar) && (nameChar <= 0xE28180U));
 }
 
 /**
@@ -181,7 +206,7 @@ uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
     uint32_t value = 0;
     size_t index = 0;
     for (size_t j = initialValue; j < 4; ++j) {
-        auto tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
+        auto tempValue = static_cast<uint32_t>(static_cast<unsigned char>(text[index++])) << bitShifts[j];
         value |= tempValue;
     }
 
@@ -205,7 +230,7 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
     for (size_t i = 0; i < text.length();) {
         size_t codePointLength = 1;
         uint32_t value = 0;
-        auto unsignedText = static_cast<uint8_t>(text[i]);
+        auto unsignedText = static_cast<uint8_t>((unsigned char)text[i]);
         if ((unsignedText & 0xf8U) == 0xf0U) {
             codePointLength = 4;
             breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
@@ -225,29 +250,6 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
     }
 
     return breakdown;
-}
-
-/**
- * @brief Test to determine if @p nameChar is a valid XML name character.
- *
- * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
- *
- * @param nameChar The character to test.
- *
- * @return True if the character is in the allowed Unicode ranges for an XML name character.
- */
-bool isNameChar(uint32_t nameChar)
-{
-    if (isNameStartChar(nameChar)) {
-        return true;
-    }
-    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
-           || (nameChar == 0x2DU)
-           || (nameChar == 0x2EU)
-           || (nameChar == 0xB7U)
-           || ((0x0300U <= nameChar) && (nameChar <= 0x036FU))
-           || ((0x203FU <= nameChar) && (nameChar <= 0x2040U));
 }
 
 /**
@@ -989,11 +991,11 @@ std::set<std::string> namesInCycle(NameList allNames)
     allNames.pop_back();
     std::reverse(allNames.begin(), allNames.end());
     std::set<std::string> namesInCycle = {cycleStartName};
-    for (const auto &name : allNames) {
-        if (name == cycleStartName) {
-            break;
-        }
+    std::string name = *allNames.begin();
+    while (name != cycleStartName) {
         namesInCycle.emplace(name);
+        allNames.erase(allNames.begin());
+        name = *allNames.begin();
     }
 
     return namesInCycle;
@@ -1003,7 +1005,7 @@ bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(NameList names) const
 {
     std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
     bool found = false;
-    for (size_t i = 0; (i < mValidator->issueCount()) && !found; ++i) {
+    for (size_t i = 0; !found && (i < mValidator->issueCount()); ++i) {
         auto issue = mValidator->issue(i);
         if (issue->description().substr(0, 20) == "Cyclic units exist: ") {
             // Remove prefix to loop information.
@@ -1103,7 +1105,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
 
         // Check if we already have another import from the same source with the same units_ref.
         // (This looks for matching entries at the same position in the source and ref vectors).
-        if ((unitsWithImportSource > 1) && !foundImportIssue) {
+        if (!foundImportIssue && (unitsWithImportSource > 1)) {
             auto description = "Model '" + model->name() + "' contains multiple imported units from '" + unitsImportUrl + "' with the same units_ref attribute '" + unitsRef + "'.";
             if (!checkIssuesForDuplications(description)) {
                 auto issue = Issue::IssueImpl::create();
@@ -1310,7 +1312,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             addIssue(issue);
         } else if (!isStandardUnitName(unitsName)) {
             ModelPtr model = owningModel(component);
-            if ((model != nullptr) && !model->hasUnits(unitsName)) {
+            if (!model->hasUnits(unitsName)) {
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
@@ -2358,15 +2360,13 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
 {
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
-        if (equivalentVariable->hasEquivalentVariable(variable)) {
-            auto component = owningComponent(equivalentVariable);
-            if (component == nullptr) {
-                IssuePtr err = Issue::IssueImpl::create();
-                err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
-                err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
-                addIssue(err);
-            }
+        auto component = owningComponent(equivalentVariable);
+        if (component == nullptr) {
+            IssuePtr err = Issue::IssueImpl::create();
+            err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
+            err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
+            err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
+            addIssue(err);
         }
     }
 }
@@ -2411,7 +2411,7 @@ IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string 
     } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM) {
         // Does not start with numeric character.
         issue->mPimpl->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");
-    } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM) {
+    } else { /* referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM */
         // Basic Latin alphanumeric characters and underscores.
         issue->mPimpl->setDescription("CellML identifiers must not contain any characters other than [a-zA-Z0-9_].");
     }
@@ -2431,43 +2431,41 @@ bool unitsAreEquivalent(const ModelPtr &model,
         unitMap.emplace(baseUnits, 0.0);
     }
 
-    std::string ref;
     hints = "";
     multiplier = 0.0;
 
-    if (model->hasUnits(v1->units()->name())) {
+    std::string v1UnitsName = v1->units()->name();
+    if (model->hasUnits(v1UnitsName)) {
         UnitsPtr u1 = Units::create();
-        u1 = model->units(v1->units()->name());
+        u1 = model->units(v1UnitsName);
         updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
-        ref = v1->units()->name();
-        unitMap.at(ref) += 1.0;
-    } else if (isStandardUnitName(v1->units()->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v1->units()->name(), 1, 0, 1);
+    } else if (unitMap.find(v1UnitsName) != unitMap.end()) {
+        unitMap.at(v1UnitsName) += 1.0;
+    } else if (isStandardUnitName(v1UnitsName)) {
+        updateBaseUnitCount(model, unitMap, multiplier, v1UnitsName, 1, 0, 1);
     }
 
-    if (model->hasUnits(v2->units()->name())) {
+    std::string v2UnitsName = v2->units()->name();
+    if (model->hasUnits(v2UnitsName)) {
         UnitsPtr u2 = Units::create();
-        u2 = model->units(v2->units()->name());
+        u2 = model->units(v2UnitsName);
         updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
-        ref = v2->units()->name();
-        unitMap.at(v2->units()->name()) -= 1.0;
-    } else if (isStandardUnitName(v2->units()->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v2->units()->name(), 1, 0, -1);
+    } else if (unitMap.find(v2UnitsName) != unitMap.end()) {
+        unitMap.at(v2UnitsName) -= 1.0;
+    } else if (isStandardUnitName(v2UnitsName)) {
+        updateBaseUnitCount(model, unitMap, multiplier, v2UnitsName, 1, 0, -1);
     }
 
     // Remove "dimensionless" from base unit testing.
     unitMap.erase("dimensionless");
+    static const std::regex fullStopAtEndRegex(".$");
 
     bool status = true;
     for (const auto &basePair : unitMap) {
         if (basePair.second != 0.0) {
             std::string num = std::to_string(basePair.second);
             num.erase(num.find_last_not_of('0') + 1, num.length());
-            if (num.back() == '.') {
-                num.pop_back();
-            }
+            num = std::regex_replace(num, fullStopAtEndRegex, "");
             hints += basePair.first + "^" + num + ", ";
             status = false;
         }
@@ -2479,9 +2477,7 @@ bool unitsAreEquivalent(const ModelPtr &model,
 
         std::string num = std::to_string(multiplier);
         num.erase(num.find_last_not_of('0') + 1, num.length());
-        if (num.back() == '.') {
-            num.pop_back();
-        }
+        num = std::regex_replace(num, fullStopAtEndRegex, "");
         hints += "multiplication factor of 10^" + num + ", ";
     }
 
@@ -2553,7 +2549,7 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
                     desc += ";\n";
                 } else if (i == iMax - 1) {
                     desc += "; and\n";
-                } else if (i == iMax) {
+                } else { /* i == iMax */
                     desc += ".\n";
                 }
             }
@@ -2612,7 +2608,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                 addIdMapItem(id, info, idMap);
             }
         }
-        if (units->isImport() && units->importSource() != nullptr && !units->importSource()->id().empty()) {
+        if ((units->importSource() != nullptr) && !units->importSource()->id().empty()) {
             info = " - import source for units '" + units->name() + "'";
             addIdMapItem(units->importSource()->id(), info, idMap);
         }
@@ -2743,7 +2739,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     buildMathIdMap(info, idMap, component->math());
 
     // Imports.
-    if (component->isImport() && (component->importSource() != nullptr) && !component->importSource()->id().empty()) {
+    if ((component->importSource() != nullptr) && !component->importSource()->id().empty()) {
         info = " - import source for component '" + component->name() + "'";
         addIdMapItem(component->importSource()->id(), info, idMap);
     }
