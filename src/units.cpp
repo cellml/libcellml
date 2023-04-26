@@ -427,13 +427,13 @@ void Units::addUnit(StandardUnit standardUnit)
 void Units::unitAttributes(StandardUnit standardUnit, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     std::string dummyReference;
-    unitAttributes(size_t(pFunc()->findUnit(standardUnitToString.at(standardUnit)) - pFunc()->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
+    unitAttributes(static_cast<size_t>(pFunc()->findUnit(standardUnitToString.at(standardUnit)) - pFunc()->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
 void Units::unitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     std::string dummyReference;
-    unitAttributes(size_t(pFunc()->findUnit(reference) - pFunc()->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
+    unitAttributes(static_cast<size_t>(pFunc()->findUnit(reference) - pFunc()->mUnitDefinitions.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
 void Units::unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const

@@ -166,22 +166,22 @@ public:
     static AnalyserEquationAstPtr create() noexcept;
 
     /**
-     * @brief Get the @c Type of this @ref AnalyserEquationAst.
+     * @brief Get the @ref Type of this @ref AnalyserEquationAst.
      *
-     * Return the @c Type of this @ref AnalyserEquationAst.
+     * Return the @ref Type of this @ref AnalyserEquationAst.
      *
-     * @return The @c Type.
+     * @return The @ref Type.
      */
     Type type() const;
 
     /**
-     * @brief Get the string version of a @c Type.
+     * @brief Get the string version of a @ref Type.
      *
-     * Return the string version of a @c Type.
+     * Return the string version of a @ref Type.
      *
      * @param type The type for which we want the string version.
      *
-     * @return The string version of the @c Type.
+     * @return The string version of the @ref Type.
      */
     static std::string typeAsString(Type type);
 
@@ -214,20 +214,20 @@ public:
     void setValue(const std::string &value);
 
     /**
-     * @brief Get the @c Variable for this @ref AnalyserEquationAst.
+     * @brief Get the @ref Variable for this @ref AnalyserEquationAst.
      *
-     * Return the @c Variable for this @ref AnalyserEquationAst.
+     * Return the @ref Variable for this @ref AnalyserEquationAst.
      *
      * @return The variable.
      */
     VariablePtr variable() const;
 
     /**
-     * @brief Set the @c Variable for this @ref AnalyserEquationAst.
+     * @brief Set the @ref Variable for this @ref AnalyserEquationAst.
      *
-     * Set the @c Variable for this @ref AnalyserEquationAst.
+     * Set the @ref Variable for this @ref AnalyserEquationAst.
      *
-     * @param variable The @c Variable to be set as the variable for this
+     * @param variable The @ref Variable to be set as the variable for this
      * @ref AnalyserEquationAst.
      */
     void setVariable(const VariablePtr &variable);
