@@ -32,6 +32,96 @@ limitations under the License.
 
 namespace libcellml {
 
+void printAnalyserModelEquations(const AnalyserModelPtr &model)
+{
+    size_t eqnNb = 0;
+
+    for (const auto &eqn : model->equations()) {
+        Debug() << "\n---------------------------------------[API equation #" << ++eqnNb << "]";
+
+        if (eqn->ast() != nullptr) {
+            Debug() << "\n" << astAsCode(eqn->ast());
+        } else {
+            Debug() << "\nNo equation";
+        }
+
+        Debug() << "\nType: " << AnalyserEquation::typeAsString(eqn->type());
+
+        if (eqn->variableCount() != 0) {
+            Debug() << "\nVariables:";
+
+            for (const auto &var : eqn->variables()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo variables";
+        }
+
+        if (eqn->dependencyCount() != 0) {
+            Debug() << "\nDependencies:";
+
+            for (const auto &dep : eqn->dependencies()) {
+                if (dep->ast() != nullptr) {
+                    Debug() << " - " << astAsCode(dep->ast());
+                } else if (dep->type() == AnalyserEquation::Type::EXTERNAL) {
+                    Debug() << " - External equation for '" << dep->variable(0)->variable()->name() << "'";
+                } else {
+                    Debug() << " - ??? [" << AnalyserEquation::typeAsString(dep->type()) << "]";
+                }
+            }
+        } else {
+            Debug() << "\nNo dependencies";
+        }
+
+        if (eqn->type() == AnalyserEquation::Type::NLA) {
+            if (eqn->nlaSiblingCount() != 0) {
+                Debug() << "\nNLA siblings:";
+
+                for (const auto &nlaSibling : eqn->nlaSiblings()) {
+                    if (nlaSibling->ast() != nullptr) {
+                        Debug() << " - " << astAsCode(nlaSibling->ast());
+                    } else if (nlaSibling->type() == AnalyserEquation::Type::EXTERNAL) {
+                        Debug() << " - External equation for '" << nlaSibling->variable(0)->variable()->name() << "'";
+                    } else {
+                        Debug() << " - ??? [" << AnalyserEquation::typeAsString(nlaSibling->type()) << "]";
+                    }
+                }
+            } else {
+                Debug() << "\nNo NLA siblings";
+            }
+        }
+    }
+
+    Debug() << "\n---------------------------------------[END]\n";
+}
+
+void printAnalyserModelVariables(const AnalyserModelPtr &model)
+{
+    size_t varNb = 0;
+
+    for (const auto &var : model->variables()) {
+        Debug() << "\n---------------------------------------[API variable " << ++varNb << "]";
+        Debug() << "\nName: " << var->variable()->name();
+        Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());
+
+        if (var->equationCount() != 0) {
+            Debug() << "\nEquations:";
+
+            for (const auto &eqn : var->equations()) {
+                if (eqn->ast() != nullptr) {
+                    Debug() << " - " << astAsCode(eqn->ast());
+                } else if (eqn->type() == AnalyserEquation::Type::EXTERNAL) {
+                    Debug() << " - External equation for '" << eqn->variable(0)->variable()->name() << "'";
+                } else {
+                    Debug() << " - ??? [" << AnalyserEquation::typeAsString(eqn->type()) << "]";
+                }
+            }
+        } else {
+            Debug() << "\nNo equations";
+        }
+    }
+}
+
 void printHistory(const History &history)
 {
     for (const auto &h : history) {
@@ -606,96 +696,6 @@ void printVariableMap(const VariableMap &map)
         }
         Debug() << "";
     }
-}
-
-void printAnalyserModelVariables(const AnalyserModelPtr &model)
-{
-    size_t varNb = 0;
-
-    for (const auto &var : model->variables()) {
-        Debug() << "\n---------------------------------------[API variable " << ++varNb << "]";
-        Debug() << "\nName: " << var->variable()->name();
-        Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());
-
-        if (var->equationCount() != 0) {
-            Debug() << "\nEquations:";
-
-            for (const auto &eqn : var->equations()) {
-                if (eqn->ast() != nullptr) {
-                    Debug() << " - " << astAsCode(eqn->ast());
-                } else if (eqn->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << eqn->variable(0)->variable()->name() << "'";
-                } else {
-                    Debug() << " - ??? [" << AnalyserEquation::typeAsString(eqn->type()) << "]";
-                }
-            }
-        } else {
-            Debug() << "\nNo equations";
-        }
-    }
-}
-
-void printAnalyserModelEquations(const AnalyserModelPtr &model)
-{
-    size_t eqnNb = 0;
-
-    for (const auto &eqn : model->equations()) {
-        Debug() << "\n---------------------------------------[API equation #" << ++eqnNb << "]";
-
-        if (eqn->ast() != nullptr) {
-            Debug() << "\n" << astAsCode(eqn->ast());
-        } else {
-            Debug() << "\nNo equation";
-        }
-
-        Debug() << "\nType: " << AnalyserEquation::typeAsString(eqn->type());
-
-        if (eqn->variableCount() != 0) {
-            Debug() << "\nVariables:";
-
-            for (const auto &var : eqn->variables()) {
-                Debug() << " - " << var->variable()->name();
-            }
-        } else {
-            Debug() << "\nNo variables";
-        }
-
-        if (eqn->dependencyCount() != 0) {
-            Debug() << "\nDependencies:";
-
-            for (const auto &dep : eqn->dependencies()) {
-                if (dep->ast() != nullptr) {
-                    Debug() << " - " << astAsCode(dep->ast());
-                } else if (dep->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << dep->variable(0)->variable()->name() << "'";
-                } else {
-                    Debug() << " - ??? [" << AnalyserEquation::typeAsString(dep->type()) << "]";
-                }
-            }
-        } else {
-            Debug() << "\nNo dependencies";
-        }
-
-        if (eqn->type() == AnalyserEquation::Type::NLA) {
-            if (eqn->nlaSiblingCount() != 0) {
-                Debug() << "\nNLA siblings:";
-
-                for (const auto &nlaSibling : eqn->nlaSiblings()) {
-                    if (nlaSibling->ast() != nullptr) {
-                        Debug() << " - " << astAsCode(nlaSibling->ast());
-                    } else if (nlaSibling->type() == AnalyserEquation::Type::EXTERNAL) {
-                        Debug() << " - External equation for '" << nlaSibling->variable(0)->variable()->name() << "'";
-                    } else {
-                        Debug() << " - ??? [" << AnalyserEquation::typeAsString(nlaSibling->type()) << "]";
-                    }
-                }
-            } else {
-                Debug() << "\nNo NLA siblings";
-            }
-        }
-    }
-
-    Debug() << "\n---------------------------------------[END]\n";
 }
 
 } // namespace libcellml

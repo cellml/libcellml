@@ -93,6 +93,8 @@ private:
     bool mNewLine;
 };
 
+void printAnalyserModelEquations(const AnalyserModelPtr &model);
+void printAnalyserModelVariables(const AnalyserModelPtr &model);
 void printAst(const AnalyserEquationAstPtr &ast);
 void printComponentMap(const ComponentMap &map);
 void printConnectionMap(const ConnectionMap &map);
@@ -105,7 +107,5 @@ void printStack(const IndexStack &stack);
 void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model);
 void printStringStringMap(const StringStringMap &map);
 void printVariableMap(const VariableMap &map);
-void printAnalyserModelVariables(const AnalyserModelPtr &model);
-void printAnalyserModelEquations(const AnalyserModelPtr &model);
 
 } // namespace libcellml
