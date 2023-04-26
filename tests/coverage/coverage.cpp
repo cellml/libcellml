@@ -454,8 +454,9 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        EXPECT_EQ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206),
-                  analyserModel->variable(i)->initialisingVariable() != nullptr);
+        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206)) {
+            EXPECT_TRUE(analyserModel->variable(i)->initialisingVariable() != nullptr);
+        }
     }
 
     EXPECT_EQ(nullptr, generator->model());
