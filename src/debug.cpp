@@ -32,6 +32,44 @@ limitations under the License.
 
 namespace libcellml {
 
+std::string astAsCode(const AnalyserEquationAstPtr &ast)
+{
+    if (ast == nullptr) {
+        return "nullptr";
+    }
+
+    static GeneratorProfilePtr generatorProfile = nullptr;
+
+    if (generatorProfile == nullptr) {
+        generatorProfile = GeneratorProfile::create();
+
+        generatorProfile->setAbsoluteValueString("abs");
+        generatorProfile->setNaturalLogarithmString("ln");
+        generatorProfile->setCommonLogarithmString("log");
+        generatorProfile->setRemString("rem");
+        generatorProfile->setAsinString("arcsin");
+        generatorProfile->setAcosString("arccos");
+        generatorProfile->setAtanString("arctan");
+        generatorProfile->setAsecString("arcsec");
+        generatorProfile->setAcscString("arccsc");
+        generatorProfile->setAcotString("arccot");
+        generatorProfile->setAsinhString("arcsinh");
+        generatorProfile->setAcoshString("arccosh");
+        generatorProfile->setAtanhString("arctanh");
+        generatorProfile->setAsechString("arcsech");
+        generatorProfile->setAcschString("arccsch");
+        generatorProfile->setAcothString("arccoth");
+        generatorProfile->setTrueString("true");
+        generatorProfile->setFalseString("false");
+        generatorProfile->setEString("exponentiale");
+        generatorProfile->setPiString("pi");
+        generatorProfile->setInfString("infinity");
+        generatorProfile->setNanString("notanumber");
+    }
+
+    return Generator::equationCode(ast, generatorProfile);
+}
+
 void printAnalyserModelEquations(const AnalyserModelPtr &model)
 {
     size_t eqnNb = 0;
@@ -617,44 +655,6 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
 void printAstAsTree(const AnalyserEquationAstPtr &ast)
 {
     Debug() << doPrintAstAsTree(ast, nullptr, false);
-}
-
-std::string astAsCode(const AnalyserEquationAstPtr &ast)
-{
-    if (ast == nullptr) {
-        return "nullptr";
-    }
-
-    static GeneratorProfilePtr generatorProfile = nullptr;
-
-    if (generatorProfile == nullptr) {
-        generatorProfile = GeneratorProfile::create();
-
-        generatorProfile->setAbsoluteValueString("abs");
-        generatorProfile->setNaturalLogarithmString("ln");
-        generatorProfile->setCommonLogarithmString("log");
-        generatorProfile->setRemString("rem");
-        generatorProfile->setAsinString("arcsin");
-        generatorProfile->setAcosString("arccos");
-        generatorProfile->setAtanString("arctan");
-        generatorProfile->setAsecString("arcsec");
-        generatorProfile->setAcscString("arccsc");
-        generatorProfile->setAcotString("arccot");
-        generatorProfile->setAsinhString("arcsinh");
-        generatorProfile->setAcoshString("arccosh");
-        generatorProfile->setAtanhString("arctanh");
-        generatorProfile->setAsechString("arcsech");
-        generatorProfile->setAcschString("arccsch");
-        generatorProfile->setAcothString("arccoth");
-        generatorProfile->setTrueString("true");
-        generatorProfile->setFalseString("false");
-        generatorProfile->setEString("exponentiale");
-        generatorProfile->setPiString("pi");
-        generatorProfile->setInfString("infinity");
-        generatorProfile->setNanString("notanumber");
-    }
-
-    return Generator::equationCode(ast, generatorProfile);
 }
 
 void printAstAsCode(const AnalyserEquationAstPtr &ast)
