@@ -93,20 +93,19 @@ private:
     bool mNewLine;
 };
 
-void printStack(const IndexStack &stack);
-void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model);
+void printAst(const AnalyserEquationAstPtr &ast);
+void printComponentMap(const ComponentMap &map);
+void printConnectionMap(const ConnectionMap &map);
 void printEquivalenceMap(const EquivalenceMap &map);
 void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model);
-void printStringStringMap(const StringStringMap &map);
-void printConnectionMap(const ConnectionMap &map);
-void printComponentMap(const ComponentMap &map);
-void printAstAsTree(const AnalyserEquationAstPtr &ast);
-std::string astAsCode(const AnalyserEquationAstPtr &ast);
-void printAstAsCode(const AnalyserEquationAstPtr &ast);
-void printAnalyserModelVariables(const AnalyserModelPtr &model);
-void printAnalyserModelEquations(const AnalyserModelPtr &model);
 void printHistory(const History &history);
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch);
 void printImportLibrary(const ImportLibrary &importlibrary);
+void printStack(const IndexStack &stack);
+void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model);
+void printStringStringMap(const StringStringMap &map);
+void printVariableMap(const VariableMap &map);
+void printAnalyserModelVariables(const AnalyserModelPtr &model);
+void printAnalyserModelEquations(const AnalyserModelPtr &model);
 
 } // namespace libcellml

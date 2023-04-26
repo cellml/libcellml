@@ -585,6 +585,29 @@ void printImportLibrary(const ImportLibrary &importlibrary)
     Debug() << " == ";
 }
 
+void printVariableMap(const VariableMap &map)
+{
+    Debug() << " == Variable map ==";
+    for (const auto &entry : map) {
+        auto v1 = entry->variable1();
+        auto v2 = entry->variable2();
+
+        Debug(false) << "v1: ";
+        if (v1 == nullptr) {
+            Debug(false) << "(nullptr)";
+        } else {
+            Debug(false) << v1->name();
+        }
+        Debug(false) << " - v2: ";
+        if (v2 == nullptr) {
+            Debug(false) << "(nullptr)";
+        } else {
+            Debug(false) << v2->name();
+        }
+        Debug() << "";
+    }
+}
+
 void printAnalyserModelVariables(const AnalyserModelPtr &model)
 {
     size_t varNb = 0;
