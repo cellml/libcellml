@@ -865,8 +865,8 @@ bool assignEncapsulationId(const ComponentPtr &component, CellmlElementType type
 {
     bool inHierarchy = std::dynamic_pointer_cast<libcellml::Model>(component->parent()) == nullptr || component->componentCount() > 0;
     return ((type == CellmlElementType::COMPONENT_REF) || all)
-            && component->encapsulationId().empty()
-            && inHierarchy;
+           && component->encapsulationId().empty()
+           && inHierarchy;
 }
 
 void Annotator::AnnotatorImpl::doSetComponentTreeTypeIds(const ComponentPtr &component, CellmlElementType type, bool all)
