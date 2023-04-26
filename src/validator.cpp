@@ -33,6 +33,7 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"
+#include "commonutils.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "namespaces.h"
@@ -2266,8 +2267,7 @@ bool reachableEquivalence(const VariablePtr &variable1, const VariablePtr &varia
 
 bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequired, const std::string &interfaceTypeCompatibleWith)
 {
-    std::string interfaceTypeMinimumRequiredString = interfaceTypeToString.find(interfaceTypeMinimumRequired)->second;
-    return interfaceTypeCompatibleWith.find(interfaceTypeMinimumRequiredString) != std::string::npos;
+    return interfaceTypeCompatibleWith.find(interfaceTypeToString.at(interfaceTypeMinimumRequired)) != std::string::npos;
 }
 
 void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported)
