@@ -2608,7 +2608,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                 addIdMapItem(id, info, idMap);
             }
         }
-        if (units->importSource() != nullptr && !units->importSource()->id().empty()) {
+        if ((units->importSource() != nullptr) && !units->importSource()->id().empty()) {
             info = " - import source for units '" + units->name() + "'";
             addIdMapItem(units->importSource()->id(), info, idMap);
         }
