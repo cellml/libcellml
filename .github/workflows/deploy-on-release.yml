@@ -99,19 +99,19 @@ jobs:
 
     steps:
     - name: Checkout libCellML
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.event.release.tag_name }}
 
     - name: Checkout zlib
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: OpenCMISS-Dependencies/zlib
         path: zlib
         ref: v1.2.3
 
     - name: Checkout LibXml2
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: OpenCMISS-Dependencies/libxml2
         path: libxml2
@@ -296,7 +296,7 @@ jobs:
 
     steps:
       - name: Check out libCellML
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.release.tag_name }}
 
@@ -380,20 +380,20 @@ jobs:
     runs-on: macos-12
     steps:
       - name: Checkout libCellML
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: libcellml
           ref: ${{ github.event.release.tag_name }}
 
       - name: Checkout zlib
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: OpenCMISS-Dependencies/zlib
           path: zlib
           ref: v1.2.3
 
       - name: Checkout LibXml2
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: OpenCMISS-Dependencies/libxml2
           path: libxml2
