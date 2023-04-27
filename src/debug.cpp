@@ -26,9 +26,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 
-#ifdef NAN
-#    undef NAN
-#endif
+#include "libcellml/undefine.h"
 
 namespace libcellml {
 
