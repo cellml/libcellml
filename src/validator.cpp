@@ -1929,7 +1929,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
             }
         }
 
-        // Equality, and relational and logical operators.
+        // Relational and logical operators.
 
     } else if (node->isMathmlElement("eq")
                || node->isMathmlElement("neq")
