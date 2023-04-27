@@ -779,7 +779,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
             ast->mPimpl->mOwnedRightChild = astRightChild;
         }
 
-        // Equality, and relational and logical operators.
+        // Relational and logical operators.
 
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
