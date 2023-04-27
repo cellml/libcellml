@@ -97,7 +97,7 @@ public:
      * Return the list of @ref AnalyserEquation items which correspond to the
      * equations on which this @ref AnalyserEquation depends.
      *
-     * @return The list of @ref AnalyserEquation dependencies.
+     * @return The dependencies as a @c std::vector.
      */
     std::vector<AnalyserEquationPtr> dependencies() const;
 
@@ -138,7 +138,7 @@ public:
      * Return the list of @ref AnalyserEquation items which are NLA siblings of
      * this @ref AnalyserEquation.
      *
-     * @return The list of @ref AnalyserEquation NLA siblings.
+     * @return The NLA siblings as a @c std::vector.
      */
     std::vector<AnalyserEquationPtr> nlaSiblings() const;
 
@@ -179,7 +179,7 @@ public:
      *
      * Return the variables computed by this @ref AnalyserEquation.
      *
-     * @return The variables.
+     * @return The variables as a @c std::vector.
      */
     std::vector<AnalyserVariablePtr> variables() const;
 

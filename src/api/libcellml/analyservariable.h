@@ -133,7 +133,7 @@ public:
      *
      * Return the equations used to compute this @ref AnalyserVariable.
      *
-     * @return The equations.
+     * @return The equations as a @c std::vector.
      */
     std::vector<AnalyserEquationPtr> equations() const;
 
