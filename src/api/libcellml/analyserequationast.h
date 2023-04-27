@@ -18,17 +18,7 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
-#ifdef TRUE
-#    undef TRUE
-#endif
-
-#ifdef FALSE
-#    undef FALSE
-#endif
-
-#ifdef NAN
-#    undef NAN
-#endif
+#include "libcellml/undefine.h"
 
 namespace libcellml {
 
