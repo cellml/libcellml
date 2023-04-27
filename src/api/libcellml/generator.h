@@ -108,8 +108,7 @@ public:
     /**
      * @brief Get the equation code for the given @ref AnalyserEquationAst.
      *
-     * Return the equation code for the given @ref AnalyserEquationAst using @ref GeneratorProfile, if present, or the
-     * default @ref GeneratorProfile.
+     * Return the equation code for the given @ref AnalyserEquationAst using @ref GeneratorProfile.
      *
      * @param ast The @ref AnalyserEquationAst for which we want to generate some code.
      * @param generatorProfile The @ref GeneratorProfile, if any, to use to generate the equation code. If no
