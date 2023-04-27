@@ -3113,8 +3113,10 @@ public:
      * Set the @c std::string for the find root method. To be useful, the string
      * should contain the [INDEX], [SIZE], and [CODE] tags, which will be
      * replaced with the index of the NLA system for which we want to find the
-     * root(s), the size of the u array, and some code to find the root(s),
+     * root(s), the size of the @c u array, and some code to find the root(s),
      * respectively.
+     *
+     * @sa uArrayString, setUArrayString
      *
      * @param forDifferentialModel Whether the call to the find root method is
      * for a differential model, as opposed to an algebraic model.
@@ -3142,7 +3144,9 @@ public:
      * Set the @c std::string for the call to the NLA solve method. To be
      * useful, the string should contain the [INDEX] and [SIZE] tags, which will
      * be replaced with the index of the NLA system for which we want to find
-     * the root(s) and the size of the u array, respectively.
+     * the root(s) and the size of the @c u array, respectively.
+     *
+     * @sa uArrayString, setUArrayString
      *
      * @param forDifferentialModel Whether the call to the NLA solve method is
      * for a differential model, as opposed to an algebraic model.
@@ -3181,49 +3185,53 @@ public:
                                           const std::string &objectiveFunctionMethodString);
 
     /**
-     * @brief Get the @c std::string for the u array used in the objective
+     * @brief Get the @c std::string for the @c u array used in the objective
      * function and find root methods.
      *
-     * Return the @c std::string for the u array used in the objective function
-     * and find root methods.
+     * Return the @c std::string for the @c u array used in the objective function
+     * and find root methods. The @c u array is used to keep track of the value of
+     * the different unknown variables in a system of non-linear algebraic equations.
      *
-     * @return The @c std::string for the u array used in the objective function
+     * @return The @c std::string for the @c u array used in the objective function
      * and find root methods.
      */
     std::string uArrayString() const;
 
     /**
-     * @brief Set the @c std::string for the u array used in the objective
+     * @brief Set the @c std::string for the @c u array used in the objective
      * function and find root methods.
      *
-     * Set the @c std::string for the u array used in the objective function and
-     * find root methods.
+     * Set the @c std::string for the @c u array used in the objective function and
+     * find root methods. The @c u array is used to keep track of the value of the
+     * different unknown variables in a system of non-linear algebraic equations.
      *
-     * @param uArrayString The @c std::string to use for the u array used in the
+     * @param uArrayString The @c std::string to use for the @c u array used in the
      * objective function and find root methods.
      */
     void setUArrayString(const std::string &uArrayString);
 
     /**
-     * @brief Get the @c std::string for the f array used in the objective
+     * @brief Get the @c std::string for the @f array used in the objective
      * function and find root methods.
      *
-     * Return the @c std::string for the f array used in the objective function
-     * and find root methods.
+     * Return the @c std::string for the @f array used in the objective function
+     * and find root methods. The @c f array is used to keep track of the value of
+     * the different objective functions in a system of non-linear algebraic equations.
      *
-     * @return The @c std::string for the f array used in the objective function
+     * @return The @c std::string for the @f array used in the objective function
      * and find root methods.
      */
     std::string fArrayString() const;
 
     /**
-     * @brief Set the @c std::string for the f array used in the objective
+     * @brief Set the @c std::string for the @f array used in the objective
      * function and find root methods.
      *
-     * Set the @c std::string for the f array used in the objective function and
-     * find root methods.
+     * Set the @c std::string for the @f array used in the objective function and
+     * find root methods. The @c f array is used to keep track of the value of the
+     * different objective functions in a system of non-linear algebraic equations.
      *
-     * @param fArrayString The @c std::string to use for the f array used in the
+     * @param fArrayString The @c std::string to use for the @f array used in the
      * objective function and find root methods.
      */
     void setFArrayString(const std::string &fArrayString);
