@@ -37,18 +37,19 @@ public:
      * The type of a model, i.e. whether it is unknown, invalid,
      * underconstrained, overconstrained, or unsuitably constrained, or whether
      * it defines a system of algebraic equations, a system of non-linear
-     * algebraic equations, or a system of ordinary differential equations.
+     * algebraic equations, a system of ordinary differential equations, or
+     * a system of differential algebraic equations.
      */
     enum class Type
     {
         UNKNOWN, /**< The type of the model is unknown. */
-        ODE, /**< The model defines a system of ordinary differential equations that require an external ODE solver (e.g., CVODE) to solve. */
-        DAE, /**< The model defines a system of differential algebraic equations that require both an external ODE solver (e.g., CVODE) and an external NLA solver (e.g., KINSOL) to solve. */
-        NLA, /**< The model defines a system of (potentially non-linear) algebraic equations that require an external NLA solver (e.g., KINSOL) to solve. */
         ALGEBRAIC, /**< The model defines a system of algebraic equations that can be solved directly. */
+        DAE, /**< The model defines a system of differential algebraic equations that require both an external ODE solver (e.g., CVODE) and an external NLA solver (e.g., KINSOL) to solve. */
         INVALID, /**< The model is invalid. */
-        UNDERCONSTRAINED, /**< The model is underconstrainted. */
+        NLA, /**< The model defines a system of (potentially non-linear) algebraic equations that require an external NLA solver (e.g., KINSOL) to solve. */
+        ODE, /**< The model defines a system of ordinary differential equations that require an external ODE solver (e.g., CVODE) to solve. */
         OVERCONSTRAINED, /**< The model is overconstrained. */
+        UNDERCONSTRAINED, /**< The model is underconstrainted. */
         UNSUITABLY_CONSTRAINED /**< The model is unsuitably constrained. */
     };
 
