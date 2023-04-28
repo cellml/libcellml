@@ -1466,3 +1466,17 @@ TEST(Importer, importCascadingUnitsImports)
     const std::string a = printer->printModel(flatModel);
     EXPECT_EQ(e, a);
 }
+
+TEST(Importer, importingCommonUnitsFromTriangleImportStructure)
+{
+    const std::string e = "The attempt to import the model at '" + resourcePath("importer/") + "' failed: the file is not valid XML.";
+
+    auto importer = libcellml::Importer::create(false);
+    auto parser = libcellml::Parser::create(false);
+
+    auto model = parser->parseModel(fileContents("importer/triangle_units_point.cellml"));
+
+    importer->resolveImports(model, resourcePath("importer"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+}
