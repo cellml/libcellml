@@ -1469,7 +1469,7 @@ TEST(Importer, importCascadingUnitsImports)
 
 TEST(Importer, importingCommonUnitsFromTriangleImportStructure)
 {
-    const std::string e = "The attempt to import the model at '" + resourcePath("importer/") + "' failed: the file is not valid XML.";
+    const std::string e = "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "' failed: the file could not be opened.";
 
     auto importer = libcellml::Importer::create(false);
     auto parser = libcellml::Parser::create(false);
