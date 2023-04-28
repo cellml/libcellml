@@ -281,9 +281,7 @@ ModelPtr Parser::ParserImpl::parseModel(const std::string &input)
     if (input.empty()) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("Model string is empty.");
-        if (mParser->isStrict()) {
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
-        }
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
         addIssue(issue);
     } else {
         model = Model::create();
