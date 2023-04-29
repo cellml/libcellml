@@ -1480,3 +1480,26 @@ TEST(Importer, importingCommonUnitsFromTriangleImportStructure)
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(e, importer->error(0)->description());
 }
+
+void testImporterWithInvalidImportedModels(bool strict)
+ {
+    const std::string e = "The attempt to import the model at '" + resourcePath("importer/triangle_units_opposite.cellml") + "' failed: the file is not valid XML.";
+
+    auto importer = libcellml::Importer::create(strict);
+    auto parser = libcellml::Parser::create(strict);
+
+     auto model = parser->parseModel(fileContents("importer/triangle_units_point.cellml"));
+
+     EXPECT_EQ(size_t(1), importer->errorCount());
+     EXPECT_EQ(e, importer->error(0)->description());
+ }
+
+TEST(Importer, importingCommonUnitsFromTriangleImportStructurePermissive)
+{
+    testImporterWithInvalidImportedModels(false);
+}
+
+TEST(Importer, importingCommonUnitsFromTriangleImportStructureStrict)
+{
+    testImporterWithInvalidImportedModels(true);
+}
