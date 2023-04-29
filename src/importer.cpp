@@ -689,6 +689,28 @@ std::string addUnitsAvoidingNameClash(const ModelPtr &model, const UnitsPtr &uni
     return units->name();
 }
 
+void flattenUnitsTree(const ModelPtr &model, const UnitsPtr &u, size_t index)
+{
+    if (u->isImport()) {
+        auto importSource = u->importSource();
+        auto importingModel = importSource->model();
+        auto importedUnits = importingModel->units(u->importReference());
+        auto importedUnitsCopy = importedUnits->clone();
+        importedUnitsCopy->setName(u->name());
+        model->replaceUnits(index, importedUnitsCopy);
+        for (size_t unitIndex = 0; unitIndex < importedUnits->unitCount(); ++unitIndex) {
+            const std::string reference = importedUnits->unitAttributeReference(unitIndex);
+            if (!reference.empty() && !isStandardUnitName(reference)) {
+                if (importingModel->hasUnits(reference)) {
+                    auto childUnits = importingModel->units(reference)->clone();
+                    addUnitsAvoidingNameClash(model, childUnits);
+                    flattenUnitsTree(model, childUnits, model->unitsCount() - 1);
+                }
+            }
+        }
+    }
+}
+
 ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -767,11 +789,29 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         applyEquivalenceMapToModel(rebasedMap, model);
 
         // Copy over units used in imported component to this model.
+        auto clonedImportModel = importModel->clone();
         StringStringMap unitsNamesToReplace;
         for (const auto &u : requiredUnits) {
-            const std::string originalName = u->name();
-            const std::string newName = addUnitsAvoidingNameClash(model, u);
+            // If the required units are imported units, we will resolve those units here.
+            size_t unitsIndex = 0;
+            UnitsPtr flattenedUnits = nullptr;
+            while (unitsIndex < clonedImportModel->unitsCount()) {
+                auto foundUnits = clonedImportModel->units(u->name());
+                if (foundUnits == nullptr) {
+                    unitsIndex += 1;
+                } else {
+                    flattenUnitsTree(clonedImportModel, u, unitsIndex);
+                    flattenedUnits = clonedImportModel->units(unitsIndex);
+                    break;
+                }
+            }
+
+            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits : u;
+
+            const std::string originalName = replacementUnits->name();
+            const std::string newName = addUnitsAvoidingNameClash(model, replacementUnits);
             if (originalName != newName) {
+                u->setName(newName);
                 unitsNamesToReplace.emplace(originalName, newName);
             }
         }
@@ -787,28 +827,6 @@ void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &compon
     for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
         auto c = flattenedComponent->component(index);
         flattenComponentTree(flattenedComponent, c, index);
-    }
-}
-
-void flattenUnitsTree(const ModelPtr &model, const UnitsPtr &u, size_t index)
-{
-    if (u->isImport()) {
-        auto importSource = u->importSource();
-        auto importingModel = importSource->model();
-        auto importedUnits = importingModel->units(u->importReference());
-        auto importedUnitsCopy = importedUnits->clone();
-        importedUnitsCopy->setName(u->name());
-        model->replaceUnits(index, importedUnitsCopy);
-        for (size_t unitIndex = 0; unitIndex < importedUnits->unitCount(); ++unitIndex) {
-            const std::string reference = importedUnits->unitAttributeReference(unitIndex);
-            if (!reference.empty() && !isStandardUnitName(reference)) {
-                if (importingModel->hasUnits(reference)) {
-                    auto childUnits = importingModel->units(reference)->clone();
-                    addUnitsAvoidingNameClash(model, childUnits);
-                    flattenUnitsTree(model, childUnits, model->unitsCount() - 1);
-                }
-            }
-        }
     }
 }
 
