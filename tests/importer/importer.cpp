@@ -1468,7 +1468,7 @@ TEST(Importer, importCascadingUnitsImports)
 }
 
 void testImporterWithInvalidImportedModels(bool strict)
- {
+{
     const std::string e = "The attempt to import the model at '" + resourcePath("importer/triangle_units_opposite.cellml") + "' failed: the file is not valid XML.";
 
     auto importer = libcellml::Importer::create(strict);
@@ -1479,7 +1479,7 @@ void testImporterWithInvalidImportedModels(bool strict)
     importer->resolveImports(model, resourcePath("importer"));
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(e, importer->error(0)->description());
- }
+}
 
 TEST(Importer, importingCommonUnitsFromTriangleImportStructurePermissive)
 {
