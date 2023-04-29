@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <algorithm>
 #include <cmath>
-#include <filesystem>
 #include <fstream>
 #include <libxml/uri.h>
 #include <sstream>
@@ -326,7 +325,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
         // If the URL has not ever been resolved into a model in this library, with or
         // without baseFile, parse it and save.
         std::ifstream file(url);
-        if (!std::filesystem::is_regular_file(std::filesystem::status(url))) {
+        if (!file.good()) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("The attempt to resolve imports with the model at '" + url + "' failed: the file could not be opened.");
             issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
