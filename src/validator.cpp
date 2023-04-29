@@ -347,8 +347,9 @@ public:
      * @param units The units to validate.
      * @param history The history of units visited.
      * @param modelsVisited The list of visited models.
+     * @param sourceUrl The source URL of the @p units.
      */
-    void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited);
+    void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited, const std::string &sourceUrl = ORIGIN_MODEL_REF);
 
     /**
      * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
@@ -683,7 +684,7 @@ public:
 bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
 {
     return std::find_if(history.begin(), history.end(),
-                        [=](const HistoryEpochPtr &i) -> bool { return i->mName == h->mName; })
+                        [=](const HistoryEpochPtr &i) -> bool { return i->mName == h->mName  && i->mSourceUrl == h->mSourceUrl; })
            != history.end();
 }
 
@@ -1032,9 +1033,9 @@ bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &des
     return false;
 }
 
-void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited)
+void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited, const std::string &sourceUrl)
 {
-    auto h = createHistoryEpoch(units, ORIGIN_MODEL_REF);
+    auto h = createHistoryEpoch(units, sourceUrl);
     if (checkForLocalCycles(history, h)) {
         history.push_back(h);
         std::string des;
@@ -1136,7 +1137,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
                 } else {
                     modelsVisited.push_back(importSourceModel);
                     history.push_back(h);
-                    validateUnits(importedUnits, history, modelsVisited);
+                    validateUnits(importedUnits, history, modelsVisited, importSource->url());
                     modelsVisited.pop_back();
                 }
             } else {
