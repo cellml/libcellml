@@ -1491,7 +1491,7 @@ TEST(Importer, importingCommonUnitsFromTriangleImportStructureStrict)
     testImporterWithInvalidImportedModels(true);
 }
 
-TEST(Importer, importingUnitsWithSameNameDoesntResultInCircularImport)
+TEST(Importer, importingUnitsWithSameNameDoesntResultInRepeatedUnits)
 {
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
@@ -1500,6 +1500,8 @@ TEST(Importer, importingUnitsWithSameNameDoesntResultInCircularImport)
     auto model = parser->parseModel(fileContents("importer/triangle_units_point_I.cellml"));
 
     EXPECT_EQ(size_t(0), importer->errorCount());
+
+    importer->resolveImports(model, resourcePath("importer"));
 
     for (size_t i = 0; i < importer->libraryCount(); ++i) {
         validator->validateModel(importer->library(i));
