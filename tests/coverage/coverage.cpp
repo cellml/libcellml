@@ -381,6 +381,20 @@ TEST(Coverage, analyserExternalVariable)
     EXPECT_EQ(false, externalVariable->removeDependency(model, "not_membrane", "Cm"));
 }
 
+TEST(Coverage, analyserTypes)
+{
+    auto analyser = libcellml::Analyser::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
+    EXPECT_EQ("algebraic", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(0)->type()));
+}
+
 void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
 {
     if (ast != nullptr) {
