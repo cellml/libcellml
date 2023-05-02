@@ -322,7 +322,7 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is unused.",
+        "The type of variable 'x' in component 'my_component' is unknown.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -373,7 +373,7 @@ TEST(Analyser, unsuitablyConstrained)
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'y' in component 'my_component' is computed more than once.",
-        "Variable 'x' in component 'my_component' is unused.",
+        "The type of variable 'x' in component 'my_component' is unknown.",
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
         libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
