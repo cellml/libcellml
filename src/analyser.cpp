@@ -2306,23 +2306,25 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equatio
 void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVariablePtr &variable,
                                                      Issue::ReferenceRule referenceRule)
 {
-    std::string issueType;
+    std::string descriptionStart = "Variable";
+    std::string descriptionEnd;
 
     switch (variable->mType) {
     case AnalyserInternalVariable::Type::UNKNOWN:
-        issueType = "is unused";
+        descriptionStart = "The type of variable";
+        descriptionEnd = "is unknown";
 
         break;
     case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
-        issueType = "is used in an ODE, but it is not initialised";
+        descriptionEnd = "is used in an ODE, but it is not initialised";
 
         break;
     case AnalyserInternalVariable::Type::STATE_ALGEBRAIC:
-        issueType = "is used in an ODE, but its rate is computed using an NLA equation";
+        descriptionEnd = "is used in an ODE, but its rate is computed using an NLA equation";
 
         break;
     default: // AnalyserInternalVariable::Type::OVERCONSTRAINED.
-        issueType = "is computed more than once";
+        descriptionEnd = "is computed more than once";
 
         break;
     }
@@ -2330,9 +2332,9 @@ void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVaria
     auto issue = Issue::IssueImpl::create();
     auto realVariable = variable->mVariable;
 
-    issue->mPimpl->setDescription("Variable '" + realVariable->name()
+    issue->mPimpl->setDescription(descriptionStart + " '" + realVariable->name()
                                   + "' in component '" + owningComponent(realVariable)->name()
-                                  + "' " + issueType + ".");
+                                  + "' " + descriptionEnd + ".");
     issue->mPimpl->setReferenceRule(referenceRule);
     issue->mPimpl->mItem->mPimpl->setVariable(realVariable);
 
