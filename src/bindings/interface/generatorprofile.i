@@ -832,10 +832,10 @@ and units of a variable respectively.";
 "Sets the string for the data structure for the root finding information object.";
 
 %feature("docstring") libcellml::GeneratorProfile::externNlaSolveMethodString
-"Returns the string for the extern NLA solve method.";
+"Returns the string for the external NLA solve method.";
 
 %feature("docstring") libcellml::GeneratorProfile::setExternNlaSolveMethodString
-"Sets the string for the extern NLA solve method.";
+"Sets the string for the external NLA solve method.";
 
 %feature("docstring") libcellml::GeneratorProfile::findRootCallString
 "Returns the string for the call to the find root method.";
