@@ -26,7 +26,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 
-#include "libcellml/undefine.h"
+#include "libcellml/undefines.h"
 
 namespace libcellml {
 
