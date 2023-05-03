@@ -3050,21 +3050,21 @@ public:
                                         const std::string &rootFindingInfoObjectString);
 
     /**
-     * @brief Get the @c std::string for the extern NLA solve method.
+     * @brief Get the @c std::string for the external NLA solve method.
      *
-     * Return the @c std::string for the extern NLA solve method.
+     * Return the @c std::string for the external NLA solve method.
      *
-     * @return The @c std::string for the extern NLA solve method.
+     * @return The @c std::string for the external NLA solve method.
      */
     std::string externNlaSolveMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the extern NLA solve method.
+     * @brief Set the @c std::string for the external NLA solve method.
      *
-     * Set the @c std::string for the extern NLA solve method.
+     * Set the @c std::string for the external NLA solve method.
      *
      * @param externNlaSolveMethodString The @c std::string to use for the
-     * extern NLA solve method.
+     * external NLA solve method.
      */
     void setExternNlaSolveMethodString(const std::string &externNlaSolveMethodString);
 
