@@ -18,7 +18,7 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
-#include "libcellml/undefine.h"
+#include "libcellml/undefines.h"
 
 namespace libcellml {
 

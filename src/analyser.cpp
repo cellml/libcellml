@@ -44,7 +44,7 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
-#include "libcellml/undefine.h"
+#include "libcellml/undefines.h"
 
 namespace libcellml {
 

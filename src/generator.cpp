@@ -33,7 +33,7 @@ limitations under the License.
 #include "generatorprofiletools.h"
 #include "utilities.h"
 
-#include "libcellml/undefine.h"
+#include "libcellml/undefines.h"
 
 namespace libcellml {
 
