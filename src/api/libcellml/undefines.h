@@ -14,6 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Note that:
+//  1) this header file MUST NOT start with #pragma once; and that
+//  2) this header file MUST be included LAST by a .cpp/.h file.
+//
+// This ensures that TRUE, FALSE, and NAN can be safely used in AnalyserEquationAst::Type.
+
 #ifdef TRUE
 #    undef TRUE
 #endif
