@@ -32,7 +32,7 @@ EMSCRIPTEN_BINDINGS(libcellml_generator)
         .function("setModel", &libcellml::Generator::setModel)
         .function("interfaceCode", &libcellml::Generator::interfaceCode)
         .function("implementationCode", &libcellml::Generator::implementationCode)
-        .class_function("equationCodeUsingDefaultProfile", select_overload<std::string(const libcellml::AnalyserEquationAstPtr &)>(&libcellml::Generator::equationCode))
-        .class_function("equationCodeUsingGivenProfile", select_overload<std::string(const libcellml::AnalyserEquationAstPtr &, const libcellml::GeneratorProfilePtr &)>(&libcellml::Generator::equationCode))
+        .class_function("equationCode", select_overload<std::string(const libcellml::AnalyserEquationAstPtr &)>(&libcellml::Generator::equationCode))
+        .class_function("equationCodeByProfile", select_overload<std::string(const libcellml::AnalyserEquationAstPtr &, const libcellml::GeneratorProfilePtr &)>(&libcellml::Generator::equationCode))
     ;
 }
