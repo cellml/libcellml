@@ -351,7 +351,9 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("The attempt to import the model at '" + url + "' failed: the file is not valid XML.");
                     issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+                    if (mImporter->isStrict()) {
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+                    }
                     addIssue(issue);
                     return false;
                 }
