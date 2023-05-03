@@ -281,9 +281,7 @@ ModelPtr Parser::ParserImpl::parseModel(const std::string &input)
     if (input.empty()) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("Model string is empty.");
-        if (mParser->isStrict()) {
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
-        }
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
         addIssue(issue);
     } else {
         model = Model::create();
@@ -389,9 +387,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("LibXml2 error: " + doc->xmlError(i));
-            if (mParser->isStrict()) {
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
-            }
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
             addIssue(issue);
         }
     }
