@@ -700,12 +700,10 @@ void flattenUnitsTree(const ModelPtr &model, const UnitsPtr &u, size_t index)
         model->replaceUnits(index, importedUnitsCopy);
         for (size_t unitIndex = 0; unitIndex < importedUnits->unitCount(); ++unitIndex) {
             const std::string reference = importedUnits->unitAttributeReference(unitIndex);
-            if (!reference.empty() && !isStandardUnitName(reference)) {
-                if (importingModel->hasUnits(reference)) {
-                    auto childUnits = importingModel->units(reference)->clone();
-                    addUnitsAvoidingNameClash(model, childUnits);
-                    flattenUnitsTree(model, childUnits, model->unitsCount() - 1);
-                }
+            if (!reference.empty() && !isStandardUnitName(reference) && importingModel->hasUnits(reference)) {
+                auto childUnits = importingModel->units(reference)->clone();
+                addUnitsAvoidingNameClash(model, childUnits);
+                flattenUnitsTree(model, childUnits, model->unitsCount() - 1);
             }
         }
     }
