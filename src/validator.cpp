@@ -684,7 +684,7 @@ public:
 bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
 {
     return std::find_if(history.begin(), history.end(),
-                        [=](const HistoryEpochPtr &i) -> bool { return i->mName == h->mName  && i->mSourceUrl == h->mSourceUrl; })
+                        [=](const HistoryEpochPtr &i) -> bool { return (i->mName == h->mName) && (i->mSourceUrl == h->mSourceUrl); })
            != history.end();
 }
 
