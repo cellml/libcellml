@@ -199,9 +199,10 @@ struct AnalyserInternalEquation
     static bool hasNonConstantVariables(const AnalyserInternalVariablePtrs &variables);
     bool hasNonConstantVariables();
 
-    bool variableOnLhsRhs(const AnalyserInternalVariablePtr &variable, bool lhs);
-    bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
+    bool variableOnLhsRhs(const AnalyserInternalVariablePtr &variable,
+                          const AnalyserEquationAstPtr &astChild);
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
+    bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
     bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &variableIndex, bool checkNlaSystems);
 };
@@ -292,10 +293,8 @@ bool AnalyserInternalEquation::hasNonConstantVariables()
 }
 
 bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserInternalVariablePtr &variable,
-                                                bool lhs)
+                                                const AnalyserEquationAstPtr &astChild)
 {
-    auto astChild = lhs ? mAst->leftChild() : mAst->rightChild();
-
     switch (astChild->type()) {
     case AnalyserEquationAst::Type::CI:
         return astChild->variable()->name() == variable->mVariable->name();
@@ -306,15 +305,15 @@ bool AnalyserInternalEquation::variableOnLhsRhs(const AnalyserInternalVariablePt
     }
 }
 
-bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable)
-{
-    return variableOnLhsRhs(variable, true)
-           || variableOnRhs(variable);
-}
-
 bool AnalyserInternalEquation::variableOnRhs(const AnalyserInternalVariablePtr &variable)
 {
-    return variableOnLhsRhs(variable, false);
+    return variableOnLhsRhs(variable, mAst->rightChild());
+}
+
+bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable)
+{
+    return variableOnLhsRhs(variable, mAst->leftChild())
+           || variableOnRhs(variable);
 }
 
 bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
