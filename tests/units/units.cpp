@@ -2799,3 +2799,40 @@ TEST(Units, equivalentUnitsMatchingBuiltinUnitsFromVariable)
 
     EXPECT_TRUE(libcellml::Units::compatible(variable->units(), variableParam->units()));
 }
+
+TEST(Units, importUnitsWithReferenceToNonStandardUnits)
+{
+    libcellml::ModelPtr unitsModel = libcellml::Model::create("Units_Database");
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create("fmol");
+    u1->addUnit("mol", "femto");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("per_fmol");
+    u2->addUnit("fmol", -1.0);
+    libcellml::UnitsPtr u3 = libcellml::Units::create("per_fmol");
+
+    unitsModel->addUnits(u1);
+    unitsModel->addUnits(u2);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+    import->setModel(unitsModel);
+
+    libcellml::ComponentPtr c = libcellml::Component::create("env");
+    libcellml::VariablePtr v = libcellml::Variable::create("v");
+
+    u3->setImportSource(import);
+    u3->setImportReference("per_fmol");
+
+    v->setUnits(u3);
+    c->addVariable(v);
+    model->addComponent(c);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    libcellml::ImporterPtr i = libcellml::Importer::create();
+
+    libcellml::ModelPtr flatModel = i->flattenModel(model);
+
+    EXPECT_TRUE(flatModel->hasUnits("fmol"));
+}
