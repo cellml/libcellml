@@ -468,7 +468,6 @@ void Units::setUnitAttributeReference(size_t index, const std::string &reference
         ud.mReference = reference;
         pFunc()->mUnitDefinitions[index] = ud;
     }
-
 }
 
 std::string Units::unitAttributePrefix(size_t index) const
