@@ -2809,10 +2809,17 @@ TEST(Units, importUnitsWithReferenceToNonStandardUnits)
     u1->addUnit("mol", "femto");
     libcellml::UnitsPtr u2 = libcellml::Units::create("per_fmol");
     u2->addUnit("fmol", -1.0);
-    libcellml::UnitsPtr u3 = libcellml::Units::create("per_fmol");
+    libcellml::UnitsPtr u3 = libcellml::Units::create("per_sec");
+    u3->addUnit("second", -1.0);
+    libcellml::UnitsPtr u4 = libcellml::Units::create("per_sec_fmol");
+    u4->addUnit("per_sec");
+    u4->addUnit("per_fmol");
+    libcellml::UnitsPtr u5 = libcellml::Units::create("per_sec_fmol");
 
     unitsModel->addUnits(u1);
     unitsModel->addUnits(u2);
+    unitsModel->addUnits(u3);
+    unitsModel->addUnits(u4);
 
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
@@ -2821,11 +2828,12 @@ TEST(Units, importUnitsWithReferenceToNonStandardUnits)
     libcellml::ComponentPtr c = libcellml::Component::create("env");
     libcellml::VariablePtr v = libcellml::Variable::create("v");
 
-    u3->setImportSource(import);
-    u3->setImportReference("per_fmol");
+    u5->setImportSource(import);
+    u5->setImportReference("per_sec_fmol");
 
-    v->setUnits(u3);
+    v->setUnits(u5);
     c->addVariable(v);
+    model->addUnits(u5);
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
