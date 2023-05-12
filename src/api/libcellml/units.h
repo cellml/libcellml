@@ -345,6 +345,8 @@ public:
      */
     std::string unitAttributeReference(size_t index) const;
 
+    void setUnitAttributeReference(size_t index, const std::string &reference);
+
     /**
      * @brief Get the prefix attribute for the unit at the given @p index.
      *

@@ -689,7 +689,25 @@ std::string addUnitsAvoidingNameClash(const ModelPtr &model, const UnitsPtr &uni
     return units->name();
 }
 
-void flattenUnitsTree(const ModelPtr &model, const UnitsPtr &u, size_t index)
+void flattenUnitsImports(const ModelPtr &model, const UnitsPtr &u, size_t index);
+
+void flattenUnits(const ModelPtr &flatModel, const ModelPtr &importingModel, const UnitsPtr &u)
+{
+    for (size_t unitIndex = 0; unitIndex < u->unitCount(); ++unitIndex) {
+        std::string reference = u->unitAttributeReference(unitIndex);
+        if (!reference.empty() && !isStandardUnitName(reference) && importingModel->hasUnits(reference)) {
+            auto importingChildUnits = importingModel->units(reference);
+            auto clonedUnits = importingChildUnits->clone();
+            addUnitsAvoidingNameClash(flatModel, clonedUnits);
+            u->setUnitAttributeReference(unitIndex, clonedUnits->name());
+            clonedUnits->setImportSource(importingChildUnits->importSource());
+            flattenUnitsImports(flatModel, clonedUnits, flatModel->unitsCount() - 1);
+            flattenUnits(flatModel, importingModel, clonedUnits);
+        }
+    }
+}
+
+void flattenUnitsImports(const ModelPtr &flatModel, const UnitsPtr &u, size_t index)
 {
     if (u->isImport()) {
         auto importSource = u->importSource();
@@ -697,15 +715,8 @@ void flattenUnitsTree(const ModelPtr &model, const UnitsPtr &u, size_t index)
         auto importedUnits = importingModel->units(u->importReference());
         auto importedUnitsCopy = importedUnits->clone();
         importedUnitsCopy->setName(u->name());
-        model->replaceUnits(index, importedUnitsCopy);
-        for (size_t unitIndex = 0; unitIndex < importedUnits->unitCount(); ++unitIndex) {
-            const std::string reference = importedUnits->unitAttributeReference(unitIndex);
-            if (!reference.empty() && !isStandardUnitName(reference) && importingModel->hasUnits(reference)) {
-                auto childUnits = importingModel->units(reference)->clone();
-                addUnitsAvoidingNameClash(model, childUnits);
-                flattenUnitsTree(model, childUnits, model->unitsCount() - 1);
-            }
-        }
+        flatModel->replaceUnits(index, importedUnitsCopy);
+        flattenUnits(flatModel, importingModel, importedUnitsCopy);
     }
 }
 
@@ -798,7 +809,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
                 if (foundUnits == nullptr) {
                     unitsIndex += 1;
                 } else {
-                    flattenUnitsTree(clonedImportModel, u, unitsIndex);
+                    flattenUnitsImports(clonedImportModel, u, unitsIndex);
                     flattenedUnits = clonedImportModel->units(unitsIndex);
                     break;
                 }
@@ -819,12 +830,12 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
     return parent->component(index);
 }
 
-void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &component, size_t componentIndex)
+void flattenComponentImports(const ComponentEntityPtr &parent, ComponentPtr &component, size_t componentIndex)
 {
     auto flattenedComponent = flattenComponent(parent, component, componentIndex);
     for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
         auto c = flattenedComponent->component(index);
-        flattenComponentTree(flattenedComponent, c, index);
+        flattenComponentImports(flattenedComponent, c, index);
     }
 }
 
@@ -851,13 +862,13 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
         // Go through Units and instantiate any imported Units.
         for (size_t index = 0; index < flatModel->unitsCount(); ++index) {
             auto u = flatModel->units(index);
-            flattenUnitsTree(flatModel, u, index);
+            flattenUnitsImports(flatModel, u, index);
         }
 
         // Go through Components and instantiate any imported Components.
         for (size_t index = 0; index < flatModel->componentCount(); ++index) {
             auto c = flatModel->component(index);
-            flattenComponentTree(flatModel, c, index);
+            flattenComponentImports(flatModel, c, index);
         }
     }
 

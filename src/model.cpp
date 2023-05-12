@@ -303,12 +303,15 @@ bool hasUnitsImports(const UnitsPtr &units)
 {
     bool importPresent = units->isImport();
     auto model = owningModel(units);
+    auto unitsName = units->name();
     size_t unistCount = units->unitCount();
     for (size_t index = 0; !importPresent && (index < unistCount); ++index) {
         std::string reference = units->unitAttributeReference(index);
         if (!reference.empty() && !isStandardUnitName(reference)) {
             if (model->hasUnits(reference)) {
-                importPresent = hasUnitsImports(model->units(reference));
+                auto tmpUnits = model->units(reference);
+                auto tmpUnitsName = tmpUnits->name();
+                importPresent = hasUnitsImports(tmpUnits);
             }
         }
     }
