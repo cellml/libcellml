@@ -343,6 +343,9 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(1.2, u.unitAttributeExponent(0))
         self.assertEqual(3.4, u.unitAttributeMultiplier(0))
 
+        u.setUnitAttributeReference(0, 'arrdee')
+        self.assertEqual('arrdee', u.unitAttributeReference(0))
+
 
 if __name__ == '__main__':
     unittest.main()
