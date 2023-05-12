@@ -98,6 +98,9 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::unitAttributeReference
 "Get the reference from the unit attribute.";
 
+%feature("docstring") libcellml::Units::setUnitAttributeReference
+"Set the reference unit attribute.";
+
 %feature("docstring") libcellml::Units::unitAttributePrefix
 "Get the prefix from the unit attribute.";
 
