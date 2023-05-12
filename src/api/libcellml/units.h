@@ -345,6 +345,15 @@ public:
      */
     std::string unitAttributeReference(size_t index) const;
 
+    /**
+     * @brief Set the reference attribute for the unit at the given @p index.
+     *
+     * Set the reference attribute for the unit at the given @p index.  The index must
+     * be in the range [0, \#unit).
+     *
+     * @param index The @c size_t index of the unit in this units to set the reference attribute for.
+     * @param reference The @c std::string reference to set.
+     */
     void setUnitAttributeReference(size_t index, const std::string &reference);
 
     /**
