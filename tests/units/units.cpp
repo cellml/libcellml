@@ -2868,6 +2868,12 @@ TEST(Units, importUnitsWithReferenceToNonStandardUnits)
 
 TEST(Units, importUnitsWithReferenceToNonStandardUnitsDuplicateName)
 {
-    libcellml::ModelPtr m = prepareImportUnitsWithReferenceToNonStandardUnits("fmol",nullptr);
+    libcellml::ModelPtr m = prepareImportUnitsWithReferenceToNonStandardUnits("fmol", nullptr);
+    EXPECT_TRUE(m->hasUnits("fmol_1"));
+}
+
+TEST(Units, importUnitsWithReferenceToNonStandardUnitsMultiUseReference)
+{
+    libcellml::ModelPtr m = prepareImportUnitsWithReferenceToNonStandardUnits("fmol", nullptr);
     EXPECT_TRUE(m->hasUnits("fmol_1"));
 }
