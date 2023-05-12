@@ -791,6 +791,12 @@ TEST(Units, unitAttributeReference)
 
     EXPECT_EQ("NewUnit", u->unitAttributeReference(0));
     EXPECT_EQ("", u->unitAttributeReference(4));
+
+    u->setUnitAttributeReference(0, "NewerUnit");
+    EXPECT_EQ("NewerUnit", u->unitAttributeReference(0));
+
+    u->setUnitAttributeReference(3, "FreshUnit");
+    EXPECT_EQ("NewerUnit", u->unitAttributeReference(0));
 }
 
 TEST(Units, unitAttributePrefix)
@@ -2800,7 +2806,7 @@ TEST(Units, equivalentUnitsMatchingBuiltinUnitsFromVariable)
     EXPECT_TRUE(libcellml::Units::compatible(variable->units(), variableParam->units()));
 }
 
-TEST(Units, importUnitsWithReferenceToNonStandardUnits)
+libcellml::ModelPtr prepareImportUnitsWithReferenceToNonStandardUnits(const std::string &importUnitsName, libcellml::UnitsPtr additionalUnits)
 {
     libcellml::ModelPtr unitsModel = libcellml::Model::create("Units_Database");
     libcellml::ModelPtr model = libcellml::Model::create("main_model");
@@ -2814,12 +2820,15 @@ TEST(Units, importUnitsWithReferenceToNonStandardUnits)
     libcellml::UnitsPtr u4 = libcellml::Units::create("per_sec_fmol");
     u4->addUnit("per_sec");
     u4->addUnit("per_fmol");
-    libcellml::UnitsPtr u5 = libcellml::Units::create("per_sec_fmol");
+    libcellml::UnitsPtr u5 = libcellml::Units::create(importUnitsName);
 
     unitsModel->addUnits(u1);
     unitsModel->addUnits(u2);
     unitsModel->addUnits(u3);
     unitsModel->addUnits(u4);
+    if (additionalUnits != nullptr) {
+        unitsModel->addUnits(additionalUnits);
+    }
 
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
@@ -2840,7 +2849,25 @@ TEST(Units, importUnitsWithReferenceToNonStandardUnits)
 
     libcellml::ImporterPtr i = libcellml::Importer::create();
 
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    Debug() << p->printModel(unitsModel);
+    Debug() << p->printModel(model);
+
     libcellml::ModelPtr flatModel = i->flattenModel(model);
 
-    EXPECT_TRUE(flatModel->hasUnits("fmol"));
+    Debug() << p->printModel(flatModel);
+    return flatModel;
+}
+
+TEST(Units, importUnitsWithReferenceToNonStandardUnits)
+{
+    libcellml::ModelPtr m = prepareImportUnitsWithReferenceToNonStandardUnits("pre_sec_fmol", nullptr);
+    EXPECT_TRUE(m->hasUnits("fmol"));
+}
+
+TEST(Units, importUnitsWithReferenceToNonStandardUnitsDuplicateName)
+{
+    libcellml::ModelPtr m = prepareImportUnitsWithReferenceToNonStandardUnits("fmol",nullptr);
+    EXPECT_TRUE(m->hasUnits("fmol_1"));
 }
