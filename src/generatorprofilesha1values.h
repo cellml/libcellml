@@ -25,6 +25,6 @@ namespace libcellml {
  * See docs/dev_utilities.rst for further information.
  */
 static const char C_GENERATOR_PROFILE_SHA1[] = "892bd80ecaeb786491be91deba7a9d08185c6f07";
-static const char PYTHON_GENERATOR_PROFILE_SHA1[] = "e9a5a6d55c93785826b2ad68bac7f78a0f1c63b3";
+static const char PYTHON_GENERATOR_PROFILE_SHA1[] = "c3d2942913e92292e675a93b0b17f2e781150a4f";
 
 } // namespace libcellml

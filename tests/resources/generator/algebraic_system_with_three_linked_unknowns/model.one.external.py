@@ -28,6 +28,9 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
+from nlasolver import nla_solve
+
+
 def objective_function_0(u, f, data):
     variables = data[0]
 

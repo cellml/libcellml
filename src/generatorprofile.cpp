@@ -994,7 +994,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mRootFindingInfoObjectFamString = "";
         mRootFindingInfoObjectFdmString = "";
-        mExternNlaSolveMethodString = "";
+        mExternNlaSolveMethodString = "\n"
+                                      "from nlasolver import nla_solve"
+                                      "\n";
         mFindRootCallFamString = "find_root_[INDEX](variables)\n";
         mFindRootCallFdmString = "find_root_[INDEX](voi, states, rates, variables)\n";
         mFindRootMethodFamString = "\n"
