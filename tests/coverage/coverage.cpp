@@ -700,6 +700,7 @@ TEST(Coverage, generator)
     generator->implementationCode();
 
     profile->setArrayElementSeparatorString("xxx");
+    profile->setExternNlaSolveMethodString("");
     profile->setFindRootMethodString(false, "xxx");
     profile->setFindRootMethodString(true, "xxx");
     profile->setFindRootCallString(false, "");
