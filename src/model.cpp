@@ -309,9 +309,7 @@ bool hasUnitsImports(const UnitsPtr &units)
         std::string reference = units->unitAttributeReference(index);
         if (!reference.empty() && !isStandardUnitName(reference)) {
             if (model->hasUnits(reference)) {
-                auto tmpUnits = model->units(reference);
-                auto tmpUnitsName = tmpUnits->name();
-                importPresent = hasUnitsImports(tmpUnits);
+                importPresent = hasUnitsImports(model->units(reference));
             }
         }
     }
