@@ -67,18 +67,18 @@ struct AnalyserInternalVariable
 {
     enum struct Type
     {
-        UNKNOWN, // 0
-        SHOULD_BE_STATE, // 1
-        INITIALISED, // 2
-        VARIABLE_OF_INTEGRATION, // 3
-        STATE, // 4
-        CONSTANT, // 5
-        COMPUTED_TRUE_CONSTANT, // 6
-        COMPUTED_VARIABLE_BASED_CONSTANT, // 7
-        INITIALISED_ALGEBRAIC, // 8
-        STATE_ALGEBRAIC, // 9
-        ALGEBRAIC, // 10
-        OVERCONSTRAINED // 11
+        UNKNOWN,
+        SHOULD_BE_STATE,
+        INITIALISED,
+        VARIABLE_OF_INTEGRATION,
+        STATE,
+        CONSTANT,
+        COMPUTED_TRUE_CONSTANT,
+        COMPUTED_VARIABLE_BASED_CONSTANT,
+        INITIALISED_ALGEBRAIC,
+        STATE_ALGEBRAIC,
+        ALGEBRAIC,
+        OVERCONSTRAINED
     };
 
     size_t mIndex = MAX_SIZE_T;
@@ -155,12 +155,12 @@ struct AnalyserInternalEquation
 {
     enum struct Type
     {
-        UNKNOWN, // 0
-        TRUE_CONSTANT, // 1
-        VARIABLE_BASED_CONSTANT, // 2
-        ODE, // 3
-        NLA, // 4
-        ALGEBRAIC // 5
+        UNKNOWN,
+        TRUE_CONSTANT,
+        VARIABLE_BASED_CONSTANT,
+        ODE,
+        NLA,
+        ALGEBRAIC
     };
 
     Type mType = Type::UNKNOWN;
