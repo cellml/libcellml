@@ -118,6 +118,9 @@ describe("Units tests", () => {
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributeReference(0)).toBe("farad")
+
+        u.setUnitAttributeReference(0, "mole")
+        expect(u.unitAttributeReference(0)).toBe("mole")
     })
     test('Checking Units unit attribute prefix.', () => {
         const u = new libcellml.Units()
