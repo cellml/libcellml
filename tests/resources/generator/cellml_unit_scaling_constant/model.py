@@ -24,7 +24,7 @@ VARIABLE_INFO = [
 
 
 def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+    return [0.0]*VARIABLE_COUNT
 
 
 def initialise_variables(variables):

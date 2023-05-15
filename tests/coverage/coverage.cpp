@@ -634,7 +634,7 @@ TEST(Coverage, generator)
 
     profile->setImplementationCreateStatesArrayMethodString("\n"
                                                             "def create_states_vector():\n"
-                                                            "    return [nan]*STATE_COUNT\n");
+                                                            "    return [0.0]*STATE_COUNT\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.py"), generator->implementationCode());
