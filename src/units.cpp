@@ -462,9 +462,8 @@ std::string Units::unitAttributeReference(size_t index) const
 
 void Units::setUnitAttributeReference(size_t index, const std::string &reference)
 {
-    UnitDefinition ud;
     if (index < pFunc()->mUnitDefinitions.size()) {
-        ud = pFunc()->mUnitDefinitions.at(index);
+        UnitDefinition ud = pFunc()->mUnitDefinitions.at(index);
         ud.mReference = reference;
         pFunc()->mUnitDefinitions[index] = ud;
     }
