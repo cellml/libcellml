@@ -99,6 +99,7 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .function("addUnitByStandardUnitExponent", select_overload<void(libcellml::Units::StandardUnit, double, const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByStandardUnit", select_overload<void(libcellml::Units::StandardUnit)>(&libcellml::Units::addUnit))
         .function("unitAttributeReference", &libcellml::Units::unitAttributeReference)
+        .function("setUnitAttributeReference", &libcellml::Units::setUnitAttributeReference)
         .function("unitAttributePrefix", &libcellml::Units::unitAttributePrefix)
         .function("unitAttributeExponent", &libcellml::Units::unitAttributeExponent)
         .function("unitAttributeMultiplier", &libcellml::Units::unitAttributeMultiplier)
