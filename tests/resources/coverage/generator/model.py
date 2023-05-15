@@ -341,11 +341,11 @@ def acoth(x):
 
 
 def create_states_array():
-    return [nan]*STATE_COUNT
+    return [0.0]*STATE_COUNT
 
 
 def create_variables_array():
-    return [nan]*VARIABLE_COUNT
+    return [0.0]*VARIABLE_COUNT
 
 
 from nlasolver import nla_solve
@@ -365,12 +365,12 @@ def objective_function_0(u, f, data):
 
 
 def find_root_0(voi, states, rates, variables):
-    u = [nan]*2
+    u = [0.0]*2
 
     u[0] = variables[205]
     u[1] = variables[206]
 
-    nla_solve(objective_function_0, u, 2, (voi, states, rates, variables))
+    u = nla_solve(objective_function_0, u, 2, [voi, states, rates, variables])
 
     variables[205] = u[0]
     variables[206] = u[1]

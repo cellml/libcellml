@@ -1001,16 +1001,16 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mFindRootCallFdmString = "find_root_[INDEX](voi, states, rates, variables)\n";
         mFindRootMethodFamString = "\n"
                                    "def find_root_[INDEX](variables):\n"
-                                   "    u = [nan]*[SIZE]\n"
+                                   "    u = [0.0]*[SIZE]\n"
                                    "\n"
                                    "[CODE]";
         mFindRootMethodFdmString = "\n"
                                    "def find_root_[INDEX](voi, states, rates, variables):\n"
-                                   "    u = [nan]*[SIZE]\n"
+                                   "    u = [0.0]*[SIZE]\n"
                                    "\n"
                                    "[CODE]";
-        mNlaSolveCallFamString = "nla_solve(objective_function_[INDEX], u, [SIZE], (variables))\n";
-        mNlaSolveCallFdmString = "nla_solve(objective_function_[INDEX], u, [SIZE], (voi, states, rates, variables))\n";
+        mNlaSolveCallFamString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [variables])\n";
+        mNlaSolveCallFdmString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [voi, states, rates, variables])\n";
         mObjectiveFunctionMethodFamString = "\n"
                                             "def objective_function_[INDEX](u, f, data):\n"
                                             "    variables = data[0]\n"
@@ -1030,12 +1030,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
                                                        "def create_states_array():\n"
-                                                       "    return [nan]*STATE_COUNT\n";
+                                                       "    return [0.0]*STATE_COUNT\n";
 
         mInterfaceCreateVariablesArrayMethodString = "";
         mImplementationCreateVariablesArrayMethodString = "\n"
                                                           "def create_variables_array():\n"
-                                                          "    return [nan]*VARIABLE_COUNT\n";
+                                                          "    return [0.0]*VARIABLE_COUNT\n";
 
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
