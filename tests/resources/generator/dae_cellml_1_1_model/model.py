@@ -94,8 +94,10 @@ def find_root_1(voi, states, rates, variables):
 
 
 def initialise_variables(states, variables):
+    variables[0] = 0.0
     variables[1] = 1.0
     variables[3] = 1.0
+    variables[6] = 0.0
     variables[7] = 20.0
     variables[8] = 2.0
     variables[9] = 10.0

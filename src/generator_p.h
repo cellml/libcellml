@@ -112,7 +112,7 @@ struct Generator::GeneratorImpl
     std::string generateDoubleCode(const std::string &value) const;
     std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
     std::string generateVariableNameCode(const VariablePtr &variable,
-                                         const AnalyserEquationAstPtr &ast = nullptr) const;
+                                         bool state = true) const;
 
     std::string generateOperatorCode(const std::string &op,
                                      const AnalyserEquationAstPtr &ast) const;
@@ -129,6 +129,7 @@ struct Generator::GeneratorImpl
     bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
     bool isSomeConstant(const AnalyserEquationPtr &equation) const;
 
+    std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,

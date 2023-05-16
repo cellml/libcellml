@@ -392,11 +392,24 @@ void findRoot12(double voi, double *states, double *rates, double *variables)
 
 void initialiseVariables(double *states, double *variables)
 {
+    variables[0] = 0.0;
+    variables[1] = 0.0;
+    variables[2] = 0.0;
+    variables[3] = 0.0;
     variables[4] = 1.0;
     variables[5] = 0.0;
+    variables[6] = 0.0;
     variables[7] = 0.3;
+    variables[8] = 0.0;
     variables[9] = 120.0;
+    variables[10] = 0.0;
+    variables[11] = 0.0;
+    variables[12] = 0.0;
+    variables[13] = 0.0;
+    variables[14] = 0.0;
     variables[15] = 36.0;
+    variables[16] = 0.0;
+    variables[17] = 0.0;
     states[0] = 0.0;
     states[1] = 0.6;
     states[2] = 0.05;
