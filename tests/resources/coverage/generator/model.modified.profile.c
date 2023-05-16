@@ -312,12 +312,24 @@ double acoth(double x)
 
 double * createStatesVector()
 {
-    return (double *) malloc(STATE_COUNT*sizeof(double));
+    double *res = (double *) malloc(STATE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < STATE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
 }
 
 void deleteArray(double *array)

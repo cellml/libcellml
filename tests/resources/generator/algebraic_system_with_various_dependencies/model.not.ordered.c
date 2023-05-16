@@ -21,7 +21,13 @@ const VariableInfo VARIABLE_INFO[] = {
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
 }
 
 void deleteArray(double *array)

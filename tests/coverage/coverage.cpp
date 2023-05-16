@@ -488,7 +488,13 @@ TEST(Coverage, generator)
     profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
     profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
                                                             "{\n"
-                                                            "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                            "    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                            "\n"
+                                                            "    for (size_t i = 0; i < STATE_COUNT; ++i) {\n"
+                                                            "        res[i] = NAN;\n"
+                                                            "    }\n"
+                                                            "\n"
+                                                            "    return res;\n"
                                                             "}\n");
 
     EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.h"), generator->interfaceCode());
@@ -634,7 +640,7 @@ TEST(Coverage, generator)
 
     profile->setImplementationCreateStatesArrayMethodString("\n"
                                                             "def create_states_vector():\n"
-                                                            "    return [0.0]*STATE_COUNT\n");
+                                                            "    return [nan]*STATE_COUNT\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.py"), generator->implementationCode());

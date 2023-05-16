@@ -25,7 +25,7 @@ VARIABLE_INFO = [
 
 
 def create_variables_array():
-    return [0.0]*VARIABLE_COUNT
+    return [nan]*VARIABLE_COUNT
 
 
 from nlasolver import nla_solve
@@ -43,7 +43,7 @@ def objective_function_0(u, f, data):
 
 
 def find_root_0(variables):
-    u = [0.0]*2
+    u = [nan]*2
 
     u[0] = variables[1]
     u[1] = variables[2]

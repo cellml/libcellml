@@ -818,7 +818,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'double * createStatesArray()\n{\n    return (double *) malloc(STATE_COUNT*sizeof(double));\n}\n',
+            'double * createStatesArray()\n{\n    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < STATE_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
             g.implementationCreateStatesArrayMethodString())
         g.setImplementationCreateStatesArrayMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateStatesArrayMethodString())
@@ -829,7 +829,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'double * createVariablesArray()\n{\n    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n}\n',
+            'double * createVariablesArray()\n{\n    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
             g.implementationCreateVariablesArrayMethodString())
         g.setImplementationCreateVariablesArrayMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateVariablesArrayMethodString())
