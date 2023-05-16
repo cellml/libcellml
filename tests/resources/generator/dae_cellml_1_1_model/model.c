@@ -118,8 +118,10 @@ void findRoot1(double voi, double *states, double *rates, double *variables)
 
 void initialiseVariables(double *states, double *variables)
 {
+    variables[0] = 0.0;
     variables[1] = 1.0;
     variables[3] = 1.0;
+    variables[6] = 0.0;
     variables[7] = 20.0;
     variables[8] = 2.0;
     variables[9] = 10.0;

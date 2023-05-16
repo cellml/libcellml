@@ -895,7 +895,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
-                                                               const AnalyserEquationAstPtr &ast) const
+                                                               bool state) const
 {
     // Generate some code for a variable name, but only if we have a model. If
     // we don't have a model, it means that we are using the generator from the
@@ -915,11 +915,9 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
     std::string arrayName;
 
     if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
-        auto astParent = (ast != nullptr) ? ast->parent() : nullptr;
-
-        arrayName = ((astParent != nullptr) && (astParent->type() == AnalyserEquationAst::Type::DIFF)) ?
-                        mProfile->ratesArrayString() :
-                        mProfile->statesArrayString();
+        arrayName = state ?
+                        mProfile->statesArrayString() :
+                        mProfile->ratesArrayString();
     } else {
         arrayName = mProfile->variablesArrayString();
     }
@@ -1264,7 +1262,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     //       model (in which case we want to generate something like dx/dt, as
     //       is in the case of the analyser when we want to mention an equation)
     //       since otherwise we don't need to generate any code for it (since we
-    //       will, instead, want to generate something like RATES[0]).
+    //       will, instead, want to generate something like rates[0]).
 
     std::string code;
 
@@ -1603,7 +1601,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         break;
     case AnalyserEquationAst::Type::CI:
-        code = generateVariableNameCode(ast->variable(), ast);
+        code = generateVariableNameCode(ast->variable(), ast->parent()->type() != AnalyserEquationAst::Type::DIFF);
 
         break;
     case AnalyserEquationAst::Type::CN:
@@ -1673,6 +1671,15 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equatio
     default:
         return false;
     }
+}
+
+std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const
+{
+    return mProfile->indentString()
+           + generateVariableNameCode(variable->variable())
+           + mProfile->equalityString()
+           + "0.0"
+           + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
@@ -1807,6 +1814,15 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
                                                                                                                  mModel->hasExternalVariables());
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
+        // Initialise our constants and our algebraic variables that have an
+        // initial value. If a computed constant or an algebraic variable is
+        // computed using an NLA system, but doesn't have an initial value, then
+        // it means that it is the only unknown variable in an equation, but
+        // that it is not on its own on either the LHS or RHS of that equation,
+        // hence we solve it using an NLA system. As a result, we "manually" set
+        // its initial guess to zero, which is fine since the NLA system has
+        // only one solution.
+
         std::string methodBody;
 
         for (const auto &variable : mModel->variables()) {
@@ -1815,9 +1831,12 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
                 methodBody += generateInitialisationCode(variable);
 
                 break;
+            case AnalyserVariable::Type::COMPUTED_CONSTANT:
             case AnalyserVariable::Type::ALGEBRAIC:
                 if (variable->initialisingVariable() != nullptr) {
                     methodBody += generateInitialisationCode(variable);
+                } else if (variable->equation(0)->type() == AnalyserEquation::Type::NLA) {
+                    methodBody += generateZeroInitialisationCode(variable);
                 }
 
                 break;
@@ -1826,15 +1845,21 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
             }
         }
 
+        // Initialise our true constants.
+
         for (const auto &equation : mModel->equations()) {
             if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
+        // Initialise our states.
+
         for (const auto &state : mModel->states()) {
             methodBody += generateInitialisationCode(state);
         }
+
+        // Initialise our external variables.
 
         if (mModel->hasExternalVariables()) {
             auto equations = mModel->equations();
