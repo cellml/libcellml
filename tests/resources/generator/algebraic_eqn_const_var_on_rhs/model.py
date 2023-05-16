@@ -23,7 +23,7 @@ VARIABLE_INFO = [
 
 
 def create_variables_array():
-    return [0.0]*VARIABLE_COUNT
+    return [nan]*VARIABLE_COUNT
 
 
 def initialise_variables(variables):

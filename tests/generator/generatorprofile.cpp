@@ -361,7 +361,13 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ("double * createStatesArray()\n"
               "{\n"
-              "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
+              "    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < STATE_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
               "}\n",
               generatorProfile->implementationCreateStatesArrayMethodString());
 
@@ -429,7 +435,13 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->interfaceCreateVariablesArrayMethodString());
     EXPECT_EQ("double * createVariablesArray()\n"
               "{\n"
-              "    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+              "    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+              "\n"
+              "    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n"
+              "        res[i] = NAN;\n"
+              "    }\n"
+              "\n"
+              "    return res;\n"
               "}\n",
               generatorProfile->implementationCreateVariablesArrayMethodString());
 

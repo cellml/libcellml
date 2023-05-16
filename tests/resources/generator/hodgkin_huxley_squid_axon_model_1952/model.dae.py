@@ -63,11 +63,11 @@ def and_func(x, y):
 
 
 def create_states_array():
-    return [0.0]*STATE_COUNT
+    return [nan]*STATE_COUNT
 
 
 def create_variables_array():
-    return [0.0]*VARIABLE_COUNT
+    return [nan]*VARIABLE_COUNT
 
 
 from nlasolver import nla_solve
@@ -85,7 +85,7 @@ def objective_function_0(u, f, data):
 
 
 def find_root_0(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[0]
 
@@ -106,7 +106,7 @@ def objective_function_1(u, f, data):
 
 
 def find_root_1(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[6]
 
@@ -127,7 +127,7 @@ def objective_function_2(u, f, data):
 
 
 def find_root_2(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[1]
 
@@ -148,7 +148,7 @@ def objective_function_3(u, f, data):
 
 
 def find_root_3(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[8]
 
@@ -169,7 +169,7 @@ def objective_function_4(u, f, data):
 
 
 def find_root_4(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[3]
 
@@ -190,7 +190,7 @@ def objective_function_5(u, f, data):
 
 
 def find_root_5(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[10]
 
@@ -211,7 +211,7 @@ def objective_function_6(u, f, data):
 
 
 def find_root_6(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[11]
 
@@ -232,7 +232,7 @@ def objective_function_7(u, f, data):
 
 
 def find_root_7(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[12]
 
@@ -253,7 +253,7 @@ def objective_function_8(u, f, data):
 
 
 def find_root_8(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[13]
 
@@ -274,7 +274,7 @@ def objective_function_9(u, f, data):
 
 
 def find_root_9(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[14]
 
@@ -295,7 +295,7 @@ def objective_function_10(u, f, data):
 
 
 def find_root_10(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[2]
 
@@ -316,7 +316,7 @@ def objective_function_11(u, f, data):
 
 
 def find_root_11(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[16]
 
@@ -337,7 +337,7 @@ def objective_function_12(u, f, data):
 
 
 def find_root_12(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[17]
 

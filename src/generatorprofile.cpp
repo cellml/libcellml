@@ -626,13 +626,25 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
                                                        "{\n"
-                                                       "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                       "    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                       "\n"
+                                                       "    for (size_t i = 0; i < STATE_COUNT; ++i) {\n"
+                                                       "        res[i] = NAN;\n"
+                                                       "    }\n"
+                                                       "\n"
+                                                       "    return res;\n"
                                                        "}\n";
 
         mInterfaceCreateVariablesArrayMethodString = "double * createVariablesArray();\n";
         mImplementationCreateVariablesArrayMethodString = "double * createVariablesArray()\n"
                                                           "{\n"
-                                                          "    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+                                                          "    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+                                                          "\n"
+                                                          "    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n"
+                                                          "        res[i] = NAN;\n"
+                                                          "    }\n"
+                                                          "\n"
+                                                          "    return res;\n"
                                                           "}\n";
 
         mInterfaceDeleteArrayMethodString = "void deleteArray(double *array);\n";
@@ -1001,12 +1013,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mFindRootCallFdmString = "find_root_[INDEX](voi, states, rates, variables)\n";
         mFindRootMethodFamString = "\n"
                                    "def find_root_[INDEX](variables):\n"
-                                   "    u = [0.0]*[SIZE]\n"
+                                   "    u = [nan]*[SIZE]\n"
                                    "\n"
                                    "[CODE]";
         mFindRootMethodFdmString = "\n"
                                    "def find_root_[INDEX](voi, states, rates, variables):\n"
-                                   "    u = [0.0]*[SIZE]\n"
+                                   "    u = [nan]*[SIZE]\n"
                                    "\n"
                                    "[CODE]";
         mNlaSolveCallFamString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [variables])\n";
@@ -1030,12 +1042,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
                                                        "def create_states_array():\n"
-                                                       "    return [0.0]*STATE_COUNT\n";
+                                                       "    return [nan]*STATE_COUNT\n";
 
         mInterfaceCreateVariablesArrayMethodString = "";
         mImplementationCreateVariablesArrayMethodString = "\n"
                                                           "def create_variables_array():\n"
-                                                          "    return [0.0]*VARIABLE_COUNT\n";
+                                                          "    return [nan]*VARIABLE_COUNT\n";
 
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";

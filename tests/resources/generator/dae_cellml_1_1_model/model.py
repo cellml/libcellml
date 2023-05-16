@@ -41,11 +41,11 @@ VARIABLE_INFO = [
 
 
 def create_states_array():
-    return [0.0]*STATE_COUNT
+    return [nan]*STATE_COUNT
 
 
 def create_variables_array():
-    return [0.0]*VARIABLE_COUNT
+    return [nan]*VARIABLE_COUNT
 
 
 from nlasolver import nla_solve
@@ -63,7 +63,7 @@ def objective_function_0(u, f, data):
 
 
 def find_root_0(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[0]
 
@@ -84,7 +84,7 @@ def objective_function_1(u, f, data):
 
 
 def find_root_1(voi, states, rates, variables):
-    u = [0.0]*1
+    u = [nan]*1
 
     u[0] = variables[6]
 
