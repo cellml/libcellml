@@ -34,6 +34,8 @@ limitations under the License.
 #include "units_p.h"
 #include "utilities.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 static const std::map<Units::Prefix, const std::string> prefixToString = {
@@ -227,11 +229,23 @@ bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstP
 bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multiplier)
 {
     double localMultiplier = 0;
-    bool updated = false;
 
-    if (units->unitCount() == 0) {
-        updated = true;
-    } else {
+    Debug() << "Start: " << units->unitCount();
+    if (units->isImport()) {
+     if (units->isResolved()) {
+                    auto importSource = units->importSource();
+                auto importedUnits = importSource->model()->units(units->importReference());
+//                double branchMult = 0.0;
+                if (!updateUnitMultiplier(importedUnits, 1, localMultiplier)) {
+                    return false;
+                }
+                Debug() << "Import mult: " << localMultiplier;
+//                localMultiplier += mult + branchMult * exp + prefixMult;
+multiplier += localMultiplier * direction;
+} else {
+ return false;
+ }
+    } else if (units->unitCount() > 0) {
         std::string ref;
         std::string pre;
         std::string id;
@@ -244,6 +258,7 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
 
+            Debug() << "ref: " << ref << " , pre: " << pre << " , local mult: " << localMultiplier;
             bool ok;
 
             prefixMult = convertPrefixToInt(pre, &ok);
@@ -253,8 +268,10 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
 
             if (isStandardUnitName(ref)) {
                 standardMult = standardMultiplierList.at(ref);
+                Debug() << "Standard.";
                 // Combine the information into a single local multiplier: exponent only applies to standard multiplier.
                 localMultiplier += mult + standardMult * exp + prefixMult;
+            } else if (units->isImport() && units->isResolved()) {
             } else {
                 auto model = owningModel(units);
                 if (model != nullptr) {
@@ -268,6 +285,7 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
                         return false;
                     }
                     // Make the direction positive on all branches, direction is only applied at the end.
+                Debug() << "Basic branch mult: " << branchMult;
                     localMultiplier += mult + branchMult * exp + prefixMult;
                 } else {
                     return false;
@@ -275,9 +293,10 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
             }
         }
         multiplier += localMultiplier * direction;
-        updated = true;
+        Debug() << "End: " << localMultiplier << " ,  total: " << multiplier;
     }
-    return updated;
+
+    return true;
 }
 
 UnitsPtr Units::create() noexcept
@@ -298,18 +317,26 @@ bool Units::isBaseUnit() const
 
 bool Units::doEquals(const EntityPtr &other) const
 {
+    auto units2 = std::dynamic_pointer_cast<Units>(other);
+    Debug() << this->name() << " = " << units2->name();
+    Debug() << "Units equal so far: 1";
+    Debug() << NamedEntity::doEquals(other);
     if (!NamedEntity::doEquals(other)) {
         return false;
     }
 
     auto units = std::dynamic_pointer_cast<Units>(other);
 
+    Debug() << "Units equal so far: 2";
+    Debug() << units->name();
+    Debug() << ImportedEntity::doEquals(units);
     if ((units == nullptr)
         || (pFunc()->mUnitDefinitions.size() != units->unitCount())
         || !ImportedEntity::doEquals(units)) {
         return false;
     }
 
+    Debug() << "Units equal so far: 1";
     std::string reference;
     std::string prefix;
     double exponent;
@@ -317,12 +344,14 @@ bool Units::doEquals(const EntityPtr &other) const
     std::string id;
     std::vector<size_t> unmatchedUnitIndex(pFunc()->mUnitDefinitions.size());
 
+    Debug() << "Units equal so far: 1";
     std::iota(unmatchedUnitIndex.begin(), unmatchedUnitIndex.end(), 0);
 
     for (const auto &unitDefinition : pFunc()->mUnitDefinitions) {
         bool unitFound = false;
         size_t index = 0;
 
+    Debug() << "Units equal so far: 1";
         for (index = 0; (index < unmatchedUnitIndex.size()) && !unitFound; ++index) {
             size_t currentIndex = unmatchedUnitIndex.at(index);
 
@@ -337,6 +366,7 @@ bool Units::doEquals(const EntityPtr &other) const
             }
         }
 
+    Debug() << "Units equal so far: 1";
         if (!unitFound) {
             return false;
         }
@@ -344,6 +374,7 @@ bool Units::doEquals(const EntityPtr &other) const
         unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ptrdiff_t(index) - 1);
     }
 
+    Debug() << "Units equal so far: yes";
     return true;
 }
 
@@ -570,13 +601,16 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
         return 0.0;
     }
 
+    Debug() << "Yes, compatible";
     bool updateUnits1 = false;
     bool updateUnits2 = false;
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
         double multiplier = 0.0;
         updateUnits1 = updateUnitMultiplier(units1, -1, multiplier);
+        Debug() << "Mult 1: " << multiplier;
         updateUnits2 = updateUnitMultiplier(units2, 1, multiplier);
+        Debug() << "Mult 2: " << multiplier;
 
         if (updateUnits1 && updateUnits2) {
             return std::pow(10, multiplier);
@@ -611,6 +645,13 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
         }
     } else if (isStandardUnit(units)) {
         updateUnitsMapWithStandardUnit(units->name(), unitsMap, exp);
+    } else if (units->isImport() && units->isResolved()) {
+        auto importSource = units->importSource();
+        auto importedUnits = importSource->model()->units(units->importReference());
+        if (!updateUnitsMap(importedUnits, unitsMap)) {
+        Debug() << "failed here!";
+            return false;
+        }
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
@@ -621,6 +662,8 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             units->unitAttributes(i, ref, pre, uExp, expMult, id);
             if (isStandardUnitName(ref)) {
                 updateUnitsMapWithStandardUnit(ref, unitsMap, uExp * exp);
+            } else if (units->isImport() && units->isResolved()) {
+                Debug() << "import stuff???";
             } else {
                 auto model = owningModel(units);
                 if (model == nullptr) {
@@ -630,9 +673,12 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 } else {
                     auto refUnits = model->units(ref);
                     if (refUnits == nullptr) {
+                    Debug() << "ref units nullptr fail. " << model->name() << ", " << ref;
+
                         return false;
                     }
                     if (!updateUnitsMap(refUnits, unitsMap, uExp * exp)) {
+                    Debug() << "died here. " << ref;
                         return false;
                     }
                 }
@@ -642,13 +688,10 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
     return true;
 }
 
-UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
+bool defineUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap)
 {
-    UnitsMap unitsMap;
-    isValid = true;
     if (!updateUnitsMap(units, unitsMap)) {
-        isValid = false;
-        return unitsMap;
+        return false;
     }
 
     // Checking for exponents of zero in the map, which can be removed.
@@ -662,7 +705,7 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
             ++it;
         }
     }
-    return unitsMap;
+    return true;
 }
 
 bool Units::requiresImports() const
@@ -674,14 +717,8 @@ bool Units::requiresImports() const
 
     auto model = owningModel(shared_from_this());
     if (model != nullptr) {
-        std::string ref;
-        std::string prefix;
-        double exponent;
-        double multiplier;
-        std::string id;
-
         for (size_t u = 0; u < unitCount(); ++u) {
-            unitAttributes(u, ref, prefix, exponent, multiplier, id);
+            const std::string ref = unitAttributeReference(u);
             auto child = model->units(ref);
             if ((child == nullptr) || (this == child.get())) {
                 continue;
@@ -698,35 +735,47 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Initial checks.
     if ((units1 == nullptr) || (units2 == nullptr)) {
+    Debug() << "here";
         return false;
     }
-    if ((units1->requiresImports()) || (units2->requiresImports())) {
-        return false;
-    }
-    bool isValid;
-    auto units1Map = createUnitsMap(units1, isValid);
-    if (!isValid) {
-        return false;
-    }
-    auto units2Map = createUnitsMap(units2, isValid);
-    if (!isValid) {
+    if ((!units1->isResolved()) || (!units2->isResolved())) {
+    Debug() << "again";
         return false;
     }
 
+    UnitsMap units1Map;
+    if (!defineUnitsMap(units1, units1Map)) {
+    Debug() << "invalid 1";
+        return false;
+    }
+    UnitsMap units2Map;
+    if (!defineUnitsMap(units2, units2Map)) {
+    Debug() << "invalid 2";
+        return false;
+    }
+
+    Debug() << "going through units";
+    Debug() << units1->isImport();
+    Debug() << units2->isImport();
+    Debug() << units1Map.size() << " <<>> " << units2Map.size();
     if (units1Map.size() == units2Map.size()) {
         for (const auto &units : units1Map) {
             std::string unit = units.first;
             auto found = units2Map.find(unit);
 
             if (found == units2Map.end()) {
+            Debug() << "falied here";
                 return false;
             }
             if (!areEqual(found->second, units.second)) {
+            Debug() << "dump";
                 return false;
             }
         }
+        Debug() <<  "Same same.";
         return true;
     }
+            Debug() << "out";
     return false;
 }
 

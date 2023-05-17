@@ -18,6 +18,8 @@ limitations under the License.
 
 #include "libcellml/importsource.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 /**
@@ -73,8 +75,13 @@ bool ImportedEntity::isResolved() const
 
 bool ImportedEntity::doEquals(const ImportedEntityPtr &other) const
 {
+    Debug() << "Imported entity:";
     bool isImportLocal = isImport();
     bool importMatches = isImportLocal == other->isImport();
+    Debug() << isImportLocal;
+    Debug() << other->isImport();
+    Debug() << mPimpl->mImportReference << " <> " << other->importReference();
+    Debug() << mPimpl->mImportSource->equals(other->importSource());
     if (isImportLocal && importMatches
         && (mPimpl->mImportReference == other->importReference())) {
         return mPimpl->mImportSource->equals(other->importSource());
