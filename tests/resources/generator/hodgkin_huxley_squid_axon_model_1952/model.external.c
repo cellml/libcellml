@@ -68,7 +68,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
     variables[5] = 1.0;
     variables[6] = 0.0;
@@ -78,9 +78,9 @@ void initialiseVariables(double voi, double *states, double *variables, External
     states[0] = 0.6;
     states[1] = 0.05;
     states[2] = 0.325;
-    variables[1] = externalVariable(voi, states, variables, 1);
-    variables[17] = externalVariable(voi, states, variables, 17);
-    variables[4] = externalVariable(voi, states, variables, 4);
+    variables[1] = externalVariable(voi, states, rates, variables, 1);
+    variables[17] = externalVariable(voi, states, rates, variables, 17);
+    variables[4] = externalVariable(voi, states, rates, variables, 4);
 }
 
 void computeComputedConstants(double *variables)
@@ -92,14 +92,14 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
-    variables[1] = externalVariable(voi, states, variables, 1);
+    variables[1] = externalVariable(voi, states, rates, variables, 1);
     variables[11] = 0.1*(variables[1]+25.0)/(exp((variables[1]+25.0)/10.0)-1.0);
     variables[12] = 4.0*exp(variables[1]/18.0);
     rates[1] = variables[11]*(1.0-states[1])-variables[12]*states[1];
     variables[13] = 0.07*exp(variables[1]/20.0);
     variables[14] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0);
     rates[0] = variables[13]*(1.0-states[0])-variables[14]*states[0];
-    variables[17] = externalVariable(voi, states, variables, 17);
+    variables[17] = externalVariable(voi, states, rates, variables, 17);
     variables[18] = 0.125*exp(variables[1]/80.0);
     rates[2] = variables[17]*(1.0-states[2])-variables[18]*states[2];
 }
@@ -107,9 +107,9 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
     variables[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    variables[1] = externalVariable(voi, states, variables, 1);
+    variables[1] = externalVariable(voi, states, rates, variables, 1);
     variables[2] = variables[8]*(variables[1]-variables[7]);
-    variables[17] = externalVariable(voi, states, variables, 17);
-    variables[4] = externalVariable(voi, states, variables, 4);
+    variables[17] = externalVariable(voi, states, rates, variables, 17);
+    variables[4] = externalVariable(voi, states, rates, variables, 4);
     variables[3] = variables[16]*pow(states[2], 4.0)*(variables[1]-variables[15]);
 }

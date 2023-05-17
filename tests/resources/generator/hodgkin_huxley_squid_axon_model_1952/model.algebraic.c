@@ -68,7 +68,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
     variables[4] = 1.0;
     variables[5] = 0.0;
@@ -79,7 +79,7 @@ void initialiseVariables(double voi, double *states, double *variables, External
     states[1] = 0.6;
     states[2] = 0.05;
     states[3] = 0.325;
-    variables[0] = externalVariable(voi, states, variables, 0);
+    variables[0] = externalVariable(voi, states, rates, variables, 0);
 }
 
 void computeComputedConstants(double *variables)
@@ -91,7 +91,7 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
-    variables[0] = externalVariable(voi, states, variables, 0);
+    variables[0] = externalVariable(voi, states, rates, variables, 0);
     variables[1] = variables[7]*(states[0]-variables[6]);
     variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14]);
     variables[3] = variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8]);
@@ -109,7 +109,7 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
-    variables[0] = externalVariable(voi, states, variables, 0);
+    variables[0] = externalVariable(voi, states, rates, variables, 0);
     variables[1] = variables[7]*(states[0]-variables[6]);
     variables[3] = variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8]);
     variables[10] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);

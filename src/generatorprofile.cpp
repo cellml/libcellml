@@ -571,10 +571,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariablesArrayString = "variables";
 
         mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
-        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *variables, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
 
         mExternalVariableMethodCallFamString = "externalVariable(variables, [INDEX])";
-        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, variables, [INDEX])";
+        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, rates, variables, [INDEX])";
 
         mRootFindingInfoObjectFamString = "typedef struct {\n"
                                           "    double *variables;\n"
@@ -665,14 +665,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                                "[CODE]"
                                                                "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *variables);\n";
-        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *variables)\n"
+        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *variables);\n";
+        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *variables)\n"
                                                                 "{\n"
                                                                 "[CODE]"
                                                                 "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable);\n";
-        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)\n"
+        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n";
+        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
                                                                "{\n"
                                                                "[CODE]"
                                                                "}\n";
@@ -1002,7 +1002,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodTypeDefinitionFdmString = "";
 
         mExternalVariableMethodCallFamString = "external_variable(variables, [INDEX])";
-        mExternalVariableMethodCallFdmString = "external_variable(voi, states, variables, [INDEX])";
+        mExternalVariableMethodCallFdmString = "external_variable(voi, states, rates, variables, [INDEX])";
 
         mRootFindingInfoObjectFamString = "";
         mRootFindingInfoObjectFdmString = "";
@@ -1064,12 +1064,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceInitialiseVariablesMethodFdmWoevString = "";
         mImplementationInitialiseVariablesMethodFdmWoevString = "\n"
-                                                                "def initialise_variables(states, variables):\n"
+                                                                "def initialise_variables(states, rates, variables):\n"
                                                                 "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFdmWevString = "";
         mImplementationInitialiseVariablesMethodFdmWevString = "\n"
-                                                               "def initialise_variables(voi, states, variables, external_variable):\n"
+                                                               "def initialise_variables(voi, states, rates, variables, external_variable):\n"
                                                                "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";

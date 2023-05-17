@@ -76,7 +76,6 @@ struct AnalyserInternalVariable
         COMPUTED_TRUE_CONSTANT,
         COMPUTED_VARIABLE_BASED_CONSTANT,
         INITIALISED_ALGEBRAIC,
-        STATE_ALGEBRAIC,
         ALGEBRAIC,
         OVERCONSTRAINED
     };
@@ -482,29 +481,6 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
 
             if (it != mDependencies.end()) {
                 mDependencies.erase(it);
-            }
-        }
-
-        // Make sure that if we have an NLA equation then none of its unknowns
-        // is a state.
-        // Note: to generate code for such an NLA equation is actually not a
-        //       problem, but this requires having the initial guess for its
-        //       rate, which we don't hence we can't allow NLA equations with
-        //       states as unknowns.
-
-        if (mType == Type::NLA) {
-            auto hasStateAlgebraicVariables = false;
-
-            for (const auto &unknownVariable : mUnknownVariables) {
-                if (unknownVariable->mType == AnalyserInternalVariable::Type::STATE) {
-                    unknownVariable->mType = AnalyserInternalVariable::Type::STATE_ALGEBRAIC;
-
-                    hasStateAlgebraicVariables = true;
-                }
-            }
-
-            if (hasStateAlgebraicVariables) {
-                return false;
             }
         }
 
@@ -2293,7 +2269,14 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equatio
     checkedEquations.push_back(equation);
 
     for (const auto &dependency : equation->dependencies()) {
+        // A rate is computed either through an ODE equation or through an NLA
+        // equation in case the rate is not on its own on either the LHS or RHS
+        // of the equation.
+
         if ((dependency->type() == AnalyserEquation::Type::ODE)
+            || ((dependency->type() == AnalyserEquation::Type::NLA)
+                && (dependency->variableCount() == 1)
+                && (dependency->variable(0)->type() == AnalyserVariable::Type::STATE))
             || isStateRateBased(dependency, checkedEquations)) {
             return true;
         }
@@ -2316,10 +2299,6 @@ void Analyser::AnalyserImpl::addInvalidVariableIssue(const AnalyserInternalVaria
         break;
     case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
         descriptionEnd = "is used in an ODE, but it is not initialised";
-
-        break;
-    case AnalyserInternalVariable::Type::STATE_ALGEBRAIC:
-        descriptionEnd = "is used in an ODE, but its rate is computed using an NLA equation";
 
         break;
     default: // AnalyserInternalVariable::Type::OVERCONSTRAINED.
@@ -2569,10 +2548,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             internalVariable->makeConstant(variableIndex);
 
             break;
-        case AnalyserInternalVariable::Type::STATE_ALGEBRAIC:
-            addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC);
-
-            break;
         case AnalyserInternalVariable::Type::OVERCONSTRAINED:
             addInvalidVariableIssue(internalVariable, Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE);
 
@@ -2602,10 +2577,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             } else {
                 mModel->mPimpl->mType = AnalyserModel::Type::UNDERCONSTRAINED;
             }
-        } else if (hasOverconstrainedVariables) {
-            mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
         } else {
-            mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
+            mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
         }
 
         return;

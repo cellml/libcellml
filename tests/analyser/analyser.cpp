@@ -971,28 +971,3 @@ TEST(Analyser, overconstrainedNlaSystem)
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
-
-TEST(Analyser, stateAsUnknownInNlaSystem)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/state_as_unknown_in_nla_system.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_algebraic_system' is used in an ODE, but its rate is computed using an NLA equation.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
-                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
-                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC),
-                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_STATE_RATE_AS_ALGEBRAIC"),
-                                                                   analyser);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
-}

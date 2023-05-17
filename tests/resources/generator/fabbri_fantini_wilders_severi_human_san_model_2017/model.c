@@ -296,7 +296,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *variables)
+void initialiseVariables(double *states, double *rates, double *variables)
 {
     variables[0] = 0.0;
     variables[1] = 0.0;
