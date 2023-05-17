@@ -65,7 +65,7 @@ describe("Generator tests", () => {
         expect(interface_lines.length).toBe(40)
 
         const implementation_lines = g.implementationCode().split('\n')
-        expect(implementation_lines.length).toBe(55)
+        expect(implementation_lines.length).toBe(67)
 
         const equation_line_1 = libcellml.Generator.equationCode(a.model().equation(0).ast())
         expect(equation_line_1.length).toBe(14)
