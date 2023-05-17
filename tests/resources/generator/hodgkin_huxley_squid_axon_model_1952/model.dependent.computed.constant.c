@@ -68,7 +68,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
     variables[4] = 1.0;
     variables[7] = 0.3;
@@ -78,8 +78,8 @@ void initialiseVariables(double voi, double *states, double *variables, External
     states[1] = 0.6;
     states[2] = 0.05;
     states[3] = 0.325;
-    variables[14] = externalVariable(voi, states, variables, 14);
-    variables[5] = externalVariable(voi, states, variables, 5);
+    variables[14] = externalVariable(voi, states, rates, variables, 14);
+    variables[5] = externalVariable(voi, states, rates, variables, 5);
 }
 
 void computeComputedConstants(double *variables)
@@ -89,8 +89,8 @@ void computeComputedConstants(double *variables)
 void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
     variables[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    variables[14] = externalVariable(voi, states, variables, 14);
-    variables[5] = externalVariable(voi, states, variables, 5);
+    variables[14] = externalVariable(voi, states, rates, variables, 14);
+    variables[5] = externalVariable(voi, states, rates, variables, 5);
     variables[6] = variables[5]-10.613;
     variables[1] = variables[7]*(states[0]-variables[6]);
     variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14]);
@@ -110,8 +110,8 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
-    variables[14] = externalVariable(voi, states, variables, 14);
-    variables[5] = externalVariable(voi, states, variables, 5);
+    variables[14] = externalVariable(voi, states, rates, variables, 14);
+    variables[5] = externalVariable(voi, states, rates, variables, 5);
     variables[6] = variables[5]-10.613;
     variables[1] = variables[7]*(states[0]-variables[6]);
     variables[8] = variables[5]-115.0;

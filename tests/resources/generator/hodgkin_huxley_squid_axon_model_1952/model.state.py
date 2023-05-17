@@ -71,7 +71,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_variables(voi, states, variables, external_variable):
+def initialise_variables(voi, states, rates, variables, external_variable):
     variables[4] = 1.0
     variables[5] = 0.0
     variables[7] = 0.3
@@ -80,7 +80,7 @@ def initialise_variables(voi, states, variables, external_variable):
     states[0] = 0.0
     states[1] = 0.6
     states[2] = 0.325
-    variables[10] = external_variable(voi, states, variables, 10)
+    variables[10] = external_variable(voi, states, rates, variables, 10)
 
 
 def compute_computed_constants(variables):
@@ -93,7 +93,7 @@ def compute_rates(voi, states, rates, variables, external_variable):
     variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     variables[1] = variables[7]*(states[0]-variables[6])
     variables[2] = variables[16]*pow(states[2], 4.0)*(states[0]-variables[15])
-    variables[10] = external_variable(voi, states, variables, 10)
+    variables[10] = external_variable(voi, states, rates, variables, 10)
     variables[3] = variables[9]*pow(variables[10], 3.0)*states[1]*(states[0]-variables[8])
     rates[0] = -(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4]
     variables[13] = 0.07*exp(states[0]/20.0)
@@ -106,7 +106,7 @@ def compute_rates(voi, states, rates, variables, external_variable):
 
 def compute_variables(voi, states, rates, variables, external_variable):
     variables[1] = variables[7]*(states[0]-variables[6])
-    variables[10] = external_variable(voi, states, variables, 10)
+    variables[10] = external_variable(voi, states, rates, variables, 10)
     variables[3] = variables[9]*pow(variables[10], 3.0)*states[1]*(states[0]-variables[8])
     variables[11] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     variables[12] = 4.0*exp(states[0]/18.0)

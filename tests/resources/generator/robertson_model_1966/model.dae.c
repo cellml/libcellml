@@ -87,7 +87,7 @@ void findRoot0(double voi, double *states, double *rates, double *variables)
     variables[2] = u[0];
 }
 
-void initialiseVariables(double *states, double *variables)
+void initialiseVariables(double *states, double *rates, double *variables)
 {
     variables[0] = 0.04;
     variables[1] = 1.0e4;

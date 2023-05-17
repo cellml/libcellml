@@ -788,8 +788,12 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 auto variablesSize = variables.size();
 
                 for (i = 0; i < variablesSize; ++i) {
+                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                                           mProfile->ratesArrayString() :
+                                           mProfile->variablesArrayString();
+
                     methodBody += mProfile->indentString()
-                                  + mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
                                   + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
@@ -825,10 +829,14 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 methodBody = {};
 
                 for (i = 0; i < variablesSize; ++i) {
+                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                                           mProfile->ratesArrayString() :
+                                           mProfile->variablesArrayString();
+
                     methodBody += mProfile->indentString()
                                   + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
@@ -841,8 +849,12 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 methodBody += newLineIfNeeded();
 
                 for (i = 0; i < variablesSize; ++i) {
+                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                                           mProfile->ratesArrayString() :
+                                           mProfile->variablesArrayString();
+
                     methodBody += mProfile->indentString()
-                                  + mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
                                   + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
@@ -1676,7 +1688,7 @@ bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equatio
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const
 {
     return mProfile->indentString()
-           + generateVariableNameCode(variable->variable())
+           + generateVariableNameCode(variable->variable(), false)
            + mProfile->equalityString()
            + "0.0"
            + mProfile->commandSeparatorString() + "\n";
@@ -1815,13 +1827,14 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
 
     if (!implementationInitialiseVariablesMethodString.empty()) {
         // Initialise our constants and our algebraic variables that have an
-        // initial value. If a computed constant or an algebraic variable is
-        // computed using an NLA system, but doesn't have an initial value, then
-        // it means that it is the only unknown variable in an equation, but
-        // that it is not on its own on either the LHS or RHS of that equation,
-        // hence we solve it using an NLA system. As a result, we "manually" set
-        // its initial guess to zero, which is fine since the NLA system has
-        // only one solution.
+        // initial value. Also use an initial guess of zero for computed
+        // constants and algebraic variables computed using an NLA system.
+        // Note: a variable which is the only unknown in an equation, but which
+        //       is not on its own on either the LHS or RHS of that equation
+        //       (e.g., x = y+z with x and y known and z unknown) is (currently)
+        //       to be computed using an NLA system for which we need an initial
+        //       guess. We use an initial guess of zero, which is fine since
+        //       such an NLA system has only one solution.
 
         std::string methodBody;
 
@@ -1857,6 +1870,15 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
 
         for (const auto &state : mModel->states()) {
             methodBody += generateInitialisationCode(state);
+        }
+
+        // Use an initial guess of zero for rates computed using an NLA system
+        // (see the note above).
+
+        for (const auto &state : mModel->states()) {
+            if (state->equation(0)->type() == AnalyserEquation::Type::NLA) {
+                methodBody += generateZeroInitialisationCode(state);
+            }
         }
 
         // Initialise our external variables.
@@ -1908,7 +1930,14 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
         std::string methodBody;
 
         for (const auto &equation : mModel->equations()) {
-            if (equation->type() == AnalyserEquation::Type::ODE) {
+            // A rate is computed either through an ODE equation or through an
+            // NLA equation in case the rate is not on its own on either the LHS
+            // or RHS of the equation.
+
+            if ((equation->type() == AnalyserEquation::Type::ODE)
+                || ((equation->type() == AnalyserEquation::Type::NLA)
+                    && (equation->variableCount() == 1)
+                    && (equation->variable(0)->type() == AnalyserVariable::Type::STATE))) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
