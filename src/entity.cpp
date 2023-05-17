@@ -20,6 +20,8 @@ limitations under the License.
 
 #include "entity_p.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entity pointer. */
@@ -56,7 +58,8 @@ bool Entity::doEquals(const EntityPtr &other) const
     if (other == nullptr) {
         return false;
     }
-    return pFunc()->mId == other->id();
+    Debug() << pFunc()->mId << " <> " << other->id();
+    return true; // pFunc()->mId == other->id();
 }
 
 } // namespace libcellml
