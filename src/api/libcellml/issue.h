@@ -21,6 +21,10 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"
 
+#ifdef ERROR
+#    undef ERROR
+#endif
+
 namespace libcellml {
 
 /**
@@ -160,6 +164,7 @@ public:
         IMPORTER_NULL_MODEL,
 
         // Analyser issues:
+        ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT,
         ANALYSER_UNITS,
         ANALYSER_UNLINKED_UNITS,
         ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE,
@@ -169,6 +174,7 @@ public:
         ANALYSER_ODE_NOT_FIRST_ORDER,
         ANALYSER_VARIABLE_UNUSED,
         ANALYSER_STATE_NOT_INITIALISED,
+        ANALYSER_STATE_RATE_AS_ALGEBRAIC,
         ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
         ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL,
         ANALYSER_EXTERNAL_VARIABLE_VOI,

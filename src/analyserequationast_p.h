@@ -29,7 +29,7 @@ namespace libcellml {
  */
 struct AnalyserEquationAst::AnalyserEquationAstImpl
 {
-    AnalyserEquationAst::Type mType = Type::ASSIGNMENT;
+    AnalyserEquationAst::Type mType = Type::EQUALITY;
     std::string mValue;
     VariablePtr mVariable;
     AnalyserEquationAstWeakPtr mParent;

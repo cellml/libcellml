@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 2
@@ -71,7 +71,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_variables(voi, states, variables, external_variable):
+def initialise_variables(voi, states, rates, variables, external_variable):
     variables[5] = 1.0
     variables[6] = 0.0
     variables[8] = 0.3
@@ -79,8 +79,8 @@ def initialise_variables(voi, states, variables, external_variable):
     variables[17] = 36.0
     states[0] = 0.6
     states[1] = 0.325
-    variables[1] = external_variable(voi, states, variables, 1)
-    variables[11] = external_variable(voi, states, variables, 11)
+    variables[1] = external_variable(voi, states, rates, variables, 1)
+    variables[11] = external_variable(voi, states, rates, variables, 11)
 
 
 def compute_computed_constants(variables):
@@ -90,7 +90,7 @@ def compute_computed_constants(variables):
 
 
 def compute_rates(voi, states, rates, variables, external_variable):
-    variables[1] = external_variable(voi, states, variables, 1)
+    variables[1] = external_variable(voi, states, rates, variables, 1)
     variables[14] = 0.07*exp(variables[1]/20.0)
     variables[15] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0)
     rates[0] = variables[14]*(1.0-states[0])-variables[15]*states[0]
@@ -101,9 +101,9 @@ def compute_rates(voi, states, rates, variables, external_variable):
 
 def compute_variables(voi, states, rates, variables, external_variable):
     variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    variables[1] = external_variable(voi, states, variables, 1)
+    variables[1] = external_variable(voi, states, rates, variables, 1)
     variables[2] = variables[8]*(variables[1]-variables[7])
-    variables[11] = external_variable(voi, states, variables, 11)
+    variables[11] = external_variable(voi, states, rates, variables, 11)
     variables[4] = variables[10]*pow(variables[11], 3.0)*states[0]*(variables[1]-variables[9])
     variables[12] = 0.1*(variables[1]+25.0)/(exp((variables[1]+25.0)/10.0)-1.0)
     variables[13] = 4.0*exp(variables[1]/18.0)

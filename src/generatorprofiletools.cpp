@@ -274,9 +274,9 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
                                TRUE_VALUE :
                                FALSE_VALUE;
 
-    // Assignment.
+    // Equality.
 
-    profileContents += generatorProfile->assignmentString();
+    profileContents += generatorProfile->equalityString();
 
     // Relational and logical operators.
 
@@ -481,6 +481,20 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
 
     profileContents += generatorProfile->externalVariableMethodCallString(false)
                        + generatorProfile->externalVariableMethodCallString(true);
+
+    profileContents += generatorProfile->rootFindingInfoObjectString(false)
+                       + generatorProfile->rootFindingInfoObjectString(true)
+                       + generatorProfile->externNlaSolveMethodString()
+                       + generatorProfile->findRootCallString(false)
+                       + generatorProfile->findRootCallString(true)
+                       + generatorProfile->findRootMethodString(false)
+                       + generatorProfile->findRootMethodString(true)
+                       + generatorProfile->nlaSolveCallString(false)
+                       + generatorProfile->nlaSolveCallString(true)
+                       + generatorProfile->objectiveFunctionMethodString(false)
+                       + generatorProfile->objectiveFunctionMethodString(true)
+                       + generatorProfile->uArrayString()
+                       + generatorProfile->fArrayString();
 
     profileContents += generatorProfile->interfaceCreateStatesArrayMethodString()
                        + generatorProfile->implementationCreateStatesArrayMethodString();

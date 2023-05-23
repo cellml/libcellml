@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 4
@@ -57,7 +57,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_variables(states, variables):
+def initialise_variables(states, rates, variables):
     variables[3] = 12.0
     variables[4] = 0.075
     variables[5] = -60.0
