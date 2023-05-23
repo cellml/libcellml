@@ -18,9 +18,7 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
-#ifdef NAN
-#    undef NAN
-#endif
+#include "libcellml/undefines.h"
 
 namespace libcellml {
 
@@ -39,15 +37,15 @@ public:
      * @brief The type of a node in an abstract syntax tree (AST).
      *
      * The type of a node in an abstract syntax tree (AST), i.e. whether it is
-     * an assignment type, a relational or a logical operator, an arithmetic
+     * an equality type, a relational or a logical operator, an arithmetic
      * operator, a calculus element, a trigonometric operator, a piecewise
      * statement, a token element, a qualifier element, or a constant.
      */
     enum class Type
     {
-        // Assignment.
+        // Equality.
 
-        ASSIGNMENT, /**< The assignment operator. */
+        EQUALITY, /**< The equality operator. */
 
         // Relational and logical operators.
 

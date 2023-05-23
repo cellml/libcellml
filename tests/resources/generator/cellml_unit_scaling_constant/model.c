@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.3.1";
+const char VERSION[] = "0.4.0";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t VARIABLE_COUNT = 3;
@@ -18,7 +18,13 @@ const VariableInfo VARIABLE_INFO[] = {
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
 }
 
 void deleteArray(double *array)

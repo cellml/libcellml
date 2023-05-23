@@ -29,6 +29,9 @@
 %feature("docstring") libcellml::Generator::implementationCode
 "Returns the implementation code.";
 
+%feature("docstring") libcellml::Generator::equationCode
+"Returns the equation code for a given equation AST.";
+
 %{
 #include "libcellml/generator.h"
 %}

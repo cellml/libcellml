@@ -24,8 +24,7 @@ namespace libcellml {
  * @brief The AnalyserVariable class.
  *
  * The AnalyserVariable class is for representing a variable in the context of a
- * CellML Analyser, i.e. a constant, a computed constant or an algebraic
- * variable.
+ * CellML Analyser.
  */
 class LIBCELLML_EXPORT AnalyserVariable
 {
@@ -121,13 +120,33 @@ public:
     VariablePtr variable() const;
 
     /**
-     * @brief Get the @ref AnalyserEquation for this @ref AnalyserVariable.
+     * @brief Get the number of equations used to compute this @ref AnalyserVariable.
      *
-     * Return the @ref AnalyserEquation for this @ref AnalyserVariable.
+     * Return the number of equations used to compute this @ref AnalyserVariable.
      *
-     * @return The @ref AnalyserEquation.
+     * @return The number of equations used to compute this @ref AnalyserVariable.
      */
-    AnalyserEquationPtr equation() const;
+    size_t equationCount() const;
+
+    /**
+     * @brief Get the equations used to compute this @ref AnalyserVariable.
+     *
+     * Return the equations used to compute this @ref AnalyserVariable.
+     *
+     * @return The equations as a @c std::vector.
+     */
+    std::vector<AnalyserEquationPtr> equations() const;
+
+    /**
+     * @brief Get the equation, at @p index, used to compute this @ref AnalyserVariable.
+     *
+     * Return the equation, at @p index, used to compute this @ref AnalyserVariable..
+     *
+     * @param index The index of the equation to return.
+     *
+     * @return The equation, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserEquationPtr equation(size_t index) const;
 
 private:
     AnalyserVariable(); /**< Constructor, @private. */

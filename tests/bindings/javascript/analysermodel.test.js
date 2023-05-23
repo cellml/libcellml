@@ -53,8 +53,8 @@ describe("Analyser Model tests", () => {
     test('Checking Analyser Model equations related API.', () => {
         expect(am.equationCount()).toBe(17)
         expect(am.equations().size()).toBe(17)
-        expect(am.equations().get(1).type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
-        expect(am.equation(1).type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
+        expect(am.equations().get(1).type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
+        expect(am.equation(1).type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
     });
     test('Checking Analyser Model states related API.', () => {
         expect(am.stateCount()).toBe(4)

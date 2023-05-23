@@ -119,29 +119,28 @@ public:
      */
     void setHasInterface(bool hasInterface);
 
-    // Assignment.
+    // Equality.
 
     /**
-     * @brief Get the @c std::string representing the MathML "assignment"
+     * @brief Get the @c std::string representing the MathML "equality"
      * operator.
      *
-     * Return the @c std::string representing the MathML "assignment" operator.
+     * Return the @c std::string representing the MathML "equality" operator.
      *
-     * @return The @c std::string representing the MathML "assignment"
-     * operator.
+     * @return The @c std::string representing the MathML "equality" operator.
      */
-    std::string assignmentString() const;
+    std::string equalityString() const;
 
     /**
-     * @brief Set the @c std::string representing the MathML "assignment"
+     * @brief Set the @c std::string representing the MathML "equality"
      * operator.
      *
-     * Set the @c std::string representing the MathML "assignment" operator.
+     * Set the @c std::string representing the MathML "equality" operator.
      *
-     * @param assignmentString The @c std::string representing the MathML
-     * "assignment" operator.
+     * @param equalityString The @c std::string representing the MathML
+     * "equality" operator.
      */
-    void setAssignmentString(const std::string &assignmentString);
+    void setEqualityString(const std::string &equalityString);
 
     // Relational and logical operators.
 
@@ -3017,6 +3016,225 @@ public:
      */
     void setExternalVariableMethodCallString(bool forDifferentialModel,
                                              const std::string &externalVariableMethodCallString);
+
+    /**
+     * @brief Get the @c std::string for the data structure for the root finding
+     * information object.
+     *
+     * Return the @c std::string for the data structure for the root finding
+     * information object.
+     *
+     * @param forDifferentialModel Whether the call to the root finding
+     * information object is for a differential model, as opposed to an
+     * algebraic model.
+     *
+     * @return The @c std::string for the data structure for the root finding
+     * information object.
+     */
+    std::string rootFindingInfoObjectString(bool forDifferentialModel) const;
+
+    /**
+     * @brief Set the @c std::string for the data structure for the root finding
+     * information object.
+     *
+     * Set the @c std::string for the data structure for the root finding
+     * information object.
+     *
+     * @param forDifferentialModel Whether the call to the root finding
+     * information object is for a differential model, as opposed to an
+     * algebraic model.
+     * @param rootFindingInfoObjectString The @c std::string to use for the data
+     * structure for the root finding information object.
+     */
+    void setRootFindingInfoObjectString(bool forDifferentialModel,
+                                        const std::string &rootFindingInfoObjectString);
+
+    /**
+     * @brief Get the @c std::string for the external NLA solve method.
+     *
+     * Return the @c std::string for the external NLA solve method.
+     *
+     * @return The @c std::string for the external NLA solve method.
+     */
+    std::string externNlaSolveMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the external NLA solve method.
+     *
+     * Set the @c std::string for the external NLA solve method.
+     *
+     * @param externNlaSolveMethodString The @c std::string to use for the
+     * external NLA solve method.
+     */
+    void setExternNlaSolveMethodString(const std::string &externNlaSolveMethodString);
+
+    /**
+     * @brief Get the @c std::string for the call to the find root method.
+     *
+     * Return the @c std::string for the call to the find root method.
+     *
+     * @param forDifferentialModel Whether the call to the find root method is
+     * for a differential model, as opposed to an algebraic model.
+     *
+     * @return The @c std::string for the call to the find root method.
+     */
+    std::string findRootCallString(bool forDifferentialModel) const;
+
+    /**
+     * @brief Set the @c std::string for the call to the find root method.
+     *
+     * Set the @c std::string for the call to the find root method. To be
+     * useful, the string should contain the [INDEX] tag, which will be replaced
+     * with the index of the NLA system for which we want to find the root(s).
+     *
+     * @param forDifferentialModel Whether the call to the find root method is
+     * for a differential model, as opposed to an algebraic model.
+     * @param findRootCallString The @c std::string to use for the call to the
+     * find root method.
+     */
+    void setFindRootCallString(bool forDifferentialModel,
+                               const std::string &findRootCallString);
+
+    /**
+     * @brief Get the @c std::string for the find root method.
+     *
+     * Return the @c std::string for the find root method.
+     *
+     * @param forDifferentialModel Whether the call to the find root method is
+     * for a differential model, as opposed to an algebraic model.
+     *
+     * @return The @c std::string for the find root method.
+     */
+    std::string findRootMethodString(bool forDifferentialModel) const;
+
+    /**
+     * @brief Set the @c std::string for the find root method.
+     *
+     * Set the @c std::string for the find root method. To be useful, the string
+     * should contain the [INDEX], [SIZE], and [CODE] tags, which will be
+     * replaced with the index of the NLA system for which we want to find the
+     * root(s), the size of the @c u array, and some code to find the root(s),
+     * respectively.
+     *
+     * @sa uArrayString, setUArrayString
+     *
+     * @param forDifferentialModel Whether the call to the find root method is
+     * for a differential model, as opposed to an algebraic model.
+     * @param findRootMethodString The @c std::string to use for the find root
+     * method.
+     */
+    void setFindRootMethodString(bool forDifferentialModel,
+                                 const std::string &findRootMethodString);
+
+    /**
+     * @brief Get the @c std::string for the call to the NLA solve method.
+     *
+     * Return the @c std::string for the call to the NLA solve method.
+     *
+     * @param forDifferentialModel Whether the call to the NLA solve method is
+     * for a differential model, as opposed to an algebraic model.
+     *
+     * @return The @c std::string for the call to the NLA solve method.
+     */
+    std::string nlaSolveCallString(bool forDifferentialModel) const;
+
+    /**
+     * @brief Set the @c std::string for the call to the NLA solve method.
+     *
+     * Set the @c std::string for the call to the NLA solve method. To be
+     * useful, the string should contain the [INDEX] and [SIZE] tags, which will
+     * be replaced with the index of the NLA system for which we want to find
+     * the root(s) and the size of the @c u array, respectively.
+     *
+     * @sa uArrayString, setUArrayString
+     *
+     * @param forDifferentialModel Whether the call to the NLA solve method is
+     * for a differential model, as opposed to an algebraic model.
+     * @param nlaSolveCallString The @c std::string to use for the call to the
+     * NLA solve method.
+     */
+    void setNlaSolveCallString(bool forDifferentialModel,
+                               const std::string &nlaSolveCallString);
+
+    /**
+     * @brief Get the @c std::string for the objective function method.
+     *
+     * Return the @c std::string for the objective function method.
+     *
+     * @param forDifferentialModel Whether the call to the objective function
+     * method is for a differential model, as opposed to an algebraic model.
+     *
+     * @return The @c std::string for the objective function method.
+     */
+    std::string objectiveFunctionMethodString(bool forDifferentialModel) const;
+
+    /**
+     * @brief Set the @c std::string for the objective function method.
+     *
+     * Set the @c std::string for the objective function method. To be useful,
+     * the string should contain the [INDEX] and [CODE] tags, which will be
+     * replaced with the index of the NLA system for which we want to find the
+     * root(s) and some code to compute the objective function, respectively.
+     *
+     * @param forDifferentialModel Whether the call to the objective function
+     * method is for a differential model, as opposed to an algebraic model.
+     * @param objectiveFunctionMethodString The @c std::string to use for the
+     * objective function method.
+     */
+    void setObjectiveFunctionMethodString(bool forDifferentialModel,
+                                          const std::string &objectiveFunctionMethodString);
+
+    /**
+     * @brief Get the @c std::string for the @c u array used in the objective
+     * function and find root methods.
+     *
+     * Return the @c std::string for the @c u array used in the objective function
+     * and find root methods. The @c u array is used to keep track of the value of
+     * the different unknown variables in a system of non-linear algebraic equations.
+     *
+     * @return The @c std::string for the @c u array used in the objective function
+     * and find root methods.
+     */
+    std::string uArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the @c u array used in the objective
+     * function and find root methods.
+     *
+     * Set the @c std::string for the @c u array used in the objective function and
+     * find root methods. The @c u array is used to keep track of the value of the
+     * different unknown variables in a system of non-linear algebraic equations.
+     *
+     * @param uArrayString The @c std::string to use for the @c u array used in the
+     * objective function and find root methods.
+     */
+    void setUArrayString(const std::string &uArrayString);
+
+    /**
+     * @brief Get the @c std::string for the @f array used in the objective
+     * function and find root methods.
+     *
+     * Return the @c std::string for the @f array used in the objective function
+     * and find root methods. The @c f array is used to keep track of the value of
+     * the different objective functions in a system of non-linear algebraic equations.
+     *
+     * @return The @c std::string for the @f array used in the objective function
+     * and find root methods.
+     */
+    std::string fArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the @f array used in the objective
+     * function and find root methods.
+     *
+     * Set the @c std::string for the @f array used in the objective function and
+     * find root methods. The @c f array is used to keep track of the value of the
+     * different objective functions in a system of non-linear algebraic equations.
+     *
+     * @param fArrayString The @c std::string to use for the @f array used in the
+     * objective function and find root methods.
+     */
+    void setFArrayString(const std::string &fArrayString);
 
     /**
      * @brief Get the @c std::string for the interface to create the states

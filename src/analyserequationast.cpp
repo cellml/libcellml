@@ -18,9 +18,7 @@ limitations under the License.
 
 #include "analyserequationast_p.h"
 
-#ifdef NAN
-#    undef NAN
-#endif
+#include "libcellml/undefines.h"
 
 namespace libcellml {
 
@@ -70,7 +68,12 @@ AnalyserEquationAst::Type AnalyserEquationAst::type() const
 }
 
 static const std::map<AnalyserEquationAst::Type, std::string> typeToString = {
-    {AnalyserEquationAst::Type::ASSIGNMENT, "assignment"},
+    // Equality.
+
+    {AnalyserEquationAst::Type::EQUALITY, "equality"},
+
+    // Relational and logical operators.
+
     {AnalyserEquationAst::Type::EQ, "eq"},
     {AnalyserEquationAst::Type::NEQ, "neq"},
     {AnalyserEquationAst::Type::LT, "lt"},
@@ -81,6 +84,9 @@ static const std::map<AnalyserEquationAst::Type, std::string> typeToString = {
     {AnalyserEquationAst::Type::OR, "or"},
     {AnalyserEquationAst::Type::XOR, "xor"},
     {AnalyserEquationAst::Type::NOT, "not"},
+
+    // Arithmetic operators.
+
     {AnalyserEquationAst::Type::PLUS, "plus"},
     {AnalyserEquationAst::Type::MINUS, "minus"},
     {AnalyserEquationAst::Type::TIMES, "times"},
@@ -96,7 +102,13 @@ static const std::map<AnalyserEquationAst::Type, std::string> typeToString = {
     {AnalyserEquationAst::Type::MIN, "min"},
     {AnalyserEquationAst::Type::MAX, "max"},
     {AnalyserEquationAst::Type::REM, "rem"},
+
+    // Calculus elements.
+
     {AnalyserEquationAst::Type::DIFF, "diff"},
+
+    // Trigonometric operators.
+
     {AnalyserEquationAst::Type::SIN, "sin"},
     {AnalyserEquationAst::Type::COS, "cos"},
     {AnalyserEquationAst::Type::TAN, "tan"},
@@ -121,14 +133,26 @@ static const std::map<AnalyserEquationAst::Type, std::string> typeToString = {
     {AnalyserEquationAst::Type::ASECH, "asech"},
     {AnalyserEquationAst::Type::ACSCH, "acsch"},
     {AnalyserEquationAst::Type::ACOTH, "acoth"},
+
+    // Piecewise statement.
+
     {AnalyserEquationAst::Type::PIECEWISE, "piecewise"},
     {AnalyserEquationAst::Type::PIECE, "piece"},
     {AnalyserEquationAst::Type::OTHERWISE, "otherwise"},
+
+    // Token elements.
+
     {AnalyserEquationAst::Type::CI, "ci"},
     {AnalyserEquationAst::Type::CN, "cn"},
+
+    // Qualifier elements.
+
     {AnalyserEquationAst::Type::DEGREE, "degree"},
     {AnalyserEquationAst::Type::LOGBASE, "logbase"},
     {AnalyserEquationAst::Type::BVAR, "bvar"},
+
+    // Constants.
+
     {AnalyserEquationAst::Type::TRUE, "true"},
     {AnalyserEquationAst::Type::FALSE, "false"},
     {AnalyserEquationAst::Type::E, "e"},

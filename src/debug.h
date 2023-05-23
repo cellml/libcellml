@@ -93,6 +93,8 @@ private:
     bool mNewLine;
 };
 
+void printAnalyserModelEquations(const AnalyserModelPtr &model);
+void printAnalyserModelVariables(const AnalyserModelPtr &model);
 void printAst(const AnalyserEquationAstPtr &ast);
 void printComponentMap(const ComponentMap &map);
 void printConnectionMap(const ConnectionMap &map);

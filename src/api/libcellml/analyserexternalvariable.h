@@ -215,7 +215,7 @@ public:
      * Return the list of @ref Variable items on which this
      * @ref AnalyserExternalVariable depends.
      *
-     * @return The list of @ref Variable dependencies.
+     * @return The dependencies as a @c std::vector.
      */
     std::vector<VariablePtr> dependencies() const;
 
