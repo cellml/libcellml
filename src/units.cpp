@@ -230,7 +230,7 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
 {
     double localMultiplier = 0;
 
-    Debug() << "Start: " << units->unitCount();
+//    Debug() << "Start: " << units->unitCount();
     if (units->isImport()) {
      if (units->isResolved()) {
                     auto importSource = units->importSource();
@@ -239,7 +239,7 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
                 if (!updateUnitMultiplier(importedUnits, 1, localMultiplier)) {
                     return false;
                 }
-                Debug() << "Import mult: " << localMultiplier;
+//                Debug() << "Import mult: " << localMultiplier;
 //                localMultiplier += mult + branchMult * exp + prefixMult;
 multiplier += localMultiplier * direction;
 } else {
@@ -258,7 +258,7 @@ multiplier += localMultiplier * direction;
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
 
-            Debug() << "ref: " << ref << " , pre: " << pre << " , local mult: " << localMultiplier;
+//            Debug() << "ref: " << ref << " , pre: " << pre << " , local mult: " << localMultiplier;
             bool ok;
 
             prefixMult = convertPrefixToInt(pre, &ok);
@@ -268,7 +268,7 @@ multiplier += localMultiplier * direction;
 
             if (isStandardUnitName(ref)) {
                 standardMult = standardMultiplierList.at(ref);
-                Debug() << "Standard.";
+//                Debug() << "Standard.";
                 // Combine the information into a single local multiplier: exponent only applies to standard multiplier.
                 localMultiplier += mult + standardMult * exp + prefixMult;
             } else if (units->isImport() && units->isResolved()) {
@@ -285,7 +285,7 @@ multiplier += localMultiplier * direction;
                         return false;
                     }
                     // Make the direction positive on all branches, direction is only applied at the end.
-                Debug() << "Basic branch mult: " << branchMult;
+//                Debug() << "Basic branch mult: " << branchMult;
                     localMultiplier += mult + branchMult * exp + prefixMult;
                 } else {
                     return false;
@@ -293,7 +293,7 @@ multiplier += localMultiplier * direction;
             }
         }
         multiplier += localMultiplier * direction;
-        Debug() << "End: " << localMultiplier << " ,  total: " << multiplier;
+//        Debug() << "End: " << localMultiplier << " ,  total: " << multiplier;
     }
 
     return true;
@@ -608,9 +608,9 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
     if ((units1 != nullptr) && (units2 != nullptr)) {
         double multiplier = 0.0;
         updateUnits1 = updateUnitMultiplier(units1, -1, multiplier);
-        Debug() << "Mult 1: " << multiplier;
+//        Debug() << "Mult 1: " << multiplier;
         updateUnits2 = updateUnitMultiplier(units2, 1, multiplier);
-        Debug() << "Mult 2: " << multiplier;
+//        Debug() << "Mult 2: " << multiplier;
 
         if (updateUnits1 && updateUnits2) {
             return std::pow(10, multiplier);
@@ -735,7 +735,7 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Initial checks.
     if ((units1 == nullptr) || (units2 == nullptr)) {
-    Debug() << "here";
+    Debug() << "at least one input is nullptr";
         return false;
     }
     if ((!units1->isResolved()) || (!units2->isResolved())) {
@@ -754,10 +754,10 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
         return false;
     }
 
-    Debug() << "going through units";
-    Debug() << units1->isImport();
-    Debug() << units2->isImport();
-    Debug() << units1Map.size() << " <<>> " << units2Map.size();
+//    Debug() << "going through units";
+//    Debug() << units1->isImport();
+//    Debug() << units2->isImport();
+//    Debug() << units1Map.size() << " <<>> " << units2Map.size();
     if (units1Map.size() == units2Map.size()) {
         for (const auto &units : units1Map) {
             std::string unit = units.first;
@@ -775,7 +775,7 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
         Debug() <<  "Same same.";
         return true;
     }
-            Debug() << "out";
+            Debug() << "fail out:";
     return false;
 }
 
