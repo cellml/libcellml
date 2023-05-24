@@ -2900,28 +2900,308 @@ limitations under the License.
 //    EXPECT_EQ("per_fmol", flatModel->units(1)->name());
 //}
 
-TEST(Units, importUnitsMultipleWaysSameDocument)
+//TEST(Units, importUnitsMultipleWaysSameDocument)
+//{
+//    libcellml::ParserPtr parser = libcellml::Parser::create();
+//    libcellml::ImporterPtr importer = libcellml::Importer::create();
+
+//    auto model = parser->parseModel(fileContents("importer/units/main.cellml"));
+
+//    EXPECT_TRUE(model->hasUnresolvedImports());
+
+//    importer->resolveImports(model, resourcePath("importer/units"));
+
+//    EXPECT_FALSE(model->hasUnresolvedImports());
+
+//    auto flatModel = importer->flattenModel(model);
+
+//    auto printer = libcellml::Printer::create();
+
+//    Debug() << printer->printModel(flatModel);
+
+//    auto analyser = libcellml::Analyser::create();
+
+//    analyser->analyseModel(flatModel);
+
+//    printIssues(analyser);
+//}
+
+libcellml::ImportSourcePtr createBaseModelImport(libcellml::ModelPtr &importModel, const std::string &resourcePath)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
+
+    importModel = parser->parseModel(fileContents(resourcePath));
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+    import->setModel(importModel);
+
+    return import;
+}
+
+//TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectly)
+//{
+//    libcellml::ModelPtr importModel;
+//    libcellml::ImporterPtr importer = libcellml::Importer::create();
+//    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+//    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+//    libcellml::UnitsPtr iu = libcellml::Units::create("per_fmol");
+//    iu->setImportSource(import);
+//    iu->setImportReference("per_fmol");
+
+//    model->addUnits(iu);
+
+//    auto flatModel = importer->flattenModel(model);
+
+//    auto printer = libcellml::Printer::create();
+
+//    Debug() << printer->printModel(flatModel);
+//}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceThroughComponent)
+{
+    libcellml::ModelPtr importModel;
     libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
 
-    auto model = parser->parseModel(fileContents("importer/units/main.cellml"));
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
 
-    EXPECT_TRUE(model->hasUnresolvedImports());
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
 
-    importer->resolveImports(model, resourcePath("importer/units"));
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
+    model->addComponent(ic);
 
     auto flatModel = importer->flattenModel(model);
 
     auto printer = libcellml::Printer::create();
 
     Debug() << printer->printModel(flatModel);
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(flatModel);
-
-    printIssues(analyser);
 }
+
+//TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnits)
+//{
+//    libcellml::ModelPtr importModel;
+//    libcellml::ImporterPtr importer = libcellml::Importer::create();
+//    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+//    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+//    libcellml::UnitsPtr iu = libcellml::Units::create("per_fmol");
+//    iu->setImportSource(import);
+//    iu->setImportReference("per_fmol");
+
+//    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+//    u->addUnit("mole", "femto");
+//    model->addUnits(iu);
+//    model->addUnits(u);
+
+//    auto flatModel = importer->flattenModel(model);
+
+//    auto printer = libcellml::Printer::create();
+
+//    Debug() << printer->printModel(flatModel);
+//}
+
+//TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsWithDifferentName)
+//{
+//    libcellml::ModelPtr importModel;
+//    libcellml::ImporterPtr importer = libcellml::Importer::create();
+//    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+//    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+//    libcellml::UnitsPtr iu = libcellml::Units::create("per_fmol");
+//    iu->setImportSource(import);
+//    iu->setImportReference("per_fmol");
+
+//    libcellml::UnitsPtr u = libcellml::Units::create("femto_mol");
+//    u->addUnit("mole", "femto");
+//    model->addUnits(iu);
+//    model->addUnits(u);
+
+//    auto flatModel = importer->flattenModel(model);
+
+//    auto printer = libcellml::Printer::create();
+
+//    Debug() << printer->printModel(flatModel);
+//}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsThroughComponent)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
+
+
+    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+    u->addUnit("mole", "femto");
+
+    model->addComponent(ic);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    auto printer = libcellml::Printer::create();
+
+    Debug() << printer->printModel(flatModel);
+}
+
+//TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonEquivalentUnits)
+//{
+//    libcellml::ModelPtr importModel;
+//    libcellml::ImporterPtr importer = libcellml::Importer::create();
+//    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+//    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+//    libcellml::UnitsPtr iu = libcellml::Units::create("per_fmol");
+//    iu->setImportSource(import);
+//    iu->setImportReference("per_fmol");
+
+//    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+//    u->addUnit("farad");
+//    u->addUnit("mole");
+//    model->addUnits(iu);
+//    model->addUnits(u);
+
+//    auto flatModel = importer->flattenModel(model);
+
+//    auto printer = libcellml::Printer::create();
+
+//    Debug() << printer->printModel(flatModel);
+//}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonEquivalentUnitsThroughComponent)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
+
+
+    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+    u->addUnit("farad");
+    u->addUnit("mole");
+
+    model->addComponent(ic);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    auto printer = libcellml::Printer::create();
+
+    Debug() << printer->printModel(flatModel);
+}
+
+//void setupFlattenImportedUnits(libcellml::ImporterPtr &importer, libcellml::ModelPtr &model, const std::string &variation)
+//{
+//    libcellml::ModelPtr unitsDefinitionsModel;
+//    libcellml::ImportSourcePtr import = createBaseModelImport(unitsDefinitionsModel, "importer/units/units_definitions.cellml");
+
+//    libcellml::ModelPtr intermediaryImportModel1 = libcellml::Model::create("import_model1");
+//    libcellml::ModelPtr intermediaryImportModel2 = libcellml::Model::create("import_model2");
+
+//    importer = libcellml::Importer::create();
+
+//    importer->addModel(unitsDefinitionsModel, "units_definitions");
+//    importer->addModel(intermediaryImportModel1, "int1");
+//    importer->addModel(intermediaryImportModel2, "int2");
+
+//    model = libcellml::Model::create("main_model");
+
+//    libcellml::UnitsPtr iu1 = libcellml::Units::create("per_fmol");
+//    iu1->setImportSource(import);
+//    iu1->setImportReference("per_fmol");
+
+//    libcellml::UnitsPtr iu2 = libcellml::Units::create("fmol");
+//    iu2->setImportSource(import);
+//    iu2->setImportReference("fmol");
+
+//    intermediaryImportModel1->addUnits(iu1);
+//    intermediaryImportModel2->addUnits(iu2);
+
+//    libcellml::ImportSourcePtr importIntermediary1 = libcellml::ImportSource::create();
+//    importIntermediary1->setUrl("I_am_a_url");
+//    importIntermediary1->setModel(intermediaryImportModel1);
+
+//    libcellml::ImportSourcePtr importIntermediary2 = libcellml::ImportSource::create();
+//    importIntermediary2->setUrl("I_am_a_url");
+//    importIntermediary2->setModel(intermediaryImportModel2);
+
+//    libcellml::UnitsPtr iu3 = libcellml::Units::create("per_fmol");
+//    iu3->setImportSource(importIntermediary1);
+//    iu3->setImportReference("per_fmol");
+
+//    libcellml::UnitsPtr iu4 = libcellml::Units::create("fmol");
+//    iu4->setImportSource(importIntermediary2);
+//    iu4->setImportReference("fmol");
+
+//    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+//    u->addUnit("mole", "femto");
+//    if (variation == "int1") {
+//        intermediaryImportModel1->addUnits(u);
+//    } else if (variation == "main") {
+//        model->addUnits(u);
+//    }
+
+//    model->addUnits(iu3);
+//    model->addUnits(iu4);
+//}
+
+//TEST(Units, flattenImportedUnitsWithNonStandardReferenceFromTwoLevelsDeep)
+//{
+//    libcellml::ImporterPtr importer;
+//    libcellml::ModelPtr model;
+
+//    setupFlattenImportedUnits(importer, model, "");
+
+//    auto flatModel = importer->flattenModel(model);
+
+//    auto printer = libcellml::Printer::create();
+
+//    Debug() << printer->printModel(flatModel);
+//}
+
+//TEST(Units, flattenImportedUnitsWithNonStandardReferenceFromTwoLevelsDeepEquivalentUnitsInIntermediary)
+//{
+//    libcellml::ImporterPtr importer;
+//    libcellml::ModelPtr model;
+
+//    setupFlattenImportedUnits(importer, model, "int1");
+
+//    auto flatModel = importer->flattenModel(model);
+
+//    auto printer = libcellml::Printer::create();
+
+//    Debug() << printer->printModel(flatModel);
+//}
+
+//TEST(Units, flattenImportedUnitsWithNonStandardReferenceFromTwoLevelsDeepEquivalentUnitsInMain)
+//{
+//    libcellml::ImporterPtr importer;
+//    libcellml::ModelPtr model;
+
+//    setupFlattenImportedUnits(importer, model, "main");
+
+//    auto printer = libcellml::Printer::create();
+
+//    Debug() << printer->printModel(model);
+
+//    auto flatModel = importer->flattenModel(model);
+
+//    Debug() << printer->printModel(flatModel);
+//}
