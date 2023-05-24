@@ -333,7 +333,7 @@ TEST(Coverage, analyser)
 
     EXPECT_NE(nullptr, ast);
 
-    ast->setType(libcellml::AnalyserEquationAst::Type::ASSIGNMENT);
+    ast->setType(libcellml::AnalyserEquationAst::Type::EQUALITY);
     ast->setValue({});
     ast->setVariable(libcellml::Variable::create());
     ast->setParent(libcellml::AnalyserEquationAst::create());
@@ -381,6 +381,20 @@ TEST(Coverage, analyserExternalVariable)
     EXPECT_EQ(false, externalVariable->removeDependency(model, "not_membrane", "Cm"));
 }
 
+TEST(Coverage, analyserTypes)
+{
+    auto analyser = libcellml::Analyser::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ("algebraic", libcellml::AnalyserEquation::typeAsString(analyserModel->equation(0)->type()));
+    EXPECT_EQ("algebraic", libcellml::AnalyserVariable::typeAsString(analyserModel->variable(0)->type()));
+}
+
 void checkAstTypeAsString(const libcellml::AnalyserEquationAstPtr &ast)
 {
     if (ast != nullptr) {
@@ -408,22 +422,37 @@ TEST(Coverage, generator)
 
     auto analyserModel = analyser->model();
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
-    EXPECT_EQ("ode", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
+    EXPECT_EQ(libcellml::AnalyserModel::Type::DAE, analyserModel->type());
+    EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(203), analyserModel->variableCount());
-    EXPECT_EQ(size_t(197), analyserModel->equationCount());
+    EXPECT_EQ(size_t(209), analyserModel->variableCount());
+    EXPECT_EQ(size_t(203), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
-    EXPECT_EQ(nullptr, analyserModel->voi()->equation());
+    EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
+    EXPECT_EQ(size_t(0), analyserModel->voi()->equations().size());
+    EXPECT_EQ(nullptr, analyserModel->voi()->equation(0));
     EXPECT_NE(nullptr, analyserModel->state(0));
-    EXPECT_NE(nullptr, analyserModel->state(0)->equation());
+    EXPECT_NE(size_t(0), analyserModel->state(0)->equationCount());
+    EXPECT_NE(size_t(0), analyserModel->state(0)->equations().size());
+    EXPECT_NE(nullptr, analyserModel->state(0)->equation(0));
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->variable(0));
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(0));
-    EXPECT_NE(nullptr, analyserModel->equation(0)->variable());
+    EXPECT_NE(nullptr, analyserModel->equation(199));
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->dependency(analyserModel->equation(199)->dependencyCount()));
+    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblingCount());
+    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblings().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->nlaSibling(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->nlaSibling(analyserModel->equation(199)->nlaSiblingCount()));
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->variableCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(199)->variables().size());
+    EXPECT_NE(nullptr, analyserModel->equation(199)->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(199)->variable(analyserModel->equation(199)->variableCount()));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     for (const auto &equation : analyserModel->equations()) {
@@ -439,7 +468,7 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 177) || (i == 178) || (i == 180)) {
+        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206)) {
             EXPECT_TRUE(analyserModel->variable(i)->initialisingVariable() != nullptr);
         }
     }
@@ -459,7 +488,13 @@ TEST(Coverage, generator)
     profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
     profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
                                                             "{\n"
-                                                            "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                            "    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                            "\n"
+                                                            "    for (size_t i = 0; i < STATE_COUNT; ++i) {\n"
+                                                            "        res[i] = NAN;\n"
+                                                            "    }\n"
+                                                            "\n"
+                                                            "    return res;\n"
                                                             "}\n");
 
     EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.h"), generator->interfaceCode());
@@ -650,6 +685,8 @@ TEST(Coverage, generator)
     profile->setInterfaceHeaderString("");
     profile->setMaxFunctionString("");
     profile->setMinFunctionString("");
+    profile->setObjectiveFunctionMethodString(false, "");
+    profile->setObjectiveFunctionMethodString(true, "");
     profile->setSecFunctionString("");
     profile->setSechFunctionString("");
     profile->setVariableInfoEntryString("");
@@ -659,12 +696,23 @@ TEST(Coverage, generator)
 
     profile->setArrayElementSeparatorString("");
     profile->setCommentString("xxx");
+    profile->setFindRootMethodString(false, "");
+    profile->setFindRootMethodString(true, "");
+    profile->setObjectiveFunctionMethodString(false, "xxx");
+    profile->setObjectiveFunctionMethodString(true, "xxx");
     profile->setOriginCommentString("");
     profile->setVariableInfoEntryString("xxx");
 
     generator->implementationCode();
 
     profile->setArrayElementSeparatorString("xxx");
+    profile->setExternNlaSolveMethodString("");
+    profile->setFindRootMethodString(false, "xxx");
+    profile->setFindRootMethodString(true, "xxx");
+    profile->setFindRootCallString(false, "");
+    profile->setFindRootCallString(true, "");
+    profile->setNlaSolveCallString(false, "");
+    profile->setNlaSolveCallString(true, "");
     profile->setVariableOfIntegrationVariableTypeString("");
 
     generator->implementationCode();
@@ -698,6 +746,8 @@ TEST(Coverage, generator)
     profile->setXorFunctionString("");
 
     generator->implementationCode();
+
+    libcellml::Generator::equationCode(analyser->model()->equation(0)->ast());
 }
 
 libcellml::ValidatorPtr validateMathPreparation(const std::string &math)

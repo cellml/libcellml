@@ -4,7 +4,7 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 LIBCELLML_VERSION = "0.4.0"
 
 STATE_COUNT = 4
@@ -71,7 +71,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_variables(voi, states, variables, external_variable):
+def initialise_variables(voi, states, rates, variables, external_variable):
     variables[4] = 1.0
     variables[7] = 0.3
     variables[9] = 120.0
@@ -80,8 +80,8 @@ def initialise_variables(voi, states, variables, external_variable):
     states[1] = 0.6
     states[2] = 0.05
     states[3] = 0.325
-    variables[14] = external_variable(voi, states, variables, 14)
-    variables[5] = external_variable(voi, states, variables, 5)
+    variables[14] = external_variable(voi, states, rates, variables, 14)
+    variables[5] = external_variable(voi, states, rates, variables, 5)
 
 
 def compute_computed_constants(variables):
@@ -90,8 +90,8 @@ def compute_computed_constants(variables):
 
 def compute_rates(voi, states, rates, variables, external_variable):
     variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    variables[14] = external_variable(voi, states, variables, 14)
-    variables[5] = external_variable(voi, states, variables, 5)
+    variables[14] = external_variable(voi, states, rates, variables, 14)
+    variables[5] = external_variable(voi, states, rates, variables, 5)
     variables[6] = variables[5]-10.613
     variables[1] = variables[7]*(states[0]-variables[6])
     variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])
@@ -110,14 +110,16 @@ def compute_rates(voi, states, rates, variables, external_variable):
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
+    variables[14] = external_variable(voi, states, rates, variables, 14)
+    variables[5] = external_variable(voi, states, rates, variables, 5)
+    variables[6] = variables[5]-10.613
     variables[1] = variables[7]*(states[0]-variables[6])
+    variables[8] = variables[5]-115.0
     variables[3] = variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8])
     variables[10] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
     variables[11] = 4.0*exp(states[0]/18.0)
     variables[12] = 0.07*exp(states[0]/20.0)
     variables[13] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
-    variables[14] = external_variable(voi, states, variables, 14)
     variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])
     variables[16] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
     variables[17] = 0.125*exp(states[0]/80.0)
-    variables[5] = external_variable(voi, states, variables, 5)

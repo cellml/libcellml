@@ -39,6 +39,8 @@ EMSCRIPTEN_BINDINGS(libcellml_analyservariable)
         .function("index", &libcellml::AnalyserVariable::index)
         .function("initialisingVariable", &libcellml::AnalyserVariable::initialisingVariable)
         .function("variable", &libcellml::AnalyserVariable::variable)
+        .function("equationCount", &libcellml::AnalyserVariable::equationCount)
+        .function("equations", &libcellml::AnalyserVariable::equations)
         .function("equation", &libcellml::AnalyserVariable::equation)
     ;
 

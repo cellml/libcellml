@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.3.1";
+const char VERSION[] = "0.4.0";
 const char LIBCELLML_VERSION[] = "0.4.0";
 
 const size_t STATE_COUNT = 2;
@@ -43,12 +43,24 @@ const VariableInfo VARIABLE_INFO[] = {
 
 double * createStatesArray()
 {
-    return (double *) malloc(STATE_COUNT*sizeof(double));
+    double *res = (double *) malloc(STATE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < STATE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
+    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
 }
 
 void deleteArray(double *array)
@@ -56,7 +68,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
     variables[5] = 1.0;
     variables[6] = 0.0;
@@ -65,8 +77,8 @@ void initialiseVariables(double voi, double *states, double *variables, External
     variables[17] = 36.0;
     states[0] = 0.6;
     states[1] = 0.325;
-    variables[1] = externalVariable(voi, states, variables, 1);
-    variables[11] = externalVariable(voi, states, variables, 11);
+    variables[1] = externalVariable(voi, states, rates, variables, 1);
+    variables[11] = externalVariable(voi, states, rates, variables, 11);
 }
 
 void computeComputedConstants(double *variables)
@@ -78,7 +90,7 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
-    variables[1] = externalVariable(voi, states, variables, 1);
+    variables[1] = externalVariable(voi, states, rates, variables, 1);
     variables[14] = 0.07*exp(variables[1]/20.0);
     variables[15] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0);
     rates[0] = variables[14]*(1.0-states[0])-variables[15]*states[0];
@@ -90,9 +102,9 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
 void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
 {
     variables[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    variables[1] = externalVariable(voi, states, variables, 1);
+    variables[1] = externalVariable(voi, states, rates, variables, 1);
     variables[2] = variables[8]*(variables[1]-variables[7]);
-    variables[11] = externalVariable(voi, states, variables, 11);
+    variables[11] = externalVariable(voi, states, rates, variables, 11);
     variables[4] = variables[10]*pow(variables[11], 3.0)*states[0]*(variables[1]-variables[9]);
     variables[12] = 0.1*(variables[1]+25.0)/(exp((variables[1]+25.0)/10.0)-1.0);
     variables[13] = 4.0*exp(variables[1]/18.0);

@@ -16,17 +16,147 @@ limitations under the License.
 
 #include "debug.h"
 
+#include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
+#include "libcellml/analysermodel.h"
+#include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
 #include "libcellml/generator.h"
+#include "libcellml/generatorprofile.h"
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 
-#ifdef NAN
-#    undef NAN
-#endif
+#include "libcellml/undefines.h"
 
 namespace libcellml {
+
+std::string astAsCode(const AnalyserEquationAstPtr &ast)
+{
+    if (ast == nullptr) {
+        return "nullptr";
+    }
+
+    static GeneratorProfilePtr generatorProfile = nullptr;
+
+    if (generatorProfile == nullptr) {
+        generatorProfile = GeneratorProfile::create();
+
+        generatorProfile->setAbsoluteValueString("abs");
+        generatorProfile->setNaturalLogarithmString("ln");
+        generatorProfile->setCommonLogarithmString("log");
+        generatorProfile->setRemString("rem");
+        generatorProfile->setAsinString("arcsin");
+        generatorProfile->setAcosString("arccos");
+        generatorProfile->setAtanString("arctan");
+        generatorProfile->setAsecString("arcsec");
+        generatorProfile->setAcscString("arccsc");
+        generatorProfile->setAcotString("arccot");
+        generatorProfile->setAsinhString("arcsinh");
+        generatorProfile->setAcoshString("arccosh");
+        generatorProfile->setAtanhString("arctanh");
+        generatorProfile->setAsechString("arcsech");
+        generatorProfile->setAcschString("arccsch");
+        generatorProfile->setAcothString("arccoth");
+        generatorProfile->setTrueString("true");
+        generatorProfile->setFalseString("false");
+        generatorProfile->setEString("exponentiale");
+        generatorProfile->setPiString("pi");
+        generatorProfile->setInfString("infinity");
+        generatorProfile->setNanString("notanumber");
+    }
+
+    return Generator::equationCode(ast, generatorProfile);
+}
+
+void printAnalyserModelEquations(const AnalyserModelPtr &model)
+{
+    size_t eqnNb = 0;
+
+    for (const auto &eqn : model->equations()) {
+        Debug() << "\n---------------------------------------[API equation #" << ++eqnNb << "]";
+
+        if (eqn->ast() != nullptr) {
+            Debug() << "\n" << astAsCode(eqn->ast());
+        } else {
+            Debug() << "\nNo equation";
+        }
+
+        Debug() << "\nType: " << AnalyserEquation::typeAsString(eqn->type());
+
+        if (eqn->variableCount() != 0) {
+            Debug() << "\nVariables:";
+
+            for (const auto &var : eqn->variables()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo variables";
+        }
+
+        if (eqn->dependencyCount() != 0) {
+            Debug() << "\nDependencies:";
+
+            for (const auto &dep : eqn->dependencies()) {
+                if (dep->ast() != nullptr) {
+                    Debug() << " - " << astAsCode(dep->ast());
+                } else if (dep->type() == AnalyserEquation::Type::EXTERNAL) {
+                    Debug() << " - External equation for '" << dep->variable(0)->variable()->name() << "'";
+                } else {
+                    Debug() << " - ??? [" << AnalyserEquation::typeAsString(dep->type()) << "]";
+                }
+            }
+        } else {
+            Debug() << "\nNo dependencies";
+        }
+
+        if (eqn->type() == AnalyserEquation::Type::NLA) {
+            if (eqn->nlaSiblingCount() != 0) {
+                Debug() << "\nNLA siblings:";
+
+                for (const auto &nlaSibling : eqn->nlaSiblings()) {
+                    if (nlaSibling->ast() != nullptr) {
+                        Debug() << " - " << astAsCode(nlaSibling->ast());
+                    } else if (nlaSibling->type() == AnalyserEquation::Type::EXTERNAL) {
+                        Debug() << " - External equation for '" << nlaSibling->variable(0)->variable()->name() << "'";
+                    } else {
+                        Debug() << " - ??? [" << AnalyserEquation::typeAsString(nlaSibling->type()) << "]";
+                    }
+                }
+            } else {
+                Debug() << "\nNo NLA siblings";
+            }
+        }
+    }
+
+    Debug() << "\n---------------------------------------[END]\n";
+}
+
+void printAnalyserModelVariables(const AnalyserModelPtr &model)
+{
+    size_t varNb = 0;
+
+    for (const auto &var : model->variables()) {
+        Debug() << "\n---------------------------------------[API variable " << ++varNb << "]";
+        Debug() << "\nName: " << var->variable()->name();
+        Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());
+
+        if (var->equationCount() != 0) {
+            Debug() << "\nEquations:";
+
+            for (const auto &eqn : var->equations()) {
+                if (eqn->ast() != nullptr) {
+                    Debug() << " - " << astAsCode(eqn->ast());
+                } else if (eqn->type() == AnalyserEquation::Type::EXTERNAL) {
+                    Debug() << " - External equation for '" << eqn->variable(0)->variable()->name() << "'";
+                } else {
+                    Debug() << " - ??? [" << AnalyserEquation::typeAsString(eqn->type()) << "]";
+                }
+            }
+        } else {
+            Debug() << "\nNo equations";
+        }
+    }
+}
 
 void printHistory(const History &history)
 {
@@ -160,31 +290,31 @@ AnalyserEquationAstTrunk::AnalyserEquationAstTrunk(AnalyserEquationAstTrunk *pre
 {
 }
 
-void doPrintAst(AnalyserEquationAstTrunk *trunk)
+std::string doPrintAstAsTree(AnalyserEquationAstTrunk *trunk)
 {
     if (trunk == nullptr) {
-        return;
+        return {};
     }
 
-    doPrintAst(trunk->mPrev);
+    auto res = doPrintAstAsTree(trunk->mPrev);
 
     if ((trunk->mPrev != nullptr) && (trunk->mPrev->mStr == SPACES)
         && ((trunk->mStr == SPACES) || (trunk->mStr == TRUNK))) {
-        std::cout << " ";
+        res += " ";
     }
 
-    std::cout << trunk->mStr;
+    return res + trunk->mStr;
 }
 
-std::string doPrintAst(const AnalyserEquationAstPtr &ast)
+std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
 {
     std::string res;
 
     switch (ast->type()) {
-        // Assignment.
+        // Equality.
 
-    case AnalyserEquationAst::Type::ASSIGNMENT:
-        res = "ASSIGNMENT";
+    case AnalyserEquationAst::Type::EQUALITY:
+        res = "EQUALITY";
 
         break;
 
@@ -477,20 +607,20 @@ std::string doPrintAst(const AnalyserEquationAstPtr &ast)
     return res;
 }
 
-void doPrintAst(const AnalyserEquationAstPtr &ast,
+std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
                 AnalyserEquationAstTrunk *prevTrunk, bool isLeft)
 {
     if (ast == nullptr) {
-        return;
+        return {};
     }
 
+    std::string res;
     std::string prevStr = SPACES;
     AnalyserEquationAstTrunk trunk(prevTrunk, prevStr);
-
     auto astLeftChild = ast->leftChild();
 
     if (astLeftChild != nullptr) {
-        doPrintAst(astLeftChild, &trunk, true);
+        res += doPrintAstAsTree(astLeftChild, &trunk, true);
     }
 
     if (prevTrunk == nullptr) {
@@ -503,9 +633,7 @@ void doPrintAst(const AnalyserEquationAstPtr &ast,
         prevTrunk->mStr = prevStr;
     }
 
-    doPrintAst(&trunk);
-
-    std::cout << doPrintAst(ast) << std::endl;
+    res += doPrintAstAsTree(&trunk) + doPrintAstAsTree(ast) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
@@ -516,13 +644,20 @@ void doPrintAst(const AnalyserEquationAstPtr &ast,
     auto astRightChild = ast->rightChild();
 
     if (astRightChild != nullptr) {
-        doPrintAst(astRightChild, &trunk, false);
+        res += doPrintAstAsTree(astRightChild, &trunk, false);
     }
+
+    return res;
 }
 
-void printAst(const AnalyserEquationAstPtr &ast)
+void printAstAsTree(const AnalyserEquationAstPtr &ast)
 {
-    doPrintAst(ast, nullptr, false);
+    Debug() << doPrintAstAsTree(ast, nullptr, false);
+}
+
+void printAstAsCode(const AnalyserEquationAstPtr &ast)
+{
+    Debug() << astAsCode(ast);
 }
 
 void printImportLibrary(const ImportLibrary &importlibrary)

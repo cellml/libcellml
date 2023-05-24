@@ -24,8 +24,14 @@
 %feature("docstring") libcellml::AnalyserVariable::variable
 "Returns the :class:`Variable`.";
 
+%feature("docstring") libcellml::AnalyserVariable::equationCount
+"Returns the number of equations used to compute this :class:`AnalyserVariable` object.";
+
+%feature("docstring") libcellml::AnalyserVariable::equations
+"Returns the equations used to compute this :class:`AnalyserVariable` object.";
+
 %feature("docstring") libcellml::AnalyserVariable::equation
-"Returns the :class:`AnalyserEquation`.";
+"Returns the equation, at the given index, used to compute this :class:`AnalyserVariable` object.";
 
 %{
 #include "libcellml/analyservariable.h"

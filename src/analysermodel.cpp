@@ -38,8 +38,15 @@ AnalyserModel::~AnalyserModel()
 
 bool AnalyserModel::isValid() const
 {
-    return (mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)
-           || (mPimpl->mType == AnalyserModel::Type::ODE);
+    switch (mPimpl->mType) {
+    case AnalyserModel::Type::ODE:
+    case AnalyserModel::Type::DAE:
+    case AnalyserModel::Type::NLA:
+    case AnalyserModel::Type::ALGEBRAIC:
+        return true;
+    default:
+        return false;
+    }
 }
 
 AnalyserModel::Type AnalyserModel::type() const
@@ -49,8 +56,10 @@ AnalyserModel::Type AnalyserModel::type() const
 
 static const std::map<AnalyserModel::Type, std::string> typeToString = {
     {AnalyserModel::Type::UNKNOWN, "unknown"},
-    {AnalyserModel::Type::ALGEBRAIC, "algebraic"},
     {AnalyserModel::Type::ODE, "ode"},
+    {AnalyserModel::Type::DAE, "dae"},
+    {AnalyserModel::Type::NLA, "nla"},
+    {AnalyserModel::Type::ALGEBRAIC, "algebraic"},
     {AnalyserModel::Type::INVALID, "invalid"},
     {AnalyserModel::Type::UNDERCONSTRAINED, "underconstrained"},
     {AnalyserModel::Type::OVERCONSTRAINED, "overconstrained"},
@@ -405,7 +414,7 @@ bool AnalyserModel::areEquivalentVariables(const VariablePtr &variable1,
         return cacheKey->second;
     }
 
-    bool res = libcellml::areEquivalentVariables(variable1, variable2);
+    auto res = libcellml::areEquivalentVariables(variable1, variable2);
 
     mPimpl->mCachedEquivalentVariables.emplace(key, res);
 

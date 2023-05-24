@@ -16,7 +16,9 @@ limitations under the License.
 
 #include <emscripten/bind.h>
 
+#include "libcellml/analyserequationast.h"
 #include "libcellml/generator.h"
+#include "libcellml/generatorprofile.h"
 
 using namespace emscripten;
 
@@ -30,5 +32,7 @@ EMSCRIPTEN_BINDINGS(libcellml_generator)
         .function("setModel", &libcellml::Generator::setModel)
         .function("interfaceCode", &libcellml::Generator::interfaceCode)
         .function("implementationCode", &libcellml::Generator::implementationCode)
+        .class_function("equationCode", select_overload<std::string(const libcellml::AnalyserEquationAstPtr &)>(&libcellml::Generator::equationCode))
+        .class_function("equationCodeByProfile", select_overload<std::string(const libcellml::AnalyserEquationAstPtr &, const libcellml::GeneratorProfilePtr &)>(&libcellml::Generator::equationCode))
     ;
 }

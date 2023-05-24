@@ -41,9 +41,9 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     bool mHasInterface = true;
 
-    // Assignment.
+    // Equality.
 
-    std::string mAssignmentString;
+    std::string mEqualityString;
 
     // Relational and logical operators.
 
@@ -224,6 +224,20 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mExternalVariableMethodCallFamString;
     std::string mExternalVariableMethodCallFdmString;
 
+    std::string mRootFindingInfoObjectFamString;
+    std::string mRootFindingInfoObjectFdmString;
+    std::string mExternNlaSolveMethodString;
+    std::string mFindRootCallFamString;
+    std::string mFindRootCallFdmString;
+    std::string mFindRootMethodFamString;
+    std::string mFindRootMethodFdmString;
+    std::string mNlaSolveCallFamString;
+    std::string mNlaSolveCallFdmString;
+    std::string mObjectiveFunctionMethodFamString;
+    std::string mObjectiveFunctionMethodFdmString;
+    std::string mUArrayString;
+    std::string mFArrayString;
+
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
 
@@ -294,9 +308,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mHasInterface = true;
 
-        // Assignment.
+        // Equality.
 
-        mAssignmentString = " = ";
+        mEqualityString = " = ";
 
         // Relational and logical operators.
 
@@ -483,7 +497,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.3.1\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.4.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n";
@@ -557,21 +571,80 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariablesArrayString = "variables";
 
         mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
-        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *variables, size_t index);\n";
+        mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
 
         mExternalVariableMethodCallFamString = "externalVariable(variables, [INDEX])";
-        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, variables, [INDEX])";
+        mExternalVariableMethodCallFdmString = "externalVariable(voi, states, rates, variables, [INDEX])";
+
+        mRootFindingInfoObjectFamString = "typedef struct {\n"
+                                          "    double *variables;\n"
+                                          "} RootFindingInfo;\n";
+        mRootFindingInfoObjectFdmString = "typedef struct {\n"
+                                          "    double voi;\n"
+                                          "    double *states;\n"
+                                          "    double *rates;\n"
+                                          "    double *variables;\n"
+                                          "} RootFindingInfo;\n";
+        mExternNlaSolveMethodString = "extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
+                                      "                     double *u, int n, void *data);\n";
+        mFindRootCallFamString = "findRoot[INDEX](variables);\n";
+        mFindRootCallFdmString = "findRoot[INDEX](voi, states, rates, variables);\n";
+        mFindRootMethodFamString = "void findRoot[INDEX](double *variables)\n"
+                                   "{\n"
+                                   "    RootFindingInfo rfi = { variables };\n"
+                                   "    double u[[SIZE]];\n"
+                                   "\n"
+                                   "[CODE]"
+                                   "}\n";
+        mFindRootMethodFdmString = "void findRoot[INDEX](double voi, double *states, double *rates, double *variables)\n"
+                                   "{\n"
+                                   "    RootFindingInfo rfi = { voi, states, rates, variables };\n"
+                                   "    double u[[SIZE]];\n"
+                                   "\n"
+                                   "[CODE]"
+                                   "}\n";
+        mNlaSolveCallFamString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
+        mNlaSolveCallFdmString = "nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n";
+        mObjectiveFunctionMethodFamString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                            "{\n"
+                                            "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+                                            "\n"
+                                            "[CODE]"
+                                            "}\n";
+        mObjectiveFunctionMethodFdmString = "void objectiveFunction[INDEX](double *u, double *f, void *data)\n"
+                                            "{\n"
+                                            "    double voi = ((RootFindingInfo *) data)->voi;\n"
+                                            "    double *states = ((RootFindingInfo *) data)->states;\n"
+                                            "    double *rates = ((RootFindingInfo *) data)->rates;\n"
+                                            "    double *variables = ((RootFindingInfo *) data)->variables;\n"
+                                            "\n"
+                                            "[CODE]"
+                                            "}\n";
+        mUArrayString = "u";
+        mFArrayString = "f";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
                                                        "{\n"
-                                                       "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                       "    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n"
+                                                       "\n"
+                                                       "    for (size_t i = 0; i < STATE_COUNT; ++i) {\n"
+                                                       "        res[i] = NAN;\n"
+                                                       "    }\n"
+                                                       "\n"
+                                                       "    return res;\n"
                                                        "}\n";
 
         mInterfaceCreateVariablesArrayMethodString = "double * createVariablesArray();\n";
         mImplementationCreateVariablesArrayMethodString = "double * createVariablesArray()\n"
                                                           "{\n"
-                                                          "    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+                                                          "    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
+                                                          "\n"
+                                                          "    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n"
+                                                          "        res[i] = NAN;\n"
+                                                          "    }\n"
+                                                          "\n"
+                                                          "    return res;\n"
                                                           "}\n";
 
         mInterfaceDeleteArrayMethodString = "void deleteArray(double *array);\n";
@@ -592,14 +665,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                                "[CODE]"
                                                                "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *variables);\n";
-        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *variables)\n"
+        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *variables);\n";
+        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *variables)\n"
                                                                 "{\n"
                                                                 "[CODE]"
                                                                 "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable);\n";
-        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)\n"
+        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n";
+        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
                                                                "{\n"
                                                                "[CODE]"
                                                                "}\n";
@@ -664,9 +737,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mHasInterface = false;
 
-        // Assignment.
+        // Equality.
 
-        mAssignmentString = " = ";
+        mEqualityString = " = ";
 
         // Relational and logical operators.
 
@@ -853,7 +926,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.3.1\"\n";
+        mImplementationVersionString = "__version__ = \"0.4.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
@@ -929,7 +1002,42 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mExternalVariableMethodTypeDefinitionFdmString = "";
 
         mExternalVariableMethodCallFamString = "external_variable(variables, [INDEX])";
-        mExternalVariableMethodCallFdmString = "external_variable(voi, states, variables, [INDEX])";
+        mExternalVariableMethodCallFdmString = "external_variable(voi, states, rates, variables, [INDEX])";
+
+        mRootFindingInfoObjectFamString = "";
+        mRootFindingInfoObjectFdmString = "";
+        mExternNlaSolveMethodString = "\n"
+                                      "from nlasolver import nla_solve"
+                                      "\n";
+        mFindRootCallFamString = "find_root_[INDEX](variables)\n";
+        mFindRootCallFdmString = "find_root_[INDEX](voi, states, rates, variables)\n";
+        mFindRootMethodFamString = "\n"
+                                   "def find_root_[INDEX](variables):\n"
+                                   "    u = [nan]*[SIZE]\n"
+                                   "\n"
+                                   "[CODE]";
+        mFindRootMethodFdmString = "\n"
+                                   "def find_root_[INDEX](voi, states, rates, variables):\n"
+                                   "    u = [nan]*[SIZE]\n"
+                                   "\n"
+                                   "[CODE]";
+        mNlaSolveCallFamString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [variables])\n";
+        mNlaSolveCallFdmString = "u = nla_solve(objective_function_[INDEX], u, [SIZE], [voi, states, rates, variables])\n";
+        mObjectiveFunctionMethodFamString = "\n"
+                                            "def objective_function_[INDEX](u, f, data):\n"
+                                            "    variables = data[0]\n"
+                                            "\n"
+                                            "[CODE]";
+        mObjectiveFunctionMethodFdmString = "\n"
+                                            "def objective_function_[INDEX](u, f, data):\n"
+                                            "    voi = data[0]\n"
+                                            "    states = data[1]\n"
+                                            "    rates = data[2]\n"
+                                            "    variables = data[3]\n"
+                                            "\n"
+                                            "[CODE]";
+        mUArrayString = "u";
+        mFArrayString = "f";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
@@ -956,12 +1064,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceInitialiseVariablesMethodFdmWoevString = "";
         mImplementationInitialiseVariablesMethodFdmWoevString = "\n"
-                                                                "def initialise_variables(states, variables):\n"
+                                                                "def initialise_variables(states, rates, variables):\n"
                                                                 "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFdmWevString = "";
         mImplementationInitialiseVariablesMethodFdmWevString = "\n"
-                                                               "def initialise_variables(voi, states, variables, external_variable):\n"
+                                                               "def initialise_variables(voi, states, rates, variables, external_variable):\n"
                                                                "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
@@ -1062,14 +1170,14 @@ void GeneratorProfile::setHasInterface(bool hasInterface)
     mPimpl->mHasInterface = hasInterface;
 }
 
-std::string GeneratorProfile::assignmentString() const
+std::string GeneratorProfile::equalityString() const
 {
-    return mPimpl->mAssignmentString;
+    return mPimpl->mEqualityString;
 }
 
-void GeneratorProfile::setAssignmentString(const std::string &assignmentString)
+void GeneratorProfile::setEqualityString(const std::string &equalityString)
 {
-    mPimpl->mAssignmentString = assignmentString;
+    mPimpl->mEqualityString = equalityString;
 }
 
 std::string GeneratorProfile::eqString() const
@@ -2415,6 +2523,131 @@ void GeneratorProfile::setExternalVariableMethodCallString(bool forDifferentialM
     } else {
         mPimpl->mExternalVariableMethodCallFamString = externalVariableMethodCallString;
     }
+}
+
+std::string GeneratorProfile::rootFindingInfoObjectString(bool forDifferentialModel) const
+{
+    if (forDifferentialModel) {
+        return mPimpl->mRootFindingInfoObjectFdmString;
+    }
+
+    return mPimpl->mRootFindingInfoObjectFamString;
+}
+
+void GeneratorProfile::setRootFindingInfoObjectString(bool forDifferentialModel,
+                                                      const std::string &rootFindingInfoObjectString)
+{
+    if (forDifferentialModel) {
+        mPimpl->mRootFindingInfoObjectFdmString = rootFindingInfoObjectString;
+    } else {
+        mPimpl->mRootFindingInfoObjectFamString = rootFindingInfoObjectString;
+    }
+}
+
+std::string GeneratorProfile::externNlaSolveMethodString() const
+{
+    return mPimpl->mExternNlaSolveMethodString;
+}
+
+void GeneratorProfile::setExternNlaSolveMethodString(const std::string &externNlaSolveMethodString)
+{
+    mPimpl->mExternNlaSolveMethodString = externNlaSolveMethodString;
+}
+
+std::string GeneratorProfile::findRootCallString(bool forDifferentialModel) const
+{
+    if (forDifferentialModel) {
+        return mPimpl->mFindRootCallFdmString;
+    }
+
+    return mPimpl->mFindRootCallFamString;
+}
+
+void GeneratorProfile::setFindRootCallString(bool forDifferentialModel,
+                                             const std::string &findRootCallString)
+{
+    if (forDifferentialModel) {
+        mPimpl->mFindRootCallFdmString = findRootCallString;
+    } else {
+        mPimpl->mFindRootCallFamString = findRootCallString;
+    }
+}
+
+std::string GeneratorProfile::findRootMethodString(bool forDifferentialModel) const
+{
+    if (forDifferentialModel) {
+        return mPimpl->mFindRootMethodFdmString;
+    }
+
+    return mPimpl->mFindRootMethodFamString;
+}
+
+void GeneratorProfile::setFindRootMethodString(bool forDifferentialModel,
+                                               const std::string &findRootMethodString)
+{
+    if (forDifferentialModel) {
+        mPimpl->mFindRootMethodFdmString = findRootMethodString;
+    } else {
+        mPimpl->mFindRootMethodFamString = findRootMethodString;
+    }
+}
+
+std::string GeneratorProfile::nlaSolveCallString(bool forDifferentialModel) const
+{
+    if (forDifferentialModel) {
+        return mPimpl->mNlaSolveCallFdmString;
+    }
+
+    return mPimpl->mNlaSolveCallFamString;
+}
+
+void GeneratorProfile::setNlaSolveCallString(bool forDifferentialModel,
+                                             const std::string &nlaSolveCallString)
+{
+    if (forDifferentialModel) {
+        mPimpl->mNlaSolveCallFdmString = nlaSolveCallString;
+    } else {
+        mPimpl->mNlaSolveCallFamString = nlaSolveCallString;
+    }
+}
+
+std::string GeneratorProfile::objectiveFunctionMethodString(bool forDifferentialModel) const
+{
+    if (forDifferentialModel) {
+        return mPimpl->mObjectiveFunctionMethodFdmString;
+    }
+
+    return mPimpl->mObjectiveFunctionMethodFamString;
+}
+
+void GeneratorProfile::setObjectiveFunctionMethodString(bool forDifferentialModel,
+                                                        const std::string &objectiveFunctionMethodString)
+{
+    if (forDifferentialModel) {
+        mPimpl->mObjectiveFunctionMethodFdmString = objectiveFunctionMethodString;
+    } else {
+        mPimpl->mObjectiveFunctionMethodFamString = objectiveFunctionMethodString;
+    }
+}
+
+std::string GeneratorProfile::uArrayString() const
+{
+    return mPimpl->mUArrayString;
+}
+
+void GeneratorProfile::setUArrayString(const std::string &uArrayString)
+{
+    mPimpl->mUArrayString = uArrayString;
+}
+
+std::string GeneratorProfile::fArrayString() const
+{
+    return mPimpl->mFArrayString;
+}
+
+void GeneratorProfile::setFArrayString(const std::string &fArrayString)
+{
+    mPimpl->mFArrayString = fArrayString;
 }
 
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const

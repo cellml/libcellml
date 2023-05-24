@@ -16,6 +16,7 @@ class GeneratorTestCase(unittest.TestCase):
         from libcellml import Analyser
         from libcellml import AnalyserModel
         from libcellml import Generator
+        from libcellml.generator import Generator_equationCode
         from libcellml import GeneratorProfile
         from libcellml import Parser
         from test_resources import file_contents
@@ -50,6 +51,9 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), g.implementationCode())
 
         self.assertEqual(GeneratorProfile.Profile.PYTHON, g.profile().profile())
+
+        self.assertEqual("x = a", Generator.equationCode(am.equation(0).ast()))
+        self.assertEqual("x = a", Generator_equationCode(am.equation(0).ast()))
 
 
 if __name__ == '__main__':

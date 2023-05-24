@@ -81,6 +81,8 @@
         <variable name="eqnMinusParentheses" units="dimensionless"/>
         <variable name="eqnMinusParenthesesPlusWith" units="dimensionless"/>
         <variable name="eqnMinusParenthesesPlusWithout" units="dimensionless"/>
+        <variable name="eqnMinusParenthesesDirectUnaryMinus" units="dimensionless"/>
+        <variable name="eqnMinusParenthesesIndirectUnaryMinus" units="dimensionless"/>
         <variable name="eqnMinusUnary" units="dimensionless"/>
         <variable name="eqnMinusUnaryParentheses" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
@@ -208,6 +210,10 @@
         <variable name="eqnCoverageForPowerOperator" units="dimensionless"/>
         <variable name="eqnCoverageForRootOperator" units="dimensionless"/>
         <variable name="eqnCoverageForMinusUnary" units="dimensionless"/>
+        <variable name="eqnNlaVariable1" initial_value="1" units="dimensionless"/>
+        <variable name="eqnNlaVariable2" initial_value="2" units="dimensionless"/>
+        <variable name="eqnComputedConstant1" units="dimensionless"/>
+        <variable name="eqnComputedConstant2" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
         <variable initial_value="3" name="o" units="dimensionless"/>
@@ -1250,6 +1256,34 @@
                     </apply>
                     <apply>
                         <plus/>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinusParenthesesDirectUnaryMinus</ci>
+                <apply>
+                    <minus/>
+                    <ci>m</ci>
+                    <apply>
+                        <minus/>
+                        <ci>n</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinusParenthesesIndirectUnaryMinus</ci>
+                <apply>
+                    <minus/>
+                    <ci>m</ci>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <minus/>
+                            <ci>n</ci>
+                        </apply>
                         <ci>o</ci>
                     </apply>
                 </apply>
@@ -3337,6 +3371,43 @@
                         </piecewise>
                     </apply>
                 </apply>
+            </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <plus/>
+                    <ci>eqnNlaVariable1</ci>
+                    <ci>eqnNlaVariable2</ci>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="dimensionless">0</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <minus/>
+                    <ci>eqnNlaVariable1</ci>
+                    <ci>eqnNlaVariable2</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>eqnComputedConstant1</ci>
+                    <ci>eqnComputedConstant2</ci>
+                </apply>
+            </apply>
+        </math>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>eqnComputedConstant1</ci>
+                <cn cellml:units="dimensionless">1</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnComputedConstant2</ci>
+                <cn cellml:units="dimensionless">3</cn>
             </apply>
         </math>
     </component>
