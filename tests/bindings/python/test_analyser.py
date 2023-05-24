@@ -160,7 +160,9 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(3, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
-        self.assertIsNone(av.equation())
+        self.assertEqual(1, av.equationCount())
+        self.assertIsNotNone(av.equations())
+        self.assertIsNone(av.equation(0))
 
         # Ensure coverage for AnalyserEquation.
 
@@ -170,9 +172,17 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual("algebraic", AnalyserEquation.typeAsString(ae.type()))
         self.assertEqual("algebraic", AnalyserEquation_typeAsString(ae.type()))
         self.assertIsNotNone(ae.ast())
+        self.assertEqual(2, ae.dependencyCount())
         self.assertIsNotNone(ae.dependencies())
+        self.assertIsNotNone(ae.dependency(0))
+        self.assertEqual(18446744073709551615, ae.nlaSystemIndex())
+        self.assertEqual(0, ae.nlaSiblingCount())
+        self.assertIsNotNone(ae.nlaSiblings())
+        self.assertIsNone(ae.nlaSibling(0))
         self.assertTrue(ae.isStateRateBased())
-        self.assertIsNotNone(ae.variable())
+        self.assertEqual(1, ae.variableCount())
+        self.assertIsNotNone(ae.variables())
+        self.assertIsNotNone(ae.variable(0))
 
         # Check Analyser Equation type with invalid values.
 
@@ -185,9 +195,9 @@ class AnalyserTestCase(unittest.TestCase):
 
         aea = ae.ast()
 
-        self.assertEqual(AnalyserEquationAst.Type.ASSIGNMENT, aea.type())
-        self.assertEqual("assignment", AnalyserEquationAst.typeAsString(aea.type()))
-        self.assertEqual("assignment", AnalyserEquationAst_typeAsString(aea.type()))
+        self.assertEqual(AnalyserEquationAst.Type.EQUALITY, aea.type())
+        self.assertEqual("equality", AnalyserEquationAst.typeAsString(aea.type()))
+        self.assertEqual("equality", AnalyserEquationAst_typeAsString(aea.type()))
         self.assertEqual('', aea.value())
         self.assertIsNone(aea.variable())
         self.assertIsNone(aea.parent())

@@ -104,6 +104,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/reset.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/strict.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/undefines.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/validator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/variable.h
@@ -233,6 +234,7 @@ target_include_directories(cellml_debug_utilities
 set_target_properties(cellml_debug_utilities PROPERTIES
   CXX_VISIBILITY_PRESET hidden
   DEBUG_POSTFIX d
+  POSITION_INDEPENDENT_CODE 1
   VISIBILITY_INLINES_HIDDEN 1
 )
 

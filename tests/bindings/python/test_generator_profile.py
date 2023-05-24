@@ -315,14 +315,14 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setAsinhString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.asinhString())
 
-    def test_assignment_string(self):
+    def test_equality_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual(' = ', g.assignmentString())
-        g.setAssignmentString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.assignmentString())
+        self.assertEqual(' = ', g.equalityString())
+        g.setEqualityString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.equalityString())
 
     def test_atan_string(self):
         from libcellml import GeneratorProfile
@@ -818,7 +818,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'double * createStatesArray()\n{\n    return (double *) malloc(STATE_COUNT*sizeof(double));\n}\n',
+            'double * createStatesArray()\n{\n    double *res = (double *) malloc(STATE_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < STATE_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
             g.implementationCreateStatesArrayMethodString())
         g.setImplementationCreateStatesArrayMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateStatesArrayMethodString())
@@ -829,7 +829,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'double * createVariablesArray()\n{\n    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n}\n',
+            'double * createVariablesArray()\n{\n    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));\n\n    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {\n        res[i] = NAN;\n    }\n\n    return res;\n}\n',
             g.implementationCreateVariablesArrayMethodString())
         g.setImplementationCreateVariablesArrayMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationCreateVariablesArrayMethodString())
@@ -869,12 +869,12 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setImplementationInitialiseVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(False, True))
 
-        self.assertEqual('void initialiseVariables(double *states, double *variables)\n{\n[CODE]}\n',
+        self.assertEqual('void initialiseVariables(double *states, double *rates, double *variables)\n{\n[CODE]}\n',
                          g.implementationInitialiseVariablesMethodString(True, False))
         g.setImplementationInitialiseVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True, False))
 
-        self.assertEqual('void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+        self.assertEqual('void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
                          g.implementationInitialiseVariablesMethodString(True, True))
         g.setImplementationInitialiseVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True, True))
@@ -931,7 +931,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('const char VERSION[] = "0.3.1";\n', g.implementationVersionString())
+        self.assertEqual('const char VERSION[] = "0.4.0";\n', g.implementationVersionString())
         g.setImplementationVersionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVersionString())
 
@@ -1078,12 +1078,12 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setInterfaceInitialiseVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(False, True))
 
-        self.assertEqual('void initialiseVariables(double *states, double *variables);\n',
+        self.assertEqual('void initialiseVariables(double *states, double *rates, double *variables);\n',
                          g.interfaceInitialiseVariablesMethodString(True, False))
         g.setInterfaceInitialiseVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True, False))
 
-        self.assertEqual('void initialiseVariables(double voi, double *states, double *variables, ExternalVariable externalVariable);\n',
+        self.assertEqual('void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n',
                          g.interfaceInitialiseVariablesMethodString(True, True))
         g.setInterfaceInitialiseVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True, True))
@@ -1592,7 +1592,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(False))
 
         self.assertEqual(
-            'typedef double (* ExternalVariable)(double voi, double *states, double *variables, size_t index);\n',
+            'typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n',
             g.externalVariableMethodTypeDefinitionString(True))
         g.setExternalVariableMethodTypeDefinitionString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodTypeDefinitionString(True))
@@ -1607,10 +1607,102 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setExternalVariableMethodCallString(False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(False))
 
-        self.assertEqual('externalVariable(voi, states, variables, [INDEX])',
+        self.assertEqual('externalVariable(voi, states, rates, variables, [INDEX])',
                          g.externalVariableMethodCallString(True))
         g.setExternalVariableMethodCallString(True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.externalVariableMethodCallString(True))
+
+    def test_root_finding_info_object_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('typedef struct {\n    double *variables;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(False))
+        g.setRootFindingInfoObjectString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(False))
+
+        self.assertEqual('typedef struct {\n    double voi;\n    double *states;\n    double *rates;\n    double *variables;\n} RootFindingInfo;\n', g.rootFindingInfoObjectString(True))
+        g.setRootFindingInfoObjectString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.rootFindingInfoObjectString(True))
+
+    def test_extern_nla_solve_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n                     double *u, int n, void *data);\n', g.externNlaSolveMethodString())
+        g.setExternNlaSolveMethodString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.externNlaSolveMethodString())
+
+    def test_find_root_call_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('findRoot[INDEX](variables);\n', g.findRootCallString(False))
+        g.setFindRootCallString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(False))
+
+        self.assertEqual('findRoot[INDEX](voi, states, rates, variables);\n', g.findRootCallString(True))
+        g.setFindRootCallString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootCallString(True))
+
+    def test_find_root_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('void findRoot[INDEX](double *variables)\n{\n    RootFindingInfo rfi = { variables };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(False))
+        g.setFindRootMethodString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(False))
+
+        self.assertEqual('void findRoot[INDEX](double voi, double *states, double *rates, double *variables)\n{\n    RootFindingInfo rfi = { voi, states, rates, variables };\n    double u[[SIZE]];\n\n[CODE]}\n', g.findRootMethodString(True))
+        g.setFindRootMethodString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.findRootMethodString(True))
+
+    def test_nla_solve_call_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString(False))
+        g.setNlaSolveCallString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString(False))
+
+        self.assertEqual('nlaSolve(objectiveFunction[INDEX], u, [SIZE], &rfi);\n', g.nlaSolveCallString(True))
+        g.setNlaSolveCallString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.nlaSolveCallString(True))
+
+    def test_objective_function_method_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double *variables = ((RootFindingInfo *) data)->variables;\n\n[CODE]}\n', g.objectiveFunctionMethodString(False))
+        g.setObjectiveFunctionMethodString(False, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(False))
+
+        self.assertEqual('void objectiveFunction[INDEX](double *u, double *f, void *data)\n{\n    double voi = ((RootFindingInfo *) data)->voi;\n    double *states = ((RootFindingInfo *) data)->states;\n    double *rates = ((RootFindingInfo *) data)->rates;\n    double *variables = ((RootFindingInfo *) data)->variables;\n\n[CODE]}\n', g.objectiveFunctionMethodString(True))
+        g.setObjectiveFunctionMethodString(True, GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.objectiveFunctionMethodString(True))
+
+    def test_u_array_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('u', g.uArrayString())
+        g.setUArrayString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.uArrayString())
+
+    def test_f_array_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('f', g.fArrayString())
+        g.setFArrayString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.fArrayString())
 
     def test_voi_string(self):
         from libcellml import GeneratorProfile
