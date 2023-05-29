@@ -364,7 +364,6 @@ TEST(Printer, mathMLWithSyntaxError)
 
     EXPECT_EQ(e, printer->printModel(model));
 
-    printIssues(printer);
     compareLibXml2Issues(printer);
 
     auto itemComponent = printer->issue(printer->issueCount() - 1)->item()->component();

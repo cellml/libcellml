@@ -2922,8 +2922,7 @@ TEST(Units, importUnitsMultipleWaysSameDocument)
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(flatModel);
-
-    printIssues(analyser);
+    EXPECT_EQ(size_t(2), analyser->issueCount());
 }
 
 libcellml::ImportSourcePtr createBaseModelImport(libcellml::ModelPtr &importModel, const std::string &resourcePath)
@@ -3314,4 +3313,19 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceFromTwoLevelsDeepEquival
     EXPECT_EQ("fmol", flatModel->units(0)->name());
     EXPECT_EQ("per_fmol", flatModel->units(1)->name());
     EXPECT_EQ("fmol", flatModel->units(2)->name());
+}
+
+TEST(Units, aliasingUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("per_hour");
+    u1->addUnit("mm");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("mm");
+    u2->addUnit("second", "milli");
+
+    libcellml::ModelPtr model = libcellml::Model::create("containing_model");
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
 }
