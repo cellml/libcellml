@@ -1614,8 +1614,7 @@ TEST(ModelFlattening, importingComponentUsingEmptyUnitReference)
     importer->addModel(importModel, "change_model.cellml");
     importer->addModel(unitsDefinitionModel, "units_definitions.cellml");
 
-    importer->resolveImports(model, "./");
-    printIssues(importer);
+    importer->resolveImports(model, ".");
     auto flattenedModel = importer->flattenModel(model);
     EXPECT_EQ(size_t(1), flattenedModel->unitsCount());
 
@@ -1623,58 +1622,6 @@ TEST(ModelFlattening, importingComponentUsingEmptyUnitReference)
     const std::string a = printer->printModel(flattenedModel);
     EXPECT_EQ(e, a);
 }
-
-//TEST(ModelFlattening, importingUnitsWithEmptyReference)
-//{
-//    const std::string importModelString =
-//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"empty_reference\">\n"
-//        "  <units name=\"mm_per_unspecified\">\n"
-//        "    <unit units=\"mm\"/>\n"
-//        "    <unit units=\"\" exponent=\"-1\"/>\n"
-//        "  </units>\n"
-//        "  <component name=\"empty_reference_units\">\n"
-//        "    <variable name=\"var1\" units=\"mm_per_unspecified\"/>\n"
-//        "  </component>\n"
-//        "</model>";
-//    const std::string modelString =
-//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
-//        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"empty_reference_model.cellml\">\n"
-//        "    <component component_ref=\"empty_reference_units\" name=\"empty_reference_units\"/>\n"
-//        "  </import>\n"
-//        "</model>";
-//    const std::string e =
-//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
-//        "  <units name=\"mm_per_unspecified\">\n"
-//        "    <unit units=\"mm\"/>\n"
-//        "    <unit exponent=\"-1\" units=\"\"/>\n"
-//        "  </units>\n"
-//        "  <component name=\"empty_reference_units\">\n"
-//        "    <variable name=\"var1\" units=\"mm_per_unspecified\"/>\n"
-//        "  </component>\n"
-//        "</model>\n";
-
-//    auto importer = libcellml::Importer::create();
-//    auto parser = libcellml::Parser::create();
-//    auto validator = libcellml::Validator::create();
-
-//    auto model = parser->parseModel(modelString);
-//    auto importModel = parser->parseModel(importModelString);
-
-//    EXPECT_TRUE(model->hasUnresolvedImports());
-
-//    importer->addModel(importModel, "empty_reference_model.cellml");
-
-//    importer->resolveImports(model, ".");
-//    auto flattenedModel = importer->flattenModel(model);
-//    EXPECT_EQ(size_t(1), flattenedModel->unitsCount());
-
-//    libcellml::PrinterPtr printer = libcellml::Printer::create();
-//    const std::string a = printer->printModel(flattenedModel);
-//    EXPECT_EQ(e, a);
-//}
 
 TEST(ModelFlattening, importedComponentWithUnreolvedUnitsImport)
 {
@@ -1718,19 +1665,12 @@ TEST(ModelFlattening, importedComponentWithUnreolvedUnitsImport)
     auto importModel = parser->parseModel(importModelString);
     auto unitsDefinitionsModel = parser->parseModel(unitsDefinitionsModelString);
 
-    Debug() << importModel->units(0)->name() << ", " << importModel->units(0)->isResolved();
-    Debug() << importModel->units(1)->name() << ", " << importModel->units(1)->isResolved();
-
     importer->addModel(importModel, "base.cellml");
     importer->addModel(unitsDefinitionsModel, "units_definitions.cellml");
 
     importer->resolveImports(model, ".");
-    Debug() << "Any issues?";
-    printIssues(importer);
     EXPECT_TRUE(model->hasUnresolvedImports());
 
-    printIssues(importer);
-    Debug() << model->hasUnresolvedImports();
     auto flattenedModel = importer->flattenModel(model);
     EXPECT_EQ(nullptr, flattenedModel);
 }
@@ -1797,8 +1737,6 @@ TEST(ModelFlattening, importedUnitsUsingUnitWhichIsAnImportedUnits)
     importer->resolveImports(model, ".");
     EXPECT_TRUE(model->hasUnresolvedImports());
 
-    printIssues(importer);
-    Debug() << model->hasUnresolvedImports();
     auto flattenedModel = importer->flattenModel(model);
     EXPECT_EQ(nullptr, flattenedModel);
 }

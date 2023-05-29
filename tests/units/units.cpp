@@ -2976,10 +2976,6 @@ TEST(Units, importUnitsMultipleWaysSameDocument)
 
     auto flatModel = importer->flattenModel(model);
 
-    auto printer = libcellml::Printer::create();
-
-    Debug() << printer->printModel(flatModel);
-
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(flatModel);
@@ -3015,9 +3011,9 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectly)
 
     auto flatModel = importer->flattenModel(model);
 
-    auto printer = libcellml::Printer::create();
-
-    Debug() << printer->printModel(flatModel);
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("per_fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol", flatModel->units(1)->name());
 }
 
 TEST(Units, flattenImportedUnitsWithNonStandardReferenceThroughComponent)
@@ -3035,6 +3031,7 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceThroughComponent)
     model->addComponent(ic);
 
     auto flatModel = importer->flattenModel(model);
+
     EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
