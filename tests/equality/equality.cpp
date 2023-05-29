@@ -182,6 +182,19 @@ TEST(Equality, unitsNotEqualByNameOnly)
     EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
 }
 
+TEST(Equality, unitsNotEqualByUnitPrefixOnly)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("unitsA");
+
+    u1->addUnit("second", 3, 2.0, 5.0);
+    u2->addUnit("second", 4, 2.0, 5.0);
+
+    EXPECT_FALSE(u1->equals(u2));
+    EXPECT_FALSE(u2->equals(u1));
+    EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
+}
+
 TEST(Equality, unitsNotEqualByUnitIdOnly)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create("unitsA");

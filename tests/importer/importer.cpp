@@ -879,6 +879,69 @@ TEST(Importer, clearModelImportsBeforeResolving)
     EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
+TEST(Importer, isResolvedUnitsNoModel)
+{
+    auto units = libcellml::Units::create("units");
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithModel)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithChild)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    units->addUnit("second");
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithNonExistentChild)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    units->addUnit("bumble");
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithNonStandardChild)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    auto unitsBumble = libcellml::Units::create("bumble");
+    units->addUnit("bumble");
+
+    model->addUnits(units);
+    model->addUnits(unitsBumble);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithReferenceToSelf)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    units->addUnit("units");
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
 TEST(Importer, isResolvedUnitsOverOneLevel)
 {
     auto parser = libcellml::Parser::create();
