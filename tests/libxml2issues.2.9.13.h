@@ -1,5 +1,8 @@
 #pragma once
 
+#include "string"
+#include "vector"
+
 // Version 2.9.13 of LibXml2 reports the following errors.
 const std::vector<std::string> expectedLibXml2Issues = {
     "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",

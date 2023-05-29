@@ -1025,6 +1025,7 @@ TEST(Importer, isResolvedCircularImportUnits)
     importModel->units("u2")->importSource()->model()->units("u3")->importSource()->model()->units("i_am_cyclic")->importSource()->setModel(importModel);
 
     EXPECT_FALSE(u->isResolved());
+    EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
 TEST(Importer, isResolvedCircularImportComponent)
@@ -1046,6 +1047,7 @@ TEST(Importer, isResolvedCircularImportComponent)
     importModel->component("c2")->importSource()->model()->component("c3")->importSource()->model()->component("i_am_cyclic")->importSource()->setModel(importModel);
 
     EXPECT_FALSE(c->isResolved());
+    EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
 TEST(Importer, removeAllModels)
@@ -1424,6 +1426,7 @@ TEST(Importer, cascadedUnitsManuallyImportedMissingUnitReferences)
     importer->addModel(importModel2, "model2.cellml");
 
     auto flatModel = importer->flattenModel(model);
+    printIssues(importer);
     EXPECT_EQ(size_t(0), importer->issueCount());
 
     const std::string a = printer->printModel(flatModel);
@@ -1458,6 +1461,7 @@ TEST(Importer, importCascadingUnitsImports)
 
     importer->resolveImports(model, resourcePath("importer"));
     EXPECT_EQ(size_t(0), importer->errorCount());
+
 
     auto flatModel = importer->flattenModel(model);
     EXPECT_EQ(size_t(0), importer->issueCount());

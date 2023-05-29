@@ -18,8 +18,6 @@ limitations under the License.
 
 #include "namedentity_p.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 NamedEntity::NamedEntityImpl *NamedEntity::pFunc()
@@ -54,8 +52,6 @@ void NamedEntity::removeName()
 
 bool NamedEntity::doEquals(const EntityPtr &other) const
 {
-    Debug() << "Named entity:";
-    Debug() << Entity::doEquals(other);
     if (Entity::doEquals(other)) {
         auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(other);
         if (namedEntity != nullptr) {

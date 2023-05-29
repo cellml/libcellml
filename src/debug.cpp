@@ -28,6 +28,8 @@ limitations under the License.
 
 #include "libcellml/undefines.h"
 
+#include "commonutils.h"
+
 namespace libcellml {
 
 std::string astAsCode(const AnalyserEquationAstPtr &ast)
@@ -694,6 +696,38 @@ void printVariableMap(const VariableMap &map)
         }
         Debug() << "";
     }
+}
+
+void printUnits(const UnitsPtr &units)
+{
+    Debug(false) << "Units: " << (units ? units->name() : "nullptr");
+    if (units) {
+        if (units->isImport()) {
+            Debug(false) << " (is imported)";
+        }
+        Debug() << "";
+        auto model = owningModel(units);
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            const std::string ref = units->unitAttributeReference(i);
+            Debug(false) << " - " << (i + 1) << ": " << ref;
+            if (model) {
+                Debug() << ", " << model->hasUnits(ref);
+            } else {
+                Debug() << ", modelless units.";
+            }
+        }
+    }
+    Debug() << "*****";
+}
+
+void listModelsUnits(const ModelPtr &model)
+{
+
+    Debug() << "Model name: " << model->name() << ", units count: " << model->unitsCount();
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        printUnits(model->units(i));
+    }
+
 }
 
 } // namespace libcellml
