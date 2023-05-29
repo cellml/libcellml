@@ -228,21 +228,17 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
 {
     double localMultiplier = 0;
 
-//    Debug() << "Start: " << units->unitCount();
     if (units->isImport()) {
-     if (units->isResolved()) {
-                    auto importSource = units->importSource();
-                auto importedUnits = importSource->model()->units(units->importReference());
-//                double branchMult = 0.0;
-                if (!updateUnitMultiplier(importedUnits, 1, localMultiplier)) {
-                    return false;
-                }
-//                Debug() << "Import mult: " << localMultiplier;
-//                localMultiplier += mult + branchMult * exp + prefixMult;
-multiplier += localMultiplier * direction;
-} else {
- return false;
- }
+        if (units->isResolved()) {
+            auto importSource = units->importSource();
+            auto importedUnits = importSource->model()->units(units->importReference());
+            if (!updateUnitMultiplier(importedUnits, 1, localMultiplier)) {
+                return false;
+            }
+            multiplier += localMultiplier * direction;
+        } else {
+            return false;
+        }
     } else if (units->unitCount() > 0) {
         std::string ref;
         std::string pre;
@@ -256,9 +252,7 @@ multiplier += localMultiplier * direction;
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
 
-//            Debug() << "ref: " << ref << " , pre: " << pre << " , local mult: " << localMultiplier;
             bool ok;
-
             prefixMult = convertPrefixToInt(pre, &ok);
             if (!ok) {
                 return false;
@@ -266,10 +260,8 @@ multiplier += localMultiplier * direction;
 
             if (isStandardUnitName(ref)) {
                 standardMult = standardMultiplierList.at(ref);
-//                Debug() << "Standard.";
                 // Combine the information into a single local multiplier: exponent only applies to standard multiplier.
                 localMultiplier += mult + standardMult * exp + prefixMult;
-            } else if (units->isImport() && units->isResolved()) {
             } else {
                 auto model = owningModel(units);
                 if (model != nullptr) {
@@ -283,7 +275,6 @@ multiplier += localMultiplier * direction;
                         return false;
                     }
                     // Make the direction positive on all branches, direction is only applied at the end.
-//                Debug() << "Basic branch mult: " << branchMult;
                     localMultiplier += mult + branchMult * exp + prefixMult;
                 } else {
                     return false;
@@ -291,7 +282,6 @@ multiplier += localMultiplier * direction;
             }
         }
         multiplier += localMultiplier * direction;
-//        Debug() << "End: " << localMultiplier << " ,  total: " << multiplier;
     }
 
     return true;
@@ -635,7 +625,7 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
         if (!updateUnitsMap(importedUnits, unitsMap)) {
             return false;
         }
-    } else if (units->isImport() && !units->isResolved()) {
+    } else if (units->isImport()) {
         return false;
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
@@ -647,7 +637,6 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             units->unitAttributes(i, ref, pre, uExp, expMult, id);
             if (isStandardUnitName(ref)) {
                 updateUnitsMapWithStandardUnit(ref, unitsMap, uExp * exp);
-            } else if (units->isImport() && units->isResolved()) {
             } else {
                 auto model = owningModel(units);
                 if (model == nullptr) {

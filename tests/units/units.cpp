@@ -2722,6 +2722,32 @@ TEST(Units, unknownUnitsScalingFactorIncompatible)
     EXPECT_EQ(0.0, scaling);
 }
 
+TEST(ExampleUnits, unitsScalingWithUnresolvedImports)
+{
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"my_model.cellml\">\n"
+        "    <units units_ref=\"my_units\" name=\"my_units\"/>\n"
+        "  </import>\n"
+        "  <units name=\"strange_units\">\n"
+        "    <unit units=\"my_units\"/>\n"
+        "    <unit exponent=\"-1\" units=\"\"/>\n"
+        "  </units>\n"
+        "</model>";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+    auto u2 = libcellml::Units::create("units");
+    u2->addUnit("banana");
+
+    model->addUnits(u2);
+    auto u1 = model->units("strange_units");
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2, false);
+    EXPECT_EQ(0.0, scaling);
+}
+
 TEST(Units, circularImportDeeperLevelBaseUnits)
 {
     auto model1 = libcellml::Model::create("model1");
@@ -2804,6 +2830,41 @@ TEST(Units, equivalentUnitsMatchingBuiltinUnitsFromVariable)
     libcellml::VariablePtr variableParam = variable->clone();
 
     EXPECT_TRUE(libcellml::Units::compatible(variable->units(), variableParam->units()));
+}
+
+TEST(Units, equivalentUnitsWithImportUsingNonExistentUnits)
+{
+    const std::string importModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"strange_units\">\n"
+        "  <units name=\"strange_units\">\n"
+        "    <unit units=\"my_units\"/>\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "</model>";
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"missing_unit_definition\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"strange_units.cellml\">\n"
+        "    <units units_ref=\"strange_units\" name=\"strange_units\"/>\n"
+        "  </import>\n"
+        "</model>";
+
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+
+    libcellml::ModelPtr model = parser->parseModel(modelString);
+    libcellml::ModelPtr importModel = parser->parseModel(importModelString);
+
+    libcellml::UnitsPtr units = libcellml::Units::create("kelvin");
+    units->addUnit(libcellml::Units::StandardUnit::KELVIN);
+
+    model->addUnits(units);
+
+    importer->addModel(importModel, "strange_units.cellml");
+    importer->resolveImports(model, ".");
+
+    EXPECT_FALSE(libcellml::Units::compatible(model->units(0), units));
 }
 
 libcellml::ModelPtr prepareImportUnitsWithReferenceToNonStandardUnits(const std::string &importUnitsName)
