@@ -27,6 +27,7 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "component_p.h"
 #include "reset_p.h"
 #include "utilities.h"
@@ -106,32 +107,49 @@ ComponentPtr Component::create(const std::string &name) noexcept
 
 bool Component::ComponentImpl::isResolvedWithHistory(History &history, const ComponentConstPtr &component) const
 {
-    bool resolved = true;
     if (mComponent->isImport()) {
         auto model = mComponent->importSource()->model();
         if (model == nullptr) {
-            resolved = false;
+            return false;
         } else {
             auto importedComponent = model->component(mComponent->importReference());
             if (importedComponent == nullptr) {
-                resolved = false;
+                return false;
             } else {
                 auto h = createHistoryEpoch(component, importeeModelUrl(history, mComponent->importSource()->url()));
                 if (checkForImportCycles(history, h)) {
-                    resolved = false;
+                    return false;
                 } else {
                     history.push_back(h);
-                    resolved = importedComponent->pFunc()->isResolvedWithHistory(history, importedComponent);
+                    if (!importedComponent->pFunc()->isResolvedWithHistory(history, importedComponent)) {
+                        return false;
+                    }
                 }
             }
         }
     }
-    for (size_t i = 0; (i < mComponent->componentCount()) && resolved; ++i) {
-        auto currentComponent = mComponent->component(i);
-        resolved = currentComponent->pFunc()->isResolvedWithHistory(history, currentComponent);
+
+    auto model = std::dynamic_pointer_cast<libcellml::Model>(mComponent->parent());
+    if (model == nullptr) {
+        model = owningModel(mComponent->parent());
     }
 
-    return resolved;
+    auto tmpComponent = mComponent->clone();
+    auto units = unitsUsed(model, tmpComponent);
+    for (const auto &u : units) {
+        if (!u->isResolved()) {
+            return false;
+        }
+    }
+
+    for (size_t i = 0; i < mComponent->componentCount(); ++i) {
+        auto currentComponent = mComponent->component(i);
+        if (!currentComponent->pFunc()->isResolvedWithHistory(history, currentComponent)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool Component::doAddComponent(const ComponentPtr &component)

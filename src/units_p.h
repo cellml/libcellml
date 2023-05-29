@@ -69,6 +69,8 @@ public:
 
     bool isResolvedWithHistory(History &history, const UnitsConstPtr &units) const;
 
+    bool isChildUnitResolvedWithHistory(History &history, const HistoryEpochPtr &h, const ModelConstPtr &model, const UnitsConstPtr &units, size_t unitIndex) const;
+
     Units *mUnits = nullptr;
 };
 

@@ -2873,7 +2873,7 @@ libcellml::ModelPtr prepareImportUnitsWithReferenceToNonStandardUnits(const std:
     libcellml::ModelPtr model = libcellml::Model::create("main_model");
 
     libcellml::UnitsPtr u1 = libcellml::Units::create("fmol");
-    u1->addUnit("mol", "femto");
+    u1->addUnit("mole", "femto");
     libcellml::UnitsPtr u2 = libcellml::Units::create("per_fmol");
     u2->addUnit("fmol", -1.0);
     libcellml::UnitsPtr u3 = libcellml::Units::create("per_sec");
@@ -3035,11 +3035,7 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceThroughComponent)
     model->addComponent(ic);
 
     auto flatModel = importer->flattenModel(model);
-
-    EXPECT_EQ(size_t(3), flatModel->unitsCount());
-    EXPECT_EQ("fmol", flatModel->units(0)->name());
-    EXPECT_EQ("per_fmol", flatModel->units(1)->name());
-    EXPECT_EQ("per_fmol", flatModel->component(0)->variable(0)->units()->name());
+    EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
 TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnits)

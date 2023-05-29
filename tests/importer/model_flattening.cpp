@@ -1291,26 +1291,7 @@ TEST(ModelFlattening, cascadedUnitsManuallyImportedWithoutImportSourcesAddedToIm
 
 TEST(ModelFlattening, cascadedUnitsManuallyImportedMissingUnitReferences)
 {
-    const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
-        "  <units name=\"first_units\">\n"
-        "    <unit exponent=\"-1\" units=\"second\"/>\n"
-        "    <unit units=\"units1_import\"/>\n"
-        "  </units>\n"
-        "  <units name=\"units1_import\">\n"
-        "    <unit exponent=\"-2\" units=\"second\"/>\n"
-        "    <unit units=\"units2_import\"/>\n"
-        "  </units>\n"
-        "  <units name=\"units2_import\">\n"
-        "    <unit exponent=\"-0.5\" units=\"second\"/>\n"
-        "    <unit units=\"\"/>\n"
-        "    <unit units=\"missing_units\"/>\n"
-        "  </units>\n"
-        "  <component name=\"base_component\">\n"
-        "    <variable name=\"variable\" units=\"first_units\"/>\n"
-        "  </component>\n"
-        "</model>\n";
+    const std::string e = "The model has unresolved imports.";
 
     auto importer = libcellml::Importer::create();
 
@@ -1369,10 +1350,8 @@ TEST(ModelFlattening, cascadedUnitsManuallyImportedMissingUnitReferences)
     importer->addModel(importModel2, "model2.cellml");
 
     auto flatModel = importer->flattenModel(model);
-    EXPECT_EQ(size_t(0), importer->issueCount());
-
-    const std::string a = printer->printModel(flatModel);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
 }
 
 TEST(ModelFlattening, importCascadingUnitsImports)
@@ -1582,35 +1561,43 @@ TEST(ModelFlattening, importingAliasedUnitsWithoutReplacing)
     EXPECT_EQ(e, a);
 }
 
-TEST(ModelFlattening, importingUnitsWithEmptyReference)
+TEST(ModelFlattening, importingComponentUsingEmptyUnitReference)
 {
+    const std::string unitsDefinitionModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"units_definitions\">\n"
+        "  <units name=\"empty_ref\">\n"
+        "    <unit units=\"\"/>\n"
+        "  </units>\n"
+        "  <units name=\"\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
+        "</model>";
     const std::string importModelString =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"empty_reference\">\n"
-        "  <units name=\"mm_per_unspecified\">\n"
-        "    <unit units=\"mm\"/>\n"
-        "    <unit units=\"\" exponent=\"-1\"/>\n"
-        "  </units>\n"
-        "  <component name=\"empty_reference_units\">\n"
-        "    <variable name=\"var1\" units=\"mm_per_unspecified\"/>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"change_model\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"units_definitions.cellml\">\n"
+        "    <units units_ref=\"empty_ref\" name=\"empty_ref\"/>\n"
+        "  </import>\n"
+        "  <component name=\"change\">\n"
+        "    <variable name=\"var1\" units=\"empty_ref\"/>\n"
         "  </component>\n"
         "</model>";
     const std::string modelString =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"empty_reference_model.cellml\">\n"
-        "    <component component_ref=\"empty_reference_units\" name=\"empty_reference_units\"/>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"change_model.cellml\">\n"
+        "    <component component_ref=\"change\" name=\"change\"/>\n"
         "  </import>\n"
         "</model>";
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
-        "  <units name=\"mm_per_unspecified\">\n"
-        "    <unit units=\"mm\"/>\n"
-        "    <unit exponent=\"-1\" units=\"\"/>\n"
+        "  <units name=\"empty_ref\">\n"
+        "    <unit units=\"\"/>\n"
         "  </units>\n"
-        "  <component name=\"empty_reference_units\">\n"
-        "    <variable name=\"var1\" units=\"mm_per_unspecified\"/>\n"
+        "  <component name=\"change\">\n"
+        "    <variable name=\"var1\" units=\"empty_ref\"/>\n"
         "  </component>\n"
         "</model>\n";
 
@@ -1620,16 +1607,198 @@ TEST(ModelFlattening, importingUnitsWithEmptyReference)
 
     auto model = parser->parseModel(modelString);
     auto importModel = parser->parseModel(importModelString);
+    auto unitsDefinitionModel = parser->parseModel(unitsDefinitionModelString);
 
     EXPECT_TRUE(model->hasUnresolvedImports());
 
-    importer->addModel(importModel, "empty_reference_model.cellml");
+    importer->addModel(importModel, "change_model.cellml");
+    importer->addModel(unitsDefinitionModel, "units_definitions.cellml");
 
-    importer->resolveImports(model, ".");
+    importer->resolveImports(model, "./");
+    printIssues(importer);
     auto flattenedModel = importer->flattenModel(model);
     EXPECT_EQ(size_t(1), flattenedModel->unitsCount());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(flattenedModel);
     EXPECT_EQ(e, a);
+}
+
+//TEST(ModelFlattening, importingUnitsWithEmptyReference)
+//{
+//    const std::string importModelString =
+//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+//        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"empty_reference\">\n"
+//        "  <units name=\"mm_per_unspecified\">\n"
+//        "    <unit units=\"mm\"/>\n"
+//        "    <unit units=\"\" exponent=\"-1\"/>\n"
+//        "  </units>\n"
+//        "  <component name=\"empty_reference_units\">\n"
+//        "    <variable name=\"var1\" units=\"mm_per_unspecified\"/>\n"
+//        "  </component>\n"
+//        "</model>";
+//    const std::string modelString =
+//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+//        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
+//        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"empty_reference_model.cellml\">\n"
+//        "    <component component_ref=\"empty_reference_units\" name=\"empty_reference_units\"/>\n"
+//        "  </import>\n"
+//        "</model>";
+//    const std::string e =
+//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+//        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
+//        "  <units name=\"mm_per_unspecified\">\n"
+//        "    <unit units=\"mm\"/>\n"
+//        "    <unit exponent=\"-1\" units=\"\"/>\n"
+//        "  </units>\n"
+//        "  <component name=\"empty_reference_units\">\n"
+//        "    <variable name=\"var1\" units=\"mm_per_unspecified\"/>\n"
+//        "  </component>\n"
+//        "</model>\n";
+
+//    auto importer = libcellml::Importer::create();
+//    auto parser = libcellml::Parser::create();
+//    auto validator = libcellml::Validator::create();
+
+//    auto model = parser->parseModel(modelString);
+//    auto importModel = parser->parseModel(importModelString);
+
+//    EXPECT_TRUE(model->hasUnresolvedImports());
+
+//    importer->addModel(importModel, "empty_reference_model.cellml");
+
+//    importer->resolveImports(model, ".");
+//    auto flattenedModel = importer->flattenModel(model);
+//    EXPECT_EQ(size_t(1), flattenedModel->unitsCount());
+
+//    libcellml::PrinterPtr printer = libcellml::Printer::create();
+//    const std::string a = printer->printModel(flattenedModel);
+//    EXPECT_EQ(e, a);
+//}
+
+TEST(ModelFlattening, importedComponentWithUnreolvedUnitsImport)
+{
+    const std::string unitsDefinitionsModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"units_definitions\">\n"
+        "  <units name=\"more_mm\">\n"
+        "    <unit prefix=\"milli\" units=\"metre\"/>\n"
+        "  </units>\n"
+        "</model>";
+    const std::string importModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"base\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"units_definitions.cellml\">\n"
+        "    <units units_ref=\"more_mm\" name=\"more_mm\"/>\n"
+        "  </import>\n"
+        "  <units name=\"mm_sq\">\n"
+        "    <unit units=\"mm\"/>\n"
+        "    <unit units=\"more_mm\"/>\n"
+        "  </units>\n"
+        "  <units name=\"mm\">\n"
+        "    <unit prefix=\"milli\" units=\"metre\"/>\n"
+        "  </units>\n"
+        "  <component name=\"base\">\n"
+        "    <variable name=\"var1\" units=\"mm_sq\"/>\n"
+        "  </component>\n"
+        "</model>";
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"base.cellml\">\n"
+        "    <component component_ref=\"base\" name=\"base\"/>\n"
+        "  </import>\n"
+        "</model>";
+
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+
+    auto model = parser->parseModel(modelString);
+    auto importModel = parser->parseModel(importModelString);
+    auto unitsDefinitionsModel = parser->parseModel(unitsDefinitionsModelString);
+
+    Debug() << importModel->units(0)->name() << ", " << importModel->units(0)->isResolved();
+    Debug() << importModel->units(1)->name() << ", " << importModel->units(1)->isResolved();
+
+    importer->addModel(importModel, "base.cellml");
+    importer->addModel(unitsDefinitionsModel, "units_definitions.cellml");
+
+    importer->resolveImports(model, ".");
+    Debug() << "Any issues?";
+    printIssues(importer);
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    printIssues(importer);
+    Debug() << model->hasUnresolvedImports();
+    auto flattenedModel = importer->flattenModel(model);
+    EXPECT_EQ(nullptr, flattenedModel);
+}
+
+TEST(ModelFlattening, importedUnitsUsingUnitWhichIsAnImportedUnits)
+{
+    const std::string unitsDefinitionsModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"units_definitions\">\n"
+        "  <units name=\"more_mm\">\n"
+        "    <unit prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "</model>";
+    const std::string importModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"base\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"units_definitions.cellml\">\n"
+        "    <units units_ref=\"more_mm\" name=\"more_mm\"/>\n"
+        "  </import>\n"
+        "  <units name=\"mm_sq\">\n"
+        "    <unit units=\"mm\"/>\n"
+        "    <unit units=\"more_mm\"/>\n"
+        "  </units>\n"
+        "  <units name=\"mm\">\n"
+        "    <unit prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"base\">\n"
+        "    <variable name=\"var1\" units=\"mm_sq\"/>\n"
+        "  </component>\n"
+        "</model>";
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"base.cellml\">\n"
+        "    <component component_ref=\"base\" name=\"base\"/>\n"
+        "  </import>\n"
+        "</model>";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
+        "  <units name=\"mm\">\n"
+        "    <unit prefix=\"milli\" units=\"metre\"/>\n"
+        "  </units>\n"
+        "  <units name=\"mm_sq\">\n"
+        "    <unit units=\"mm\"/>\n"
+        "    <unit units=\"mm\"/>\n"
+        "  </units>\n"
+        "  <component name=\"base\">\n"
+        "    <variable name=\"var1\" units=\"mm_sq\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+
+    auto model = parser->parseModel(modelString);
+    auto importModel = parser->parseModel(importModelString);
+    auto unitsDefinitionsModel = parser->parseModel(unitsDefinitionsModelString);
+
+    importer->addModel(importModel, "base.cellml");
+    importer->addModel(unitsDefinitionsModel, "units_definitions.cellml");
+
+    importer->resolveImports(model, ".");
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    printIssues(importer);
+    Debug() << model->hasUnresolvedImports();
+    auto flattenedModel = importer->flattenModel(model);
+    EXPECT_EQ(nullptr, flattenedModel);
 }
