@@ -38,8 +38,6 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 static const std::map<std::string, int> standardPrefixList = {
@@ -727,7 +725,6 @@ std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &uni
         if (!isStandardUnitName(ref)) {
             auto refUnits = model->units(ref);
             if ((refUnits != nullptr) && refUnits->isImport()) {
-                Debug() << "000000000000000000000000000";
             } else if (refUnits != nullptr) {
                 auto requiredUnitsUnits = referencedUnits(model, refUnits);
                 requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
@@ -745,11 +742,9 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
 
     // Get all the units used by variables in this component.
 
-    Debug() << "Going through units used by variables.";
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto v = component->variable(i);
         auto u = v->units();
-//        printUnits(u);
         if ((u != nullptr) && !isStandardUnitName(u->name())) {
             auto modelUnits = model->units(u->name());
             auto availableUnits = modelUnits ? modelUnits : u;

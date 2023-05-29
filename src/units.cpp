@@ -34,8 +34,6 @@ limitations under the License.
 #include "units_p.h"
 #include "utilities.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 static const std::map<Units::Prefix, const std::string> prefixToString = {
@@ -650,7 +648,6 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             if (isStandardUnitName(ref)) {
                 updateUnitsMapWithStandardUnit(ref, unitsMap, uExp * exp);
             } else if (units->isImport() && units->isResolved()) {
-                Debug() << "import stuff???";
             } else {
                 auto model = owningModel(units);
                 if (model == nullptr) {
