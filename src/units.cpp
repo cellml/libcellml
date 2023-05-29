@@ -318,25 +318,18 @@ bool Units::isBaseUnit() const
 bool Units::doEquals(const EntityPtr &other) const
 {
     auto units2 = std::dynamic_pointer_cast<Units>(other);
-    Debug() << this->name() << " = " << units2->name();
-    Debug() << "Units equal so far: 1";
-    Debug() << NamedEntity::doEquals(other);
     if (!NamedEntity::doEquals(other)) {
         return false;
     }
 
     auto units = std::dynamic_pointer_cast<Units>(other);
 
-    Debug() << "Units equal so far: 2";
-    Debug() << units->name();
-    Debug() << ImportedEntity::doEquals(units);
     if ((units == nullptr)
         || (pFunc()->mUnitDefinitions.size() != units->unitCount())
         || !ImportedEntity::doEquals(units)) {
         return false;
     }
 
-    Debug() << "Units equal so far: 1";
     std::string reference;
     std::string prefix;
     double exponent;
@@ -344,14 +337,12 @@ bool Units::doEquals(const EntityPtr &other) const
     std::string id;
     std::vector<size_t> unmatchedUnitIndex(pFunc()->mUnitDefinitions.size());
 
-    Debug() << "Units equal so far: 1";
     std::iota(unmatchedUnitIndex.begin(), unmatchedUnitIndex.end(), 0);
 
     for (const auto &unitDefinition : pFunc()->mUnitDefinitions) {
         bool unitFound = false;
         size_t index = 0;
 
-    Debug() << "Units equal so far: 1";
         for (index = 0; (index < unmatchedUnitIndex.size()) && !unitFound; ++index) {
             size_t currentIndex = unmatchedUnitIndex.at(index);
 
@@ -366,7 +357,6 @@ bool Units::doEquals(const EntityPtr &other) const
             }
         }
 
-    Debug() << "Units equal so far: 1";
         if (!unitFound) {
             return false;
         }
@@ -374,7 +364,6 @@ bool Units::doEquals(const EntityPtr &other) const
         unmatchedUnitIndex.erase(unmatchedUnitIndex.begin() + ptrdiff_t(index) - 1);
     }
 
-    Debug() << "Units equal so far: yes";
     return true;
 }
 
@@ -601,16 +590,13 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
         return 0.0;
     }
 
-    Debug() << "Yes, compatible";
     bool updateUnits1 = false;
     bool updateUnits2 = false;
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
         double multiplier = 0.0;
         updateUnits1 = updateUnitMultiplier(units1, -1, multiplier);
-//        Debug() << "Mult 1: " << multiplier;
         updateUnits2 = updateUnitMultiplier(units2, 1, multiplier);
-//        Debug() << "Mult 2: " << multiplier;
 
         if (updateUnits1 && updateUnits2) {
             return std::pow(10, multiplier);
@@ -649,9 +635,10 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
         auto importSource = units->importSource();
         auto importedUnits = importSource->model()->units(units->importReference());
         if (!updateUnitsMap(importedUnits, unitsMap)) {
-        Debug() << "failed here!";
             return false;
         }
+    } else if (units->isImport() && !units->isResolved()) {
+        return false;
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
@@ -673,12 +660,9 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 } else {
                     auto refUnits = model->units(ref);
                     if (refUnits == nullptr) {
-                    Debug() << "ref units nullptr fail. " << model->name() << ", " << ref;
-
                         return false;
                     }
                     if (!updateUnitsMap(refUnits, unitsMap, uExp * exp)) {
-                    Debug() << "died here. " << ref;
                         return false;
                     }
                 }
@@ -735,47 +719,38 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Initial checks.
     if ((units1 == nullptr) || (units2 == nullptr)) {
-    Debug() << "at least one input is nullptr";
         return false;
     }
     if ((!units1->isResolved()) || (!units2->isResolved())) {
-    Debug() << "again";
         return false;
     }
 
     UnitsMap units1Map;
     if (!defineUnitsMap(units1, units1Map)) {
-    Debug() << "invalid 1";
-        return false;
-    }
-    UnitsMap units2Map;
-    if (!defineUnitsMap(units2, units2Map)) {
-    Debug() << "invalid 2";
         return false;
     }
 
-//    Debug() << "going through units";
-//    Debug() << units1->isImport();
-//    Debug() << units2->isImport();
-//    Debug() << units1Map.size() << " <<>> " << units2Map.size();
+    UnitsMap units2Map;
+    if (!defineUnitsMap(units2, units2Map)) {
+        return false;
+    }
+
     if (units1Map.size() == units2Map.size()) {
         for (const auto &units : units1Map) {
             std::string unit = units.first;
             auto found = units2Map.find(unit);
 
             if (found == units2Map.end()) {
-            Debug() << "falied here";
                 return false;
             }
             if (!areEqual(found->second, units.second)) {
-            Debug() << "dump";
                 return false;
             }
         }
-        Debug() <<  "Same same.";
+
         return true;
     }
-            Debug() << "fail out:";
+
     return false;
 }
 

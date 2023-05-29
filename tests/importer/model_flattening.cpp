@@ -997,8 +997,10 @@ TEST(ModelFlattening, resolveFlattenMissingUnits)
     auto importedModel = importer->library(0);
     importedModel->units(0)->setName("someOtherName");
 
+    printIssues(importer);
     // Attempt to flatten the model.
     auto flatModel = importer->flattenModel(originalModel);
+    printIssues(importer);
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
 }

@@ -808,7 +808,21 @@ NameList unitsNamesUsed(const ComponentPtr &component);
 EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
-void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+
+/**
+ * @brief Change all matching cn CellML units attributes names.
+ *
+ * Find all cn elements with a CellML units attribute with the value @p oldName
+ * and replace it with @p newName.
+ *
+ * The find and replace is done recursively through the components component
+ * tree hierarchy.
+ *
+ * @param component The component to find and replace in.
+ * @param oldName The old name to match.
+ * @param newName The new name to replace the old name with.
+ */
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName);
 
 /**
  * @brief Return the number of non-comment children.

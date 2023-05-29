@@ -107,5 +107,7 @@ void printStack(const IndexStack &stack);
 void printStackWithModelInfo(const IndexStack &stack, const ModelPtr &model);
 void printStringStringMap(const StringStringMap &map);
 void printVariableMap(const VariableMap &map);
+void printUnits(const UnitsPtr &units);
+void listModelsUnits(const ModelPtr &model);
 
 } // namespace libcellml

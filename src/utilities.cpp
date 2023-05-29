@@ -38,6 +38,8 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 static const std::map<std::string, int> standardPrefixList = {
@@ -515,15 +517,14 @@ NameList findCnUnitsNames(const XmlNodePtr &node);
  */
 NameList findComponentCnUnitsNames(const ComponentPtr &component);
 
-void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
-void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const std::string &oldName, const std::string &newName);
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName);
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
 IndexStack indexStackOf(const VariablePtr &variable);
 VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model);
 void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model);
 IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
 void componentNames(const ComponentPtr &component, NameList &names);
-std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units);
 
 NameList findCnUnitsNames(const XmlNodePtr &node)
 {
@@ -564,23 +565,22 @@ NameList findComponentCnUnitsNames(const ComponentPtr &component)
     return names;
 }
 
-void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap)
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const std::string &oldName, const std::string &newName)
 {
     XmlNodePtr childNode = node->firstChild();
     while (childNode != nullptr) {
         if (childNode->isMathmlElement("cn")) {
             std::string unitsName = childNode->attribute("units");
-            auto foundNameIter = replaceMap.find(unitsName);
-            if (foundNameIter != replaceMap.end()) {
-                childNode->setAttribute("units", foundNameIter->second.c_str());
+            if (unitsName == oldName) {
+                childNode->setAttribute("units", newName.c_str());
             }
         }
-        findAndReplaceCnUnitsNames(childNode, replaceMap);
+        findAndReplaceCnUnitsNames(childNode, oldName, newName);
         childNode = childNode->next();
     }
 }
 
-void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName)
 {
     std::string mathContent = component->math();
     if (mathContent.empty()) {
@@ -593,7 +593,7 @@ void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const St
         auto rootNode = doc->rootNode();
         if (rootNode->isMathmlElement("math")) {
             auto originalMath = rootNode->convertToString();
-            findAndReplaceCnUnitsNames(rootNode, replaceMap);
+            findAndReplaceCnUnitsNames(rootNode, oldName, newName);
             auto newMath = rootNode->convertToString();
             newMathContent += newMath;
             if (newMath != originalMath) {
@@ -607,12 +607,12 @@ void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const St
     }
 }
 
-void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName)
 {
-    findAndReplaceComponentCnUnitsNames(component, replaceMap);
+    findAndReplaceComponentCnUnitsNames(component, oldName, newName);
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto childComponent = component->component(index);
-        findAndReplaceComponentCnUnitsNames(childComponent, replaceMap);
+        findAndReplaceComponentCnUnitsNames(childComponent, oldName, newName);
     }
 }
 
@@ -722,17 +722,13 @@ std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &uni
 {
     std::vector<UnitsPtr> requiredUnits;
 
-    std::string ref;
-    std::string pre;
-    std::string id;
-    double expMult;
-    double uExp;
-
     for (size_t index = 0; index < units->unitCount(); ++index) {
-        units->unitAttributes(index, ref, pre, uExp, expMult, id);
+        const std::string ref = units->unitAttributeReference(index);
         if (!isStandardUnitName(ref)) {
             auto refUnits = model->units(ref);
-            if (refUnits != nullptr) {
+            if ((refUnits != nullptr) && refUnits->isImport()) {
+                Debug() << "000000000000000000000000000";
+            } else if (refUnits != nullptr) {
                 auto requiredUnitsUnits = referencedUnits(model, refUnits);
                 requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
                 requiredUnits.push_back(refUnits);
@@ -746,15 +742,23 @@ std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &uni
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component)
 {
     std::vector<UnitsPtr> usedUnits;
+
+    // Get all the units used by variables in this component.
+
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto v = component->variable(i);
         auto u = v->units();
         if ((u != nullptr) && !isStandardUnitName(u->name())) {
-            auto requiredUnits = referencedUnits(model, u);
+            auto modelUnits = model->units(u->name());
+            auto availableUnits = modelUnits ? modelUnits : u;
+            auto requiredUnits = referencedUnits(model, availableUnits);
             usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
-            usedUnits.push_back(u);
+            usedUnits.push_back(availableUnits);
         }
     }
+
+    // Get all the units used by cn elements in the components maths.
+
     auto componentCnUnitsNames = findComponentCnUnitsNames(component);
     for (const auto &unitsName : componentCnUnitsNames) {
         auto u = model->units(unitsName);
@@ -764,6 +768,8 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
             usedUnits.push_back(u);
         }
     }
+
+    // Get all the units used by child components of this component.
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
         auto childComponent = component->component(i);

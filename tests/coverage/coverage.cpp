@@ -793,7 +793,7 @@ TEST(CoverageValidator, unitsUsedByComponentMathNotFoundInModel)
 {
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <apply>"
+        "  <apply>\n"
         "    <eq/>\n"
         "    <ci>a</ci>\n"
         "    <cn cellml:units=\"bobs\">1</cn>\n"
@@ -810,7 +810,7 @@ TEST(CoverageValidator, notMathMLMathNodesInComponentMath)
 {
     const std::string math =
         "<notmath xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <apply>"
+        "  <apply>\n"
         "    <eq/>\n"
         "    <ci>a</ci>\n"
         "    <cn cellml:units=\"bobs\">1</cn>\n"
