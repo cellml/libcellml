@@ -158,13 +158,51 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(History &history, const UnitsConstP
     return (mUnits->unitCount() == 0) && standardUnitCheck;
 }
 
-bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstPtr &units) const
+bool Units::UnitsImpl::isChildUnitResolvedWithHistory(History &history, const HistoryEpochPtr &h, const ModelConstPtr &model, const UnitsConstPtr &units, size_t unitIndex) const
 {
-    if (!mUnits->isImport()) {
+    std::string reference = mUnits->unitAttributeReference(unitIndex);
+    if (units != nullptr) {
+        reference = units->unitAttributeReference(unitIndex);
+    }
+
+    if (isStandardUnitName(reference)) {
         return true;
     }
 
-    auto model = mUnits->importSource()->model();
+    if (model == nullptr) {
+        return false;
+    }
+
+    auto childUnits = model->units(reference);
+    if (childUnits == nullptr) {
+        return false;
+    }
+
+    if (h != nullptr) {
+        history.push_back(h);
+    }
+
+    if (!childUnits->pFunc()->isResolvedWithHistory(history, childUnits)) {
+        return false;
+    }
+
+    return true;
+}
+
+bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstPtr &units) const
+{
+    ModelPtr model;
+    if (!mUnits->isImport()) {
+        model = std::dynamic_pointer_cast<libcellml::Model>(mUnits->parent());
+        for (size_t unitIndex = 0; unitIndex < mUnits->unitCount(); ++unitIndex) {
+            if (!isChildUnitResolvedWithHistory(history, nullptr, model, nullptr, unitIndex)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    model = mUnits->importSource()->model();
     if (model == nullptr) {
         return false;
     }
@@ -185,25 +223,8 @@ bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstP
         return importedUnits->pFunc()->isResolvedWithHistory(history, importedUnits);
     }
 
-    for (size_t u = 0; (u < importedUnits->unitCount()); ++u) {
-        std::string reference;
-        std::string prefix;
-        std::string id;
-        double exponent;
-        double multiplier;
-        importedUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
-        if (isStandardUnitName(reference)) {
-            continue;
-        }
-
-        auto childUnits = model->units(reference);
-        if (childUnits == nullptr) {
-            return false;
-        }
-
-        history.push_back(h);
-
-        if (!childUnits->pFunc()->isResolvedWithHistory(history, childUnits)) {
+    for (size_t unitIndex = 0; unitIndex < importedUnits->unitCount(); ++unitIndex) {
+        if (!isChildUnitResolvedWithHistory(history, h, model, importedUnits, unitIndex)) {
             return false;
         }
     }
@@ -232,9 +253,7 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
         if (units->isResolved()) {
             auto importSource = units->importSource();
             auto importedUnits = importSource->model()->units(units->importReference());
-            if (!updateUnitMultiplier(importedUnits, 1, localMultiplier)) {
-                return false;
-            }
+            updateUnitMultiplier(importedUnits, 1, localMultiplier);
             multiplier += localMultiplier * direction;
         } else {
             return false;
@@ -264,21 +283,17 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
                 localMultiplier += mult + standardMult * exp + prefixMult;
             } else {
                 auto model = owningModel(units);
-                if (model != nullptr) {
-                    auto refUnits = model->units(ref);
-                    if (refUnits == nullptr) {
-                        return false;
-                    }
-                    double branchMult = 0.0;
-                    // Return false when we can't find a valid prefix.
-                    if (!updateUnitMultiplier(refUnits, 1, branchMult)) {
-                        return false;
-                    }
-                    // Make the direction positive on all branches, direction is only applied at the end.
-                    localMultiplier += mult + branchMult * exp + prefixMult;
-                } else {
+                auto refUnits = model->units(ref);
+                if (refUnits == nullptr) {
                     return false;
                 }
+                double branchMult = 0.0;
+                // Return false when we can't find a valid prefix.
+                if (!updateUnitMultiplier(refUnits, 1, branchMult)) {
+                    return false;
+                }
+                // Make the direction positive on all branches, direction is only applied at the end.
+                localMultiplier += mult + branchMult * exp + prefixMult;
             }
         }
         multiplier += localMultiplier * direction;
@@ -607,7 +622,7 @@ void updateUnitsMapWithStandardUnit(const std::string &name, UnitsMap &unitsMap,
     }
 }
 
-bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
+void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
         auto unitsName = units->name();
@@ -619,14 +634,10 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
         }
     } else if (isStandardUnit(units)) {
         updateUnitsMapWithStandardUnit(units->name(), unitsMap, exp);
-    } else if (units->isImport() && units->isResolved()) {
+    } else if (units->isImport()) {
         auto importSource = units->importSource();
         auto importedUnits = importSource->model()->units(units->importReference());
-        if (!updateUnitsMap(importedUnits, unitsMap)) {
-            return false;
-        }
-    } else if (units->isImport()) {
-        return false;
+        updateUnitsMap(importedUnits, unitsMap);
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
@@ -639,30 +650,18 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 updateUnitsMapWithStandardUnit(ref, unitsMap, uExp * exp);
             } else {
                 auto model = owningModel(units);
-                if (model == nullptr) {
-                    // We cannot resolve the reference for this units so we add
-                    // what we do know.
-                    unitsMap.emplace(ref, uExp * exp);
-                } else {
-                    auto refUnits = model->units(ref);
-                    if (refUnits == nullptr) {
-                        return false;
-                    }
-                    if (!updateUnitsMap(refUnits, unitsMap, uExp * exp)) {
-                        return false;
-                    }
-                }
+                auto refUnits = model->units(ref);
+                updateUnitsMap(refUnits, unitsMap, uExp * exp);
             }
         }
     }
-    return true;
 }
 
-bool defineUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap)
+UnitsMap defineUnitsMap(const UnitsPtr &units)
 {
-    if (!updateUnitsMap(units, unitsMap)) {
-        return false;
-    }
+    UnitsMap unitsMap;
+
+    updateUnitsMap(units, unitsMap);
 
     // Checking for exponents of zero in the map, which can be removed.
     auto it = unitsMap.begin();
@@ -675,7 +674,7 @@ bool defineUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap)
             ++it;
         }
     }
-    return true;
+    return unitsMap;
 }
 
 bool Units::requiresImports() const
@@ -711,15 +710,9 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
         return false;
     }
 
-    UnitsMap units1Map;
-    if (!defineUnitsMap(units1, units1Map)) {
-        return false;
-    }
+    UnitsMap units1Map = defineUnitsMap(units1);
 
-    UnitsMap units2Map;
-    if (!defineUnitsMap(units2, units2Map)) {
-        return false;
-    }
+    UnitsMap units2Map = defineUnitsMap(units2);
 
     if (units1Map.size() == units2Map.size()) {
         for (const auto &units : units1Map) {

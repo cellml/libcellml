@@ -724,12 +724,9 @@ std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &uni
         const std::string ref = units->unitAttributeReference(index);
         if (!isStandardUnitName(ref)) {
             auto refUnits = model->units(ref);
-            if ((refUnits != nullptr) && refUnits->isImport()) {
-            } else if (refUnits != nullptr) {
-                auto requiredUnitsUnits = referencedUnits(model, refUnits);
-                requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
-                requiredUnits.push_back(refUnits);
-            }
+            auto requiredUnitsUnits = referencedUnits(model, refUnits);
+            requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
+            requiredUnits.push_back(refUnits);
         }
     }
 
@@ -759,11 +756,9 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
     auto componentCnUnitsNames = findComponentCnUnitsNames(component);
     for (const auto &unitsName : componentCnUnitsNames) {
         auto u = model->units(unitsName);
-        if (u != nullptr) {
-            auto requiredUnits = referencedUnits(model, u);
-            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
-            usedUnits.push_back(u);
-        }
+        auto requiredUnits = referencedUnits(model, u);
+        usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+        usedUnits.push_back(u);
     }
 
     // Get all the units used by child components of this component.
