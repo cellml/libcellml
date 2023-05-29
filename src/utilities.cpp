@@ -745,9 +745,11 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
 
     // Get all the units used by variables in this component.
 
+    Debug() << "Going through units used by variables.";
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto v = component->variable(i);
         auto u = v->units();
+//        printUnits(u);
         if ((u != nullptr) && !isStandardUnitName(u->name())) {
             auto modelUnits = model->units(u->name());
             auto availableUnits = modelUnits ? modelUnits : u;
