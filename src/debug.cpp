@@ -698,6 +698,46 @@ void printVariableMap(const VariableMap &map)
     }
 }
 
+void printNamedPath(const ParentedEntityPtr &parented)
+{
+    if (parented != nullptr) {
+        std::vector<std::string> names;
+        auto named = std::dynamic_pointer_cast<libcellml::NamedEntity>(parented);
+        if (named != nullptr) {
+            names.push_back(named->name());
+            auto parent = named->parent();
+            while (parent != nullptr) {
+                auto named = std::dynamic_pointer_cast<libcellml::NamedEntity>(parent);
+                if (named != nullptr) {
+                    names.push_back(named->name());
+                }
+                parent = parent->parent();
+            }
+        }
+
+        while (!names.empty()) {
+            Debug(false) << "/" << names.back();
+            names.pop_back();
+        }
+    } else {
+        Debug() << "nullptr variable.";
+    }
+}
+
+void printEquivalences(const VariablePtr &variable)
+{
+    Debug(false) << "Equivalence for: ";
+    printNamedPath(variable);
+    Debug();
+    if (variable != nullptr) {
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            Debug(false) << " - ";
+            printNamedPath(variable->equivalentVariable(j));
+            Debug();
+        }
+    }
+}
+
 void printUnits(const UnitsPtr &units)
 {
     Debug(false) << "Units: " << (units ? units->name() : "nullptr");
