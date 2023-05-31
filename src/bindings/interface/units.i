@@ -86,6 +86,9 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::equivalent
 "Tests if two Units are equivalent in base units as well as scaling factor.";
 
+%feature("docstring") libcellml::Units::isDefined
+"Tests if this units is defined.";
+
 %feature("docstring") libcellml::Units::clone
 "Create a copy of this units.";
 

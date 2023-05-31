@@ -228,10 +228,15 @@ class ModelTestCase(unittest.TestCase):
         del m
 
     def test_is_defined(self):
-        from libcellml import Model, Component
+        from libcellml import Model, Component, Variable, Units
 
         m = Model()
         c = Component()
+        v = Variable()
+        u = Units()
+
+        v.setUnits(u)
+        c.addVariable(v)
         m.addComponent(c)
         self.assertTrue(m.isDefined())
 
