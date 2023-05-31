@@ -34,6 +34,8 @@ limitations under the License.
 #include "units_p.h"
 #include "utilities.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 static const std::map<Units::Prefix, const std::string> prefixToString = {
@@ -158,73 +160,47 @@ bool Units::UnitsImpl::isBaseUnitWithHistory(History &history, const UnitsConstP
     return (mUnits->unitCount() == 0) && standardUnitCheck;
 }
 
-bool Units::UnitsImpl::isChildUnitResolvedWithHistory(History &history, const HistoryEpochPtr &h, const ModelConstPtr &model, const UnitsConstPtr &units, size_t unitIndex) const
-{
-    std::string reference = mUnits->unitAttributeReference(unitIndex);
-    if (units != nullptr) {
-        reference = units->unitAttributeReference(unitIndex);
-    }
-
-    if (isStandardUnitName(reference)) {
-        return true;
-    }
-
-    if (model == nullptr) {
-        return false;
-    }
-
-    auto childUnits = model->units(reference);
-    if (childUnits == nullptr) {
-        return false;
-    }
-
-    if (h != nullptr) {
-        history.push_back(h);
-    }
-
-    if (!childUnits->pFunc()->isResolvedWithHistory(history, childUnits)) {
-        return false;
-    }
-
-    return true;
-}
-
-bool Units::UnitsImpl::isResolvedWithHistory(History &history, const UnitsConstPtr &units) const
+bool Units::UnitsImpl::performTestWithHistory(History &history, const UnitsConstPtr &units, TestType type) const
 {
     ModelPtr model;
-    if (!mUnits->isImport()) {
-        model = std::dynamic_pointer_cast<libcellml::Model>(mUnits->parent());
-        for (size_t unitIndex = 0; unitIndex < mUnits->unitCount(); ++unitIndex) {
-            if (!isChildUnitResolvedWithHistory(history, nullptr, model, nullptr, unitIndex)) {
-                return false;
-            }
+    if (mUnits->isImport()) {
+        model = mUnits->importSource()->model();
+        if (model == nullptr) {
+            return false;
         }
-        return true;
-    }
 
-    model = mUnits->importSource()->model();
-    if (model == nullptr) {
-        return false;
-    }
+        auto importedUnits = model->units(mUnits->importReference());
+        if (importedUnits == nullptr) {
+            return false;
+        }
 
-    auto importedUnits = model->units(mUnits->importReference());
-    if (importedUnits == nullptr) {
-        return false;
-    }
+        auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
+        if (checkForImportCycles(history, h)) {
+            return false;
+        }
 
-    auto h = createHistoryEpoch(units, importeeModelUrl(history, mUnits->importSource()->url()));
-    if (checkForImportCycles(history, h)) {
-        return false;
-    }
-
-    if (importedUnits->isImport()) {
         history.push_back(h);
 
-        return importedUnits->pFunc()->isResolvedWithHistory(history, importedUnits);
+        return importedUnits->pFunc()->performTestWithHistory(history, importedUnits, type);
     }
 
-    for (size_t unitIndex = 0; unitIndex < importedUnits->unitCount(); ++unitIndex) {
-        if (!isChildUnitResolvedWithHistory(history, h, model, importedUnits, unitIndex)) {
+    model = std::dynamic_pointer_cast<libcellml::Model>(mUnits->parent());
+    for (size_t unitIndex = 0; unitIndex < mUnits->unitCount(); ++unitIndex) {
+        std::string reference = mUnits->unitAttributeReference(unitIndex);
+        if (isStandardUnitName(reference)) {
+            continue;
+        }
+
+        if (model != nullptr) {
+            auto childUnits = model->units(reference);
+            if (childUnits != nullptr) {
+                if (!childUnits->pFunc()->performTestWithHistory(history, childUnits, type)) {
+                    return false;
+                }
+            } else if (type == TestType::DEFINED) {
+                return false;
+            }
+        } else if (type == TestType::DEFINED) {
             return false;
         }
     }
@@ -706,12 +682,11 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
     if ((units1 == nullptr) || (units2 == nullptr)) {
         return false;
     }
-    if ((!units1->isResolved()) || (!units2->isResolved())) {
+    if ((!units1->isDefined()) || (!units2->isDefined())) {
         return false;
     }
 
     UnitsMap units1Map = defineUnitsMap(units1);
-
     UnitsMap units2Map = defineUnitsMap(units2);
 
     if (units1Map.size() == units2Map.size()) {
@@ -765,10 +740,16 @@ UnitsPtr Units::clone() const
     return units;
 }
 
+bool Units::isDefined() const
+{
+    History history;
+    return pFunc()->performTestWithHistory(history, shared_from_this(), TestType::DEFINED);
+}
+
 bool Units::doIsResolved() const
 {
     History history;
-    return pFunc()->isResolvedWithHistory(history, shared_from_this());
+    return pFunc()->performTestWithHistory(history, shared_from_this(), TestType::RESOLVED);
 }
 
 } // namespace libcellml

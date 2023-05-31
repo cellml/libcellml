@@ -1291,7 +1291,7 @@ TEST(ModelFlattening, cascadedUnitsManuallyImportedWithoutImportSourcesAddedToIm
 
 TEST(ModelFlattening, cascadedUnitsManuallyImportedMissingUnitReferences)
 {
-    const std::string e = "The model has unresolved imports.";
+    const std::string e = "The model is not fully defined.";
 
     auto importer = libcellml::Importer::create();
 
@@ -1344,7 +1344,8 @@ TEST(ModelFlattening, cascadedUnitsManuallyImportedMissingUnitReferences)
     importedUnits2->setImportSource(importSource2);
     importedUnits2->setImportReference("third_units");
 
-    EXPECT_TRUE(model->hasUnresolvedImports());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_FALSE(model->isDefined());
 
     importer->addModel(importModel1, "model1.cellml");
     importer->addModel(importModel2, "model2.cellml");
@@ -1623,7 +1624,7 @@ TEST(ModelFlattening, importingComponentUsingEmptyUnitReference)
     EXPECT_EQ(e, a);
 }
 
-TEST(ModelFlattening, importedComponentWithUnreolvedUnitsImport)
+TEST(ModelFlattening, importedComponentWithUnresolvedUnitsImport)
 {
     const std::string unitsDefinitionsModelString =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

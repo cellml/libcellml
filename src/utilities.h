@@ -806,7 +806,7 @@ void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model
 NameList componentNames(const ModelPtr &model);
 NameList unitsNamesUsed(const ComponentPtr &component);
 EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
-std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentConstPtr &component);
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 
 /**

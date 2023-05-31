@@ -3383,3 +3383,41 @@ TEST(Units, aliasingUnits)
 
     EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
 }
+
+TEST(Units, definedUnitsBaseUnit)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create("base_unit");
+
+    EXPECT_TRUE(u->isDefined());
+}
+
+TEST(Units, definedUnitsStandardUnit)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create("only_standard_units");
+    u->addUnit("second");
+    u->addUnit("farad");
+
+    EXPECT_TRUE(u->isDefined());
+}
+
+TEST(Units, undefinedUnitsNonStandardUnit)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create("only_standard_units");
+    u->addUnit("battle");
+
+    EXPECT_FALSE(u->isDefined());
+    EXPECT_TRUE(u->isResolved());
+}
+
+TEST(Units, definedUnitsImport)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create("only_standard_units");
+
+    libcellml::ImportSourcePtr importSource = libcellml::ImportSource::create();
+    importSource->setUrl("I_am_a_url");
+
+    u->setImportSource(importSource);
+    u->setImportReference("ref");
+
+    EXPECT_FALSE(u->isDefined());
+}

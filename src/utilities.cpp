@@ -513,7 +513,7 @@ NameList findCnUnitsNames(const XmlNodePtr &node);
  * @param component The component to search.
  * @return A list of units references.
  */
-NameList findComponentCnUnitsNames(const ComponentPtr &component);
+NameList findComponentCnUnitsNames(const ComponentConstPtr &component);
 
 void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const std::string &oldName, const std::string &newName);
 void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName);
@@ -543,7 +543,7 @@ NameList findCnUnitsNames(const XmlNodePtr &node)
     return names;
 }
 
-NameList findComponentCnUnitsNames(const ComponentPtr &component)
+NameList findComponentCnUnitsNames(const ComponentConstPtr &component)
 {
     NameList names;
     // Inspect the MathML in this component for any specified constant <cn> units.
@@ -733,7 +733,7 @@ std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &uni
     return requiredUnits;
 }
 
-std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component)
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentConstPtr &component)
 {
     std::vector<UnitsPtr> usedUnits;
 

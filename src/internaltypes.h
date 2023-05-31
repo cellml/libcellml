@@ -133,4 +133,10 @@ using History = std::vector<HistoryEpochPtr>; /**< Type definition for history.*
 
 using Strings = std::vector<std::string>; /**< Type definition for strings.*/
 
+enum class TestType
+{
+    RESOLVED,
+    DEFINED,
+};
+
 } // namespace libcellml

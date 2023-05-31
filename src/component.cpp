@@ -33,6 +33,8 @@ limitations under the License.
 #include "utilities.h"
 #include "variable_p.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
@@ -453,6 +455,55 @@ bool doRequiresImport(const ComponentConstPtr &thisComponent)
 bool Component::requiresImports() const
 {
     return doRequiresImport(shared_from_this());
+}
+
+bool Component::isDefined() const
+{
+    if (!doIsResolved()) {
+        return false;
+    }
+
+    ModelPtr model;
+    if (isImport()) {
+        model = importSource()->model();
+
+        if (model == nullptr) {
+            return false;
+        }
+
+        auto importedComponent = model->component(importReference());
+        if (importedComponent == nullptr) {
+            return false;
+        }
+
+        return importedComponent->isDefined();
+    }
+
+    model = owningModel(shared_from_this());
+    if (model == nullptr) {
+        return false;
+    }
+
+    Debug() << "AAAAAAAAAAAAAAAAAAA";
+//    listModelsUnits(model);
+    Debug() << "BBBBBBBBBBBBBBBBBBB";
+    auto usedUnits = unitsUsed(model, shared_from_this());
+    std::vector<UnitsPtr> uniqueUnits;
+    for (const auto &u : usedUnits) {
+        const auto iterator = std::find_if(uniqueUnits.begin(), uniqueUnits.end(),
+            [=](const UnitsPtr &uu) -> bool {return uu->equals(u); });
+        if (iterator == uniqueUnits.end()) {
+            uniqueUnits.push_back(u);
+        }
+    }
+
+    for (const auto &units : uniqueUnits) {
+        if (!units->isDefined()) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool Component::doIsResolved() const
