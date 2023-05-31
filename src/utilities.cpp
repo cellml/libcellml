@@ -742,12 +742,14 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentConstPtr &
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto v = component->variable(i);
         auto u = v->units();
-        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+        if ((u != nullptr) && !isStandardUnitName(u->name()) && (model != nullptr)) {
             auto modelUnits = model->units(u->name());
             auto availableUnits = modelUnits ? modelUnits : u;
             auto requiredUnits = referencedUnits(model, availableUnits);
             usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
             usedUnits.push_back(availableUnits);
+        } else if (model == nullptr) {
+            usedUnits.push_back(u);
         }
     }
 

@@ -45,7 +45,7 @@ public:
     bool equalVariables(const ComponentPtr &other) const;
     bool equalResets(const ComponentPtr &other) const;
 
-    bool isResolvedWithHistory(History &history, const ComponentConstPtr &component) const;
+    bool performTestWithHistory(History &history, const ComponentConstPtr &component, TestType type) const;
 };
 
 } // namespace libcellml

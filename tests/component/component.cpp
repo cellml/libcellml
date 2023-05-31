@@ -699,3 +699,23 @@ TEST(Component, preventSegfaultInAddSomething)
     EXPECT_FALSE(model->addComponent(nullptr));
     EXPECT_FALSE(model->addUnits(nullptr));
 }
+
+TEST(Component, isDefined)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create("a_component");
+
+    EXPECT_TRUE(c->isDefined());
+}
+
+TEST(Component, isNotDefinedWithUndefinedUnits)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create("a_component");
+    libcellml::VariablePtr v = libcellml::Variable::create("a_variable");
+    libcellml::UnitsPtr u = libcellml::Units::create("improper_units");
+    u->addUnit("battle");
+
+    c->addVariable(v);
+    v->setUnits(u);
+
+    EXPECT_FALSE(c->isDefined());
+}
