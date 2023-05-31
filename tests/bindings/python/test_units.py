@@ -346,6 +346,14 @@ class UnitsTestCase(unittest.TestCase):
         u.setUnitAttributeReference(0, 'arrdee')
         self.assertEqual('arrdee', u.unitAttributeReference(0))
 
+    def test_is_defined(self):
+        from libcellml import Units
+
+        u = Units("BigVolts")
+        u.addUnit("volt", 0, 1, 1000)
+
+        self.assertTrue(u.isDefined())
+
 
 if __name__ == '__main__':
     unittest.main()
