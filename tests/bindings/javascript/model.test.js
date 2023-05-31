@@ -23,10 +23,20 @@ describe("Model tests", () => {
     });
   test('Checking Model name.', () => {
     const m = new libcellml.Model()
-   
+
     expect(m.name()).toBe('');
 
     m.setName('model-test')
     expect(m.name()).toBe('model-test');
+  });
+  test('Checking Model has resolved imports.', () => {
+    const m = new libcellml.Model()
+
+    expect(m.hasUnresolvedImports()).toBe(false);
+  });
+  test('Checking Model is defined.', () => {
+    const m = new libcellml.Model()
+
+    expect(m.isDefined()).toBe(true);
   });
 })

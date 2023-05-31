@@ -942,6 +942,32 @@ TEST(Importer, isResolvedUnitsWithReferenceToSelf)
     EXPECT_FALSE(units->requiresImports());
 }
 
+TEST(Importer, isResolvedUnitsNotImportFullyDefined)
+{
+    auto model = libcellml::Model::create("standard_model");
+    auto units = libcellml::Units::create("my_units");
+    units->addUnit("second", -1.0);
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_TRUE(units->isResolved());
+    EXPECT_TRUE(units->isDefined());
+}
+
+TEST(Importer, isResolvedUnitsNotImportPartiallyDefined)
+{
+    auto model = libcellml::Model::create("standard_model");
+    auto units = libcellml::Units::create("my_units");
+    units->addUnit("seconds", -1.0);
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_TRUE(units->isResolved());
+    EXPECT_FALSE(units->isDefined());
+}
+
 TEST(Importer, isResolvedUnitsOverOneLevel)
 {
     auto parser = libcellml::Parser::create();
@@ -1064,9 +1090,11 @@ TEST(Importer, isResolvedReferencedUnitsMissing)
 
     auto units = model->units(0);
 
-    EXPECT_FALSE(units->isResolved());
+    EXPECT_TRUE(units->isResolved());
+    EXPECT_FALSE(units->isDefined());
 
-    EXPECT_TRUE(model->hasUnresolvedImports());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_FALSE(model->isDefined());
 }
 
 TEST(Importer, isResolvedCircularImportUnits)

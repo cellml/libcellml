@@ -274,6 +274,18 @@ bool Model::hasUnlinkedUnits()
     return unlinkedUnits;
 }
 
+bool Model::isDefined() const
+{
+    bool defined = true;
+    for (size_t n = 0; n < unitsCount() && defined; ++n) {
+        defined = units(n)->isDefined();
+    }
+    for (size_t n = 0; (n < componentCount()) && defined; ++n) {
+        defined = component(n)->isDefined();
+    }
+    return defined;
+}
+
 bool Model::hasUnresolvedImports() const
 {
     bool unresolvedImports = false;
@@ -283,6 +295,7 @@ bool Model::hasUnresolvedImports() const
     for (size_t n = 0; (n < componentCount()) && !unresolvedImports; ++n) {
         unresolvedImports = !component(n)->isResolved();
     }
+
     return unresolvedImports;
 }
 

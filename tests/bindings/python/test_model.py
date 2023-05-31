@@ -227,6 +227,14 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual(m.unitsCount(), 0)
         del m
 
+    def test_is_defined(self):
+        from libcellml import Model, Component
+
+        m = Model()
+        c = Component()
+        m.addComponent(c)
+        self.assertTrue(m.isDefined())
+
     def test_has_unresolved_imports(self):
         from libcellml import Model, Component, ImportSource
 

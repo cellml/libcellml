@@ -37,6 +37,8 @@ limitations under the License.
 #include "logger_p.h"
 #include "utilities.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 /**
@@ -728,6 +730,9 @@ StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &targetModel, con
     StringStringMap changedNames;
 
     std::string newName = units->name();
+    Debug() << "CCCCCCCCCCCCCCCCCC";
+//    listModelsUnits(sourceModel);
+    Debug() << "DDDDDDDDDDDDDDDDDD";
     UnitsPtr targetUnits = modelsEquivalentUnits(targetModel, units);
     if (targetUnits == nullptr) {
         for (size_t unitIndex = 0; unitIndex < units->unitCount(); ++unitIndex) {
@@ -959,6 +964,15 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
     }
 
     if (pFunc()->hasImportIssues(model)) {
+        return flatModel;
+    }
+
+    if (!model->isDefined()) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_UNDEFINED_MODEL);
+        issue->mPimpl->setDescription("The model is not fully defined.");
+        pFunc()->addIssue(issue);
+
         return flatModel;
     }
 
