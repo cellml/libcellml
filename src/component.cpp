@@ -33,8 +33,6 @@ limitations under the License.
 #include "utilities.h"
 #include "variable_p.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 std::vector<VariablePtr>::const_iterator Component::ComponentImpl::findVariable(const std::string &name) const
@@ -460,27 +458,13 @@ bool Component::requiresImports() const
 bool Component::isDefined() const
 {
     History history;
-    if (!pFunc()->performTestWithHistory(history, shared_from_this(), TestType::DEFINED)) {
-        if (history.size() > 0) {
-            Debug() << "IS DEFINED:";
-            Debug() << formDescriptionOfCyclicDependency(history, "tracking");
-        }
-        return false;
-    }
-    return true;
+    return pFunc()->performTestWithHistory(history, shared_from_this(), TestType::DEFINED);
 }
 
 bool Component::doIsResolved() const
 {
     History history;
-    if (!pFunc()->performTestWithHistory(history, shared_from_this(), TestType::RESOLVED)) {
-        if (history.size() > 0) {
-            Debug() << "IS RESOLVED:";
-            Debug() << formDescriptionOfCyclicDependency(history, "tracking");
-        }
-        return false;
-    }
-    return true;
+    return pFunc()->performTestWithHistory(history, shared_from_this(), TestType::RESOLVED);
 }
 
 bool Component::doEquals(const EntityPtr &other) const

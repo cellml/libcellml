@@ -97,6 +97,9 @@ range for the index is [0, #resets).";
 resets. Returns True if the :param: reset is in this component's
 resets and False otherwise.";
 
+%feature("docstring") libcellml::Component::isDefined
+"Tests if this component is defined.";
+
 %feature("docstring") libcellml::Component::clone
 "Create a copy of this component.";
 
