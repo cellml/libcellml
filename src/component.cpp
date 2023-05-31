@@ -107,46 +107,46 @@ ComponentPtr Component::create(const std::string &name) noexcept
     return std::shared_ptr<Component> {new Component {name}};
 }
 
-bool Component::ComponentImpl::isResolvedWithHistory(History &history, const ComponentConstPtr &component) const
+bool Component::ComponentImpl::performTestWithHistory(History &history, const ComponentConstPtr &component, TestType type) const
 {
     if (mComponent->isImport()) {
         auto model = mComponent->importSource()->model();
         if (model == nullptr) {
             return false;
-        } else {
-            auto importedComponent = model->component(mComponent->importReference());
-            if (importedComponent == nullptr) {
-                return false;
-            } else {
-                auto h = createHistoryEpoch(component, importeeModelUrl(history, mComponent->importSource()->url()));
-                if (checkForImportCycles(history, h)) {
-                    return false;
-                } else {
-                    history.push_back(h);
-                    if (!importedComponent->pFunc()->isResolvedWithHistory(history, importedComponent)) {
-                        return false;
-                    }
-                }
-            }
         }
+
+        auto importedComponent = model->component(mComponent->importReference());
+        if (importedComponent == nullptr) {
+            return false;
+        }
+
+        auto h = createHistoryEpoch(component, importeeModelUrl(history, mComponent->importSource()->url()));
+        if (checkForImportCycles(history, h)) {
+            return false;
+        }
+
+        history.push_back(h);
+        return importedComponent->pFunc()->performTestWithHistory(history, importedComponent, type);
     }
 
     auto model = std::dynamic_pointer_cast<libcellml::Model>(mComponent->parent());
-    if (model == nullptr) {
+    if ((model == nullptr) && (mComponent->parent() != nullptr)) {
         model = owningModel(mComponent->parent());
     }
 
     auto tmpComponent = mComponent->clone();
     auto units = unitsUsed(model, tmpComponent);
     for (const auto &u : units) {
-        if (!u->isResolved()) {
+        if (type == TestType::RESOLVED && !u->isResolved()) {
+            return false;
+        } else if (type == TestType::DEFINED && !u->isDefined()) {
             return false;
         }
     }
 
     for (size_t i = 0; i < mComponent->componentCount(); ++i) {
         auto currentComponent = mComponent->component(i);
-        if (!currentComponent->pFunc()->isResolvedWithHistory(history, currentComponent)) {
+        if (!currentComponent->pFunc()->performTestWithHistory(history, currentComponent, type)) {
             return false;
         }
     }
@@ -459,57 +459,28 @@ bool Component::requiresImports() const
 
 bool Component::isDefined() const
 {
-    if (!doIsResolved()) {
+    History history;
+    if (!pFunc()->performTestWithHistory(history, shared_from_this(), TestType::DEFINED)) {
+        if (history.size() > 0) {
+            Debug() << "IS DEFINED:";
+            Debug() << formDescriptionOfCyclicDependency(history, "tracking");
+        }
         return false;
     }
-
-    ModelPtr model;
-    if (isImport()) {
-        model = importSource()->model();
-
-        if (model == nullptr) {
-            return false;
-        }
-
-        auto importedComponent = model->component(importReference());
-        if (importedComponent == nullptr) {
-            return false;
-        }
-
-        return importedComponent->isDefined();
-    }
-
-    model = owningModel(shared_from_this());
-    if (model == nullptr) {
-        return false;
-    }
-
-    Debug() << "AAAAAAAAAAAAAAAAAAA";
-//    listModelsUnits(model);
-    Debug() << "BBBBBBBBBBBBBBBBBBB";
-    auto usedUnits = unitsUsed(model, shared_from_this());
-    std::vector<UnitsPtr> uniqueUnits;
-    for (const auto &u : usedUnits) {
-        const auto iterator = std::find_if(uniqueUnits.begin(), uniqueUnits.end(),
-            [=](const UnitsPtr &uu) -> bool {return uu->equals(u); });
-        if (iterator == uniqueUnits.end()) {
-            uniqueUnits.push_back(u);
-        }
-    }
-
-    for (const auto &units : uniqueUnits) {
-        if (!units->isDefined()) {
-            return false;
-        }
-    }
-
     return true;
 }
 
 bool Component::doIsResolved() const
 {
     History history;
-    return pFunc()->isResolvedWithHistory(history, shared_from_this());
+    if (!pFunc()->performTestWithHistory(history, shared_from_this(), TestType::RESOLVED)) {
+        if (history.size() > 0) {
+            Debug() << "IS RESOLVED:";
+            Debug() << formDescriptionOfCyclicDependency(history, "tracking");
+        }
+        return false;
+    }
+    return true;
 }
 
 bool Component::doEquals(const EntityPtr &other) const
