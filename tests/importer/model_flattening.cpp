@@ -1740,3 +1740,50 @@ TEST(ModelFlattening, importedUnitsUsingUnitWhichIsAnImportedUnits)
     auto flattenedModel = importer->flattenModel(model);
     EXPECT_EQ(nullptr, flattenedModel);
 }
+
+TEST(ModelFlattening, flatteningSimpleBondGraph)
+{
+    auto importer = libcellml::Importer::create(false);
+    auto parser = libcellml::Parser::create(false);
+
+    auto model = parser->parseModel(fileContents("importer/simplebondgraph/cpp_coupling.cellml"));
+    importer->resolveImports(model, resourcePath("importer/simplebondgraph"));
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_EQ("C_main_vessel", flatModel->component(0)->variable(0)->name());
+    EXPECT_EQ(size_t(1), flatModel->component(0)->variable(0)->equivalentVariableCount());
+    EXPECT_EQ("C", flatModel->component(1)->variable(0)->name());
+    EXPECT_EQ(size_t(1), flatModel->component(1)->variable(0)->equivalentVariableCount());
+}
+
+TEST(ModelFlattening, flatteningMediumBondGraph)
+{
+    auto importer = libcellml::Importer::create(false);
+    auto parser = libcellml::Parser::create(false);
+
+    auto model = parser->parseModel(fileContents("importer/mediumbondgraph/cpp_coupling.cellml"));
+    importer->resolveImports(model, resourcePath("importer/mediumbondgraph"));
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_EQ("C_main_vessel", flatModel->component(0)->variable(0)->name());
+    EXPECT_EQ(size_t(1), flatModel->component(0)->variable(0)->equivalentVariableCount());
+    EXPECT_EQ("C", flatModel->component(2)->variable(1)->name());
+    EXPECT_EQ(size_t(2), flatModel->component(2)->variable(1)->equivalentVariableCount());
+}
+
+TEST(ModelFlattening, flatteningComplexBondGraph)
+{
+    auto importer = libcellml::Importer::create(false);
+    auto parser = libcellml::Parser::create(false);
+
+    auto model = parser->parseModel(fileContents("importer/complexbondgraph/cpp_coupling.cellml"));
+    importer->resolveImports(model, resourcePath("importer/complexbondgraph"));
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_EQ("C_main_vessel", flatModel->component(0)->variable(1)->name());
+    EXPECT_EQ(size_t(1), flatModel->component(0)->variable(0)->equivalentVariableCount());
+    EXPECT_EQ("C", flatModel->component(2)->variable(2)->name());
+    EXPECT_EQ(size_t(2), flatModel->component(2)->variable(2)->equivalentVariableCount());
+    EXPECT_EQ("C", flatModel->component(3)->variable(4)->name());
+    EXPECT_EQ(size_t(1), flatModel->component(3)->variable(4)->equivalentVariableCount());
+}
