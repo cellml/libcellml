@@ -109,5 +109,7 @@ void printStringStringMap(const StringStringMap &map);
 void printVariableMap(const VariableMap &map);
 void printUnits(const UnitsPtr &units);
 void listModelsUnits(const ModelPtr &model);
+void printNamedPath(const ParentedEntityPtr &parented);
+void printEquivalences(const VariablePtr &variable);
 
 } // namespace libcellml
