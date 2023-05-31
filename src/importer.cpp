@@ -875,7 +875,6 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
             for (size_t j = 0; j < placeholderVariable->equivalentVariableCount(); ++j) {
                 auto localModelVariable = placeholderVariable->equivalentVariable(j);
                 auto importedComponentVariable = importedComponentCopy->variable(placeholderVariable->name());
-                Variable::removeEquivalence(placeholderVariable, localModelVariable);
                 Variable::addEquivalence(importedComponentVariable, localModelVariable);
             }
         }
@@ -883,7 +882,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         auto flatModel = owningModel(importedComponentCopy);
 
         // Apply the re-based equivalence map onto the modified model.
-        applyEquivalenceMapToModel(rebasedMap, model);
+        applyEquivalenceMapToModel(rebasedMap, flatModel);
 
         // Copy over units used in imported component to this model.
         auto clonedImportModel = importModel->clone();
