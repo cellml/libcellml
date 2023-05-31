@@ -119,6 +119,7 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .function("importReference", &libcellml::Units::importReference)
         .function("setImportReference", &libcellml::Units::setImportReference)
         .function("isResolved", &libcellml::Units::isResolved)
+        .function("isDefined", &libcellml::Units::isDefined)
         .class_function("scalingFactor", &libcellml::Units::scalingFactor)
         .class_function("compatible", &libcellml::Units::compatible)
         .class_function("equivalent", &libcellml::Units::equivalent)
