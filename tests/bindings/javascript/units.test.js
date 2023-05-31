@@ -262,6 +262,11 @@ describe("Units tests", () => {
         u.setImportReference("this_thing")
         expect(u.isResolved()).toBe(false)
     })
+    test('Checking Units is defined.', () => {
+        const u = new libcellml.Units()
+
+        expect(u.isDefined()).toBe(true)
+    })
     test('Checking Units scaling factor.', () => {
         const u1 = new libcellml.Units("second")
         let u2 = new libcellml.Units("millisecond")
