@@ -834,7 +834,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         StringStringMap aliasedUnitsNames;
         for (const auto &u : requiredUnits) {
             const auto iterator = std::find_if(uniqueRequiredUnits.begin(), uniqueRequiredUnits.end(),
-                                               [=](const UnitsPtr &uu) -> bool {return Units::equivalent(uu, u); });
+                                               [=](const UnitsPtr &uu) -> bool { return Units::equivalent(uu, u); });
             if (iterator == uniqueRequiredUnits.end()) {
                 uniqueRequiredUnits.push_back(u);
             } else if ((*iterator)->name() != u->name()) {
