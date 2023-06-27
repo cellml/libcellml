@@ -3315,12 +3315,14 @@ void setupFlattenImportedUnits(libcellml::ImporterPtr &importer, libcellml::Mode
     iu4->setImportSource(importIntermediary2);
     iu4->setImportReference("fmol");
 
-    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
-    u->addUnit("mole", "femto");
-    if (variation == "int1") {
-        intermediaryImportModel1->addUnits(u);
-    } else if (variation == "main") {
-        model->addUnits(u);
+    if (!variation.empty()) {
+        libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+        u->addUnit("mole", "femto");
+        if (variation == "int1") {
+            intermediaryImportModel1->addUnits(u);
+        } else if (variation == "main") {
+            model->addUnits(u);
+        }
     }
 
     model->addUnits(iu3);
