@@ -764,7 +764,7 @@ StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &sourceModel, con
     return changedNames;
 }
 
-void flattenUnitsImports(const ModelPtr &flatModel, const UnitsPtr &u, size_t index, const ComponentPtr &component);
+void flattenUnitsImports(const ModelPtr &flatModel, const UnitsPtr &units, size_t index, const ComponentPtr &component);
 
 void retrieveUnitsDependencies(const ModelPtr &flatModel, const ModelPtr &model, const UnitsPtr &u, const ComponentPtr &component)
 {
@@ -787,13 +787,13 @@ void retrieveUnitsDependencies(const ModelPtr &flatModel, const ModelPtr &model,
     }
 }
 
-void flattenUnitsImports(const ModelPtr &flatModel, const UnitsPtr &u, size_t index, const ComponentPtr &component)
+void flattenUnitsImports(const ModelPtr &flatModel, const UnitsPtr &units, size_t index, const ComponentPtr &component)
 {
-    auto importSource = u->importSource();
+    auto importSource = units->importSource();
     auto importingModel = importSource->model();
-    auto importedUnits = importingModel->units(u->importReference());
+    auto importedUnits = importingModel->units(units->importReference());
     auto importedUnitsCopy = importedUnits->clone();
-    importedUnitsCopy->setName(u->name());
+    importedUnitsCopy->setName(units->name());
     flatModel->replaceUnits(index, importedUnitsCopy);
     retrieveUnitsDependencies(flatModel, importingModel, importedUnitsCopy, component);
 }
