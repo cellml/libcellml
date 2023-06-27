@@ -294,7 +294,6 @@ bool Units::isBaseUnit() const
 
 bool Units::doEquals(const EntityPtr &other) const
 {
-    auto units2 = std::dynamic_pointer_cast<Units>(other);
     if (!NamedEntity::doEquals(other)) {
         return false;
     }
