@@ -537,7 +537,7 @@ public:
      * Two @ref Units are considered to be compatible if they share the same units,
      * independently of their scaling (e.g. volt and volt are compatible as are
      * volt and millivolt). The units of @p units1 and @p units2 will not be compared if
-     * either is not fully defined or are @c null.
+     * either is not fully defined or is @c null.
      *
      * @see Units::isDefined()
      *
