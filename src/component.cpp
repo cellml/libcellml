@@ -137,8 +137,16 @@ bool Component::ComponentImpl::performTestWithHistory(History &history, const Co
     for (const auto &u : units) {
         if ((type == TestType::RESOLVED) && !u->isResolved()) {
             return false;
-        } else if ((type == TestType::DEFINED) && !u->isDefined()) {
-            return false;
+        } else if (type == TestType::DEFINED) {
+            if (!u->isDefined()) {
+                return false;
+            }
+            if (model == nullptr) {
+                return false;
+            }
+            if (!model->hasUnits(u)) {
+                return false;
+            }
         }
     }
 

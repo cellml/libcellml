@@ -3084,11 +3084,11 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEqui
     EXPECT_EQ("femto_mole", flatModel->units(1)->name());
 }
 
-TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsThroughComponent)
+libcellml::ModelPtr setupFlattenImportedUnitsThroughComponent(const std::string &baseModelName)
 {
     libcellml::ModelPtr importModel;
     libcellml::ImporterPtr importer = libcellml::Importer::create();
-    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, baseModelName);
 
     libcellml::ModelPtr model = libcellml::Model::create("main_model");
 
@@ -3102,12 +3102,24 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEqui
     model->addComponent(ic);
     model->addUnits(u);
 
-    auto flatModel = importer->flattenModel(model);
+    return importer->flattenModel(model);
+}
 
-    EXPECT_EQ(size_t(3), flatModel->unitsCount());
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsThroughComponent)
+{
+    auto flatModel = setupFlattenImportedUnitsThroughComponent("importer/units/base_model.cellml");
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
     EXPECT_EQ("fmol", flatModel->units(0)->name());
     EXPECT_EQ("per_fmol", flatModel->units(1)->name());
     EXPECT_EQ("per_fmol", flatModel->component(0)->variable(0)->units()->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsThroughComponentContainingIllDefinedUnits)
+{
+    auto flatModel = setupFlattenImportedUnitsThroughComponent("importer/units/base_model_illdefined.cellml");
+
+    EXPECT_EQ(nullptr, flatModel);
 }
 
 TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsWithDifferentNameThroughComponent)
@@ -3130,7 +3142,7 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEqui
 
     auto flatModel = importer->flattenModel(model);
 
-    EXPECT_EQ(size_t(3), flatModel->unitsCount());
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
     EXPECT_EQ("femtomole", flatModel->units(0)->name());
     EXPECT_EQ("per_fmol", flatModel->units(1)->name());
     EXPECT_EQ("femtomole", flatModel->units(1)->unitAttributeReference(0));
@@ -3184,7 +3196,7 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonE
 
     auto flatModel = importer->flattenModel(model);
 
-    EXPECT_EQ(size_t(4), flatModel->unitsCount());
+    EXPECT_EQ(size_t(3), flatModel->unitsCount());
     EXPECT_EQ("fmol", flatModel->units(0)->name());
     EXPECT_EQ("fmol_1", flatModel->units(1)->name());
     EXPECT_EQ("per_fmol", flatModel->units(2)->name());
@@ -3217,13 +3229,13 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonE
 
     auto flatModel = importer->flattenModel(model);
 
-    EXPECT_EQ(size_t(4), flatModel->unitsCount());
+    EXPECT_EQ(size_t(3), flatModel->unitsCount());
     EXPECT_EQ("fmol", flatModel->units(0)->name());
     EXPECT_EQ("fmol_1", flatModel->units(1)->name());
     EXPECT_EQ("per_fmol", flatModel->units(2)->name());
     EXPECT_EQ("fmol_1", flatModel->units(2)->unitAttributeReference(0));
     EXPECT_EQ("per_fmol", flatModel->component(0)->variable(0)->units()->name());
-    EXPECT_EQ("fmol_1", flatModel->component(0)->variable(2)->units()->name());
+    EXPECT_EQ("fmol_1", flatModel->component(0)->variable(1)->units()->name());
 }
 
 TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonEquivalentUnitsThroughComponentWithCnNeedingRenamedUnits)
@@ -3263,7 +3275,7 @@ TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonE
 
     auto flatModel = importer->flattenModel(model);
 
-    EXPECT_EQ(size_t(4), flatModel->unitsCount());
+    EXPECT_EQ(size_t(3), flatModel->unitsCount());
     EXPECT_EQ("fmol", flatModel->units(0)->name());
     EXPECT_EQ("fmol_1", flatModel->units(1)->name());
     EXPECT_EQ("per_fmol", flatModel->units(2)->name());

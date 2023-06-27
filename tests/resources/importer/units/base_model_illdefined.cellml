@@ -8,6 +8,7 @@
   </units>
   <component name="my_component">
     <variable name="P" units="per_fmol" interface="public"/>
+    <variable name="Q" units="unusual" interface="public" initial_value="-2.7"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>

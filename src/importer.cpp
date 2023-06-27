@@ -740,8 +740,7 @@ StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &sourceModel, con
         }
 
         size_t count = 0;
-        const std::string originalName = units->name();
-        newName = originalName;
+        const std::string originalName = newName;
         targetUnits = targetModel->units(newName);
         while (targetModel->hasUnits(newName)) {
             newName = originalName + "_" + convertToString(++count);
@@ -894,16 +893,14 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
             // If the required units are imported units, we will resolve those units here.
             size_t unitsIndex = 0;
             UnitsPtr flattenedUnits = nullptr;
-            while (unitsIndex < clonedImportModel->unitsCount()) {
+            if (units->isImport()) {
                 auto foundUnits = clonedImportModel->units(units->name());
-                if (foundUnits == nullptr) {
-                    unitsIndex += 1;
-                } else {
-                    if (units->isImport()) {
+                while (flattenedUnits == nullptr) {
+                    if (foundUnits->name() == clonedImportModel->units(unitsIndex)->name()) {
                         flattenUnitsImports(clonedImportModel, units, unitsIndex, importedComponentCopy);
                         flattenedUnits = clonedImportModel->units(unitsIndex);
                     }
-                    break;
+                    unitsIndex += 1;
                 }
             }
 

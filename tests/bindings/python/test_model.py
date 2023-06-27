@@ -235,6 +235,7 @@ class ModelTestCase(unittest.TestCase):
         v = Variable()
         u = Units()
 
+        m.addUnits(u)
         v.setUnits(u)
         c.addVariable(v)
         m.addComponent(c)
