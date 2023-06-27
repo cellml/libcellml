@@ -762,12 +762,10 @@ void printUnits(const UnitsPtr &units)
 
 void listModelsUnits(const ModelPtr &model)
 {
-
     Debug() << "Model name: " << model->name() << ", units count: " << model->unitsCount();
     for (size_t i = 0; i < model->unitsCount(); ++i) {
         printUnits(model->units(i));
     }
-
 }
 
 } // namespace libcellml
