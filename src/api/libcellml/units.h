@@ -503,12 +503,12 @@ public:
     /**
      * @brief Tests whether this units is defined or not.
      *
-     * Analyses the units and determines if the units are fully defined.
+     * Analyses the units and determines if the units is fully defined.
      * A fully defined units will have no unresolved imports, and no unit that
      * is not a base units, standard units, or a units fully defined in the model.
-     * If the units are fully defined it will return @c true, @c false otherwise.
+     * If the units is fully defined it will return @c true, @c false otherwise.
      *
-     * @return @c true if the units are fully defined, @c false otherwise.
+     * @return @c true if the units is fully defined, @c false otherwise.
      */
     bool isDefined() const;
 
@@ -537,7 +537,7 @@ public:
      * Two @ref Units are considered to be compatible if they share the same units,
      * independently of their scaling (e.g. volt and volt are compatible as are
      * volt and millivolt). The units of @p units1 and @p units2 will not be compared if
-     * either are not fully defined or are @c null.
+     * either is not fully defined or are @c null.
      *
      * @see Units::isDefined()
      *
