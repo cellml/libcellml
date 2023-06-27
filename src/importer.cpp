@@ -834,13 +834,13 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
 
         std::vector<UnitsPtr> uniqueRequiredUnits;
         StringStringMap aliasedUnitsNames;
-        for (const auto &u : requiredUnits) {
+        for (const auto &units : requiredUnits) {
             const auto iterator = std::find_if(uniqueRequiredUnits.begin(), uniqueRequiredUnits.end(),
-                                               [=](const UnitsPtr &uu) -> bool { return Units::equivalent(uu, u); });
+                                               [=](const UnitsPtr &u) -> bool { return Units::equivalent(u, units); });
             if (iterator == uniqueRequiredUnits.end()) {
-                uniqueRequiredUnits.push_back(u);
-            } else if ((*iterator)->name() != u->name()) {
-                aliasedUnitsNames.emplace(u->name(), (*iterator)->name());
+                uniqueRequiredUnits.push_back(units);
+            } else if ((*iterator)->name() != units->name()) {
+                aliasedUnitsNames.emplace(units->name(), (*iterator)->name());
             }
         }
 
@@ -890,24 +890,24 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         auto clonedImportModel = importModel->clone();
 
         StringStringMap unitNamesToReplace;
-        for (const auto &u : uniqueRequiredUnits) {
+        for (const auto &units : uniqueRequiredUnits) {
             // If the required units are imported units, we will resolve those units here.
             size_t unitsIndex = 0;
             UnitsPtr flattenedUnits = nullptr;
             while (unitsIndex < clonedImportModel->unitsCount()) {
-                auto foundUnits = clonedImportModel->units(u->name());
+                auto foundUnits = clonedImportModel->units(units->name());
                 if (foundUnits == nullptr) {
                     unitsIndex += 1;
                 } else {
-                    if (u->isImport()) {
-                        flattenUnitsImports(clonedImportModel, u, unitsIndex, importedComponentCopy);
+                    if (units->isImport()) {
+                        flattenUnitsImports(clonedImportModel, units, unitsIndex, importedComponentCopy);
                         flattenedUnits = clonedImportModel->units(unitsIndex);
                     }
                     break;
                 }
             }
 
-            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits->clone() : u;
+            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits->clone() : units;
 
             for (size_t unitIndex = 0; unitIndex < replacementUnits->unitCount(); ++unitIndex) {
                 const std::string ref = replacementUnits->unitAttributeReference(unitIndex);
