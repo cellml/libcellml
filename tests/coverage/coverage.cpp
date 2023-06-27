@@ -750,45 +750,6 @@ TEST(Coverage, generator)
     libcellml::Generator::equationCode(analyser->model()->equation(0)->ast());
 }
 
-libcellml::ValidatorPtr validateMathPreparation(const std::string &unitsReference, const std::string &math)
-{
-    auto variable = libcellml::Variable::create("a");
-    auto uBobs = libcellml::Units::create("bobs");
-    uBobs->addUnit(unitsReference);
-    variable->setUnits(uBobs);
-    auto component = libcellml::Component::create("myComponent");
-    component->addVariable(variable);
-    component->appendMath(math);
-    auto importedModel = libcellml::Model::create("myImportedModel");
-    importedModel->addComponent(component);
-
-    auto importer = libcellml::Importer::create();
-    auto validator = libcellml::Validator::create();
-
-    importer->addModel(importedModel, "myImportedModel.cellml");
-
-    auto model = libcellml::Model::create("myModel");
-    auto u = libcellml::Units::create("meter");
-    u->addUnit("metre");
-    model->addUnits(u);
-
-    auto c = libcellml::Component::create("c");
-
-    auto importSource = libcellml::ImportSource::create();
-    importSource->setUrl("not_required_resolving_import_manually");
-    importSource->setModel(importedModel);
-
-    c->setImportReference("myComponent");
-    c->setImportSource(importSource);
-    model->addComponent(c);
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
-    model = importer->flattenModel(model);
-
-    validator->validateModel(model);
-    return validator;
-}
-
 TEST(CoverageValidator, degreeElementWithOneSibling)
 {
     const std::string math =
