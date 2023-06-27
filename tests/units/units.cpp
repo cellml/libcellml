@@ -796,6 +796,7 @@ TEST(Units, unitAttributeReference)
     EXPECT_EQ("NewerUnit", u->unitAttributeReference(0));
 
     u->setUnitAttributeReference(3, "FreshUnit");
+    EXPECT_EQ("", u->unitAttributeReference(3));
     EXPECT_EQ("NewerUnit", u->unitAttributeReference(0));
 }
 
