@@ -723,7 +723,7 @@ void updateUnitsNameUsages(const std::string &oldName, const std::string &newNam
     }
 }
 
-StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &targetModel, const ModelPtr &sourceModel, const UnitsPtr &units, const ComponentPtr &component)
+StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &sourceModel, const ModelPtr &targetModel, const UnitsPtr &units, const ComponentPtr &component)
 {
     StringStringMap changedNames;
 
@@ -734,10 +734,11 @@ StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &targetModel, con
             std::string reference = units->unitAttributeReference(unitIndex);
             if (!reference.empty() && !isStandardUnitName(reference) && sourceModel->hasUnits(reference)) {
                 auto clonedChildUnits = sourceModel->units(reference)->clone();
-                transferUnitsRenamingIfRequired(targetModel, sourceModel, clonedChildUnits, component);
+                transferUnitsRenamingIfRequired(sourceModel, targetModel, clonedChildUnits, component);
                 units->setUnitAttributeReference(unitIndex, clonedChildUnits->name());
             }
         }
+
         size_t count = 0;
         const std::string originalName = units->name();
         newName = originalName;
@@ -747,6 +748,7 @@ StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &targetModel, con
             units->setName(newName);
             targetUnits = targetModel->units(newName);
         }
+
         targetModel->addUnits(units);
         if (originalName != newName) {
             updateUnitsNameUsages(originalName, newName, component, units);
@@ -777,7 +779,7 @@ void retrieveUnitsDependencies(const ModelPtr &flatModel, const ModelPtr &model,
                 flattenUnitsImports(flatModel, clonedChildUnits, flatModelUnitsIndex, component);
             } else {
                 auto clonedChildUnits = childUnits->clone();
-                transferUnitsRenamingIfRequired(flatModel, model, clonedChildUnits, component);
+                transferUnitsRenamingIfRequired(model, flatModel, clonedChildUnits, component);
                 u->setUnitAttributeReference(unitIndex, clonedChildUnits->name());
                 retrieveUnitsDependencies(flatModel, model, clonedChildUnits, component);
             }
@@ -915,7 +917,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
                     }
                 }
             }
-            StringStringMap changedNames = transferUnitsRenamingIfRequired(flatModel, clonedImportModel, replacementUnits, importedComponentCopy);
+            StringStringMap changedNames = transferUnitsRenamingIfRequired(clonedImportModel, flatModel, replacementUnits, importedComponentCopy);
             if (!changedNames.empty()) {
                 unitNamesToReplace.merge(changedNames);
             }
