@@ -277,11 +277,11 @@ bool Model::hasUnlinkedUnits()
 bool Model::isDefined() const
 {
     bool defined = true;
-    for (size_t n = 0; (n < unitsCount()) && defined; ++n) {
-        defined = units(n)->isDefined();
+    for (size_t index = 0; (index < unitsCount()) && defined; ++index) {
+        defined = units(index)->isDefined();
     }
-    for (size_t n = 0; (n < componentCount()) && defined; ++n) {
-        defined = component(n)->isDefined();
+    for (size_t index = 0; (index < componentCount()) && defined; ++index) {
+        defined = component(index)->isDefined();
     }
     return defined;
 }
@@ -289,11 +289,11 @@ bool Model::isDefined() const
 bool Model::hasUnresolvedImports() const
 {
     bool unresolvedImports = false;
-    for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
-        unresolvedImports = !units(n)->isResolved();
+    for (size_t index = 0; index < unitsCount() && !unresolvedImports; ++index) {
+        unresolvedImports = !units(index)->isResolved();
     }
-    for (size_t n = 0; (n < componentCount()) && !unresolvedImports; ++n) {
-        unresolvedImports = !component(n)->isResolved();
+    for (size_t index = 0; (index < componentCount()) && !unresolvedImports; ++index) {
+        unresolvedImports = !component(index)->isResolved();
     }
 
     return unresolvedImports;
@@ -302,8 +302,8 @@ bool Model::hasUnresolvedImports() const
 bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
 {
     bool importsPresent = false;
-    for (size_t n = 0; (n < componentEntity->componentCount()) && !importsPresent; ++n) {
-        libcellml::ComponentPtr childComponent = componentEntity->component(n);
+    for (size_t index = 0; (index < componentEntity->componentCount()) && !importsPresent; ++index) {
+        libcellml::ComponentPtr childComponent = componentEntity->component(index);
         importsPresent = childComponent->isImport();
         if (!importsPresent) {
             importsPresent = hasComponentImports(childComponent);
@@ -331,8 +331,8 @@ bool hasUnitsImports(const UnitsPtr &units)
 bool Model::hasImports() const
 {
     bool importsPresent = false;
-    for (size_t n = 0; (n < unitsCount()) && !importsPresent; ++n) {
-        libcellml::UnitsPtr units = Model::units(n);
+    for (size_t index = 0; (index < unitsCount()) && !importsPresent; ++index) {
+        libcellml::UnitsPtr units = Model::units(index);
         importsPresent = hasUnitsImports(units);
     }
 
