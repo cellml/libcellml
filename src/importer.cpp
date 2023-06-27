@@ -701,17 +701,17 @@ UnitsPtr modelsEquivalentUnits(const ModelPtr &model, const UnitsPtr &units)
     return nullptr;
 }
 
-void updateComponentsVariablesUnitsNames(const std::string &oldName, const std::string &newName, const ComponentPtr &component, const UnitsPtr &units)
+void updateComponentsVariablesUnitsNames(const std::string &name, const ComponentPtr &component, const UnitsPtr &units)
 {
     for (size_t variableIndex = 0; variableIndex < component->variableCount(); ++variableIndex) {
         auto variable = component->variable(variableIndex);
-        if (variable->units()->name() == oldName) {
+        if (variable->units()->name() == name) {
             variable->setUnits(units);
         }
     }
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto childComponent = component->component(index);
-        updateComponentsVariablesUnitsNames(oldName, newName, childComponent, units);
+        updateComponentsVariablesUnitsNames(name, childComponent, units);
     }
 }
 
@@ -719,7 +719,7 @@ void updateUnitsNameUsages(const std::string &oldName, const std::string &newNam
 {
     if (component != nullptr) {
         findAndReplaceComponentsCnUnitsNames(component, oldName, newName);
-        updateComponentsVariablesUnitsNames(oldName, newName, component, units);
+        updateComponentsVariablesUnitsNames(oldName, component, units);
     }
 }
 
