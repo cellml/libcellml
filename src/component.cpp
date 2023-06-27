@@ -135,9 +135,9 @@ bool Component::ComponentImpl::performTestWithHistory(History &history, const Co
     auto tmpComponent = mComponent->clone();
     auto units = unitsUsed(model, tmpComponent);
     for (const auto &u : units) {
-        if (type == TestType::RESOLVED && !u->isResolved()) {
+        if ((type == TestType::RESOLVED) && !u->isResolved()) {
             return false;
-        } else if (type == TestType::DEFINED && !u->isDefined()) {
+        } else if ((type == TestType::DEFINED) && !u->isDefined()) {
             return false;
         }
     }
