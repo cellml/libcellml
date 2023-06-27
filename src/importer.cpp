@@ -923,14 +923,14 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
             }
         }
 
-        for (const auto &a : aliasedUnitsNames) {
-            std::string finalUnitsName = a.second;
+        for (const auto &alias : aliasedUnitsNames) {
+            std::string finalUnitsName = alias.second;
             const auto match = unitNamesToReplace.find(finalUnitsName);
             if (match != unitNamesToReplace.end()) {
                 finalUnitsName = match->second;
             }
             UnitsPtr targetUnits = flatModel->units(finalUnitsName);
-            updateUnitsNameUsages(a.first, finalUnitsName, importedComponentCopy, targetUnits);
+            updateUnitsNameUsages(alias.first, finalUnitsName, importedComponentCopy, targetUnits);
         }
     }
 
