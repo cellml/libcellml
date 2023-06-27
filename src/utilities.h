@@ -815,7 +815,7 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
  * Find all cn elements with a CellML units attribute with the value @p oldName
  * and replace it with @p newName.
  *
- * The find and replace is done recursively through the components component
+ * The find and replace is done recursively through the component's component
  * tree hierarchy.
  *
  * @param component The component to find and replace in.
