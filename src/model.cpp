@@ -277,7 +277,7 @@ bool Model::hasUnlinkedUnits()
 bool Model::isDefined() const
 {
     bool defined = true;
-    for (size_t n = 0; n < unitsCount() && defined; ++n) {
+    for (size_t n = 0; (n < unitsCount()) && defined; ++n) {
         defined = units(n)->isDefined();
     }
     for (size_t n = 0; (n < componentCount()) && defined; ++n) {
