@@ -289,7 +289,7 @@ bool Model::isDefined() const
 bool Model::hasUnresolvedImports() const
 {
     bool unresolvedImports = false;
-    for (size_t index = 0; index < unitsCount() && !unresolvedImports; ++index) {
+    for (size_t index = 0; (index < unitsCount()) && !unresolvedImports; ++index) {
         unresolvedImports = !units(index)->isResolved();
     }
     for (size_t index = 0; (index < componentCount()) && !unresolvedImports; ++index) {
