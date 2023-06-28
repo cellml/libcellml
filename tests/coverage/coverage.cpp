@@ -227,6 +227,19 @@ TEST(Coverage, sha1)
 
 TEST(ImporterCoverage, importingComponentWithCnUnitsThatAreEmpty)
 {
+    const std::vector<std::string> expectedIssues = {
+        "Imported component 'c' is not valid because:\n"
+        "  -> Component 'c' importing 'myComponent' from 'not_required_resolving_import_manually' has an error:\n"
+        "   - Variable 'a' in component 'myComponent' does not have a valid units attribute. The attribute given is ''. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Imported component 'c' is not valid because:\n"
+        "  -> Component 'c' importing 'myComponent' from 'not_required_resolving_import_manually' has an error:\n"
+        "   - Math cn element with the value '1' does not have a valid cellml:units attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Imported component 'c' is not valid because:\n"
+        "  -> Component 'c' importing 'myComponent' from 'not_required_resolving_import_manually' has an error:\n"
+        "   - W3C MathML DTD error: No declaration for attribute bobs of element cn.",
+        "Units '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+    };
+
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
@@ -270,15 +283,34 @@ TEST(ImporterCoverage, importingComponentWithCnUnitsThatAreEmpty)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(4), validator->errorCount());
+    expectEqualIssues(expectedIssues, validator);
 
     model = importer->flattenModel(model);
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ("The model is null.", validator->error(0)->description());
 }
 
 TEST(ImporterCoverage, importingComponentWithCnUnitsThatReferenceEmptyNamedUnits)
 {
+    const std::vector<std::string> expectedIssuesModel = {
+        "Imported component 'c' is not valid because:\n"
+        "  -> Component 'c' importing 'myComponent' from 'not_required_resolving_import_manually' has an error:\n"
+        "   - Variable 'a' in component 'myComponent' does not have a valid units attribute. The attribute given is ''. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Imported component 'c' is not valid because:\n"
+        "  -> Component 'c' importing 'myComponent' from 'not_required_resolving_import_manually' has an error:\n"
+        "   - Math cn element with the value '1' does not have a valid cellml:units attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Imported component 'c' is not valid because:\n"
+        "  -> Component 'c' importing 'myComponent' from 'not_required_resolving_import_manually' has an error:\n"
+        "   - W3C MathML DTD error: No declaration for attribute unuts of element cn.",
+    };
+
+    const std::vector<std::string> expectedIssuesFLatModel = {
+        "Math cn element with the value '1' does not have a valid cellml:units attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "W3C MathML DTD error: No declaration for attribute unuts of element cn.",
+    };
+
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
@@ -322,12 +354,13 @@ TEST(ImporterCoverage, importingComponentWithCnUnitsThatReferenceEmptyNamedUnits
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(3), validator->errorCount());
-    printIssues(validator);
+    expectEqualIssues(expectedIssuesModel, validator);
 
     model = importer->flattenModel(model);
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(2), validator->errorCount());
+    expectEqualIssues(expectedIssuesFLatModel, validator);
 }
 
 TEST(Coverage, analyser)
