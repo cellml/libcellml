@@ -1,5 +1,8 @@
 #pragma once
 
+#include "string"
+#include "vector"
+
 // Version 2.9.10 of LibXml2 reports the following errors,
 // used on Windows CI machines.
 const std::vector<std::string> expectedLibXml2Issues = {

@@ -28,6 +28,8 @@ limitations under the License.
 
 #include "libcellml/undefines.h"
 
+#include "commonutils.h"
+
 namespace libcellml {
 
 std::string astAsCode(const AnalyserEquationAstPtr &ast)
@@ -693,6 +695,76 @@ void printVariableMap(const VariableMap &map)
             Debug(false) << v2->name();
         }
         Debug() << "";
+    }
+}
+
+void printNamedPath(const ParentedEntityPtr &parented)
+{
+    if (parented != nullptr) {
+        std::vector<std::string> names;
+        auto named = std::dynamic_pointer_cast<libcellml::NamedEntity>(parented);
+        if (named != nullptr) {
+            names.push_back(named->name());
+            auto parent = named->parent();
+            while (parent != nullptr) {
+                auto named = std::dynamic_pointer_cast<libcellml::NamedEntity>(parent);
+                if (named != nullptr) {
+                    names.push_back(named->name());
+                }
+                parent = parent->parent();
+            }
+        }
+
+        while (!names.empty()) {
+            Debug(false) << "/" << names.back();
+            names.pop_back();
+        }
+    } else {
+        Debug() << "nullptr variable.";
+    }
+}
+
+void printEquivalences(const VariablePtr &variable)
+{
+    Debug(false) << "Equivalence for: ";
+    printNamedPath(variable);
+    Debug();
+    if (variable != nullptr) {
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            Debug(false) << " - ";
+            printNamedPath(variable->equivalentVariable(j));
+            Debug();
+        }
+    }
+}
+
+void printUnits(const UnitsPtr &units)
+{
+    Debug(false) << "Units: " << (units ? units->name() : "nullptr");
+    if (units) {
+        if (units->isImport()) {
+            Debug(false) << " (is imported)";
+        }
+        Debug() << "";
+        auto model = owningModel(units);
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            const std::string ref = units->unitAttributeReference(i);
+            Debug(false) << " - " << (i + 1) << ": " << ref;
+            if (model) {
+                Debug() << ", " << model->hasUnits(ref);
+            } else {
+                Debug() << ", modelless units.";
+            }
+        }
+    }
+    Debug() << "*****";
+}
+
+void listModelsUnits(const ModelPtr &model)
+{
+    Debug() << "Model name: " << model->name() << ", units count: " << model->unitsCount();
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        printUnits(model->units(i));
     }
 }
 

@@ -173,6 +173,8 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT, {"IMPORTER_MISSING_COMPONENT", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_MISSING_UNITS, {"IMPORTER_MISSING_UNITS", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_NULL_MODEL, {"IMPORTER_NULL_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_UNDEFINED_MODEL, {"IMPORTER_UNDEFINED_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_UNRESOLVED_IMPORTS, {"IMPORTER_UNRESOLVED_IMPORTS", "", docsUrl, ""}},
 
     // Analyser issues:
     {Issue::ReferenceRule::ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT, {"ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT", "", docsUrl, ""}},

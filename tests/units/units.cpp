@@ -791,6 +791,13 @@ TEST(Units, unitAttributeReference)
 
     EXPECT_EQ("NewUnit", u->unitAttributeReference(0));
     EXPECT_EQ("", u->unitAttributeReference(4));
+
+    u->setUnitAttributeReference(0, "NewerUnit");
+    EXPECT_EQ("NewerUnit", u->unitAttributeReference(0));
+
+    u->setUnitAttributeReference(3, "FreshUnit");
+    EXPECT_EQ("", u->unitAttributeReference(3));
+    EXPECT_EQ("NewerUnit", u->unitAttributeReference(0));
 }
 
 TEST(Units, unitAttributePrefix)
@@ -2716,6 +2723,32 @@ TEST(Units, unknownUnitsScalingFactorIncompatible)
     EXPECT_EQ(0.0, scaling);
 }
 
+TEST(ExampleUnits, unitsScalingWithUnresolvedImports)
+{
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"multiple_clash\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"my_model.cellml\">\n"
+        "    <units units_ref=\"my_units\" name=\"my_units\"/>\n"
+        "  </import>\n"
+        "  <units name=\"strange_units\">\n"
+        "    <unit units=\"my_units\"/>\n"
+        "    <unit exponent=\"-1\" units=\"\"/>\n"
+        "  </units>\n"
+        "</model>";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+    auto u2 = libcellml::Units::create("units");
+    u2->addUnit("banana");
+
+    model->addUnits(u2);
+    auto u1 = model->units("strange_units");
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2, false);
+    EXPECT_EQ(0.0, scaling);
+}
+
 TEST(Units, circularImportDeeperLevelBaseUnits)
 {
     auto model1 = libcellml::Model::create("model1");
@@ -2798,4 +2831,608 @@ TEST(Units, equivalentUnitsMatchingBuiltinUnitsFromVariable)
     libcellml::VariablePtr variableParam = variable->clone();
 
     EXPECT_TRUE(libcellml::Units::compatible(variable->units(), variableParam->units()));
+}
+
+TEST(Units, equivalentUnitsWithImportUsingNonExistentUnits)
+{
+    const std::string importModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"strange_units\">\n"
+        "  <units name=\"strange_units\">\n"
+        "    <unit units=\"my_units\"/>\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "</model>";
+    const std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"missing_unit_definition\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"strange_units.cellml\">\n"
+        "    <units units_ref=\"strange_units\" name=\"strange_units\"/>\n"
+        "  </import>\n"
+        "</model>";
+
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+
+    libcellml::ModelPtr model = parser->parseModel(modelString);
+    libcellml::ModelPtr importModel = parser->parseModel(importModelString);
+
+    libcellml::UnitsPtr units = libcellml::Units::create("kelvin");
+    units->addUnit(libcellml::Units::StandardUnit::KELVIN);
+
+    model->addUnits(units);
+
+    importer->addModel(importModel, "strange_units.cellml");
+    importer->resolveImports(model, ".");
+
+    EXPECT_FALSE(libcellml::Units::compatible(model->units(0), units));
+}
+
+libcellml::ModelPtr prepareImportUnitsWithReferenceToNonStandardUnits(const std::string &importUnitsName)
+{
+    libcellml::ModelPtr unitsModel = libcellml::Model::create("Units_Database");
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create("fmol");
+    u1->addUnit("mole", "femto");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("per_fmol");
+    u2->addUnit("fmol", -1.0);
+    libcellml::UnitsPtr u3 = libcellml::Units::create("per_sec");
+    u3->addUnit("second", -1.0);
+    libcellml::UnitsPtr u4 = libcellml::Units::create("per_sec_fmol");
+    u4->addUnit("per_sec");
+    u4->addUnit("per_fmol");
+    libcellml::UnitsPtr u5 = libcellml::Units::create(importUnitsName);
+
+    unitsModel->addUnits(u1);
+    unitsModel->addUnits(u2);
+    unitsModel->addUnits(u3);
+    unitsModel->addUnits(u4);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+    import->setModel(unitsModel);
+
+    libcellml::ComponentPtr c = libcellml::Component::create("env");
+    libcellml::VariablePtr v = libcellml::Variable::create("v");
+
+    u5->setImportSource(import);
+    u5->setImportReference("per_sec_fmol");
+
+    v->setUnits(u5);
+    c->addVariable(v);
+    model->addUnits(u5);
+    model->addComponent(c);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    libcellml::ImporterPtr i = libcellml::Importer::create();
+
+    return i->flattenModel(model);
+}
+
+TEST(Units, importUnitsWithReferenceToNonStandardUnits)
+{
+    libcellml::ModelPtr m = prepareImportUnitsWithReferenceToNonStandardUnits("pre_sec_fmol");
+    EXPECT_TRUE(m->hasUnits("fmol"));
+}
+
+TEST(Units, importUnitsWithReferenceToNonStandardUnitsDuplicateName)
+{
+    libcellml::ModelPtr m = prepareImportUnitsWithReferenceToNonStandardUnits("fmol");
+    EXPECT_TRUE(m->hasUnits("fmol_1"));
+}
+
+TEST(Units, importMultipleUnitsFromSameDocumentWithSameUnitsDependency)
+{
+    libcellml::ModelPtr unitsModel = libcellml::Model::create("Units_Database");
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create("fmol");
+    u1->addUnit("mole", "femto");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("per_fmol");
+    u2->addUnit("fmol", -1.0);
+
+    libcellml::UnitsPtr iu1 = libcellml::Units::create("fmol");
+    libcellml::UnitsPtr iu2 = libcellml::Units::create("per_fmol");
+
+    unitsModel->addUnits(u1);
+    unitsModel->addUnits(u2);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+    import->setModel(unitsModel);
+
+    iu1->setImportSource(import);
+    iu1->setImportReference("fmol");
+    iu2->setImportSource(import);
+    iu2->setImportReference("per_fmol");
+
+    model->addUnits(iu1);
+    model->addUnits(iu2);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    libcellml::ImporterPtr i = libcellml::Importer::create();
+
+    auto flatModel = i->flattenModel(model);
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("fmol", flatModel->units(0)->name());
+    EXPECT_EQ("per_fmol", flatModel->units(1)->name());
+}
+
+TEST(Units, importUnitsMultipleWaysSameDocument)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+
+    auto model = parser->parseModel(fileContents("importer/units/main.cellml"));
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    importer->resolveImports(model, resourcePath("importer/units"));
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flatModel = importer->flattenModel(model);
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(flatModel);
+    EXPECT_EQ(size_t(2), analyser->issueCount());
+}
+
+libcellml::ImportSourcePtr createBaseModelImport(libcellml::ModelPtr &importModel, const std::string &resourcePath)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+
+    importModel = parser->parseModel(fileContents(resourcePath));
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+    import->setModel(importModel);
+
+    return import;
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectly)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::UnitsPtr iu = libcellml::Units::create("per_fmol");
+    iu->setImportSource(import);
+    iu->setImportReference("per_fmol");
+
+    model->addUnits(iu);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("per_fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol", flatModel->units(1)->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceThroughComponent)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
+
+    model->addComponent(ic);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(0), importer->issueCount());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnits)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::UnitsPtr iu = libcellml::Units::create("per_fmol");
+    iu->setImportSource(import);
+    iu->setImportReference("per_fmol");
+
+    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+    u->addUnit("mole", "femto");
+    model->addUnits(iu);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("per_fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol", flatModel->units(1)->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsWithDifferentName)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::UnitsPtr iu = libcellml::Units::create("per_fmol");
+    iu->setImportSource(import);
+    iu->setImportReference("per_fmol");
+
+    libcellml::UnitsPtr u = libcellml::Units::create("femto_mole");
+    u->addUnit("mole", "femto");
+    model->addUnits(iu);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("per_fmol", flatModel->units(0)->name());
+    EXPECT_EQ("femto_mole", flatModel->units(1)->name());
+}
+
+libcellml::ModelPtr setupFlattenImportedUnitsThroughComponent(const std::string &baseModelName)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, baseModelName);
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
+
+    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+    u->addUnit("mole", "femto");
+
+    model->addComponent(ic);
+    model->addUnits(u);
+
+    return importer->flattenModel(model);
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsThroughComponent)
+{
+    auto flatModel = setupFlattenImportedUnitsThroughComponent("importer/units/base_model.cellml");
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("fmol", flatModel->units(0)->name());
+    EXPECT_EQ("per_fmol", flatModel->units(1)->name());
+    EXPECT_EQ("per_fmol", flatModel->component(0)->variable(0)->units()->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsThroughComponentContainingIllDefinedUnits)
+{
+    auto flatModel = setupFlattenImportedUnitsThroughComponent("importer/units/base_model_illdefined.cellml");
+
+    EXPECT_EQ(nullptr, flatModel);
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingEquivalentUnitsWithDifferentNameThroughComponent)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
+
+    libcellml::UnitsPtr u = libcellml::Units::create("femtomole");
+    u->addUnit("mole", "femto");
+
+    model->addComponent(ic);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("femtomole", flatModel->units(0)->name());
+    EXPECT_EQ("per_fmol", flatModel->units(1)->name());
+    EXPECT_EQ("femtomole", flatModel->units(1)->unitAttributeReference(0));
+    EXPECT_EQ("per_fmol", flatModel->component(0)->variable(0)->units()->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonEquivalentUnits)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::UnitsPtr iu = libcellml::Units::create("per_fmol");
+    iu->setImportSource(import);
+    iu->setImportReference("per_fmol");
+
+    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+    u->addUnit("farad");
+    u->addUnit("mole");
+    model->addUnits(iu);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(3), flatModel->unitsCount());
+    EXPECT_EQ("per_fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol", flatModel->units(1)->name());
+    EXPECT_EQ("fmol_1", flatModel->units(2)->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonEquivalentUnitsThroughComponent)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
+
+    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+    u->addUnit("farad");
+    u->addUnit("mole");
+
+    model->addComponent(ic);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(3), flatModel->unitsCount());
+    EXPECT_EQ("fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol_1", flatModel->units(1)->name());
+    EXPECT_EQ("per_fmol", flatModel->units(2)->name());
+    EXPECT_EQ("fmol_1", flatModel->units(2)->unitAttributeReference(0));
+    EXPECT_EQ("per_fmol", flatModel->component(0)->variable(0)->units()->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonEquivalentUnitsThroughComponentWithVariableNeedingRenamedUnits)
+{
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
+
+    libcellml::VariablePtr v = libcellml::Variable::create("R");
+    v->setUnits("fmol");
+    importModel->component(0)->addVariable(v);
+
+    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+    u->addUnit("farad");
+    u->addUnit("mole");
+
+    model->addComponent(ic);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(3), flatModel->unitsCount());
+    EXPECT_EQ("fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol_1", flatModel->units(1)->name());
+    EXPECT_EQ("per_fmol", flatModel->units(2)->name());
+    EXPECT_EQ("fmol_1", flatModel->units(2)->unitAttributeReference(0));
+    EXPECT_EQ("per_fmol", flatModel->component(0)->variable(0)->units()->name());
+    EXPECT_EQ("fmol_1", flatModel->component(0)->variable(1)->units()->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceDirectlyWithExistingNonEquivalentUnitsThroughComponentWithCnNeedingRenamedUnits)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>P</ci>\n"
+        "    <cn cellml:units=\"per_fmol\">3.0</cn>\n"
+        "  </apply>\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>R</ci>\n"
+        "    <cn cellml:units=\"fmol\">4.2</cn>\n"
+        "  </apply>\n"
+        "</math>";
+
+    libcellml::ModelPtr importModel;
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ImportSourcePtr import = createBaseModelImport(importModel, "importer/units/base_model.cellml");
+
+    libcellml::ModelPtr model = libcellml::Model::create("main_model");
+
+    libcellml::ComponentPtr ic = libcellml::Component::create("my_component");
+    ic->setImportSource(import);
+    ic->setImportReference("my_component");
+
+    importModel->component(0)->setMath(math);
+
+    libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+    u->addUnit("farad");
+    u->addUnit("mole");
+
+    model->addComponent(ic);
+    model->addUnits(u);
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(3), flatModel->unitsCount());
+    EXPECT_EQ("fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol_1", flatModel->units(1)->name());
+    EXPECT_EQ("per_fmol", flatModel->units(2)->name());
+    EXPECT_EQ("fmol_1", flatModel->units(2)->unitAttributeReference(0));
+    EXPECT_EQ("per_fmol", flatModel->component(0)->variable(0)->units()->name());
+    EXPECT_TRUE(flatModel->component(0)->math().find("fmol_1") != std::string::npos);
+}
+
+void setupFlattenImportedUnits(libcellml::ImporterPtr &importer, libcellml::ModelPtr &model, const std::string &variation)
+{
+    libcellml::ModelPtr unitsDefinitionsModel;
+    libcellml::ImportSourcePtr import = createBaseModelImport(unitsDefinitionsModel, "importer/units/units_definitions.cellml");
+
+    libcellml::ModelPtr intermediaryImportModel1 = libcellml::Model::create("import_model1");
+    libcellml::ModelPtr intermediaryImportModel2 = libcellml::Model::create("import_model2");
+
+    importer = libcellml::Importer::create();
+
+    importer->addModel(unitsDefinitionsModel, "units_definitions");
+    importer->addModel(intermediaryImportModel1, "int1");
+    importer->addModel(intermediaryImportModel2, "int2");
+
+    model = libcellml::Model::create("main_model");
+
+    libcellml::UnitsPtr iu1 = libcellml::Units::create("per_fmol");
+    iu1->setImportSource(import);
+    iu1->setImportReference("per_fmol");
+
+    libcellml::UnitsPtr iu2 = libcellml::Units::create("fmol");
+    iu2->setImportSource(import);
+    iu2->setImportReference("fmol");
+
+    intermediaryImportModel1->addUnits(iu1);
+    intermediaryImportModel2->addUnits(iu2);
+
+    libcellml::ImportSourcePtr importIntermediary1 = libcellml::ImportSource::create();
+    importIntermediary1->setUrl("I_am_a_url");
+    importIntermediary1->setModel(intermediaryImportModel1);
+
+    libcellml::ImportSourcePtr importIntermediary2 = libcellml::ImportSource::create();
+    importIntermediary2->setUrl("I_am_a_url");
+    importIntermediary2->setModel(intermediaryImportModel2);
+
+    libcellml::UnitsPtr iu3 = libcellml::Units::create("per_fmol");
+    iu3->setImportSource(importIntermediary1);
+    iu3->setImportReference("per_fmol");
+
+    libcellml::UnitsPtr iu4 = libcellml::Units::create("fmol");
+    iu4->setImportSource(importIntermediary2);
+    iu4->setImportReference("fmol");
+
+    if (!variation.empty()) {
+        libcellml::UnitsPtr u = libcellml::Units::create("fmol");
+        u->addUnit("mole", "femto");
+        if (variation == "int1") {
+            intermediaryImportModel1->addUnits(u);
+        } else if (variation == "main") {
+            model->addUnits(u);
+        }
+    }
+
+    model->addUnits(iu3);
+    model->addUnits(iu4);
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceFromTwoLevelsDeep)
+{
+    libcellml::ImporterPtr importer;
+    libcellml::ModelPtr model;
+
+    setupFlattenImportedUnits(importer, model, "");
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("per_fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol", flatModel->units(1)->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceFromTwoLevelsDeepEquivalentUnitsInIntermediary)
+{
+    libcellml::ImporterPtr importer;
+    libcellml::ModelPtr model;
+
+    setupFlattenImportedUnits(importer, model, "int1");
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(2), flatModel->unitsCount());
+    EXPECT_EQ("per_fmol", flatModel->units(0)->name());
+    EXPECT_EQ("fmol", flatModel->units(1)->name());
+}
+
+TEST(Units, flattenImportedUnitsWithNonStandardReferenceFromTwoLevelsDeepEquivalentUnitsInMain)
+{
+    libcellml::ImporterPtr importer;
+    libcellml::ModelPtr model;
+
+    setupFlattenImportedUnits(importer, model, "main");
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(3), flatModel->unitsCount());
+    EXPECT_EQ("fmol", flatModel->units(0)->name());
+    EXPECT_EQ("per_fmol", flatModel->units(1)->name());
+    EXPECT_EQ("fmol", flatModel->units(2)->name());
+}
+
+TEST(Units, aliasingUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("per_hour");
+    u1->addUnit("mm");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("mm");
+    u2->addUnit("second", "milli");
+
+    libcellml::ModelPtr model = libcellml::Model::create("containing_model");
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
+}
+
+TEST(Units, definedUnitsBaseUnit)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create("base_unit");
+
+    EXPECT_TRUE(u->isDefined());
+}
+
+TEST(Units, definedUnitsStandardUnit)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create("only_standard_units");
+    u->addUnit("second");
+    u->addUnit("farad");
+
+    EXPECT_TRUE(u->isDefined());
+}
+
+TEST(Units, undefinedUnitsNonStandardUnit)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create("only_standard_units");
+    u->addUnit("battle");
+
+    EXPECT_FALSE(u->isDefined());
+    EXPECT_TRUE(u->isResolved());
+}
+
+TEST(Units, definedUnitsImport)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create("only_standard_units");
+
+    libcellml::ImportSourcePtr importSource = libcellml::ImportSource::create();
+    importSource->setUrl("I_am_a_url");
+
+    u->setImportSource(importSource);
+    u->setImportReference("ref");
+
+    EXPECT_FALSE(u->isDefined());
 }

@@ -346,6 +346,17 @@ public:
     std::string unitAttributeReference(size_t index) const;
 
     /**
+     * @brief Set the reference attribute for the unit at the given @p index.
+     *
+     * Set the reference attribute for the unit at the given @p index.  The index must
+     * be in the range [0, \#unit).
+     *
+     * @param index The @c size_t index of the unit in this units to set the reference attribute for.
+     * @param reference The @c std::string reference to set.
+     */
+    void setUnitAttributeReference(size_t index, const std::string &reference);
+
+    /**
      * @brief Get the prefix attribute for the unit at the given @p index.
      *
      * Get the prefix attribute for the unit at the given @p index. The index must
@@ -490,10 +501,25 @@ public:
     bool requiresImports() const;
 
     /**
+     * @brief Tests whether this units is defined or not.
+     *
+     * Analyses the units and determines if the units is fully defined.
+     * A fully defined units will have no unresolved imports, and no unit that
+     * is not a base units, standard units, or a units fully defined in the model.
+     * If the units is fully defined it will return @c true, @c false otherwise.
+     *
+     * @return @c true if the units is fully defined, @c false otherwise.
+     */
+    bool isDefined() const;
+
+    /**
      * @brief Return the scaling factor difference between two @ref Units.
      *
      * This can be interpreted as `factor`, where units2 = factor*units1.  If compatibility checking is
-     * turned on and the units are not compatible the factor returned is 0.0.
+     * turned on and the units are not compatible the factor returned is 0.0. Both @p units1
+     * and @p units2 must be fully defined, otherwise a scale factor of 0.0 will be returned.
+     *
+     * @see Units::isDefined()
      *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
@@ -510,7 +536,10 @@ public:
      *
      * Two @ref Units are considered to be compatible if they share the same units,
      * independently of their scaling (e.g. volt and volt are compatible as are
-     * volt and millivolt).
+     * volt and millivolt). The units of @p units1 and @p units2 will not be compared if
+     * either is not fully defined or is @c null.
+     *
+     * @see Units::isDefined()
      *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.

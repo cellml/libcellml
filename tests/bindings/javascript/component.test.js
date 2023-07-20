@@ -277,4 +277,9 @@ describe("Component tests", () => {
         c.setImportReference("this_thing")
         expect(c.isResolved()).toBe(false)
     })
+    test('Checking Component is defined.', () => {
+        const c = new libcellml.Component()
+
+        expect(c.isDefined()).toBe(true)
+    })
 })
