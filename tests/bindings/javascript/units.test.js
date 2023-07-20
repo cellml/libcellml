@@ -118,6 +118,9 @@ describe("Units tests", () => {
         expect(u.unitCount()).toBe(1)
 
         expect(u.unitAttributeReference(0)).toBe("farad")
+
+        u.setUnitAttributeReference(0, "mole")
+        expect(u.unitAttributeReference(0)).toBe("mole")
     })
     test('Checking Units unit attribute prefix.', () => {
         const u = new libcellml.Units()
@@ -258,6 +261,11 @@ describe("Units tests", () => {
         u.setImportSource(iS)
         u.setImportReference("this_thing")
         expect(u.isResolved()).toBe(false)
+    })
+    test('Checking Units is defined.', () => {
+        const u = new libcellml.Units()
+
+        expect(u.isDefined()).toBe(true)
     })
     test('Checking Units scaling factor.', () => {
         const u1 = new libcellml.Units("second")

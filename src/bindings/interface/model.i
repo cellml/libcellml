@@ -52,6 +52,9 @@ Only the first matching Units is removed and returned.";
 %feature("docstring") libcellml::Model::hasUnresolvedImports
 "Tests if this model has unresolved imports.";
 
+%feature("docstring") libcellml::Model::isDefined
+"Tests if this model is defined.";
+
 %feature("docstring") libcellml::Model::clone
 "Create a copy of this model.";
 

@@ -67,7 +67,7 @@ public:
 
     bool isBaseUnitWithHistory(History &history, const UnitsConstPtr &units) const;
 
-    bool isResolvedWithHistory(History &history, const UnitsConstPtr &units) const;
+    bool performTestWithHistory(History &history, const UnitsConstPtr &units, TestType type) const;
 
     Units *mUnits = nullptr;
 };

@@ -404,6 +404,20 @@ public:
     bool hasReset(const ResetPtr &reset) const;
 
     /**
+     * @brief Tests whether this component is defined or not.
+     *
+     * Analyses the component and determines if the component is fully defined.
+     * A fully defined component will have no unresolved imports, all variables
+     * will have fully defined units, and all math constant units will be fully defined.
+     * If the component is fully defined it will return @c true, @c false otherwise.
+     *
+     * @see Units::isDefined()
+     *
+     * @return @c true if the component is fully defined, @c false otherwise.
+     */
+    bool isDefined() const;
+
+    /**
      * @brief Create a clone of this component.
      *
      * Creates a full separate copy of this component without copying
