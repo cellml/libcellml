@@ -849,12 +849,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         auto requiredUnitsModel = Model::create();
         for (const auto &units : uniqueRequiredUnits) {
             // Cloning units present elsewhere so that they don't get moved by the addUnits function.
-            if (units->parent() == nullptr) {
-                requiredUnitsModel->addUnits(units);
-            } else {
-                auto cloned = units->clone();
-                requiredUnitsModel->addUnits(cloned);
-            }
+            requiredUnitsModel->addUnits(units->clone());
         }
 
         // Make a map of component name to component pointer.
