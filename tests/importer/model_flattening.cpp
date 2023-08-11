@@ -1825,8 +1825,6 @@ TEST(ModelFlattening, flatteningCheckImportModelsForChanges)
     auto parser = libcellml::Parser::create(false);
     auto printer = libcellml::Printer::create();
 
-
-
     auto model = parser->parseModel(fileContents("modelflattening/user_ex_01/parent.cellml"));
     importer->resolveImports(model, resourcePath("modelflattening/user_ex_01"));
 
