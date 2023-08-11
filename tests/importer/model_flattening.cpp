@@ -1793,3 +1793,50 @@ TEST(ModelFlattening, flatteningComplexBondGraph)
     EXPECT_EQ("C", flatModel->component(3)->variable(4)->name());
     EXPECT_EQ(size_t(1), flatModel->component(3)->variable(4)->equivalentVariableCount());
 }
+
+TEST(ModelFlattening, flatteningCheckImportModelsForChanges)
+{
+    const std::string eParent =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"InitializedVariables_model\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"child.cellml\">\n"
+        "    <component component_ref=\"not_main\" name=\"child_main\"/>\n"
+        "  </import>\n"
+        "  <component name=\"main\">\n"
+        "    <variable name=\"kComminuteOralMin\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"child_main\" component_2=\"main\">\n"
+        "    <map_variables variable_1=\"kComminuteOralMin\" variable_2=\"kComminuteOralMin\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+    const std::string eChild =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"AnimalConstants_model\">\n"
+        "  <units name=\"perS\">\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"not_main\">\n"
+        "    <variable name=\"kComminuteOralMax\" units=\"dimensionless\" initial_value=\"0.934\" interface=\"public\"/>\n"
+        "    <variable name=\"TAveabsE\" units=\"perS\" initial_value=\"0.05\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto importer = libcellml::Importer::create(false);
+    auto parser = libcellml::Parser::create(false);
+    auto printer = libcellml::Printer::create();
+
+
+
+    auto model = parser->parseModel(fileContents("modelflattening/user_ex_01/parent.cellml"));
+    importer->resolveImports(model, resourcePath("modelflattening/user_ex_01"));
+
+    auto importedModel = importer->library(0);
+
+    EXPECT_EQ(eChild, printer->printModel(importedModel));
+    EXPECT_EQ(eParent, printer->printModel(model));
+
+    auto flatModel = importer->flattenModel(model);
+
+    EXPECT_EQ(eChild, printer->printModel(importedModel));
+    EXPECT_EQ(eParent, printer->printModel(model));
+}
