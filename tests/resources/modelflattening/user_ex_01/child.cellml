@@ -6,6 +6,5 @@
     <component name="not_main">
         <variable initial_value="0.934" name="kComminuteOralMax" public_interface="out" units="dimensionless"/>
         <variable initial_value="0.05" name="TAveabsE" public_interface="out" units="perS"/>
-
     </component>
 </model>
