@@ -804,6 +804,8 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         auto importSource = component->importSource();
         auto importModel = importSource->model();
         auto importedComponent = importModel->component(component->importReference());
+        // Clone import model to not affect origin import model units.
+        auto clonedImportModel = importModel->clone();
 
         NameList compNames = componentNames(model);
 
@@ -829,7 +831,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         }
 
         // Get list of required units from component's variables and math cn elements.
-        std::vector<UnitsPtr> requiredUnits = unitsUsed(importModel, importedComponentCopy);
+        std::vector<UnitsPtr> requiredUnits = unitsUsed(clonedImportModel, importedComponentCopy);
 
         std::vector<UnitsPtr> uniqueRequiredUnits;
         StringStringMap aliasedUnitsNames;
@@ -847,12 +849,7 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
         auto requiredUnitsModel = Model::create();
         for (const auto &units : uniqueRequiredUnits) {
             // Cloning units present elsewhere so that they don't get moved by the addUnits function.
-            if (units->parent() == nullptr) {
-                requiredUnitsModel->addUnits(units);
-            } else {
-                auto cloned = units->clone();
-                requiredUnitsModel->addUnits(cloned);
-            }
+            requiredUnitsModel->addUnits(units->clone());
         }
 
         // Make a map of component name to component pointer.
@@ -884,9 +881,6 @@ ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &co
 
         // Apply the re-based equivalence map onto the modified model.
         applyEquivalenceMapToModel(rebasedMap, flatModel);
-
-        // Copy over units used in imported component to this model.
-        auto clonedImportModel = importModel->clone();
 
         StringStringMap unitNamesToReplace;
         for (const auto &units : uniqueRequiredUnits) {
