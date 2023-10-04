@@ -1841,9 +1841,7 @@ TEST(ModelFlattening, flatteningCheckImportModelsForChanges)
 
 TEST(ModelFlattening, resolveImportsInvalidInput)
 {
-    auto importer = libcellml::Importer::create(false);
-    auto parser = libcellml::Parser::create(false);
-    auto printer = libcellml::Printer::create();
+    auto importer = libcellml::Importer::create();
 
     libcellml::ModelPtr model = nullptr;
 
