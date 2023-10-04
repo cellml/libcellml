@@ -1842,6 +1842,7 @@ TEST(ModelFlattening, flatteningCheckImportModelsForChanges)
 TEST(ModelFlattening, flatteningModelsRequiringUnitsNameChangesInvolvingImportedComponents)
 {
     auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
 
     auto model = parser->parseModel(fileContents("importer/HHComplete/MembraneModel.cellml"));
     importer->resolveImports(model, resourcePath("importer/HHComplete"));
