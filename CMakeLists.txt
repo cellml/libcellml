@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.18.0)
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.14 CACHE STRING "Minimum OS X deployment version.")
+set(CMAKE_OSX_DEPLOYMENT_TARGET 11 CACHE STRING "Minimum OS X deployment version.")
 
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
