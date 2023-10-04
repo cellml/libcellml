@@ -1839,14 +1839,17 @@ TEST(ModelFlattening, flatteningCheckImportModelsForChanges)
     EXPECT_EQ(eParent, printer->printModel(model));
 }
 
-TEST(ModelCausesSegFault, importingHH)
+TEST(ModelFlattening, flatteningModelsRequiringUnitsNameChangesInvolvingImportedComponents)
 {
     auto importer = libcellml::Importer::create(false);
     auto parser = libcellml::Parser::create(false);
     auto printer = libcellml::Printer::create();
 
-    auto model = parser->parseModel(fileContents("importer/HH/MembraneModel.cellml"));
-    importer->resolveImports(model, "/Users/hsor001/Projects/cellml/documentation/tutorials/hh_tutorial4");
+    auto model = parser->parseModel(fileContents("importer/HHComplete/MembraneModel.cellml"));
+    importer->resolveImports(model, resourcePath("importer/HHComplete"));
 
-    model->hasUnresolvedImports();
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_NE(nullptr, flatModel);
 }
