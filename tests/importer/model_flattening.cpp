@@ -1838,3 +1838,18 @@ TEST(ModelFlattening, flatteningCheckImportModelsForChanges)
     EXPECT_EQ(eChild, printer->printModel(importedModel));
     EXPECT_EQ(eParent, printer->printModel(model));
 }
+
+TEST(ModelFlattening, flatteningModelsRequiringUnitsNameChangesInvolvingImportedComponents)
+{
+    auto importer = libcellml::Importer::create(false);
+    auto parser = libcellml::Parser::create(false);
+    auto printer = libcellml::Printer::create();
+
+    auto model = parser->parseModel(fileContents("importer/HHComplete/MembraneModel.cellml"));
+    importer->resolveImports(model, resourcePath("importer/HHComplete"));
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flatModel = importer->flattenModel(model);
+    EXPECT_NE(nullptr, flatModel);
+}
