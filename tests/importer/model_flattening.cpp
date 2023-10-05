@@ -1838,3 +1838,14 @@ TEST(ModelFlattening, flatteningCheckImportModelsForChanges)
     EXPECT_EQ(eChild, printer->printModel(importedModel));
     EXPECT_EQ(eParent, printer->printModel(model));
 }
+
+TEST(ModelFlattening, resolveImportsInvalidInput)
+{
+    auto importer = libcellml::Importer::create();
+
+    libcellml::ModelPtr model = nullptr;
+
+    EXPECT_FALSE(importer->resolveImports(model, "not/used"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ("Cannot resolve imports for null model.", importer->issue(0)->description());
+}
