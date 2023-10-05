@@ -642,6 +642,15 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &basePath)
     History history;
 
     pFunc()->removeAllIssues();
+
+    if (model == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Cannot resolve imports for null model.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+        pFunc()->addIssue(issue);
+        return false;
+    }
+
     clearImports(model);
     auto normalisedBasePath = normalisePath(basePath);
 
