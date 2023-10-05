@@ -16,9 +16,9 @@ limitations under the License.
 
 #include "libcellml/analyservariable.h"
 
-#include "libcellml/variable.h"
-
 #include <iterator>
+
+#include "libcellml/variable.h"
 
 #include "analyservariable_p.h"
 #include "commonutils.h"
