@@ -1843,7 +1843,6 @@ TEST(ModelFlattening, flatteningModelsRequiringUnitsNameChangesInvolvingImported
 {
     auto importer = libcellml::Importer::create(false);
     auto parser = libcellml::Parser::create(false);
-    auto printer = libcellml::Printer::create();
 
     auto model = parser->parseModel(fileContents("importer/HHComplete/MembraneModel.cellml"));
     importer->resolveImports(model, resourcePath("importer/HHComplete"));
@@ -1852,4 +1851,15 @@ TEST(ModelFlattening, flatteningModelsRequiringUnitsNameChangesInvolvingImported
 
     auto flatModel = importer->flattenModel(model);
     EXPECT_NE(nullptr, flatModel);
+}
+
+TEST(ModelFlattening, resolveImportsInvalidInput)
+{
+    auto importer = libcellml::Importer::create();
+
+    libcellml::ModelPtr model = nullptr;
+
+    EXPECT_FALSE(importer->resolveImports(model, "not/used"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ("Cannot resolve imports for null model.", importer->issue(0)->description());
 }
