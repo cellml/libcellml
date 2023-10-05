@@ -2504,15 +2504,19 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     // Loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
-    // Note: we are actually looping twice. The first time, we don't check for
-    //       NLA systems while we do the second time round. The first time we
-    //       loop, we want to handle all the equations that have one unknown
-    //       variable which is is on its own either on the LHS or RHS of an
-    //       equation. Once we have done that then we can see whether what is
-    //       left can be used in one or several NLA systems.
+    // Note: we loop twice by checking the model with the view of:
+    //        1) getting an ODE system WITHOUT any NLA systems; and then
+    //        2) getting an ODE system WITH one or several NLA systems.
+    //       After those two loops, if we still have some unknown variables and
+    //       they have been marked as external, then we consider them as
+    //       initialised and we go through the two loops one more time. This is
+    //       to account for models that have unknown variables (rendering the
+    //       model invalid) that have been marked as external (rendering the
+    //       model valid).
 
     auto stateIndex = MAX_SIZE_T;
     auto variableIndex = MAX_SIZE_T;
+    auto loopNb = 1;
     bool relevantCheck;
     auto checkNlaSystems = false;
 
@@ -2524,9 +2528,29 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                             || relevantCheck;
         }
 
-        if (!relevantCheck && !checkNlaSystems) {
+        if (((loopNb == 1) || (loopNb == 3)) && !relevantCheck && !checkNlaSystems) {
+            ++loopNb;
+
             relevantCheck = true;
             checkNlaSystems = true;
+        } else if ((loopNb == 2) && !relevantCheck) {
+            // We have gone through the two loops and we still have some unknown
+            // variables, so we consider them as initialised and we go through
+            // the two loops one more time.
+
+            for (const auto &internalVariable : mInternalVariables) {
+                if (internalVariable->mIsExternal
+                    && (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN)) {
+                    relevantCheck = true;
+                    internalVariable->mType = AnalyserInternalVariable::Type::INITIALISED;
+                }
+            }
+
+            if (relevantCheck) {
+                ++loopNb;
+
+                checkNlaSystems = false;
+            }
         }
     } while (relevantCheck);
 
