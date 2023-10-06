@@ -16,6 +16,9 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
+#include <cmath>
+#include <iterator>
+
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
 #include "libcellml/analyserexternalvariable.h"
@@ -28,9 +31,6 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
-
-#include <cmath>
-#include <iterator>
 
 #include "analyserequation_p.h"
 #include "analyserequationast_p.h"
