@@ -1837,3 +1837,29 @@ TEST(Generator, variableInitialisedUsingAConstant)
 
     EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.py"), generator->implementationCode());
 }
+
+TEST(Generator, modelOutOfScope)
+{
+    auto analyser = libcellml::Analyser::create();
+    {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
+
+        EXPECT_EQ(size_t(0), parser->issueCount());
+
+        analyser->analyseModel(model);
+    }
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.py"), generator->implementationCode());
+}
