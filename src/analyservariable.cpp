@@ -18,7 +18,10 @@ limitations under the License.
 
 #include <iterator>
 
+#include "libcellml/variable.h"
+
 #include "analyservariable_p.h"
+#include "commonutils.h"
 
 namespace libcellml {
 
@@ -37,6 +40,7 @@ void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type typ
     mIndex = index;
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
+    mComponent = owningComponent(mVariable);
 
     std::copy(equations.begin(), equations.end(), back_inserter(mEquations));
 }
