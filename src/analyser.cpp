@@ -2528,7 +2528,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                             || relevantCheck;
         }
 
-        if (((loopNb == 1) || (loopNb == 3)) && !relevantCheck && !checkNlaSystems) {
+        if (((loopNb == 1) || (loopNb == 3)) && !relevantCheck) {
             ++loopNb;
 
             relevantCheck = true;
