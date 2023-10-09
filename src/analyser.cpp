@@ -2502,6 +2502,12 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
+    // Detmerine whether some variables have been marked as external.
+
+    auto hasExternalVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+        return iv->mIsExternal;
+    });
+
     // Loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
     // Note: we loop twice by checking the model with the view of:
@@ -2535,20 +2541,20 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             checkNlaSystems = true;
         } else if ((loopNb == 2) && !relevantCheck) {
             // We have gone through the two loops and we still have some unknown
-            // variables, so we consider them as initialised and we go through
-            // the two loops one more time.
+            // variables, so we consider as initialised those that have been
+            // marked as external and we go through the two loops one more time.
 
             for (const auto &internalVariable : mInternalVariables) {
                 if (internalVariable->mIsExternal
                     && (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN)) {
-                    relevantCheck = true;
                     internalVariable->mType = AnalyserInternalVariable::Type::INITIALISED;
                 }
             }
 
-            if (relevantCheck) {
+            if (hasExternalVariables) {
                 ++loopNb;
 
+                relevantCheck = true;
                 checkNlaSystems = false;
             }
         }
@@ -2804,9 +2810,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make it known through our API whether the model has some external
     // variables.
 
-    mModel->mPimpl->mHasExternalVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
-        return iv->mIsExternal;
-    });
+    mModel->mPimpl->mHasExternalVariables = hasExternalVariables;
 
     // Create a mapping between our internal equations and our future equations
     // in the API.
