@@ -124,7 +124,9 @@ bool Component::ComponentImpl::performTestWithHistory(History &history, const Co
         }
 
         history.push_back(h);
-        return importedComponent->pFunc()->performTestWithHistory(history, importedComponent, type);
+        bool result = importedComponent->pFunc()->performTestWithHistory(history, importedComponent, type);
+        history.pop_back();
+        return result;
     }
 
     auto model = std::dynamic_pointer_cast<libcellml::Model>(mComponent->parent());

@@ -714,6 +714,11 @@ void updateComponentsVariablesUnitsNames(const std::string &name, const Componen
 {
     for (size_t variableIndex = 0; variableIndex < component->variableCount(); ++variableIndex) {
         auto variable = component->variable(variableIndex);
+        if (component->isImport()) {
+            auto importModel = component->importSource()->model();
+            auto importComponent = importModel->component(component->importReference());
+            variable = importComponent->variable(variable->name());
+        }
         if (variable->units()->name() == name) {
             variable->setUnits(units);
         }
