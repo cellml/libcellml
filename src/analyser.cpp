@@ -16,6 +16,9 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
+#include <cmath>
+#include <iterator>
+
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
 #include "libcellml/analyserexternalvariable.h"
@@ -28,9 +31,6 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
-
-#include <cmath>
-#include <iterator>
 
 #include "analyserequation_p.h"
 #include "analyserequationast_p.h"
@@ -2502,17 +2502,27 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         }
     }
 
+    // Detmerine whether some variables have been marked as external.
+
+    auto hasExternalVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
+        return iv->mIsExternal;
+    });
+
     // Loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
-    // Note: we are actually looping twice. The first time, we don't check for
-    //       NLA systems while we do the second time round. The first time we
-    //       loop, we want to handle all the equations that have one unknown
-    //       variable which is is on its own either on the LHS or RHS of an
-    //       equation. Once we have done that then we can see whether what is
-    //       left can be used in one or several NLA systems.
+    // Note: we loop twice by checking the model with the view of:
+    //        1) getting an ODE system WITHOUT any NLA systems; and then
+    //        2) getting an ODE system WITH one or several NLA systems.
+    //       After those two loops, if we still have some unknown variables and
+    //       they have been marked as external, then we consider them as
+    //       initialised and we go through the two loops one more time. This is
+    //       to account for models that have unknown variables (rendering the
+    //       model invalid) that have been marked as external (rendering the
+    //       model valid).
 
     auto stateIndex = MAX_SIZE_T;
     auto variableIndex = MAX_SIZE_T;
+    auto loopNumber = 1;
     bool relevantCheck;
     auto checkNlaSystems = false;
 
@@ -2524,9 +2534,29 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                             || relevantCheck;
         }
 
-        if (!relevantCheck && !checkNlaSystems) {
+        if (((loopNumber == 1) || (loopNumber == 3)) && !relevantCheck) {
+            ++loopNumber;
+
             relevantCheck = true;
             checkNlaSystems = true;
+        } else if ((loopNumber == 2) && !relevantCheck) {
+            // We have gone through the two loops and we still have some unknown
+            // variables, so we consider as initialised those that have been
+            // marked as external and we go through the two loops one more time.
+
+            for (const auto &internalVariable : mInternalVariables) {
+                if (internalVariable->mIsExternal
+                    && (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN)) {
+                    internalVariable->mType = AnalyserInternalVariable::Type::INITIALISED;
+                }
+            }
+
+            if (hasExternalVariables) {
+                ++loopNumber;
+
+                relevantCheck = true;
+                checkNlaSystems = false;
+            }
         }
     } while (relevantCheck);
 
@@ -2780,9 +2810,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make it known through our API whether the model has some external
     // variables.
 
-    mModel->mPimpl->mHasExternalVariables = std::any_of(mInternalVariables.begin(), mInternalVariables.end(), [](const auto &iv) {
-        return iv->mIsExternal;
-    });
+    mModel->mPimpl->mHasExternalVariables = hasExternalVariables;
 
     // Create a mapping between our internal equations and our future equations
     // in the API.
