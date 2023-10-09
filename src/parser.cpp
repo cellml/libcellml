@@ -281,9 +281,7 @@ ModelPtr Parser::ParserImpl::parseModel(const std::string &input)
     if (input.empty()) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("Model string is empty.");
-        if (mParser->isStrict()) {
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
-        }
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
         addIssue(issue);
     } else {
         model = Model::create();
@@ -389,9 +387,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("LibXml2 error: " + doc->xmlError(i));
-            if (mParser->isStrict()) {
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
-            }
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
             addIssue(issue);
         }
     }
@@ -462,6 +458,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         }
         attribute = attribute->next();
     }
+
     // Get model children (CellML entities).
     XmlNodePtr childNode = node->firstChild();
     std::vector<XmlNodePtr> connectionNodes;
@@ -611,10 +608,10 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             // If transforming, manipulate the math sub-document CellML namespaces.
             if (mParsing1XVersion) {
                 // Find all attributes using old CellML namespace.
-                auto cellmlAttributes = attributesWithCellml1XNamespace(childNode);
+                auto cellmlAttributes = attributesWithCellml1XNamespace(childNode->firstChild());
 
                 // Remove all old CellML namespace definitions and references.
-                removeCellml1XNamespaces(childNode);
+                removeCellml1XNamespaces(childNode, true);
 
                 if (!cellmlAttributes.empty()) {
                     // Add CellML 2.0 namespace to MathML element.
@@ -629,7 +626,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             // Copy any namespaces that do not feature as a namespace definition
             // of the math node into the math node.
             auto mathElementDefinedNamespaces = childNode->definedNamespaces();
-            auto possiblyUndefinedNamespaces = traverseTreeForUndefinedNamespaces(childNode);
+            auto possiblyUndefinedNamespaces = traverseTreeForUndefinedNamespaces(childNode->firstChild());
             auto undefinedNamespaces = determineMissingNamespaces(possiblyUndefinedNamespaces, mathElementDefinedNamespaces);
             XmlNamespaceMap::const_iterator it;
             for (it = undefinedNamespaces.begin(); it != undefinedNamespaces.end(); ++it) {
@@ -775,11 +772,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             prefix = attribute->value();
         } else if (attribute->isType("exponent")) {
             if (isCellMLReal(attribute->value())) {
-                bool validConversion;
-                double tmpExponent = convertToDouble(attribute->value(), &validConversion);
-                if (validConversion) {
-                    exponent = tmpExponent;
-                } else {
+                if (!convertToDouble(attribute->value(), exponent)) {
                     // This value won't be saved for validation later, so it does need to be reported now.
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");
@@ -797,11 +790,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             }
         } else if (attribute->isType("multiplier")) {
             if (isCellMLReal(attribute->value())) {
-                bool validConversion;
-                double tmpMultiplier = convertToDouble(attribute->value(), &validConversion);
-                if (validConversion) {
-                    multiplier = tmpMultiplier;
-                } else {
+                if (!convertToDouble(attribute->value(), multiplier)) {
                     // This value won't be saved for validation later, so it does need to be reported now.
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");
@@ -1587,7 +1576,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             orderDefined = true;
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
-                order = convertToInt(attribute->value(), &orderValid);
+                orderValid = convertToInt(attribute->value(), order);
                 if (!orderValid) {
                     std::string variableName;
                     if (reset->variable() != nullptr) {

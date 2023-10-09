@@ -24,8 +24,7 @@ namespace libcellml {
  * @brief The AnalyserVariable class.
  *
  * The AnalyserVariable class is for representing a variable in the context of a
- * CellML Analyser, i.e. a constant, a computed constant or an algebraic
- * variable.
+ * CellML Analyser.
  */
 class LIBCELLML_EXPORT AnalyserVariable
 {
@@ -35,22 +34,18 @@ public:
     /**
      * @brief The type of a variable.
      *
-     * A variable can be of one of the following types:
-     *  - VARIABLE_OF_INTEGRATION: the variable is the variable of integration;
-     *  - STATE: the variable is a state;
-     *  - CONSTANT: the variable is a constant (e.g. x = 3);
-     *  - COMPUTED_CONSTANT: the variable is a computed constant (e.g. x = 3+5,
-     *    x = 3+z, x = y+z where y and z are constants); or
-     *  - ALGEBRAIC: the variable is an algebraic variable.
+     * The type of a variable, i.e. whether it is the variable of integration, a
+     * state, a constant, a computed constant, an algebraic variable, or an
+     * external variable.
      */
     enum class Type
     {
-        VARIABLE_OF_INTEGRATION,
-        STATE,
-        CONSTANT,
-        COMPUTED_CONSTANT,
-        ALGEBRAIC,
-        EXTERNAL
+        VARIABLE_OF_INTEGRATION, /**< The variable is the variable of integration. */
+        STATE, /**< The variable is a state. */
+        CONSTANT, /**< The variable is a constant (e.g. x = 3). */
+        COMPUTED_CONSTANT, /**< The variable is a computed constant (e.g. x = 3+5, x = 3+z, x = y+z where y and z are constants). */
+        ALGEBRAIC, /**< The variable is an algebraic variable. */
+        EXTERNAL /**< The variable is an external variable, i.e. not computed as part of the model. */
     };
 
     ~AnalyserVariable(); /**< Destructor, @private. */
@@ -59,29 +54,40 @@ public:
     AnalyserVariable &operator=(AnalyserVariable rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Get the @c Type of this @c AnalyserVariable.
+     * @brief Get the @ref Type of this @ref AnalyserVariable.
      *
-     * Return the @c Type of this @c AnalyserVariable.
+     * Return the @ref Type of this @ref AnalyserVariable.
      *
-     * @return The @c Type.
+     * @return The @ref Type.
      */
     Type type() const;
 
     /**
-     * @brief Get the index of this @c AnalyserVariable.
+     * @brief Get the string version of a @ref Type.
      *
-     * Return the index of this @c AnalyserVariable.
+     * Return the string version of a @ref Type.
+     *
+     * @param type The type for which we want the string version.
+     *
+     * @return The string version of the @ref Type.
+     */
+    static std::string typeAsString(Type type);
+
+    /**
+     * @brief Get the index of this @ref AnalyserVariable.
+     *
+     * Return the index of this @ref AnalyserVariable.
      *
      * @return The index.
      */
     size_t index() const;
 
     /**
-     * @brief Get the initialising @c Variable for this @c AnalyserVariable.
+     * @brief Get the initialising @ref Variable for this @ref AnalyserVariable.
      *
-     * Return the initialising @c Variable for this @c AnalyserVariable. It is
-     * used to retrieve the initial value of the @c Variable, if there is one.
-     * It may or may not be the same @c Variable as the one returned by
+     * Return the initialising @ref Variable for this @ref AnalyserVariable. It is
+     * used to retrieve the initial value of the @ref Variable, if there is one.
+     * It may or may not be the same @ref Variable as the one returned by
      * @sa variable. If it is not the same (e.g., a state variable is
      * initialised in one component and computed in another) then the initial
      * value retrieved from this variable may have to be scaled to account for
@@ -92,35 +98,55 @@ public:
      * @sa variable
      * @sa scalingFactor
      *
-     * @return The initialising @c Variable, if there is one, or @c nullptr.
+     * @return The initialising @ref Variable, if there is one, or @c nullptr.
      */
     VariablePtr initialisingVariable() const;
 
     /**
-     * @brief Get the (primary) @c Variable for this @c AnalyserVariable.
+     * @brief Get the (primary) @ref Variable for this @ref AnalyserVariable.
      *
-     * Return the (primary) @c Variable for this @c AnalyserVariable. Its
-     * @c Component is the one in which the @c Variable is first defined (in the
+     * Return the (primary) @ref Variable for this @ref AnalyserVariable. Its
+     * @ref Component is the one in which the @ref Variable is first defined (in the
      * case of the variable of integration), initialised (in the case of a
      * constant) or computed (in the case of a state, computed constant or
-     * algebraic variable). It may or may not be the same @c Variable as the one
+     * algebraic variable). It may or may not be the same @ref Variable as the one
      * returned by @sa initialisingVariable (e.g., a state variable is
      * initialised in one component and computed in another).
      *
      * @sa initialisingVariable
      *
-     * @return The @c Variable.
+     * @return The @ref Variable.
      */
     VariablePtr variable() const;
 
     /**
-     * @brief Get the @c AnalyserEquation for this @c AnalyserVariable.
+     * @brief Get the number of equations used to compute this @ref AnalyserVariable.
      *
-     * Return the @c AnalyserEquation for this @c AnalyserVariable.
+     * Return the number of equations used to compute this @ref AnalyserVariable.
      *
-     * @return The @c AnalyserEquation.
+     * @return The number of equations used to compute this @ref AnalyserVariable.
      */
-    AnalyserEquationPtr equation() const;
+    size_t equationCount() const;
+
+    /**
+     * @brief Get the equations used to compute this @ref AnalyserVariable.
+     *
+     * Return the equations used to compute this @ref AnalyserVariable.
+     *
+     * @return The equations as a @c std::vector.
+     */
+    std::vector<AnalyserEquationPtr> equations() const;
+
+    /**
+     * @brief Get the equation, at @p index, used to compute this @ref AnalyserVariable.
+     *
+     * Return the equation, at @p index, used to compute this @ref AnalyserVariable..
+     *
+     * @param index The index of the equation to return.
+     *
+     * @return The equation, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserEquationPtr equation(size_t index) const;
 
 private:
     AnalyserVariable(); /**< Constructor, @private. */

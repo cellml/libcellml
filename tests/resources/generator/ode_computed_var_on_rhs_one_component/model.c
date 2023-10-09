@@ -1,12 +1,12 @@
-/* The content of this file was generated using the C profile of libCellML 0.4.0. */
+/* The content of this file was generated using the C profile of libCellML 0.5.0. */
 
 #include "model.h"
 
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.3.0";
-const char LIBCELLML_VERSION[] = "0.4.0";
+const char VERSION[] = "0.4.0";
+const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 1;
 const size_t VARIABLE_COUNT = 1;
@@ -23,12 +23,24 @@ const VariableInfo VARIABLE_INFO[] = {
 
 double * createStatesArray()
 {
-    return malloc(STATE_COUNT*sizeof(double));
+    double *res = (double *) malloc(STATE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < STATE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
 }
 
 double * createVariablesArray()
 {
-    return malloc(VARIABLE_COUNT*sizeof(double));
+    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
 }
 
 void deleteArray(double *array)
@@ -36,7 +48,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *variables)
+void initialiseVariables(double *states, double *rates, double *variables)
 {
     variables[0] = 1.0;
     states[0] = 1.0;

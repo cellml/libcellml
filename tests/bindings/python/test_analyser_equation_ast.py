@@ -17,7 +17,7 @@ class AnalyserEquationAstTestCase(unittest.TestCase):
 
         # Create an equation AST and check its default settings.
         ast = AnalyserEquationAst()
-        self.assertEqual(AnalyserEquationAst.Type.ASSIGNMENT, ast.type())
+        self.assertEqual(AnalyserEquationAst.Type.EQUALITY, ast.type())
         self.assertEqual('', ast.value())
         self.assertIsNone(ast.variable())
         self.assertIsNone(ast.parent())

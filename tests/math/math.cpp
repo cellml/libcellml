@@ -20,22 +20,7 @@ limitations under the License.
 
 #include <libcellml>
 
-// Version 2.9.4 of LibXml2 reports the following errors,
-// used on macOS and Linux CI machines.
-const std::vector<std::string> expectedIssues_2_9_4 = {
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
-    "LibXml2 error: Premature end of data in tag apply line 3.",
-    "LibXml2 error: Premature end of data in tag math line 2.",
-};
-
-// Version 2.9.10 of LibXml2 reports the following errors,
-// used on Windows CI machines.
-const std::vector<std::string> expectedIssues_2_9_10 = {
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and apply.",
-    "LibXml2 error: Opening and ending tag mismatch: ci line 6 and math.",
-    "LibXml2 error: EndTag: '</' not found.",
-};
+#include "libxml2issues.h"
 
 TEST(Maths, setAndGetMath)
 {
@@ -121,35 +106,6 @@ TEST(Maths, appendSerialiseAndParseMathInComponent)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
     a = printer->printModel(model);
-    EXPECT_EQ(e, a);
-}
-
-TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
-{
-    const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"component\">\n"
-        "    <variable name=\"variable1\"/>\n"
-        "    <variable name=\"variable2\"/>\n"
-        "  </component>\n"
-        "</model>\n";
-
-    libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c = libcellml::Component::create();
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-    c->setName("component");
-    v1->setName("variable1");
-    v2->setName("variable2");
-    c->addVariable(v1);
-    c->addVariable(v2);
-    c->appendMath(EMPTY_MATH);
-    c->appendMath(EMPTY_MATH);
-    m->addComponent(c);
-
-    libcellml::PrinterPtr printer = libcellml::Printer::create();
-    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -374,6 +330,13 @@ TEST(Printer, addMathMLAsCompleteXMLDoc)
     EXPECT_EQ(e, printer->printModel(model));
 }
 
+void compareLibXml2Issues(const libcellml::PrinterPtr &printer)
+{
+    EXPECT_EQ(expectedLibXml2Issues.size(), printer->issueCount());
+    for (size_t i = 0; i < printer->issueCount(); ++i) {
+        EXPECT_EQ(expectedLibXml2Issues.at(i), printer->issue(i)->description());
+    }
+}
 TEST(Printer, mathMLWithSyntaxError)
 {
     const std::string e =
@@ -401,15 +364,7 @@ TEST(Printer, mathMLWithSyntaxError)
 
     EXPECT_EQ(e, printer->printModel(model));
 
-    if (expectedIssues_2_9_4.size() == printer->issueCount()) {
-        for (size_t i = 0; i < printer->issueCount(); ++i) {
-            EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
-        }
-    } else {
-        for (size_t i = 0; i < printer->issueCount(); ++i) {
-            EXPECT_EQ(expectedIssues_2_9_10.at(i), printer->issue(i)->description());
-        }
-    }
+    compareLibXml2Issues(printer);
 
     auto itemComponent = printer->issue(printer->issueCount() - 1)->item()->component();
     EXPECT_NE(nullptr, itemComponent);
@@ -449,15 +404,8 @@ TEST(Printer, mathMLInResetWithSyntaxError)
     component->addReset(reset);
 
     EXPECT_EQ(e, printer->printModel(model));
-    if (expectedIssues_2_9_4.size() == printer->issueCount()) {
-        for (size_t i = 0; i < printer->issueCount(); ++i) {
-            EXPECT_EQ(expectedIssues_2_9_4.at(i), printer->issue(i)->description());
-        }
-    } else {
-        for (size_t i = 0; i < printer->issueCount(); ++i) {
-            EXPECT_EQ(expectedIssues_2_9_10.at(i), printer->issue(i)->description());
-        }
-    }
+
+    compareLibXml2Issues(printer);
 
     auto itemReset = printer->issue(printer->issueCount() - 1)->item()->reset();
     EXPECT_NE(nullptr, itemReset);

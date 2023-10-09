@@ -20,10 +20,9 @@ limitations under the License.
 
 #include "libcellml/generatorprofile.h"
 
-namespace libcellml {
+#include "utilities.h"
 
-using AnalyserModelWeakPtr = std::weak_ptr<AnalyserModel>; /**< Type definition for weak analyser model pointer. */
-using GeneratorProfileWeakPtr = std::weak_ptr<GeneratorProfile>; /**< Type definition for weak generator profile pointer. */
+namespace libcellml {
 
 /**
  * @brief The Generator::GeneratorImpl struct.
@@ -32,23 +31,22 @@ using GeneratorProfileWeakPtr = std::weak_ptr<GeneratorProfile>; /**< Type defin
  */
 struct Generator::GeneratorImpl
 {
-    Generator *mGenerator = nullptr;
-
-    AnalyserModelWeakPtr mModel;
-    AnalyserModelPtr mLockedModel;
+    AnalyserModelPtr mModel;
 
     std::string mCode;
 
-    GeneratorProfilePtr mOwnedProfile = GeneratorProfile::create();
-    GeneratorProfileWeakPtr mProfile;
-    GeneratorProfilePtr mLockedProfile;
+    GeneratorProfilePtr mProfile = GeneratorProfile::create();
 
-    bool retrieveLockedModelAndProfile();
-    void resetLockedModelAndProfile();
+    void reset();
+
+    bool modelHasOdes() const;
+    bool modelHasNlas() const;
 
     AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
     double scalingFactor(const VariablePtr &variable) const;
+
+    bool isNegativeNumber(const AnalyserEquationAstPtr &ast) const;
 
     bool isRelationalOperator(const AnalyserEquationAstPtr &ast) const;
     bool isAndOperator(const AnalyserEquationAstPtr &ast) const;
@@ -68,6 +66,8 @@ struct Generator::GeneratorImpl
                                  const AnalyserVariablePtr &variable) const;
 
     bool modifiedProfile() const;
+
+    std::string newLineIfNeeded();
 
     void addOriginCommentCode();
 
@@ -103,12 +103,16 @@ struct Generator::GeneratorImpl
     void addImplementationCreateVariablesArrayMethodCode();
     void addImplementationDeleteArrayMethodCode();
 
+    void addRootFindingInfoObjectCode();
+    void addExternNlaSolveMethodCode();
+    void addNlaSystemsCode();
+
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
     std::string generateDoubleCode(const std::string &value) const;
     std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
     std::string generateVariableNameCode(const VariablePtr &variable,
-                                         const AnalyserEquationAstPtr &ast = nullptr) const;
+                                         bool state = true) const;
 
     std::string generateOperatorCode(const std::string &op,
                                      const AnalyserEquationAstPtr &ast) const;
@@ -122,10 +126,16 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value) const;
     std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
+    bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
+    bool isSomeConstant(const AnalyserEquationPtr &equation) const;
+
+    std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool forComputeVariables = false) const;
+                                     std::vector<AnalyserEquationPtr> &equationsForComputeVariables);
+    std::string generateEquationCode(const AnalyserEquationPtr &equation,
+                                     std::vector<AnalyserEquationPtr> &remainingEquations);
 
     void addInterfaceComputeModelMethodsCode();
     void addImplementationInitialiseVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);

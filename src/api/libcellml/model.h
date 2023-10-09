@@ -312,11 +312,20 @@ public:
     /**
      * @brief Test if this model has unresolved imports.
      *
-     * Test if this model has unresolved imports.
+     * Test all components and units of this model and determine if the imported entities are fully resolved.
      *
-     * @return True if the @c Model has unresolved imports and false otherwise.
+     * @return @c true if the @c Model has unresolved imports and @c false otherwise.
      */
     bool hasUnresolvedImports() const;
+
+    /**
+     * @brief Test if this model is fully defined.
+     *
+     * Test all components and units of this model and determine if they are all fully defined.
+     *
+     * @return @c true if the @c Model is defined, @c false otherwise.
+     */
+    bool isDefined() const;
 
     /**
      * @brief Create a clone of this model.

@@ -42,6 +42,7 @@ EMSCRIPTEN_BINDINGS(libcellml_model) {
         .function("linkUnits", &libcellml::Model::linkUnits)
         .function("hasUnlinkedUnits", &libcellml::Model::hasUnlinkedUnits)
         .function("hasImports", &libcellml::Model::hasImports)
+        .function("isDefined", &libcellml::Model::isDefined)
         .function("hasUnresolvedImports", &libcellml::Model::hasUnresolvedImports)
         .function("clone", &libcellml::Model::clone)
         .function("fixVariableInterfaces", &libcellml::Model::fixVariableInterfaces)

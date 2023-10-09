@@ -24,7 +24,7 @@ using namespace emscripten;
 EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
 {
     enum_<libcellml::AnalyserEquationAst::Type>("AnalyserEquationAst.Type")
-        .value("ASSIGNMENT", libcellml::AnalyserEquationAst::Type::ASSIGNMENT)
+        .value("EQUALITY", libcellml::AnalyserEquationAst::Type::EQUALITY)
         .value("EQ", libcellml::AnalyserEquationAst::Type::EQ)
         .value("NEQ", libcellml::AnalyserEquationAst::Type::NEQ)
         .value("LT", libcellml::AnalyserEquationAst::Type::LT)
@@ -94,6 +94,7 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
     class_<libcellml::AnalyserEquationAst>("AnalyserEquationAst")
         .smart_ptr_constructor("AnalyserEquationAst", &libcellml::AnalyserEquationAst::create)
         .function("type", &libcellml::AnalyserEquationAst::type)
+        .class_function("typeAsString", &libcellml::AnalyserEquationAst::typeAsString)
         .function("setType", &libcellml::AnalyserEquationAst::setType)
         .function("value", &libcellml::AnalyserEquationAst::value)
         .function("setValue", &libcellml::AnalyserEquationAst::setValue)
@@ -105,6 +106,7 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequationast)
         .function("setLeftChild", &libcellml::AnalyserEquationAst::setLeftChild)
         .function("rightChild", &libcellml::AnalyserEquationAst::rightChild)
         .function("setRightChild", &libcellml::AnalyserEquationAst::setRightChild)
+        .function("swapLeftAndRightChildren", &libcellml::AnalyserEquationAst::swapLeftAndRightChildren)
     ;
 
     EM_ASM(

@@ -34,34 +34,62 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "xmldoc.h"
 #include "xmlutils.h"
 
 namespace libcellml {
 
-double convertToDouble(const std::string &in, bool *ok)
+static const std::map<std::string, int> standardPrefixList = {
+    {"yotta", 24},
+    {"zetta", 21},
+    {"exa", 18},
+    {"peta", 15},
+    {"tera", 12},
+    {"giga", 9},
+    {"mega", 6},
+    {"kilo", 3},
+    {"hecto", 2},
+    {"deca", 1},
+    {"deci", -1},
+    {"centi", -2},
+    {"milli", -3},
+    {"micro", -6},
+    {"nano", -9},
+    {"pico", -12},
+    {"femto", -15},
+    {"atto", -18},
+    {"zepto", -21},
+    {"yocto", -24}};
+
+bool stringToDouble(const std::string &in, double &out)
 {
-    double out = 0.0;
-    if (ok != nullptr) {
-        *ok = true;
-    }
-
-    if (!isCellMLReal(in)) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
-
-        return out;
-    }
-
     try {
         out = std::stod(in);
     } catch (std::out_of_range &) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
+        return false;
     }
-    return out;
+
+    return true;
+}
+
+bool canConvertToBasicDouble(const std::string &in)
+{
+    if (!isCellMLBasicReal(in)) {
+        return false;
+    }
+
+    double temp;
+    return stringToDouble(in, temp);
+}
+
+bool convertToDouble(const std::string &in, double &out)
+{
+    if (!isCellMLReal(in)) {
+        return false;
+    }
+
+    return stringToDouble(in, out);
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
@@ -96,29 +124,18 @@ std::string convertToString(double value, bool fullPrecision)
     return strs.str();
 }
 
-int convertToInt(const std::string &in, bool *ok)
+bool convertToInt(const std::string &in, int &out)
 {
-    int out = 0;
-    if (ok != nullptr) {
-        *ok = true;
-    }
-
     if (!isCellMLInteger(in)) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
-
-        return out;
+        return false;
     }
 
     try {
         out = std::stoi(in);
     } catch (std::out_of_range &) {
-        if (ok != nullptr) {
-            *ok = false;
-        }
+        return false;
     }
-    return out;
+    return true;
 }
 
 int convertPrefixToInt(const std::string &in, bool *ok)
@@ -132,7 +149,10 @@ int convertPrefixToInt(const std::string &in, bool *ok)
     if (isStandardPrefixName(in)) {
         prefixInt = standardPrefixList.at(in);
     } else if (!in.empty()) {
-        prefixInt = convertToInt(in, ok);
+        bool success = convertToInt(in, prefixInt);
+        if (ok != nullptr) {
+            *ok = success;
+        }
     }
     return prefixInt;
 }
@@ -345,7 +365,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && (units->unitCount() == 0) && isStandardUnitName(units->name());
+    return (units->unitCount() == 0) && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
@@ -388,7 +408,7 @@ bool isEntityChildOf(const ParentedEntityPtr &entity1, const ParentedEntityPtr &
 bool areEntitiesSiblings(const ParentedEntityPtr &entity1, const ParentedEntityPtr &entity2)
 {
     auto entity1Parent = entity1->parent();
-    return entity1Parent != nullptr && entity1Parent == entity2->parent();
+    return entity1Parent == entity2->parent();
 }
 
 using PublicPrivateRequiredPair = std::pair<bool, bool>;
@@ -413,7 +433,7 @@ PublicPrivateRequiredPair publicAndOrPrivateInterfaceTypeRequired(const Variable
         auto equivalentVariable = variable->equivalentVariable(index);
         auto componentOfVariable = variable->parent();
         auto componentOfEquivalentVariable = equivalentVariable->parent();
-        if (componentOfVariable == nullptr || componentOfEquivalentVariable == nullptr) {
+        if (componentOfEquivalentVariable == nullptr) {
             return std::make_pair(false, false);
         }
         if (areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)
@@ -464,9 +484,7 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     for (size_t index = 0; index < component->variableCount(); ++index) {
         auto variable = component->variable(index);
         if (variable->equivalentVariableCount() > 0) {
-            if (std::find(variables.begin(), variables.end(), variable) == variables.end()) {
-                variables.push_back(variable);
-            }
+            variables.push_back(variable);
         }
     }
     for (size_t index = 0; index < component->componentCount(); ++index) {
@@ -474,17 +492,37 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
+/**
+ * @brief Return a list of names taken from MathML cn units attribute.
+ *
+ * Search the given @p node for MathML @c cn elements.
+ * For all @c cn elements return the units reference if it is not empty
+ * or a reference to a standard unit.
+ *
+ * @param node The node to search for MathML @c cn elements.
+ * @return A list of units references.
+ */
 NameList findCnUnitsNames(const XmlNodePtr &node);
-NameList findComponentCnUnitsNames(const ComponentPtr &component);
-void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
-void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+
+/**
+ * @brief Find all MathML @c cn elements units attributes in the given component's math string.
+ *
+ * Search through the @p component's math string and return a list of units references found
+ * on MathML @c cn elements units attribute.
+ *
+ * @param component The component to search.
+ * @return A list of units references.
+ */
+NameList findComponentCnUnitsNames(const ComponentConstPtr &component);
+
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const std::string &oldName, const std::string &newName);
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName);
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
 IndexStack indexStackOf(const VariablePtr &variable);
 VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model);
 void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model);
 IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
 void componentNames(const ComponentPtr &component, NameList &names);
-std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units);
 
 NameList findCnUnitsNames(const XmlNodePtr &node)
 {
@@ -505,7 +543,7 @@ NameList findCnUnitsNames(const XmlNodePtr &node)
     return names;
 }
 
-NameList findComponentCnUnitsNames(const ComponentPtr &component)
+NameList findComponentCnUnitsNames(const ComponentConstPtr &component)
 {
     NameList names;
     // Inspect the MathML in this component for any specified constant <cn> units.
@@ -525,23 +563,22 @@ NameList findComponentCnUnitsNames(const ComponentPtr &component)
     return names;
 }
 
-void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap)
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const std::string &oldName, const std::string &newName)
 {
     XmlNodePtr childNode = node->firstChild();
     while (childNode != nullptr) {
         if (childNode->isMathmlElement("cn")) {
             std::string unitsName = childNode->attribute("units");
-            auto foundNameIter = replaceMap.find(unitsName);
-            if (foundNameIter != replaceMap.end()) {
-                childNode->setAttribute("units", foundNameIter->second.c_str());
+            if (unitsName == oldName) {
+                childNode->setAttribute("units", newName.c_str());
             }
         }
-        findAndReplaceCnUnitsNames(childNode, replaceMap);
+        findAndReplaceCnUnitsNames(childNode, oldName, newName);
         childNode = childNode->next();
     }
 }
 
-void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName)
 {
     std::string mathContent = component->math();
     if (mathContent.empty()) {
@@ -554,7 +591,7 @@ void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const St
         auto rootNode = doc->rootNode();
         if (rootNode->isMathmlElement("math")) {
             auto originalMath = rootNode->convertToString();
-            findAndReplaceCnUnitsNames(rootNode, replaceMap);
+            findAndReplaceCnUnitsNames(rootNode, oldName, newName);
             auto newMath = rootNode->convertToString();
             newMathContent += newMath;
             if (newMath != originalMath) {
@@ -568,12 +605,12 @@ void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const St
     }
 }
 
-void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName)
 {
-    findAndReplaceComponentCnUnitsNames(component, replaceMap);
+    findAndReplaceComponentCnUnitsNames(component, oldName, newName);
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto childComponent = component->component(index);
-        findAndReplaceComponentCnUnitsNames(childComponent, replaceMap);
+        findAndReplaceComponentCnUnitsNames(childComponent, oldName, newName);
     }
 }
 
@@ -581,7 +618,7 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
 {
     size_t index = 0;
     bool found = false;
-    while ((index < componentParent->componentCount()) && !found) {
+    while (!found) {
         if (componentParent->component(index) == component) {
             found = true;
         } else {
@@ -625,23 +662,21 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
     for (const auto &entry : map) {
         auto key = entry.first;
         auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
-        if (!rebasedKey.empty()) {
-            auto vector = entry.second;
-            std::vector<IndexStack> rebasedVector;
-            for (auto stack : vector) {
-                // Temporarily remove the variable index whilst we rebase the component part of the stack.
-                size_t variableIndex = stack.back();
-                stack.pop_back();
-                auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
-                if (!rebasedTarget.empty()) {
-                    rebasedTarget.push_back(variableIndex);
-                    rebasedVector.push_back(rebasedTarget);
-                }
+        auto vector = entry.second;
+        std::vector<IndexStack> rebasedVector;
+        for (auto stack : vector) {
+            // Temporarily remove the variable index whilst we rebase the component part of the stack.
+            size_t variableIndex = stack.back();
+            stack.pop_back();
+            auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
+            if (!rebasedTarget.empty()) {
+                rebasedTarget.push_back(variableIndex);
+                rebasedVector.push_back(rebasedTarget);
             }
+        }
 
-            if (!rebasedVector.empty()) {
-                rebasedMap.emplace(rebasedKey, rebasedVector);
-            }
+        if (!rebasedVector.empty()) {
+            rebasedMap.emplace(rebasedKey, rebasedVector);
         }
     }
 
@@ -685,48 +720,50 @@ std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &uni
 {
     std::vector<UnitsPtr> requiredUnits;
 
-    std::string ref;
-    std::string pre;
-    std::string id;
-    double expMult;
-    double uExp;
-
     for (size_t index = 0; index < units->unitCount(); ++index) {
-        units->unitAttributes(index, ref, pre, uExp, expMult, id);
+        const std::string ref = units->unitAttributeReference(index);
         if (!isStandardUnitName(ref)) {
             auto refUnits = model->units(ref);
-            if (refUnits != nullptr) {
-                auto requiredUnitsUnits = referencedUnits(model, refUnits);
-                requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
-                requiredUnits.push_back(refUnits);
-            }
+            auto requiredUnitsUnits = referencedUnits(model, refUnits);
+            requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
+            requiredUnits.push_back(refUnits);
         }
     }
 
     return requiredUnits;
 }
 
-std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component)
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentConstPtr &component)
 {
     std::vector<UnitsPtr> usedUnits;
+
+    // Get all the units used by variables in this component.
+
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto v = component->variable(i);
         auto u = v->units();
-        if ((u != nullptr) && !isStandardUnitName(u->name())) {
-            auto requiredUnits = referencedUnits(model, u);
+        if ((u != nullptr) && !isStandardUnitName(u->name()) && (model != nullptr)) {
+            auto modelUnits = model->units(u->name());
+            auto availableUnits = modelUnits ? modelUnits : u;
+            auto requiredUnits = referencedUnits(model, availableUnits);
             usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+            usedUnits.push_back(availableUnits);
+        } else if (model == nullptr) {
             usedUnits.push_back(u);
         }
     }
+
+    // Get all the units used by cn elements in the components maths.
+
     auto componentCnUnitsNames = findComponentCnUnitsNames(component);
     for (const auto &unitsName : componentCnUnitsNames) {
         auto u = model->units(unitsName);
-        if ((u != nullptr) && !isStandardUnitName(u->name())) {
-            auto requiredUnits = referencedUnits(model, u);
-            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
-            usedUnits.push_back(u);
-        }
+        auto requiredUnits = referencedUnits(model, u);
+        usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+        usedUnits.push_back(u);
     }
+
+    // Get all the units used by child components of this component.
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
         auto childComponent = component->component(i);
@@ -839,12 +876,11 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
         idList.insert(id);
     }
     // Imports.
-    if (component->isImport()) {
-        if (component->importSource() != nullptr) {
-            id = component->importSource()->id();
-            if (!id.empty()) {
-                idList.insert(id);
-            }
+    auto importSource = component->importSource();
+    if (importSource != nullptr) {
+        id = importSource->id();
+        if (!id.empty()) {
+            idList.insert(id);
         }
     }
     // Component reference in encapsulation structure.
@@ -854,19 +890,20 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
     }
     // Variables.
     for (size_t v = 0; v < component->variableCount(); ++v) {
-        id = component->variable(v)->id();
+        auto variable = component->variable(v);
+        id = variable->id();
         if (!id.empty()) {
             idList.insert(id);
         }
 
-        for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+        for (size_t e = 0; e < variable->equivalentVariableCount(); ++e) {
             // Equivalent variable mappings.
-            id = Variable::equivalenceMappingId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            id = Variable::equivalenceMappingId(variable, variable->equivalentVariable(e));
             if (!id.empty()) {
                 idList.insert(id);
             }
             // Connections.
-            id = Variable::equivalenceConnectionId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            id = Variable::equivalenceConnectionId(variable, variable->equivalentVariable(e));
             if (!id.empty()) {
                 idList.insert(id);
             }
@@ -874,15 +911,16 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
     }
     // Resets.
     for (size_t r = 0; r < component->resetCount(); ++r) {
-        id = component->reset(r)->id();
+        auto reset = component->reset(r);
+        id = reset->id();
         if (!id.empty()) {
             idList.insert(id);
         }
-        id = component->reset(r)->testValueId();
+        id = reset->testValueId();
         if (!id.empty()) {
             idList.insert(id);
         }
-        id = component->reset(r)->resetValueId();
+        id = reset->resetValueId();
         if (!id.empty()) {
             idList.insert(id);
         }
@@ -914,20 +952,19 @@ IdList listIds(const ModelPtr &model)
             idList.insert(id);
         }
         // Imports.
-        if (units->isImport()) {
-            if (units->importSource() != nullptr) {
-                id = units->importSource()->id();
-                if (!id.empty()) {
-                    idList.insert(id);
-                }
+        auto importSource = units->importSource();
+        if (importSource != nullptr) {
+            id = importSource->id();
+            if (!id.empty()) {
+                idList.insert(id);
             }
         }
-        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
+        for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string prefix;
             std::string reference;
             double exponent;
             double multiplier;
-            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
             if (!id.empty()) {
                 idList.insert(id);
             }
@@ -1112,7 +1149,7 @@ bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entitie
                 }
             }
         }
-        if (entityFound && index < size_t(std::numeric_limits<ptrdiff_t>::max())) {
+        if (entityFound) {
             // We are going to assume here that nobody is going to add more
             // than 2,147,483,647 units to this component. And much more than
             // that in a 64-bit environment.
@@ -1199,6 +1236,73 @@ std::string formDescriptionOfCyclicDependency(const History &history, const std:
     }
 
     return msgHeader + msgHistory;
+}
+
+size_t nonCommentChildCount(const XmlNodePtr &node)
+{
+    size_t res = 0;
+    auto childNode = node->firstChild();
+
+    while (childNode != nullptr) {
+        if (!childNode->isComment()) {
+            ++res;
+        }
+
+        childNode = childNode->next();
+    }
+
+    return res;
+}
+
+XmlNodePtr nonCommentChildNode(const XmlNodePtr &node, size_t index)
+{
+    // Note: we assume that there is always a non-comment child at the given
+    //       index, hence we never test res for nullptr.
+
+    auto res = node->firstChild();
+    auto childNodeIndex = res->isComment() ? MAX_SIZE_T : 0;
+
+    while (childNodeIndex != index) {
+        res = res->next();
+
+        if (!res->isComment()) {
+            ++childNodeIndex;
+        }
+    }
+
+    return res;
+}
+
+size_t mathmlChildCount(const XmlNodePtr &node)
+{
+    size_t res = 0;
+    auto childNode = node->firstChild();
+
+    while (childNode != nullptr) {
+        if (childNode->isMathmlElement()) {
+            ++res;
+        }
+
+        childNode = childNode->next();
+    }
+
+    return res;
+}
+
+XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
+{
+    auto res = node->firstChild();
+    auto childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
+
+    while ((res != nullptr) && (childNodeIndex != index)) {
+        res = res->next();
+
+        if ((res != nullptr) && res->isMathmlElement()) {
+            ++childNodeIndex;
+        }
+    }
+
+    return res;
 }
 
 } // namespace libcellml

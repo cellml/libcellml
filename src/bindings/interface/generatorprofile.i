@@ -13,6 +13,9 @@
 %feature("docstring") libcellml::GeneratorProfile::profile
 "Returns the :enum:`GeneratorProfile::Profile` for this :class:`GeneratorProfile`.";
 
+%feature("docstring") libcellml::GeneratorProfile::profileAsString
+"Returns the :enum:`GeneratorProfile::Profile` as a string for this :class:`GeneratorProfile`.";
+
 %feature("docstring") libcellml::GeneratorProfile::setProfile
 "Sets the :enum:`GeneratorProfile::Profile` for this :class:`GeneratorProfile`.";
 
@@ -22,11 +25,11 @@
 %feature("docstring") libcellml::GeneratorProfile::setHasInterface
 "Sets whether this :class:`GeneratorProfile` requires an interface.";
 
-%feature("docstring") libcellml::GeneratorProfile::assignmentString
-"Returns the string representing the MathML \"assigment\" operator.";
+%feature("docstring") libcellml::GeneratorProfile::equalityString
+"Returns the string representing the MathML \"equality\" operator.";
 
-%feature("docstring") libcellml::GeneratorProfile::setAssignmentString
-"Sets the string representing the MathML \"assigment\" operator.";
+%feature("docstring") libcellml::GeneratorProfile::setEqualityString
+"Sets the string representing the MathML \"equality\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::eqString
 "Returns the string representing the MathML \"equal to\" operator.";
@@ -821,6 +824,54 @@ and units of a variable respectively.";
 
 %feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodCallString
 "Sets the string for the call to the external variable method.";
+
+%feature("docstring") libcellml::GeneratorProfile::rootFindingInfoObjectString
+"Returns the string for the data structure for the root finding information object.";
+
+%feature("docstring") libcellml::GeneratorProfile::setRootFindingInfoObjectString
+"Sets the string for the data structure for the root finding information object.";
+
+%feature("docstring") libcellml::GeneratorProfile::externNlaSolveMethodString
+"Returns the string for the external NLA solve method.";
+
+%feature("docstring") libcellml::GeneratorProfile::setExternNlaSolveMethodString
+"Sets the string for the external NLA solve method.";
+
+%feature("docstring") libcellml::GeneratorProfile::findRootCallString
+"Returns the string for the call to the find root method.";
+
+%feature("docstring") libcellml::GeneratorProfile::setFindRootCallString
+"Sets the string for the call to the find root method.";
+
+%feature("docstring") libcellml::GeneratorProfile::findRootMethodString
+"Returns the string for the find root method.";
+
+%feature("docstring") libcellml::GeneratorProfile::setFindRootMethodString
+"Sets the string for the find root method.";
+
+%feature("docstring") libcellml::GeneratorProfile::nlaSolveCallString
+"Returns the string for the call to the NLA solve method.";
+
+%feature("docstring") libcellml::GeneratorProfile::setNlaSolveCallString
+"Sets the string for the call to the NLA solve method.";
+
+%feature("docstring") libcellml::GeneratorProfile::objectiveFunctionMethodString
+"Returns the string for the objective function method.";
+
+%feature("docstring") libcellml::GeneratorProfile::setObjectiveFunctionMethodString
+"Sets the string for the objective function method.";
+
+%feature("docstring") libcellml::GeneratorProfile::uArrayString
+"Returns the string for the u array used in the objective function and find root methods.";
+
+%feature("docstring") libcellml::GeneratorProfile::setUArrayString
+"Sets the string for the u array used in the objective function and find root methods.";
+
+%feature("docstring") libcellml::GeneratorProfile::fArrayString
+"Returns the string for the f array used in the objective function and find root methods.";
+
+%feature("docstring") libcellml::GeneratorProfile::setFArrayString
+"Sets the string for the f array used in the objective function and find root methods.";
 
 %feature("docstring") libcellml::GeneratorProfile::setReturnCreatedArrayString
 "Sets the string for returning a created array. To be useful, the string should contain the <ARRAY_SIZE> tag,

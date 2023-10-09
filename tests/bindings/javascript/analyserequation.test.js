@@ -43,16 +43,41 @@ describe("Analyser Equation tests", () => {
         eqn = am.equation(0)
     });
     test('Checking Analyser Equation type.', () => {
-        expect(eqn.type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
+        expect(eqn.type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
+        expect(libcellml.AnalyserEquation.typeAsString(eqn.type())).toBe("ode")
     });
     test('Checking Analyser Equation isStateRateBased.', () => {
         expect(eqn.isStateRateBased()).toBe(false)
     });
+    test('Checking Analyser Equation dependencyCount.', () => {
+        expect(eqn.dependencyCount()).toBe(0)
+    });
     test('Checking Analyser Equation dependencies.', () => {
         expect(eqn.dependencies().size()).toBe(0)
     });
+    test('Checking Analyser Equation dependency.', () => {
+        expect(eqn.dependency(0)).toBe(null)
+    });
+    test('Checking Analyser Equation nlaSystemIndex.', () => {
+        expect(eqn.nlaSystemIndex()).toBe(4294967295)
+    });
+    test('Checking Analyser Equation nlaSiblingCount.', () => {
+        expect(eqn.nlaSiblingCount()).toBe(0)
+    });
+    test('Checking Analyser Equation nlaSiblings.', () => {
+        expect(eqn.nlaSiblings().size()).toBe(0)
+    });
+    test('Checking Analyser Equation nlaSibling.', () => {
+        expect(eqn.nlaSibling(0)).toBe(null)
+    });
+    test('Checking Analyser Equation variableCount.', () => {
+        expect(eqn.variableCount()).toBe(1)
+    });
+    test('Checking Analyser Equation variables.', () => {
+        expect(eqn.variables().size()).toBe(1)
+    });
     test('Checking Analyser Equation variable.', () => {
-        expect(eqn.variable().variable().name()).toBe("x")
+        expect(eqn.variable(0).variable().name()).toBe("x")
     });
     test('Checking Analyser Equation AST.', () => {
         expect(eqn.ast().value()).toBe("")

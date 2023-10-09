@@ -29,6 +29,7 @@ class AnalyserTestCase(unittest.TestCase):
         from libcellml import Analyser
         from libcellml import AnalyserModel
         from libcellml import Model
+        from libcellml.analysermodel import AnalyserModel_typeAsString
 
         # Analyse an empty model and make sure that we get no errors and an
         # UNKNOWN type for the analyser model.
@@ -40,6 +41,8 @@ class AnalyserTestCase(unittest.TestCase):
 
         self.assertEqual(0, a.errorCount())
         self.assertEqual(AnalyserModel.Type.UNKNOWN, a.model().type())
+        self.assertEqual("unknown", AnalyserModel.typeAsString(a.model().type()))
+        self.assertEqual("unknown", AnalyserModel_typeAsString(a.model().type()))
 
     def test_coverage(self):
         from libcellml import Analyser
@@ -50,6 +53,9 @@ class AnalyserTestCase(unittest.TestCase):
         from libcellml import AnalyserVariable
         from libcellml import Model
         from libcellml import Parser
+        from libcellml.analyserequation import AnalyserEquation_typeAsString
+        from libcellml.analyserequationast import AnalyserEquationAst_typeAsString
+        from libcellml.analyservariable import AnalyserVariable_typeAsString
         from test_resources import file_contents
 
         # Try to create an analyser equation/model/variable, something that is not allowed.
@@ -149,32 +155,56 @@ class AnalyserTestCase(unittest.TestCase):
         av = am.variable(3)
 
         self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
+        self.assertEqual("constant", AnalyserVariable.typeAsString(av.type()))
+        self.assertEqual("constant", AnalyserVariable_typeAsString(av.type()))
         self.assertEqual(3, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
-        self.assertIsNone(av.equation())
+        self.assertEqual(1, av.equationCount())
+        self.assertIsNotNone(av.equations())
+        self.assertIsNone(av.equation(0))
 
         # Ensure coverage for AnalyserEquation.
 
         ae = am.equation(3)
 
-        self.assertEqual(AnalyserEquation.Type.RATE, ae.type())
+        self.assertEqual(AnalyserEquation.Type.ALGEBRAIC, ae.type())
+        self.assertEqual("algebraic", AnalyserEquation.typeAsString(ae.type()))
+        self.assertEqual("algebraic", AnalyserEquation_typeAsString(ae.type()))
         self.assertIsNotNone(ae.ast())
+        self.assertEqual(2, ae.dependencyCount())
         self.assertIsNotNone(ae.dependencies())
+        self.assertIsNotNone(ae.dependency(0))
+        self.assertEqual(18446744073709551615, ae.nlaSystemIndex())
+        self.assertEqual(0, ae.nlaSiblingCount())
+        self.assertIsNotNone(ae.nlaSiblings())
+        self.assertIsNone(ae.nlaSibling(0))
         self.assertTrue(ae.isStateRateBased())
-        self.assertIsNotNone(ae.variable())
+        self.assertEqual(1, ae.variableCount())
+        self.assertIsNotNone(ae.variables())
+        self.assertIsNotNone(ae.variable(0))
+
+        # Check Analyser Equation type with invalid values.
+
+        self.assertRaises(RuntimeError, AnalyserEquation.typeAsString, -1)
+        self.assertRaises(RuntimeError, AnalyserEquation_typeAsString, -1)
+        self.assertRaises(RuntimeError, AnalyserEquation.typeAsString, 999)
+        self.assertRaises(RuntimeError, AnalyserEquation_typeAsString, 999)
 
         # Ensure coverage for AnalyserEquationAst.
 
         aea = ae.ast()
 
-        self.assertEqual(AnalyserEquationAst.Type.ASSIGNMENT, aea.type())
+        self.assertEqual(AnalyserEquationAst.Type.EQUALITY, aea.type())
+        self.assertEqual("equality", AnalyserEquationAst.typeAsString(aea.type()))
+        self.assertEqual("equality", AnalyserEquationAst_typeAsString(aea.type()))
         self.assertEqual('', aea.value())
         self.assertIsNone(aea.variable())
         self.assertIsNone(aea.parent())
         self.assertIsNotNone(aea.leftChild())
         self.assertIsNotNone(aea.rightChild())
 
+        aea.swapLeftAndRightChildren()
         aea.setType(AnalyserEquationAst.Type.EQ)
         aea.setValue(AnalyserTestCase.VALUE)
         aea.setVariable(av.variable())
@@ -183,6 +213,8 @@ class AnalyserTestCase(unittest.TestCase):
         aea.setRightChild(None)
 
         self.assertEqual(AnalyserEquationAst.Type.EQ, aea.type())
+        self.assertEqual("eq", AnalyserEquationAst.typeAsString(aea.type()))
+        self.assertEqual("eq", AnalyserEquationAst_typeAsString(aea.type()))
         self.assertEqual(AnalyserTestCase.VALUE, aea.value())
         self.assertIsNotNone(aea.variable())
         self.assertIsNotNone(aea.parent())

@@ -1,0 +1,375 @@
+/* The content of this file was generated using a modified C profile of libCellML 0.5.0. */
+
+double xor(double x, double y)
+{
+    return (x != 0.0) ^ (y != 0.0);
+}
+
+double min(double x, double y)
+{
+    return (x < y)?x:y;
+}
+
+double max(double x, double y)
+{
+    return (x > y)?x:y;
+}
+
+double sec(double x)
+{
+    return 1.0/cos(x);
+}
+
+double csc(double x)
+{
+    return 1.0/sin(x);
+}
+
+double cot(double x)
+{
+    return 1.0/tan(x);
+}
+
+double sech(double x)
+{
+    return 1.0/cosh(x);
+}
+
+double csch(double x)
+{
+    return 1.0/sinh(x);
+}
+
+double coth(double x)
+{
+    return 1.0/tanh(x);
+}
+
+double asec(double x)
+{
+    return acos(1.0/x);
+}
+
+double acsc(double x)
+{
+    return asin(1.0/x);
+}
+
+double acot(double x)
+{
+    return atan(1.0/x);
+}
+
+double asech(double x)
+{
+    double oneOverX = 1.0/x;
+
+    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));
+}
+
+double acsch(double x)
+{
+    double oneOverX = 1.0/x;
+
+    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));
+}
+
+double acoth(double x)
+{
+    double oneOverX = 1.0/x;
+
+    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
+}
+
+double * createStatesArray()
+{
+    double *res = (double *) malloc(STATE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < STATE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+double * createVariablesArray()
+{
+    double *res = (double *) malloc(VARIABLE_COUNT*sizeof(double));
+
+    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+        res[i] = NAN;
+    }
+
+    return res;
+}
+
+void deleteArray(double *array)
+{
+    free(array);
+}
+
+typedef struct {
+    double voi;
+    double *states;
+    double *rates;
+    double *variables;
+} RootFindingInfo;
+
+extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
+                     double *u, int n, void *data);
+
+void objectiveFunction0(double *u, double *f, void *data)
+{
+    double voi = ((RootFindingInfo *) data)->voi;
+    double *states = ((RootFindingInfo *) data)->states;
+    double *rates = ((RootFindingInfo *) data)->rates;
+    double *variables = ((RootFindingInfo *) data)->variables;
+
+    variables[205] = u[0];
+    variables[206] = u[1];
+
+    f[0] = variables[205]+variables[206]+states[0]-0.0;
+    f[1] = variables[205]-variables[206]-(variables[207]+variables[208]);
+}
+
+void findRoot0(double voi, double *states, double *rates, double *variables)
+{
+    RootFindingInfo rfi = { voi, states, rates, variables };
+    double u[2];
+
+    u[0] = variables[205];
+    u[1] = variables[206];
+
+    nlaSolve(objectiveFunction0, u, 2, &rfi);
+
+    variables[205] = u[0];
+    variables[206] = u[1];
+}
+
+void initialiseVariables(double *states, double *rates, double *variables)
+{
+    variables[1] = 1.0;
+    variables[2] = 2.0;
+    variables[6] = 3.0;
+    variables[18] = 4.0;
+    variables[179] = 5.0;
+    variables[180] = 6.0;
+    variables[182] = 7.0;
+    variables[205] = 1.0;
+    variables[206] = 2.0;
+    variables[184] = 123.0;
+    variables[185] = 123.456789;
+    variables[186] = 123.0e99;
+    variables[187] = 123.456789e99;
+    variables[189] = 1.0;
+    variables[190] = 0.0;
+    variables[191] = 2.71828182845905;
+    variables[192] = 3.14159265358979;
+    variables[193] = INFINITY;
+    variables[194] = NAN;
+    variables[207] = 1.0;
+    variables[208] = 3.0;
+    states[0] = 0.0;
+}
+
+void computeComputedConstants(double *variables)
+{
+    variables[0] = eq(variables[1], variables[2]);
+    variables[3] = variables[1]/eq(variables[2], variables[2]);
+    variables[4] = neq(variables[1], variables[2]);
+    variables[5] = variables[1]/neq(variables[2], variables[6]);
+    variables[7] = lt(variables[1], variables[2]);
+    variables[8] = variables[1]/lt(variables[2], variables[6]);
+    variables[9] = leq(variables[1], variables[2]);
+    variables[10] = variables[1]/leq(variables[2], variables[6]);
+    variables[11] = gt(variables[1], variables[2]);
+    variables[12] = variables[1]/gt(variables[2], variables[6]);
+    variables[13] = geq(variables[1], variables[2]);
+    variables[14] = variables[1]/geq(variables[2], variables[6]);
+    variables[15] = and(variables[1], variables[2]);
+    variables[16] = and(variables[1], and(variables[2], variables[6]));
+    variables[17] = and(lt(variables[1], variables[2]), gt(variables[6], variables[18]));
+    variables[19] = and(variables[1]+variables[2], gt(variables[6], variables[18]));
+    variables[20] = and(variables[1], gt(variables[2], variables[6]));
+    variables[21] = and(variables[1]-variables[2], gt(variables[6], variables[18]));
+    variables[22] = and(-variables[1], gt(variables[2], variables[6]));
+    variables[23] = and(pow(variables[1], variables[2]), gt(variables[6], variables[18]));
+    variables[24] = and(pow(variables[1], 1.0/variables[2]), gt(variables[6], variables[18]));
+    variables[25] = and(lt(variables[1], variables[2]), variables[6]+variables[18]);
+    variables[26] = and(lt(variables[1], variables[2]), variables[6]);
+    variables[27] = and(lt(variables[1], variables[2]), variables[6]-variables[18]);
+    variables[28] = and(lt(variables[1], variables[2]), -variables[6]);
+    variables[29] = and(lt(variables[1], variables[2]), pow(variables[6], variables[18]));
+    variables[30] = and(lt(variables[1], variables[2]), pow(variables[6], 1.0/variables[18]));
+    variables[31] = variables[1]/and(variables[2], variables[6]);
+    variables[32] = or(variables[1], variables[2]);
+    variables[33] = or(variables[1], or(variables[2], variables[6]));
+    variables[34] = or(lt(variables[1], variables[2]), gt(variables[6], variables[18]));
+    variables[35] = or(variables[1]+variables[2], gt(variables[6], variables[18]));
+    variables[36] = or(variables[1], gt(variables[2], variables[6]));
+    variables[37] = or(variables[1]-variables[2], gt(variables[6], variables[18]));
+    variables[38] = or(-variables[1], gt(variables[2], variables[6]));
+    variables[39] = or(pow(variables[1], variables[2]), gt(variables[6], variables[18]));
+    variables[40] = or(pow(variables[1], 1.0/variables[2]), gt(variables[6], variables[18]));
+    variables[41] = or(lt(variables[1], variables[2]), variables[6]+variables[18]);
+    variables[42] = or(lt(variables[1], variables[2]), variables[6]);
+    variables[43] = or(lt(variables[1], variables[2]), variables[6]-variables[18]);
+    variables[44] = or(lt(variables[1], variables[2]), -variables[6]);
+    variables[45] = or(lt(variables[1], variables[2]), pow(variables[6], variables[18]));
+    variables[46] = or(lt(variables[1], variables[2]), pow(variables[6], 1.0/variables[18]));
+    variables[47] = variables[1]/or(variables[2], variables[6]);
+    variables[48] = xor(variables[1], variables[2]);
+    variables[49] = xor(variables[1], xor(variables[2], variables[6]));
+    variables[50] = xor(lt(variables[1], variables[2]), gt(variables[6], variables[18]));
+    variables[51] = xor(variables[1]+variables[2], gt(variables[6], variables[18]));
+    variables[52] = xor(variables[1], gt(variables[2], variables[6]));
+    variables[53] = xor(variables[1]-variables[2], gt(variables[6], variables[18]));
+    variables[54] = xor(-variables[1], gt(variables[2], variables[6]));
+    variables[55] = xor(pow(variables[1], variables[2]), gt(variables[6], variables[18]));
+    variables[56] = xor(pow(variables[1], 1.0/variables[2]), gt(variables[6], variables[18]));
+    variables[57] = xor(lt(variables[1], variables[2]), variables[6]+variables[18]);
+    variables[58] = xor(lt(variables[1], variables[2]), variables[6]);
+    variables[59] = xor(lt(variables[1], variables[2]), variables[6]-variables[18]);
+    variables[60] = xor(lt(variables[1], variables[2]), -variables[6]);
+    variables[61] = xor(lt(variables[1], variables[2]), pow(variables[6], variables[18]));
+    variables[62] = xor(lt(variables[1], variables[2]), pow(variables[6], 1.0/variables[18]));
+    variables[63] = variables[1]/xor(variables[2], variables[6]);
+    variables[64] = not(variables[1]);
+    variables[65] = variables[1]+variables[2];
+    variables[66] = variables[1]+variables[2]+variables[6];
+    variables[67] = lt(variables[1], variables[2])+gt(variables[6], variables[18]);
+    variables[68] = variables[1];
+    variables[69] = variables[1]-variables[2];
+    variables[70] = lt(variables[1], variables[2])-gt(variables[6], variables[18]);
+    variables[71] = lt(variables[1], variables[2])-(variables[6]+variables[18]);
+    variables[72] = lt(variables[1], variables[2])-variables[6];
+    variables[73] = variables[1]-(-variables[2]);
+    variables[74] = variables[1]-(-variables[2]*variables[6]);
+    variables[75] = -variables[1];
+    variables[76] = -lt(variables[1], variables[2]);
+    variables[77] = variables[1]*variables[2];
+    variables[78] = variables[1]*variables[2]*variables[6];
+    variables[79] = lt(variables[1], variables[2])*gt(variables[6], variables[18]);
+    variables[80] = (variables[1]+variables[2])*gt(variables[6], variables[18]);
+    variables[81] = variables[1]*gt(variables[2], variables[6]);
+    variables[82] = (variables[1]-variables[2])*gt(variables[6], variables[18]);
+    variables[83] = -variables[1]*gt(variables[2], variables[6]);
+    variables[84] = lt(variables[1], variables[2])*(variables[6]+variables[18]);
+    variables[85] = lt(variables[1], variables[2])*variables[6];
+    variables[86] = lt(variables[1], variables[2])*(variables[6]-variables[18]);
+    variables[87] = lt(variables[1], variables[2])*-variables[6];
+    variables[88] = variables[1]/variables[2];
+    variables[89] = lt(variables[1], variables[2])/gt(variables[18], variables[6]);
+    variables[90] = (variables[1]+variables[2])/gt(variables[18], variables[6]);
+    variables[91] = variables[1]/gt(variables[6], variables[2]);
+    variables[92] = (variables[1]-variables[2])/gt(variables[18], variables[6]);
+    variables[93] = -variables[1]/gt(variables[6], variables[2]);
+    variables[94] = lt(variables[1], variables[2])/(variables[6]+variables[18]);
+    variables[95] = lt(variables[1], variables[2])/variables[6];
+    variables[96] = lt(variables[1], variables[2])/(variables[6]-variables[18]);
+    variables[97] = lt(variables[1], variables[2])/-variables[6];
+    variables[98] = lt(variables[1], variables[2])/(variables[6]*variables[18]);
+    variables[99] = lt(variables[1], variables[2])/(variables[6]/variables[18]);
+    variables[100] = sqrt(variables[1]);
+    variables[101] = pow(variables[1], 2.0);
+    variables[102] = pow(variables[1], 3.0);
+    variables[103] = pow(variables[1], variables[2]);
+    variables[104] = pow(leq(variables[1], variables[2]), geq(variables[6], variables[18]));
+    variables[105] = pow(variables[1]+variables[2], geq(variables[6], variables[18]));
+    variables[106] = pow(variables[1], geq(variables[2], variables[6]));
+    variables[107] = pow(variables[1]-variables[2], geq(variables[6], variables[18]));
+    variables[108] = pow(-variables[1], geq(variables[2], variables[6]));
+    variables[109] = pow(variables[1]*variables[2], geq(variables[6], variables[18]));
+    variables[110] = pow(variables[1]/variables[2], geq(variables[6], variables[18]));
+    variables[111] = pow(leq(variables[1], variables[2]), variables[6]+variables[18]);
+    variables[112] = pow(leq(variables[1], variables[2]), variables[6]);
+    variables[113] = pow(leq(variables[1], variables[2]), variables[6]-variables[18]);
+    variables[114] = pow(leq(variables[1], variables[2]), -variables[6]);
+    variables[115] = pow(leq(variables[1], variables[2]), variables[6]*variables[18]);
+    variables[116] = pow(leq(variables[1], variables[2]), variables[6]/variables[18]);
+    variables[117] = pow(leq(variables[1], variables[2]), pow(variables[6], variables[18]));
+    variables[118] = pow(leq(variables[1], variables[2]), pow(variables[6], 1.0/variables[18]));
+    variables[119] = sqrt(variables[1]);
+    variables[120] = sqrt(variables[1]);
+    variables[121] = pow(variables[1], 1.0/3.0);
+    variables[122] = pow(variables[1], 1.0/variables[2]);
+    variables[123] = pow(lt(variables[1], variables[2]), 1.0/gt(variables[18], variables[6]));
+    variables[124] = pow(variables[1]+variables[2], 1.0/gt(variables[18], variables[6]));
+    variables[125] = pow(variables[1], 1.0/gt(variables[6], variables[2]));
+    variables[126] = pow(variables[1]-variables[2], 1.0/gt(variables[18], variables[6]));
+    variables[127] = pow(-variables[1], 1.0/gt(variables[6], variables[2]));
+    variables[128] = pow(variables[1]*variables[2], 1.0/gt(variables[18], variables[6]));
+    variables[129] = pow(variables[1]/variables[2], 1.0/gt(variables[18], variables[6]));
+    variables[130] = pow(lt(variables[1], variables[2]), 1.0/(variables[6]+variables[18]));
+    variables[131] = pow(lt(variables[1], variables[2]), 1.0/variables[6]);
+    variables[132] = pow(lt(variables[1], variables[2]), 1.0/(variables[6]-variables[18]));
+    variables[133] = pow(lt(variables[1], variables[2]), 1.0/-variables[6]);
+    variables[134] = pow(lt(variables[1], variables[2]), 1.0/(variables[6]*variables[18]));
+    variables[135] = pow(lt(variables[1], variables[2]), 1.0/(variables[6]/variables[18]));
+    variables[136] = pow(lt(variables[1], variables[2]), 1.0/pow(variables[6], variables[18]));
+    variables[137] = pow(lt(variables[1], variables[2]), 1.0/pow(variables[6], 1.0/variables[18]));
+    variables[138] = fabs(variables[1]);
+    variables[139] = exp(variables[1]);
+    variables[140] = log(variables[1]);
+    variables[141] = log10(variables[1]);
+    variables[142] = log(variables[1])/log(2.0);
+    variables[143] = log10(variables[1]);
+    variables[144] = log(variables[1])/log(variables[2]);
+    variables[145] = ceil(variables[1]);
+    variables[146] = floor(variables[1]);
+    variables[147] = min(variables[1], variables[2]);
+    variables[148] = min(variables[1], min(variables[2], variables[6]));
+    variables[149] = max(variables[1], variables[2]);
+    variables[150] = max(variables[1], max(variables[2], variables[6]));
+    variables[151] = fmod(variables[1], variables[2]);
+    variables[152] = sin(variables[1]);
+    variables[153] = cos(variables[1]);
+    variables[154] = tan(variables[1]);
+    variables[155] = sec(variables[1]);
+    variables[156] = csc(variables[1]);
+    variables[157] = cot(variables[1]);
+    variables[158] = sinh(variables[1]);
+    variables[159] = cosh(variables[1]);
+    variables[160] = tanh(variables[1]);
+    variables[161] = sech(variables[1]);
+    variables[162] = csch(variables[1]);
+    variables[163] = coth(variables[1]);
+    variables[164] = asin(variables[1]);
+    variables[165] = acos(variables[1]);
+    variables[166] = atan(variables[1]);
+    variables[167] = asec(variables[1]);
+    variables[168] = acsc(variables[1]);
+    variables[169] = acot(variables[1]);
+    variables[170] = asinh(variables[1]);
+    variables[171] = acosh(variables[1]);
+    variables[172] = atanh(variables[1]/2.0);
+    variables[173] = asech(variables[1]);
+    variables[174] = acsch(variables[1]);
+    variables[175] = acoth(2.0*variables[1]);
+    variables[176] = (gt(variables[1], variables[2]))?variables[1]:NAN;
+    variables[177] = (gt(variables[1], variables[2]))?variables[1]:variables[6];
+    variables[178] = (gt(variables[1], variables[2]))?variables[1]:(gt(variables[6], variables[18]))?variables[6]:(gt(variables[179], variables[180]))?variables[179]:NAN;
+    variables[181] = (gt(variables[1], variables[2]))?variables[1]:(gt(variables[6], variables[18]))?variables[6]:(gt(variables[179], variables[180]))?variables[179]:variables[182];
+    variables[183] = 123.0+((gt(variables[1], variables[2]))?variables[1]:NAN);
+    variables[188] = variables[1];
+    variables[195] = and(variables[1], variables[2])+((gt(variables[6], variables[18]))?variables[2]:NAN)+variables[179]+and(variables[180], variables[182]);
+    variables[196] = and(variables[1], variables[2])-(((gt(variables[6], variables[18]))?variables[2]:NAN)-(variables[179]-((gt(variables[6], variables[18]))?variables[2]:NAN)))-and(variables[180], variables[182]);
+    variables[197] = and(variables[1], variables[2])*((gt(variables[6], variables[18]))?variables[2]:NAN)*variables[179]*((gt(variables[6], variables[18]))?variables[2]:NAN)*and(variables[180], variables[182]);
+    variables[198] = and(variables[1], variables[2])/(((gt(variables[6], variables[18]))?variables[2]:NAN)/(variables[179]/((gt(variables[6], variables[18]))?variables[2]:NAN)));
+    variables[199] = and(or(variables[1], variables[2]), and(xor(variables[1], variables[2]), and((gt(variables[6], variables[18]))?variables[2]:NAN, and(and(and(variables[179], (gt(variables[6], variables[18]))?variables[2]:NAN), xor(variables[1], variables[2])), or(variables[1], variables[2])))));
+    variables[200] = or(and(variables[1], variables[2]), or(xor(variables[1], variables[2]), or((gt(variables[6], variables[18]))?variables[2]:NAN, or(or(or(variables[179], (gt(variables[6], variables[18]))?variables[2]:NAN), xor(variables[1], variables[2])), and(variables[1], variables[2])))));
+    variables[201] = xor(and(variables[1], variables[2]), xor(or(variables[1], variables[2]), xor((gt(variables[6], variables[18]))?variables[2]:NAN, xor(xor(xor(variables[179], (gt(variables[6], variables[18]))?variables[2]:NAN), or(variables[1], variables[2])), and(variables[1], variables[2])))));
+    variables[202] = pow(and(variables[1], variables[2]), pow((gt(variables[6], variables[18]))?variables[2]:NAN, pow(pow(variables[179], (gt(variables[6], variables[18]))?variables[2]:NAN), and(variables[1], variables[2]))));
+    variables[203] = pow(pow(pow(and(variables[1], variables[2]), 1.0/pow((gt(variables[6], variables[18]))?variables[2]:NAN, 1.0/variables[179])), 1.0/((gt(variables[6], variables[18]))?variables[2]:NAN)), 1.0/and(variables[1], variables[2]));
+    variables[204] = -and(variables[1], variables[2])+-((gt(variables[6], variables[18]))?variables[2]:NAN);
+}
+
+void computeRates(double voi, double *states, double *rates, double *variables)
+{
+    rates[0] = 1.0;
+}
+
+void computeVariables(double voi, double *states, double *rates, double *variables)
+{
+    findRoot0(voi, states, rates, variables);
+}

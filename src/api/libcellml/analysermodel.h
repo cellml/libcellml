@@ -34,24 +34,23 @@ public:
     /**
      * @brief The type of a model.
      *
-     * A model can be of one of the following types:
-     *  - UNKNOWN: the type of the model is unknown;
-     *  - ALGEBRAIC: the model defines a system of algebraic equations;
-     *  - ODE: the model defines a system of ordinary differential equations;
-     *  - INVALID: the model is invalid;
-     *  - UNDERCONSTRAINED: the model is underconstrainted;
-     *  - OVERCONSTRAINED: the model is overconstrained; or
-     *  - UNSUITABLY_CONSTRAINED: the model is unsuitably constrained.
+     * The type of a model, i.e. whether it is unknown, invalid,
+     * underconstrained, overconstrained, or unsuitably constrained, or whether
+     * it defines a system of algebraic equations, a system of non-linear
+     * algebraic equations, a system of ordinary differential equations, or
+     * a system of differential algebraic equations.
      */
     enum class Type
     {
-        UNKNOWN,
-        ALGEBRAIC,
-        ODE,
-        INVALID,
-        UNDERCONSTRAINED,
-        OVERCONSTRAINED,
-        UNSUITABLY_CONSTRAINED
+        UNKNOWN, /**< The type of the model is unknown. */
+        ALGEBRAIC, /**< The model defines a system of algebraic equations that can be solved directly. */
+        DAE, /**< The model defines a system of differential algebraic equations that require both an external ODE solver (e.g., CVODE) and an external NLA solver (e.g., KINSOL) to solve. */
+        INVALID, /**< The model is invalid. */
+        NLA, /**< The model defines a system of (potentially non-linear) algebraic equations that require an external NLA solver (e.g., KINSOL) to solve. */
+        ODE, /**< The model defines a system of ordinary differential equations that require an external ODE solver (e.g., CVODE) to solve. */
+        OVERCONSTRAINED, /**< The model is overconstrained. */
+        UNDERCONSTRAINED, /**< The model is underconstrainted. */
+        UNSUITABLY_CONSTRAINED /**< The model is unsuitably constrained. */
     };
 
     ~AnalyserModel(); /**< Destructor, @private. */
@@ -60,43 +59,54 @@ public:
     AnalyserModel &operator=(AnalyserModel rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Test to determine if @c AnalyserModel is a valid model.
+     * @brief Test to determine if @ref AnalyserModel is a valid model.
      *
-     * Test to determine if @c AnalyserModel is a valid model, return @c true if
+     * Test to determine if @ref AnalyserModel is a valid model, return @c true if
      * it is a valid model (i.e. either an algebraic or an ODE model) and
      * @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel is a valid model, @c false otherwise.
+     * @return @c true if @ref AnalyserModel is a valid model, @c false otherwise.
      */
     bool isValid() const;
 
     /**
-     * @brief Get the @c Type of the @c AnalyserModel.
+     * @brief Get the @ref Type of the @ref AnalyserModel.
      *
-     * Return the @c Type of the @c AnalyserModel.
+     * Return the @ref Type of the @ref AnalyserModel.
      *
-     * @return The @c Type.
+     * @return The @ref Type.
      */
     Type type() const;
 
     /**
-     * @brief Test to determine if this @c AnalyserModel has external variables.
+     * @brief Get the string version of a @ref Type.
      *
-     * Test to determine if this @c AnalyserModel has external variables, return
+     * Return the string version of a @ref Type.
+     *
+     * @param type The type for which we want the string version.
+     *
+     * @return The string version of the @ref Type.
+     */
+    static std::string typeAsString(Type type);
+
+    /**
+     * @brief Test to determine if this @ref AnalyserModel has external variables.
+     *
+     * Test to determine if this @ref AnalyserModel has external variables, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel has external variables, @c false
+     * @return @c true if @ref AnalyserModel has external variables, @c false
      * otherwise.
      */
     bool hasExternalVariables() const;
 
     /**
-     * @brief Get the @c Variable of integration.
+     * @brief Get the @ref Variable of integration.
      *
-     * Return the @c Variable of integration of the @c AnalyserModel, in the
+     * Return the @ref Variable of integration of the @ref AnalyserModel, in the
      * case of an ODE model, @c nullptr otherwise.
      *
-     * @return The @c Variable of integration, if an ODE model, @c nullptr
+     * @return The @ref Variable of integration, if an ODE model, @c nullptr
      * otherwise.
      */
     AnalyserVariablePtr voi() const;
@@ -104,7 +114,7 @@ public:
     /**
      * @brief Get the number of states.
      *
-     * Return the number of states in the @c AnalyserModel.
+     * Return the number of states in the @ref AnalyserModel.
      *
      * @return The number of states.
      */
@@ -113,7 +123,7 @@ public:
     /**
      * @brief Get the states.
      *
-     * Return the states in the @c AnalyserModel.
+     * Return the states in the @ref AnalyserModel.
      *
      * @return The states as a @c std::vector.
      */
@@ -122,7 +132,7 @@ public:
     /**
      * @brief Get the state at @p index.
      *
-     * Return the state at the index @p index for the @c AnalyserModel.
+     * Return the state at the index @p index for the @ref AnalyserModel.
      *
      * @param index The index of the state to return.
      *
@@ -134,7 +144,7 @@ public:
     /**
      * @brief Get the number of variables.
      *
-     * Return the number of variables in the @c AnalyserModel.
+     * Return the number of variables in the @ref AnalyserModel.
      *
      * @return The number of variables.
      */
@@ -143,7 +153,7 @@ public:
     /**
      * @brief Get the variables.
      *
-     * Return the variables in the @c AnalyserModel.
+     * Return the variables in the @ref AnalyserModel.
      *
      * @return The variables as a @c std::vector.
      */
@@ -152,7 +162,7 @@ public:
     /**
      * @brief Get the variable at @p index.
      *
-     * Return the variable at the index @p index for the @c AnalyserModel.
+     * Return the variable at the index @p index for the @ref AnalyserModel.
      *
      * @param index The index of the variable to return.
      *
@@ -164,7 +174,7 @@ public:
     /**
      * @brief Get the number of equations.
      *
-     * Return the number of equations in the @c AnalyserModel.
+     * Return the number of equations in the @ref AnalyserModel.
      *
      * @return The number of equations.
      */
@@ -173,7 +183,7 @@ public:
     /**
      * @brief Get the equations.
      *
-     * Return the equations in the @c AnalyserModel.
+     * Return the equations in the @ref AnalyserModel.
      *
      * @return The equations as a @c std::vector.
      */
@@ -182,7 +192,7 @@ public:
     /**
      * @brief Get the equation at @p index.
      *
-     * Return the equation at the index @p index for the @c AnalyserModel.
+     * Return the equation at the index @p index for the @ref AnalyserModel.
      *
      * @param index The index of the equation to return.
      *
@@ -192,282 +202,282 @@ public:
     AnalyserEquationPtr equation(size_t index) const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "equal to"
+     * @brief Test to determine if @ref AnalyserModel needs an "equal to"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs an "equal to" function,
+     * Test to determine if @ref AnalyserModel needs an "equal to" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "equal to" function,
+     * @return @c true if @ref AnalyserModel needs an "equal to" function,
      * @c false otherwise.
      */
     bool needEqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "not equal to"
+     * @brief Test to determine if @ref AnalyserModel needs a "not equal to"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs a "not equal to" function,
+     * Test to determine if @ref AnalyserModel needs a "not equal to" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "not equal to" function,
+     * @return @c true if @ref AnalyserModel needs a "not equal to" function,
      * @c false otherwise.
      */
     bool needNeqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "less than"
+     * @brief Test to determine if @ref AnalyserModel needs a "less than"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs a "less than" function,
+     * Test to determine if @ref AnalyserModel needs a "less than" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "less than" function,
+     * @return @c true if @ref AnalyserModel needs a "less than" function,
      * @c false otherwise.
      */
     bool needLtFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "less than or equal
+     * @brief Test to determine if @ref AnalyserModel needs a "less than or equal
      * to" function.
      *
-     * Test to determine if @c AnalyserModel needs a "less than or equal to"
+     * Test to determine if @ref AnalyserModel needs a "less than or equal to"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "less than or equal to"
+     * @return @c true if @ref AnalyserModel needs a "less than or equal to"
      * function, @c false otherwise.
      */
     bool needLeqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "greater than"
+     * @brief Test to determine if @ref AnalyserModel needs a "greater than"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs a "greater than" function,
+     * Test to determine if @ref AnalyserModel needs a "greater than" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "greater than" function,
+     * @return @c true if @ref AnalyserModel needs a "greater than" function,
      * @c false otherwise.
      */
     bool needGtFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "greater than or
+     * @brief Test to determine if @ref AnalyserModel needs a "greater than or
      * equal to" function.
      *
-     * Test to determine if @c AnalyserModel needs a "greater than or equal to"
+     * Test to determine if @ref AnalyserModel needs a "greater than or equal to"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "greater than or equal to"
+     * @return @c true if @ref AnalyserModel needs a "greater than or equal to"
      * function, @c false otherwise.
      */
     bool needGeqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "and" function.
+     * @brief Test to determine if @ref AnalyserModel needs an "and" function.
      *
-     * Test to determine if @c AnalyserModel needs an "and" function, return
+     * Test to determine if @ref AnalyserModel needs an "and" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "and" function, @c false
+     * @return @c true if @ref AnalyserModel needs an "and" function, @c false
      * otherwise.
      */
     bool needAndFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "or" function.
+     * @brief Test to determine if @ref AnalyserModel needs an "or" function.
      *
-     * Test to determine if @c AnalyserModel needs an "or" function, return
+     * Test to determine if @ref AnalyserModel needs an "or" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "or" function, @c false
+     * @return @c true if @ref AnalyserModel needs an "or" function, @c false
      * otherwise.
      */
     bool needOrFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "exclusive or"
+     * @brief Test to determine if @ref AnalyserModel needs a "exclusive or"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs a "exclusive or" function,
+     * Test to determine if @ref AnalyserModel needs a "exclusive or" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "exclusive or" function,
+     * @return @c true if @ref AnalyserModel needs a "exclusive or" function,
      * @c false otherwise.
      */
     bool needXorFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "not" function.
+     * @brief Test to determine if @ref AnalyserModel needs a "not" function.
      *
-     * Test to determine if @c AnalyserModel needs a "not" function, return
+     * Test to determine if @ref AnalyserModel needs a "not" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "not" function, @c false
+     * @return @c true if @ref AnalyserModel needs a "not" function, @c false
      * otherwise.
      */
     bool needNotFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "minimum" function.
+     * @brief Test to determine if @ref AnalyserModel needs a "minimum" function.
      *
-     * Test to determine if @c AnalyserModel needs a "minimum" function, return
+     * Test to determine if @ref AnalyserModel needs a "minimum" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "minimum" function, @c false
+     * @return @c true if @ref AnalyserModel needs a "minimum" function, @c false
      * otherwise.
      */
     bool needMinFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "maximum" function.
+     * @brief Test to determine if @ref AnalyserModel needs a "maximum" function.
      *
-     * Test to determine if @c AnalyserModel needs a "maximum" function, return
+     * Test to determine if @ref AnalyserModel needs a "maximum" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "maximum" function, @c false
+     * @return @c true if @ref AnalyserModel needs a "maximum" function, @c false
      * otherwise.
      */
     bool needMaxFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "secant" function.
+     * @brief Test to determine if @ref AnalyserModel needs a "secant" function.
      *
-     * Test to determine if @c AnalyserModel needs a "secant" function, return
+     * Test to determine if @ref AnalyserModel needs a "secant" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "secant" function, @c false
+     * @return @c true if @ref AnalyserModel needs a "secant" function, @c false
      * otherwise.
      */
     bool needSecFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "cosecant" function.
+     * @brief Test to determine if @ref AnalyserModel needs a "cosecant" function.
      *
-     * Test to determine if @c AnalyserModel needs a "cosecant" function, return
+     * Test to determine if @ref AnalyserModel needs a "cosecant" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "cosecant" function, @c false
+     * @return @c true if @ref AnalyserModel needs a "cosecant" function, @c false
      * otherwise.
      */
     bool needCscFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "cotangent"
+     * @brief Test to determine if @ref AnalyserModel needs a "cotangent"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs a "cotangent" function,
+     * Test to determine if @ref AnalyserModel needs a "cotangent" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "cotangent" function,
+     * @return @c true if @ref AnalyserModel needs a "cotangent" function,
      * @c false otherwise.
      */
     bool needCotFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "hyperbolic secant"
+     * @brief Test to determine if @ref AnalyserModel needs a "hyperbolic secant"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs a "hyperbolic secant"
+     * Test to determine if @ref AnalyserModel needs a "hyperbolic secant"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "hyperbolic secant" function,
+     * @return @c true if @ref AnalyserModel needs a "hyperbolic secant" function,
      * @c false otherwise.
      */
     bool needSechFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "hyperbolic
+     * @brief Test to determine if @ref AnalyserModel needs a "hyperbolic
      * cosecant" function.
      *
-     * Test to determine if @c AnalyserModel needs a "hyperbolic cosecant"
+     * Test to determine if @ref AnalyserModel needs a "hyperbolic cosecant"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "hyperbolic cosecant"
+     * @return @c true if @ref AnalyserModel needs a "hyperbolic cosecant"
      * function, @c false otherwise.
      */
     bool needCschFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "hyperbolic
+     * @brief Test to determine if @ref AnalyserModel needs a "hyperbolic
      * cotangent" function.
      *
-     * Test to determine if @c AnalyserModel needs a "hyperbolic cotangent"
+     * Test to determine if @ref AnalyserModel needs a "hyperbolic cotangent"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "hyperbolic cotangent"
+     * @return @c true if @ref AnalyserModel needs a "hyperbolic cotangent"
      * function, @c false otherwise.
      */
     bool needCothFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "arc secant"
+     * @brief Test to determine if @ref AnalyserModel needs an "arc secant"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs an "arc secant" function,
+     * Test to determine if @ref AnalyserModel needs an "arc secant" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "arc secant" function,
+     * @return @c true if @ref AnalyserModel needs an "arc secant" function,
      * @c false otherwise.
      */
     bool needAsecFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "arc cosecant"
+     * @brief Test to determine if @ref AnalyserModel needs an "arc cosecant"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs an "arc cosecant" function,
+     * Test to determine if @ref AnalyserModel needs an "arc cosecant" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "arc cosecant" function,
+     * @return @c true if @ref AnalyserModel needs an "arc cosecant" function,
      * @c false otherwise.
      */
     bool needAcscFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "arc cotangent"
+     * @brief Test to determine if @ref AnalyserModel needs an "arc cotangent"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs an "arc cotangent" function,
+     * Test to determine if @ref AnalyserModel needs an "arc cotangent" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "arc cotangent" function,
+     * @return @c true if @ref AnalyserModel needs an "arc cotangent" function,
      * @c false otherwise.
      */
     bool needAcotFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "arc hyperbolic
+     * @brief Test to determine if @ref AnalyserModel needs an "arc hyperbolic
      * secant" function.
      *
-     * Test to determine if @c AnalyserModel needs an "arc hyperbolic secant"
+     * Test to determine if @ref AnalyserModel needs an "arc hyperbolic secant"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "arc hyperbolic secant"
+     * @return @c true if @ref AnalyserModel needs an "arc hyperbolic secant"
      * function, @c false otherwise.
      */
     bool needAsechFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "arc hyperbolic
+     * @brief Test to determine if @ref AnalyserModel needs an "arc hyperbolic
      * cosecant" function.
      *
-     * Test to determine if @c AnalyserModel needs an "arc hyperbolic cosecant"
+     * Test to determine if @ref AnalyserModel needs an "arc hyperbolic cosecant"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "arc hyperbolic cosecant"
+     * @return @c true if @ref AnalyserModel needs an "arc hyperbolic cosecant"
      * function, @c false otherwise.
      */
     bool needAcschFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "arc hyperbolic
+     * @brief Test to determine if @ref AnalyserModel needs an "arc hyperbolic
      * cotangent" function.
      *
-     * Test to determine if @c AnalyserModel needs an "arc hyperbolic
+     * Test to determine if @ref AnalyserModel needs an "arc hyperbolic
      * cotangent" function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "arc hyperbolic cotangent"
+     * @return @c true if @ref AnalyserModel needs an "arc hyperbolic cotangent"
      * function, @c false otherwise.
      */
     bool needAcothFunction() const;
@@ -484,13 +494,13 @@ public:
      * and their result cached. So, if you test two variables that were tested
      * during the analysis then the cached result will be returned otherwise the
      * two variables will be properly tested and their result cached. This works
-     * because an @c AnalyserModel always refers to a static version of a
-     * @c Model. However, this might break if a @c Model is modified after it
+     * because an @ref AnalyserModel always refers to a static version of a
+     * @ref Model. However, this might break if a @ref Model is modified after it
      * has been analysed.
      *
-     * @param variable1 The @c Variable to test if it is equivalent to
+     * @param variable1 The @ref Variable to test if it is equivalent to
      * @p variable2.
-     * @param variable2 The @c Variable that is potentially equivalent to
+     * @param variable2 The @ref Variable that is potentially equivalent to
      * @p variable1.
      *
      * @return @c true if @p variable1 is equivalent to @p variable2 and

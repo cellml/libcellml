@@ -879,6 +879,95 @@ TEST(Importer, clearModelImportsBeforeResolving)
     EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
+TEST(Importer, isResolvedUnitsNoModel)
+{
+    auto units = libcellml::Units::create("units");
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithModel)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithChild)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    units->addUnit("second");
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithNonExistentChild)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    units->addUnit("bumble");
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithNonStandardChild)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    auto unitsBumble = libcellml::Units::create("bumble");
+    units->addUnit("bumble");
+
+    model->addUnits(units);
+    model->addUnits(unitsBumble);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsWithReferenceToSelf)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    units->addUnit("units");
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(units->requiresImports());
+}
+
+TEST(Importer, isResolvedUnitsNotImportFullyDefined)
+{
+    auto model = libcellml::Model::create("standard_model");
+    auto units = libcellml::Units::create("my_units");
+    units->addUnit("second", -1.0);
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_TRUE(units->isResolved());
+    EXPECT_TRUE(units->isDefined());
+}
+
+TEST(Importer, isResolvedUnitsNotImportPartiallyDefined)
+{
+    auto model = libcellml::Model::create("standard_model");
+    auto units = libcellml::Units::create("my_units");
+    units->addUnit("seconds", -1.0);
+
+    model->addUnits(units);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_TRUE(units->isResolved());
+    EXPECT_FALSE(units->isDefined());
+}
+
 TEST(Importer, isResolvedUnitsOverOneLevel)
 {
     auto parser = libcellml::Parser::create();
@@ -1001,9 +1090,11 @@ TEST(Importer, isResolvedReferencedUnitsMissing)
 
     auto units = model->units(0);
 
-    EXPECT_FALSE(units->isResolved());
+    EXPECT_TRUE(units->isResolved());
+    EXPECT_FALSE(units->isDefined());
 
-    EXPECT_TRUE(model->hasUnresolvedImports());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_FALSE(model->isDefined());
 }
 
 TEST(Importer, isResolvedCircularImportUnits)
@@ -1025,6 +1116,7 @@ TEST(Importer, isResolvedCircularImportUnits)
     importModel->units("u2")->importSource()->model()->units("u3")->importSource()->model()->units("i_am_cyclic")->importSource()->setModel(importModel);
 
     EXPECT_FALSE(u->isResolved());
+    EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
 TEST(Importer, isResolvedCircularImportComponent)
@@ -1046,6 +1138,7 @@ TEST(Importer, isResolvedCircularImportComponent)
     importModel->component("c2")->importSource()->model()->component("c3")->importSource()->model()->component("i_am_cyclic")->importSource()->setModel(importModel);
 
     EXPECT_FALSE(c->isResolved());
+    EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
 TEST(Importer, removeAllModels)
@@ -1136,6 +1229,21 @@ TEST(Importer, importInvalidUnitsFromCellmlModel)
     EXPECT_EQ(e, importer->error(0)->description());
 }
 
+TEST(Importer, importUnitsThatEncounterARelatedImportError)
+{
+    const std::string e = "Encountered an error when resolving units 'unitsB_imported' from '" + resourcePath("importer/simple_model.cellml") + "'.";
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+
+    auto model = parser->parseModel(fileContents("importer/import_invalid_component.cellml"));
+    model->component(0)->setImportReference("component4");
+    model->component(0)->setName("component4_imported");
+
+    importer->resolveImports(model, resourcePath("importer"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+}
+
 TEST(Importer, importInvalidComponentFromCellmlModelComponentError)
 {
     auto e = "Encountered an error when resolving component 'component1_imported' from '" + resourcePath("importer/invalid_model.cellml") + "'.";
@@ -1182,4 +1290,28 @@ TEST(Importer, importInvalidComponentFromCellmlModelResetError)
     importer->resolveImports(model, resourcePath("importer"));
     EXPECT_EQ(size_t(1), importer->errorCount());
     EXPECT_EQ(e, importer->error(0)->description());
+}
+
+void testImporterWithInvalidImportedModels(bool strict)
+{
+    const std::string e = "The attempt to import the model at '" + resourcePath("importer/triangle_units_opposite.cellml") + "' failed: the file is not valid XML.";
+
+    auto importer = libcellml::Importer::create(strict);
+    auto parser = libcellml::Parser::create(strict);
+
+    auto model = parser->parseModel(fileContents("importer/triangle_units_point.cellml"));
+
+    importer->resolveImports(model, resourcePath("importer"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+}
+
+TEST(Importer, importingCommonUnitsFromTriangleImportStructurePermissive)
+{
+    testImporterWithInvalidImportedModels(false);
+}
+
+TEST(Importer, importingCommonUnitsFromTriangleImportStructureStrict)
+{
+    testImporterWithInvalidImportedModels(true);
 }

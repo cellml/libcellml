@@ -14,10 +14,12 @@
 
 cmake_minimum_required(VERSION 3.18.0)
 
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum OS X deployment version.")
+
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
-set(_PROJECT_VERSION 0.4.0)
-set(PROJECT_DEVELOPER_VERSION )
+set(_PROJECT_VERSION 0.5.0)
+set(PROJECT_DEVELOPER_VERSION -rc.1)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.
@@ -105,7 +107,7 @@ set(_PARAM_ANNOTATION "Build Python wrappers.")
 if(BINDINGS_AVAILABLE AND PYTHON_BINDINGS_AVAILABLE)
   set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL "${_PARAM_ANNOTATION}")
 endif()
-if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE AND Python_Development_FOUND)
+if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE AND PYTHON_BINDINGS_AVAILABLE)
   set(LIBCELLML_BINDINGS_PYTHON "${BINDINGS_PYTHON}" CACHE BOOL "${_PARAM_ANNOTATION}" FORCE)
 elseif(BINDINGS_PYTHON)
   message(WARNING "Python bindings requested but development files for Python or SWIG were not found!")
@@ -276,4 +278,3 @@ endif()
 # Add target to print out version
 add_custom_target(print_version
   COMMAND ${CMAKE_COMMAND} -E echo "version=v${PROJECT_VERSION}${PROJECT_DEVELOPER_VERSION}")
-

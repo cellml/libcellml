@@ -20,6 +20,7 @@ limitations under the License.
 #include <cmath>
 #include <libxml/uri.h>
 #include <map>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -32,6 +33,7 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"
+#include "commonutils.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "namespaces.h"
@@ -150,18 +152,42 @@ bool isNameStartChar(uint32_t startChar)
            || ((0x41U <= startChar) && (startChar <= 0x5AU))
            || (startChar == 0x5FU)
            || ((0x61U <= startChar) && (startChar <= 0x7AU))
-           || ((0xC0U <= startChar) && (startChar <= 0xD6U))
-           || ((0xD8U <= startChar) && (startChar <= 0xF6U))
-           || ((0xF8U <= startChar) && (startChar <= 0x2FFU))
-           || ((0x370U <= startChar) && (startChar <= 0x37DU))
-           || ((0x37FU <= startChar) && (startChar <= 0x1FFFU))
-           || ((0x200CU <= startChar) && (startChar <= 0x200DU))
-           || ((0x2070U <= startChar) && (startChar <= 0x218FU))
-           || ((0x2C00U <= startChar) && (startChar <= 0x2FEFU))
-           || ((0x3001U <= startChar) && (startChar <= 0xD7FFU))
-           || ((0xF900U <= startChar) && (startChar <= 0xFDCFU))
-           || ((0xFDF0U <= startChar) && (startChar <= 0xFFFDU))
-           || ((0x10000U <= startChar) && (startChar <= 0xEFFFFU));
+           || ((0xC380U <= startChar) && (startChar <= 0xC396U))
+           || ((0xC398U <= startChar) && (startChar <= 0xC3B6U))
+           || ((0xC3B8U <= startChar) && (startChar <= 0xCBBFU))
+           || ((0xCDB0U <= startChar) && (startChar <= 0xCDBDU))
+           || ((0xCDBFU <= startChar) && (startChar <= 0xE1BFBFU))
+           || ((0xE2808CU <= startChar) && (startChar <= 0xE2808DU))
+           || ((0xE281B0U <= startChar) && (startChar <= 0xE2868FU))
+           || ((0xE2B080U <= startChar) && (startChar <= 0xE2BFAFU))
+           || ((0xE38081U <= startChar) && (startChar <= 0xED9FBFU))
+           || ((0xEFA480U <= startChar) && (startChar <= 0xEFB78FU))
+           || ((0xEFB7B0U <= startChar) && (startChar <= 0xEFBFBDU))
+           || ((0xF0908080U <= startChar) && (startChar <= 0xF3AFBFBFU));
+}
+
+/**
+ * @brief Test to determine if @p nameChar is a valid XML name character.
+ *
+ * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
+ *
+ * @param nameChar The character to test.
+ *
+ * @return True if the character is in the allowed Unicode ranges for an XML name character.
+ */
+bool isNameChar(uint32_t nameChar)
+{
+    if (isNameStartChar(nameChar)) {
+        return true;
+    }
+
+    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
+           || (nameChar == 0x2DU)
+           || (nameChar == 0x2EU)
+           || (nameChar == 0xC2B7U)
+           || ((0xCC80U <= nameChar) && (nameChar <= 0xCDAFU))
+           || ((0xE280BFU <= nameChar) && (nameChar <= 0xE28180U));
 }
 
 /**
@@ -180,7 +206,7 @@ uint32_t convertTextToUint32(const std::string &text, size_t initialValue = 0)
     uint32_t value = 0;
     size_t index = 0;
     for (size_t j = initialValue; j < 4; ++j) {
-        auto tempValue = static_cast<uint32_t>(text[index++]) << bitShifts[j];
+        auto tempValue = static_cast<uint32_t>(static_cast<unsigned char>(text[index++])) << bitShifts[j];
         value |= tempValue;
     }
 
@@ -204,7 +230,7 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
     for (size_t i = 0; i < text.length();) {
         size_t codePointLength = 1;
         uint32_t value = 0;
-        auto unsignedText = static_cast<uint8_t>(text[i]);
+        auto unsignedText = static_cast<uint8_t>((unsigned char)text[i]);
         if ((unsignedText & 0xf8U) == 0xf0U) {
             codePointLength = 4;
             breakdown.push_back(convertTextToUint32(text.substr(i, codePointLength)));
@@ -224,29 +250,6 @@ std::vector<uint32_t> characterBreakdown(const std::string &text)
     }
 
     return breakdown;
-}
-
-/**
- * @brief Test to determine if @p nameChar is a valid XML name character.
- *
- * An XML name character is defined here: https://www.w3.org/TR/xml11/#NT-NameChar.
- *
- * @param nameChar The character to test.
- *
- * @return True if the character is in the allowed Unicode ranges for an XML name character.
- */
-bool isNameChar(uint32_t nameChar)
-{
-    if (isNameStartChar(nameChar)) {
-        return true;
-    }
-    // "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-    return ((0x30U <= nameChar) && (nameChar <= 0x39U))
-           || (nameChar == 0x2DU)
-           || (nameChar == 0x2EU)
-           || (nameChar == 0xB7U)
-           || ((0x0300U <= nameChar) && (nameChar <= 0x036FU))
-           || ((0x203FU <= nameChar) && (nameChar <= 0x2040U));
 }
 
 /**
@@ -344,8 +347,9 @@ public:
      * @param units The units to validate.
      * @param history The history of units visited.
      * @param modelsVisited The list of visited models.
+     * @param sourceUrl The source URL of the @p units.
      */
-    void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited);
+    void validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited, const std::string &sourceUrl = ORIGIN_MODEL_REF);
 
     /**
      * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
@@ -493,6 +497,69 @@ public:
     void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const NameList &variableNames);
 
     /**
+     * @brief Add a MathML-related issue.
+     *
+     * Add a MathML-related issue.
+     *
+     * @param description The description for the MathML-related issue.
+     * @param referenceRule The reference rule for the MathML-related issue.
+     * @param component The component where the MathML-related issue occurred.
+     */
+    void addMathmlIssue(const std::string &description,
+                        Issue::ReferenceRule referenceRule,
+                        const ComponentPtr &component);
+
+    bool hasOneMathmlSibling(const XmlNodePtr &parentNode,
+                             const XmlNodePtr &node,
+                             const ComponentPtr &component);
+    bool hasAtLeastOneMathmlSibling(const XmlNodePtr &parentNode,
+                                    const XmlNodePtr &node,
+                                    const ComponentPtr &component);
+    bool hasTwoMathmlSiblings(const XmlNodePtr &parentNode,
+                              const XmlNodePtr &node,
+                              const ComponentPtr &component);
+    bool hasAtLeastTwoMathmlSiblings(const XmlNodePtr &parentNode,
+                                     const XmlNodePtr &node,
+                                     const ComponentPtr &component);
+    size_t hasOneOrTwoMathmlSiblings(const XmlNodePtr &parentNode,
+                                     const XmlNodePtr &node,
+                                     const ComponentPtr &component);
+
+    bool isFirstMathmlSibling(const XmlNodePtr &parentNode,
+                              const XmlNodePtr &node,
+                              const ComponentPtr &component);
+    bool isSecondMathmlSibling(const XmlNodePtr &parentNode,
+                               const XmlNodePtr &node,
+                               const ComponentPtr &component);
+
+    bool hasFirstMathmlSiblingWithName(const XmlNodePtr &parentNode,
+                                       const XmlNodePtr &node,
+                                       const std::string &name,
+                                       const ComponentPtr &component);
+
+    bool hasOneMathmlChild(const XmlNodePtr &node,
+                           const ComponentPtr &component);
+    bool hasAtLeastOneMathmlChild(const XmlNodePtr &node,
+                                  const ComponentPtr &component);
+    bool hasTwoMathmlChildren(const XmlNodePtr &node,
+                              const ComponentPtr &component);
+    bool hasOneOrTwoMathmlChildren(const XmlNodePtr &node,
+                                   const ComponentPtr &component);
+
+    /**
+     * @brief Traverse the node tree for invalid MathML elements'
+     * children/siblings.
+     *
+     * Traverse the XML node tree checking that all MathML elements have the
+     * correct number of children/siblings and that their type is as expected.
+     *
+     * @param node The node to check children and siblings.
+     * @param component The component the MathML belongs to.
+     */
+    void validateMathMLElementsChildrenAndSiblings(const XmlNodePtr &node,
+                                                   const ComponentPtr &component);
+
+    /**
      * @brief Check if the provided @p node is a supported MathML element.
      *
      * Checks if the provided @p node is one of the supported MathML elements defined in the table
@@ -617,7 +684,7 @@ public:
 bool checkForLocalCycles(const History &history, const HistoryEpochPtr &h)
 {
     return std::find_if(history.begin(), history.end(),
-                        [=](const HistoryEpochPtr &i) -> bool { return i->mName == h->mName; })
+                        [=](const HistoryEpochPtr &i) -> bool { return (i->mName == h->mName) && (i->mSourceUrl == h->mSourceUrl); })
            != history.end();
 }
 
@@ -925,11 +992,11 @@ std::set<std::string> namesInCycle(NameList allNames)
     allNames.pop_back();
     std::reverse(allNames.begin(), allNames.end());
     std::set<std::string> namesInCycle = {cycleStartName};
-    for (const auto &name : allNames) {
-        if (name == cycleStartName) {
-            break;
-        }
+    std::string name = *allNames.begin();
+    while (name != cycleStartName) {
         namesInCycle.emplace(name);
+        allNames.erase(allNames.begin());
+        name = *allNames.begin();
     }
 
     return namesInCycle;
@@ -939,7 +1006,7 @@ bool Validator::ValidatorImpl::hasCycleAlreadyBeenReported(NameList names) const
 {
     std::set<std::string> testNamesInCycle = namesInCycle(std::move(names));
     bool found = false;
-    for (size_t i = 0; (i < mValidator->issueCount()) && !found; ++i) {
+    for (size_t i = 0; !found && (i < mValidator->issueCount()); ++i) {
         auto issue = mValidator->issue(i);
         if (issue->description().substr(0, 20) == "Cyclic units exist: ") {
             // Remove prefix to loop information.
@@ -966,9 +1033,9 @@ bool Validator::ValidatorImpl::checkIssuesForDuplications(const std::string &des
     return false;
 }
 
-void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited)
+void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &history, std::vector<ModelPtr> &modelsVisited, const std::string &sourceUrl)
 {
-    auto h = createHistoryEpoch(units, ORIGIN_MODEL_REF);
+    auto h = createHistoryEpoch(units, sourceUrl);
     if (checkForLocalCycles(history, h)) {
         history.push_back(h);
         std::string des;
@@ -1039,7 +1106,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
 
         // Check if we already have another import from the same source with the same units_ref.
         // (This looks for matching entries at the same position in the source and ref vectors).
-        if ((unitsWithImportSource > 1) && !foundImportIssue) {
+        if (!foundImportIssue && (unitsWithImportSource > 1)) {
             auto description = "Model '" + model->name() + "' contains multiple imported units from '" + unitsImportUrl + "' with the same units_ref attribute '" + unitsRef + "'.";
             if (!checkIssuesForDuplications(description)) {
                 auto issue = Issue::IssueImpl::create();
@@ -1070,7 +1137,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
                 } else {
                     modelsVisited.push_back(importSourceModel);
                     history.push_back(h);
-                    validateUnits(importedUnits, history, modelsVisited);
+                    validateUnits(importedUnits, history, modelsVisited, importSource->url());
                     modelsVisited.pop_back();
                 }
             } else {
@@ -1246,7 +1313,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             addIssue(issue);
         } else if (!isStandardUnitName(unitsName)) {
             ModelPtr model = owningModel(component);
-            if ((model != nullptr) && !model->hasUnits(unitsName)) {
+            if (!model->hasUnits(unitsName)) {
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
@@ -1448,7 +1515,6 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             issue->mPimpl->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
             issue->mPimpl->mItem->mPimpl->setComponent(component);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
-
             addIssue(issue);
             return;
         }
@@ -1488,6 +1554,17 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_MATHML);
                 addIssue(issue);
             }
+        }
+
+        // Make sure that the different MathML elements for the right number of
+        // children/siblings, type, etc.
+
+        mathNode = mathmlDoc->rootNode();
+
+        auto childCount = mathmlChildCount(mathNode);
+
+        for (size_t i = 0; i < childCount; ++i) {
+            validateMathMLElementsChildrenAndSiblings(mathmlChildNode(mathNode, i), component);
         }
     }
 }
@@ -1635,6 +1712,535 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     }
 }
 
+void Validator::ValidatorImpl::addMathmlIssue(const std::string &description,
+                                              Issue::ReferenceRule referenceRule,
+                                              const ComponentPtr &component)
+{
+    auto issue = Issue::IssueImpl::create();
+
+    issue->mPimpl->setDescription(description);
+    issue->mPimpl->mItem->mPimpl->setMath(component);
+    issue->mPimpl->setReferenceRule(referenceRule);
+
+    addIssue(issue);
+}
+
+bool Validator::ValidatorImpl::hasOneMathmlSibling(const XmlNodePtr &parentNode,
+                                                   const XmlNodePtr &node,
+                                                   const ComponentPtr &component)
+{
+    if (mathmlChildCount(parentNode) != 2) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly one MathML sibling.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::hasAtLeastOneMathmlSibling(const XmlNodePtr &parentNode,
+                                                          const XmlNodePtr &node,
+                                                          const ComponentPtr &component)
+{
+    if (mathmlChildCount(parentNode) < 2) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without at least one MathML sibling.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::hasTwoMathmlSiblings(const XmlNodePtr &parentNode,
+                                                    const XmlNodePtr &node,
+                                                    const ComponentPtr &component)
+{
+    if (mathmlChildCount(parentNode) != 3) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly two MathML siblings.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::hasAtLeastTwoMathmlSiblings(const XmlNodePtr &parentNode,
+                                                           const XmlNodePtr &node,
+                                                           const ComponentPtr &component)
+{
+    if (mathmlChildCount(parentNode) < 3) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without at least two MathML siblings.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+size_t Validator::ValidatorImpl::hasOneOrTwoMathmlSiblings(const XmlNodePtr &parentNode,
+                                                           const XmlNodePtr &node,
+                                                           const ComponentPtr &component)
+{
+    auto childCount = mathmlChildCount(parentNode);
+
+    if ((childCount != 2) && (childCount != 3)) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly one or two MathML siblings.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return 0;
+    }
+
+    return childCount - 1;
+}
+
+bool Validator::ValidatorImpl::isFirstMathmlSibling(const XmlNodePtr &parentNode,
+                                                    const XmlNodePtr &node,
+                                                    const ComponentPtr &component)
+{
+    if (!mathmlChildNode(parentNode, 0)->equals(node)) {
+        addMathmlIssue("Math has a '" + node->name() + "' element which is not the first MathML sibling.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::isSecondMathmlSibling(const XmlNodePtr &parentNode,
+                                                     const XmlNodePtr &node,
+                                                     const ComponentPtr &component)
+{
+    if (!mathmlChildNode(parentNode, 1)->equals(node)) {
+        addMathmlIssue("Math has a '" + node->name() + "' element which is not the second MathML sibling.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::hasFirstMathmlSiblingWithName(const XmlNodePtr &parentNode,
+                                                             const XmlNodePtr &node,
+                                                             const std::string &name,
+                                                             const ComponentPtr &component)
+{
+    auto childNode = mathmlChildNode(parentNode, 0);
+
+    if (childNode->equals(node)) {
+        childNode = mathmlChildNode(parentNode, 1);
+    }
+
+    if (childNode->name() != name) {
+        addMathmlIssue("Math has a '" + node->name() + "' element which first sibling is not a '" + name + "' element.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::hasOneMathmlChild(const XmlNodePtr &node,
+                                                 const ComponentPtr &component)
+{
+    if (mathmlChildCount(node) != 1) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly one MathML child.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::hasAtLeastOneMathmlChild(const XmlNodePtr &node,
+                                                        const ComponentPtr &component)
+{
+    if (mathmlChildCount(node) < 1) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without at least one MathML child.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::hasTwoMathmlChildren(const XmlNodePtr &node,
+                                                    const ComponentPtr &component)
+{
+    if (mathmlChildCount(node) != 2) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly two MathML children.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Validator::ValidatorImpl::hasOneOrTwoMathmlChildren(const XmlNodePtr &node,
+                                                         const ComponentPtr &component)
+{
+    auto childCount = mathmlChildCount(node);
+
+    if ((childCount != 1) && (childCount != 2)) {
+        addMathmlIssue("Math has a '" + node->name() + "' element without exactly one or two MathML children.",
+                       Issue::ReferenceRule::MATH_MATHML,
+                       component);
+
+        return false;
+    }
+
+    return true;
+}
+
+void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const XmlNodePtr &node,
+                                                                         const ComponentPtr &component)
+{
+    // Check the current node against the MathML elements listed in
+    // supportedMathMLElements.
+    // Note: we don't have to do anything for 'true', 'false, 'exponentiale',
+    //       'pi', 'infinity', and 'notanumber' since they must be empty and if
+    //       they are not then this will be caught by the DTD.
+
+    // Basic content elements.
+
+    if (node->isMathmlElement("apply")) {
+        if (hasAtLeastOneMathmlChild(node, component)) {
+            for (size_t i = 0, iMax = mathmlChildCount(node); i < iMax; ++i) {
+                validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, i), component);
+            }
+        }
+
+        // Relational and logical operators.
+
+    } else if (node->isMathmlElement("eq")
+               || node->isMathmlElement("neq")
+               || node->isMathmlElement("lt")
+               || node->isMathmlElement("leq")
+               || node->isMathmlElement("gt")
+               || node->isMathmlElement("geq")) {
+        auto parentNode = node->parent();
+
+        hasTwoMathmlSiblings(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("and")
+               || node->isMathmlElement("or")
+               || node->isMathmlElement("xor")) {
+        auto parentNode = node->parent();
+
+        hasAtLeastTwoMathmlSiblings(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("not")) {
+        auto parentNode = node->parent();
+
+        hasOneMathmlSibling(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+
+        // Arithmetic operators.
+
+    } else if (node->isMathmlElement("plus")) {
+        auto parentNode = node->parent();
+
+        hasAtLeastOneMathmlSibling(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("minus")) {
+        auto parentNode = node->parent();
+
+        hasOneOrTwoMathmlSiblings(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("times")) {
+        auto parentNode = node->parent();
+
+        hasAtLeastTwoMathmlSiblings(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("divide")) {
+        auto parentNode = node->parent();
+
+        hasTwoMathmlSiblings(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("power")) {
+        auto parentNode = node->parent();
+
+        hasTwoMathmlSiblings(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("root")) {
+        // A 'root' element can have either one or two siblings, depending on
+        // whether a 'degree' element is specified, e.g.
+        //
+        //   <apply>
+        //     <root/>
+        //     <ci>a</ci>
+        //   </apply>
+        //
+        // and
+        //
+        //   <apply>
+        //     <root/>
+        //     <degree>
+        //       <cn cellml:units="dimensionless">3</cn>
+        //     </degree>
+        //     <ci>a</ci>
+        //   </apply>
+
+        auto parentNode = node->parent();
+        auto siblingCount = hasOneOrTwoMathmlSiblings(parentNode, node, component);
+
+        if ((siblingCount != 0)
+            && isFirstMathmlSibling(parentNode, node, component)) {
+            (siblingCount == 2)
+                && hasFirstMathmlSiblingWithName(parentNode, node, "degree", component);
+        }
+    } else if (node->isMathmlElement("abs")
+               || node->isMathmlElement("exp")
+               || node->isMathmlElement("ln")) {
+        auto parentNode = node->parent();
+
+        hasOneMathmlSibling(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("log")) {
+        // A 'log' element can have either one or two siblings, depending on
+        // whether a 'logbase' element is specified, e.g.
+        //
+        //   <apply>
+        //     <log/>
+        //     <ci>a</ci>
+        //   </apply>
+        //
+        // and
+        //
+        //   <apply>
+        //     <log/>
+        //     <logbase>
+        //       <cn cellml:units="dimensionless">3</cn>
+        //     </logbase>
+        //     <ci>a</ci>
+        //   </apply>
+
+        auto parentNode = node->parent();
+        auto siblingCount = hasOneOrTwoMathmlSiblings(parentNode, node, component);
+
+        if ((siblingCount != 0)
+            && isFirstMathmlSibling(parentNode, node, component)) {
+            (siblingCount == 2)
+                && hasFirstMathmlSiblingWithName(parentNode, node, "logbase", component);
+        }
+    } else if (node->isMathmlElement("ceiling")
+               || node->isMathmlElement("floor")) {
+        auto parentNode = node->parent();
+
+        hasOneMathmlSibling(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+    } else if (node->isMathmlElement("min")) {
+    } else if (node->isMathmlElement("max")) {
+    } else if (node->isMathmlElement("rem")) {
+        // Calculus elements.
+
+    } else if (node->isMathmlElement("diff")) {
+        auto parentNode = node->parent();
+
+        hasTwoMathmlSiblings(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component)
+            && hasFirstMathmlSiblingWithName(parentNode, node, "bvar", component);
+
+        // Trigonometric operators.
+
+    } else if (node->isMathmlElement("sin")
+               || node->isMathmlElement("cos")
+               || node->isMathmlElement("tan")
+               || node->isMathmlElement("sec")
+               || node->isMathmlElement("csc")
+               || node->isMathmlElement("cot")
+               || node->isMathmlElement("sinh")
+               || node->isMathmlElement("cosh")
+               || node->isMathmlElement("tanh")
+               || node->isMathmlElement("sech")
+               || node->isMathmlElement("csch")
+               || node->isMathmlElement("coth")
+               || node->isMathmlElement("arcsin")
+               || node->isMathmlElement("arccos")
+               || node->isMathmlElement("arctan")
+               || node->isMathmlElement("arcsec")
+               || node->isMathmlElement("arccsc")
+               || node->isMathmlElement("arccot")
+               || node->isMathmlElement("arcsinh")
+               || node->isMathmlElement("arccosh")
+               || node->isMathmlElement("arctanh")
+               || node->isMathmlElement("arcsech")
+               || node->isMathmlElement("arccsch")
+               || node->isMathmlElement("arccoth")) {
+        auto parentNode = node->parent();
+
+        hasOneMathmlSibling(parentNode, node, component)
+            && isFirstMathmlSibling(parentNode, node, component);
+
+        // Piecewise statement.
+
+    } else if (node->isMathmlElement("piecewise")) {
+        for (size_t i = 0, iMax = mathmlChildCount(node); i < iMax; ++i) {
+            validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, i), component);
+        }
+    } else if (node->isMathmlElement("piece")) {
+        if (hasTwoMathmlChildren(node, component)) {
+            validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, 0), component);
+            validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, 1), component);
+        }
+    } else if (node->isMathmlElement("otherwise")) {
+        if (hasOneMathmlChild(node, component)) {
+            validateMathMLElementsChildrenAndSiblings(mathmlChildNode(node, 0), component);
+        }
+
+        // Token elements.
+
+    } else if (node->isMathmlElement("ci")) {
+        auto ok = (nonCommentChildCount(node) != 1) ? false : !nonCommentChildNode(node, 0)->convertToStrippedString().empty();
+
+        if (!ok) {
+            addMathmlIssue("Math has a 'ci' element with no identifier as a child.",
+                           Issue::ReferenceRule::MATH_CI_VARIABLE_REF,
+                           component);
+        }
+    } else if (node->isMathmlElement("cn")) {
+        auto cnBase = node->attribute("base");
+
+        if (!cnBase.empty() && (cnBase != "10")) {
+            addMathmlIssue("Math has a 'cn' element which is not in base 10.",
+                           Issue::ReferenceRule::MATH_CN_BASE10,
+                           component);
+
+            return;
+        }
+
+        auto cnType = node->attribute("type");
+
+        if (cnType.empty() || (cnType == "real")) {
+            auto ok = (nonCommentChildCount(node) != 1) ? false : nonCommentChildNode(node, 0)->isBasicReal();
+
+            if (!ok) {
+                addMathmlIssue("Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+                               Issue::ReferenceRule::MATH_CN_FORMAT,
+                               component);
+            }
+        } else if (cnType == "e-notation") {
+            auto ok = false;
+
+            if (nonCommentChildCount(node) == 3) {
+                ok = nonCommentChildNode(node, 0)->isBasicReal()
+                     && nonCommentChildNode(node, 1)->isMathmlElement("sep")
+                     && nonCommentChildNode(node, 2)->isInteger();
+            }
+
+            if (!ok) {
+                addMathmlIssue("Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+                               Issue::ReferenceRule::MATH_CN_FORMAT,
+                               component);
+            }
+        } else {
+            addMathmlIssue("Math has a 'cn' element which is not of 'real' or 'e-notation' type.",
+                           Issue::ReferenceRule::MATH_CN_FORMAT,
+                           component);
+        }
+
+        // Qualifier elements.
+
+    } else if (node->isMathmlElement("degree")) {
+        // A 'degree' element can be used either with a 'root' element or within
+        // a 'bvar' element, e.g.
+        //
+        //   <apply>
+        //     <diff/>
+        //     <bvar>
+        //       <ci>t</ci>
+        //       <degree>
+        //         <cn cellml:units="dimensionless">2</cn>
+        //       </degree>
+        //     </bvar>
+        //     <ci>x</ci>
+        //   </apply>
+        //
+        // and
+        //
+        //   <apply>
+        //     <root/>
+        //     <degree>
+        //       <cn cellml:units="dimensionless">3</cn>
+        //     </degree>
+        //     <ci>a</ci>
+        //   </apply>
+
+        auto parentNode = node->parent();
+        auto siblingCount = hasOneOrTwoMathmlSiblings(parentNode, node, component);
+
+        if (siblingCount == 1) {
+            // Used with a 'degree' element.
+
+            isSecondMathmlSibling(parentNode, node, component)
+                && hasOneMathmlChild(node, component);
+        } else if (siblingCount == 2) {
+            // Used with a 'root' element.
+
+            hasFirstMathmlSiblingWithName(parentNode, node, "root", component)
+                && isSecondMathmlSibling(parentNode, node, component)
+                && hasOneMathmlChild(node, component);
+        }
+    } else if (node->isMathmlElement("logbase")) {
+        auto parentNode = node->parent();
+
+        hasTwoMathmlSiblings(parentNode, node, component)
+            && hasFirstMathmlSiblingWithName(parentNode, node, "log", component)
+            && isSecondMathmlSibling(parentNode, node, component)
+            && hasOneMathmlChild(node, component);
+    } else if (node->isMathmlElement("bvar")) {
+        // A 'bvar' element can have one or two children, e.g.
+        //
+        //   <apply>
+        //     <diff/>
+        //     <bvar>
+        //       <ci>t</ci>
+        //     </bvar>
+        //     <ci>x</ci>
+        //   </apply>
+        //
+        // and
+        //
+        //   <apply>
+        //     <diff/>
+        //     <bvar>
+        //       <ci>t</ci>
+        //       <degree>
+        //         <cn cellml:units="dimensionless">2</cn>
+        //       </degree>
+        //     </bvar>
+        //     <ci>x</ci>
+        //   </apply>
+
+        auto parentNode = node->parent();
+
+        hasTwoMathmlSiblings(parentNode, node, component)
+            && hasFirstMathmlSiblingWithName(parentNode, node, "diff", component)
+            && isSecondMathmlSibling(parentNode, node, component)
+            && hasOneOrTwoMathmlChildren(node, component);
+    }
+}
+
 /**
  * @brief Test to see if the given variables are reachable from their parent components.
  *
@@ -1662,8 +2268,7 @@ bool reachableEquivalence(const VariablePtr &variable1, const VariablePtr &varia
 
 bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequired, const std::string &interfaceTypeCompatibleWith)
 {
-    std::string interfaceTypeMinimumRequiredString = interfaceTypeToString.find(interfaceTypeMinimumRequired)->second;
-    return interfaceTypeCompatibleWith.find(interfaceTypeMinimumRequiredString) != std::string::npos;
+    return interfaceTypeCompatibleWith.find(interfaceTypeToString.at(interfaceTypeMinimumRequired)) != std::string::npos;
 }
 
 void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported)
@@ -1756,15 +2361,13 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
 {
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
-        if (equivalentVariable->hasEquivalentVariable(variable)) {
-            auto component = owningComponent(equivalentVariable);
-            if (component == nullptr) {
-                IssuePtr err = Issue::IssueImpl::create();
-                err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
-                err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
-                addIssue(err);
-            }
+        auto component = owningComponent(equivalentVariable);
+        if (component == nullptr) {
+            IssuePtr err = Issue::IssueImpl::create();
+            err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
+            err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
+            err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
+            addIssue(err);
         }
     }
 }
@@ -1809,7 +2412,7 @@ IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string 
     } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM) {
         // Does not start with numeric character.
         issue->mPimpl->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");
-    } else if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM) {
+    } else { /* referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM */
         // Basic Latin alphanumeric characters and underscores.
         issue->mPimpl->setDescription("CellML identifiers must not contain any characters other than [a-zA-Z0-9_].");
     }
@@ -1829,43 +2432,41 @@ bool unitsAreEquivalent(const ModelPtr &model,
         unitMap.emplace(baseUnits, 0.0);
     }
 
-    std::string ref;
     hints = "";
     multiplier = 0.0;
 
-    if (model->hasUnits(v1->units()->name())) {
+    std::string v1UnitsName = v1->units()->name();
+    if (model->hasUnits(v1UnitsName)) {
         UnitsPtr u1 = Units::create();
-        u1 = model->units(v1->units()->name());
+        u1 = model->units(v1UnitsName);
         updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
-        ref = v1->units()->name();
-        unitMap.at(ref) += 1.0;
-    } else if (isStandardUnitName(v1->units()->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v1->units()->name(), 1, 0, 1);
+    } else if (unitMap.find(v1UnitsName) != unitMap.end()) {
+        unitMap.at(v1UnitsName) += 1.0;
+    } else if (isStandardUnitName(v1UnitsName)) {
+        updateBaseUnitCount(model, unitMap, multiplier, v1UnitsName, 1, 0, 1);
     }
 
-    if (model->hasUnits(v2->units()->name())) {
+    std::string v2UnitsName = v2->units()->name();
+    if (model->hasUnits(v2UnitsName)) {
         UnitsPtr u2 = Units::create();
-        u2 = model->units(v2->units()->name());
+        u2 = model->units(v2UnitsName);
         updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
-        ref = v2->units()->name();
-        unitMap.at(v2->units()->name()) -= 1.0;
-    } else if (isStandardUnitName(v2->units()->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v2->units()->name(), 1, 0, -1);
+    } else if (unitMap.find(v2UnitsName) != unitMap.end()) {
+        unitMap.at(v2UnitsName) -= 1.0;
+    } else if (isStandardUnitName(v2UnitsName)) {
+        updateBaseUnitCount(model, unitMap, multiplier, v2UnitsName, 1, 0, -1);
     }
 
     // Remove "dimensionless" from base unit testing.
     unitMap.erase("dimensionless");
+    static const std::regex fullStopAtEndRegex(".$");
 
     bool status = true;
     for (const auto &basePair : unitMap) {
         if (basePair.second != 0.0) {
             std::string num = std::to_string(basePair.second);
             num.erase(num.find_last_not_of('0') + 1, num.length());
-            if (num.back() == '.') {
-                num.pop_back();
-            }
+            num = std::regex_replace(num, fullStopAtEndRegex, "");
             hints += basePair.first + "^" + num + ", ";
             status = false;
         }
@@ -1877,9 +2478,7 @@ bool unitsAreEquivalent(const ModelPtr &model,
 
         std::string num = std::to_string(multiplier);
         num.erase(num.find_last_not_of('0') + 1, num.length());
-        if (num.back() == '.') {
-            num.pop_back();
-        }
+        num = std::regex_replace(num, fullStopAtEndRegex, "");
         hints += "multiplication factor of 10^" + num + ", ";
     }
 
@@ -1951,7 +2550,7 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
                     desc += ";\n";
                 } else if (i == iMax - 1) {
                     desc += "; and\n";
-                } else if (i == iMax) {
+                } else { /* i == iMax */
                     desc += ".\n";
                 }
             }
@@ -2010,7 +2609,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
                 addIdMapItem(id, info, idMap);
             }
         }
-        if (units->isImport() && units->importSource() != nullptr && !units->importSource()->id().empty()) {
+        if ((units->importSource() != nullptr) && !units->importSource()->id().empty()) {
             info = " - import source for units '" + units->name() + "'";
             addIdMapItem(units->importSource()->id(), info, idMap);
         }
@@ -2141,7 +2740,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     buildMathIdMap(info, idMap, component->math());
 
     // Imports.
-    if (component->isImport() && (component->importSource() != nullptr) && !component->importSource()->id().empty()) {
+    if ((component->importSource() != nullptr) && !component->importSource()->id().empty()) {
         info = " - import source for component '" + component->name() + "'";
         addIdMapItem(component->importSource()->id(), info, idMap);
     }

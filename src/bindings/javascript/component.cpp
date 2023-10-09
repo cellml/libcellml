@@ -63,6 +63,7 @@ EMSCRIPTEN_BINDINGS(libcellml_component) {
         .function("importReference", &libcellml::Component::importReference)
         .function("setImportReference", &libcellml::Component::setImportReference)
         .function("isResolved", &libcellml::Component::isResolved)
+        .function("isDefined", &libcellml::Component::isDefined)
     ;
 
 }

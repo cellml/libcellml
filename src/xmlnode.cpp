@@ -21,6 +21,7 @@ limitations under the License.
 #include <string>
 
 #include "namespaces.h"
+#include "utilities.h"
 #include "xmlattribute.h"
 
 namespace libcellml {
@@ -124,10 +125,8 @@ bool XmlNode::hasNamespaceDefinition(const std::string &uri)
     if (mPimpl->mXmlNodePtr->nsDef != nullptr) {
         auto next = mPimpl->mXmlNodePtr->nsDef;
         while (next != nullptr) {
-            std::string href;
-            if (next->href != nullptr) {
-                href = std::string(reinterpret_cast<const char *>(next->href));
-            }
+            // If you have a namespace, the href cannot be empty.
+            std::string href = std::string(reinterpret_cast<const char *>(next->href));
             if (href == uri) {
                 return true;
             }
@@ -147,10 +146,8 @@ XmlNamespaceMap XmlNode::definedNamespaces() const
             if (next->prefix != nullptr) {
                 prefix = std::string(reinterpret_cast<const char *>(next->prefix));
             }
-            std::string href;
-            if (next->href != nullptr) {
-                href = std::string(reinterpret_cast<const char *>(next->href));
-            }
+            // If you have a namespace, the href cannot be empty.
+            std::string href = std::string(reinterpret_cast<const char *>(next->href));
             namespaceMap.emplace(prefix, href);
             next = next->next;
         }
@@ -209,6 +206,17 @@ bool XmlNode::isText() const
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
 }
 
+bool XmlNode::isBasicReal() const
+{
+    return canConvertToBasicDouble(convertToStrippedString());
+}
+
+bool XmlNode::isInteger() const
+{
+    int dummyInt;
+    return convertToInt(convertToStrippedString(), dummyInt);
+}
+
 bool XmlNode::isComment() const
 {
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
@@ -221,12 +229,8 @@ std::string XmlNode::name() const
 
 bool XmlNode::hasAttribute(const char *attributeName) const
 {
-    bool found = false;
     xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
-    if (attribute != nullptr) {
-        found = true;
-    }
-    return found;
+    return attribute != nullptr;
 }
 
 xmlNsPtr getAttributeNamespace(const xmlNodePtr &node, const char *attributeName)
@@ -264,6 +268,11 @@ XmlAttributePtr XmlNode::firstAttribute() const
     return attributeHandle;
 }
 
+bool XmlNode::equals(const XmlNodePtr &node) const
+{
+    return mPimpl->mXmlNodePtr == node->mPimpl->mXmlNodePtr;
+}
+
 XmlNodePtr XmlNode::firstChild() const
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
@@ -272,7 +281,7 @@ XmlNodePtr XmlNode::firstChild() const
         childHandle = std::make_shared<XmlNode>();
         childHandle->setXmlNode(child);
         bool textNode = childHandle->isText();
-        if (!textNode || (textNode && !childHandle->convertToStrippedString().empty())) {
+        if (!textNode || !childHandle->convertToStrippedString().empty()) {
             break;
         }
         child = child->next;
@@ -294,23 +303,17 @@ XmlNodePtr XmlNode::next() const
 XmlNodePtr XmlNode::parent() const
 {
     xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
-    XmlNodePtr parentHandle = nullptr;
-    if (parent != nullptr) {
-        parentHandle = std::make_shared<XmlNode>();
-        parentHandle->setXmlNode(parent);
-    }
+    XmlNodePtr parentHandle = std::make_shared<XmlNode>();
+    parentHandle->setXmlNode(parent);
     return parentHandle;
 }
 
 std::string XmlNode::convertToString() const
 {
-    std::string contentString;
     xmlKeepBlanksDefault(1);
     xmlBufferPtr buffer = xmlBufferCreate();
-    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
-    if (len > 0) {
-        contentString = std::string(reinterpret_cast<const char *>(buffer->content));
-    }
+    xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
+    std::string contentString = std::string(reinterpret_cast<const char *>(buffer->content));
     xmlBufferFree(buffer);
     return contentString;
 }

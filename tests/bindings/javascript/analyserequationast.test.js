@@ -25,13 +25,15 @@ describe("Analyser Equation AST tests", () => {
     test('Checking Analyser Equation AST type.', () => {
         const aea = new libcellml.AnalyserEquationAst()
 
-        expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.ASSIGNMENT.value)
-        expect(aea.type()).toStrictEqual(libcellml.AnalyserEquationAst.Type.ASSIGNMENT)
+        expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.EQUALITY.value)
+        expect(libcellml.AnalyserEquationAst.typeAsString(aea.type())).toBe("equality")
+        expect(aea.type()).toStrictEqual(libcellml.AnalyserEquationAst.Type.EQUALITY)
         expect(aea.type()).not.toStrictEqual(libcellml.AnalyserEquationAst.Type.OTHERWISE)
 
         aea.setType(libcellml.AnalyserEquationAst.Type.OTHERWISE)
 
         expect(aea.type().value).toBe(libcellml.AnalyserEquationAst.Type.OTHERWISE.value)
+        expect(libcellml.AnalyserEquationAst.typeAsString(aea.type())).toBe("otherwise")
     });
     test('Checking Analyser Equation AST value.', () => {
         const aea = new libcellml.AnalyserEquationAst()
@@ -56,6 +58,9 @@ describe("Analyser Equation AST tests", () => {
     });
     test('Checking Analyser Equation AST tree manipulations.', () => {
         const aea = new libcellml.AnalyserEquationAst()
+
+        aea.swapLeftAndRightChildren()
+
         const paea = new libcellml.AnalyserEquationAst()
         const laea = new libcellml.AnalyserEquationAst()
         const raea = new libcellml.AnalyserEquationAst()

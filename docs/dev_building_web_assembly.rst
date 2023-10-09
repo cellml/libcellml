@@ -65,11 +65,11 @@ Start by making the current directory the parent of the zlib build directory::
 
 Then, as before, configure the library::
 
-  emcmake cmake -S libxml2 -B build-libxml2-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr/local -DZLIB_DIR=../usr/local/lib/cmake/ZLIB-1.2.3/ -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
+  emcmake cmake -S libxml2 -B build-libxml2-release -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr/local -DZLIB_DIR=../usr/local/lib/cmake/ZLIB-1.2.12/ -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PROGRAMS=OFF
 
 There are seven additions to the configure command this time:
 
-1. We set :code:`ZLIB_DIR` to enable the configuration to find our *zlib* library we just installed, :code:`-DZLIB_DIR=../usr/local/lib/cmake/ZLIB-1.2.3/`.
+1. We set :code:`ZLIB_DIR` to enable the configuration to find our *zlib* library we just installed, :code:`-DZLIB_DIR=../usr/local/lib/cmake/ZLIB-1.2.12/`.
 2. We turn off building a shared *libxml2* library, -DBUILD_SHARED_LIBS=OFF.
 3. We turn off building *libxml2* with iconv, -DLIBXML2_WITH_ICONV=OFF.
 4. We turn off building *libxml2* with lzma compression, -DLIBXML2_WITH_LZMA=OFF.

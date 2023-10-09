@@ -1,4 +1,4 @@
-/* The content of this file was generated using the C profile of libCellML 0.4.0. */
+/* The content of this file was generated using the C profile of libCellML 0.5.0. */
 
 #pragma once
 
@@ -33,7 +33,7 @@ double * createStatesArray();
 double * createVariablesArray();
 void deleteArray(double *array);
 
-void initialiseVariables(double *states, double *variables);
+void initialiseVariables(double *states, double *rates, double *variables);
 void computeComputedConstants(double *variables);
 void computeRates(double voi, double *states, double *rates, double *variables);
 void computeVariables(double voi, double *states, double *rates, double *variables);

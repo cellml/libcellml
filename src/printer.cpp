@@ -33,13 +33,12 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"
+#include "commonutils.h"
 #include "internaltypes.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
-
-#include <iostream>
 
 namespace libcellml {
 
@@ -86,11 +85,10 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         ComponentPtr currentComponent1 = iterPair->first;
         ComponentPtr currentComponent2 = iterPair->second;
         ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
-        ComponentPair reciprocalCurrentComponentPair = std::make_pair(currentComponent2, currentComponent1);
         // Check whether this set of connections has already been serialised.
         bool pairFound = false;
         for (const auto &serialisedIterPair : serialisedComponentMap) {
-            if ((serialisedIterPair == currentComponentPair) || (serialisedIterPair == reciprocalCurrentComponentPair)) {
+            if (serialisedIterPair == currentComponentPair) {
                 pairFound = true;
                 break;
             }
@@ -117,10 +115,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
             ++componentMapIndex2;
         }
         // Serialise out the new connection.
-        connections += "<connection";
-        if (currentComponent1 != nullptr) {
-            connections += " component_1=\"" + currentComponent1->name() + "\"";
-        }
+        connections += "<connection component_1=\"" + currentComponent1->name() + "\"";
         if (currentComponent2 != nullptr) {
             connections += " component_2=\"" + currentComponent2->name() + "\"";
         }
@@ -139,17 +134,24 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
 
 std::string Printer::PrinterImpl::printMath(const std::string &math)
 {
+    static const std::string wrapElementName = "math_wrap_as_single_root_element";
     static const std::regex before(">[\\s\n\t]*");
     static const std::regex after("[\\s\n\t]*<");
     static const std::regex xmlDeclaration(R"|(<\?xml[[:space:]]+version=.*\?>)|");
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     xmlKeepBlanksDefault(0);
-    xmlDoc->parse(math);
+    // Remove any XML declarations from the string.
+    std::string normalisedMath = std::regex_replace(math, xmlDeclaration, "");
+    xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">");
     if (xmlDoc->xmlErrorCount() == 0) {
-        auto result = xmlDoc->prettyPrint();
-        // Remove any XML declarations from the string.
-        result = std::regex_replace(result, xmlDeclaration, "");
+        auto rootNode = xmlDoc->rootNode();
+        auto childNode = rootNode->firstChild();
+        std::string result;
+        while (childNode != nullptr) {
+            result += childNode->convertToStrippedString();
+            childNode = childNode->next();
+        }
         // Clean whitespace in the math.
         result = std::regex_replace(result, before, ">");
         return std::regex_replace(result, after, "<");
@@ -171,23 +173,20 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
         VariablePtr variable = component->variable(i);
         for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
             VariablePtr equivalentVariable = variable->equivalentVariable(j);
-            if (equivalentVariable->hasEquivalentVariable(variable)) {
-                VariablePairPtr variablePair = VariablePair::create(variable, equivalentVariable);
-                auto pairFound = std::find_if(variableMap.begin(), variableMap.end(),
-                                              [variable, equivalentVariable](const VariablePairPtr &in) {
-                                                  return ((in->variable1() == equivalentVariable) && (in->variable2() == variable))
-                                                         || ((in->variable1() == variable) && (in->variable2() == equivalentVariable));
-                                              });
-                if (pairFound == variableMap.end()) {
-                    // Get parent components.
-                    ComponentPtr component1 = owningComponent(variable);
-                    ComponentPtr component2 = owningComponent(equivalentVariable);
-                    // Add new unique variable equivalence pair to the VariableMap.
-                    variableMap.push_back(variablePair);
-                    // Also create a component map pair corresponding with the variable map pair.
-                    ComponentPair componentPair = std::make_pair(component1, component2);
-                    componentMap.push_back(componentPair);
-                }
+            VariablePairPtr variablePair = VariablePair::create(variable, equivalentVariable);
+            auto pairFound = std::find_if(variableMap.begin(), variableMap.end(),
+                                          [variable, equivalentVariable](const VariablePairPtr &in) {
+                                              return (in->variable1() == equivalentVariable) && (in->variable2() == variable);
+                                          });
+            if (pairFound == variableMap.end()) {
+                // Add new unique variable equivalence pair to the VariableMap.
+                variableMap.push_back(variablePair);
+                // Get parent components.
+                ComponentPtr component1 = owningComponent(variable);
+                ComponentPtr component2 = owningComponent(equivalentVariable);
+                // Also create a component map pair corresponding with the variable map pair.
+                ComponentPair componentPair = std::make_pair(component1, component2);
+                componentMap.push_back(componentPair);
             }
         }
     }

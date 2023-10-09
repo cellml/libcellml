@@ -39,6 +39,7 @@ describe("Analyser Model tests", () => {
     });
     test('Checking Analyser Model type.', () => {
         expect(am.type().value).toBe(libcellml.AnalyserModel.Type.ODE.value)
+        expect(libcellml.AnalyserModel.typeAsString(am.type())).toBe("ode")
     });
     test('Checking Analyser Model isValid.', () => {
         expect(am.isValid()).toBe(true)
@@ -52,18 +53,18 @@ describe("Analyser Model tests", () => {
     test('Checking Analyser Model equations related API.', () => {
         expect(am.equationCount()).toBe(17)
         expect(am.equations().size()).toBe(17)
-        expect(am.equations().get(1).type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
-        expect(am.equation(1).type().value).toBe(libcellml.AnalyserEquation.Type.RATE.value)
+        expect(am.equations().get(1).type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
+        expect(am.equation(1).type().value).toBe(libcellml.AnalyserEquation.Type.ODE.value)
     });
     test('Checking Analyser Model states related API.', () => {
         expect(am.stateCount()).toBe(4)
         expect(am.states().size()).toBe(4)
-        expect(am.state(2).variable().name()).toBe("n")
+        expect(am.state(2).variable().name()).toBe("m")
     });
     test('Checking Analyser Model variables related API.', () => {
         expect(am.variableCount()).toBe(18)
         expect(am.variables().size()).toBe(18)
-        expect(am.variable(2).variable().name()).toBe("E_R")
+        expect(am.variable(2).variable().name()).toBe("i_K")
     });
     test('Checking Analyser Model need* API.', () => {
         expect(am.needEqFunction()).toBe(false)

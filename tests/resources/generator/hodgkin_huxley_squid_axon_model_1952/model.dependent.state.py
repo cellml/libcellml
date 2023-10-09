@@ -1,11 +1,11 @@
-# The content of this file was generated using the Python profile of libCellML 0.4.0.
+# The content of this file was generated using the Python profile of libCellML 0.5.0.
 
 from enum import Enum
 from math import *
 
 
-__version__ = "0.3.1"
-LIBCELLML_VERSION = "0.4.0"
+__version__ = "0.4.0"
+LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 2
 VARIABLE_COUNT = 20
@@ -28,24 +28,24 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.EXTERNAL},
+    {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
     {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.EXTERNAL},
-    {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
+    {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current", "type": VariableType.ALGEBRAIC},
+    {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel", "type": VariableType.ALGEBRAIC},
+    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel", "type": VariableType.ALGEBRAIC},
     {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "E_R", "units": "millivolt", "component": "membrane", "type": VariableType.CONSTANT},
-    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel", "type": VariableType.CONSTANT},
-    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel", "type": VariableType.CONSTANT},
-    {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
     {"name": "E_L", "units": "millivolt", "component": "leakage_current", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "i_L", "units": "microA_per_cm2", "component": "leakage_current", "type": VariableType.ALGEBRAIC},
+    {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
     {"name": "E_Na", "units": "millivolt", "component": "sodium_channel", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "i_Na", "units": "microA_per_cm2", "component": "sodium_channel", "type": VariableType.ALGEBRAIC},
+    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel", "type": VariableType.CONSTANT},
+    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.EXTERNAL},
     {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_m", "units": "per_millisecond", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel", "type": VariableType.ALGEBRAIC},
+    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel", "type": VariableType.CONSTANT},
     {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC}
 ]
@@ -71,26 +71,26 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_variables(voi, states, variables, external_variable):
-    variables[2] = 0.3
-    variables[3] = 1.0
-    variables[4] = 0.0
-    variables[5] = 36.0
-    variables[6] = 120.0
+def initialise_variables(voi, states, rates, variables, external_variable):
+    variables[5] = 1.0
+    variables[6] = 0.0
+    variables[8] = 0.3
+    variables[10] = 120.0
+    variables[17] = 36.0
     states[0] = 0.6
     states[1] = 0.325
-    variables[1] = external_variable(voi, states, variables, 1)
-    variables[0] = external_variable(voi, states, variables, 0)
+    variables[1] = external_variable(voi, states, rates, variables, 1)
+    variables[11] = external_variable(voi, states, rates, variables, 11)
 
 
 def compute_computed_constants(variables):
-    variables[8] = variables[4]-10.613
-    variables[10] = variables[4]-115.0
-    variables[16] = variables[4]+12.0
+    variables[7] = variables[6]-10.613
+    variables[9] = variables[6]-115.0
+    variables[16] = variables[6]+12.0
 
 
 def compute_rates(voi, states, rates, variables, external_variable):
-    variables[1] = external_variable(voi, states, variables, 1)
+    variables[1] = external_variable(voi, states, rates, variables, 1)
     variables[14] = 0.07*exp(variables[1]/20.0)
     variables[15] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0)
     rates[0] = variables[14]*(1.0-states[0])-variables[15]*states[0]
@@ -100,11 +100,11 @@ def compute_rates(voi, states, rates, variables, external_variable):
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
-    variables[1] = external_variable(voi, states, variables, 1)
-    variables[0] = external_variable(voi, states, variables, 0)
-    variables[7] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    variables[9] = variables[2]*(variables[1]-variables[8])
-    variables[11] = variables[6]*pow(variables[0], 3.0)*states[0]*(variables[1]-variables[10])
+    variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    variables[1] = external_variable(voi, states, rates, variables, 1)
+    variables[2] = variables[8]*(variables[1]-variables[7])
+    variables[11] = external_variable(voi, states, rates, variables, 11)
+    variables[4] = variables[10]*pow(variables[11], 3.0)*states[0]*(variables[1]-variables[9])
     variables[12] = 0.1*(variables[1]+25.0)/(exp((variables[1]+25.0)/10.0)-1.0)
     variables[13] = 4.0*exp(variables[1]/18.0)
-    variables[17] = variables[5]*pow(states[1], 4.0)*(variables[1]-variables[16])
+    variables[3] = variables[17]*pow(states[1], 4.0)*(variables[1]-variables[16])

@@ -18,11 +18,9 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 
-namespace libcellml {
+#include "internaltypes.h"
 
-using AnalyserEquationWeakPtr = std::weak_ptr<AnalyserEquation>; /**< Type definition for weak analyser equation pointer. */
-using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type definition for weak analyser equation AST pointer. */
-using AnalyserVariableWeakPtr = std::weak_ptr<AnalyserVariable>; /**< Type definition for weak analyser variable pointer. */
+namespace libcellml {
 
 /**
  * @brief The AnalyserEquation::AnalyserEquationImpl struct.
@@ -32,15 +30,23 @@ using AnalyserVariableWeakPtr = std::weak_ptr<AnalyserVariable>; /**< Type defin
 struct AnalyserEquation::AnalyserEquationImpl
 {
     AnalyserEquation::Type mType = AnalyserEquation::Type::ALGEBRAIC;
-    AnalyserEquationAstWeakPtr mAst;
+    AnalyserEquationAstPtr mAst;
     std::vector<AnalyserEquationWeakPtr> mDependencies;
+    size_t mNlaSystemIndex;
+    std::vector<AnalyserEquationWeakPtr> mNlaSiblings;
     bool mIsStateRateBased = false;
-    AnalyserVariableWeakPtr mVariable;
+    std::vector<AnalyserVariablePtr> mVariables;
+
+    static AnalyserEquationPtr create();
 
     void populate(AnalyserEquation::Type type,
                   const AnalyserEquationAstPtr &ast,
                   const std::vector<AnalyserEquationPtr> &dependencies,
-                  const AnalyserVariablePtr &variable);
+                  size_t nlaSystemIndex,
+                  const std::vector<AnalyserEquationPtr> &nlaSiblings,
+                  const std::vector<AnalyserVariablePtr> &variables);
+
+    static bool isEmptyDependency(const AnalyserEquationWeakPtr &dependency);
 
     void cleanUpDependencies();
 };

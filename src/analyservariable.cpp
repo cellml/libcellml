@@ -16,7 +16,12 @@ limitations under the License.
 
 #include "libcellml/analyservariable.h"
 
+#include <iterator>
+
+#include "libcellml/variable.h"
+
 #include "analyservariable_p.h"
+#include "commonutils.h"
 
 namespace libcellml {
 
@@ -29,13 +34,15 @@ void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type typ
                                                       size_t index,
                                                       const VariablePtr &initialisingVariable,
                                                       const VariablePtr &variable,
-                                                      const AnalyserEquationPtr &equation)
+                                                      const std::vector<AnalyserEquationPtr> &equations)
 {
     mType = type;
     mIndex = index;
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
-    mEquation = equation;
+    mComponent = owningComponent(mVariable);
+
+    std::copy(equations.begin(), equations.end(), back_inserter(mEquations));
 }
 
 AnalyserVariable::AnalyserVariable()
@@ -53,6 +60,19 @@ AnalyserVariable::Type AnalyserVariable::type() const
     return mPimpl->mType;
 }
 
+static const std::map<AnalyserVariable::Type, std::string> typeToString = {
+    {AnalyserVariable::Type::VARIABLE_OF_INTEGRATION, "variable_of_integration"},
+    {AnalyserVariable::Type::STATE, "state"},
+    {AnalyserVariable::Type::CONSTANT, "constant"},
+    {AnalyserVariable::Type::COMPUTED_CONSTANT, "computed_constant"},
+    {AnalyserVariable::Type::ALGEBRAIC, "algebraic"},
+    {AnalyserVariable::Type::EXTERNAL, "external"}};
+
+std::string AnalyserVariable::typeAsString(Type type)
+{
+    return typeToString.at(type);
+}
+
 size_t AnalyserVariable::index() const
 {
     return mPimpl->mIndex;
@@ -60,17 +80,37 @@ size_t AnalyserVariable::index() const
 
 VariablePtr AnalyserVariable::initialisingVariable() const
 {
-    return mPimpl->mInitialisingVariable.lock();
+    return mPimpl->mInitialisingVariable;
 }
 
 VariablePtr AnalyserVariable::variable() const
 {
-    return mPimpl->mVariable.lock();
+    return mPimpl->mVariable;
 }
 
-AnalyserEquationPtr AnalyserVariable::equation() const
+size_t AnalyserVariable::equationCount() const
 {
-    return mPimpl->mEquation.lock();
+    return mPimpl->mEquations.size();
+}
+
+std::vector<AnalyserEquationPtr> AnalyserVariable::equations() const
+{
+    std::vector<AnalyserEquationPtr> res;
+
+    for (const auto &equation : mPimpl->mEquations) {
+        res.push_back(equation.lock());
+    }
+
+    return res;
+}
+
+AnalyserEquationPtr AnalyserVariable::equation(size_t index) const
+{
+    if (index >= mPimpl->mEquations.size()) {
+        return {};
+    }
+
+    return mPimpl->mEquations[index].lock();
 }
 
 } // namespace libcellml

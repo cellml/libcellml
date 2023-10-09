@@ -57,11 +57,13 @@ def convert(base, enum, variables, new_base=None):
 convert(AnalyserEquation, 'Type', [
     'TRUE_CONSTANT',
     'VARIABLE_BASED_CONSTANT',
-    'RATE',
+    'ODE',
+    'NLA',
     'ALGEBRAIC',
+    'EXTERNAL',
 ])
 convert(AnalyserEquationAst, 'Type', [
-    'ASSIGNMENT',
+    'EQUALITY',
 
     # Relational and logical operators.
 
@@ -153,8 +155,10 @@ convert(AnalyserEquationAst, 'Type', [
 ])
 convert(AnalyserModel, 'Type', [
     'UNKNOWN',
-    'ALGEBRAIC',
     'ODE',
+    'DAE',
+    'NLA',
+    'ALGEBRAIC',
     'INVALID',
     'UNDERCONSTRAINED',
     'OVERCONSTRAINED',
@@ -166,6 +170,7 @@ convert(AnalyserVariable, 'Type', [
     'CONSTANT',
     'COMPUTED_CONSTANT',
     'ALGEBRAIC',
+    'EXTERNAL',
 ])
 convert(GeneratorProfile, 'Profile', [
     'C',

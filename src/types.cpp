@@ -16,11 +16,15 @@ limitations under the License.
 
 #include "libcellml/types.h"
 
+#include <limits>
+
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"
 #include "internaltypes.h"
+
+#include <limits>
 
 namespace libcellml {
 

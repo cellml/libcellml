@@ -16,36 +16,48 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 
+#include <algorithm>
+#include <iterator>
+
 #include "analyserequation_p.h"
 
 namespace libcellml {
 
+AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
+{
+    return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
+}
+
 void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
                                                       const AnalyserEquationAstPtr &ast,
                                                       const std::vector<AnalyserEquationPtr> &dependencies,
-                                                      const AnalyserVariablePtr &variable)
+                                                      size_t nlaSystemIndex,
+                                                      const std::vector<AnalyserEquationPtr> &nlaSiblings,
+                                                      const std::vector<AnalyserVariablePtr> &variables)
 {
     mType = type;
     mAst = ast;
+    mNlaSystemIndex = nlaSystemIndex;
 
-    for (const auto &dependency : dependencies) {
-        mDependencies.push_back(dependency);
+    std::copy(dependencies.begin(), dependencies.end(), back_inserter(mDependencies));
+    std::copy(nlaSiblings.begin(), nlaSiblings.end(), back_inserter(mNlaSiblings));
+    std::copy(variables.begin(), variables.end(), back_inserter(mVariables));
+}
+
+bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
+{
+    auto variables = dependency.lock()->variables();
+
+    if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
+        return false;
     }
 
-    mVariable = variable;
+    return true;
 }
 
 void AnalyserEquation::AnalyserEquationImpl::cleanUpDependencies()
 {
-    std::vector<AnalyserEquationWeakPtr> dependencies;
-
-    for (const auto &dependency : mDependencies) {
-        if (dependency.lock()->variable() != nullptr) {
-            dependencies.push_back(dependency);
-        }
-    }
-
-    mDependencies = dependencies;
+    mDependencies.erase(std::remove_if(mDependencies.begin(), mDependencies.end(), isEmptyDependency), mDependencies.end());
 }
 
 AnalyserEquation::AnalyserEquation()
@@ -63,9 +75,27 @@ AnalyserEquation::Type AnalyserEquation::type() const
     return mPimpl->mType;
 }
 
+static const std::map<AnalyserEquation::Type, std::string> typeToString = {
+    {AnalyserEquation::Type::TRUE_CONSTANT, "true_constant"},
+    {AnalyserEquation::Type::VARIABLE_BASED_CONSTANT, "variable_based_constant"},
+    {AnalyserEquation::Type::ODE, "ode"},
+    {AnalyserEquation::Type::NLA, "nla"},
+    {AnalyserEquation::Type::ALGEBRAIC, "algebraic"},
+    {AnalyserEquation::Type::EXTERNAL, "external"}};
+
+std::string AnalyserEquation::typeAsString(Type type)
+{
+    return typeToString.at(type);
+}
+
 AnalyserEquationAstPtr AnalyserEquation::ast() const
 {
-    return mPimpl->mAst.lock();
+    return mPimpl->mAst;
+}
+
+size_t AnalyserEquation::dependencyCount() const
+{
+    return mPimpl->mDependencies.size();
 }
 
 std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
@@ -79,14 +109,67 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
     return res;
 }
 
+AnalyserEquationPtr AnalyserEquation::dependency(size_t index) const
+{
+    if (index >= mPimpl->mDependencies.size()) {
+        return {};
+    }
+
+    return mPimpl->mDependencies[index].lock();
+}
+
+size_t AnalyserEquation::nlaSystemIndex() const
+{
+    return mPimpl->mNlaSystemIndex;
+}
+
+size_t AnalyserEquation::nlaSiblingCount() const
+{
+    return mPimpl->mNlaSiblings.size();
+}
+
+std::vector<AnalyserEquationPtr> AnalyserEquation::nlaSiblings() const
+{
+    std::vector<AnalyserEquationPtr> res;
+
+    for (const auto &nlaSibling : mPimpl->mNlaSiblings) {
+        res.push_back(nlaSibling.lock());
+    }
+
+    return res;
+}
+
+AnalyserEquationPtr AnalyserEquation::nlaSibling(size_t index) const
+{
+    if (index >= mPimpl->mNlaSiblings.size()) {
+        return {};
+    }
+
+    return mPimpl->mNlaSiblings[index].lock();
+}
+
 bool AnalyserEquation::isStateRateBased() const
 {
     return mPimpl->mIsStateRateBased;
 }
 
-AnalyserVariablePtr AnalyserEquation::variable() const
+size_t AnalyserEquation::variableCount() const
 {
-    return mPimpl->mVariable.lock();
+    return mPimpl->mVariables.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::variables() const
+{
+    return mPimpl->mVariables;
+}
+
+AnalyserVariablePtr AnalyserEquation::variable(size_t index) const
+{
+    if (index >= mPimpl->mVariables.size()) {
+        return {};
+    }
+
+    return mPimpl->mVariables[index];
 }
 
 } // namespace libcellml

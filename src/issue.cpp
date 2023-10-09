@@ -16,7 +16,6 @@ limitations under the License.
 
 #include "libcellml/issue.h"
 
-#include "anycellmlelement_p.h"
 #include "issue_p.h"
 #include "utilities.h"
 
@@ -174,8 +173,11 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT, {"IMPORTER_MISSING_COMPONENT", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_MISSING_UNITS, {"IMPORTER_MISSING_UNITS", "", docsUrl, ""}},
     {Issue::ReferenceRule::IMPORTER_NULL_MODEL, {"IMPORTER_NULL_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_UNDEFINED_MODEL, {"IMPORTER_UNDEFINED_MODEL", "", docsUrl, ""}},
+    {Issue::ReferenceRule::IMPORTER_UNRESOLVED_IMPORTS, {"IMPORTER_UNRESOLVED_IMPORTS", "", docsUrl, ""}},
 
     // Analyser issues:
+    {Issue::ReferenceRule::ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT, {"ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_UNITS, {"ANALYSER_UNITS", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_UNLINKED_UNITS, {"ANALYSER_UNLINKED_UNITS", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE, {"ANALYSER_VARIABLE_INITIALISED_MORE_THAN_ONCE", "", docsUrl, ""}},
@@ -185,6 +187,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::ANALYSER_ODE_NOT_FIRST_ORDER, {"ANALYSER_ODE_NOT_FIRST_ORDER", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED, {"ANALYSER_VARIABLE_UNUSED", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_STATE_NOT_INITIALISED, {"ANALYSER_STATE_NOT_INITIALISED", "", docsUrl, ""}},
+    {Issue::ReferenceRule::ANALYSER_STATE_RATE_AS_ALGEBRAIC, {"ANALYSER_STATE_RATE_AS_ALGEBRAIC", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE, {"ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL, {"ANALYSER_EXTERNAL_VARIABLE_DIFFERENT_MODEL", "", docsUrl, ""}},
     {Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_VOI, {"ANALYSER_EXTERNAL_VARIABLE_VOI", "", docsUrl, ""}},
@@ -201,18 +204,18 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 
 std::string Issue::referenceHeading() const
 {
-    return ruleToInformation.find(referenceRule())->second[1];
+    return ruleToInformation.at(referenceRule())[1];
 }
 
 std::string Issue::url() const
 {
-    auto search = ruleToInformation.find(referenceRule());
+    auto search = ruleToInformation.at(referenceRule());
 
-    if (search->second[1].empty()) {
-        return search->second[2] + "?issue=" + search->second[0];
+    if (search[1].empty()) {
+        return search[2] + "?issue=" + search[0];
     }
 
-    return search->second[2] + search->second[3] + ".html?issue=" + search->second[0];
+    return search[2] + search[3] + ".html?issue=" + search[0];
 }
 
 } // namespace libcellml

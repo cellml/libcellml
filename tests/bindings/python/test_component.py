@@ -280,6 +280,13 @@ class ComponentTestCase(unittest.TestCase):
 
         self.assertRaises(AttributeError, ComponentEntity)
 
+    def test_is_defined(self):
+        from libcellml import Component
+
+        c = Component("MyComponent")
+
+        self.assertTrue(c.isDefined())
+
     def test_requires_imports(self):
         from libcellml import Component
 

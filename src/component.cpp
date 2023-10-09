@@ -27,6 +27,7 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "component_p.h"
 #include "reset_p.h"
 #include "utilities.h"
@@ -104,34 +105,55 @@ ComponentPtr Component::create(const std::string &name) noexcept
     return std::shared_ptr<Component> {new Component {name}};
 }
 
-bool Component::ComponentImpl::isResolvedWithHistory(History &history, const ComponentConstPtr &component) const
+bool Component::ComponentImpl::performTestWithHistory(History &history, const ComponentConstPtr &component, TestType type) const
 {
-    bool resolved = true;
     if (mComponent->isImport()) {
         auto model = mComponent->importSource()->model();
         if (model == nullptr) {
-            resolved = false;
-        } else {
-            auto importedComponent = model->component(mComponent->importReference());
-            if (importedComponent == nullptr) {
-                resolved = false;
-            } else {
-                auto h = createHistoryEpoch(component, importeeModelUrl(history, mComponent->importSource()->url()));
-                if (checkForImportCycles(history, h)) {
-                    resolved = false;
-                } else {
-                    history.push_back(h);
-                    resolved = importedComponent->pFunc()->isResolvedWithHistory(history, importedComponent);
-                }
+            return false;
+        }
+
+        auto importedComponent = model->component(mComponent->importReference());
+        if (importedComponent == nullptr) {
+            return false;
+        }
+
+        auto h = createHistoryEpoch(component, importeeModelUrl(history, mComponent->importSource()->url()));
+        if (checkForImportCycles(history, h)) {
+            return false;
+        }
+
+        history.push_back(h);
+        bool result = importedComponent->pFunc()->performTestWithHistory(history, importedComponent, type);
+        history.pop_back();
+        return result;
+    }
+
+    auto model = std::dynamic_pointer_cast<libcellml::Model>(mComponent->parent());
+    if ((model == nullptr) && (mComponent->parent() != nullptr)) {
+        model = owningModel(mComponent->parent());
+    }
+
+    auto tmpComponent = mComponent->clone();
+    auto units = unitsUsed(model, tmpComponent);
+    for (const auto &u : units) {
+        if ((type == TestType::RESOLVED) && !u->isResolved()) {
+            return false;
+        } else if (type == TestType::DEFINED) {
+            if (!u->isDefined() || (model == nullptr) || !model->hasUnits(u)) {
+                return false;
             }
         }
     }
-    for (size_t i = 0; (i < mComponent->componentCount()) && resolved; ++i) {
+
+    for (size_t i = 0; i < mComponent->componentCount(); ++i) {
         auto currentComponent = mComponent->component(i);
-        resolved = currentComponent->pFunc()->isResolvedWithHistory(history, currentComponent);
+        if (!currentComponent->pFunc()->performTestWithHistory(history, currentComponent, type)) {
+            return false;
+        }
     }
 
-    return resolved;
+    return true;
 }
 
 bool Component::doAddComponent(const ComponentPtr &component)
@@ -146,7 +168,7 @@ bool Component::doAddComponent(const ComponentPtr &component)
         if (parent != newParent) {
             removeComponentFromEntity(parent, component);
         }
-    } else if (!hasParent && hasAncestor(component)) {
+    } else if (hasAncestor(component)) {
         return false;
     } else if (newParent == component) {
         return false;
@@ -437,10 +459,16 @@ bool Component::requiresImports() const
     return doRequiresImport(shared_from_this());
 }
 
+bool Component::isDefined() const
+{
+    History history;
+    return pFunc()->performTestWithHistory(history, shared_from_this(), TestType::DEFINED);
+}
+
 bool Component::doIsResolved() const
 {
     History history;
-    return pFunc()->isResolvedWithHistory(history, shared_from_this());
+    return pFunc()->performTestWithHistory(history, shared_from_this(), TestType::RESOLVED);
 }
 
 bool Component::doEquals(const EntityPtr &other) const

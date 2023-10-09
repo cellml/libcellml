@@ -32,6 +32,7 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "anycellmlelement_p.h"
+#include "commonutils.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"
@@ -73,7 +74,17 @@ public:
     bool checkUnitsForCycles(const UnitsPtr &units, History &history);
     bool checkComponentForCycles(const ComponentPtr &component, History &history);
 
-    bool hasImportCycles(const ModelPtr &model);
+    /**
+     * @brief Test for any import issues.
+     *
+     * Test the given @p model for import issues.
+     * This method will test for cyclic imports, and missing imports.
+     * Returns @c true if an import issue is found, @c false otherwise.
+     *
+     * @param model The model to test import issues of.
+     * @return @c true if the model has import issues, @c false otherwise.
+     */
+    bool hasImportIssues(const ModelPtr &model);
 };
 
 Importer::ImporterImpl *Importer::pFunc()
@@ -136,17 +147,11 @@ bool Importer::ImporterImpl::checkUnitsForCycles(const UnitsPtr &units, History 
 {
     // Even if these units are not imported, they might have imported children.
     if (!units->isImport()) {
-        for (size_t u = 0; u < units->unitCount(); ++u) {
-            std::string ref;
-            std::string prefix;
-            std::string id;
-            double multiplier;
-            double exponent;
-
-            units->unitAttributes(u, ref, prefix, exponent, multiplier, id);
+        for (size_t index = 0; index < units->unitCount(); ++index) {
+            std::string ref = units->unitAttributeReference(index);
             // If the child units are imported, check them too.
             auto model = owningModel(units);
-            if ((model != nullptr) && model->hasUnits(ref)) {
+            if (model->hasUnits(ref)) {
                 if (checkUnitsForCycles(model->units(ref), history)) {
                     return true;
                 }
@@ -202,35 +207,33 @@ bool Importer::ImporterImpl::checkComponentForCycles(const ComponentPtr &compone
     history.push_back(h);
 
     // If the dependencies have not been recorded already, then check it.
-    if (component->isImport()) {
-        auto model = component->importSource()->model();
-        if (model == nullptr) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
-            issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
-            addIssue(issue);
-            return true;
-        }
-        auto importedComponent = model->component(component->importReference(), true);
-        if (importedComponent == nullptr) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
-            issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
-            addIssue(issue);
-            return true;
-        }
+    auto model = component->importSource()->model();
+    if (model == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Component '" + component->name() + "' requires a model imported from '" + resolvingUrl + "' which is not available in the importer.");
+        issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+        addIssue(issue);
+        return true;
+    }
+    auto importedComponent = model->component(component->importReference(), true);
+    if (importedComponent == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Component '" + component->name() + "' imports a component named '" + component->importReference() + "' from the model imported from '" + resolvingUrl + "'. The component could not be found.");
+        issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_MISSING_COMPONENT);
+        addIssue(issue);
+        return true;
+    }
 
-        if (importedComponent->isImport() && checkComponentForCycles(importedComponent, history)) {
-            return true;
-        }
+    if (importedComponent->isImport() && checkComponentForCycles(importedComponent, history)) {
+        return true;
     }
 
     return false;
 }
 
-bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
+bool Importer::ImporterImpl::hasImportIssues(const ModelPtr &model)
 {
     History history;
 
@@ -246,6 +249,15 @@ bool Importer::ImporterImpl::hasImportCycles(const ModelPtr &model)
         if (checkComponentForCycles(component, history)) {
             return true;
         }
+    }
+
+    if (model->hasUnresolvedImports()) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("The model has unresolved imports.");
+        issue->mPimpl->mItem->mPimpl->setModel(model);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_UNRESOLVED_IMPORTS);
+        addIssue(issue);
+        return true;
     }
 
     return false;
@@ -358,7 +370,9 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("The attempt to import the model at '" + url + "' failed: the file is not valid XML.");
                     issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+                    if (mImporter->isStrict()) {
+                        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+                    }
                     addIssue(issue);
                     return false;
                 }
@@ -455,12 +469,14 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
 
     size_t endIndex = mImporter->errorCount();
     bool encounteredRelatedError = false;
-    for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
-        auto error = mImporter->error(index);
-        removeError(index);
+    if (endIndex > startIndex) {
+        for (size_t index = endIndex; startIndex < index; --index) {
+            auto error = mImporter->error(index - 1);
+            removeError(index - 1);
 
-        if (!encounteredRelatedError && isErrorRelatedToComponent(error, sourceComponent)) {
-            encounteredRelatedError = true;
+            if (!encounteredRelatedError && isErrorRelatedToComponent(error, sourceComponent)) {
+                encounteredRelatedError = true;
+            }
         }
     }
 
@@ -544,12 +560,14 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
 
     bool encounteredRelatedError = false;
     size_t endIndex = mImporter->errorCount();
-    for (size_t index = endIndex - 1; (startIndex <= index) && (index < endIndex); --index) {
-        auto error = mImporter->error(index);
-        auto errorUnits = error->item()->units();
-        removeError(index);
-        if (!encounteredRelatedError && (errorUnits != nullptr) && (errorUnits->name() == importUnits->importReference())) {
-            encounteredRelatedError = true;
+    if (endIndex > startIndex) {
+        for (size_t index = endIndex; startIndex < index; --index) {
+            auto error = mImporter->error(index - 1);
+            auto errorUnits = error->item()->units();
+            removeError(index - 1);
+            if (!encounteredRelatedError && (errorUnits != nullptr) && (errorUnits->name() == importUnits->importReference())) {
+                encounteredRelatedError = true;
+            }
         }
     }
 
@@ -585,13 +603,8 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
             return false;
         }
 
-        for (size_t u = 0; u < sourceUnits->unitCount(); ++u) {
-            std::string reference;
-            std::string prefix;
-            std::string id;
-            double exponent;
-            double multiplier;
-            sourceUnits->unitAttributes(u, reference, prefix, exponent, multiplier, id);
+        for (size_t unit_index = 0; unit_index < sourceUnits->unitCount(); ++unit_index) {
+            std::string reference = sourceUnits->unitAttributeReference(unit_index);
             if (isStandardUnitName(reference)) {
                 continue;
             }
@@ -604,7 +617,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
                 addIssue(issue);
                 return false;
             }
-            if (sourceUnit->isImport() && !sourceUnit->isResolved()) {
+            if (sourceUnit->isImport()) {
                 if (!fetchUnits(sourceUnit, newBase, history)) {
                     return false;
                 }
@@ -629,6 +642,15 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &basePath)
     History history;
 
     pFunc()->removeAllIssues();
+
+    if (model == nullptr) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Cannot resolve imports for null model.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_NULL_MODEL);
+        pFunc()->addIssue(issue);
+        return false;
+    }
+
     clearImports(model);
     auto normalisedBasePath = normalisePath(basePath);
 
@@ -676,15 +698,129 @@ void Importer::clearImports(ModelPtr &model)
     }
 }
 
-void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
+UnitsPtr modelsEquivalentUnits(const ModelPtr &model, const UnitsPtr &units)
+{
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        const UnitsPtr u = model->units(i);
+        if (Units::equivalent(u, units)) {
+            return u;
+        }
+    }
+
+    return nullptr;
+}
+
+void updateComponentsVariablesUnitsNames(const std::string &name, const ComponentPtr &component, const UnitsPtr &units)
+{
+    for (size_t variableIndex = 0; variableIndex < component->variableCount(); ++variableIndex) {
+        auto variable = component->variable(variableIndex);
+        if (component->isImport()) {
+            auto importModel = component->importSource()->model();
+            auto importComponent = importModel->component(component->importReference());
+            variable = importComponent->variable(variable->name());
+        }
+        if (variable->units()->name() == name) {
+            variable->setUnits(units);
+        }
+    }
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto childComponent = component->component(index);
+        updateComponentsVariablesUnitsNames(name, childComponent, units);
+    }
+}
+
+void updateUnitsNameUsages(const std::string &oldName, const std::string &newName, const ComponentPtr &component, const UnitsPtr &units)
+{
+    if (component != nullptr) {
+        findAndReplaceComponentsCnUnitsNames(component, oldName, newName);
+        updateComponentsVariablesUnitsNames(oldName, component, units);
+    }
+}
+
+StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &sourceModel, const ModelPtr &targetModel, const UnitsPtr &units, const ComponentPtr &component)
+{
+    StringStringMap changedNames;
+
+    std::string newName = units->name();
+    UnitsPtr targetUnits = modelsEquivalentUnits(targetModel, units);
+    if (targetUnits == nullptr) {
+        for (size_t unitIndex = 0; unitIndex < units->unitCount(); ++unitIndex) {
+            std::string reference = units->unitAttributeReference(unitIndex);
+            if (!reference.empty() && !isStandardUnitName(reference) && sourceModel->hasUnits(reference)) {
+                auto clonedChildUnits = sourceModel->units(reference)->clone();
+                transferUnitsRenamingIfRequired(sourceModel, targetModel, clonedChildUnits, component);
+                units->setUnitAttributeReference(unitIndex, clonedChildUnits->name());
+            }
+        }
+
+        size_t count = 0;
+        const std::string originalName = newName;
+        targetUnits = targetModel->units(newName);
+        while (targetModel->hasUnits(newName)) {
+            newName = originalName + "_" + convertToString(++count);
+            units->setName(newName);
+            targetUnits = targetModel->units(newName);
+        }
+
+        targetModel->addUnits(units);
+        if (originalName != newName) {
+            updateUnitsNameUsages(originalName, newName, component, units);
+            changedNames.emplace(originalName, newName);
+        }
+    } else if (targetUnits->name() != units->name()) {
+        const std::string originalName = units->name();
+        newName = targetUnits->name();
+        updateUnitsNameUsages(originalName, newName, component, targetUnits);
+        changedNames.emplace(originalName, newName);
+    }
+
+    return changedNames;
+}
+
+void flattenUnitsImports(const ModelPtr &flatModel, const UnitsPtr &units, size_t index, const ComponentPtr &component);
+
+void retrieveUnitsDependencies(const ModelPtr &flatModel, const ModelPtr &model, const UnitsPtr &u, const ComponentPtr &component)
+{
+    for (size_t unitIndex = 0; unitIndex < u->unitCount(); ++unitIndex) {
+        std::string reference = u->unitAttributeReference(unitIndex);
+        if (!reference.empty() && !isStandardUnitName(reference) && model->hasUnits(reference)) {
+            auto childUnits = model->units(reference);
+            if (childUnits->isImport()) {
+                size_t flatModelUnitsIndex = flatModel->unitsCount();
+                UnitsPtr clonedChildUnits = childUnits->clone();
+                flatModel->addUnits(clonedChildUnits);
+                flattenUnitsImports(flatModel, clonedChildUnits, flatModelUnitsIndex, component);
+            } else {
+                auto clonedChildUnits = childUnits->clone();
+                transferUnitsRenamingIfRequired(model, flatModel, clonedChildUnits, component);
+                u->setUnitAttributeReference(unitIndex, clonedChildUnits->name());
+                retrieveUnitsDependencies(flatModel, model, clonedChildUnits, component);
+            }
+        }
+    }
+}
+
+void flattenUnitsImports(const ModelPtr &flatModel, const UnitsPtr &units, size_t index, const ComponentPtr &component)
+{
+    auto importSource = units->importSource();
+    auto importingModel = importSource->model();
+    auto importedUnits = importingModel->units(units->importReference());
+    auto importedUnitsCopy = importedUnits->clone();
+    importedUnitsCopy->setName(units->name());
+    flatModel->replaceUnits(index, importedUnitsCopy);
+    retrieveUnitsDependencies(flatModel, importingModel, importedUnitsCopy, component);
+}
+
+ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
         auto model = owningModel(component);
         auto importSource = component->importSource();
         auto importModel = importSource->model();
         auto importedComponent = importModel->component(component->importReference());
+        // Clone import model to not affect origin import model units.
+        auto clonedImportModel = importModel->clone();
 
-        // Determine names of components already in use.
         NameList compNames = componentNames(model);
 
         // Determine the stack for the destination component.
@@ -708,30 +844,38 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
             importedComponentCopy->addComponent(component->component(i));
         }
 
-        // Get list of required units from component's variables.
-        std::vector<UnitsPtr> requiredUnits = unitsUsed(importModel, importedComponentCopy);
+        // Get list of required units from component's variables and math cn elements.
+        std::vector<UnitsPtr> requiredUnits = unitsUsed(clonedImportModel, importedComponentCopy);
+
+        std::vector<UnitsPtr> uniqueRequiredUnits;
+        StringStringMap aliasedUnitsNames;
+        for (const auto &units : requiredUnits) {
+            const auto iterator = std::find_if(uniqueRequiredUnits.begin(), uniqueRequiredUnits.end(),
+                                               [=](const UnitsPtr &u) -> bool { return Units::equivalent(u, units); });
+            if (iterator == uniqueRequiredUnits.end()) {
+                uniqueRequiredUnits.push_back(units);
+            } else if ((*iterator)->name() != units->name()) {
+                aliasedUnitsNames.emplace(units->name(), (*iterator)->name());
+            }
+        }
 
         // Add all required units to a model so referenced units can be resolved.
         auto requiredUnitsModel = Model::create();
-        for (const auto &units : requiredUnits) {
+        for (const auto &units : uniqueRequiredUnits) {
             // Cloning units present elsewhere so that they don't get moved by the addUnits function.
-            if (units->parent() == nullptr) {
-                requiredUnitsModel->addUnits(units);
-            } else {
-                auto cloned = units->clone();
-                requiredUnitsModel->addUnits(cloned);
-            }
+            requiredUnitsModel->addUnits(units->clone());
         }
 
         // Make a map of component name to component pointer.
         ComponentNameMap newComponentNames = createComponentNamesMap(importedComponentCopy);
         for (const auto &entry : newComponentNames) {
-            std::string newName = entry.first;
+            std::string originalName = entry.first;
             size_t count = 0;
+            std::string newName = originalName;
             while (std::find(compNames.begin(), compNames.end(), newName) != compNames.end()) {
-                newName += "_" + convertToString(++count);
+                newName = originalName + "_" + convertToString(++count);
             }
-            if (newName != entry.first) {
+            if (originalName != newName) {
                 entry.second->setName(newName);
             }
         }
@@ -743,43 +887,67 @@ void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component,
             for (size_t j = 0; j < placeholderVariable->equivalentVariableCount(); ++j) {
                 auto localModelVariable = placeholderVariable->equivalentVariable(j);
                 auto importedComponentVariable = importedComponentCopy->variable(placeholderVariable->name());
-                Variable::removeEquivalence(placeholderVariable, localModelVariable);
                 Variable::addEquivalence(importedComponentVariable, localModelVariable);
             }
         }
         parent->replaceComponent(index, importedComponentCopy);
+        auto flatModel = owningModel(importedComponentCopy);
 
         // Apply the re-based equivalence map onto the modified model.
-        applyEquivalenceMapToModel(rebasedMap, model);
+        applyEquivalenceMapToModel(rebasedMap, flatModel);
 
-        // Copy over units used in imported component to this model.
-        std::map<std::string, std::string> unitsNamesToReplace;
-        for (const auto &u : requiredUnits) {
-            if (!model->hasUnits(u)) {
-                auto originalName = u->name();
-                size_t count = 0;
-                while (!model->hasUnits(u) && model->hasUnits(u->name())) {
-                    auto name = u->name();
-                    name += "_" + convertToString(++count);
-                    u->setName(name);
-                }
-                model->addUnits(u);
-                if (originalName != u->name()) {
-                    unitsNamesToReplace.emplace(originalName, u->name());
+        StringStringMap unitNamesToReplace;
+        for (const auto &units : uniqueRequiredUnits) {
+            // If the required units are imported units, we will resolve those units here.
+            size_t unitsIndex = 0;
+            UnitsPtr flattenedUnits = nullptr;
+            if (units->isImport()) {
+                auto foundUnits = clonedImportModel->units(units->name());
+                while (flattenedUnits == nullptr) {
+                    if (foundUnits->name() == clonedImportModel->units(unitsIndex)->name()) {
+                        flattenUnitsImports(clonedImportModel, units, unitsIndex, importedComponentCopy);
+                        flattenedUnits = clonedImportModel->units(unitsIndex);
+                    }
+                    unitsIndex += 1;
                 }
             }
+
+            auto replacementUnits = (flattenedUnits != nullptr) ? flattenedUnits->clone() : units;
+
+            for (size_t unitIndex = 0; unitIndex < replacementUnits->unitCount(); ++unitIndex) {
+                const std::string ref = replacementUnits->unitAttributeReference(unitIndex);
+                for (const auto &entry : unitNamesToReplace) {
+                    if (ref == entry.first) {
+                        replacementUnits->setUnitAttributeReference(unitIndex, entry.second);
+                    }
+                }
+            }
+            StringStringMap changedNames = transferUnitsRenamingIfRequired(clonedImportModel, flatModel, replacementUnits, importedComponentCopy);
+            if (!changedNames.empty()) {
+                unitNamesToReplace.merge(changedNames);
+            }
         }
-        findAndReplaceComponentsCnUnitsNames(importedComponentCopy, unitsNamesToReplace);
+
+        for (const auto &alias : aliasedUnitsNames) {
+            std::string finalUnitsName = alias.second;
+            const auto match = unitNamesToReplace.find(finalUnitsName);
+            if (match != unitNamesToReplace.end()) {
+                finalUnitsName = match->second;
+            }
+            UnitsPtr targetUnits = flatModel->units(finalUnitsName);
+            updateUnitsNameUsages(alias.first, finalUnitsName, importedComponentCopy, targetUnits);
+        }
     }
+
+    return parent->component(index);
 }
 
-void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &component, size_t componentIndex)
+void flattenComponentImports(const ComponentEntityPtr &parent, ComponentPtr &component, size_t componentIndex)
 {
-    flattenComponent(parent, component, componentIndex);
-    auto flattenedComponent = parent->component(componentIndex);
+    auto flattenedComponent = flattenComponent(parent, component, componentIndex);
     for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
         auto c = flattenedComponent->component(index);
-        flattenComponentTree(flattenedComponent, c, index);
+        flattenComponentImports(flattenedComponent, c, index);
     }
 }
 
@@ -796,7 +964,16 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
         return flatModel;
     }
 
-    if (pFunc()->hasImportCycles(model)) {
+    if (pFunc()->hasImportIssues(model)) {
+        return flatModel;
+    }
+
+    if (!model->isDefined()) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORTER_UNDEFINED_MODEL);
+        issue->mPimpl->setDescription("The model is not fully defined.");
+        pFunc()->addIssue(issue);
+
         return flatModel;
     }
 
@@ -807,18 +984,14 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
         for (size_t index = 0; index < flatModel->unitsCount(); ++index) {
             auto u = flatModel->units(index);
             if (u->isImport()) {
-                auto importSource = u->importSource();
-                auto importedUnits = importSource->model()->units(u->importReference());
-                auto importedUnitsCopy = importedUnits->clone();
-                importedUnitsCopy->setName(u->name());
-                flatModel->replaceUnits(index, importedUnitsCopy);
+                flattenUnitsImports(flatModel, u, index, nullptr);
             }
         }
 
         // Go through Components and instantiate any imported Components.
         for (size_t index = 0; index < flatModel->componentCount(); ++index) {
             auto c = flatModel->component(index);
-            flattenComponentTree(flatModel, c, index);
+            flattenComponentImports(flatModel, c, index);
         }
     }
 

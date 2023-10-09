@@ -58,6 +58,32 @@ TEST(Analyser, unlinkedUnitsInModel)
                                                                    analyser);
 }
 
+TEST(Analyser, notEqualityStatement)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/not_equality_statement.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Equation 'x+y+z' in component 'my_component' is not an equality statement (i.e. LHS = RHS).",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::COMPONENT),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_EQUATION_NOT_EQUALITY_STATEMENT"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
+    EXPECT_EQ("invalid", libcellml::AnalyserModel::typeAsString(analyser->model()->type()));
+}
+
 TEST(Analyser, initialisedVariableOfIntegration)
 {
     auto parser = libcellml::Parser::create();
@@ -296,7 +322,7 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is unused.",
+        "The type of variable 'x' in component 'my_component' is unknown.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -313,68 +339,15 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
 
-TEST(Analyser, overconstrainedOneVariable)
+TEST(Analyser, overconstrained)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/overconstrained_one_variable.cellml"));
+    auto model = parser->parseModel(fileContents("analyser/overconstrained.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is computed more than once.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
-                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
-                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE),
-                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
-                                                                   analyser);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
-}
-
-TEST(Analyser, overconstrainedTwoVariables)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/overconstrained_two_variables.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is computed more than once.",
-        "Variable 'y' in component 'my_component' is computed more than once.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-
-    analyser->analyseModel(model);
-
-    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
-                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
-                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
-                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE),
-                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
-                                                                   analyser);
-
-    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
-}
-
-TEST(Analyser, overconstrainedThreeVariables)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("analyser/overconstrained_three_variables.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is computed more than once.",
-        "Variable 'y' in component 'my_component' is computed more than once.",
-        "Variable 'z' in component 'my_component' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -399,16 +372,16 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is unused.",
         "Variable 'y' in component 'my_component' is computed more than once.",
+        "The type of variable 'x' in component 'my_component' is unknown.",
     };
     const std::vector<libcellml::Issue::ReferenceRule> expectedReferenceRules = {
-        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
         libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE,
+        libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_UNUSED,
     };
     const std::vector<std::string> expectedUrls = {
-        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNUSED",
         "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE",
+        "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_UNUSED",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -509,8 +482,11 @@ TEST(Analyser, removeExternalVariableByName)
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
 
-    EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(nullptr, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "X", "V"));
     EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "X"));
+    EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "V"));
 }
 
 TEST(Analyser, removeExternalVariableByPointer)
@@ -527,9 +503,9 @@ TEST(Analyser, removeExternalVariableByPointer)
 
     analyser->addExternalVariable(externalVariable);
 
+    EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
     EXPECT_TRUE(analyser->removeExternalVariable(externalVariable));
     EXPECT_FALSE(analyser->removeExternalVariable(externalVariable));
-    EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
 }
 
 TEST(Analyser, removeAllExternalVariables)
@@ -914,64 +890,84 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
                                                                    analyser);
 }
 
-TEST(Analyser, coverage)
+TEST(Analyser, algebraicSystemWithThreeLinkedUnknownsWithOneExternalVariable)
 {
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'y' in component 'my_algebraic_system' is computed more than once.",
+        "Variable 'z' in component 'my_algebraic_system' is computed more than once.",
+    };
+
     auto analyser = libcellml::Analyser::create();
 
-    analyser->analyseModel(nullptr);
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("x")));
 
-    EXPECT_EQ(size_t(1), analyser->issueCount());
+    analyser->analyseModel(model);
 
-    auto analyserModel = analyser->model();
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
+                                                                   analyser);
 
-    EXPECT_FALSE(analyserModel->isValid());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
+}
 
-    EXPECT_EQ(libcellml::AnalyserModel::Type::UNKNOWN, analyserModel->type());
+TEST(Analyser, algebraicSystemWithThreeLinkedUnknownsWithTwoExternalVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.cellml"));
 
-    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
-    EXPECT_FALSE(analyserModel->hasExternalVariables());
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'y' in component 'my_algebraic_system' is computed more than once.",
+    };
 
-    EXPECT_EQ(size_t(0), analyserModel->stateCount());
-    EXPECT_EQ(size_t(0), analyserModel->states().size());
+    auto analyser = libcellml::Analyser::create();
 
-    EXPECT_EQ(size_t(0), analyserModel->variableCount());
-    EXPECT_EQ(size_t(0), analyserModel->variables().size());
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("x")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("my_algebraic_system")->variable("z")));
 
-    EXPECT_EQ(size_t(0), analyserModel->equationCount());
-    EXPECT_EQ(size_t(0), analyserModel->equations().size());
+    analyser->analyseModel(model);
 
-    EXPECT_FALSE(analyserModel->needEqFunction());
-    EXPECT_FALSE(analyserModel->needNeqFunction());
-    EXPECT_FALSE(analyserModel->needLtFunction());
-    EXPECT_FALSE(analyserModel->needLeqFunction());
-    EXPECT_FALSE(analyserModel->needGtFunction());
-    EXPECT_FALSE(analyserModel->needGeqFunction());
-    EXPECT_FALSE(analyserModel->needAndFunction());
-    EXPECT_FALSE(analyserModel->needOrFunction());
-    EXPECT_FALSE(analyserModel->needXorFunction());
-    EXPECT_FALSE(analyserModel->needNotFunction());
-    EXPECT_FALSE(analyserModel->needMinFunction());
-    EXPECT_FALSE(analyserModel->needMaxFunction());
-    EXPECT_FALSE(analyserModel->needSecFunction());
-    EXPECT_FALSE(analyserModel->needCscFunction());
-    EXPECT_FALSE(analyserModel->needCotFunction());
-    EXPECT_FALSE(analyserModel->needSechFunction());
-    EXPECT_FALSE(analyserModel->needCschFunction());
-    EXPECT_FALSE(analyserModel->needCothFunction());
-    EXPECT_FALSE(analyserModel->needAsecFunction());
-    EXPECT_FALSE(analyserModel->needAcscFunction());
-    EXPECT_FALSE(analyserModel->needAcotFunction());
-    EXPECT_FALSE(analyserModel->needAsechFunction());
-    EXPECT_FALSE(analyserModel->needAcschFunction());
-    EXPECT_FALSE(analyserModel->needAcothFunction());
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
+                                                                   analyser);
 
-    auto ast = libcellml::AnalyserEquationAst::create();
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
+}
 
-    EXPECT_NE(nullptr, ast);
+TEST(Analyser, overconstrainedNlaSystem)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/overconstrained_nla_system.cellml"));
 
-    ast->setType(libcellml::AnalyserEquationAst::Type::ASSIGNMENT);
-    ast->setValue({});
-    ast->setVariable(libcellml::Variable::create());
-    ast->setParent(libcellml::AnalyserEquationAst::create());
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'x' in component 'my_algebraic_system' is computed more than once.",
+        "Variable 'y' in component 'my_algebraic_system' is computed more than once.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(expectedIssues,
+                                                                   expectedCellmlElementTypes(expectedIssues.size(), libcellml::CellmlElementType::VARIABLE),
+                                                                   expectedLevels(expectedIssues.size(), libcellml::Issue::Level::ERROR),
+                                                                   expectedReferenceRules(expectedIssues.size(), libcellml::Issue::ReferenceRule::ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE),
+                                                                   expectedUrls(expectedIssues.size(), "https://libcellml.org/documentation/guides/latest/runtime_codes/index?issue=ANALYSER_VARIABLE_COMPUTED_MORE_THAN_ONCE"),
+                                                                   analyser);
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }

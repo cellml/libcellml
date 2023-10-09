@@ -19,6 +19,7 @@ limitations under the License.
 #include <cstring>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -26,7 +27,6 @@ limitations under the License.
 #include <zlib.h>
 
 #include "internaltypes.h"
-#include "libcellmlconfig_p.h"
 #include "mathmldtd.h"
 #include "xmlnode.h"
 
@@ -44,11 +44,9 @@ namespace libcellml {
  */
 void structuredErrorCallback(void *userData, xmlErrorPtr error)
 {
-    std::string errorString = std::string(error->message);
+    static const std::regex newLineRegex("\\n");
     // Swap libxml2 carriage return for a period.
-    if (errorString.substr(errorString.length() - 1) == "\n") {
-        errorString.replace(errorString.end() - 1, errorString.end(), ".");
-    }
+    std::string errorString = std::regex_replace(error->message, newLineRegex, ".");
     auto context = reinterpret_cast<xmlParserCtxtPtr>(userData);
     auto doc = reinterpret_cast<XmlDoc *>(context->_private);
     doc->addXmlError(errorString);
@@ -97,7 +95,7 @@ void XmlDoc::parse(const std::string &input)
 std::string decompressMathMLDTD()
 {
     std::vector<unsigned char> mathmlDTD;
-    UNCOMPRESS_SIZE_TYPE sizeMathmlDTDUncompressedResize = MATHML_DTD_LEN;
+    uLong sizeMathmlDTDUncompressedResize = MATHML_DTD_LEN;
     mathmlDTD.resize(sizeMathmlDTDUncompressedResize);
 
     const unsigned char *a = compressedMathMLDTD();

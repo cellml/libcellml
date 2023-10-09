@@ -193,6 +193,33 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
+TEST(Validator, unitsHasReferenceToStandardUnitsDefinedInModel)
+{
+    const std::string e = "Units is named 'second' which is a protected standard unit name.";
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    model->addComponent(c1);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    model->setName("model");
+    c1->setName("michael");
+    u1->setName("keaton");
+    u2->setName("second");
+
+    u1->addUnit("second");
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(e, validator->error(0)->description());
+}
+
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
 {
     const std::vector<std::string> expectedIssues = {
@@ -200,7 +227,9 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
         "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "Variable 'margie' in component 'fargo' does not have any units specified.",
         "Variable 'ransom' in component 'fargo' has a units reference 'dollars' which is neither standard nor defined in the parent model.",
-        "Variable 'mullah' in component 'fargo' does not have a valid units attribute. The attribute given is '$$'. CellML identifiers must not contain any characters other than [a-zA-Z0-9_]."};
+        "Variable 'mullah' in component 'fargo' does not have a valid units attribute. The attribute given is '$$'. CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
+        "Variable '' in component 'fargo' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+    };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -210,6 +239,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::VariablePtr v4 = libcellml::Variable::create();
     libcellml::VariablePtr v5 = libcellml::Variable::create();
+    libcellml::VariablePtr v6 = libcellml::Variable::create();
 
     model->addComponent(c1);
     c1->addVariable(v1);
@@ -217,6 +247,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     c1->addVariable(v3);
     c1->addVariable(v4);
     c1->addVariable(v5);
+    c1->addVariable(v6);
 
     model->setName("minnesota");
     c1->setName("fargo");
@@ -229,6 +260,8 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     v4->setUnits("dollars");
     v5->setName("mullah");
     v5->setUnits("$$");
+    v6->setName("");
+    v6->setUnits("second");
 
     validator->validateModel(model);
 
@@ -760,6 +793,11 @@ TEST(Validator, invalidMathMLVariables)
         "MathML ci element has the child text 'new_bvar' which does not correspond with any variable names present in component 'componentName'.",
         "W3C MathML DTD error: Element nonsense is not declared in ci list of possible children.",
         "W3C MathML DTD error: No declaration for element nonsense.",
+        "Math has a 'eq' element without exactly two MathML siblings.",
+        "Math has a 'bvar' element which first sibling is not a 'diff' element.",
+        "Math has a 'ci' element with no identifier as a child.",
+        "Math has a 'ci' element with no identifier as a child.",
+        "Math has a 'bvar' element which first sibling is not a 'diff' element.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -807,6 +845,7 @@ TEST(Validator, invalidSimpleMathmlCellMLUnits)
         "MathML ci element has the child text 'B' which does not correspond with any variable names present in component ''.",
         "W3C MathML DTD error: Element apply content does not follow the DTD, expecting (csymbol | ci | cn | apply | reln | lambda | condition | declare | sep | semantics | annotation | annotation-xml | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | interval | list | matrix | matrixrow | set | vector | piecewise | lowlimit | uplimit | bvar | degree | logbase | momentabout | domainofapplication | inverse | ident | domain | codomain | image | abs | conjugate | exp | factorial | arg | real | imaginary | floor | ceiling | not | ln | sin | cos | tan | sec | csc | cot | sinh | cosh | tanh | sech | csch | coth | arcsin | arccos | arctan | arccosh | arccot | arccoth | arccsc | arccsch | arcsec | arcsech | arcsinh | arctanh | determinant | transpose | card | quotient | divide | power | rem | implies | vectorproduct | scalarproduct | outerproduct | setdiff | fn | compose | plus | times | max | min | gcd | lcm | and | or | xor | union | intersect | cartesianproduct | mean | sdev | variance | median | mode | selector | root | minus | log | int | diff | partialdiff | divergence | grad | curl | laplacian | sum | product | limit | moment | exists | forall | neq | factorof | in | notin | notsubset | notprsubset | tendsto | eq | leq | lt | geq | gt | equivalent | approx | subset | prsubset | mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction)*, got (CDATA bvar ).",
         "W3C MathML DTD error: No declaration for attribute units of element ci.",
+        "Math has a 'bvar' element without exactly two MathML siblings.",
     };
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -829,6 +868,7 @@ TEST(Validator, invalidMathmlCellMLNsOnNode)
         "Math has a 'bvar' element that is not a supported MathML element.",
         "MathML ci element has the child text 'B' which does not correspond with any variable names present in component ''.",
         "W3C MathML DTD error: No declaration for attribute units of element ci.",
+        "Math has a 'bvar' element without exactly two MathML siblings.",
     };
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -887,6 +927,11 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "Math cn element with the value '2.0' does not have a valid cellml:units attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "W3C MathML DTD error: No declaration for attribute units of element ci.",
         "W3C MathML DTD error: No declaration for attribute units of element ci.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'bvar' element which first sibling is not a 'diff' element.",
+        "Math has a 'ci' element with no identifier as a child.",
+        "Math has a 'ci' element with no identifier as a child.",
+        "Math has a 'bvar' element without exactly two MathML siblings.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -1589,7 +1634,7 @@ TEST(Validator, validMathCnElements)
         "    <ci>C</ci>\n"
         "    <apply>\n"
         "      <plus/>\n"
-        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\" type=\"e-notation\">3.44<sep/>2</cn>\n"
         "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
         "    </apply>\n"
         "  </apply>\n"
@@ -1623,7 +1668,7 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
         "    <ci>C</ci>\n"
         "    <apply>\n"
         "      <plus/>\n"
-        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\" type=\"e-notation\">3.44<sep/>2</cn>\n"
         "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
         "    </apply>\n"
         "  </apply>\n"
@@ -2110,7 +2155,6 @@ TEST(Validator, unitMissingEquivalentUnits)
     auto v2 = c2->variable(0);
 
     v2->setUnits("second");
-    v2->setInterfaceType("public");
 
     libcellml::Variable::addEquivalence(v1, v2);
     validator->validateModel(m);
@@ -2211,6 +2255,59 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
+TEST(Validator, unitNonStandardUnitsWhichAreBaseUnits)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has a units reference 'orange' which is neither standard nor defined in the parent model.",
+        "Variable 'v2' in component 'c2' has a units reference 'apple' which is neither standard nor defined in the parent model.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+
+    v1->setUnits("orange");
+    v2->setUnits("apple");
+
+    libcellml::Variable::addEquivalence(v1, v2); // orange != apple.
+
+    validator->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, multipleEquivalentUnitStandardUnitsWhichAreNotBaseUnits)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
+        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v3' in component 'c1' with non-matching units of 'ampere'. The mismatch is: ampere^-1, metre^3, multiplication factor of 10^-3.",
+    };
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
+    auto c1 = m->component(0);
+    auto c2 = m->component(1);
+    auto v1 = c1->variable(0);
+    auto v2 = c2->variable(0);
+    auto v3 = libcellml::Variable::create("v3");
+    v3->setInterfaceType("public");
+    c1->addVariable(v3);
+
+    v1->setUnits("litre");
+    v2->setUnits("gram");
+    v3->setUnits("ampere");
+
+    libcellml::Variable::addEquivalence(v1, v2); // litre != gram.
+    libcellml::Variable::addEquivalence(v1, v3); // litre != ampere.
+
+    validator->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
 TEST(Validator, unitSimpleCycle)
 {
     // Testing that indirect dependence is caught in the unit cycles. The network is:
@@ -2254,6 +2351,50 @@ TEST(Validator, unitSimpleCycle)
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
     auto issue = v->issue(0);
+    EXPECT_EQ("grandfather", issue->item()->units()->name());
+}
+
+TEST(Validator, unitSimpleCycleWithAdditionalIssue)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Model '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Cyclic units exist: 'grandfather' -> 'child' -> 'father' -> 'grandfather'.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = libcellml::Model::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+
+    m->setName("model");
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
+
+    u1->setName("grandfather"); // Base unit.
+
+    u2->setName("father"); // First generation.
+    u2->addUnit("grandfather");
+
+    u3->setName("child"); // Second generation.
+    u3->addUnit("father");
+
+    // Network valid at this stage.
+    v->validateModel(m);
+    EXPECT_EQ(size_t(0), v->issueCount());
+
+    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u3 -> u2 -> u1.
+    u1->addUnit("child");
+    // Add additional validation error.
+    m->removeName();
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+    auto issue = v->issue(1);
     EXPECT_EQ("grandfather", issue->item()->units()->name());
 }
 
@@ -2568,8 +2709,58 @@ TEST(Validator, variableEquivalenceUnreachable)
     c2->addVariable(v2);
     c3->addVariable(v3);
 
-    // invalid equivalence, too far away
+    // Invalid equivalence, too far away.
     libcellml::Variable::addEquivalence(v1, v3);
+    validator->validateModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, multipleVariableEquivalencesUnreachable)
+{
+    const std::vector<std::string> expectedIssues {
+        "The equivalence between 'v1' in component 'c1'  and 'v3' in component 'c3' is invalid. Component 'c1' and 'c3' are neither siblings nor in a parent/child relationship.",
+        "The equivalence between 'v1' in component 'c1'  and 'v4' in component 'c4' is invalid. Component 'c1' and 'c4' are neither siblings nor in a parent/child relationship.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::ComponentPtr c4 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+    c4->setName("c4");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    c2->addComponent(c3);
+    c2->addComponent(c4);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+    v4->setName("v4");
+    v4->setUnits("dimensionless");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c4->addVariable(v4);
+    c3->addVariable(v3);
+
+    // Invalid equivalence, too far away.
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v1, v4);
     validator->validateModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
@@ -2647,8 +2838,10 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 TEST(Validator, variableInterfaceShouldBePublic)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'v1' in component 'c1' has no interface type set. The interface type required is 'public'.",
+        "Variable 'v1' in component 'c1' has an interface type set to 'none' which is not the correct interface type for this variable. The interface type required is 'public'.",
+        "Variable 'v3' in component 'c1' has no interface type set. The interface type required is 'public'.",
         "Variable 'v2' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
+        "Variable 'v4' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2672,12 +2865,25 @@ TEST(Validator, variableInterfaceShouldBePublic)
     v2->setName("v2");
     v2->setUnits("dimensionless");
 
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+    v4->setName("v4");
+    v4->setUnits("dimensionless");
+
     c1->addVariable(v1);
+    c1->addVariable(v3);
     c2->addVariable(v2);
+    c2->addVariable(v4);
 
     libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v3, v4);
 
+    v1->setInterfaceType("none");
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    v4->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
 
     validator->validateModel(model);
 
@@ -2918,6 +3124,9 @@ TEST(Validator, duplicateIdAll)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"  name=\"everything\" id=\"id1\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"id2\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"id3\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model-2.xml\" id=\"id17\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units7\" id=\"id6\"/>\n"
         "  </import>\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"id4\">\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"id5\"/>\n"
@@ -3488,4 +3697,161 @@ TEST(Validator, zOffsetImportThatIllustratesBadPractice)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
+TEST(Validator, invalidMathMLElementsChildrenOrSiblings)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Math has a 'apply' element without at least one MathML child.",
+        "Math has a 'eq' element without exactly two MathML siblings.",
+        "Math has a 'eq' element which is not the first MathML sibling.",
+        "Math has a 'neq' element without exactly two MathML siblings.",
+        "Math has a 'neq' element which is not the first MathML sibling.",
+        "Math has a 'lt' element without exactly two MathML siblings.",
+        "Math has a 'lt' element which is not the first MathML sibling.",
+        "Math has a 'leq' element without exactly two MathML siblings.",
+        "Math has a 'leq' element which is not the first MathML sibling.",
+        "Math has a 'gt' element without exactly two MathML siblings.",
+        "Math has a 'gt' element which is not the first MathML sibling.",
+        "Math has a 'geq' element without exactly two MathML siblings.",
+        "Math has a 'geq' element which is not the first MathML sibling.",
+        "Math has a 'and' element without at least two MathML siblings.",
+        "Math has a 'and' element which is not the first MathML sibling.",
+        "Math has a 'or' element without at least two MathML siblings.",
+        "Math has a 'or' element which is not the first MathML sibling.",
+        "Math has a 'xor' element without at least two MathML siblings.",
+        "Math has a 'xor' element which is not the first MathML sibling.",
+        "Math has a 'not' element without exactly one MathML sibling.",
+        "Math has a 'not' element which is not the first MathML sibling.",
+        "Math has a 'plus' element without at least one MathML sibling.",
+        "Math has a 'plus' element which is not the first MathML sibling.",
+        "Math has a 'minus' element without exactly one or two MathML siblings.",
+        "Math has a 'minus' element which is not the first MathML sibling.",
+        "Math has a 'times' element without at least two MathML siblings.",
+        "Math has a 'times' element which is not the first MathML sibling.",
+        "Math has a 'divide' element without exactly two MathML siblings.",
+        "Math has a 'divide' element which is not the first MathML sibling.",
+        "Math has a 'power' element without exactly two MathML siblings.",
+        "Math has a 'power' element which is not the first MathML sibling.",
+        "Math has a 'root' element without exactly one or two MathML siblings.",
+        "Math has a 'root' element which is not the first MathML sibling.",
+        "Math has a 'root' element which is not the first MathML sibling.",
+        "Math has a 'root' element which first sibling is not a 'degree' element.",
+        "Math has a 'abs' element without exactly one MathML sibling.",
+        "Math has a 'abs' element which is not the first MathML sibling.",
+        "Math has a 'exp' element without exactly one MathML sibling.",
+        "Math has a 'exp' element which is not the first MathML sibling.",
+        "Math has a 'ln' element without exactly one MathML sibling.",
+        "Math has a 'ln' element which is not the first MathML sibling.",
+        "Math has a 'log' element without exactly one or two MathML siblings.",
+        "Math has a 'log' element which is not the first MathML sibling.",
+        "Math has a 'log' element which is not the first MathML sibling.",
+        "Math has a 'log' element which first sibling is not a 'logbase' element.",
+        "Math has a 'ceiling' element without exactly one MathML sibling.",
+        "Math has a 'ceiling' element which is not the first MathML sibling.",
+        "Math has a 'floor' element without exactly one MathML sibling.",
+        "Math has a 'floor' element which is not the first MathML sibling.",
+        "Math has a 'diff' element without exactly two MathML siblings.",
+        "Math has a 'diff' element which is not the first MathML sibling.",
+        "Math has a 'diff' element which first sibling is not a 'bvar' element.",
+        "Math has a 'sin' element without exactly one MathML sibling.",
+        "Math has a 'sin' element which is not the first MathML sibling.",
+        "Math has a 'cos' element without exactly one MathML sibling.",
+        "Math has a 'cos' element which is not the first MathML sibling.",
+        "Math has a 'tan' element without exactly one MathML sibling.",
+        "Math has a 'tan' element which is not the first MathML sibling.",
+        "Math has a 'sec' element without exactly one MathML sibling.",
+        "Math has a 'sec' element which is not the first MathML sibling.",
+        "Math has a 'csc' element without exactly one MathML sibling.",
+        "Math has a 'csc' element which is not the first MathML sibling.",
+        "Math has a 'cot' element without exactly one MathML sibling.",
+        "Math has a 'cot' element which is not the first MathML sibling.",
+        "Math has a 'sinh' element without exactly one MathML sibling.",
+        "Math has a 'sinh' element which is not the first MathML sibling.",
+        "Math has a 'cosh' element without exactly one MathML sibling.",
+        "Math has a 'cosh' element which is not the first MathML sibling.",
+        "Math has a 'tanh' element without exactly one MathML sibling.",
+        "Math has a 'tanh' element which is not the first MathML sibling.",
+        "Math has a 'sech' element without exactly one MathML sibling.",
+        "Math has a 'sech' element which is not the first MathML sibling.",
+        "Math has a 'csch' element without exactly one MathML sibling.",
+        "Math has a 'csch' element which is not the first MathML sibling.",
+        "Math has a 'coth' element without exactly one MathML sibling.",
+        "Math has a 'coth' element which is not the first MathML sibling.",
+        "Math has a 'arcsin' element without exactly one MathML sibling.",
+        "Math has a 'arcsin' element which is not the first MathML sibling.",
+        "Math has a 'arccos' element without exactly one MathML sibling.",
+        "Math has a 'arccos' element which is not the first MathML sibling.",
+        "Math has a 'arctan' element without exactly one MathML sibling.",
+        "Math has a 'arctan' element which is not the first MathML sibling.",
+        "Math has a 'arcsec' element without exactly one MathML sibling.",
+        "Math has a 'arcsec' element which is not the first MathML sibling.",
+        "Math has a 'arccsc' element without exactly one MathML sibling.",
+        "Math has a 'arccsc' element which is not the first MathML sibling.",
+        "Math has a 'arccot' element without exactly one MathML sibling.",
+        "Math has a 'arccot' element which is not the first MathML sibling.",
+        "Math has a 'arcsinh' element without exactly one MathML sibling.",
+        "Math has a 'arcsinh' element which is not the first MathML sibling.",
+        "Math has a 'arccosh' element without exactly one MathML sibling.",
+        "Math has a 'arccosh' element which is not the first MathML sibling.",
+        "Math has a 'arctanh' element without exactly one MathML sibling.",
+        "Math has a 'arctanh' element which is not the first MathML sibling.",
+        "Math has a 'arcsech' element without exactly one MathML sibling.",
+        "Math has a 'arcsech' element which is not the first MathML sibling.",
+        "Math has a 'arccsch' element without exactly one MathML sibling.",
+        "Math has a 'arccsch' element which is not the first MathML sibling.",
+        "Math has a 'arccoth' element without exactly one MathML sibling.",
+        "Math has a 'arccoth' element which is not the first MathML sibling.",
+        "Math has a 'piece' element without exactly two MathML children.",
+        "Math has a 'otherwise' element without exactly one MathML child.",
+        "Math has a 'ci' element with no identifier as a child.",
+        "Math has a 'cn' element which is not in base 10.",
+        "Math has a 'cn' element which is not of 'real' or 'e-notation' type.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'real' type with no valid text node (representing a basic number) as a child.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'cn' element of 'e-notation' type with no valid text node (representing a basic number), no 'sep' element, and/or no valid text node (representing an integer) as children.",
+        "Math has a 'degree' element without exactly one or two MathML siblings.",
+        "Math has a 'degree' element which is not the second MathML sibling.",
+        "Math has a 'degree' element without exactly one MathML child.",
+        "Math has a 'degree' element which first sibling is not a 'root' element.",
+        "Math has a 'root' element which first sibling is not a 'degree' element.",
+        "Math has a 'degree' element which is not the second MathML sibling.",
+        "Math has a 'degree' element without exactly one MathML child.",
+        "Math has a 'logbase' element without exactly two MathML siblings.",
+        "Math has a 'logbase' element which first sibling is not a 'log' element.",
+        "Math has a 'log' element which first sibling is not a 'logbase' element.",
+        "Math has a 'logbase' element which is not the second MathML sibling.",
+        "Math has a 'logbase' element without exactly one MathML child.",
+        "Math has a 'bvar' element without exactly two MathML siblings.",
+        "Math has a 'bvar' element which first sibling is not a 'diff' element.",
+        "Math has a 'diff' element which first sibling is not a 'bvar' element.",
+        "Math has a 'bvar' element which is not the second MathML sibling.",
+        "Math has a 'bvar' element without exactly one or two MathML children.",
+        "W3C MathML DTD error: Element true was declared EMPTY this one has content.",
+        "W3C MathML DTD error: Element false was declared EMPTY this one has content.",
+        "W3C MathML DTD error: Element exponentiale was declared EMPTY this one has content.",
+        "W3C MathML DTD error: Element pi was declared EMPTY this one has content.",
+        "W3C MathML DTD error: Element infinity was declared EMPTY this one has content.",
+        "W3C MathML DTD error: Element notanumber was declared EMPTY this one has content.",
+    };
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("invalidmathmlelementschildrenorsiblings.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto validator = libcellml::Validator::create();
+
+    validator->validateModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }

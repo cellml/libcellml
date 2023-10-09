@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <cctype>
+#include <limits>
 #include <map>
 #include <string>
 #include <vector>
@@ -25,8 +26,8 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/variable.h"
 
-#include "commonutils.h"
 #include "internaltypes.h"
+#include "xmldoc.h"
 
 namespace libcellml {
 
@@ -124,31 +125,6 @@ static const std::map<std::string, double> standardMultiplierList = {
     {"weber", 0.0}};
 
 /**
- * Map connecting prefix strings to their exponent (eg: "kilo" -> 10^3).
- */
-static const std::map<std::string, int> standardPrefixList = {
-    {"yotta", 24},
-    {"zetta", 21},
-    {"exa", 18},
-    {"peta", 15},
-    {"tera", 12},
-    {"giga", 9},
-    {"mega", 6},
-    {"kilo", 3},
-    {"hecto", 2},
-    {"deca", 1},
-    {"deci", -1},
-    {"centi", -2},
-    {"milli", -3},
-    {"micro", -6},
-    {"nano", -9},
-    {"pico", -12},
-    {"femto", -15},
-    {"atto", -18},
-    {"zepto", -21},
-    {"yocto", -24}};
-
-/**
  * List of MathML elements supported by CellML.
  */
 static const NameList supportedMathMLElements = {
@@ -171,40 +147,61 @@ static const std::map<Variable::InterfaceType, std::string> interfaceTypeToStrin
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
 /**
+ * @brief Check whether the @p in @c std::string can be converted to a basic @c double.
+ *
+ * Try to convert the @p in @c std::string to a basic @c double. Return true if the conversion succeeded and @c false
+ * if it didn't.
+ *
+ * If the @p in is not a CellML basic real the conversion will not succeed.
+ *
+ * @sa isCellMLBasicReal
+ *
+ * @param in The @c std::string value to convert to a basic @c double.
+ *
+ * @return @c true if @p in could be converted to a basic @c double and @c false otherwise.
+ */
+bool canConvertToBasicDouble(const std::string &in);
+
+/**
  * @brief Convert the @p in @c std::string to a @c double.
  *
  * Convert the @p in @c std::string to a @c double.
- * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * Returns @c true if the conversion succeeded
  * and @c false if it didn't.
  *
  * If the @p in is not a CellML real the conversion will not succeed.
+ * If the @p in is a number bigger than a double can represent the
+ * conversion will also not succeed.
  *
  * @sa isCellMLReal
  *
  * @param in The @c std::string value to convert to a @c double.
- * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
+ * @param out The value of the @p in as a doulbe if the conversion was successful,
+ * left unchanged if the conversion fails.
  *
- * @return The double value of @p in.
+ * @return @c true if the conversion succeeded, @c false otherwise.
  */
-double convertToDouble(const std::string &in, bool *ok = nullptr);
+bool convertToDouble(const std::string &in, double &out);
 
 /**
  * @brief Convert the @p in @c std::string to an @c int.
  *
  * Convert the @p in @c std::string to an @c int.
- * If given, sets the parameter @p ok to @c true if the conversion succeeded
+ * Returns @c true if the conversion succeeded
  * and @c false if it didn't.
  *
  * If @p in is not a CellML integer the conversion will not succeed.
+ * If @p in is a number bigger than an int can represent the conversion
+ * will also not succeed.
  *
  * @sa isCellMLInteger
  *
  * @param in The @c std::string value to convert to an @c int.
- * @param ok Optional parameter returns @c true if the conversion was successful and @c false if it wasn't.
+ * @param out The integer value of the @p in.
  *
- * @return The integer value of @p in.
+ * @return @c true if the conversion was successful and @c false if it wasn't.
  */
-int convertToInt(const std::string &in, bool *ok = nullptr);
+bool convertToInt(const std::string &in, int &out);
 
 /**
  * @brief Convert a units prefix to an int.
@@ -293,6 +290,19 @@ bool isNonNegativeCellMLInteger(const std::string &candidate);
  * @return @c true if the @p candidate is a CellML integer and @c false otherwise.
  */
 bool isCellMLInteger(const std::string &candidate);
+
+/**
+ * @brief Test if the @p candidate @c std::string is in the form of a CellML basic real.
+ *
+ * The candidate string must consist of european numeric characters.  It may optionally
+ * have a basic Latin hyphen character '-' to indicate sign.  It may also optionally
+ * use the basic Latin fullstop character '.' to indicate a decimal point.  The candidate
+ * string must represent a number in base 10.
+ *
+ * @param candidate The string to test and determine whether or not it is a CellML basic real.
+ * @return @c true if the @p candidate is a CellML basic real and @c false otherwise.
+ */
+bool isCellMLBasicReal(const std::string &candidate);
 
 /**
  * @brief Test if the @p candidate @c std::string is in the form of a CellML real.
@@ -796,8 +806,68 @@ void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model
 NameList componentNames(const ModelPtr &model);
 NameList unitsNamesUsed(const ComponentPtr &component);
 EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
-std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentConstPtr &component);
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
-void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+
+/**
+ * @brief Change all matching cn CellML units attributes names.
+ *
+ * Find all cn elements with a CellML units attribute with the value @p oldName
+ * and replace it with @p newName.
+ *
+ * The find and replace is done recursively through the component's component
+ * tree hierarchy.
+ *
+ * @param component The component to find and replace in.
+ * @param oldName The old name to match.
+ * @param newName The new name to replace the old name with.
+ */
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const std::string &oldName, const std::string &newName);
+
+/**
+ * @brief Return the number of non-comment children.
+ *
+ * Return the number of non-comment children for the given node.
+ *
+ * @param node The node for which we want the number of non-comment children.
+ *
+ * @return The number of non-comment children.
+ */
+size_t nonCommentChildCount(const XmlNodePtr &node);
+
+/**
+ * @brief Return the non-comment child at a given index.
+ *
+ * Return the non-comment child, at @p index, of the given node.
+ *
+ * @param node The node from which we want the non-comment child at @p index.
+ * @param index The index of the non-comment child.
+ *
+ * @return The non-comment child at @p index.
+ */
+XmlNodePtr nonCommentChildNode(const XmlNodePtr &node, size_t index);
+
+/**
+ * @brief Return the number of MathML children.
+ *
+ * Return the number of MathML children for the given node.
+ *
+ * @param node The node for which we want the number of MathML children.
+ *
+ * @return The number of MathML children.
+ */
+size_t mathmlChildCount(const XmlNodePtr &node);
+
+/**
+ * @brief Return the index'th MathML child for the given node.
+ *
+ * Return the @p index'th MathML child for the given node.
+ *
+ * @param node The node from which we want the @p index'th MathML child.
+ * @param index The index of the MathML child.
+ *
+ * @return The @p index'th MathML child.
+ */
+XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index);
 
 } // namespace libcellml

@@ -56,6 +56,7 @@ bool Entity::doEquals(const EntityPtr &other) const
     if (other == nullptr) {
         return false;
     }
+
     return pFunc()->mId == other->id();
 }
 
