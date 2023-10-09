@@ -32,7 +32,7 @@ namespace libcellml {
  * computed by this model, but set externally. It is therefore the
  * responsibility of the user to set an external variable (see
  * @ref GeneratorProfile::externalVariableMethodTypeDefinitionString and
- * @ref GeneratorProfile::setExternalVariableMethodTypeDefinitionString)
+ * @ref GeneratorProfile::setExternalVariableMethodTypeDefinitionString).
  *
  * Also, say that the analysis of a model fails because the type of one or
  * several of its variables could not be determined (i.e. the model is
