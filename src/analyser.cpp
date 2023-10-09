@@ -2522,7 +2522,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     auto stateIndex = MAX_SIZE_T;
     auto variableIndex = MAX_SIZE_T;
-    auto loopNb = 1;
+    auto loopNumber = 1;
     bool relevantCheck;
     auto checkNlaSystems = false;
 
@@ -2534,12 +2534,12 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                             || relevantCheck;
         }
 
-        if (((loopNb == 1) || (loopNb == 3)) && !relevantCheck) {
-            ++loopNb;
+        if (((loopNumber == 1) || (loopNumber == 3)) && !relevantCheck) {
+            ++loopNumber;
 
             relevantCheck = true;
             checkNlaSystems = true;
-        } else if ((loopNb == 2) && !relevantCheck) {
+        } else if ((loopNumber == 2) && !relevantCheck) {
             // We have gone through the two loops and we still have some unknown
             // variables, so we consider as initialised those that have been
             // marked as external and we go through the two loops one more time.
@@ -2552,7 +2552,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
 
             if (hasExternalVariables) {
-                ++loopNb;
+                ++loopNumber;
 
                 relevantCheck = true;
                 checkNlaSystems = false;
