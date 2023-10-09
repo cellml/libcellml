@@ -7,33 +7,29 @@
 extern const char VERSION[];
 extern const char LIBCELLML_VERSION[];
 
-extern const size_t STATE_COUNT;
 extern const size_t VARIABLE_COUNT;
 
 typedef enum {
-    VARIABLE_OF_INTEGRATION,
-    STATE,
     CONSTANT,
     COMPUTED_CONSTANT,
-    ALGEBRAIC
+    ALGEBRAIC,
+    EXTERNAL
 } VariableType;
 
 typedef struct {
-    char name[7];
-    char units[3];
-    char component[12];
+    char name[5];
+    char units[15];
+    char component[17];
     VariableType type;
 } VariableInfo;
 
-extern const VariableInfo VOI_INFO;
-extern const VariableInfo STATE_INFO[];
 extern const VariableInfo VARIABLE_INFO[];
 
-double * createStatesArray();
 double * createVariablesArray();
 void deleteArray(double *array);
 
-void initialiseVariables(double *states, double *rates, double *variables);
+typedef double (* ExternalVariable)(double *variables, size_t index);
+
+void initialiseVariables(double *variables, ExternalVariable externalVariable);
 void computeComputedConstants(double *variables);
-void computeRates(double voi, double *states, double *rates, double *variables);
-void computeVariables(double voi, double *states, double *rates, double *variables);
+void computeVariables(double *variables, ExternalVariable externalVariable);

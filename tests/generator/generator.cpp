@@ -1837,3 +1837,59 @@ TEST(Generator, variableInitialisedUsingAConstant)
 
     EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.py"), generator->implementationCode());
 }
+
+TEST(Generator, modelOutOfScope)
+{
+    auto analyser = libcellml::Analyser::create();
+    {
+        auto parser = libcellml::Parser::create();
+        auto model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
+
+        EXPECT_EQ(size_t(0), parser->issueCount());
+
+        analyser->analyseModel(model);
+    }
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.py"), generator->implementationCode());
+}
+
+TEST(Generator, unknownVariableMarkedAsExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/unknown_variable_as_external_variable/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("SLC_template3_ss")->variable("P_3")));
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(fileContents("generator/unknown_variable_as_external_variable/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/unknown_variable_as_external_variable/model.c"), generator->implementationCode());
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/unknown_variable_as_external_variable/model.py"), generator->implementationCode());
+}
