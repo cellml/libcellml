@@ -317,7 +317,7 @@ jobs:
               echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
             else
               echo "Setting macos_archs as: macos_archs='x86_64 arm64'"
-              echo 'MACOS_ARCHS="x86_64 arm64"' >> $GITHUB_OUTPUT
+              echo 'MACOS_ARCHS=x86_64 arm64' >> $GITHUB_OUTPUT
             fi
           else
             echo "Setting macos_archs as: macos_archs='x86_64'"
