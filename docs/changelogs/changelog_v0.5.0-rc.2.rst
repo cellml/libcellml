@@ -1,4 +1,4 @@
-libCellML v0.5.0-rc.1 Changelog
+libCellML v0.5.0-rc.2 Changelog
 ===============================
 
 Analyser
@@ -61,6 +61,7 @@ Imports
 Infrastructure
 --------------
 
+* Update deploy script  by `@hsorby <https://github.com/hsorby>`_ [`#1188 <https://github.com/cellml/libcellml/pull/1188>`_].
 * Set macOS 10.15 as the minimum deployment target for macOS by `@hsorby <https://github.com/hsorby>`_ [`#1181 <https://github.com/cellml/libcellml/pull/1181>`_].
 * GitHub Actions update by `@hsorby <https://github.com/hsorby>`_ [`#1154 <https://github.com/cellml/libcellml/pull/1154>`_].
 * CMake: fixed an issue with BINDINGS_PYTHON's value not being taken into account by `@agarny <https://github.com/agarny>`_ [`#1149 <https://github.com/cellml/libcellml/pull/1149>`_].
