@@ -25,7 +25,7 @@ Glossary of terms
    
    C++
      The language in which libCellML is written. 
-     Please see the :cpp_reference:`C++ Reference site` for details.
+     Please see the `C++ Reference site <https://en.cppreference.com>`_ for details.
    
    SWIG
      :swig:`SWIG (Simplified Wrapper and Interface Generator)<>` is a tool which acts as a translator between code written in C++ and other languages.  
