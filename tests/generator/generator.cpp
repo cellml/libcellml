@@ -1878,7 +1878,9 @@ TEST(Generator, modelWithImportOutOfScope)
         importer->resolveImports(model, resourcePath("generator/cellml_slc_example"));
         EXPECT_FALSE(model->hasUnresolvedImports());
 
-        analyser->analyseModel(model);
+        auto flatModel = importer->flattenModel(model);
+
+        analyser->analyseModel(flatModel);
     }
 
     EXPECT_EQ(size_t(0), analyser->errorCount());
