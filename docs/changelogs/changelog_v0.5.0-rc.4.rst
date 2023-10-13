@@ -1,4 +1,4 @@
-libCellML v0.5.0-rc.2 Changelog
+libCellML v0.5.0-rc.4 Changelog
 ===============================
 
 Analyser
@@ -61,6 +61,7 @@ Imports
 Infrastructure
 --------------
 
+* Update setup-msbuild to the latest version by `@hsorby <https://github.com/hsorby>`_ [`#1190 <https://github.com/cellml/libcellml/pull/1190>`_].
 * Update deploy script  by `@hsorby <https://github.com/hsorby>`_ [`#1188 <https://github.com/cellml/libcellml/pull/1188>`_].
 * Set macOS 10.15 as the minimum deployment target for macOS by `@hsorby <https://github.com/hsorby>`_ [`#1181 <https://github.com/cellml/libcellml/pull/1181>`_].
 * GitHub Actions update by `@hsorby <https://github.com/hsorby>`_ [`#1154 <https://github.com/cellml/libcellml/pull/1154>`_].
@@ -91,11 +92,11 @@ Validation
 Contributors
 ------------
 
-.. image:: https://avatars.githubusercontent.com/u/778048?v=4
-   :target: https://github.com/hsorby
-   :height: 32
-   :width: 32
 .. image:: https://avatars.githubusercontent.com/u/602265?v=4
    :target: https://github.com/agarny
+   :height: 32
+   :width: 32
+.. image:: https://avatars.githubusercontent.com/u/778048?v=4
+   :target: https://github.com/hsorby
    :height: 32
    :width: 32

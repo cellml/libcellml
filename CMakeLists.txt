@@ -19,7 +19,7 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum OS X deployment vers
 set(PROJECT_NAME libCellML)
 set(PROJECT_URL https://libcellml.org)
 set(_PROJECT_VERSION 0.5.0)
-set(PROJECT_DEVELOPER_VERSION -rc.2)
+set(PROJECT_DEVELOPER_VERSION -rc.4)
 project(${PROJECT_NAME} VERSION ${_PROJECT_VERSION} LANGUAGES CXX)
 
 # Set policies that affect the build.
