@@ -1841,6 +1841,7 @@ TEST(Generator, variableInitialisedUsingAConstant)
 TEST(Generator, modelOutOfScope)
 {
     auto analyser = libcellml::Analyser::create();
+
     {
         auto parser = libcellml::Parser::create();
         auto model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
@@ -1867,11 +1868,11 @@ TEST(Generator, modelOutOfScope)
 TEST(Generator, modelWithImportOutOfScope)
 {
     auto analyser = libcellml::Analyser::create();
+
     {
         auto parser = libcellml::Parser::create();
-        auto importer = libcellml::Importer::create();
-
         auto model = parser->parseModel(fileContents("generator/cellml_slc_example/slc_model.cellml"));
+        auto importer = libcellml::Importer::create();
 
         EXPECT_EQ(size_t(0), parser->issueCount());
 
