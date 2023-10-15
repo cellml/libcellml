@@ -504,7 +504,7 @@ class Analyser::AnalyserImpl: public Logger::LoggerImpl
 public:
     Analyser *mAnalyser = nullptr;
 
-    AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
+    AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create(nullptr);
 
     AnalyserExternalVariablePtrs mExternalVariables;
 
@@ -2324,7 +2324,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Reset a few things in case this analyser was to be used to analyse more
     // than one model.
 
-    mModel = AnalyserModel::AnalyserModelImpl::create();
+    mModel = AnalyserModel::AnalyserModelImpl::create(model);
 
     mInternalVariables.clear();
     mInternalEquations.clear();

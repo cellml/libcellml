@@ -1863,3 +1863,39 @@ TEST(ModelFlattening, resolveImportsInvalidInput)
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ("Cannot resolve imports for null model.", importer->issue(0)->description());
 }
+
+TEST(ModelFlattening, flatteningImportedUnitsThatNeedEquivalence)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"test_model\">\n"
+        "  <units name=\"per_fmol\">\n"
+        "    <unit exponent=\"-1\" units=\"fmol\"/>\n"
+        "  </units>\n"
+        "  <units name=\"fmol\">\n"
+        "    <unit prefix=\"femto\" units=\"mole\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_fmol_sec4\">\n"
+        "    <unit units=\"per_fmol\"/>\n"
+        "    <unit exponent=\"4\" units=\"per_sec\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_sec\">\n"
+        "    <unit exponent=\"-1\" units=\"second\"/>\n"
+        "  </units>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+
+    auto model = parser->parseModel(fileContents("generator/cellml_slc_example/slc_model_units_only.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    importer->resolveImports(model, resourcePath("generator/cellml_slc_example"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    auto flatModel = importer->flattenModel(model);
+
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(e, printer->printModel(flatModel));
+}
