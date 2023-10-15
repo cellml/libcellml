@@ -5,23 +5,23 @@
     <units units_ref="fmol_per_sec" name="fmol_per_sec"/>
     <units units_ref="per_fmol" name="per_fmol"/>
     <units units_ref="fmol" name="fmol"/>
-	<units units_ref="per_fmol_sec4" name="per_fmol_sec4"/>
-	<units units_ref="per_fmol_sec3" name="per_fmol_sec3"/>
-	<units units_ref="per_fmol2_sec3" name="per_fmol2_sec3"/>
-	<units units_ref="per_sec3" name="per_sec3"/>
+    <units units_ref="per_fmol_sec4" name="per_fmol_sec4"/>
+    <units units_ref="per_fmol_sec3" name="per_fmol_sec3"/>
+    <units units_ref="per_fmol2_sec3" name="per_fmol2_sec3"/>
+    <units units_ref="per_sec3" name="per_sec3"/>
   </import>
   <component name="SLC_template3_ss">
     <variable name="v" units="fmol_per_sec" />
     <variable name="E" units="fmol" initial_value="1.1" />
     <variable name="q_Ai" units="fmol" initial_value="2"/>
     <variable name="q_Ao" units="fmol" initial_value="150" />
-	 <variable name="P_0" units="per_fmol_sec4" initial_value="21262500" id="b4da6c"/>
+    <variable name="P_0" units="per_fmol_sec4" initial_value="21262500" id="b4da6c"/>
     <variable name="P_1" units="per_fmol_sec4" initial_value="3402000"  id="b4da6d"/>
     <variable name="P_2" units="per_fmol_sec3"  initial_value="2902500"  id="b4da6e"/>
     <variable name="P_3" units="per_fmol_sec3"  initial_value="2902500" interface="public" id="b4da6f"/>
     <variable name="P_4" units="per_fmol2_sec3" initial_value="247140"  id="b4da70"/>
     <variable name="P_5" units="per_sec3" initial_value="810000"  id="b4da71"/>
-	<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
         <ci>v</ci>

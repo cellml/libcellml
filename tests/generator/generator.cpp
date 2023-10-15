@@ -1864,39 +1864,6 @@ TEST(Generator, modelOutOfScope)
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.py"), generator->implementationCode());
 }
 
-TEST(Generator, modelWithImportOutOfScope)
-{
-    auto analyser = libcellml::Analyser::create();
-    {
-        auto parser = libcellml::Parser::create();
-        auto importer = libcellml::Importer::create();
-
-        auto model = parser->parseModel(fileContents("generator/cellml_slc_example/slc_model.cellml"));
-
-        EXPECT_EQ(size_t(0), parser->issueCount());
-
-        importer->resolveImports(model, resourcePath("generator/cellml_slc_example"));
-        EXPECT_FALSE(model->hasUnresolvedImports());
-
-        auto flatModel = importer->flattenModel(model);
-
-        analyser->analyseModel(flatModel);
-    }
-
-    EXPECT_EQ(size_t(0), analyser->errorCount());
-
-    auto analyserModel = analyser->model();
-    auto generator = libcellml::Generator::create();
-
-    generator->setModel(analyserModel);
-
-    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-
-    generator->setProfile(profile);
-
-    EXPECT_EQ(fileContents("generator/cellml_slc_example/model.py"), generator->implementationCode());
-}
-
 TEST(Generator, unknownVariableMarkedAsExternalVariable)
 {
     auto parser = libcellml::Parser::create();
@@ -1925,4 +1892,38 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/unknown_variable_as_external_variable/model.py"), generator->implementationCode());
+}
+
+TEST(Generator, modelWithComplexUnitsOutOfScope)
+{
+    libcellml::AnalyserModelPtr analyserModel;
+    {
+        auto analyser = libcellml::Analyser::create();
+        auto parser = libcellml::Parser::create();
+        auto importer = libcellml::Importer::create();
+
+        auto model = parser->parseModel(fileContents("generator/cellml_slc_example/slc_model.cellml"));
+
+        EXPECT_EQ(size_t(0), parser->issueCount());
+
+        importer->resolveImports(model, resourcePath("generator/cellml_slc_example"));
+        EXPECT_FALSE(model->hasUnresolvedImports());
+
+        auto flatModel = importer->flattenModel(model);
+
+        analyser->analyseModel(flatModel);
+        EXPECT_EQ(size_t(0), analyser->errorCount());
+
+        analyserModel = analyser->model();
+    }
+
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/cellml_slc_example/model.py"), generator->implementationCode());
 }
