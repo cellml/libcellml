@@ -1841,6 +1841,7 @@ TEST(Generator, variableInitialisedUsingAConstant)
 TEST(Generator, modelOutOfScope)
 {
     libcellml::AnalyserModelPtr analyserModel;
+
     {
         auto analyser = libcellml::Analyser::create();
         auto parser = libcellml::Parser::create();
@@ -1899,11 +1900,11 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
 TEST(Generator, modelWithComplexUnitsOutOfScope)
 {
     libcellml::AnalyserModelPtr analyserModel;
+
     {
         auto analyser = libcellml::Analyser::create();
         auto parser = libcellml::Parser::create();
         auto importer = libcellml::Importer::create();
-
         auto model = parser->parseModel(fileContents("generator/cellml_slc_example/slc_model.cellml"));
 
         EXPECT_EQ(size_t(0), parser->issueCount());
@@ -1911,9 +1912,9 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
         importer->resolveImports(model, resourcePath("generator/cellml_slc_example"));
         EXPECT_FALSE(model->hasUnresolvedImports());
 
-        auto flatModel = importer->flattenModel(model);
+        model = importer->flattenModel(model);
 
-        analyser->analyseModel(flatModel);
+        analyser->analyseModel(model);
         EXPECT_EQ(size_t(0), analyser->errorCount());
 
         analyserModel = analyser->model();
