@@ -27,8 +27,6 @@ namespace libcellml {
  */
 struct AnalyserModel::AnalyserModelImpl
 {
-    AnalyserModelImpl(const ModelPtr &model);
-
     ModelPtr mModel;
 
     AnalyserModel::Type mType = Type::UNKNOWN;
@@ -70,6 +68,8 @@ struct AnalyserModel::AnalyserModelImpl
     std::map<uintptr_t, bool> mCachedEquivalentVariables;
 
     static AnalyserModelPtr create(const ModelPtr &model = nullptr);
+
+    AnalyserModelImpl(const ModelPtr &model);
 };
 
 } // namespace libcellml
