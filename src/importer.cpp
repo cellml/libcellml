@@ -743,7 +743,6 @@ StringStringMap transferUnitsRenamingIfRequired(const ModelPtr &sourceModel, con
 
     std::string newName = units->name();
     UnitsPtr targetUnits = modelsEquivalentUnits(targetModel, units);
-    std::string targetName = targetUnits == nullptr ? "(null)" : targetUnits->name();
     if (targetUnits == nullptr) {
         for (size_t unitIndex = 0; unitIndex < units->unitCount(); ++unitIndex) {
             std::string reference = units->unitAttributeReference(unitIndex);
@@ -788,7 +787,6 @@ void retrieveUnitsDependencies(const ModelPtr &flatModel, const ModelPtr &model,
             auto childUnits = model->units(reference);
             if (childUnits->isImport()) {
                 size_t flatModelUnitsIndex = flatModel->unitsCount();
-                UnitsPtr clonedChildUnits = childUnits->clone();
                 flatModel->addUnits(childUnits);
                 flattenUnitsImports(flatModel, childUnits, flatModelUnitsIndex, component);
             } else {
