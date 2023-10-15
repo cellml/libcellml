@@ -22,7 +22,7 @@ limitations under the License.
 namespace libcellml {
 
 AnalyserModel::AnalyserModelImpl::AnalyserModelImpl(const ModelPtr &model)
-    : mSourceModel(model)
+    : mModel(model)
 {
 }
 

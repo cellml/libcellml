@@ -29,7 +29,7 @@ struct AnalyserModel::AnalyserModelImpl
 {
     AnalyserModelImpl(const ModelPtr &model);
 
-    ModelPtr mSourceModel;
+    ModelPtr mModel;
 
     AnalyserModel::Type mType = Type::UNKNOWN;
 
