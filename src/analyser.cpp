@@ -504,7 +504,7 @@ class Analyser::AnalyserImpl: public Logger::LoggerImpl
 public:
     Analyser *mAnalyser = nullptr;
 
-    AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create(nullptr);
+    AnalyserModelPtr mModel = AnalyserModel::AnalyserModelImpl::create();
 
     AnalyserExternalVariablePtrs mExternalVariables;
 

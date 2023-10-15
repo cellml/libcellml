@@ -69,7 +69,7 @@ struct AnalyserModel::AnalyserModelImpl
 
     std::map<uintptr_t, bool> mCachedEquivalentVariables;
 
-    static AnalyserModelPtr create(const ModelPtr &model);
+    static AnalyserModelPtr create(const ModelPtr &model = nullptr);
 };
 
 } // namespace libcellml
