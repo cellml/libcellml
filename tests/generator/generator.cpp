@@ -1840,20 +1840,21 @@ TEST(Generator, variableInitialisedUsingAConstant)
 
 TEST(Generator, modelOutOfScope)
 {
-    auto analyser = libcellml::Analyser::create();
-
+    libcellml::AnalyserModelPtr analyserModel;
     {
+        auto analyser = libcellml::Analyser::create();
         auto parser = libcellml::Parser::create();
         auto model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
 
         EXPECT_EQ(size_t(0), parser->issueCount());
 
         analyser->analyseModel(model);
+
+        EXPECT_EQ(size_t(0), analyser->errorCount());
+
+        analyserModel = analyser->model();
     }
 
-    EXPECT_EQ(size_t(0), analyser->errorCount());
-
-    auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
 
     generator->setModel(analyserModel);
