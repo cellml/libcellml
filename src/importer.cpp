@@ -787,14 +787,12 @@ void retrieveUnitsDependencies(const ModelPtr &flatModel, const ModelPtr &model,
             auto childUnits = model->units(reference);
             if (childUnits->isImport()) {
                 size_t flatModelUnitsIndex = flatModel->unitsCount();
-                UnitsPtr clonedChildUnits = childUnits->clone();
-                flatModel->addUnits(clonedChildUnits);
-                flattenUnitsImports(flatModel, clonedChildUnits, flatModelUnitsIndex, component);
+                flatModel->addUnits(childUnits);
+                flattenUnitsImports(flatModel, childUnits, flatModelUnitsIndex, component);
             } else {
-                auto clonedChildUnits = childUnits->clone();
-                transferUnitsRenamingIfRequired(model, flatModel, clonedChildUnits, component);
-                u->setUnitAttributeReference(unitIndex, clonedChildUnits->name());
-                retrieveUnitsDependencies(flatModel, model, clonedChildUnits, component);
+                transferUnitsRenamingIfRequired(model, flatModel, childUnits, component);
+                u->setUnitAttributeReference(unitIndex, childUnits->name());
+                retrieveUnitsDependencies(flatModel, model, childUnits, component);
             }
         }
     }
@@ -803,12 +801,11 @@ void retrieveUnitsDependencies(const ModelPtr &flatModel, const ModelPtr &model,
 void flattenUnitsImports(const ModelPtr &flatModel, const UnitsPtr &units, size_t index, const ComponentPtr &component)
 {
     auto importSource = units->importSource();
-    auto importingModel = importSource->model();
-    auto importedUnits = importingModel->units(units->importReference());
-    auto importedUnitsCopy = importedUnits->clone();
-    importedUnitsCopy->setName(units->name());
-    flatModel->replaceUnits(index, importedUnitsCopy);
-    retrieveUnitsDependencies(flatModel, importingModel, importedUnitsCopy, component);
+    auto importingModelCopy = importSource->model()->clone();
+    auto importedUnits = importingModelCopy->units(units->importReference());
+    importedUnits->setName(units->name());
+    flatModel->replaceUnits(index, importedUnits);
+    retrieveUnitsDependencies(flatModel, importingModelCopy, importedUnits, component);
 }
 
 ComponentPtr flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
