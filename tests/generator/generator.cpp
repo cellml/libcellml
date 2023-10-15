@@ -1841,6 +1841,7 @@ TEST(Generator, variableInitialisedUsingAConstant)
 TEST(Generator, modelOutOfScope)
 {
     auto analyser = libcellml::Analyser::create();
+
     {
         auto parser = libcellml::Parser::create();
         auto model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
