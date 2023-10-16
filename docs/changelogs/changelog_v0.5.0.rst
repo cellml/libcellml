@@ -1,5 +1,5 @@
-libCellML v0.5.0-rc.5 Changelog
-===============================
+libCellML v0.5.0 Changelog
+==========================
 
 Analyser
 --------
@@ -89,11 +89,11 @@ Validation
 Contributors
 ------------
 
-.. image:: https://avatars.githubusercontent.com/u/602265?v=4
-   :target: https://github.com/agarny
-   :height: 32
-   :width: 32
 .. image:: https://avatars.githubusercontent.com/u/778048?v=4
    :target: https://github.com/hsorby
+   :height: 32
+   :width: 32
+.. image:: https://avatars.githubusercontent.com/u/602265?v=4
+   :target: https://github.com/agarny
    :height: 32
    :width: 32
