@@ -1,10 +1,12 @@
-libCellML v0.5.0-rc.4 Changelog
-===============================
+libCellML v0.5.0 Changelog
+==========================
 
 Analyser
 --------
 
+* AnaylserModel: Fix loss of Units definition information by `@hsorby <https://github.com/hsorby>`_ [`#1196 <https://github.com/cellml/libcellml/pull/1196>`_].
 * Analyser: add support for unknown variables that have been marked as external by `@agarny <https://github.com/agarny>`_ [`#1184 <https://github.com/cellml/libcellml/pull/1184>`_].
+* AnalyserVariable: hold onto the owning component reference by `@agarny <https://github.com/agarny>`_ [`#1185 <https://github.com/cellml/libcellml/pull/1185>`_].
 * Analyser: don't optimise the order of variables and equations by `@agarny <https://github.com/agarny>`_ [`#1090 <https://github.com/cellml/libcellml/pull/1090>`_].
 * Analyser: reworked the analysis of a model with external variables by `@agarny <https://github.com/agarny>`_ [`#1077 <https://github.com/cellml/libcellml/pull/1077>`_].
 * Analyser: allow for the unknown variable to be either on the LHS or RHS of an equation by `@agarny <https://github.com/agarny>`_ [`#1071 <https://github.com/cellml/libcellml/pull/1071>`_].
@@ -79,11 +81,6 @@ Miscellaneous
 * Analyser/Generator: replace if...else statements with switch ones wherever possible by `@agarny <https://github.com/agarny>`_ [`#1135 <https://github.com/cellml/libcellml/pull/1135>`_].
 * Tests: added support for libXml2 2.9.11+ by `@agarny <https://github.com/agarny>`_ [`#1069 <https://github.com/cellml/libcellml/pull/1069>`_].
 
-No category
------------
-
-* AnalyserVariable: hold onto the owning component reference by `@agarny <https://github.com/agarny>`_ [`#1185 <https://github.com/cellml/libcellml/pull/1185>`_].
-
 Validation
 ----------
 
@@ -92,11 +89,11 @@ Validation
 Contributors
 ------------
 
-.. image:: https://avatars.githubusercontent.com/u/602265?v=4
-   :target: https://github.com/agarny
-   :height: 32
-   :width: 32
 .. image:: https://avatars.githubusercontent.com/u/778048?v=4
    :target: https://github.com/hsorby
+   :height: 32
+   :width: 32
+.. image:: https://avatars.githubusercontent.com/u/602265?v=4
+   :target: https://github.com/agarny
    :height: 32
    :width: 32
