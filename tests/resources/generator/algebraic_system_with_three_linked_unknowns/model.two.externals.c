@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.4.0";
+const char VERSION[] = "0.5.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t VARIABLE_COUNT = 3;
@@ -37,7 +37,7 @@ typedef struct {
 } RootFindingInfo;
 
 extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
-                     double *u, int n, void *data);
+                     double *u, size_t n, void *data);
 
 void objectiveFunction0(double *u, double *f, void *data)
 {
