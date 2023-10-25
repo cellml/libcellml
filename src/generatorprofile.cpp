@@ -497,7 +497,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.4.0\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.5.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n";
@@ -586,7 +586,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                           "    double *variables;\n"
                                           "} RootFindingInfo;\n";
         mExternNlaSolveMethodString = "extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
-                                      "                     double *u, int n, void *data);\n";
+                                      "                     double *u, size_t n, void *data);\n";
         mFindRootCallFamString = "findRoot[INDEX](variables);\n";
         mFindRootCallFdmString = "findRoot[INDEX](voi, states, rates, variables);\n";
         mFindRootMethodFamString = "void findRoot[INDEX](double *variables)\n"
