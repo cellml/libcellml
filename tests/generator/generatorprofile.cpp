@@ -271,7 +271,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->implementationHeaderString());
 
     EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
-    EXPECT_EQ("const char VERSION[] = \"0.4.0\";\n", generatorProfile->implementationVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.5.0\";\n", generatorProfile->implementationVersionString());
 
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n", generatorProfile->implementationLibcellmlVersionString());
@@ -383,7 +383,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "} RootFindingInfo;\n",
               generatorProfile->rootFindingInfoObjectString(true));
     EXPECT_EQ("extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),\n"
-              "                     double *u, int n, void *data);\n",
+              "                     double *u, size_t n, void *data);\n",
               generatorProfile->externNlaSolveMethodString());
     EXPECT_EQ("findRoot[INDEX](variables);\n",
               generatorProfile->findRootCallString(false));
