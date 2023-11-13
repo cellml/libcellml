@@ -1930,3 +1930,39 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
 
     EXPECT_EQ(fileContents("generator/cellml_slc_example/model.py"), generator->implementationCode());
 }
+
+TEST(Generator, segfaultWhenResolvingImports)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("generator/SN_to_cAMP/SN_to_cAMP.cellml"));
+    auto importer = libcellml::Importer::create(false);
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    importer->resolveImports(model, resourcePath("generator/SN_to_cAMP"));
+
+    EXPECT_FALSE(model->hasUnresolvedImports()); // <--- >>> CRASH! <<<
+
+    model = importer->flattenModel(model);
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
+    EXPECT_EQ(fileContents("generator/SN_to_cAMP/SN_to_cAMP.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/SN_to_cAMP/SN_to_cAMP.c"), generator->implementationCode());
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/SN_to_cAMP/SN_to_cAMP.py"), generator->implementationCode());
+}
