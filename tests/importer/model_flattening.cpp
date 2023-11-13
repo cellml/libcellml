@@ -1899,3 +1899,22 @@ TEST(ModelFlattening, flatteningImportedUnitsThatNeedEquivalence)
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(e, printer->printModel(flatModel));
 }
+
+TEST(ModelFlattening, modelWithCnUnitsNotDefinedInImportedComponent)
+{
+    auto parser = libcellml::Parser::create(false);
+    auto model = parser->parseModel(fileContents("modelflattening/SN_to_cAMP/SN_to_cAMP.cellml"));
+    auto importer = libcellml::Importer::create(false);
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    importer->resolveImports(model, resourcePath("modelflattening/SN_to_cAMP"));
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model = importer->flattenModel(model);
+
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ("The model is not fully defined.", importer->error(0)->description());
+}
