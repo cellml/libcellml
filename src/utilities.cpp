@@ -758,8 +758,13 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentConstPtr &
     auto componentCnUnitsNames = findComponentCnUnitsNames(component);
     for (const auto &unitsName : componentCnUnitsNames) {
         auto u = model->units(unitsName);
-        auto requiredUnits = referencedUnits(model, u);
-        usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+        if (u == nullptr) {
+          // We have used a units in the math but it is not defined in the given model, so send back a units that isn't defined.
+          u = Units::create(unitsName);
+        } else {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+        }
         usedUnits.push_back(u);
     }
 
