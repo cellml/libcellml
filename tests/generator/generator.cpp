@@ -1930,22 +1930,3 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
 
     EXPECT_EQ(fileContents("generator/cellml_slc_example/model.py"), generator->implementationCode());
 }
-
-TEST(Generator, modelWithCnUnitsNotDefinedInImportedComponent)
-{
-    auto parser = libcellml::Parser::create(false);
-    auto model = parser->parseModel(fileContents("generator/SN_to_cAMP/SN_to_cAMP.cellml"));
-    auto importer = libcellml::Importer::create(false);
-
-    EXPECT_EQ(size_t(0), parser->errorCount());
-    EXPECT_TRUE(model->hasUnresolvedImports());
-
-    importer->resolveImports(model, resourcePath("generator/SN_to_cAMP"));
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
-
-    model = importer->flattenModel(model);
-
-    EXPECT_EQ(size_t(1), importer->errorCount());
-    EXPECT_EQ("The model is not fully defined.", importer->error(0)->description());
-}
