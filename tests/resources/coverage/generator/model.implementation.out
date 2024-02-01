@@ -116,7 +116,7 @@ typedef struct {
 } RootFindingInfo;
 
 extern void nlaSolve(void (*objectiveFunction)(double *, double *, void *),
-                     double *u, int n, void *data);
+                     double *u, size_t n, void *data);
 
 void objectiveFunction0(double *u, double *f, void *data)
 {

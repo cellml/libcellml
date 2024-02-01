@@ -118,7 +118,7 @@ jobs:
         ref: v2.9.10
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.3.1
       if: runner.os == 'Windows'
 
     - name: Prepare Windows environment
@@ -254,10 +254,8 @@ jobs:
         endif()
 
         file(GLOB _DIST_FILES ${ACTION_DIR}/build/dist/*)
-        # softprops action requires a list of newline separated files.
-        # The %0A will be converted by GitHub actions into '\n'.
-        string(REPLACE ";" "%0A" _DIST_FILES "${_DIST_FILES}")
-        file(APPEND $ENV{GITHUB_OUTPUT} "files=${_DIST_FILES}")
+        string(REPLACE ";" "\n" _DIST_FILES "${_DIST_FILES}")
+        file(APPEND $ENV{GITHUB_OUTPUT} "files<<EOF\n${_DIST_FILES}\nEOF")
 
     - name: Publish libraries
       if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
@@ -317,7 +315,7 @@ jobs:
               echo "macos_archs=x86_64" >> $GITHUB_OUTPUT
             else
               echo "Setting macos_archs as: macos_archs='x86_64 arm64'"
-              echo 'MACOS_ARCHS="x86_64 arm64"' >> $GITHUB_OUTPUT
+              echo 'MACOS_ARCHS=x86_64 arm64' >> $GITHUB_OUTPUT
             fi
           else
             echo "Setting macos_archs as: macos_archs='x86_64'"

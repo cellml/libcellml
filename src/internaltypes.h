@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <map>
+#include <set>
 #include <unordered_set>
 #include <vector>
 
@@ -36,6 +37,7 @@ using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type 
 using NameList = std::vector<std::string>; /**< Type definition for list of names. */
 using DescriptionList = std::vector<std::pair<VariablePtr, std::string>>; /**< Type definition for list of variables and associated description. */
 using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
+using UniqueNames = std::set<std::string>; /**< Type definition for a set of unique names. */
 
 // VariableMap
 using VariableMap = std::vector<VariablePairPtr>; /**< Type definition for vector of VariablePair.*/
