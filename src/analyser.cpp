@@ -1682,9 +1682,17 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast)
                        0.0 :
                        powerValue(ast->mPimpl->mOwnedLeftChild) / powerValue(ast->mPimpl->mOwnedRightChild);
         case AnalyserEquationAst::Type::PLUS:
-            return powerValue(ast->mPimpl->mOwnedLeftChild) + powerValue(ast->mPimpl->mOwnedRightChild);
+            if (ast->mPimpl->mOwnedRightChild != nullptr) {
+                return powerValue(ast->mPimpl->mOwnedLeftChild) + powerValue(ast->mPimpl->mOwnedRightChild);
+            }
+
+            return powerValue(ast->mPimpl->mOwnedLeftChild);
         case AnalyserEquationAst::Type::MINUS:
-            return powerValue(ast->mPimpl->mOwnedLeftChild) - powerValue(ast->mPimpl->mOwnedRightChild);
+            if (ast->mPimpl->mOwnedRightChild != nullptr) {
+                return powerValue(ast->mPimpl->mOwnedLeftChild) - powerValue(ast->mPimpl->mOwnedRightChild);
+            }
+
+            return powerValue(ast->mPimpl->mOwnedLeftChild);
         case AnalyserEquationAst::Type::DEGREE:
             return powerValue(ast->mPimpl->mOwnedLeftChild);
         default:
