@@ -1934,7 +1934,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     case AnalyserEquationAst::Type::REM: {
         auto sameUnitsMaps = rightUnitsMaps.empty()
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
-        auto sameUnitsMultipliers = rightUnitsMaps.empty()
+        auto sameUnitsMultipliers = rightUnitsMultipliers.empty()
                                     || areSameUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
 
         if (sameUnitsMaps && sameUnitsMultipliers) {
@@ -2068,17 +2068,17 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
         // Retrieve the exponent and apply it to our units maps and multipliers.
 
         if (isDimensionlessExponent) {
-            auto powerRootValue = 0.0;
+            double powerRootValue;
 
             if (isPower) {
-                powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedRightChild);
+                powerRootValue = powerValue(ast->mPimpl->mOwnedRightChild);
             } else { // AnalyserEquationAst::Type::ROOT.
                 if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
                     unitsMaps = rightUnitsMaps;
                     userUnitsMaps = rightUserUnitsMaps;
                     unitsMultipliers = rightUnitsMultipliers;
 
-                    powerRootValue = Analyser::AnalyserImpl::powerValue(ast->mPimpl->mOwnedLeftChild);
+                    powerRootValue = powerValue(ast->mPimpl->mOwnedLeftChild);
                 } else {
                     // No DEGREE element, which means that we are dealing with a
                     // square root.
