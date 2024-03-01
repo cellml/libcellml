@@ -786,8 +786,8 @@ TEST(AnalyserUnits, fabbriFantiniWildersSeveriHumanSanModel2017WithIncompatibleU
 
     const std::vector<std::string> expectedIssues = {
         "The unit of '1.2' in 'pow(Km_Kp/Ko, 1.2)' in '1.0+pow(Km_Kp/Ko, 1.2)' in 'pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)' in 'pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)*pow(1.0+pow(Km_Nap/Nai, 1.3), -1.0)*pow(1.0+exp(-(V-E_Na+110.0)/20.0), -1.0)' in 'i_NaK_max*pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)*pow(1.0+pow(Km_Nap/Nai, 1.3), -1.0)*pow(1.0+exp(-(V-E_Na+110.0)/20.0), -1.0)' in 'Iso_increase*i_NaK_max*pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)*pow(1.0+pow(Km_Nap/Nai, 1.3), -1.0)*pow(1.0+exp(-(V-E_Na+110.0)/20.0), -1.0)' in equation 'i_NaK = Iso_increase*i_NaK_max*pow(1.0+pow(Km_Kp/Ko, 1.2), -1.0)*pow(1.0+pow(Km_Nap/Nai, 1.3), -1.0)*pow(1.0+exp(-(V-E_Na+110.0)/20.0), -1.0)' in component 'i_NaK' is not dimensionless. '1.2' is in 'second'.",
+        "The units in '1.0+pow(EC50_SR/Ca_jsr, HSR)' in '(MaxSR-MinSR)/(1.0+pow(EC50_SR/Ca_jsr, HSR))' in 'MaxSR-(MaxSR-MinSR)/(1.0+pow(EC50_SR/Ca_jsr, HSR))' in equation 'kCaSR = MaxSR-(MaxSR-MinSR)/(1.0+pow(EC50_SR/Ca_jsr, HSR))' in component 'Ca_SR_release' may not be equivalent. '1.0' is 'dimensionless' while 'HSR' may result in 'pow(EC50_SR/Ca_jsr, HSR)' having different units.",
         "The units in 'ACh > 0.0' in '(ACh > 0.0)?0.7*ACh/(0.00009+ACh)' in '(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in '(Iso_1_uM > 0.0)?-0.25:(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in equation 'b_up = (Iso_1_uM > 0.0)?-0.25:(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in component 'Ca_intracellular_fluxes' are not equivalent. 'ACh' is in 'millimolar' (i.e. 'metre^-3 x mole') while '0.0' is in 'millimolar4' (i.e. 'metre^-12 x mole^4').",
-        "The unit of 'ACh > 0.0' in '(ACh > 0.0)?0.7*ACh/(0.00009+ACh)' in '(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in '(Iso_1_uM > 0.0)?-0.25:(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in equation 'b_up = (Iso_1_uM > 0.0)?-0.25:(ACh > 0.0)?0.7*ACh/(0.00009+ACh):0.0' in component 'Ca_intracellular_fluxes' is not dimensionless. 'ACh > 0.0' is in 'millimolar' (i.e. 'metre^-3 x mole').",
         "The units in '-1.0-9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423)' in '(ACh > 0.0)?-1.0-9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423)' in '(ACh > 0.0)?-1.0-9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423):0.0' in equation 'ACh_shift = (ACh > 0.0)?-1.0-9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423):0.0' in component 'i_f_y_gate' are not equivalent. '-1.0' is in 'millivolt' (i.e. '10^-3 x ampere^-1 x kilogram x metre^2 x second^-3') while '9.898*pow(1.0*ACh, 0.618)/(pow(1.0*ACh, 0.618)+0.00122423)' is in 'volt' (i.e. 'ampere^-1 x kilogram x metre^2 x second^-3').",
         "The units in '0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)+0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift)))' in '1.0/(0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)+0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift))))' in '1.0/(0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)+0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift))))-0.054' in equation 'tau_y = 1.0/(0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)+0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift))))-0.054' in component 'i_f_y_gate' are not equivalent. '0.36*(V+148.8-ACh_shift-Iso_shift)/(exp(0.066*(V+148.8-ACh_shift-Iso_shift))-1.0)' is 'dimensionless' while '0.1*(V+87.3-ACh_shift-Iso_shift)/(1.0-exp(-0.2*(V+87.3-ACh_shift-Iso_shift)))' is in 'millivolt x per_millivolt_second' (i.e. 'second^-1').",
         "The units in '0.01329+0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752))' in '(V < -(80.0-ACh_shift-Iso_shift-y_shift))?0.01329+0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752))' in '(V < -(80.0-ACh_shift-Iso_shift-y_shift))?0.01329+0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752)):0.0002501*exp(-(V-ACh_shift-Iso_shift-y_shift)/12.861)' in equation 'y_infinity = (V < -(80.0-ACh_shift-Iso_shift-y_shift))?0.01329+0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752)):0.0002501*exp(-(V-ACh_shift-Iso_shift-y_shift)/12.861)' in component 'i_f_y_gate' are not equivalent. '0.01329' is 'dimensionless' while '0.99921/(1.0+exp((V+97.134-ACh_shift-Iso_shift-y_shift)/8.1752))' is in 'ampere'.",
@@ -798,6 +798,86 @@ TEST(AnalyserUnits, fabbriFantiniWildersSeveriHumanSanModel2017WithIncompatibleU
         "The units in '-0.02839*(adVm+41.8)/(exp(-(adVm+41.8)/2.5)-1.0)-0.0849*(adVm+6.8)/(exp(-(adVm+6.8)/4.8)-1.0)' in equation 'alpha_dL = -0.02839*(adVm+41.8)/(exp(-(adVm+41.8)/2.5)-1.0)-0.0849*(adVm+6.8)/(exp(-(adVm+6.8)/4.8)-1.0)' in component 'i_CaL_dL_gate' are not equivalent. '-0.02839*(adVm+41.8)/(exp(-(adVm+41.8)/2.5)-1.0)' is in 'millivolt x per_millivolt_second' (i.e. 'second^-1') while '0.0849*(adVm+6.8)/(exp(-(adVm+6.8)/4.8)-1.0)' is in 'millivolt x per_second' (i.e. '10^-3 x ampere^-1 x kilogram x metre^2 x second^-4').",
         "The unit of '-pow((V+36.0)/10.0, 2.0)' in 'exp(-pow((V+36.0)/10.0, 2.0))' in '230.0*exp(-pow((V+36.0)/10.0, 2.0))' in '44.3+230.0*exp(-pow((V+36.0)/10.0, 2.0))' in '0.001*(44.3+230.0*exp(-pow((V+36.0)/10.0, 2.0)))' in equation 'tau_fL = 0.001*(44.3+230.0*exp(-pow((V+36.0)/10.0, 2.0)))' in component 'i_CaL_fL_gate' is not dimensionless. '-pow((V+36.0)/10.0, 2.0)' is in 'ampere^-2 x millivolt^2' (i.e. '10^-6 x ampere^-4 x kilogram^2 x metre^4 x second^-6').",
         "The units in 'i_KACh = (ACh > 0.0)?ACh_on*g_KACh*(V-E_K)*(1.0+exp((V+20.0)/20.0))*a:0.0' in component 'i_KACh' are not equivalent. 'i_KACh' is in 'nanoA' (i.e. '10^-9 x ampere') while '(ACh > 0.0)?ACh_on*g_KACh*(V-E_K)*(1.0+exp((V+20.0)/20.0))*a:0.0' is in 'microS x millivolt' and 'ampere' (i.e. '10^-9 x ampere' and 'ampere').",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+}
+
+TEST(AnalyserUnits, powerValues)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/units/power_values.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "The units in 'eqnEq = pow(x, 3.0 == 5.0)' in component 'my_component' are not equivalent. 'eqnEq' is in 'second' while 'pow(x, 3.0 == 5.0)' is 'dimensionless'.",
+        "The units in 'eqnGt = pow(x, 3.0 > 5.0)' in component 'my_component' are not equivalent. 'eqnGt' is in 'second' while 'pow(x, 3.0 > 5.0)' is 'dimensionless'.",
+        "The units in 'eqnGeq = pow(x, 3.0 >= 5.0)' in component 'my_component' are not equivalent. 'eqnGeq' is in 'second' while 'pow(x, 3.0 >= 5.0)' is 'dimensionless'.",
+        "The units in 'eqnAnd2 = pow(x, !3.0 && 5.0)' in component 'my_component' are not equivalent. 'eqnAnd2' is in 'second' while 'pow(x, !3.0 && 5.0)' is 'dimensionless'.",
+        "The units in 'eqnAnd3 = pow(x, 3.0 && !5.0)' in component 'my_component' are not equivalent. 'eqnAnd3' is in 'second' while 'pow(x, 3.0 && !5.0)' is 'dimensionless'.",
+        "The units in 'eqnOr3 = pow(x, !3.0 || !5.0)' in component 'my_component' are not equivalent. 'eqnOr3' is in 'second' while 'pow(x, !3.0 || !5.0)' is 'dimensionless'.",
+        "The units in 'eqnXor = pow(x, xor(3.0, 5.0))' in component 'my_component' are not equivalent. 'eqnXor' is in 'second' while 'pow(x, xor(3.0, 5.0))' is 'dimensionless'.",
+        "The units in 'eqnNot = pow(x, !3.0)' in component 'my_component' are not equivalent. 'eqnNot' is in 'second' while 'pow(x, !3.0)' is 'dimensionless'.",
+        "The units in 'eqnPlus = pow(x, 3.0)' in component 'my_component' are not equivalent. 'eqnPlus' is in 'second' while 'pow(x, 3.0)' is in 'second^3'.",
+        "The units in 'eqnPlus2 = pow(x, 3.0+5.0)' in component 'my_component' are not equivalent. 'eqnPlus2' is in 'second' while 'pow(x, 3.0+5.0)' is in 'second^8'.",
+        "The units in 'eqnMinus = pow(x, -3.0)' in component 'my_component' are not equivalent. 'eqnMinus' is in 'second' while 'pow(x, -3.0)' is in 'second^-3'.",
+        "The units in 'eqnMinus2 = pow(x, 3.0-5.0)' in component 'my_component' are not equivalent. 'eqnMinus2' is in 'second' while 'pow(x, 3.0-5.0)' is in 'second^-2'.",
+        "The units in 'eqnTimes = pow(x, 3.0*5.0)' in component 'my_component' are not equivalent. 'eqnTimes' is in 'second' while 'pow(x, 3.0*5.0)' is in 'second^15'.",
+        "The units in 'eqnDivide = pow(x, 3.0/5.0)' in component 'my_component' are not equivalent. 'eqnDivide' is in 'second' while 'pow(x, 3.0/5.0)' is in 'second^0.6'.",
+        "The units in 'eqnPower = pow(x, pow(3.0, 5.0))' in component 'my_component' are not equivalent. 'eqnPower' is in 'second' while 'pow(x, pow(3.0, 5.0))' is in 'second^243'.",
+        "The units in 'eqnRoot = pow(x, pow(3.0, 1.0/5.0))' in component 'my_component' are not equivalent. 'eqnRoot' is in 'second' while 'pow(x, pow(3.0, 1.0/5.0))' is in 'second^1.24573'.",
+        "The units in 'eqnRoot2 = pow(x, sqrt(3.0))' in component 'my_component' are not equivalent. 'eqnRoot2' is in 'second' while 'pow(x, sqrt(3.0))' is in 'second^1.73205'.",
+        "The units in 'eqnAbs = pow(x, abs(-3.0))' in component 'my_component' are not equivalent. 'eqnAbs' is in 'second' while 'pow(x, abs(-3.0))' is in 'second^3'.",
+        "The units in 'eqnExp = pow(x, exp(3.0))' in component 'my_component' are not equivalent. 'eqnExp' is in 'second' while 'pow(x, exp(3.0))' is in 'second^20.0855'.",
+        "The units in 'eqnLn = pow(x, ln(3.0))' in component 'my_component' are not equivalent. 'eqnLn' is in 'second' while 'pow(x, ln(3.0))' is in 'second^1.09861'.",
+        "The units in 'eqnLog = pow(x, log(3.0))' in component 'my_component' are not equivalent. 'eqnLog' is in 'second' while 'pow(x, log(3.0))' is in 'second^0.477121'.",
+        "The units in 'eqnLog2 = pow(x, ln(3.0)/ln(2.0))' in component 'my_component' are not equivalent. 'eqnLog2' is in 'second' while 'pow(x, ln(3.0)/ln(2.0))' is in 'second^1.58496'.",
+        "The units in 'eqnLog10 = pow(x, log(3.0))' in component 'my_component' are not equivalent. 'eqnLog10' is in 'second' while 'pow(x, log(3.0))' is in 'second^0.477121'.",
+        "The units in 'eqnCeiling = pow(x, ceil(3.21))' in component 'my_component' are not equivalent. 'eqnCeiling' is in 'second' while 'pow(x, ceil(3.21))' is in 'second^4'.",
+        "The units in 'eqnFloor = pow(x, floor(3.21))' in component 'my_component' are not equivalent. 'eqnFloor' is in 'second' while 'pow(x, floor(3.21))' is in 'second^3'.",
+        "The units in 'eqnMin = pow(x, min(3.0, 5.0))' in component 'my_component' are not equivalent. 'eqnMin' is in 'second' while 'pow(x, min(3.0, 5.0))' is in 'second^3'.",
+        "The units in 'eqnMin2 = pow(x, min(5.0, 3.0))' in component 'my_component' are not equivalent. 'eqnMin2' is in 'second' while 'pow(x, min(5.0, 3.0))' is in 'second^3'.",
+        "The units in 'eqnMax = pow(x, max(3.0, 5.0))' in component 'my_component' are not equivalent. 'eqnMax' is in 'second' while 'pow(x, max(3.0, 5.0))' is in 'second^5'.",
+        "The units in 'eqnMax2 = pow(x, max(5.0, 3.0))' in component 'my_component' are not equivalent. 'eqnMax2' is in 'second' while 'pow(x, max(5.0, 3.0))' is in 'second^5'.",
+        "The units in 'eqnRem = pow(x, rem(3.0, 5.0))' in component 'my_component' are not equivalent. 'eqnRem' is in 'second' while 'pow(x, rem(3.0, 5.0))' is in 'second^3'.",
+        "The units in 'eqnDiff = pow(x, dx/dt)' in component 'my_component' may not be equivalent. 'eqnDiff' is in 'second' while 't' may result in 'pow(x, dx/dt)' having different units.",
+        "The units in 'eqnSin = pow(x, sin(3.0))' in component 'my_component' are not equivalent. 'eqnSin' is in 'second' while 'pow(x, sin(3.0))' is in 'second^0.14112'.",
+        "The units in 'eqnCos = pow(x, cos(3.0))' in component 'my_component' are not equivalent. 'eqnCos' is in 'second' while 'pow(x, cos(3.0))' is in 'second^-0.989992'.",
+        "The units in 'eqnTan = pow(x, tan(3.0))' in component 'my_component' are not equivalent. 'eqnTan' is in 'second' while 'pow(x, tan(3.0))' is in 'second^-0.142547'.",
+        "The units in 'eqnSec = pow(x, sec(3.0))' in component 'my_component' are not equivalent. 'eqnSec' is in 'second' while 'pow(x, sec(3.0))' is in 'second^-1.01011'.",
+        "The units in 'eqnCsc = pow(x, csc(3.0))' in component 'my_component' are not equivalent. 'eqnCsc' is in 'second' while 'pow(x, csc(3.0))' is in 'second^7.08617'.",
+        "The units in 'eqnCot = pow(x, cot(3.0))' in component 'my_component' are not equivalent. 'eqnCot' is in 'second' while 'pow(x, cot(3.0))' is in 'second^-7.01525'.",
+        "The units in 'eqnSinh = pow(x, sinh(3.0))' in component 'my_component' are not equivalent. 'eqnSinh' is in 'second' while 'pow(x, sinh(3.0))' is in 'second^10.0179'.",
+        "The units in 'eqnCosh = pow(x, cosh(3.0))' in component 'my_component' are not equivalent. 'eqnCosh' is in 'second' while 'pow(x, cosh(3.0))' is in 'second^10.0677'.",
+        "The units in 'eqnTanh = pow(x, tanh(3.0))' in component 'my_component' are not equivalent. 'eqnTanh' is in 'second' while 'pow(x, tanh(3.0))' is in 'second^0.995055'.",
+        "The units in 'eqnSech = pow(x, sech(3.0))' in component 'my_component' are not equivalent. 'eqnSech' is in 'second' while 'pow(x, sech(3.0))' is in 'second^0.0993279'.",
+        "The units in 'eqnCsch = pow(x, csch(3.0))' in component 'my_component' are not equivalent. 'eqnCsch' is in 'second' while 'pow(x, csch(3.0))' is in 'second^0.0998216'.",
+        "The units in 'eqnCoth = pow(x, coth(3.0))' in component 'my_component' are not equivalent. 'eqnCoth' is in 'second' while 'pow(x, coth(3.0))' is in 'second^1.00497'.",
+        "The units in 'eqnArcsin = pow(x, arcsin(0.3))' in component 'my_component' are not equivalent. 'eqnArcsin' is in 'second' while 'pow(x, arcsin(0.3))' is in 'second^0.304693'.",
+        "The units in 'eqnArccos = pow(x, arccos(0.3))' in component 'my_component' are not equivalent. 'eqnArccos' is in 'second' while 'pow(x, arccos(0.3))' is in 'second^1.2661'.",
+        "The units in 'eqnArctan = pow(x, arctan(3.0))' in component 'my_component' are not equivalent. 'eqnArctan' is in 'second' while 'pow(x, arctan(3.0))' is in 'second^1.24905'.",
+        "The units in 'eqnArcsec = pow(x, arcsec(3.0))' in component 'my_component' are not equivalent. 'eqnArcsec' is in 'second' while 'pow(x, arcsec(3.0))' is in 'second^1.23096'.",
+        "The units in 'eqnArccsc = pow(x, arccsc(3.0))' in component 'my_component' are not equivalent. 'eqnArccsc' is in 'second' while 'pow(x, arccsc(3.0))' is in 'second^0.339837'.",
+        "The units in 'eqnArccot = pow(x, arccot(3.0))' in component 'my_component' are not equivalent. 'eqnArccot' is in 'second' while 'pow(x, arccot(3.0))' is in 'second^0.321751'.",
+        "The units in 'eqnArcsinh = pow(x, arcsinh(3.0))' in component 'my_component' are not equivalent. 'eqnArcsinh' is in 'second' while 'pow(x, arcsinh(3.0))' is in 'second^1.81845'.",
+        "The units in 'eqnArccosh = pow(x, arccosh(3.0))' in component 'my_component' are not equivalent. 'eqnArccosh' is in 'second' while 'pow(x, arccosh(3.0))' is in 'second^1.76275'.",
+        "The units in 'eqnArctanh = pow(x, arctanh(0.3))' in component 'my_component' are not equivalent. 'eqnArctanh' is in 'second' while 'pow(x, arctanh(0.3))' is in 'second^0.30952'.",
+        "The units in 'eqnArcsech = pow(x, arcsech(0.3))' in component 'my_component' are not equivalent. 'eqnArcsech' is in 'second' while 'pow(x, arcsech(0.3))' is in 'second^1.87382'.",
+        "The units in 'eqnArccsch = pow(x, arccsch(3.0))' in component 'my_component' are not equivalent. 'eqnArccsch' is in 'second' while 'pow(x, arccsch(3.0))' is in 'second^0.32745'.",
+        "The units in 'eqnArccoth = pow(x, arccoth(3.0))' in component 'my_component' are not equivalent. 'eqnArccoth' is in 'second' while 'pow(x, arccoth(3.0))' is in 'second^0.346574'.",
+        "The units in 'eqnPiecewise = pow(x, (y > 5.0)?3.0:7.0)' in component 'my_component' may not be equivalent. 'eqnPiecewise' is in 'second' while 'y' may result in 'pow(x, (y > 5.0)?3.0:7.0)' having different units.",
+        "The units in 'eqnCi = pow(x, y)' in component 'my_component' may not be equivalent. 'eqnCi' is in 'second' while 'y' may result in 'pow(x, y)' having different units.",
+        "The units in 'eqnCn = pow(x, 3.0)' in component 'my_component' are not equivalent. 'eqnCn' is in 'second' while 'pow(x, 3.0)' is in 'second^3'.",
+        "The units in 'eqnFalse = pow(x, false)' in component 'my_component' are not equivalent. 'eqnFalse' is in 'second' while 'pow(x, false)' is 'dimensionless'.",
+        "The units in 'eqnExponentiale = pow(x, exponentiale)' in component 'my_component' are not equivalent. 'eqnExponentiale' is in 'second' while 'pow(x, exponentiale)' is in 'second^2.71828'.",
+        "The units in 'eqnPi = pow(x, pi)' in component 'my_component' are not equivalent. 'eqnPi' is in 'second' while 'pow(x, pi)' is in 'second^3.14159'.",
+        "The units in 'eqnInfinity = pow(x, infinity)' in component 'my_component' are not equivalent. 'eqnInfinity' is in 'second' while 'pow(x, infinity)' is in 'second^inf' (i.e. '10^nan x second^inf').",
+        "The units in 'eqnNotanumber = pow(x, notanumber)' in component 'my_component' are not equivalent. 'eqnNotanumber' is in 'second' while 'pow(x, notanumber)' is in 'second^nan' (i.e. '10^nan x second^nan').",
     };
 
     auto analyser = libcellml::Analyser::create();

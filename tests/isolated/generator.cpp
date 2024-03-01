@@ -206,5 +206,6 @@ TEST(Generator, isolatedFirstOrderModel)
     analyser->analyseModel(model);
 
     //  5.b   Check whether the analyser has encountered any issues.
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(1), analyser->issueCount());
+    EXPECT_EQ("The units in 'i_y = g_y*(V-E_y)*pow(y, gamma)' in component 'IonChannel' may not be equivalent. 'i_y' is in 'microA_per_cm2' (i.e. '10^-2 x ampere x metre^-2') while 'gamma' may result in 'g_y*(V-E_y)*pow(y, gamma)' having different units.", analyser->issue(0)->description());
 }
