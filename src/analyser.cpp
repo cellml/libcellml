@@ -2103,16 +2103,16 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     // Check the left and right children.
 
-    UnitsMaps rightUnitsMaps;
-    UnitsMaps rightUserUnitsMaps;
-    UnitsMultipliers rightUnitsMultipliers;
-
     analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers,
                          issueDescription, noPowerValueOrPowerValueConstant, powerValueAst);
 
     if (!issueDescription.empty()) {
         return;
     }
+
+    UnitsMaps rightUnitsMaps;
+    UnitsMaps rightUserUnitsMaps;
+    UnitsMultipliers rightUnitsMultipliers;
 
     analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers,
                          issueDescription, noPowerValueOrPowerValueConstant, powerValueAst);
@@ -2687,8 +2687,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         bool noPowerValueOrPowerValueConstant = true;
         AnalyserEquationAstPtr powerValueAst = nullptr;
 
-        analyseEquationUnits(internalEquation->mAst, unitsMaps,
-                             userUnitsMaps, unitsMultipliers,
+        analyseEquationUnits(internalEquation->mAst, unitsMaps, userUnitsMaps, unitsMultipliers,
                              issueDescription, noPowerValueOrPowerValueConstant, powerValueAst);
 
         if (!issueDescription.empty()) {
