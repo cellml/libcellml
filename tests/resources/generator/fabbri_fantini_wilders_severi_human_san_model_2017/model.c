@@ -426,6 +426,7 @@ void initialiseVariables(double *states, double *rates, double *variables)
 
 void computeComputedConstants(double *variables)
 {
+    variables[3] = variables[119]*variables[120]/variables[17];
     variables[6] = variables[3]*log(variables[7]/variables[8]);
     variables[20] = (variables[1] > 0.0)?1.2:1.0;
     variables[35] = variables[4]/(variables[47]+variables[4]);
@@ -436,7 +437,6 @@ void computeComputedConstants(double *variables)
     variables[100] = variables[107]*variables[103];
     variables[18] = variables[108]*variables[103]-variables[19];
     variables[99] = variables[109]*variables[103];
-    variables[3] = variables[119]*variables[120]/variables[17];
     variables[127] = variables[128]/(variables[7]/(variables[7]+variables[129]));
     variables[130] = variables[127]/(variables[131]+1.0);
     variables[132] = variables[131]*variables[130];
