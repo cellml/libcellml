@@ -1,9 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="coverage" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <units name="second3">
+        <unit exponent="3" units="second"/>
+    </units>
+    <units name="second4">
+        <unit exponent="4" units="second"/>
+    </units>
+    <units name="second5">
+        <unit exponent="5" units="second"/>
+    </units>
     <component name="my_component">
         <variable name="t" units="second"/>
         <variable name="x" initial_value="1" units="second"/>
         <variable name="y" initial_value="3" units="dimensionless"/>
+        <variable name="z" initial_value="1" units="dimensionless"/>
         <variable name="eqnEq" units="second"/>
         <variable name="eqnNeq" units="second"/>
         <variable name="eqnLt" units="second"/>
@@ -67,6 +77,10 @@
         <variable name="eqnArccoth" units="second"/>
         <variable name="eqnPiecewise" units="second"/>
         <variable name="eqnCi" units="second"/>
+        <variable name="eqnCi2" units="second"/>
+        <variable name="eqnCi3" units="second3"/>
+        <variable name="eqnCi4" units="second4"/>
+        <variable name="eqnCi5" units="second5"/>
         <variable name="eqnCn" units="second"/>
         <variable name="eqnTrue" units="second"/>
         <variable name="eqnFalse" units="second"/>
@@ -896,6 +910,66 @@
                     <power/>
                     <ci>x</ci>
                     <ci>y</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCi2</ci>
+                <apply>
+                    <power/>
+                    <ci>x</ci>
+                    <ci>z</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCi3</ci>
+                <apply>
+                    <power/>
+                    <ci>x</ci>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">3</cn>
+                        <ci>z</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCi4</ci>
+                <apply>
+                    <power/>
+                    <ci>x</ci>
+                    <apply>
+                        <plus/>
+                        <ci>y</ci>
+                        <ci>z</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCi5</ci>
+                <apply>
+                    <power/>
+                    <ci>x</ci>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <power/>
+                            <apply>
+                                <minus/>
+                                <ci>y</ci>
+                                <ci>z</ci>
+                            </apply>
+                            <apply>
+                                <minus/>
+                                <ci>y</ci>
+                                <ci>z</ci>
+                            </apply>
+                        </apply>
+                        <cn cellml:units="dimensionless">1</cn>
+                    </apply>
                 </apply>
             </apply>
             <apply>
