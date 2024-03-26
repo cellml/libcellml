@@ -42,6 +42,7 @@ limitations under the License.
 #include "analyservariable_p.h"
 #include "anycellmlelement_p.h"
 #include "commonutils.h"
+#include "generator_p.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"
@@ -506,11 +507,14 @@ using UnitsMultipliers = std::vector<double>;
 class Analyser::AnalyserImpl: public Logger::LoggerImpl
 {
 public:
-    class Data
+    class PowerData
     {
     public:
-        bool mPowerValueAvailable = true;
-        AnalyserEquationAstPtr mPowerValueAst;
+        bool mDimensionlessBase;
+        bool mExponentValueAvailable = true;
+        bool mExponentValueChangeable = false;
+        double mExponentValue;
+        AnalyserEquationAstPtr mExponentAst;
     };
 
     Analyser *mAnalyser = nullptr;
@@ -584,7 +588,7 @@ public:
                                double unitsExponent = 1.0,
                                double unitsMultiplier = 0.0);
     std::string componentName(const AnalyserEquationAstPtr &ast);
-    double powerValue(const AnalyserEquationAstPtr &ast, Data &data);
+    double powerValue(const AnalyserEquationAstPtr &ast, PowerData &powerData);
     std::string expression(const AnalyserEquationAstPtr &ast,
                            bool includeHierarchy = true);
     std::string expressionUnits(const UnitsMaps &unitsMaps,
@@ -599,7 +603,7 @@ public:
     void analyseEquationUnits(const AnalyserEquationAstPtr &ast,
                               UnitsMaps &unitsMaps, UnitsMaps &userUnitsMaps,
                               UnitsMultipliers &unitsMultipliers,
-                              std::string &issueDescription, Data &data);
+                              std::string &issueDescription, PowerData &powerData);
 
     double scalingFactor(const VariablePtr &variable);
 
@@ -1673,7 +1677,7 @@ std::string Analyser::AnalyserImpl::componentName(const AnalyserEquationAstPtr &
 }
 
 double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
-                                          Data &data)
+                                          PowerData &powerData)
 {
     // Make sure that we have an AST to process.
 
@@ -1685,15 +1689,15 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
 
     // Retrieve the power value of the LHS and RHS of the given AST.
 
-    auto lhs = powerValue(ast->mPimpl->mOwnedLeftChild, data);
+    auto lhs = powerValue(ast->mPimpl->mOwnedLeftChild, powerData);
 
-    if (!data.mPowerValueAvailable) {
+    if (!powerData.mExponentValueAvailable) {
         return lhs;
     }
 
-    auto rhs = powerValue(ast->mPimpl->mOwnedRightChild, data);
+    auto rhs = powerValue(ast->mPimpl->mOwnedRightChild, powerData);
 
-    if (!data.mPowerValueAvailable) {
+    if (!powerData.mExponentValueAvailable) {
         return rhs;
     }
 
@@ -1840,6 +1844,19 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
 
         // Token elements.
 
+    case AnalyserEquationAst::Type::CI: {
+        auto initialValue = ast->variable()->initialValue();
+
+        if (initialValue.empty()) {
+            powerData.mExponentValueAvailable = false;
+
+            return NAN;
+        }
+
+        powerData.mExponentValueChangeable = true;
+
+        return std::stod(initialValue);
+    }
     case AnalyserEquationAst::Type::CN:
         return std::stod(ast->value());
 
@@ -1873,15 +1890,13 @@ double Analyser::AnalyserImpl::powerValue(const AnalyserEquationAstPtr &ast,
         // This corresponds to one of the following cases:
         //  - AnalyserEquationAst::Type::EQUALITY (we should never come across this case);
         //  - AnalyserEquationAst::Type::DIFF,
-        //    AnalyserEquationAst::Type::BVAR;
+        //    AnalyserEquationAst::Type::BVAR; and
         //  - AnalyserEquationAst::Type::PIECEWISE,
         //    AnalyserEquationAst::Type::PIECE,
-        //    AnalyserEquationAst::Type::OTHERWISE; and
-        //  - AnalyserEquationAst::Type::CI.
+        //    AnalyserEquationAst::Type::OTHERWISE.
         // In all these cases, we may not have a constant (power) value.
 
-        data.mPowerValueAvailable = false;
-        data.mPowerValueAst = ast;
+        powerData.mExponentValueAvailable = false;
 
         return NAN;
     }
@@ -2017,7 +2032,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                                                   UnitsMaps &userUnitsMaps,
                                                   UnitsMultipliers &unitsMultipliers,
                                                   std::string &issueDescription,
-                                                  Data &data)
+                                                  PowerData &powerData)
 {
     // Analyse the units used with different MathML elements (table 2.1 of the
     // CellML 2.0 normative specification; see https://bit.ly/3vBbyO5):
@@ -2104,7 +2119,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
 
     // Check the left and right children.
 
-    analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers, issueDescription, data);
+    analyseEquationUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers, issueDescription, powerData);
 
     if (!issueDescription.empty()) {
         return;
@@ -2114,7 +2129,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     UnitsMaps rightUserUnitsMaps;
     UnitsMultipliers rightUnitsMultipliers;
 
-    analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers, issueDescription, data);
+    analyseEquationUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers, issueDescription, powerData);
 
     if (!issueDescription.empty()) {
         return;
@@ -2137,8 +2152,9 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                              || areSameUnitsMaps(unitsMaps, rightUnitsMaps);
         auto sameUnitsMultipliers = rightUnitsMultipliers.empty()
                                     || areSameUnitsMultipliers(unitsMultipliers, rightUnitsMultipliers);
+        auto sameUnits = sameUnitsMaps && sameUnitsMultipliers;
 
-        if (sameUnitsMaps && sameUnitsMultipliers && data.mPowerValueAvailable) {
+        if (sameUnits && powerData.mExponentValueAvailable && !powerData.mExponentValueChangeable) {
             // Relational operators result in a dimensionless unit.
 
             switch (ast->mPimpl->mType) {
@@ -2154,14 +2170,21 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
             default:
                 break;
             }
-        } else if (data.mPowerValueAvailable) {
-            issueDescription = "The units in " + expression(ast) + " are not equivalent. "
-                               + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
-                               + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".";
-        } else {
+        } else if (powerData.mExponentValueAvailable) {
+            if (sameUnits && powerData.mExponentValueChangeable) {
+                if (!powerData.mDimensionlessBase) {
+                    issueDescription = "The units in " + expression(ast) + " are equivalent as long as the value of "
+                                       + expression(powerData.mExponentAst, false) + " is equal to '" + Generator::GeneratorImpl::generateDoubleCode(convertToString(powerData.mExponentValue)) + "'.";
+                }
+            } else {
+                issueDescription = "The units in " + expression(ast) + " are not equivalent. "
+                                   + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
+                                   + expressionUnits(ast->mPimpl->mOwnedRightChild, rightUnitsMaps, rightUserUnitsMaps, rightUnitsMultipliers) + ".";
+            }
+        } else if (!isDimensionlessUnitsMaps(unitsMaps)) {
             issueDescription = "The units in " + expression(ast) + " may not be equivalent. "
                                + expressionUnits(ast->mPimpl->mOwnedLeftChild, unitsMaps, userUnitsMaps, unitsMultipliers) + " while "
-                               + expression(data.mPowerValueAst, false) + " may result in " + expression(ast->mPimpl->mOwnedRightChild, false) + " having different units.";
+                               + expression(ast->mPimpl->mOwnedRightChild->mPimpl->mOwnedRightChild, false) + " may result in " + expression(ast->mPimpl->mOwnedRightChild, false) + " having different units.";
         }
     } break;
     case AnalyserEquationAst::Type::PIECEWISE:
@@ -2234,59 +2257,66 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
     case AnalyserEquationAst::Type::POWER:
     case AnalyserEquationAst::Type::ROOT: {
         auto isPower = ast->mPimpl->mType == AnalyserEquationAst::Type::POWER;
+
+        // Determine whether we are dealing with a dimensionless base.
+
+        if (isPower) {
+            powerData.mDimensionlessBase = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
+        } else {
+            if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
+                powerData.mDimensionlessBase = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(rightUnitsMaps);
+            } else {
+                powerData.mDimensionlessBase = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(unitsMaps);
+            }
+        }
+
+        // Determine whether we are dealing with a dimensionless exponent and report it if not.
+
         auto isDimensionlessExponent = true;
 
         if (isPower
             || (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE)) {
+            powerData.mExponentAst = isPower ?
+                                         ast->mPimpl->mOwnedRightChild :
+                                         ast->mPimpl->mOwnedLeftChild;
             isDimensionlessExponent = Analyser::AnalyserImpl::isDimensionlessUnitsMaps(isPower ?
                                                                                            rightUnitsMaps :
                                                                                            unitsMaps);
 
             if (!isDimensionlessExponent) {
-                auto exponentAst = isPower ?
-                                   ast->mPimpl->mOwnedRightChild :
-                                   ast->mPimpl->mOwnedLeftChild;
-                auto exponentUnitsMaps = isPower ?
-                                             rightUnitsMaps :
-                                             unitsMaps;
-                auto exponentUserUnitsMaps = isPower ?
-                                                 rightUserUnitsMaps :
-                                                 userUnitsMaps;
-                auto exponentUnitsMultipliers = isPower ?
-                                                    rightUnitsMultipliers :
-                                                    unitsMultipliers;
+                auto exponentUnitsMaps = isPower ? rightUnitsMaps : unitsMaps;
+                auto exponentUserUnitsMaps = isPower ? rightUserUnitsMaps : userUnitsMaps;
+                auto exponentUnitsMultipliers = isPower ? rightUnitsMultipliers : unitsMultipliers;
 
-                issueDescription = "The unit of " + expression(exponentAst) + " is not dimensionless. "
-                                   + expressionUnits(exponentAst, exponentUnitsMaps, exponentUserUnitsMaps, exponentUnitsMultipliers) + ".";
+                issueDescription = "The unit of " + expression(powerData.mExponentAst) + " is not dimensionless. "
+                                   + expressionUnits(powerData.mExponentAst, exponentUnitsMaps, exponentUserUnitsMaps, exponentUnitsMultipliers) + ".";
             }
         }
 
         // Retrieve the exponent and apply it to our units maps and multipliers.
 
         if (isDimensionlessExponent) {
-            double powerRootValue;
-
             if (isPower) {
-                powerRootValue = powerValue(ast->mPimpl->mOwnedRightChild, data);
+                powerData.mExponentValue = powerValue(ast->mPimpl->mOwnedRightChild, powerData);
             } else { // AnalyserEquationAst::Type::ROOT.
                 if (ast->mPimpl->mOwnedLeftChild->type() == AnalyserEquationAst::Type::DEGREE) {
                     unitsMaps = rightUnitsMaps;
                     userUnitsMaps = rightUserUnitsMaps;
                     unitsMultipliers = rightUnitsMultipliers;
 
-                    powerRootValue = powerValue(ast->mPimpl->mOwnedLeftChild, data);
+                    powerData.mExponentValue = powerValue(ast->mPimpl->mOwnedLeftChild, powerData);
                 } else {
                     // No DEGREE element, which means that we are dealing with a
                     // square root.
 
-                    powerRootValue = 2.0;
+                    powerData.mExponentValue = 2.0;
                 }
             }
 
-            if (data.mPowerValueAvailable) {
-                unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerRootValue, isPower);
-                userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerRootValue, isPower);
-                unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerRootValue, isPower);
+            if (powerData.mExponentValueAvailable) {
+                unitsMaps = multiplyDivideUnitsMaps(unitsMaps, powerData.mExponentValue, isPower);
+                userUnitsMaps = multiplyDivideUnitsMaps(userUnitsMaps, powerData.mExponentValue, isPower);
+                unitsMultipliers = powerRootUnitsMultipliers(unitsMultipliers, powerData.mExponentValue, isPower);
             }
         }
     } break;
@@ -2683,10 +2713,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         UnitsMaps userUnitsMaps;
         UnitsMultipliers unitsMultipliers;
         std::string issueDescription;
-        Data data;
+        PowerData powerData;
 
         analyseEquationUnits(internalEquation->mAst, unitsMaps, userUnitsMaps, unitsMultipliers,
-                             issueDescription, data);
+                             issueDescription, powerData);
 
         if (!issueDescription.empty()) {
             auto issue = Issue::IssueImpl::create();

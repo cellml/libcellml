@@ -30,6 +30,8 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Generator
 {
+    friend class Analyser;
+
 public:
     ~Generator(); /**< Destructor, @private. */
     Generator(const Generator &rhs) = delete; /**< Copy constructor, @private. */
