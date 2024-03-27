@@ -24,6 +24,8 @@ limitations under the License.
 
 namespace libcellml {
 
+std::string generateDoubleCode(const std::string &value);
+
 /**
  * @brief The Generator::GeneratorImpl struct.
  *
@@ -109,7 +111,6 @@ struct Generator::GeneratorImpl
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
-    std::string generateDoubleCode(const std::string &value) const;
     std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          bool state = true) const;

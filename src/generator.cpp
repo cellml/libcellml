@@ -879,7 +879,7 @@ std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &
                methodBody;
 }
 
-std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value) const
+std::string generateDoubleCode(const std::string &value)
 {
     if (value.find('.') != std::string::npos) {
         return value;
