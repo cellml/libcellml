@@ -254,10 +254,8 @@ jobs:
         endif()
 
         file(GLOB _DIST_FILES ${ACTION_DIR}/build/dist/*)
-        # softprops action requires a list of newline separated files.
-        # The %0A will be converted by GitHub actions into '\n'.
-        string(REPLACE ";" "%0A" _DIST_FILES "${_DIST_FILES}")
-        file(APPEND $ENV{GITHUB_OUTPUT} "files=${_DIST_FILES}")
+        string(REPLACE ";" "\n" _DIST_FILES "${_DIST_FILES}")
+        file(APPEND $ENV{GITHUB_OUTPUT} "files<<EOF\n${_DIST_FILES}\nEOF")
 
     - name: Publish libraries
       if: needs.setup-jobs.outputs.binaries-destination == 'Publish'
@@ -281,7 +279,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-12, ubuntu-20.04, windows-2019]
-        py: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        py: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
         include:
           - name: 'Windows'
             os: windows-2019
