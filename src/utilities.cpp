@@ -115,6 +115,11 @@ Strings split(const std::string &content, const std::string &delimiter)
 
 std::string convertToString(double value, bool fullPrecision)
 {
+    if (std::isnan(value)) {
+        // Always return "nan" whether we are dealing with +NAN or -NAN. This is to ensure that
+        // the string representation of a NAN is consistent across compilers.
+        return "nan";
+    }
     std::ostringstream strs;
     if (fullPrecision) {
         strs << std::setprecision(std::numeric_limits<double>::digits10) << value;

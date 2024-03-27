@@ -610,7 +610,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
 }
 
 std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
-                AnalyserEquationAstTrunk *prevTrunk, bool isLeft)
+                             AnalyserEquationAstTrunk *prevTrunk, bool isLeft)
 {
     if (ast == nullptr) {
         return {};
