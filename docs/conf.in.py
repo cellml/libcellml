@@ -51,13 +51,12 @@ source_suffix = '.rst'
 extlinks = {
     # NB for deployment outside of the libcellml.org domain, you will need to include the root of the href for the
     # :api: shortcut here.  This only works internally.
-    'api': ('/documentation/api/latest/classlibcellml_1_1%s', ''),
+    'api': ('/documentation/latest/api/classlibcellml_1_1%s', ''),
     'buildbot': ('https://buildbot.net/%s',''),
     'cellml': ('https://www.cellml.org/%s',''),
     'cellml2spec': ('https://www.cellml.org/specifications/cellml_2.0%s', ''),
     'clang': ('https://clang.llvm.org/%s',''),
     'cmake': ('https://cmake.org/%s',''),
-    'cpp_reference': ('https://en.cppreference.com/%s',''),
     'doxygen': ('http://www.doxygen.nl/%s',''),
     'forcescheduler': ('http://docs.buildbot.net/latest/developer/cls-forcesched.html%s',''),
     'gcc': ('https://gcc.gnu.org/%s',''),
@@ -68,7 +67,6 @@ extlinks = {
     'github_help': ('https://help.github.com%s',''),
     'github_rtd': ('https://github.com/rtfd/readthedocs.org/issues%s',''),
     'google_style_guide': ('https://google.github.io/styleguide/cppguide.html%s',''),
-    'google_style_bad': ('https://www.linkedin.com/pulse/20140503193653-3046051-why-google-style-guide-for-c-is-a-deal-breaker%s',''),
     'graphviz': ('http://graphviz.org%s',''),
     'htpasswd': ('https://httpd.apache.org/docs/current/programs/htpasswd.html%s',''),
     'libcellml_repo': ('https://github.com/cellml/libcellml/%s',''),
