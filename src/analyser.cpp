@@ -2171,7 +2171,7 @@ void Analyser::AnalyserImpl::analyseEquationUnits(const AnalyserEquationAstPtr &
                 break;
             }
         } else if (powerData.mExponentValueAvailable) {
-            if (sameUnits && powerData.mExponentValueChangeable) {
+            if (sameUnits) {
                 if (!powerData.mDimensionlessBase) {
                     issueDescription = "The units in " + expression(ast) + " are equivalent as long as the value of "
                                        + expression(powerData.mExponentAst, false) + " is equal to '" + generateDoubleCode(convertToString(powerData.mExponentValue)) + "'.";
