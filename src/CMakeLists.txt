@@ -55,6 +55,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/interpreter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.cpp
@@ -94,6 +95,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/interpreter.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/issue.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
@@ -136,6 +138,7 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofilesha1values.h
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/interpreter_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/issue_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/logger_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.h

@@ -27,6 +27,7 @@ set(TEST_SRCS
   generator.test.js
   generatorprofile.test.js
   importsource.test.js
+  interpreter.test.js
   model.test.js
   namedentity.test.js
   parentedentity.test.js

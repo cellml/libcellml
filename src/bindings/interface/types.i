@@ -29,6 +29,7 @@ Provides support for shared pointers declared in types.h.
 %shared_ptr(libcellml::Importer)
 %shared_ptr(libcellml::ImportSource)
 %shared_ptr(libcellml::ImportedEntity)
+%shared_ptr(libcellml::Interpreter)
 %shared_ptr(libcellml::Issue)
 %shared_ptr(libcellml::Logger)
 %shared_ptr(libcellml::Model)

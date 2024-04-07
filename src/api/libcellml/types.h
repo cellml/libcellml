@@ -50,6 +50,8 @@ class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
 using GeneratorProfilePtr = std::shared_ptr<GeneratorProfile>; /**< Type definition for shared generator variable pointer. */
 class Importer; /**< Forward declaration of Importer class. */
 using ImporterPtr = std::shared_ptr<Importer>; /**< Type definition for shared importer pointer. */
+class Interpreter; /**< Forward declaration of Interpreter class. */
+using InterpreterPtr = std::shared_ptr<Interpreter>; /**< Type definition for shared Interpreter pointer. */
 class Issue; /**< Forward declaration of Issue class. */
 using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
 class Logger; /**< Forward declaration of Parser class. */

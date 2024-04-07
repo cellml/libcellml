@@ -840,6 +840,24 @@ TEST(Coverage, generator)
     libcellml::Generator::equationCode(analyser->model()->equation(0)->ast());
 }
 
+TEST(Coverage, interpreter)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->model();
+    auto interpreter = libcellml::Interpreter::create();
+
+    EXPECT_EQ(nullptr, interpreter->model());
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(analyserModel, interpreter->model());
+}
+
 TEST(CoverageValidator, degreeElementWithOneSibling)
 {
     const std::string math =
