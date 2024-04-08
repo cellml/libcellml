@@ -37,5 +37,10 @@ describe("Interpreter tests", () => {
         i.setModel(a.model())
 
         expect(i.model()).toBeDefined()
+
+        i.initialiseVariables()
+        i.computeComputedConstants()
+        i.computeRates()
+        i.computeVariables()
     })
 })

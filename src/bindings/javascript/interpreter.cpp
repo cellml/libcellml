@@ -26,5 +26,9 @@ EMSCRIPTEN_BINDINGS(libcellml_interpreter)
         .smart_ptr_constructor("Interpreter", &libcellml::Interpreter::create)
         .function("model", &libcellml::Interpreter::model)
         .function("setModel", &libcellml::Interpreter::setModel)
+        .function("initialiseVariables", &libcellml::Interpreter::initialiseVariables)
+        .function("computeComputedConstants", &libcellml::Interpreter::computeComputedConstants)
+        .function("computeRates", &libcellml::Interpreter::computeRates)
+        .function("computeVariables", &libcellml::Interpreter::computeVariables)
     ;
 }

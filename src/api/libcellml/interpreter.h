@@ -65,6 +65,42 @@ public:
      */
     void setModel(const AnalyserModelPtr &model);
 
+    /**
+     * @brief Initialise the model's variables.
+     *
+     * Initialise the model's variables.
+     *
+     * @sa computeComputedConstants, computeRates, computeVariables
+     */
+    void initialiseVariables();
+
+    /**
+     * @brief Compute the model's computed constants.
+     *
+     * Compute the model's computed constants.
+     *
+     * @sa initialiseVariables, computeRates, computeVariables
+     */
+    void computeComputedConstants();
+
+    /**
+     * @brief Compute the model's rates.
+     *
+     * Compute the model's rates.
+     *
+     * @sa initialiseVariables, computeComputedConstants, computeVariables
+     */
+    void computeRates();
+
+    /**
+     * @brief Compute the model's variables.
+     *
+     * Compute the model's variables.
+     *
+     * @sa initialiseVariables, computeComputedConstants, computeRates
+     */
+    void computeVariables();
+
 private:
     Interpreter(); /**< Constructor, @private. */
 

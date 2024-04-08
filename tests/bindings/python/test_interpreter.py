@@ -37,6 +37,11 @@ class InterpreterTestCase(unittest.TestCase):
 
         self.assertIsNotNone(i.model())
 
+        i.initialiseVariables()
+        i.computeComputedConstants()
+        i.computeRates()
+        i.computeVariables()
+
 
 if __name__ == '__main__':
     unittest.main()

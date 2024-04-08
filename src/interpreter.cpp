@@ -45,4 +45,20 @@ void Interpreter::setModel(const AnalyserModelPtr &model)
     mPimpl->mModel = model;
 }
 
+void Interpreter::initialiseVariables()
+{
+}
+
+void Interpreter::computeComputedConstants()
+{
+}
+
+void Interpreter::computeRates()
+{
+}
+
+void Interpreter::computeVariables()
+{
+}
+
 } // namespace libcellml

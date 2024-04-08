@@ -842,8 +842,10 @@ TEST(Coverage, generator)
 
 TEST(Coverage, interpreter)
 {
+    // Get an interpreter for the HH52 model.
+
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
@@ -851,11 +853,20 @@ TEST(Coverage, interpreter)
     auto analyserModel = analyser->model();
     auto interpreter = libcellml::Interpreter::create();
 
+    // Make sure that Interpreter::model() works as expected.
+
     EXPECT_EQ(nullptr, interpreter->model());
 
     interpreter->setModel(analyserModel);
 
     EXPECT_EQ(analyserModel, interpreter->model());
+
+    // Fully initialise the HH52 model.
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
 }
 
 TEST(CoverageValidator, degreeElementWithOneSibling)
