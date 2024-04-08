@@ -16,6 +16,27 @@
 %feature("docstring") libcellml::Interpreter::setModel
 "Sets the model to interpret.";
 
+%feature("docstring") libcellml::Interpreter::voi
+"Returns the value of the model's variable of integration.";
+
+%feature("docstring") libcellml::Interpreter::stateCount
+"Returns the number of states in the model.";
+
+%feature("docstring") libcellml::Interpreter::states
+"Returns the model's states.";
+
+%feature("docstring") libcellml::Interpreter::rateCount
+"Returns the number of rates in the model.";
+
+%feature("docstring") libcellml::Interpreter::rates
+"Returns the model's rates.";
+
+%feature("docstring") libcellml::Interpreter::variableCount
+"Returns the number of variables in the model.";
+
+%feature("docstring") libcellml::Interpreter::variables
+"Returns the model's variables.";
+
 %feature("docstring") libcellml::Interpreter::initialiseVariables
 "Initialises the model's variables.";
 

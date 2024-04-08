@@ -37,6 +37,17 @@ class InterpreterTestCase(unittest.TestCase):
 
         self.assertIsNotNone(i.model())
 
+        self.assertEqual(0.0, i.voi())
+
+        self.assertEqual(0, i.stateCount())
+        self.assertIsNone(i.states())
+
+        self.assertEqual(0, i.rateCount())
+        self.assertIsNone(i.rates())
+
+        self.assertEqual(0, i.variableCount())
+        self.assertIsNone(i.variables())
+
         i.initialiseVariables()
         i.computeComputedConstants()
         i.computeRates()

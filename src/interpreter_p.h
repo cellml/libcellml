@@ -30,6 +30,17 @@ std::string generateDoubleCode(const std::string &value);
 struct Interpreter::InterpreterImpl
 {
     AnalyserModelPtr mModel;
+
+    double mVoi = 0.0;
+
+    size_t mStateCount = 0;
+    double *mStates = nullptr;
+
+    size_t mRateCount = 0;
+    double *mRates = nullptr;
+
+    size_t mVariableCount = 0;
+    double *mVariables = nullptr;
 };
 
 } // namespace libcellml

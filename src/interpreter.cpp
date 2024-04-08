@@ -45,6 +45,41 @@ void Interpreter::setModel(const AnalyserModelPtr &model)
     mPimpl->mModel = model;
 }
 
+double Interpreter::voi()
+{
+    return mPimpl->mVoi;
+}
+
+size_t Interpreter::stateCount()
+{
+    return mPimpl->mStateCount;
+}
+
+double *Interpreter::states()
+{
+    return mPimpl->mStates;
+}
+
+size_t Interpreter::rateCount()
+{
+    return mPimpl->mRateCount;
+}
+
+double *Interpreter::rates()
+{
+    return mPimpl->mRates;
+}
+
+size_t Interpreter::variableCount()
+{
+    return mPimpl->mVariableCount;
+}
+
+double *Interpreter::variables()
+{
+    return mPimpl->mVariables;
+}
+
 void Interpreter::initialiseVariables()
 {
 }

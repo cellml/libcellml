@@ -66,6 +66,70 @@ public:
     void setModel(const AnalyserModelPtr &model);
 
     /**
+     * @brief Get the value of the model's variable of integration.
+     *
+     * Return the value of the model's variable of integration. If no variable of integration is needed to compute the
+     * model then 0.0 is returned.
+     *
+     * @return The value of the variable of integration as a @c double.
+     */
+    double voi();
+
+    /**
+     * @brief Get the number of states in the model.
+     *
+     * Return the number of states in the model. If the model doesn't have any states then 0 is returned.
+     *
+     * @return The number of states in the model as a @c size_t.
+     */
+    size_t stateCount();
+
+    /**
+     * @brief Get the model's states.
+     *
+     * Return the model's states. If the model doesn't have any states then @c nullptr is returned.
+     *
+     * @return The model's states as an array of @c double.
+     */
+    double *states();
+
+    /**
+     * @brief Get the number of rates in the model.
+     *
+     * Return the number of rates in the model. If the model doesn't have any rates then 0 is returned.
+     *
+     * @return The number of rates in the model as a @c size_t.
+     */
+    size_t rateCount();
+
+    /**
+     * @brief Get the model's rates.
+     *
+     * Return the model's rates. If the model doesn't have any rates then @c nullptr is returned.
+     *
+     * @return The model's rates as an array of @c double.
+     */
+    double *rates();
+
+    /**
+     * @brief Get the number of variables in the model.
+     *
+     * Return the number of variables in the model. If the model doesn't have any variables then 0 is returned.
+     *
+     * @return The number of variables in the model as a @c size_t.
+     */
+    size_t variableCount();
+
+    /**
+     * @brief Get the model's variables.
+     *
+     * Return the model's variables.
+     *
+     * @return The model's variables as an array of @c double.
+     */
+    double *variables();
+
+    /**
      * @brief Initialise the model's variables.
      *
      * Initialise the model's variables.

@@ -38,6 +38,21 @@ TEST(Generator, emptyModel)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+
+    EXPECT_EQ(size_t(0), interpreter->stateCount());
+    EXPECT_EQ(nullptr, interpreter->states());
+
+    EXPECT_EQ(size_t(0), interpreter->rateCount());
+    EXPECT_EQ(nullptr, interpreter->rates());
+
+    EXPECT_EQ(size_t(0), interpreter->variableCount());
+    EXPECT_EQ(nullptr, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnComputedVarOnRhs)

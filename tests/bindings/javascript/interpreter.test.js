@@ -38,6 +38,17 @@ describe("Interpreter tests", () => {
 
         expect(i.model()).toBeDefined()
 
+        expect(i.voi()).toBe(0.0)
+
+        expect(i.stateCount()).toBe(0)
+        expect(i.states()).toHaveLength(0)
+
+        expect(i.rateCount()).toBe(0)
+        expect(i.rates()).toHaveLength(0)
+
+        expect(i.variableCount()).toBe(0)
+        expect(i.variables()).toHaveLength(0)
+
         i.initialiseVariables()
         i.computeComputedConstants()
         i.computeRates()
