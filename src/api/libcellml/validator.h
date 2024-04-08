@@ -16,9 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "libcellml/logger.h"
 #include "libcellml/types.h"
 
