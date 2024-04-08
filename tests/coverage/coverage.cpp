@@ -861,7 +861,12 @@ TEST(Coverage, interpreter)
 
     EXPECT_EQ(analyserModel, interpreter->model());
 
+    interpreter->setModel(nullptr);
+
+    EXPECT_EQ(nullptr, interpreter->model());
+
     // Fully initialise the HH52 model.
+    //---GRY--- THIS SHOULD BE REMOVED ONCE THE INTERPRETER IS FULLY IMPLEMENTED.
 
     interpreter->initialiseVariables();
     interpreter->computeComputedConstants();

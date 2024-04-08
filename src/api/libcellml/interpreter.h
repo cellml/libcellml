@@ -19,6 +19,8 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"
 
+#include <vector>
+
 namespace libcellml {
 
 /**
@@ -76,58 +78,31 @@ public:
     double voi();
 
     /**
-     * @brief Get the number of states in the model.
-     *
-     * Return the number of states in the model. If the model doesn't have any states then 0 is returned.
-     *
-     * @return The number of states in the model as a @c size_t.
-     */
-    size_t stateCount();
-
-    /**
      * @brief Get the model's states.
      *
      * Return the model's states. If the model doesn't have any states then @c nullptr is returned.
      *
-     * @return The model's states as an array of @c double.
+     * @return The model's states as a @c std::vector of @c double.
      */
-    double *states();
-
-    /**
-     * @brief Get the number of rates in the model.
-     *
-     * Return the number of rates in the model. If the model doesn't have any rates then 0 is returned.
-     *
-     * @return The number of rates in the model as a @c size_t.
-     */
-    size_t rateCount();
+    std::vector<double> states();
 
     /**
      * @brief Get the model's rates.
      *
      * Return the model's rates. If the model doesn't have any rates then @c nullptr is returned.
      *
-     * @return The model's rates as an array of @c double.
+     * @return The model's rates as a @c std::vector of @c double.
      */
-    double *rates();
-
-    /**
-     * @brief Get the number of variables in the model.
-     *
-     * Return the number of variables in the model. If the model doesn't have any variables then 0 is returned.
-     *
-     * @return The number of variables in the model as a @c size_t.
-     */
-    size_t variableCount();
+    std::vector<double> rates();
 
     /**
      * @brief Get the model's variables.
      *
      * Return the model's variables.
      *
-     * @return The model's variables as an array of @c double.
+     * @return The model's variables as a @c std::vector of @c double.
      */
-    double *variables();
+    std::vector<double> variables();
 
     /**
      * @brief Initialise the model's variables.

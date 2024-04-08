@@ -12,7 +12,7 @@ class InterpreterTestCase(unittest.TestCase):
         x = Interpreter()
         del x
 
-    def test_algebraic_eqn_computed_var_on_rhs(self):
+    def test_hodgkin_huxley_squid_axon_model_1952(self):
         from libcellml import Analyser
         from libcellml import AnalyserModel
         from libcellml import Interpreter
@@ -20,14 +20,14 @@ class InterpreterTestCase(unittest.TestCase):
         from test_resources import file_contents
 
         p = Parser()
-        m = p.parseModel(file_contents('generator/algebraic_eqn_computed_var_on_rhs/model.cellml'))
-
+        m = p.parseModel(file_contents('generator/hodgkin_huxley_squid_axon_model_1952/model.cellml'))
         a = Analyser()
+
         a.analyseModel(m)
 
         am = a.model()
 
-        self.assertEqual(AnalyserModel.Type.ALGEBRAIC, am.type())
+        self.assertEqual(AnalyserModel.Type.ODE, am.type())
 
         i = Interpreter()
 
@@ -39,14 +39,9 @@ class InterpreterTestCase(unittest.TestCase):
 
         self.assertEqual(0.0, i.voi())
 
-        self.assertEqual(0, i.stateCount())
-        self.assertIsNone(i.states())
-
-        self.assertEqual(0, i.rateCount())
-        self.assertIsNone(i.rates())
-
-        self.assertEqual(0, i.variableCount())
-        self.assertIsNone(i.variables())
+        self.assertEqual(4, len(i.states()))
+        self.assertEqual(4, len(i.rates()))
+        self.assertEqual(18, len(i.variables()))
 
         i.initialiseVariables()
         i.computeComputedConstants()

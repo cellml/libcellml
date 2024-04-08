@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 const loadLibCellML = require('libcellml.js/libcellml.common')
-const { basicModel } = require('./resources')
+const { hhSquidAxon1952 } = require('./resources')
 
 let libcellml = null
 
@@ -27,7 +27,7 @@ describe("Interpreter tests", () => {
         const i = new libcellml.Interpreter()
         const p = new libcellml.Parser(true)
 
-        m = p.parseModel(basicModel)
+        m = p.parseModel(hhSquidAxon1952)
         a = new libcellml.Analyser()
 
         a.analyseModel(m)
@@ -40,14 +40,9 @@ describe("Interpreter tests", () => {
 
         expect(i.voi()).toBe(0.0)
 
-        expect(i.stateCount()).toBe(0)
-        expect(i.states()).toHaveLength(0)
-
-        expect(i.rateCount()).toBe(0)
-        expect(i.rates()).toHaveLength(0)
-
-        expect(i.variableCount()).toBe(0)
-        expect(i.variables()).toHaveLength(0)
+        expect(i.states().size()).toBe(4)
+        expect(i.rates().size()).toBe(4)
+        expect(i.variables().size()).toBe(18)
 
         i.initialiseVariables()
         i.computeComputedConstants()

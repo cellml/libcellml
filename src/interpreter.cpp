@@ -16,9 +16,34 @@ limitations under the License.
 
 #include "libcellml/interpreter.h"
 
+#include "libcellml/analysermodel.h"
+
 #include "interpreter_p.h"
 
 namespace libcellml {
+
+void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
+{
+    mModel = model;
+
+    mVoi = 0.0;
+
+    if (mModel != nullptr) {
+        mStates.resize(mModel->stateCount());
+        mRates.resize(mModel->stateCount());
+        mVariables.resize(mModel->variableCount());
+
+        static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+
+        std::fill(mStates.begin(), mStates.end(), NaN);
+        std::fill(mRates.begin(), mRates.end(), NaN);
+        std::fill(mVariables.begin(), mVariables.end(), NaN);
+    } else {
+        mStates.clear();
+        mRates.clear();
+        mVariables.clear();
+    }
+}
 
 Interpreter::Interpreter()
     : mPimpl(new InterpreterImpl())
@@ -42,7 +67,7 @@ AnalyserModelPtr Interpreter::model()
 
 void Interpreter::setModel(const AnalyserModelPtr &model)
 {
-    mPimpl->mModel = model;
+    mPimpl->setModel(model);
 }
 
 double Interpreter::voi()
@@ -50,32 +75,17 @@ double Interpreter::voi()
     return mPimpl->mVoi;
 }
 
-size_t Interpreter::stateCount()
-{
-    return mPimpl->mStateCount;
-}
-
-double *Interpreter::states()
+std::vector<double> Interpreter::states()
 {
     return mPimpl->mStates;
 }
 
-size_t Interpreter::rateCount()
-{
-    return mPimpl->mRateCount;
-}
-
-double *Interpreter::rates()
+std::vector<double> Interpreter::rates()
 {
     return mPimpl->mRates;
 }
 
-size_t Interpreter::variableCount()
-{
-    return mPimpl->mVariableCount;
-}
-
-double *Interpreter::variables()
+std::vector<double> Interpreter::variables()
 {
     return mPimpl->mVariables;
 }

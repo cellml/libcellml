@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %include <std_string.i>
+%include <std_vector.i>
 
 %import "analysermodel.i"
 %import "createconstructor.i"
@@ -19,20 +20,11 @@
 %feature("docstring") libcellml::Interpreter::voi
 "Returns the value of the model's variable of integration.";
 
-%feature("docstring") libcellml::Interpreter::stateCount
-"Returns the number of states in the model.";
-
 %feature("docstring") libcellml::Interpreter::states
 "Returns the model's states.";
 
-%feature("docstring") libcellml::Interpreter::rateCount
-"Returns the number of rates in the model.";
-
 %feature("docstring") libcellml::Interpreter::rates
 "Returns the model's rates.";
-
-%feature("docstring") libcellml::Interpreter::variableCount
-"Returns the number of variables in the model.";
 
 %feature("docstring") libcellml::Interpreter::variables
 "Returns the model's variables.";
@@ -52,6 +44,8 @@
 %{
 #include "libcellml/interpreter.h"
 %}
+
+%template(DoubleVector) std::vector<double>;
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.

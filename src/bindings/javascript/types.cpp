@@ -22,6 +22,7 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_types)
 {
+    register_vector<double>("VectorDouble");
     register_vector<std::string>("VectorString");
     register_vector<libcellml::AnyCellmlElementPtr>("VectorAnyCellmlElementPtr");
     register_vector<libcellml::VariablePtr>("VectorVariablePtr");
