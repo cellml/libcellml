@@ -1514,9 +1514,9 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "      </reset_value>\n"
         "    </reset>\n"
         "  </component>\n"
-        "  <connection>\n"
+        "  <connection component_1=\"\" component_2=\"\">\n"
         "    finn\n"
-        "    <map_variables>\n"
+        "    <map_variables variable_1=\"\" variable_2=\"\">\n"
         "      trooper\n"
         "    </map_variables>\n"
         "  </connection>\n"
@@ -1543,12 +1543,12 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n    awakens\n    '.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n      force\n    '.",
         "Encapsulation in model 'starwars' specifies 'ship' as a parent component_ref but it does not have any children.",
-        "Connection in model 'starwars' does not specify a component_1 in a connection element.",
-        "Connection in model 'starwars' does not specify a component_2 in a connection element.",
+        "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
+        "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element '\n    finn\n    '.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element '\n      trooper\n    '.",
-        "Connection in model 'starwars' does not specify a variable_1 in a map_variables element.",
-        "Connection in model 'starwars' does not specify a variable_2 in a map_variables element.",
+        "Connection in model 'starwars' does not have a valid variable_1 in a map_variables element.",
+        "Connection in model 'starwars' does not have a valid variable_2 in a map_variables element.",
         "Connection in model 'starwars' specifies '' as variable_1 but the corresponding component_1 is invalid.",
         "Connection in model 'starwars' specifies '' as variable_2 but the corresponding component_2 is invalid.",
     };
