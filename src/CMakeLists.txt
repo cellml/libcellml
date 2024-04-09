@@ -56,6 +56,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/interpreter.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/interpreterinstruction.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.cpp
@@ -139,6 +140,8 @@ set(GIT_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofiletools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/interpreter_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/interpreterinstruction_p.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/interpreterinstruction.h
   ${CMAKE_CURRENT_SOURCE_DIR}/issue_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/logger_p.h
   ${CMAKE_CURRENT_SOURCE_DIR}/mathmldtd.h
