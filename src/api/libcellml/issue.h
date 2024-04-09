@@ -68,7 +68,7 @@ public:
     {
         UNDEFINED,
 
-        // Specification errors.
+        // Specification errors:
         XML,
         XML_UNEXPECTED_ELEMENT,
         XML_UNEXPECTED_CHARACTER,
@@ -168,6 +168,11 @@ public:
         MAP_VARIABLES_VARIABLE2_ATTRIBUTE,
         MAP_VARIABLES_VARIABLE2_ATTRIBUTE_REFERENCE,
         MAP_VARIABLES_UNIQUE,
+
+        // Secondary specification errors:
+        DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM,
+        DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM,
+        DATA_REPR_IDENTIFIER_LATIN_ALPHANUM,
 
         // Issues not present in the normative specification:
         INVALID_ARGUMENT,
