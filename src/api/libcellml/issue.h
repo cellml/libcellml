@@ -170,7 +170,6 @@ public:
         MAP_VARIABLES_UNIQUE,
 
         // Issues not present in the normative specification:
-        MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION,
         INVALID_ARGUMENT,
 
         // Importer class issues:
