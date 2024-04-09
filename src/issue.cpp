@@ -180,6 +180,11 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2_ATTRIBUTE_REFERENCE, {"MAP_VARIABLES_VARIABLE2_ATTRIBUTE_REFERENCE", "2.16.2.1", baseSpecificationUrl, "specB16"}},
     {Issue::ReferenceRule::MAP_VARIABLES_UNIQUE, {"MAP_VARIABLES_UNIQUE", "2.16.3", baseSpecificationUrl, "specB16"}},
 
+    // Secondary specification rules:
+    {Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM, {"DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM", "1.3.1.1", baseSpecificationUrl, "specA03"}},
+    {Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM, {"DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM", "1.3.1.1", baseSpecificationUrl, "specA03"}},
+    {Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM, {"DATA_REPR_IDENTIFIER_LATIN_ALPHANUM", "1.3.1.1", baseSpecificationUrl, "specA03"}},
+
     // Not in normative specification:
     {Issue::ReferenceRule::INVALID_ARGUMENT, {"INVALID_ARGUMENT", "", docsUrl, ""}},
 

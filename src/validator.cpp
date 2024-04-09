@@ -927,7 +927,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
             auto issue = makeIssueIllegalIdentifier(componentRef);
             issue->mPimpl->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid component_ref attribute. " + issue->description());
             issue->mPimpl->mItem->mPimpl->setComponent(component);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REFERENCE);
             addIssue(issue);
         }
 
@@ -943,7 +943,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                     auto description = formDescriptionOfCyclicDependency(history, "resolve");
                     IssuePtr issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription(description);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REFERENCE);
                     issue->mPimpl->mItem->mPimpl->setImportSource(component->importSource());
                     addIssue(issue);
                 } else {
@@ -957,7 +957,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription(descriptionPrefix + "'" + componentName + "' refers to component '" + componentRef + "' which does not appear in '" + component->importSource()->url() + "'.");
                 issue->mPimpl->mItem->mPimpl->setComponent(component);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REFERENCE_TARGET);
                 addIssue(issue);
             }
         }
@@ -1052,7 +1052,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Cyclic units exist: " + des + ".");
             issue->mPimpl->mItem->mPimpl->setUnits(units);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_CIRCULAR_REF);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_CIRCULAR_REFERENCE);
             addIssue(issue);
         }
         history.pop_back();
@@ -1095,7 +1095,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
             auto issue = makeIssueIllegalIdentifier(unitsRef);
             issue->mPimpl->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
             issue->mPimpl->mItem->mPimpl->setUnits(units);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE);
             addIssue(issue);
         }
 
@@ -1112,7 +1112,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription(description);
                 issue->mPimpl->mItem->mPimpl->setModel(model);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE);
                 addIssue(issue);
             }
         }
@@ -1132,7 +1132,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
                     IssuePtr issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription(description);
                     issue->mPimpl->mItem->mPimpl->setUnits(units);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE);
                     addIssue(issue);
                 } else {
                     modelsVisited.push_back(importSourceModel);
@@ -1144,7 +1144,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Imported units '" + units->name() + "' refers to units '" + unitsRef + "' which does not appear in '" + importSource->url() + "'.");
                 issue->mPimpl->mItem->mPimpl->setUnits(units);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE);
                 addIssue(issue);
             }
         }
@@ -1224,14 +1224,14 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
             issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REFERENCE);
             addIssue(issue);
         }
     } else {
         auto issue = makeIssueIllegalIdentifier(reference);
         issue->mPimpl->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'. " + issue->description());
         issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REFERENCE);
         addIssue(issue);
     }
     // Check for a valid identifier.
@@ -1248,7 +1248,7 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
                 issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_ATTRIBUTE_PREFIX_VALUE);
                 addIssue(issue);
             } else {
                 try {
@@ -1258,7 +1258,7 @@ void Validator::ValidatorImpl::validateUnitsUnitsItem(size_t index, const UnitsP
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
                     issue->mPimpl->mItem->mPimpl->setUnitsItem(UnitsItem::create(units, index));
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_ATTRIBUTE_PREFIX_VALUE);
                     addIssue(issue);
                 }
             }
@@ -1275,7 +1275,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Component '" + component->name() + "' contains multiple variables with the name '" + variableName + "'. Valid variable names must be unique to their component.");
             issue->mPimpl->mItem->mPimpl->setComponent(component);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME_UNIQUE);
             addIssue(issue);
         }
     }
@@ -1285,7 +1285,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         auto issue = makeIssueIllegalIdentifier(variableName);
         issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' does not have a valid name attribute. " + issue->description());
         issue->mPimpl->mItem->mPimpl->setVariable(variable);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_ATTRIBUTE_REQUIRED);
         addIssue(issue);
     }
     // Check for a valid identifier.
@@ -1301,7 +1301,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' does not have any units specified.");
         issue->mPimpl->mItem->mPimpl->setVariable(variable);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS_VALUE);
         addIssue(issue);
     } else {
         std::string unitsName = variable->units()->name();
@@ -1309,7 +1309,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             auto issue = makeIssueIllegalIdentifier(unitsName);
             issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' does not have a valid units attribute. The attribute given is '" + unitsName + "'. " + issue->description());
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS_VALUE);
             addIssue(issue);
         } else if (!isStandardUnitName(unitsName)) {
             ModelPtr model = owningModel(component);
@@ -1317,7 +1317,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS_VALUE);
                 addIssue(issue);
             }
         }
@@ -1329,7 +1329,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_INTERFACE);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_INTERFACE_VALUE);
             addIssue(issue);
         }
     }
@@ -1343,7 +1343,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' has an invalid initial value '" + initialValue + "'. Initial values must be a real number string or a variable reference.");
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_INITIAL_VALUE);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_INITIAL_VALUE_VALUE);
                 addIssue(issue);
             }
         }
@@ -1440,49 +1440,49 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not have an order set.");
         issue->mPimpl->mItem->mPimpl->setComponent(component);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_ORDER);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_ORDER_VALUE);
         addIssue(issue);
     }
     if (noVariable) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not reference a variable.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
         addIssue(issue);
     }
     if (noTestVariable) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not reference a test_variable.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
         addIssue(issue);
     }
     if (noTestValue) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not have a test_value specified.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VALUE);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::TEST_VALUE_ELEMENT);
         addIssue(issue);
     }
     if (noResetValue) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "does not have a reset_value specified.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_RESET_VALUE);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VALUE_ELEMENT);
         addIssue(issue);
     }
     if (varOutsideComponent) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "refers to a variable '" + reset->variable()->name() + "' in a different component '" + varParentName + "'.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
         addIssue(issue);
     }
     if (testVarOutsideComponent) {
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription(description + "refers to a test_variable '" + reset->testVariable()->name() + "' in a different component '" + testVarParentName + "'.");
         issue->mPimpl->mItem->mPimpl->setReset(reset);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
         addIssue(issue);
     }
 }
@@ -1578,7 +1578,7 @@ bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, co
     IssuePtr issue = makeIssueIllegalIdentifier(unitsName);
     issue->mPimpl->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute. " + issue->description());
     issue->mPimpl->mItem->mPimpl->setMath(component);
-    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS);
+    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS_ATTRIBUTE);
     addIssue(issue);
 
     return false;
@@ -1634,7 +1634,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in the model '" + model->name() + "' or a standard unit.");
                 issue->mPimpl->mItem->mPimpl->setMath(component);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CN_UNITS_ATTRIBUTE_REFERENCE);
                 addIssue(issue);
             }
         }
@@ -1660,7 +1660,7 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("MathML ci element has the child text '" + textInNode + "' which does not correspond with any variable names present in component '" + component->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setMath(component);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CI_VARIABLE_REF);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CI_VARIABLE_REFERENCE);
             addIssue(issue);
         }
     }
@@ -2115,7 +2115,7 @@ void Validator::ValidatorImpl::validateMathMLElementsChildrenAndSiblings(const X
 
         if (!ok) {
             addMathmlIssue("Math has a 'ci' element with no identifier as a child.",
-                           Issue::ReferenceRule::MATH_CI_VARIABLE_REF,
+                           Issue::ReferenceRule::MATH_CI_VARIABLE_REFERENCE,
                            component);
         }
     } else if (node->isMathmlElement("cn")) {
@@ -2293,7 +2293,7 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
                     IssuePtr err = Issue::IssueImpl::create();
                     err->mPimpl->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
                     err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
-                    err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE);
+                    err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_ELEMENT);
                     addIssue(err);
                 }
             }
@@ -2308,7 +2308,7 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
                 err->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + componentName + "' has an interface type set to '" + interfaceTypeString + "' which is not the correct interface type for this variable. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
             }
             err->mPimpl->mItem->mPimpl->setVariable(variable);
-            err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE);
+            err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_ELEMENT);
             addIssue(err);
         }
     }
@@ -2350,7 +2350,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
                 IssuePtr err = Issue::IssueImpl::create();
                 err->mPimpl->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + variable->units()->name() + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentVariable->units()->name() + "'. The mismatch is: " + hints);
                 err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
-                err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
+                err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_ELEMENT);
                 addIssue(err);
             }
         }
@@ -2366,7 +2366,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
             IssuePtr err = Issue::IssueImpl::create();
             err->mPimpl->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
             err->mPimpl->mItem->mPimpl->setMapVariables(variable, equivalentVariable);
-            err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
+            err->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1_ATTRIBUTE);
             addIssue(err);
         }
     }
@@ -2404,7 +2404,7 @@ IssuePtr Validator::ValidatorImpl::makeIssueIllegalIdentifier(const std::string 
 {
     auto issue = Issue::IssueImpl::create();
     auto referenceRule = validateCellmlIdentifier(name);
-    issue->mPimpl->setReferenceRule(referenceRule);
+    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
 
     if (referenceRule == Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM) {
         // One or more alphabetic characters.
@@ -2555,7 +2555,7 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
                 }
             }
             auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ID_ATTRIBUTE);
             issue->mPimpl->setDescription(desc);
             issue->mPimpl->mItem->mPimpl->setModel(model);
             addIssue(issue);
