@@ -42,7 +42,7 @@ limitations under the License.
 #include "analyservariable_p.h"
 #include "anycellmlelement_p.h"
 #include "commonutils.h"
-#include "generator_p.h"
+#include "generatorinterpreter_p.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"

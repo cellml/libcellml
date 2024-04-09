@@ -45,15 +45,34 @@ public:
      * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
      *
      * @code
-     *   auto interpreterInstruction = libcellml::GeneratorInterpreter::create();
+     *   auto interpreterInstruction = libcellml::GeneratorInterpreter::create(model, profile, code);
      * @endcode
      *
      * @param model The model for which we want to generate the code to compute.
      * @param profile The profile to be used to generate the code to compute.
+     * @param code The code that has already been generated.
      *
      * @return A smart pointer to an @ref GeneratorInterpreter object.
      */
-    static GeneratorInterpreterPtr create(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile) noexcept;
+    static GeneratorInterpreterPtr create(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
+                                          const std::string &code) noexcept;
+
+    /**
+     * @brief Create an @ref GeneratorInterpreter object.
+     *
+     * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
+     *
+     * @code
+     *   auto interpreterInstruction = libcellml::GeneratorInterpreter::create(profile);
+     * @endcode
+     *
+     * @param ast The AST for which we want to generate some code.
+     * @param profile The profile to be used to generate some code.
+     *
+     * @return A smart pointer to an @ref GeneratorInterpreter object.
+     */
+    static GeneratorInterpreterPtr create(const AnalyserEquationAstPtr &ast,
+                                          const GeneratorProfilePtr &profile) noexcept;
 
     /**
      * @brief Get the code to compute the model.
@@ -65,7 +84,9 @@ public:
     std::string code() const;
 
 private:
-    GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile); /**< Constructor, @private. */
+    GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
+                         const std::string &code); /**< Constructor, @private. */
+    GeneratorInterpreter(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile); /**< Constructor, @private. */
 
     struct GeneratorInterpreterImpl;
     GeneratorInterpreterImpl *mPimpl; /**< Private member to implementation pointer, @private. */

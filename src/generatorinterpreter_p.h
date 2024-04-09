@@ -22,6 +22,13 @@ limitations under the License.
 
 namespace libcellml {
 
+bool modelHasOdes(const AnalyserModelPtr &model);
+bool modelHasNlas(const AnalyserModelPtr &model);
+
+std::string newLineIfNotEmpty(const std::string &code);
+
+std::string generateDoubleCode(const std::string &value);
+
 /**
  * @brief The GeneratorInterpreter::GeneratorInterpreterImpl struct.
  *
@@ -30,11 +37,71 @@ namespace libcellml {
 struct GeneratorInterpreter::GeneratorInterpreterImpl
 {
     AnalyserModelPtr mModel;
-    GeneratorProfilePtr mProfile;
+    bool mModelHasOdes = false;
+    bool mModelHasNlas = false;
 
+    GeneratorProfilePtr mProfile = GeneratorProfile::create();
     std::string mCode;
 
-    explicit GeneratorInterpreterImpl(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile);
+    explicit GeneratorInterpreterImpl(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
+                                      const std::string &code);
+    explicit GeneratorInterpreterImpl(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile);
+
+    AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
+
+    double scalingFactor(const VariablePtr &variable) const;
+
+    bool isNegativeNumber(const AnalyserEquationAstPtr &ast) const;
+
+    bool isRelationalOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isAndOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isOrOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isXorOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isLogicalOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isPlusOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isMinusOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isTimesOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isDivideOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isPowerOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isRootOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isPiecewiseStatement(const AnalyserEquationAstPtr &ast) const;
+
+    std::string generateMethodBodyCode(const std::string &methodBody) const;
+
+    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
+    std::string generateVariableNameCode(const VariablePtr &variable,
+                                         bool state = true) const;
+
+    std::string generateOperatorCode(const std::string &op,
+                                     const AnalyserEquationAstPtr &ast) const;
+    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const;
+    std::string generateOneParameterFunctionCode(const std::string &function,
+                                                 const AnalyserEquationAstPtr &ast) const;
+    std::string generateTwoParameterFunctionCode(const std::string &function,
+                                                 const AnalyserEquationAstPtr &ast) const;
+    std::string generatePiecewiseIfCode(const std::string &condition,
+                                        const std::string &value) const;
+    std::string generatePiecewiseElseCode(const std::string &value) const;
+    std::string generateCode(const AnalyserEquationAstPtr &ast) const;
+
+    bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
+    bool isSomeConstant(const AnalyserEquationPtr &equation,
+                        bool includeComputedConstants) const;
+
+    std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const;
+    std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
+    std::string generateEquationCode(const AnalyserEquationPtr &equation,
+                                     std::vector<AnalyserEquationPtr> &remainingEquations,
+                                     std::vector<AnalyserEquationPtr> &equationsForDependencies,
+                                     bool includeComputedConstants);
+    std::string generateEquationCode(const AnalyserEquationPtr &equation,
+                                     std::vector<AnalyserEquationPtr> &remainingEquations);
+
+    void nlaSystems();
+    void initialiseVariables(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void computeComputedConstants(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void computeRates(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void computeVariables(std::vector<AnalyserEquationPtr> &remainingEquations);
 };
 
 } // namespace libcellml
