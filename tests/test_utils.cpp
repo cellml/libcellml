@@ -260,6 +260,19 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
     }
 }
 
+void expectEqualValues(const std::vector<double> &expectedValues, const std::vector<double> &values)
+{
+    EXPECT_EQ(expectedValues.size(), values.size());
+
+    for (size_t i = 0; i < values.size(); ++i) {
+        if (std::isnan(expectedValues.at(i))) {
+            EXPECT_TRUE(std::isnan(values.at(i)));
+        } else {
+            EXPECT_EQ(expectedValues.at(i), values.at(i));
+        }
+    }
+}
+
 libcellml::ModelPtr createModel(const std::string &name)
 {
     libcellml::ModelPtr model = libcellml::Model::create();

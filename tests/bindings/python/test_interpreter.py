@@ -1,6 +1,7 @@
 #
 # Tests the Interpreter class bindings
 #
+import math
 import unittest
 
 
@@ -11,6 +12,15 @@ class InterpreterTestCase(unittest.TestCase):
 
         x = Interpreter()
         del x
+
+    def assert_array_equal(self, expected_values, values):
+        self.assertEqual(len(expected_values), len(values))
+
+        for i in range(len(expected_values)):
+            if math.isnan(expected_values[i]):
+                self.assertTrue(math.isnan(values[i]))
+            else:
+                self.assertEqual(expected_values[i], values[i])
 
     def test_hodgkin_huxley_squid_axon_model_1952(self):
         from libcellml import Analyser
@@ -39,14 +49,18 @@ class InterpreterTestCase(unittest.TestCase):
 
         self.assertEqual(0.0, i.voi())
 
-        self.assertEqual(4, len(i.states()))
-        self.assertEqual(4, len(i.rates()))
-        self.assertEqual(18, len(i.variables()))
+        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan], i.states())
+        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan], i.rates())
+        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan], i.variables())
 
         i.initialiseVariables()
         i.computeComputedConstants()
         i.computeRates()
         i.computeVariables()
+
+        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan], i.states())
+        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan], i.rates())
+        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan], i.variables())
 
 
 if __name__ == '__main__':

@@ -21,6 +21,23 @@ limitations under the License.
 #include <libcellml>
 
 static const std::string EMPTY_STRING;
+static const std::vector<double> NO_VALUES;
+static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+static const auto NaN_x_1 = std::vector<double>({NaN});
+static const auto NaN_x_2 = std::vector<double>({NaN, NaN});
+static const auto NaN_x_3 = std::vector<double>({NaN, NaN, NaN});
+static const auto NaN_x_4 = std::vector<double>({NaN, NaN, NaN, NaN});
+static const auto NaN_x_5 = std::vector<double>({NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_6 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_10 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_15 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_17 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_18 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_19 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_20 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_33 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_185 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
+static const auto NaN_x_217 = std::vector<double>({NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN});
 
 TEST(Generator, emptyModel)
 {
@@ -76,6 +93,24 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariable)
@@ -110,6 +145,24 @@ TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariab
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.external.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnConstVarOnRhs)
@@ -138,6 +191,24 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnConstantOnRhs)
@@ -166,6 +237,24 @@ TEST(Generator, algebraicEqnConstantOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_constant_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnDerivativeOnRhs)
@@ -194,6 +283,24 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
@@ -222,6 +329,24 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnStateVarOnRhs)
@@ -250,6 +375,24 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
@@ -278,6 +421,24 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, algebraicUnknownVarOnRhs)
@@ -306,6 +467,24 @@ TEST(Generator, algebraicUnknownVarOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_unknown_var_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
@@ -334,6 +513,24 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
@@ -368,6 +565,24 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_eqn_with_one_non_isolated_unknown/model.external.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
 }
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
@@ -396,6 +611,24 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->variables());
 }
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables)
@@ -432,6 +665,24 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_system_with_three_linked_unknowns/model.three.externals.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->variables());
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
@@ -464,6 +715,24 @@ TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.ordered.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_6, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_6, interpreter->variables());
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
@@ -496,6 +765,24 @@ TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/algebraic_system_with_various_dependencies/model.not.ordered.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_6, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_6, interpreter->variables());
 }
 
 TEST(Generator, odeComputedVarOnRhs)
@@ -524,6 +811,24 @@ TEST(Generator, odeComputedVarOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, odeComputedVarOnRhsOneComponent)
@@ -552,6 +857,24 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs_one_component/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, odeConstVarOnRhs)
@@ -580,6 +903,24 @@ TEST(Generator, odeConstVarOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, odeConstVarOnRhsOneComponent)
@@ -608,6 +949,24 @@ TEST(Generator, odeConstVarOnRhsOneComponent)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs_one_component/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, odeConstantOnRhs)
@@ -636,6 +995,24 @@ TEST(Generator, odeConstantOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_constant_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
 }
 
 TEST(Generator, odeConstantOnRhsOneComponent)
@@ -664,6 +1041,24 @@ TEST(Generator, odeConstantOnRhsOneComponent)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_constant_on_rhs_one_component/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
 }
 
 TEST(Generator, odeMultipleDependentOdes)
@@ -692,6 +1087,24 @@ TEST(Generator, odeMultipleDependentOdes)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, odeMultipleDependentOdesOneComponent)
@@ -720,6 +1133,24 @@ TEST(Generator, odeMultipleDependentOdesOneComponent)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes_one_component/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, odeMultipleOdesWithSameName)
@@ -748,6 +1179,24 @@ TEST(Generator, odeMultipleOdesWithSameName)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_multiple_odes_with_same_name/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, odeUnknownVarOnRhs)
@@ -776,6 +1225,24 @@ TEST(Generator, odeUnknownVarOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_unknown_var_on_rhs/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
 }
 
 TEST(Generator, cellmlMappingsAndEncapsulations)
@@ -804,6 +1271,24 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_mappings_and_encapsulations/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, cellmlStateInitialisedUsingVariable)
@@ -832,6 +1317,24 @@ TEST(Generator, cellmlStateInitialisedUsingVariable)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_state_initialised_using_variable/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, cellmlUnitScalingVoiIndirect)
@@ -860,6 +1363,24 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
 }
 
 TEST(Generator, cellmlUnitScalingVoiDirect)
@@ -888,6 +1409,24 @@ TEST(Generator, cellmlUnitScalingVoiDirect)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
 }
 
 TEST(Generator, cellmlUnitScalingConstant)
@@ -916,6 +1455,24 @@ TEST(Generator, cellmlUnitScalingConstant)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_constant/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->variables());
 }
 
 TEST(Generator, cellmlUnitScalingState)
@@ -944,6 +1501,24 @@ TEST(Generator, cellmlUnitScalingState)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
@@ -972,6 +1547,24 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
 }
 
 TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
@@ -1000,6 +1593,24 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, cellmlUnitScalingRate)
@@ -1028,6 +1639,24 @@ TEST(Generator, cellmlUnitScalingRate)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling_rate/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, dependentEqns)
@@ -1056,6 +1685,24 @@ TEST(Generator, dependentEqns)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/dependent_eqns/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->variables());
 }
 
 TEST(Generator, cellGeometryModel)
@@ -1084,6 +1731,24 @@ TEST(Generator, cellGeometryModel)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cell_geometry_model/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
 }
 
 TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
@@ -1119,6 +1784,24 @@ TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cell_geometry_model/model.external.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
 }
 
 TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
@@ -1147,6 +1830,24 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_33, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_33, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_217, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_33, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_33, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_217, interpreter->variables());
 }
 
 TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
@@ -1175,6 +1876,24 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_15, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_15, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_185, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_15, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_15, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_185, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952)
@@ -1203,6 +1922,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
@@ -1231,6 +1968,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariable)
@@ -1268,6 +2023,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariab
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_19, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_19, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -1312,6 +2085,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVaria
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_20, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_20, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
@@ -1349,6 +2140,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -1392,6 +2201,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesI
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVariable)
@@ -1429,6 +2256,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -1472,6 +2317,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVa
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVariable)
@@ -1509,6 +2372,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -1552,6 +2433,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
@@ -1602,6 +2501,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_19, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_19, interpreter->variables());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
@@ -1637,6 +2554,24 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dae.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, nobleModel1962)
@@ -1665,6 +2600,24 @@ TEST(Generator, nobleModel1962)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/noble_model_1962/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_17, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_17, interpreter->variables());
 }
 
 TEST(Generator, robertsonOdeModel1966)
@@ -1697,6 +2650,24 @@ TEST(Generator, robertsonOdeModel1966)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/robertson_model_1966/model.ode.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_3, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->variables());
 }
 
 TEST(Generator, robertsonDaeModel1966)
@@ -1729,6 +2700,24 @@ TEST(Generator, robertsonDaeModel1966)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/robertson_model_1966/model.dae.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_5, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_5, interpreter->variables());
 }
 
 TEST(Generator, sineImports)
@@ -1765,6 +2754,24 @@ TEST(Generator, sineImports)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/sine_model_imports/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_10, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_10, interpreter->variables());
 }
 
 TEST(Generator, analyserModelScopeTest)
@@ -1790,6 +2797,24 @@ TEST(Generator, analyserModelScopeTest)
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_4, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_18, interpreter->variables());
 }
 
 TEST(Generator, daeModel)
@@ -1818,6 +2843,24 @@ TEST(Generator, daeModel)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/dae_cellml_1_1_model/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_10, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_10, interpreter->variables());
 }
 
 TEST(Generator, variableInitialisedUsingAConstant)
@@ -1846,6 +2889,24 @@ TEST(Generator, variableInitialisedUsingAConstant)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/variable_initialised_using_a_constant/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, modelOutOfScope)
@@ -1875,6 +2936,24 @@ TEST(Generator, modelOutOfScope)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->states());
+    EXPECT_EQ_VALUES(NaN_x_2, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_1, interpreter->variables());
 }
 
 TEST(Generator, unknownVariableMarkedAsExternalVariable)
@@ -1905,6 +2984,24 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/unknown_variable_as_external_variable/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_10, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_10, interpreter->variables());
 }
 
 TEST(Generator, modelWithComplexUnitsOutOfScope)
@@ -1939,4 +3036,22 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
     generator->setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/cellml_slc_example/model.py"), generator->implementationCode());
+
+    auto interpreter = libcellml::Interpreter::create();
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_10, interpreter->variables());
+
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
+    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
+    EXPECT_EQ_VALUES(NaN_x_10, interpreter->variables());
 }

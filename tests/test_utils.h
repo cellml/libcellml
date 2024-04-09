@@ -105,6 +105,8 @@ void TEST_EXPORT expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(con
                                                                              const std::vector<std::string> &urls,
                                                                              const libcellml::LoggerPtr &logger);
 
+void TEST_EXPORT expectEqualValues(const std::vector<double> &expectedValues, const std::vector<double> &values);
+
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",
                                                          const std::string &componentName = "");
@@ -128,3 +130,7 @@ void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::Mo
 #define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(issues, cellmlElementTypes, levels, referenceRules, urls, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(issues, cellmlElementTypes, levels, referenceRules, urls, logger)
+
+#define EXPECT_EQ_VALUES(expectedValues, values) \
+    SCOPED_TRACE("Values checked here."); \
+    expectEqualValues(expectedValues, values)

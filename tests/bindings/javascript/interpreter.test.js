@@ -23,6 +23,19 @@ describe("Interpreter tests", () => {
     beforeAll(async () => {
         libcellml = await loadLibCellML()
     })
+
+    function expectArray(expectedValues, values) {
+        expect(expectedValues.length).toBe(values.size())
+
+        for (let i = 0; i < expectedValues.length; ++i) {
+            if (Number.isNaN(expectedValues[i])) {
+                expect(Number.isNaN(values.get(i))).toBe(true)
+            } else {
+                expect(expectedValues[i]).toBe(values.get(i))
+            }
+        }
+    }
+
     test('Checking Interpreter model manipulation.', () => {
         const i = new libcellml.Interpreter()
         const p = new libcellml.Parser(true)
@@ -40,13 +53,17 @@ describe("Interpreter tests", () => {
 
         expect(i.voi()).toBe(0.0)
 
-        expect(i.states().size()).toBe(4)
-        expect(i.rates().size()).toBe(4)
-        expect(i.variables().size()).toBe(18)
+        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.states())
+        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.rates())
+        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.variables())
 
         i.initialiseVariables()
         i.computeComputedConstants()
         i.computeRates()
         i.computeVariables()
+
+        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.states())
+        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.rates())
+        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.variables())
     })
 })
