@@ -994,8 +994,8 @@ TEST(Parser, emptyConnections)
         "  <connection/>\n"
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
-        "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
-        "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
+        "Connection in model 'model_name' does not specify a component_1 in a connection element.",
+        "Connection in model 'model_name' does not specify a component_2 in a connection element.",
         "Connection in model 'model_name' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
@@ -1012,8 +1012,8 @@ TEST(Parser, emptyConnectionWithId)
         "  <connection id=\"myId\"/>\n"
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
-        "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
-        "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
+        "Connection in model 'model_name' does not specify a component_1 in a connection element.",
+        "Connection in model 'model_name' does not specify a component_2 in a connection element.",
         "Connection in model 'model_name' has an identifier of 'myId' but does not contain any 'map_variables' elements. The connection will be disregarded and the associated identifier will be lost.",
     };
 
@@ -1035,7 +1035,7 @@ TEST(Parser, connectionErrorNoComponent2)
         "  </connection>\n"
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
-        "Connection in model 'modelA' does not have a valid component_2 in a connection element.",
+        "Connection in model 'modelA' does not specify a component_2 in a connection element.",
         "Connection in model 'modelA' specifies 'component1' as component_1 but it does not exist in the model.",
         "Connection in model 'modelA' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.",
         "Connection in model 'modelA' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid.",
@@ -1082,7 +1082,7 @@ TEST(Parser, connectionErrorNoComponent1)
         "</connection>\n"
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
-        "Connection in model 'modelName' does not have a valid component_1 in a connection element.",
+        "Connection in model 'modelName' does not specify a component_1 in a connection element.",
         "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.",
         "Variable 'variable2' is specified as variable_2 in a connection but it does not exist in component_2 component 'componentA' of model 'modelName'.",
     };
@@ -1108,8 +1108,8 @@ TEST(Parser, connectionErrorNoMapComponents)
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Connection in model 'modelName' has an invalid connection attribute 'name'.",
-        "Connection in model 'modelName' does not have a valid component_1 in a connection element.",
-        "Connection in model 'modelName' does not have a valid component_2 in a connection element.",
+        "Connection in model 'modelName' does not specify a component_1 in a connection element.",
+        "Connection in model 'modelName' does not specify a component_2 in a connection element.",
         "Connection in model 'modelName' has an invalid child element 'map_units' of element 'map_variables'.",
         "Connection in model 'modelName' has an invalid map_variables attribute 'variable_3'.",
         "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.",
@@ -1255,7 +1255,7 @@ TEST(Parser, component2InConnectionMissing)
         "</model>\n";
 
     const std::vector<std::string> expectedIssues = {
-        "Connection in model '' does not have a valid component_2 in a connection element.",
+        "Connection in model '' does not specify a component_2 in a connection element.",
         "Connection in model '' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.",
     };
 
@@ -1286,7 +1286,7 @@ TEST(Parser, connectionVariable2Missing)
         "</model>\n";
 
     const std::vector<std::string> expectedIssues = {
-        "Connection in model '' does not have a valid variable_2 in a map_variables element.",
+        "Connection in model '' does not specify a variable_2 in a map_variables element.",
     };
 
     // Parse
@@ -1311,7 +1311,7 @@ TEST(Parser, connectionVariable1Missing)
         "  </connection>\n"
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
-        "Connection in model '' does not have a valid variable_1 in a map_variables element.",
+        "Connection in model '' does not specify a variable_1 in a map_variables element.",
         "Model does not contain the units 'scrat' required by variable 'variable_bob' in component 'component_bob'.",
         "Model does not contain the units 'gone' required by variable 'variable_dave' in component 'component_dave'.",
     };
@@ -1427,8 +1427,8 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
         "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
         "Encapsulation in model 'starwars' does not contain any child elements.",
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
-        "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
-        "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
+        "Connection in model 'starwars' does not specify a component_1 in a connection element.",
+        "Connection in model 'starwars' does not specify a component_2 in a connection element.",
         "Connection in model 'starwars' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
@@ -1543,12 +1543,12 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n    awakens\n    '.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n      force\n    '.",
         "Encapsulation in model 'starwars' specifies 'ship' as a parent component_ref but it does not have any children.",
-        "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
-        "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
+        "Connection in model 'starwars' does not specify a component_1 in a connection element.",
+        "Connection in model 'starwars' does not specify a component_2 in a connection element.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element '\n    finn\n    '.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element '\n      trooper\n    '.",
-        "Connection in model 'starwars' does not have a valid variable_1 in a map_variables element.",
-        "Connection in model 'starwars' does not have a valid variable_2 in a map_variables element.",
+        "Connection in model 'starwars' does not specify a variable_1 in a map_variables element.",
+        "Connection in model 'starwars' does not specify a variable_2 in a map_variables element.",
         "Connection in model 'starwars' specifies '' as variable_1 but the corresponding component_1 is invalid.",
         "Connection in model 'starwars' specifies '' as variable_2 but the corresponding component_2 is invalid.",
     };

@@ -116,10 +116,10 @@ TEST(Validator, invalidElementIdAttribute)
         "Model 'valid_name' does not have a valid 'id' attribute, '993-++$@'.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "1.2.5",
+        "1.2.5.1.1",
     };
     const std::vector<std::string> expectedUrls = {
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specA02.html?issue=XML",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specA02.html?issue=XML_ID_ATTRIBUTE",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create("valid_name");
