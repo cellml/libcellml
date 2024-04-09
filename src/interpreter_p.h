@@ -20,8 +20,6 @@ limitations under the License.
 
 namespace libcellml {
 
-std::string generateDoubleCode(const std::string &value);
-
 /**
  * @brief The Interpreter::InterpreterImpl struct.
  *
