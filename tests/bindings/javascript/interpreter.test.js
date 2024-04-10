@@ -53,17 +53,20 @@ describe("Interpreter tests", () => {
 
         expect(i.voi()).toBe(0.0)
 
-        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.states())
-        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.rates())
-        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.variables())
+        const NaN_x_4 = Array(4).fill(Number.NaN)
+        const NaN_x_18 = Array(18).fill(Number.NaN)
+
+        expectArray(NaN_x_4, i.states())
+        expectArray(NaN_x_4, i.rates())
+        expectArray(NaN_x_18, i.variables())
 
         i.initialiseVariables()
         i.computeComputedConstants()
         i.computeRates()
         i.computeVariables()
 
-        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.states())
-        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.rates())
-        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN], i.variables())
+        expectArray(NaN_x_4, i.states())
+        expectArray(NaN_x_4, i.rates())
+        expectArray(NaN_x_18, i.variables())
     })
 })

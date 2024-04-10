@@ -49,18 +49,21 @@ class InterpreterTestCase(unittest.TestCase):
 
         self.assertEqual(0.0, i.voi())
 
-        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan], i.states())
-        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan], i.rates())
-        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan], i.variables())
+        nan_x_4 = 4 * [math.nan]
+        nan_x_18 = 18 * [math.nan]
+
+        self.assert_array_equal(nan_x_4, i.states())
+        self.assert_array_equal(nan_x_4, i.rates())
+        self.assert_array_equal(nan_x_18, i.variables())
 
         i.initialiseVariables()
         i.computeComputedConstants()
         i.computeRates()
         i.computeVariables()
 
-        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan], i.states())
-        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan], i.rates())
-        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan, math.nan], i.variables())
+        self.assert_array_equal(nan_x_4, i.states())
+        self.assert_array_equal(nan_x_4, i.rates())
+        self.assert_array_equal(nan_x_18, i.variables())
 
 
 if __name__ == '__main__':
