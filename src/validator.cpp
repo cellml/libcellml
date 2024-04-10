@@ -1095,7 +1095,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
             auto issue = makeIssueIllegalIdentifier(unitsRef);
             issue->mPimpl->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute. " + issue->description());
             issue->mPimpl->mItem->mPimpl->setUnits(units);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE_VALUE);
             addIssue(issue);
         }
 
@@ -1144,7 +1144,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Imported units '" + units->name() + "' refers to units '" + unitsRef + "' which does not appear in '" + importSource->url() + "'.");
                 issue->mPimpl->mItem->mPimpl->setUnits(units);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_UNITS_REFERENCE_VALUE_TARGET);
                 addIssue(issue);
             }
         }
@@ -1156,7 +1156,12 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription(description);
             issue->mPimpl->mItem->mPimpl->setModel(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_NAME_UNIQUE);
+            if (units->isImport()) {
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_NAME_UNIQUE);
+            } else {
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_NAME_UNIQUE);
+            }
+
             addIssue(issue);
         }
     }
@@ -1166,10 +1171,10 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, History &his
         issue->mPimpl->mItem->mPimpl->setUnits(units);
         if (units->isImport()) {
             issue->mPimpl->setDescription("Imported units '" + unitsName + "' does not have a valid name attribute. " + issue->description());
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_NAME);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_NAME_VALUE);
         } else {
             issue->mPimpl->setDescription("Units '" + unitsName + "' does not have a valid name attribute. " + issue->description());
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_NAME);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_NAME_VALUE);
         }
         addIssue(issue);
     } else {
