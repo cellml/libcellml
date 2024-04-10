@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include "test_utils.h"
 #include <libcellml>
 
 TEST(UnitsImport, basics)
@@ -144,6 +145,24 @@ TEST(UnitsImport, nonExistentUrl)
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
+}
+
+TEST(UnitsImport, noNameAttribute)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"http://someplace.world/cellml/model.xml\">\n"
+        "    <units units_ref=\"per_mole\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+
+    libcellml::ModelPtr m = p->parseModel(in);
+
+    EXPECT_EQ(size_t(1), p->errorCount());
+    printIssues(p);
 }
 
 TEST(UnitsImport, importModifyAndParse)
