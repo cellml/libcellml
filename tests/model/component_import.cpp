@@ -322,3 +322,43 @@ TEST(ComponentImport, complexImportAndParse)
     const libcellml::ComponentPtr constBob = constDave->component("bob");
     EXPECT_EQ(size_t(2), constBob->componentCount());
 }
+
+TEST(ComponentImport, noNameAttribute)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"http://someplace.world/cellml/model.xml\">\n"
+        "    <component component_ref=\"holey\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+
+    libcellml::ModelPtr m = p->parseModel(in);
+
+    EXPECT_EQ(size_t(1), p->errorCount());
+}
+
+TEST(ComponentImport, notUniqueImportName)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"http://someplace.world/cellml/model.xml\">\n"
+        "    <component component_ref=\"holey\" name=\"bob\"/>\n"
+        "    <component component_ref=\"moley\" name=\"bob\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    libcellml::ModelPtr m = p->parseModel(in);
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+
+    v->validateModel(m);
+
+    EXPECT_EQ(size_t(1), v->errorCount());
+}

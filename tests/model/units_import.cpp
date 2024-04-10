@@ -162,7 +162,6 @@ TEST(UnitsImport, noNameAttribute)
     libcellml::ModelPtr m = p->parseModel(in);
 
     EXPECT_EQ(size_t(1), p->errorCount());
-    printIssues(p);
 }
 
 TEST(UnitsImport, importModifyAndParse)

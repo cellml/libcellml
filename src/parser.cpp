@@ -1437,9 +1437,11 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
             ComponentPtr importedComponent = Component::create();
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             importedComponent->setImportSource(importSource);
+            nameAttributePresent = false;
             while (childAttribute) {
                 if (childAttribute->isType("name")) {
                     importedComponent->setName(childAttribute->value());
+                    nameAttributePresent = true;
                 } else if (isIdAttribute(childAttribute, mParsing1XVersion)) {
                     importedComponent->setId(childAttribute->value());
                 } else if (childAttribute->isType("component_ref")) {
@@ -1448,11 +1450,20 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Import of component '" + childNode->attribute("name") + "' from '" + node->attribute("href") + "' has an invalid attribute '" + childAttribute->name() + "'.");
                     issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_CHILD);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_ELEMENT);
                     addIssue(issue);
                 }
                 childAttribute = childAttribute->next();
             }
+
+            if (!nameAttributePresent) {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Import of component does not specify a name attribute.");
+                issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_NAME);
+                addIssue(issue);
+            }
+
             model->addComponent(importedComponent);
         } else if (parseNode(childNode, "units")) {
             UnitsPtr importedUnits = Units::create();
