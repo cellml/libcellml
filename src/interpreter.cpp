@@ -29,15 +29,11 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
     mVoi = 0.0;
 
     if (mModel != nullptr) {
-        mStates.resize(mModel->stateCount());
-        mRates.resize(mModel->stateCount());
-        mVariables.resize(mModel->variableCount());
-
         static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 
-        std::fill(mStates.begin(), mStates.end(), NaN);
-        std::fill(mRates.begin(), mRates.end(), NaN);
-        std::fill(mVariables.begin(), mVariables.end(), NaN);
+        mStates = std::vector<double>(mModel->stateCount(), NaN);
+        mRates = std::vector<double>(mModel->stateCount(), NaN);
+        mVariables = std::vector<double>(mModel->variableCount(), NaN);
     } else {
         mStates.clear();
         mRates.clear();
