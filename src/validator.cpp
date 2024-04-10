@@ -300,17 +300,17 @@ public:
     IssuePtr makeIssueIllegalIdentifier(const std::string &name) const;
 
     /**
-     * @brief Validate the given name is unique in the model.
+     * @brief Validate the given component's name is unique in the model.
      *
-     * The @p name is checked against known names in @p names. If
-     * the @p name already exists an issue is added to the validator
-     * with the model passed to the issue for further reference.
+     * The @p component is checked against known names in @p names. If
+     * the component's name already exists an issue is added to the validator
+     * with the component passed to the issue for further reference.
      *
-     * @param model The model the name is used in.
-     * @param name The name of the component to validate.
+     * @param model The model the component is used in.
+     * @param component The component to validate the name of.
      * @param names The list of component names already used in the model.
      */
-    void validateUniqueName(const ModelPtr &model, const std::string &name, NameList &names);
+    void validateUniqueName(const ModelPtr &model, const ComponentPtr &component, NameList &names);
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -765,14 +765,19 @@ void Validator::validateModel(const ModelPtr &model)
     }
 }
 
-void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, NameList &names)
+void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const ComponentPtr &component, NameList &names)
 {
+    std::string name = component->name();
     if (!name.empty()) {
         if (std::find(names.begin(), names.end(), name) != names.end()) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Model '" + model->name() + "' contains multiple components with the name '" + name + "'. Valid component names must be unique to their model.");
             issue->mPimpl->mItem->mPimpl->setModel(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME_UNIQUE);
+            if (component->isImport()) {
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_NAME_UNIQUE);
+            } else {
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME_UNIQUE);
+            }
             addIssue(issue);
         } else {
             names.push_back(name);
@@ -782,7 +787,7 @@ void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const s
 
 void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, NameList &componentNames, History &history, std::vector<ModelPtr> &modelsVisited)
 {
-    validateUniqueName(model, component->name(), componentNames);
+    validateUniqueName(model, component, componentNames);
     for (size_t i = 0; i < component->componentCount(); ++i) {
         auto childComponent = component->component(i);
         validateComponentTree(model, childComponent, componentNames, history, modelsVisited);
@@ -907,7 +912,11 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
         auto issue = makeIssueIllegalIdentifier(componentName);
         issue->mPimpl->mItem->mPimpl->setComponent(component);
         issue->mPimpl->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid name attribute. " + issue->description());
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME);
+        if (isImported) {
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_NAME_VALUE);
+        } else {
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME_VALUE);
+        }
         addIssue(issue);
     }
     // Check for a valid identifier.
@@ -927,7 +936,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
             auto issue = makeIssueIllegalIdentifier(componentRef);
             issue->mPimpl->setDescription(descriptionPrefix + "'" + componentName + "' does not have a valid component_ref attribute. " + issue->description());
             issue->mPimpl->mItem->mPimpl->setComponent(component);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REFERENCE);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REFERENCE_VALUE);
             addIssue(issue);
         }
 
@@ -961,7 +970,6 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component, 
                 addIssue(issue);
             }
         }
-
     } else {
         // Check for variables in this component.
         NameList variableNames;

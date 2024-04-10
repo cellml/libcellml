@@ -72,17 +72,17 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
         "2.1.1.1",
-        "2.7.1",
-        "2.7.1",
-        "2.7.1",
-        "2.7.1",
+        "2.7.1.1",
+        "2.7.1.1",
+        "2.7.1.1",
+        "2.7.1.1",
     };
     const std::vector<std::string> expectedUrls = {
         "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME_VALUE",
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME_VALUE",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME_VALUE",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME_VALUE",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME_VALUE",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
