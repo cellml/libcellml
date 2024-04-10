@@ -724,7 +724,7 @@ void Validator::validateModel(const ModelPtr &model)
         if (!isCellmlIdentifier(model->name())) {
             auto issue = pFunc()->makeIssueIllegalIdentifier(model->name());
             issue->mPimpl->mItem->mPimpl->setModel(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_NAME_VALUE);
             issue->mPimpl->setDescription("Model '" + model->name() + "' does not have a valid name attribute. " + issue->description());
             pFunc()->addIssue(issue);
         }

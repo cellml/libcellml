@@ -184,6 +184,7 @@ TEST(Parser, invalidModelAttribute)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" game=\"model_name\"/>\n";
     const std::vector<std::string> expectedIssues = {
         "Model '' has an invalid attribute 'game'.",
+        "Model does not have a name attribute.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -219,7 +220,7 @@ TEST(Parser, modelWithInvalidElement)
     };
     const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"\">\n"
         "  <hobbit/>\n"
         "</model>\n";
     const std::vector<std::string> expectedIssues2 = {
@@ -920,7 +921,7 @@ TEST(Parser, invalidVariableAttributesAndGetVariableIssue)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"\">\n"
         "  <component name=\"componentA\">\n"
         "    <variable name=\"quixote\" don=\"true\"/>\n"
         "    <variable windmill=\"tilted\"/>\n"
@@ -1125,7 +1126,7 @@ TEST(Parser, connectionErrorNoMapVariables)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"componentA\">\n"
         "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
         "  </component>\n"
@@ -1145,9 +1146,9 @@ TEST(Parser, connectionErrorNoMapVariables)
 
 TEST(Parser, importedComponent2Connection)
 {
-    const std::string e =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "  </import>\n"
@@ -1161,7 +1162,7 @@ TEST(Parser, importedComponent2Connection)
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(e);
+    parser->parseModel(in);
     EXPECT_EQ(size_t(0), parser->issueCount());
 }
 
@@ -1186,7 +1187,7 @@ TEST(Parser, validConnectionMapVariablesFirst)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"robert\">\n"
         "    <variable name=\"bob\" units=\"dimensionless\"/>\n"
         "  </component>\n"
@@ -1205,9 +1206,9 @@ TEST(Parser, validConnectionMapVariablesFirst)
 
 TEST(Parser, component2ConnectionVariableMissing)
 {
-    const std::string e =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"component_bob\">\n"
         "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
         "  </component>\n"
@@ -1224,7 +1225,7 @@ TEST(Parser, component2ConnectionVariableMissing)
 
     // Parse
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(e);
+    p->parseModel(in);
     EXPECT_EQ_ISSUES(expectedIssues, p);
 }
 
@@ -1232,7 +1233,7 @@ TEST(Parser, component2InConnectionMissing)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"component_bob\">\n"
         "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
         "  </component>\n"
@@ -1273,7 +1274,7 @@ TEST(Parser, connectionVariable2Missing)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"component_bob\">\n"
         "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
         "  </component>\n"
@@ -1299,7 +1300,7 @@ TEST(Parser, connectionVariable1Missing)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"component_bob\">\n"
         "    <variable name=\"variable_bob\" units=\"scrat\"/>\n"
         "  </component>\n"
@@ -1326,7 +1327,7 @@ TEST(Parser, connectionErrorNoMapVariablesType)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"component1\">\n"
         "    <variable name=\"variable1\" units=\"scrat\"/>\n"
         "  </component>\n"
@@ -1353,7 +1354,7 @@ TEST(Parser, invalidImportsAndGetIssue)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" sauce=\"hollandaise\">\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
@@ -1567,7 +1568,7 @@ TEST(Parser, parseIds)
     };
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>\n"
         "  </import>\n"
@@ -1768,7 +1769,7 @@ TEST(Parser, parseResets)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
         "    <variable name=\"variable1\" id=\"vid\"/>\n"
         "    <variable name=\"variable2\" id=\"vid2\"/>\n"
@@ -1821,7 +1822,7 @@ TEST(Parser, parseResetsWithIssues)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"component1\">\n"
         "    <variable name=\"variable1\" id=\"vid\" units=\"dimensionless\"/>\n" // reset variable not in the same component
         "  </component>\n"
@@ -1918,7 +1919,7 @@ TEST(Parser, parseResetIllegalChild)
     const std::string e = "Reset in component 'componentA' has an invalid child 'initial_value'.";
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"componentA\" id=\"c2id\">\n"
         "    <variable name=\"variable1\" id=\"vid\"/>\n"
         "    <variable name=\"variable2\" id=\"vid2\"/>\n"

@@ -438,10 +438,12 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         addIssue(issue);
     }
     // Get model attributes.
+    bool nameAttributePresent = false;
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute != nullptr) {
         if (attribute->isType("name")) {
             model->setName(attribute->value());
+            nameAttributePresent = true;
         } else if (isIdAttribute(attribute, mParsing1XVersion)) {
             model->setId(attribute->value());
         } else {
@@ -451,12 +453,20 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Model '" + node->attribute("name") + "' has an invalid attribute '" + attribute->name() + "'.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_ELEMENT);
             }
             issue->mPimpl->mItem->mPimpl->setModel(model);
             addIssue(issue);
         }
         attribute = attribute->next();
+    }
+
+    if (!mParsing1XVersion && !nameAttributePresent) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Model does not have a name attribute.");
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
+        issue->mPimpl->mItem->mPimpl->setModel(model);
+        addIssue(issue);
     }
 
     // Get model children (CellML entities).

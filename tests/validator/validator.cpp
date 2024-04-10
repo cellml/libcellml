@@ -49,10 +49,10 @@ TEST(Validator, unnamedModel)
         "Model '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "2.1.1",
+        "2.1.1.1",
     };
     const std::vector<std::string> expectedUrls = {
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME_VALUE",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -71,14 +71,14 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
         "Component '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "2.1.1",
+        "2.1.1.1",
         "2.7.1",
         "2.7.1",
         "2.7.1",
         "2.7.1",
     };
     const std::vector<std::string> expectedUrls = {
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME_VALUE",
         "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
         "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
         "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
