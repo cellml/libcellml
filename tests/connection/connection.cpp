@@ -236,7 +236,7 @@ TEST(Connection, parseValidAlternateFormConnection)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <connection component_1=\"component1\" component_2=\"component2\">\n"
         "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
         "  </connection>\n"
@@ -1264,7 +1264,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
-    EXPECT_EQ(size_t(0), parser->issueCount());
+    EXPECT_EQ(size_t(1), parser->issueCount());
 
     a = printer->printModel(model);
     EXPECT_EQ(e, a);
@@ -1274,7 +1274,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
 {
     const std::string s =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"component_dave\">\n"
         "    <variable name=\"variable_dave\" units=\"dimensionless\"/>\n"
         "  </component>\n"
