@@ -1389,9 +1389,11 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
 {
     XmlAttributePtr attribute = node->firstAttribute();
     std::string id;
+    bool hrefAttributePresent = false;
     while (attribute != nullptr) {
         if (attribute->isType("href", XLINK_NS)) {
             importSource->setUrl(attribute->value());
+            hrefAttributePresent = true;
         } else if (isIdAttribute(attribute, mParsing1XVersion)) {
             id = attribute->value();
             importSource->setId(id);
@@ -1401,11 +1403,20 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Import from '" + node->attribute("href") + "' has an invalid attribute '" + attribute->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_ELEMENT);
             addIssue(issue);
         }
         attribute = attribute->next();
     }
+
+    if (!hrefAttributePresent) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Import does not specify an xlink href attribute.");
+        issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+        addIssue(issue);
+    }
+
     XmlNodePtr childNode = node->firstChild();
 
     if (childNode == nullptr) {

@@ -115,7 +115,7 @@ TEST(ParserTransform, annotatedCellMl10Model)
 
     EXPECT_EQ(size_t(5), model->unitsCount());
     EXPECT_EQ(size_t(2), model->componentCount());
-    EXPECT_EQ(size_t(77), parser->issueCount());
+    EXPECT_EQ(size_t(78), parser->issueCount());
 
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);

@@ -807,7 +807,7 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
         auto issue = Issue::IssueImpl::create();
         issue->mPimpl->setDescription("Import of " + importType + " '" + importName + "' does not have a valid locator xlink:href attribute.");
         issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF_LOCATOR);
         addIssue(issue);
     } else {
         xmlURIPtr uri = xmlParseURI(url.c_str());
@@ -815,7 +815,7 @@ void Validator::ValidatorImpl::validateImportSource(const ImportSourcePtr &impor
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Import of " + importType + " '" + importName + "' has an invalid URI in the xlink:href attribute.");
             issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF_LOCATOR);
             addIssue(issue);
 
         } else {
