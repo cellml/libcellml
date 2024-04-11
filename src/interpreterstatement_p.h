@@ -33,8 +33,6 @@ struct InterpreterStatement::InterpreterStatementImpl
     AnalyserVariablePtr mVariable;
     double mValue = std::numeric_limits<double>::quiet_NaN();
 
-    static InterpreterStatementPtr createEquality(const AnalyserVariablePtr &variable, double value);
-
     explicit InterpreterStatementImpl(Type type,
                                       const InterpreterStatementPtr &leftChild,
                                       const InterpreterStatementPtr &rightChild);

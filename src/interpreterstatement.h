@@ -151,19 +151,54 @@ public:
     /**
      * @brief Create an @ref InterpreterStatement object.
      *
-     * Factory method to create an @ref InterpreterStatement for an equality statement. Create an interpreter
-     * statement with::
+     * Factory method to create an @ref InterpreterStatement for an element of the given type. Create such an
+     * interpreter statement with::
      *
      * @code
-     *   auto interpreterStatement = libcellml::InterpreterStatement::createEquality(variable, value);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(type, leftChild, rightChild);
      * @endcode
      *
-     * @param variable The variable to set.
-     * @param value The value to set the variable to.
+     * @param type The type of the statement.
+     * @param leftChild The left child of the statement.
+     * @param rightChild The right child of the statement.
      *
      * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterStatementPtr createEquality(const AnalyserVariablePtr &variable, double value) noexcept;
+    static InterpreterStatementPtr create(Type type,
+                                          const InterpreterStatementPtr &leftChild,
+                                          const InterpreterStatementPtr &rightChild) noexcept;
+
+    /**
+     * @brief Create an @ref InterpreterStatement object.
+     *
+     * Factory method to create an @ref InterpreterStatement for a CI element. Create such an interpreter statement
+     * with::
+     *
+     * @code
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(variable);
+     * @endcode
+     *
+     * @param variable The variable associated with the CI element.
+     *
+     * @return A smart pointer to an @ref InterpreterStatement object.
+     */
+    static InterpreterStatementPtr create(const AnalyserVariablePtr &variable) noexcept;
+
+    /**
+     * @brief Create an @ref InterpreterStatement object.
+     *
+     * Factory method to create an @ref InterpreterStatement for a CN element. Create such an interpreter statement
+     * with::
+     *
+     * @code
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(value);
+     * @endcode
+     *
+     * @param value The value associated with the CN element.
+     *
+     * @return A smart pointer to an @ref InterpreterStatement object.
+     */
+    static InterpreterStatementPtr create(double value) noexcept;
 
     /**
      * @brief Evaluate the statement.
@@ -177,7 +212,9 @@ public:
     void evaluate(double *states, double *rates, double *variables) const;
 
 private:
-    InterpreterStatement(Type type, const InterpreterStatementPtr &leftChild, const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
+    InterpreterStatement(Type type,
+                         const InterpreterStatementPtr &leftChild,
+                         const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
     InterpreterStatement(const AnalyserVariablePtr &variable); /**< Constructor, @private. */
     InterpreterStatement(double value); /**< Constructor, @private. */
 

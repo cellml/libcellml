@@ -1100,7 +1100,9 @@ bool GeneratorInterpreter::GeneratorInterpreterImpl::isSomeConstant(const Analys
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable)
 {
-    mStatements.push_back(InterpreterStatement::createEquality(variable, 0.0));
+    mStatements.push_back(InterpreterStatement::create(InterpreterStatement::Type::EQUALITY,
+                                                       InterpreterStatement::create(variable),
+                                                       InterpreterStatement::create(0.0)));
 
     return mProfile->indentString()
            + generateVariableNameCode(variable->variable(), false)

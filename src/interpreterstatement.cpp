@@ -47,14 +47,6 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(double 
 {
 }
 
-InterpreterStatementPtr InterpreterStatement::InterpreterStatementImpl::createEquality(const AnalyserVariablePtr &variable, double value)
-{
-    auto leftChild = InterpreterStatementPtr {new InterpreterStatement {variable}};
-    auto rightChild = InterpreterStatementPtr {new InterpreterStatement {value}};
-
-    return InterpreterStatementPtr {new InterpreterStatement {Type::EQUALITY, leftChild, rightChild}};
-}
-
 void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, double *rates, double *variables) const
 {
     //---GRY--- AT THIS STAGE, WE ONLY HANDLE AN EQUALITY STATEMENT.
@@ -105,9 +97,21 @@ InterpreterStatement::~InterpreterStatement()
     delete mPimpl;
 }
 
-InterpreterStatementPtr InterpreterStatement::createEquality(const AnalyserVariablePtr &variable, double value) noexcept
+InterpreterStatementPtr InterpreterStatement::create(Type type,
+                                                     const InterpreterStatementPtr &leftChild,
+                                                     const InterpreterStatementPtr &rightChild) noexcept
 {
-    return InterpreterStatementImpl::createEquality(variable, value);
+    return InterpreterStatementPtr {new InterpreterStatement {type, leftChild, rightChild}};
+}
+
+InterpreterStatementPtr InterpreterStatement::create(const AnalyserVariablePtr &variable) noexcept
+{
+    return InterpreterStatementPtr {new InterpreterStatement {variable}};
+}
+
+InterpreterStatementPtr InterpreterStatement::create(double value) noexcept
+{
+    return InterpreterStatementPtr {new InterpreterStatement {value}};
 }
 
 void InterpreterStatement::evaluate(double *states, double *rates, double *variables) const
