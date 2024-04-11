@@ -99,7 +99,7 @@ public:
      * @param node The @c XmlNodePtr to parse and update the model with.
      * @param usedConnections A list of connections that have already been used.
      */
-    void loadConnection(const ModelPtr &model, const XmlNodePtr &node, ConnectionList &usedConnections);
+    void loadConnection(const ModelPtr &model, const XmlNodePtr &node, NamePairList &usedConnections);
 
     /**
      * @brief Update the @p model with an encapsulation parsed from @p node.
@@ -568,7 +568,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         }
     }
 
-    ConnectionList usedConnections;
+    NamePairList usedConnections;
     for (const auto &connectionNode : connectionNodes) {
         loadConnection(model, connectionNode, usedConnections);
     }
@@ -964,12 +964,11 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     }
 }
 
-void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node, ConnectionList &usedConnections)
+void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node, NamePairList &usedConnections)
 {
     // Define types for variable and component pairs, and their identifiers.
     using NameInfo = std::vector<std::string>;
     using NameInfoMap = std::vector<NameInfo>;
-    using NamePair = std::pair<std::string, std::string>;
 
     // Initialise name pairs and flags.
     NamePair componentNamePair;
@@ -1084,7 +1083,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 component2Name = tmp;
             }
 
-            ConnectionList::const_iterator it = std::find_if(usedConnections.begin(), usedConnections.end(),
+            NamePairList::const_iterator it = std::find_if(usedConnections.begin(), usedConnections.end(),
                 [&component1Name, &component2Name](const std::pair<std::string, std::string>& element){ return element.first == component1Name && element.second == component2Name;});
 
             if (it == usedConnections.end()) {
@@ -1119,7 +1118,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
 
     // Iterate over connection child XML nodes.
-    ConnectionList usedMapVariables;
+    NamePairList usedMapVariables;
     while (childNode != nullptr) {
         // Connection map XML nodes should not have further children.
         XmlNodePtr grandchildNode = childNode->firstChild();
@@ -1217,8 +1216,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
 
                 auto variableNamePair = std::make_pair(variable1Name, variable2Name);
 
-                ConnectionList::const_iterator it = std::find_if(usedMapVariables.begin(), usedMapVariables.end(),
-                                  [&variableNamePair](const std::pair<std::string, std::string>& element){ return element.first == variableNamePair.first && element.second == variableNamePair.second;});
+                NamePairList::const_iterator it = std::find_if(usedMapVariables.begin(), usedMapVariables.end(),
+                    [&variableNamePair](const std::pair<std::string, std::string>& element){ return element.first == variableNamePair.first && element.second == variableNamePair.second;});
 
                 if (it == usedMapVariables.end()) {
                     usedMapVariables.emplace_back(variableNamePair);

@@ -34,6 +34,7 @@ using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definiti
 using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
 
+using NamePair = std::pair<std::string, std::string>; /**< Type definition for pair of names. */
 using NameList = std::vector<std::string>; /**< Type definition for list of names. */
 using DescriptionList = std::vector<std::pair<VariablePtr, std::string>>; /**< Type definition for list of variables and associated description. */
 using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
@@ -73,7 +74,7 @@ using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type 
 using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for shared units const pointer. */
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
-using ConnectionList = std::vector<std::pair<std::string, std::string>>; /**< Type definition for a list of connections. */
+using NamePairList = std::vector<NamePair>; /**< Type definition for a list of a pair of names. */
 
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
