@@ -1565,7 +1565,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
             issue->mPimpl->mItem->mPimpl->setComponent(component);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_ELEMENT);
             addIssue(issue);
             return;
         }
