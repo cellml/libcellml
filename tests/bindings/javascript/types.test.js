@@ -49,7 +49,7 @@ describe("Types tests", () => {
          const p = new libcellml.Parser(true)
          const m = p.parseModel(modelWithParseErrors)
 
-         expect(p.issueCount()).toBe(4)
+         expect(p.issueCount()).toBe(5)
 
          const item = p.issue(2).item()
 
