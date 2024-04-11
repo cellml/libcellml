@@ -31,12 +31,13 @@ struct InterpreterStatement::InterpreterStatementImpl
     InterpreterStatementPtr mLeftChild;
     InterpreterStatementPtr mRightChild;
     AnalyserVariablePtr mVariable;
+    bool mState = true;
     double mValue = std::numeric_limits<double>::quiet_NaN();
 
     explicit InterpreterStatementImpl(Type type,
                                       const InterpreterStatementPtr &leftChild,
                                       const InterpreterStatementPtr &rightChild);
-    explicit InterpreterStatementImpl(const AnalyserVariablePtr &variable);
+    explicit InterpreterStatementImpl(const AnalyserVariablePtr &variable, bool state);
     explicit InterpreterStatementImpl(double value);
 
     void evaluate(double *states, double *rates, double *variables) const;

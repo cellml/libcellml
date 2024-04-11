@@ -66,7 +66,7 @@ public:
         //---GRY---
         // PLUS, /**< The plus operator. */
         // MINUS, /**< The minus operator. */
-        // TIMES, /**< The times operator. */
+        TIMES, /**< The times operator. */
         // DIVIDE, /**< The divide operator. */
         // POWER, /**< The power operator. */
         // ROOT, /**< The root operator. */
@@ -175,14 +175,16 @@ public:
      * with::
      *
      * @code
-     *   auto interpreterStatement = libcellml::InterpreterStatement::create(variable);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(variable, state);
      * @endcode
      *
      * @param variable The variable associated with the CI element.
+     * @param state Whether the variable is a state. If it is not a state, it is a rate if its type is
+     * AnalyserVariable::Type::STATE otherwise it is a variable.
      *
      * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterStatementPtr create(const AnalyserVariablePtr &variable) noexcept;
+    static InterpreterStatementPtr create(const AnalyserVariablePtr &variable, bool state = true) noexcept;
 
     /**
      * @brief Create an @ref InterpreterStatement object.
@@ -215,7 +217,7 @@ private:
     InterpreterStatement(Type type,
                          const InterpreterStatementPtr &leftChild,
                          const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
-    InterpreterStatement(const AnalyserVariablePtr &variable); /**< Constructor, @private. */
+    InterpreterStatement(const AnalyserVariablePtr &variable, bool state); /**< Constructor, @private. */
     InterpreterStatement(double value); /**< Constructor, @private. */
 
     struct InterpreterStatementImpl;

@@ -1089,7 +1089,7 @@ bool GeneratorInterpreter::GeneratorInterpreterImpl::isSomeConstant(const Analys
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable)
 {
     mStatements.push_back(InterpreterStatement::create(InterpreterStatement::Type::EQUALITY,
-                                                       InterpreterStatement::create(variable),
+                                                       InterpreterStatement::create(variable, false),
                                                        InterpreterStatement::create(0.0)));
 
     return mProfile->indentString()
@@ -1099,35 +1099,48 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitiali
            + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
+std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateInitialisationCode(const AnalyserVariablePtr &variable)
 {
     // Determine whether the initialising variable
 
     auto initialisingVariable = variable->initialisingVariable();
-    std::string initialisingVariableCode;
+    InterpreterStatementPtr initialValueStatement;
+    std::string initialValueCode;
 
     if (isCellMLReal(initialisingVariable->initialValue())) {
-        initialisingVariableCode = generateDoubleCode(initialisingVariable->initialValue());
+        double initialValue;
+
+        convertToDouble(initialisingVariable->initialValue(), initialValue);
+
+        initialValueStatement = InterpreterStatement::create(initialValue);
+        initialValueCode = generateDoubleCode(initialisingVariable->initialValue());
     } else {
         auto initValueVariable = owningComponent(initialisingVariable)->variable(initialisingVariable->initialValue());
         auto analyserInitialValueVariable = analyserVariable(initValueVariable);
 
-        initialisingVariableCode = mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
+        initialValueStatement = InterpreterStatement::create(analyserInitialValueVariable);
+        initialValueCode = mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
     }
 
     // Determine the scaling factor, if any.
 
     auto scalingFactor = GeneratorInterpreter::GeneratorInterpreterImpl::scalingFactor(initialisingVariable);
-    std::string scalingFactorCode;
 
     if (!areNearlyEqual(scalingFactor, 1.0)) {
-        scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString();
+        initialValueStatement = InterpreterStatement::create(InterpreterStatement::Type::TIMES,
+                                                             InterpreterStatement::create(1.0 / scalingFactor),
+                                                             initialValueStatement);
+        initialValueCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString() + initialValueCode;
     }
+
+    mStatements.push_back(InterpreterStatement::create(InterpreterStatement::Type::EQUALITY,
+                                                       InterpreterStatement::create(variable),
+                                                       initialValueStatement));
 
     return mProfile->indentString()
            + generateVariableNameCode(variable->variable())
            + mProfile->equalityString()
-           + scalingFactorCode + initialisingVariableCode
+           + initialValueCode
            + mProfile->commandSeparatorString() + "\n";
 }
 

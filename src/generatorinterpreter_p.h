@@ -98,7 +98,7 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
                         bool includeComputedConstants) const;
 
     std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable);
-    std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
+    std::string generateInitialisationCode(const AnalyserVariablePtr &variable);
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      std::vector<AnalyserEquationPtr> &equationsForDependencies,

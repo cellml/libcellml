@@ -35,9 +35,11 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(Type ty
 {
 }
 
-InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(const AnalyserVariablePtr &variable)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(const AnalyserVariablePtr &variable,
+                                                                         bool state)
     : mType(Type::CI)
     , mVariable(variable)
+    , mState(state)
 {
 }
 
@@ -53,12 +55,14 @@ void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, do
 
     assert(mType == Type::EQUALITY);
 
-    auto rightChildValue = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-
     if (mLeftChild->mPimpl->mVariable->type() == AnalyserVariable::Type::STATE) {
-        states[mLeftChild->mPimpl->mVariable->index()] = rightChildValue;
+        if (mLeftChild->mPimpl->mState) {
+            states[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        } else {
+            rates[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        }
     } else {
-        variables[mLeftChild->mPimpl->mVariable->index()] = rightChildValue;
+        variables[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
     }
 }
 
@@ -70,9 +74,31 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *
     (void)rates;
     (void)variables;
 
-    assert(mType == Type::CN);
+    switch (mType) {
+        // Arithmetic operators.
 
-    return mValue;
+    case Type::TIMES:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) * mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+
+        // Token elements.
+
+    case Type::CI:
+        /*---GRY---
+        if (mVariable->type() == AnalyserVariable::Type::STATE) {
+            return mState ?
+                       states[mVariable->index()] :
+                       rates[mVariable->index()];
+        } else {
+        */
+        return variables[mVariable->index()];
+        /*---GRY---
+        }
+        */
+    default:
+        assert(mType == Type::CN);
+
+        return mValue;
+    }
 }
 
 InterpreterStatement::InterpreterStatement(Type type,
@@ -82,8 +108,8 @@ InterpreterStatement::InterpreterStatement(Type type,
 {
 }
 
-InterpreterStatement::InterpreterStatement(const AnalyserVariablePtr &variable)
-    : mPimpl(new InterpreterStatementImpl(variable))
+InterpreterStatement::InterpreterStatement(const AnalyserVariablePtr &variable, bool state)
+    : mPimpl(new InterpreterStatementImpl(variable, state))
 {
 }
 
@@ -104,9 +130,9 @@ InterpreterStatementPtr InterpreterStatement::create(Type type,
     return InterpreterStatementPtr {new InterpreterStatement {type, leftChild, rightChild}};
 }
 
-InterpreterStatementPtr InterpreterStatement::create(const AnalyserVariablePtr &variable) noexcept
+InterpreterStatementPtr InterpreterStatement::create(const AnalyserVariablePtr &variable, bool state) noexcept
 {
-    return InterpreterStatementPtr {new InterpreterStatement {variable}};
+    return InterpreterStatementPtr {new InterpreterStatement {variable, state}};
 }
 
 InterpreterStatementPtr InterpreterStatement::create(double value) noexcept

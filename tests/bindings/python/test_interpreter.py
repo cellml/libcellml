@@ -61,9 +61,9 @@ class InterpreterTestCase(unittest.TestCase):
         i.computeRates()
         i.computeVariables()
 
-        self.assert_array_equal(nan_x_4, i.states())
+        self.assert_array_equal([0.0, 0.6, 0.05, 0.325], i.states())
         self.assert_array_equal(nan_x_4, i.rates())
-        self.assert_array_equal(nan_x_18, i.variables())
+        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan, 1.0, 0.0, math.nan, 0.3, math.nan, 120.0, math.nan, math.nan, math.nan, math.nan, math.nan, 36.0, math.nan, math.nan], i.variables())
 
 
 if __name__ == '__main__':
