@@ -701,14 +701,19 @@ TEST(Parser, encapsulationWithCycleDefined)
         "  </encapsulation>\n"
         "</model>\n";
 
-    const std::vector<std::string> expectedIssues = {
+    const std::vector<std::string> expectedIssuesParser = {
+        "Encapsulation in model 'model_name' specifies 'bob' as a component in a component_ref but it is not unique.",
+    };
+
+    const std::vector<std::string> expectedIssuesValidator = {
         "Model 'model_name' contains multiple components with the name 'bob'. Valid component names must be unique to their model.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     auto m = p->parseModel(in);
 
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ(size_t(1), p->issueCount());
+    EXPECT_EQ_ISSUES(expectedIssuesParser, p);
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     auto output = printer->printModel(m);
@@ -717,7 +722,7 @@ TEST(Parser, encapsulationWithCycleDefined)
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     v->validateModel(m);
 
-    EXPECT_EQ_ISSUES(expectedIssues, v);
+    EXPECT_EQ_ISSUES(expectedIssuesValidator, v);
 }
 
 TEST(Parser, encapsulationWithNoComponentAttribute)
