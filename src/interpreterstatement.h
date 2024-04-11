@@ -22,16 +22,16 @@ limitations under the License.
 
 namespace libcellml {
 
-class InterpreterInstruction; /**< Forward declaration of InterpreterInstruction class. */
-using InterpreterInstructionPtr = std::shared_ptr<InterpreterInstruction>; /**< Type definition for shared InterpreterInstruction pointer. */
-using InterpreterInstructionPtrs = std::vector<InterpreterInstructionPtr>; /**< Type definition for a list of shared InterpreterInstruction pointers. */
+class InterpreterStatement; /**< Forward declaration of InterpreterStatement class. */
+using InterpreterStatementPtr = std::shared_ptr<InterpreterStatement>; /**< Type definition for shared InterpreterStatement pointer. */
+using InterpreterStatementPtrs = std::vector<InterpreterStatementPtr>; /**< Type definition for a list of shared InterpreterStatement pointers. */
 
 /**
- * @brief The InterpreterInstruction class.
+ * @brief The InterpreterStatement class.
  *
- * The InterpreterInstruction class is for representing a CellML Interpreter Instruction.
+ * The InterpreterStatement class is for representing a CellML Interpreter Statement.
  */
-class InterpreterInstruction
+class InterpreterStatement
 {
 public:
     /**
@@ -143,24 +143,24 @@ public:
         // NAN /**< The not-a-number value. */
     };
 
-    ~InterpreterInstruction(); /**< Destructor, @private. */
-    InterpreterInstruction(const InterpreterInstruction &rhs) = delete; /**< Copy constructor, @private. */
-    InterpreterInstruction(InterpreterInstruction &&rhs) noexcept = delete; /**< Move constructor, @private. */
-    InterpreterInstruction &operator=(InterpreterInstruction rhs) = delete; /**< Assignment operator, @private. */
+    ~InterpreterStatement(); /**< Destructor, @private. */
+    InterpreterStatement(const InterpreterStatement &rhs) = delete; /**< Copy constructor, @private. */
+    InterpreterStatement(InterpreterStatement &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    InterpreterStatement &operator=(InterpreterStatement rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Create an @ref InterpreterInstruction object.
+     * @brief Create an @ref InterpreterStatement object.
      *
-     * Factory method to create an @ref InterpreterInstruction for an equality statement. Create an interpreter
+     * Factory method to create an @ref InterpreterStatement for an equality statement. Create an interpreter
      * instruction with::
      *
      * @code
-     *   auto interpreterInstruction = libcellml::InterpreterInstruction::createEquality(variable, value);
+     *   auto interpreterInstruction = libcellml::InterpreterStatement::createEquality(variable, value);
      * @endcode
      *
-     * @return A smart pointer to an @ref InterpreterInstruction object.
+     * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterInstructionPtr createEquality(const AnalyserVariablePtr &variable, double value) noexcept;
+    static InterpreterStatementPtr createEquality(const AnalyserVariablePtr &variable, double value) noexcept;
 
     /**
      * @brief Evaluate the instruction.
@@ -174,12 +174,12 @@ public:
     void evaluate(double *states, double *rates, double *variables) const;
 
 private:
-    InterpreterInstruction(Type type, const InterpreterInstructionPtr &leftChild, const InterpreterInstructionPtr &rightChild); /**< Constructor, @private. */
-    InterpreterInstruction(const AnalyserVariablePtr &variable); /**< Constructor, @private. */
-    InterpreterInstruction(double value); /**< Constructor, @private. */
+    InterpreterStatement(Type type, const InterpreterStatementPtr &leftChild, const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
+    InterpreterStatement(const AnalyserVariablePtr &variable); /**< Constructor, @private. */
+    InterpreterStatement(double value); /**< Constructor, @private. */
 
-    struct InterpreterInstructionImpl;
-    InterpreterInstructionImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    struct InterpreterStatementImpl;
+    InterpreterStatementImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

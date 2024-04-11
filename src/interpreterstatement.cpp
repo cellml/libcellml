@@ -27,36 +27,36 @@ limitations under the License.
 
 namespace libcellml {
 
-InterpreterInstruction::InterpreterInstructionImpl::InterpreterInstructionImpl(Type type,
-                                                                               const InterpreterInstructionPtr &leftChild,
-                                                                               const InterpreterInstructionPtr &rightChild)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(Type type,
+                                                                         const InterpreterStatementPtr &leftChild,
+                                                                         const InterpreterStatementPtr &rightChild)
     : mType(type)
     , mLeftChild(leftChild)
     , mRightChild(rightChild)
 {
 }
 
-InterpreterInstruction::InterpreterInstructionImpl::InterpreterInstructionImpl(const AnalyserVariablePtr &variable)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(const AnalyserVariablePtr &variable)
     : mType(Type::CI)
     , mVariable(variable)
 {
 }
 
-InterpreterInstruction::InterpreterInstructionImpl::InterpreterInstructionImpl(double value)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(double value)
     : mType(Type::CN)
     , mValue(value)
 {
 }
 
-InterpreterInstructionPtr InterpreterInstruction::InterpreterInstructionImpl::createEquality(const AnalyserVariablePtr &variable, double value)
+InterpreterStatementPtr InterpreterStatement::InterpreterStatementImpl::createEquality(const AnalyserVariablePtr &variable, double value)
 {
-    auto leftChild = InterpreterInstructionPtr {new InterpreterInstruction {variable}};
-    auto rightChild = InterpreterInstructionPtr {new InterpreterInstruction {value}};
+    auto leftChild = InterpreterStatementPtr {new InterpreterStatement {variable}};
+    auto rightChild = InterpreterStatementPtr {new InterpreterStatement {value}};
 
-    return InterpreterInstructionPtr {new InterpreterInstruction {Type::EQUALITY, leftChild, rightChild}};
+    return InterpreterStatementPtr {new InterpreterStatement {Type::EQUALITY, leftChild, rightChild}};
 }
 
-void InterpreterInstruction::InterpreterInstructionImpl::evaluate(double *states, double *rates, double *variables) const
+void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, double *rates, double *variables) const
 {
     if (mType == Type::EQUALITY) {
         auto rightChildValue = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
@@ -69,7 +69,7 @@ void InterpreterInstruction::InterpreterInstructionImpl::evaluate(double *states
     }
 }
 
-double InterpreterInstruction::InterpreterInstructionImpl::evaluateToDouble(double *states, double *rates, double *variables) const
+double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *states, double *rates, double *variables) const
 {
     (void)states;
     (void)rates;
@@ -83,34 +83,34 @@ double InterpreterInstruction::InterpreterInstructionImpl::evaluateToDouble(doub
     }
 }
 
-InterpreterInstruction::InterpreterInstruction(Type type,
-                                               const InterpreterInstructionPtr &leftChild,
-                                               const InterpreterInstructionPtr &rightChild)
-    : mPimpl(new InterpreterInstructionImpl(type, leftChild, rightChild))
+InterpreterStatement::InterpreterStatement(Type type,
+                                           const InterpreterStatementPtr &leftChild,
+                                           const InterpreterStatementPtr &rightChild)
+    : mPimpl(new InterpreterStatementImpl(type, leftChild, rightChild))
 {
 }
 
-InterpreterInstruction::InterpreterInstruction(const AnalyserVariablePtr &variable)
-    : mPimpl(new InterpreterInstructionImpl(variable))
+InterpreterStatement::InterpreterStatement(const AnalyserVariablePtr &variable)
+    : mPimpl(new InterpreterStatementImpl(variable))
 {
 }
 
-InterpreterInstruction::InterpreterInstruction(double value)
-    : mPimpl(new InterpreterInstructionImpl(value))
+InterpreterStatement::InterpreterStatement(double value)
+    : mPimpl(new InterpreterStatementImpl(value))
 {
 }
 
-InterpreterInstruction::~InterpreterInstruction()
+InterpreterStatement::~InterpreterStatement()
 {
     delete mPimpl;
 }
 
-InterpreterInstructionPtr InterpreterInstruction::createEquality(const AnalyserVariablePtr &variable, double value) noexcept
+InterpreterStatementPtr InterpreterStatement::createEquality(const AnalyserVariablePtr &variable, double value) noexcept
 {
-    return InterpreterInstructionImpl::createEquality(variable, value);
+    return InterpreterStatementImpl::createEquality(variable, value);
 }
 
-void InterpreterInstruction::evaluate(double *states, double *rates, double *variables) const
+void InterpreterStatement::evaluate(double *states, double *rates, double *variables) const
 {
     mPimpl->evaluate(states, rates, variables);
 }

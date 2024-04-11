@@ -1100,7 +1100,7 @@ bool GeneratorInterpreter::GeneratorInterpreterImpl::isSomeConstant(const Analys
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable)
 {
-    mInstructions.push_back(InterpreterInstruction::createEquality(variable, 0.0));
+    mInstructions.push_back(InterpreterStatement::createEquality(variable, 0.0));
 
     return mProfile->indentString()
            + generateVariableNameCode(variable->variable(), false)
@@ -1487,27 +1487,27 @@ std::string GeneratorInterpreter::code() const
     return mPimpl->mCode;
 }
 
-std::vector<InterpreterInstructionPtr> GeneratorInterpreter::nlaSystemsInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::nlaSystemsInstructions() const
 {
     return mPimpl->mNlaSystemsInstructions;
 }
 
-std::vector<InterpreterInstructionPtr> GeneratorInterpreter::initialiseVariablesInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::initialiseVariablesInstructions() const
 {
     return mPimpl->mInitialiseVariablesInstructions;
 }
 
-std::vector<InterpreterInstructionPtr> GeneratorInterpreter::computeComputedConstantsInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeComputedConstantsInstructions() const
 {
     return mPimpl->mComputeComputedConstantsInstructions;
 }
 
-std::vector<InterpreterInstructionPtr> GeneratorInterpreter::computeRatesInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeRatesInstructions() const
 {
     return mPimpl->mComputeRatesInstructions;
 }
 
-std::vector<InterpreterInstructionPtr> GeneratorInterpreter::computeVariablesInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeVariablesInstructions() const
 {
     return mPimpl->mComputeVariablesInstructions;
 }

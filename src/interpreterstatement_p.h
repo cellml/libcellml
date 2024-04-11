@@ -21,25 +21,25 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The InterpreterInstruction::InterpreterInstructionImpl struct.
+ * @brief The InterpreterStatement::InterpreterStatementImpl struct.
  *
- * The private implementation for the InterpreterInstruction class.
+ * The private implementation for the InterpreterStatement class.
  */
-struct InterpreterInstruction::InterpreterInstructionImpl
+struct InterpreterStatement::InterpreterStatementImpl
 {
-    InterpreterInstruction::Type mType = Type::EQUALITY;
-    InterpreterInstructionPtr mLeftChild;
-    InterpreterInstructionPtr mRightChild;
+    InterpreterStatement::Type mType = Type::EQUALITY;
+    InterpreterStatementPtr mLeftChild;
+    InterpreterStatementPtr mRightChild;
     AnalyserVariablePtr mVariable;
     double mValue = std::numeric_limits<double>::quiet_NaN();
 
-    static InterpreterInstructionPtr createEquality(const AnalyserVariablePtr &variable, double value);
+    static InterpreterStatementPtr createEquality(const AnalyserVariablePtr &variable, double value);
 
-    explicit InterpreterInstructionImpl(Type type,
-                                        const InterpreterInstructionPtr &leftChild,
-                                        const InterpreterInstructionPtr &rightChild);
-    explicit InterpreterInstructionImpl(const AnalyserVariablePtr &variable);
-    explicit InterpreterInstructionImpl(double value);
+    explicit InterpreterStatementImpl(Type type,
+                                      const InterpreterStatementPtr &leftChild,
+                                      const InterpreterStatementPtr &rightChild);
+    explicit InterpreterStatementImpl(const AnalyserVariablePtr &variable);
+    explicit InterpreterStatementImpl(double value);
 
     void evaluate(double *states, double *rates, double *variables) const;
     double evaluateToDouble(double *states, double *rates, double *variables) const;

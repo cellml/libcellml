@@ -20,7 +20,7 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
-#include "interpreterinstruction.h"
+#include "interpreterstatement.h"
 
 namespace libcellml {
 
@@ -107,7 +107,7 @@ public:
      *
      * @return The instructions to compute the NLA systems as a @c std::vector.
      */
-    std::vector<InterpreterInstructionPtr> nlaSystemsInstructions() const;
+    std::vector<InterpreterStatementPtr> nlaSystemsInstructions() const;
 
     /**
      * @brief Get the instructions to initialise variables.
@@ -116,7 +116,7 @@ public:
      *
      * @return The instructions to initialise variables as a @c std::vector.
      */
-    std::vector<InterpreterInstructionPtr> initialiseVariablesInstructions() const;
+    std::vector<InterpreterStatementPtr> initialiseVariablesInstructions() const;
 
     /**
      * @brief Get the instructions to compute computed constants.
@@ -125,7 +125,7 @@ public:
      *
      * @return The instructions to compute computed constants as a @c std::vector.
      */
-    std::vector<InterpreterInstructionPtr> computeComputedConstantsInstructions() const;
+    std::vector<InterpreterStatementPtr> computeComputedConstantsInstructions() const;
 
     /**
      * @brief Get the instructions to compute rates.
@@ -134,7 +134,7 @@ public:
      *
      * @return The instructions to compute rates as a @c std::vector.
      */
-    std::vector<InterpreterInstructionPtr> computeRatesInstructions() const;
+    std::vector<InterpreterStatementPtr> computeRatesInstructions() const;
 
     /**
      * @brief Get the instructions to compute variables.
@@ -143,7 +143,7 @@ public:
      *
      * @return The instructions to compute variables as a @c std::vector.
      */
-    std::vector<InterpreterInstructionPtr> computeVariablesInstructions() const;
+    std::vector<InterpreterStatementPtr> computeVariablesInstructions() const;
 
 private:
     GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
