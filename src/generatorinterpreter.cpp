@@ -316,18 +316,6 @@ std::string generateDoubleCode(const std::string &value)
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
-std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const
-{
-    if (isCellMLReal(variable->initialValue())) {
-        return generateDoubleCode(variable->initialValue());
-    }
-
-    auto initValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    auto analyserInitialValueVariable = analyserVariable(initValueVariable);
-
-    return mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
-}
-
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateVariableNameCode(const VariablePtr &variable,
                                                                                      bool state) const
 {
@@ -1113,7 +1101,22 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitiali
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateInitialisationCode(const AnalyserVariablePtr &variable) const
 {
+    // Determine whether the initialising variable
+
     auto initialisingVariable = variable->initialisingVariable();
+    std::string initialisingVariableCode;
+
+    if (isCellMLReal(initialisingVariable->initialValue())) {
+        initialisingVariableCode = generateDoubleCode(initialisingVariable->initialValue());
+    } else {
+        auto initValueVariable = owningComponent(initialisingVariable)->variable(initialisingVariable->initialValue());
+        auto analyserInitialValueVariable = analyserVariable(initValueVariable);
+
+        initialisingVariableCode = mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
+    }
+
+    // Determine the scaling factor, if any.
+
     auto scalingFactor = GeneratorInterpreter::GeneratorInterpreterImpl::scalingFactor(initialisingVariable);
     std::string scalingFactorCode;
 
@@ -1124,7 +1127,7 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateInitialisati
     return mProfile->indentString()
            + generateVariableNameCode(variable->variable())
            + mProfile->equalityString()
-           + scalingFactorCode + generateDoubleOrConstantVariableNameCode(initialisingVariable)
+           + scalingFactorCode + initialisingVariableCode
            + mProfile->commandSeparatorString() + "\n";
 }
 

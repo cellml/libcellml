@@ -78,7 +78,6 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
-    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          bool state = true) const;
 
