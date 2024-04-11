@@ -422,6 +422,7 @@ TEST(Parser, componentAttributeIssues)
         "</model>\n";
     const std::vector<std::string> expectedIssues1 = {
         "Component '' has an invalid attribute 'lame'.",
+        "Component does not specify a name attribute.",
     };
     const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -456,7 +457,7 @@ TEST(Parser, componentElementIssues)
     const std::string in1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
-        "  <component>\n"
+        "  <component name=\"\">\n"
         "    <son name=\"stan\"/>\n"
         "  </component>\n"
         "</model>\n";
@@ -1430,6 +1431,7 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
         "Units '' has an invalid attribute 'jedi'.",
         "Units does not specify a name attribute.",
         "Component '' has an invalid attribute 'ship'.",
+        "Component does not specify a name attribute.",
         "Variable '' has an invalid attribute 'pilot'.",
         "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
         "Encapsulation in model 'starwars' does not contain any child elements.",
@@ -2126,7 +2128,7 @@ TEST(Parser, mathWithNamespacesDefinedOnTheMathNode)
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
-        "  <component>\n"
+        "  <component name=\"\">\n"
         "  <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
         "    <apply>\n"
         "      <eq/>\n"
@@ -2152,7 +2154,7 @@ TEST(Parser, mathWithNamespacesDefinedOnTheNodeThatUsesNamespace)
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
-        "  <component>\n"
+        "  <component name=\"\">\n"
         "  <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "    <apply>\n"
         "      <eq/>\n"
@@ -2178,7 +2180,7 @@ TEST(Parser, mathWithNonStandardCellMLPrefix)
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
-        "  <component>\n"
+        "  <component name=\"\">\n"
         "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "      <apply>\n"
         "        <eq/>\n"
@@ -2204,7 +2206,7 @@ TEST(Parser, mathWithMathmlNamespaceOnModel)
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_2=\"http://www.w3.org/1998/Math/MathML\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
-        "  <component>\n"
+        "  <component name=\"\">\n"
         "    <ns_2:math>\n"
         "      <ns_2:apply>\n"
         "        <ns_2:eq/>\n"

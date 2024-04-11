@@ -585,9 +585,11 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
 void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node)
 {
     XmlAttributePtr attribute = node->firstAttribute();
+    bool nameAttributePresent = false;
     while (attribute != nullptr) {
         if (attribute->isType("name")) {
             component->setName(attribute->value());
+            nameAttributePresent = true;
         } else if (isIdAttribute(attribute, mParsing1XVersion)) {
             component->setId(attribute->value());
         } else {
@@ -604,6 +606,15 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
         }
         attribute = attribute->next();
     }
+
+    if (!nameAttributePresent) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Component does not specify a name attribute.");
+        issue->mPimpl->mItem->mPimpl->setComponent(component);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME);
+        addIssue(issue);
+    }
+
     XmlNodePtr childNode = node->firstChild();
     while (childNode != nullptr) {
         if (childNode->isCellmlElement("variable")) {
