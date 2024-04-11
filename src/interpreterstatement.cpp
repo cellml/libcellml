@@ -58,29 +58,30 @@ InterpreterStatementPtr InterpreterStatement::InterpreterStatementImpl::createEq
 
 void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, double *rates, double *variables) const
 {
-    if (mType == Type::EQUALITY) {
-        auto rightChildValue = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    //---GRY--- AT THIS STAGE, WE ONLY HANDLE AN EQUALITY STATEMENT.
 
-        if (mLeftChild->mPimpl->mVariable->type() == AnalyserVariable::Type::STATE) {
-            states[mLeftChild->mPimpl->mVariable->index()] = rightChildValue;
-        } else {
-            variables[mLeftChild->mPimpl->mVariable->index()] = rightChildValue;
-        }
+    assert(mType == Type::EQUALITY);
+
+    auto rightChildValue = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+
+    if (mLeftChild->mPimpl->mVariable->type() == AnalyserVariable::Type::STATE) {
+        states[mLeftChild->mPimpl->mVariable->index()] = rightChildValue;
+    } else {
+        variables[mLeftChild->mPimpl->mVariable->index()] = rightChildValue;
     }
 }
 
 double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *states, double *rates, double *variables) const
 {
+    //---GRY--- AT THIS STAGE, WE ONLY HANDLE A CN ELEMENT.
+
     (void)states;
     (void)rates;
     (void)variables;
 
-    switch (mType) {
-    default: // Something else, but in fact it should be a CN element.
-        assert(mType == Type::CN);
+    assert(mType == Type::CN);
 
-        return mValue;
-    }
+    return mValue;
 }
 
 InterpreterStatement::InterpreterStatement(Type type,
