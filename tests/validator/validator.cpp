@@ -1690,7 +1690,6 @@ TEST(Validator, resetOrderSameVariableSetUnique)
     auto m = setupResetOrderModel();
 
     v->validateModel(m);
-    printIssues(v);
 
     EXPECT_EQ(size_t(0), v->errorCount());
 }
@@ -1710,7 +1709,6 @@ TEST(Validator, resetOrderVariableSetInComponentNotUnique)
     r->setOrder(1);
 
     v->validateModel(m);
-    printIssues(v);
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
@@ -1730,7 +1728,6 @@ TEST(Validator, resetOrderVariableSetInEquivalentSetNotUnique)
     r->setOrder(1);
 
     v->validateModel(m);
-    printIssues(v);
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }

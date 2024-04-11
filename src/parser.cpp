@@ -97,8 +97,9 @@ public:
      *
      * @param model The @c ModelPtr to update.
      * @param node The @c XmlNodePtr to parse and update the model with.
+     * @param usedConnections A list of connections that have already been used.
      */
-    void loadConnection(const ModelPtr &model, const XmlNodePtr &node);
+    void loadConnection(const ModelPtr &model, const XmlNodePtr &node, ConnectionList &usedConnections);
 
     /**
      * @brief Update the @p model with an encapsulation parsed from @p node.
@@ -566,8 +567,10 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             addIssue(issue);
         }
     }
+
+    ConnectionList usedConnections;
     for (const auto &connectionNode : connectionNodes) {
-        loadConnection(model, connectionNode);
+        loadConnection(model, connectionNode, usedConnections);
     }
 
     // Link units to their names.
@@ -961,7 +964,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     }
 }
 
-void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
+void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node, ConnectionList &usedConnections)
 {
     // Define types for variable and component pairs, and their identifiers.
     using NameInfo = std::vector<std::string>;
@@ -1065,6 +1068,36 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
 
     componentNamePair = std::make_pair(component1Name, component2Name);
+
+    if (!component1Missing && !component2Missing) {
+
+        if (component1Name == component2Name) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has a connection to itself, the at fault component is '" + component1Name + "'.");
+            issue->mPimpl->mItem->mPimpl->setModel(model);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_EXCLUDE_SELF);
+            addIssue(issue);
+        }
+
+        ConnectionList::const_iterator it;
+        if (component1Name < component2Name) {
+            it = std::find_if(usedConnections.begin(), usedConnections.end(),
+                              [&componentNamePair](const std::pair<std::string, std::string>& element){ return element.first == componentNamePair.first && element.second == componentNamePair.second;});
+        } else {
+            it = std::find_if(usedConnections.begin(), usedConnections.end(),
+                              [&componentNamePair](const std::pair<std::string, std::string>& element){ return element.first == componentNamePair.second && element.second == componentNamePair.first;});
+        }
+
+        if (it == usedConnections.end()) {
+            usedConnections.emplace_back(componentNamePair);
+        } else {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Connection in model '" + model->name() + "' between '" + component1Name + "' and '" + component2Name + "' is not unique.");
+            issue->mPimpl->mItem->mPimpl->setModel(model);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_UNIQUE);
+            addIssue(issue);
+        }
+    }
 
     XmlNodePtr childNode = node->firstChild();
 

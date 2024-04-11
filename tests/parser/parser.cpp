@@ -1145,7 +1145,10 @@ TEST(Parser, connectionErrorNoMapVariables)
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' has an invalid connection attribute 'component_3'.",
+        "Connection in model '' has a connection to itself, the at fault component is 'componentA'.",
         "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
+        "Connection in model '' has a connection to itself, the at fault component is 'componentA'.",
+        "Connection in model '' between 'componentA' and 'componentA' is not unique.",
         "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
