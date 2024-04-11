@@ -623,10 +623,12 @@ TEST(Parser, modelWithInvalidUnits)
         "Unit referencing 'kelvin' in units 'fahrenheitish' has a multiplier with the value '-35.0E+310' that is a representation of a CellML real valued number, but out of range of the 'double' type.",
         "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
         "Unit referencing '' in units 'fahrenheitish' has an invalid attribute 'GUnit'.",
+        "Unit does not specify a units attribute.",
         "Units '' has an invalid attribute 'jerry'.",
         "Units does not specify a name attribute.",
         "Unit referencing 'friends' in units '' has an invalid attribute 'neighbor'.",
         "Unit referencing '' in units '' has an invalid attribute 'george'.",
+        "Unit does not specify a units attribute.",
     };
 
     libcellml::ParserPtr parser = libcellml::Parser::create();

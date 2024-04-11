@@ -119,7 +119,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::UNIT_ELEMENT, {"UNIT_ELEMENT", "2.6", baseSpecificationUrl, "specB06"}},
     {Issue::ReferenceRule::UNIT_UNITS, {"UNIT_UNITS", "2.6.1", baseSpecificationUrl, "specB06"}},
     {Issue::ReferenceRule::UNIT_UNITS_REFERENCE, {"UNIT_UNITS_REFERENCE", "2.6.1.1", baseSpecificationUrl, "specB06"}},
-    {Issue::ReferenceRule::UNIT_UNITS_CIRCULAR_REFERENCE, {"UNIT_UNITS_CIRCULAR_REFERENCE", "2.6.1.2", baseSpecificationUrl, "specB06"}},
+    {Issue::ReferenceRule::UNIT_UNITS_CIRCULAR_REFERENCE, {"UNIT_UNITS_CIRCULAR_REFERENCE", "2.6.1.3", baseSpecificationUrl, "specB06"}},
     {Issue::ReferenceRule::UNIT_ATTRIBUTE_OPTIONAL, {"UNIT_ATTRIBUTE_OPTIONAL", "2.6.2", baseSpecificationUrl, "specB06"}},
     {Issue::ReferenceRule::UNIT_ATTRIBUTE_PREFIX_VALUE, {"UNIT_ATTRIBUTE_PREFIX_VALUE", "2.6.2.1.1", baseSpecificationUrl, "specB06"}},
     {Issue::ReferenceRule::UNIT_ATTRIBUTE_MULTIPLIER_VALUE, {"UNIT_ATTRIBUTE_MULTIPLIER_VALUE", "2.6.2.2.1", baseSpecificationUrl, "specB06"}},

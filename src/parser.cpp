@@ -766,7 +766,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setUnits(units);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_ELEMENT);
                 addIssue(issue);
             }
         } else if (childNode->isComment()) {
@@ -775,13 +775,14 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an invalid child element '" + childNode->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setUnits(units);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_CHILD);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_ELEMENT);
             addIssue(issue);
         }
         childNode = childNode->next();
     }
     // Parse the unit attributes.
     XmlAttributePtr attribute = node->firstAttribute();
+    bool unitsAttributePresent = false;
     while (attribute != nullptr) {
         if (attribute->isType("units")) {
             if (mParsing1XVersion) {
@@ -789,6 +790,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             } else {
                 reference = attribute->value();
             }
+            unitsAttributePresent = true;
         } else if (attribute->isType("prefix")) {
             prefix = attribute->value();
         } else if (attribute->isType("exponent")) {
@@ -838,6 +840,15 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         }
         attribute = attribute->next();
     }
+
+    if (!unitsAttributePresent) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Unit does not specify a units attribute.");
+        issue->mPimpl->mItem->mPimpl->setUnits(units);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS);
+        addIssue(issue);
+    }
+
     // Add this unit to the parent units.
     units->addUnit(reference, prefix, exponent, multiplier, id);
 }
