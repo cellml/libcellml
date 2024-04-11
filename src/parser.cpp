@@ -1077,25 +1077,25 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             issue->mPimpl->mItem->mPimpl->setModel(model);
             issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_EXCLUDE_SELF);
             addIssue(issue);
-        }
-
-        ConnectionList::const_iterator it;
-        if (component1Name < component2Name) {
-            it = std::find_if(usedConnections.begin(), usedConnections.end(),
-                              [&componentNamePair](const std::pair<std::string, std::string>& element){ return element.first == componentNamePair.first && element.second == componentNamePair.second;});
         } else {
-            it = std::find_if(usedConnections.begin(), usedConnections.end(),
-                              [&componentNamePair](const std::pair<std::string, std::string>& element){ return element.first == componentNamePair.second && element.second == componentNamePair.first;});
-        }
+            if (component1Name > component2Name) {
+                std::string tmp = component1Name;
+                component1Name = component2Name;
+                component2Name = tmp;
+            }
 
-        if (it == usedConnections.end()) {
-            usedConnections.emplace_back(componentNamePair);
-        } else {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Connection in model '" + model->name() + "' between '" + component1Name + "' and '" + component2Name + "' is not unique.");
-            issue->mPimpl->mItem->mPimpl->setModel(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_UNIQUE);
-            addIssue(issue);
+            ConnectionList::const_iterator it = std::find_if(usedConnections.begin(), usedConnections.end(),
+                [&component1Name, &component2Name](const std::pair<std::string, std::string>& element){ return element.first == component1Name && element.second == component2Name;});
+
+            if (it == usedConnections.end()) {
+                usedConnections.emplace_back(componentNamePair);
+            } else {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Connection in model '" + model->name() + "' between '" + component1Name + "' and '" + component2Name + "' is not unique.");
+                issue->mPimpl->mItem->mPimpl->setModel(model);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_UNIQUE);
+                addIssue(issue);
+            }
         }
     }
 
@@ -1119,6 +1119,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
 
     // Iterate over connection child XML nodes.
+    ConnectionList usedMapVariables;
     while (childNode != nullptr) {
         // Connection map XML nodes should not have further children.
         XmlNodePtr grandchildNode = childNode->firstChild();
@@ -1206,6 +1207,29 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             variableNameInfo = {variable1Name, variable2Name, mappingId};
             variableNameMap.push_back(variableNameInfo);
             mapVariablesFound = true;
+
+            if (!variable1Missing && !variable2Missing) {
+                if (variable1Name > variable2Name) {
+                    std::string tmp = variable1Name;
+                    variable1Name = variable2Name;
+                    variable2Name = tmp;
+                }
+
+                auto variableNamePair = std::make_pair(variable1Name, variable2Name);
+
+                ConnectionList::const_iterator it = std::find_if(usedMapVariables.begin(), usedMapVariables.end(),
+                                  [&variableNamePair](const std::pair<std::string, std::string>& element){ return element.first == variableNamePair.first && element.second == variableNamePair.second;});
+
+                if (it == usedMapVariables.end()) {
+                    usedMapVariables.emplace_back(variableNamePair);
+                } else {
+                    auto issue = Issue::IssueImpl::create();
+                    issue->mPimpl->setDescription("Connection in model '" + model->name() + "' between '" + variableNamePair.first + "' and '" + variableNamePair.second + "' is not unique.");
+                    issue->mPimpl->mItem->mPimpl->setModel(model);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_UNIQUE);
+                    addIssue(issue);
+                }
+            }
 
         } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
