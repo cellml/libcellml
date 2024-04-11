@@ -24,6 +24,7 @@ limitations under the License.
 
 #include "commonutils.h"
 #include "generatorinterpreter_p.h"
+#include "interpreterinstruction.h"
 #include "utilities.h"
 
 #include "libcellml/undefines.h"
@@ -33,39 +34,13 @@ namespace libcellml {
 GeneratorInterpreter::GeneratorInterpreterImpl::GeneratorInterpreterImpl(const AnalyserModelPtr &model,
                                                                          const GeneratorProfilePtr &profile,
                                                                          const std::string &code)
-    : mModel(model)
-    , mModelHasOdes(modelHasOdes(model))
-    , mModelHasNlas(modelHasNlas(model))
-    , mProfile(profile)
-    , mCode(code)
 {
-    // Add code for solving the NLA systems.
+    initialise(model, profile, code);
+}
 
-    nlaSystems();
-
-    // Add code for the implementation to initialise our variables.
-
-    auto equations = mModel->equations();
-    std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
-
-    initialiseVariables(remainingEquations);
-
-    // Add code for the implementation to compute our computed constants.
-
-    computeComputedConstants(remainingEquations);
-
-    // Add code for the implementation to compute our rates (and any variables
-    // on which they depend).
-
-    computeRates(remainingEquations);
-
-    // Add code for the implementation to compute our variables.
-    // Note: this method computes the remaining variables, i.e. the ones not needed to compute our rates, but also the
-    //       variables that depend on the value of some states/rates and all the external variables. This method is
-    //       typically called after having integrated a model, thus ensuring that variables that rely on the value of
-    //       some states/rates are up to date.
-
-    computeVariables(remainingEquations);
+GeneratorInterpreter::GeneratorInterpreterImpl::GeneratorInterpreterImpl(const AnalyserModelPtr &model)
+{
+    initialise(model, mProfile, mCode);
 }
 
 GeneratorInterpreter::GeneratorInterpreterImpl::GeneratorInterpreterImpl(const AnalyserEquationAstPtr &ast,
@@ -76,6 +51,63 @@ GeneratorInterpreter::GeneratorInterpreterImpl::GeneratorInterpreterImpl(const A
     }
 
     mCode = generateCode(ast);
+}
+
+void GeneratorInterpreter::GeneratorInterpreterImpl::initialise(const AnalyserModelPtr &model,
+                                                                const GeneratorProfilePtr &profile,
+                                                                const std::string &code)
+{
+    mModel = model;
+    mModelHasOdes = modelHasOdes(model);
+    mModelHasNlas = modelHasNlas(model);
+    mProfile = profile;
+    mCode = code;
+
+    // Add code for solving the NLA systems.
+
+    nlaSystems();
+
+    mNlaSystemsInstructions = mInstructions;
+
+    // Add code for the implementation to initialise our variables.
+
+    auto equations = mModel->equations();
+    std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
+
+    mInstructions.clear();
+
+    initialiseVariables(remainingEquations);
+
+    mInitialiseVariablesInstructions = mInstructions;
+
+    // Add code for the implementation to compute our computed constants.
+
+    mInstructions.clear();
+
+    computeComputedConstants(remainingEquations);
+
+    mComputeComputedConstantsInstructions = mInstructions;
+
+    // Add code for the implementation to compute our rates (and any variables
+    // on which they depend).
+
+    mInstructions.clear();
+
+    computeRates(remainingEquations);
+
+    mComputeRatesInstructions = mInstructions;
+
+    // Add code for the implementation to compute our variables.
+    // Note: this method computes the remaining variables, i.e. the ones not needed to compute our rates, but also the
+    //       variables that depend on the value of some states/rates and all the external variables. This method is
+    //       typically called after having integrated a model, thus ensuring that variables that rely on the value of
+    //       some states/rates are up to date.
+
+    mInstructions.clear();
+
+    computeVariables(remainingEquations);
+
+    mComputeVariablesInstructions = mInstructions;
 }
 
 bool modelHasOdes(const AnalyserModelPtr &model)
@@ -1066,8 +1098,10 @@ bool GeneratorInterpreter::GeneratorInterpreterImpl::isSomeConstant(const Analys
            || (!includeComputedConstants && (type == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT));
 }
 
-std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const
+std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable)
 {
+    mInstructions.push_back(InterpreterInstruction::createEquality(variable, 0.0));
+
     return mProfile->indentString()
            + generateVariableNameCode(variable->variable(), false)
            + mProfile->equalityString()
@@ -1416,6 +1450,11 @@ GeneratorInterpreter::GeneratorInterpreter(const AnalyserModelPtr &model, const 
 {
 }
 
+GeneratorInterpreter::GeneratorInterpreter(const AnalyserModelPtr &model)
+    : mPimpl(new GeneratorInterpreterImpl(model))
+{
+}
+
 GeneratorInterpreter::GeneratorInterpreter(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile)
     : mPimpl(new GeneratorInterpreterImpl(ast, profile))
 {
@@ -1432,6 +1471,11 @@ GeneratorInterpreterPtr GeneratorInterpreter::create(const AnalyserModelPtr &mod
     return std::shared_ptr<GeneratorInterpreter> {new GeneratorInterpreter {model, profile, code}};
 }
 
+GeneratorInterpreterPtr GeneratorInterpreter::create(const AnalyserModelPtr &model) noexcept
+{
+    return std::shared_ptr<GeneratorInterpreter> {new GeneratorInterpreter {model}};
+}
+
 GeneratorInterpreterPtr GeneratorInterpreter::create(const AnalyserEquationAstPtr &ast,
                                                      const GeneratorProfilePtr &profile) noexcept
 {
@@ -1441,6 +1485,31 @@ GeneratorInterpreterPtr GeneratorInterpreter::create(const AnalyserEquationAstPt
 std::string GeneratorInterpreter::code() const
 {
     return mPimpl->mCode;
+}
+
+std::vector<InterpreterInstructionPtr> GeneratorInterpreter::nlaSystemsInstructions() const
+{
+    return mPimpl->mNlaSystemsInstructions;
+}
+
+std::vector<InterpreterInstructionPtr> GeneratorInterpreter::initialiseVariablesInstructions() const
+{
+    return mPimpl->mInitialiseVariablesInstructions;
+}
+
+std::vector<InterpreterInstructionPtr> GeneratorInterpreter::computeComputedConstantsInstructions() const
+{
+    return mPimpl->mComputeComputedConstantsInstructions;
+}
+
+std::vector<InterpreterInstructionPtr> GeneratorInterpreter::computeRatesInstructions() const
+{
+    return mPimpl->mComputeRatesInstructions;
+}
+
+std::vector<InterpreterInstructionPtr> GeneratorInterpreter::computeVariablesInstructions() const
+{
+    return mPimpl->mComputeVariablesInstructions;
 }
 
 } // namespace libcellml

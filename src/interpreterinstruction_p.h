@@ -16,6 +16,8 @@ limitations under the License.
 
 #pragma once
 
+#include "libcellml/analyservariable.h"
+
 namespace libcellml {
 
 /**
@@ -25,6 +27,22 @@ namespace libcellml {
  */
 struct InterpreterInstruction::InterpreterInstructionImpl
 {
+    InterpreterInstruction::Type mType = Type::EQUALITY;
+    InterpreterInstructionPtr mLeftChild;
+    InterpreterInstructionPtr mRightChild;
+    AnalyserVariablePtr mVariable;
+    double mValue = std::numeric_limits<double>::quiet_NaN();
+
+    static InterpreterInstructionPtr createEquality(const AnalyserVariablePtr &variable, double value);
+
+    explicit InterpreterInstructionImpl(Type type,
+                                        const InterpreterInstructionPtr &leftChild,
+                                        const InterpreterInstructionPtr &rightChild);
+    explicit InterpreterInstructionImpl(const AnalyserVariablePtr &variable);
+    explicit InterpreterInstructionImpl(double value);
+
+    void evaluate(double *states, double *rates, double *variables) const;
+    double evaluateToDouble(double *states, double *rates, double *variables) const;
 };
 
 } // namespace libcellml

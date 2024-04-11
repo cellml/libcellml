@@ -20,6 +20,8 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
+#include "interpreterinstruction.h"
+
 namespace libcellml {
 
 class GeneratorInterpreter; /**< Forward declaration of GeneratorInterpreter class. */
@@ -63,6 +65,21 @@ public:
      * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
      *
      * @code
+     *   auto interpreterInstruction = libcellml::GeneratorInterpreter::create(model);
+     * @endcode
+     *
+     * @param model The model for which we want to generate the code to compute.
+     *
+     * @return A smart pointer to an @ref GeneratorInterpreter object.
+     */
+    static GeneratorInterpreterPtr create(const AnalyserModelPtr &model) noexcept;
+
+    /**
+     * @brief Create an @ref GeneratorInterpreter object.
+     *
+     * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
+     *
+     * @code
      *   auto interpreterInstruction = libcellml::GeneratorInterpreter::create(profile);
      * @endcode
      *
@@ -83,9 +100,55 @@ public:
      */
     std::string code() const;
 
+    /**
+     * @brief Get the instructions to compute the NLA systems.
+     *
+     * Get the instructions to compute the NLA systems.
+     *
+     * @return The instructions to compute the NLA systems as a @c std::vector.
+     */
+    std::vector<InterpreterInstructionPtr> nlaSystemsInstructions() const;
+
+    /**
+     * @brief Get the instructions to initialise variables.
+     *
+     * Get the instructions to initialise variables.
+     *
+     * @return The instructions to initialise variables as a @c std::vector.
+     */
+    std::vector<InterpreterInstructionPtr> initialiseVariablesInstructions() const;
+
+    /**
+     * @brief Get the instructions to compute computed constants.
+     *
+     * Get the instructions to compute computed constants.
+     *
+     * @return The instructions to compute computed constants as a @c std::vector.
+     */
+    std::vector<InterpreterInstructionPtr> computeComputedConstantsInstructions() const;
+
+    /**
+     * @brief Get the instructions to compute rates.
+     *
+     * Get the instructions to compute rates.
+     *
+     * @return The instructions to compute rates as a @c std::vector.
+     */
+    std::vector<InterpreterInstructionPtr> computeRatesInstructions() const;
+
+    /**
+     * @brief Get the instructions to compute variables.
+     *
+     * Get the instructions to compute variables.
+     *
+     * @return The instructions to compute variables as a @c std::vector.
+     */
+    std::vector<InterpreterInstructionPtr> computeVariablesInstructions() const;
+
 private:
     GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
                          const std::string &code); /**< Constructor, @private. */
+    GeneratorInterpreter(const AnalyserModelPtr &model); /**< Constructor, @private. */
     GeneratorInterpreter(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile); /**< Constructor, @private. */
 
     struct GeneratorInterpreterImpl;

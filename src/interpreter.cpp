@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
+#include "generatorinterpreter_p.h"
 #include "interpreter_p.h"
 
 namespace libcellml {
@@ -34,6 +35,18 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
         mStates = std::vector<double>(mModel->stateCount(), NaN);
         mRates = std::vector<double>(mModel->stateCount(), NaN);
         mVariables = std::vector<double>(mModel->variableCount(), NaN);
+
+        mStatesData = mStates.data();
+        mRatesData = mRates.data();
+        mVariablesData = mVariables.data();
+
+        auto generatorInterpreter = GeneratorInterpreter::create(mModel);
+
+        mNlaSystemsInstructions = generatorInterpreter->nlaSystemsInstructions();
+        mInitialiseVariablesInstructions = generatorInterpreter->initialiseVariablesInstructions();
+        mComputeComputedConstantsInstructions = generatorInterpreter->computeComputedConstantsInstructions();
+        mComputeRatesInstructions = generatorInterpreter->computeRatesInstructions();
+        mComputeVariablesInstructions = generatorInterpreter->computeVariablesInstructions();
     } else {
         mStates.clear();
         mRates.clear();
@@ -88,18 +101,36 @@ std::vector<double> Interpreter::variables()
 
 void Interpreter::initialiseVariables()
 {
+    for (const auto &instruction : mPimpl->mInitialiseVariablesInstructions) {
+        instruction->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+    }
 }
 
 void Interpreter::computeComputedConstants()
 {
+    /*---GRY----
+    for (const auto &instruction : mPimpl->mComputeComputedConstantsInstructions) {
+        instruction->evaluate(shared_from_this());
+    }
+    */
 }
 
 void Interpreter::computeRates()
 {
+    /*---GRY----
+    for (const auto &instruction : mPimpl->mComputeRatesInstructions) {
+        instruction->evaluate(shared_from_this());
+    }
+    */
 }
 
 void Interpreter::computeVariables()
 {
+    /*---GRY----
+    for (const auto &instruction : mPimpl->mComputeVariablesInstructions) {
+        instruction->evaluate(shared_from_this());
+    }
+    */
 }
 
 } // namespace libcellml

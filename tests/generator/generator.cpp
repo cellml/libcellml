@@ -2571,9 +2571,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
     interpreter->computeRates();
     interpreter->computeVariables();
 
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0}), interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, NAN, NAN, 0.0, NAN, 0.0, NAN, 0.0, 0.0, 0.0, 0.0, 0.0, NAN, 0.0, 0.0}), interpreter->variables());
 }
 
 TEST(Generator, nobleModel1962)
@@ -2862,7 +2862,7 @@ TEST(Generator, daeModel)
 
     EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_10, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, NAN, 0.0, NAN, NAN, NAN}), interpreter->variables());
 }
 
 TEST(Generator, variableInitialisedUsingAConstant)

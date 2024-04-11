@@ -43,9 +43,19 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     GeneratorProfilePtr mProfile = GeneratorProfile::create();
     std::string mCode;
 
+    InterpreterInstructionPtrs mInstructions;
+    InterpreterInstructionPtrs mNlaSystemsInstructions;
+    InterpreterInstructionPtrs mInitialiseVariablesInstructions;
+    InterpreterInstructionPtrs mComputeComputedConstantsInstructions;
+    InterpreterInstructionPtrs mComputeRatesInstructions;
+    InterpreterInstructionPtrs mComputeVariablesInstructions;
+
     explicit GeneratorInterpreterImpl(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
                                       const std::string &code);
+    explicit GeneratorInterpreterImpl(const AnalyserModelPtr &model);
     explicit GeneratorInterpreterImpl(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile);
+
+    void initialise(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile, const std::string &code);
 
     AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
@@ -88,7 +98,7 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     bool isSomeConstant(const AnalyserEquationPtr &equation,
                         bool includeComputedConstants) const;
 
-    std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const;
+    std::string generateZeroInitialisationCode(const AnalyserVariablePtr &variable);
     std::string generateInitialisationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
