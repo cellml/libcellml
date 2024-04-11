@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include "test_utils.h"
 #include <libcellml>
 
 TEST(Variable, addEquivalenceNullptrFirstParameter)
@@ -1312,27 +1313,28 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
 
 TEST(Connection, mappingId)
 {
-    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"  name=\"everything\" >\n"
-                           "  <component name=\"c1\" >\n"
-                           "    <variable name=\"v1\" units=\"units2\" interface=\"private\"/>\n"
-                           "  </component>\n"
-                           "  <component name=\"c2\">\n"
-                           "    <variable name=\"v2a\" units=\"units2\" interface=\"public\"/>\n"
-                           "    <variable name=\"v2b\" units=\"units2\" interface=\"public\"/>\n"
-                           "  </component>\n"
-                           "  <component name=\"c3\">\n"
-                           "    <variable name=\"v3\" units=\"units2\" interface=\"public\"/>\n"
-                           "  </component>\n"
-                           "  <connection component_1=\"c1\" component_2=\"c2\">\n"
-                           "    <map_variables variable_1=\"v1\" variable_2=\"v2a\" id=\"id12a\"/>\n"
-                           "    <map_variables variable_1=\"v1\" variable_2=\"v2b\" id=\"id12b\"/>\n"
-                           "  </connection>\n"
-                           "  <connection component_1=\"c1\" component_2=\"c3\">\n"
-                           "    <map_variables variable_1=\"v1\" variable_2=\"v3\" id=\"id13\"/>\n"
-                           "  </connection>\n"
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"  name=\"everything\" >\n"
+        "  <component name=\"c1\" >\n"
+        "    <variable name=\"v1\" units=\"units2\" interface=\"private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"c2\">\n"
+        "    <variable name=\"v2a\" units=\"units2\" interface=\"public\"/>\n"
+        "    <variable name=\"v2b\" units=\"units2\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"c3\">\n"
+        "    <variable name=\"v3\" units=\"units2\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"c1\" component_2=\"c2\">\n"
+        "    <map_variables variable_1=\"v1\" variable_2=\"v2a\" id=\"id12a\"/>\n"
+        "    <map_variables variable_1=\"v1\" variable_2=\"v2b\" id=\"id12b\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"c1\" component_2=\"c3\">\n"
+        "    <map_variables variable_1=\"v1\" variable_2=\"v3\" id=\"id13\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
-                           "</model>\n";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
     EXPECT_EQ("id12a",
@@ -1347,4 +1349,32 @@ TEST(Connection, mappingId)
               libcellml::Variable::equivalenceMappingId(
                   model->component("c1")->variable("v1"),
                   model->component("c3")->variable("v3")));
+}
+
+TEST(Connection, repeatedConnection)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"connection\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr m = p->parseModel(in);
+
+    const std::string expectedIssue = "Connection in model 'connection' between 'component1' and 'component2' is not unique.";
+
+    EXPECT_EQ(size_t(1), p->errorCount());
+    EXPECT_EQ(expectedIssue, p->error(0)->description());
 }

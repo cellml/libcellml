@@ -73,6 +73,7 @@ using ParentedEntityConstPtr = std::shared_ptr<const ParentedEntity>; /**< Type 
 using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for shared units const pointer. */
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
+using ConnectionList = std::vector<std::pair<std::string, std::string>>; /**< Type definition for a list of connections. */
 
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
