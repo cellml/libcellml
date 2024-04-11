@@ -1378,3 +1378,38 @@ TEST(Connection, repeatedConnection)
     EXPECT_EQ(size_t(1), p->errorCount());
     EXPECT_EQ(expectedIssue, p->error(0)->description());
 }
+
+TEST(Connection, repeatedMapVariables)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"connection\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"variable6\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"variable3\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"variable5\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "    <map_variables variable_1=\"variable6\" variable_2=\"variable3\"/>\n"
+        "    <map_variables variable_1=\"variable6\" variable_2=\"variable5\"/>\n"
+        "    <map_variables variable_1=\"variable6\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr m = p->parseModel(in);
+
+    const std::vector<std::string> expectedIssues = {
+        "Connection in model 'connection' between 'variable1' and 'variable2' is not unique.",
+        "Connection in model 'connection' between 'variable3' and 'variable6' is not unique.",
+    };
+
+    printIssues(p);
+    EXPECT_EQ_ISSUES(expectedIssues, p);
+}

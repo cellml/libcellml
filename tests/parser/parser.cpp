@@ -1148,7 +1148,6 @@ TEST(Parser, connectionErrorNoMapVariables)
         "Connection in model '' has a connection to itself, the at fault component is 'componentA'.",
         "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
         "Connection in model '' has a connection to itself, the at fault component is 'componentA'.",
-        "Connection in model '' between 'componentA' and 'componentA' is not unique.",
         "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
