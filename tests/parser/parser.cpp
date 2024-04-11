@@ -927,20 +927,22 @@ TEST(Parser, invalidVariableAttributesAndGetVariableIssue)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"\">\n"
         "  <component name=\"componentA\">\n"
         "    <variable name=\"quixote\" don=\"true\"/>\n"
-        "    <variable windmill=\"tilted\"/>\n"
+        "    <variable name=\"\" units=\"\" windmill=\"tilted\"/>\n"
+        "    <variable units=\"bobs\"/>\n"
         "  </component>\n"
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Variable 'quixote' has an invalid attribute 'don'.",
+        "Variable 'quixote' does not specify a units attribute.",
         "Variable '' has an invalid attribute 'windmill'.",
+        "Variable with units 'bobs' does not specify a name attribute.",
+        "Model does not contain the units '' required by variable '' in component 'componentA'.",
+        "Model does not contain the units 'bobs' required by variable '' in component 'componentA'.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(in);
-    EXPECT_EQ(expectedIssues.size(), p->issueCount());
-    for (size_t i = 0; i < p->issueCount(); ++i) {
-        EXPECT_EQ(expectedIssues.at(i), p->issue(i)->description());
-    }
+    EXPECT_EQ_ISSUES(expectedIssues, p);
 
     libcellml::VariablePtr variableExpected = model->component("componentA")->variable("quixote");
     // Get variable from issue and check.
@@ -1433,6 +1435,7 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
         "Component '' has an invalid attribute 'ship'.",
         "Component does not specify a name attribute.",
         "Variable '' has an invalid attribute 'pilot'.",
+        "Variable does not specify a name attribute or a units attribute.",
         "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
         "Encapsulation in model 'starwars' does not contain any child elements.",
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
@@ -1508,7 +1511,7 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "  </units>\n"
         "  <component name=\"ship\">\n"
         "    falcon\n"
-        "    <variable name=\"jedi\">\n"
+        "    <variable name=\"jedi\" units=\"robot\">\n"
         "      rey\n"
         "    </variable>\n"
         "    <reset variable=\"jedi\" test_variable=\"jedi\" order=\"3\">\n"
@@ -1565,7 +1568,6 @@ TEST(Parser, invalidModelWithTextInAllElements)
     // Parse and check for CellML issues.
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(in);
-
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 }
 
@@ -1929,8 +1931,8 @@ TEST(Parser, parseResetIllegalChild)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"componentA\" id=\"c2id\">\n"
-        "    <variable name=\"variable1\" id=\"vid\"/>\n"
-        "    <variable name=\"variable2\" id=\"vid2\"/>\n"
+        "    <variable name=\"variable1\" units=\"\" id=\"vid\"/>\n"
+        "    <variable name=\"variable2\" units=\"\" id=\"vid2\"/>\n"
         "    <reset order=\"1\" id=\"rid\" variable=\"variable1\" test_variable=\"variable2\">\n"
         "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
