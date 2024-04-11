@@ -952,7 +952,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         if (nameAttributePresent) {
             description += "'" + node->attribute("name") + "' does not specify a units attribute.";
         } else if (unitsAttributePresent) {
-            description += "with units '"  + node->attribute("units") + "' does not specify a name attribute.";
+            description += "with units '" + node->attribute("units") + "' does not specify a name attribute.";
         } else {
             description += "does not specify a name attribute or a units attribute.";
         }
@@ -1069,7 +1069,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     componentNamePair = std::make_pair(component1Name, component2Name);
 
     if (!component1Missing && !component2Missing) {
-
         if (component1Name == component2Name) {
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has a connection to itself, the at fault component is '" + component1Name + "'.");
@@ -1084,7 +1083,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
 
             NamePairList::const_iterator it = std::find_if(usedConnections.begin(), usedConnections.end(),
-                [&component1Name, &component2Name](const std::pair<std::string, std::string>& element){ return element.first == component1Name && element.second == component2Name;});
+                                                           [&component1Name, &component2Name](const std::pair<std::string, std::string> &element) { return element.first == component1Name && element.second == component2Name; });
 
             if (it == usedConnections.end()) {
                 usedConnections.emplace_back(componentNamePair);
@@ -1217,7 +1216,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 auto variableNamePair = std::make_pair(variable1Name, variable2Name);
 
                 NamePairList::const_iterator it = std::find_if(usedMapVariables.begin(), usedMapVariables.end(),
-                    [&variableNamePair](const std::pair<std::string, std::string>& element){ return element.first == variableNamePair.first && element.second == variableNamePair.second;});
+                                                               [&variableNamePair](const std::pair<std::string, std::string> &element) { return element.first == variableNamePair.first && element.second == variableNamePair.second; });
 
                 if (it == usedMapVariables.end()) {
                     usedMapVariables.emplace_back(variableNamePair);

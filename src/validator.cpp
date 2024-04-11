@@ -623,7 +623,6 @@ public:
      */
     void addResetOrderMapItem(const VariablePtr &variable, int order, ResetOrderMap &resetOrderMap);
 
-
     /** @brief Utility function called recursively to construct a map of identifiers in a component.
      *
      * Utility function called recursively to construct a map of identifiers in a component.
