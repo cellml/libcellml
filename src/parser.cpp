@@ -120,10 +120,11 @@ public:
      *
      * @param model The @c ModelPtr to update.
      * @param node The @c XmlNodePtr to parse and update the model with.
+     * @param usedNames List of components already used in loading component hierarchy.
      *
      * @return A @c ComponentPtr which is the root of the component hierarchy.
      */
-    ComponentPtr loadComponentRef(const ModelPtr &model, const XmlNodePtr &node);
+    ComponentPtr loadComponentRef(const ModelPtr &model, const XmlNodePtr &node, NameList &usedNames);
 
     /**
      * @brief Update the @p import source with attributes parsed from @p node and add any imported
@@ -1295,7 +1296,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
 }
 
-ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const XmlNodePtr &node)
+ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const XmlNodePtr &node, NameList &usedNames)
 {
     ComponentPtr parentComponent = nullptr;
     std::string parentComponentName;
@@ -1305,6 +1306,17 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
     while (attribute != nullptr) {
         if (attribute->isType("component")) {
             parentComponentName = attribute->value();
+
+            if (std::find(usedNames.begin(), usedNames.end(), parentComponentName) == usedNames.end()) {
+                usedNames.emplace_back(parentComponentName);
+            } else {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponentName + "' as a component in a component_ref but it is not unique.");
+                issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE_UNIQUE);
+                addIssue(issue);
+            }
+
             if (model->containsComponent(parentComponentName)) {
                 // Will re-add this to the model once we encapsulate the child(ren).
                 parentComponent = model->takeComponent(parentComponentName);
@@ -1321,7 +1333,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid component_ref attribute '" + attribute->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_ELEMENT);
             addIssue(issue);
         }
         attribute = attribute->next();
@@ -1344,7 +1356,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
     while (childComponentNode) {
         ComponentPtr childComponent = nullptr;
         if (parseNode(childComponentNode, "component_ref")) {
-            childComponent = loadComponentRef(model, childComponentNode);
+            childComponent = loadComponentRef(model, childComponentNode, usedNames);
         } else if (childComponentNode->isText()) {
             const std::string textNode = childComponentNode->convertToString();
             // Ignore whitespace when parsing.
@@ -1383,6 +1395,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
 
 void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
 {
+    NameList usedNames;
     XmlNodePtr componentRefNode = node->firstChild();
     while (componentRefNode != nullptr) {
         ComponentPtr parentComponent = nullptr;
@@ -1390,7 +1403,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         bool haveComponentRef = false;
         if (parseNode(componentRefNode, "component_ref")) {
             haveComponentRef = true;
-            parentComponent = loadComponentRef(model, componentRefNode);
+            parentComponent = loadComponentRef(model, componentRefNode, usedNames);
         } else if (componentRefNode->isText()) {
             const std::string textNode = componentRefNode->convertToString();
             // Ignore whitespace when parsing.
