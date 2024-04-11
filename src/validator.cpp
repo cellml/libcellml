@@ -579,6 +579,14 @@ public:
      */
     void checkUniqueIds(const ModelPtr &model);
 
+    /** @brief Function to check reset orders within the model scope are unique.
+     *
+     * Function to check reset orders within the model scope are unique.
+     *
+     * @param model The model to be checked.
+     */
+    void checkUniqueResetOrders(const ModelPtr &model);
+
     /** @brief Utility function to construct a map of identifiers used within the model.
      *
      * Utility function to construct a map of identifiers used within the model.
@@ -587,6 +595,34 @@ public:
      * @return An IdMap of the items in the model with identifier fields.
      */
     IdMap buildModelIdMap(const ModelPtr &model);
+
+    /** @brief Utility function to construct a map of reset orders used within the model.
+     *
+     * Utility function to construct a map of reset orders used within the model.
+     *
+     * @param model The model to be checked.
+     * @return A ResetOrderMap of the items in the model with reset orders.
+     */
+    ResetOrderMap buildModelResetOrderMap(const ModelPtr &model);
+
+    /**
+     * @brief Traverse the component tree populating the reset order map.
+     *
+     * Traverse the component tree populating the reset order map.
+     *
+     * @param component The component to check and populate from.
+     * @param resetOrderMap The ResetOrderMap object to construct.
+     */
+    void traverseComponentTree(const ComponentPtr &component, ResetOrderMap &resetOrderMap);
+
+    /**
+     * @brief Utility function to add an item to the resetOrderMap.
+     * @param variable The variable to add.
+     * @param order The order associated with the variable.
+     * @param resetOrderMap The resetOrderMap under construction.
+     */
+    void addResetOrderMapItem(const VariablePtr &variable, int order, ResetOrderMap &resetOrderMap);
+
 
     /** @brief Utility function called recursively to construct a map of identifiers in a component.
      *
@@ -762,6 +798,8 @@ void Validator::validateModel(const ModelPtr &model)
 
         // Check identifiers across the model are unique.
         pFunc()->checkUniqueIds(model);
+
+        pFunc()->checkUniqueResetOrders(model);
     }
 }
 
@@ -2545,6 +2583,71 @@ void updateBaseUnitCount(const ModelPtr &model,
         }
         multiplier += direction * (logMult + standardMultiplierList.at(uName));
     }
+}
+
+void Validator::ValidatorImpl::checkUniqueResetOrders(const ModelPtr &model)
+{
+    auto resetOrderMap = buildModelResetOrderMap(model);
+    for (const auto &variableOrder : resetOrderMap) {
+        auto variable = variableOrder.first;
+        auto orders = variableOrder.second;
+
+        std::set<int> ordersSet(orders.begin(), orders.end());
+
+        if (ordersSet.size() < orders.size()) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_ORDER_UNIQUE);
+            issue->mPimpl->setDescription("Variable '" + variable->name() + "' used in resets does not have unique order values across the equivalent variable set.");
+            issue->mPimpl->mItem->mPimpl->setModel(model);
+            addIssue(issue);
+        }
+    }
+}
+
+void Validator::ValidatorImpl::addResetOrderMapItem(const VariablePtr &variable, int order, ResetOrderMap &resetOrderMap)
+{
+    auto currentVariable = variable;
+    bool existingVariableFound = resetOrderMap.count(currentVariable) > 0;
+    size_t i = 0;
+
+    while (i < variable->equivalentVariableCount() && !existingVariableFound) {
+        currentVariable = variable->equivalentVariable(i);
+        existingVariableFound = resetOrderMap.count(currentVariable) > 0;
+        ++i;
+    }
+
+    if (existingVariableFound) {
+        resetOrderMap[currentVariable].emplace_back(order);
+    } else {
+        std::vector<int> orders = {order};
+        resetOrderMap.emplace(variable, orders);
+    }
+}
+
+void Validator::ValidatorImpl::traverseComponentTree(const ComponentPtr &component, ResetOrderMap &resetOrderMap)
+{
+    for (size_t j = 0; j < component->resetCount(); ++j) {
+        auto reset = component->reset(j);
+        auto currentVariable = reset->variable();
+        if ((currentVariable != nullptr) && reset->isOrderSet()) {
+            addResetOrderMapItem(currentVariable, reset->order(), resetOrderMap);
+        }
+    }
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        traverseComponentTree(component->component(i), resetOrderMap);
+    }
+}
+
+ResetOrderMap Validator::ValidatorImpl::buildModelResetOrderMap(const ModelPtr &model)
+{
+    ResetOrderMap resetOrderMap;
+    for (size_t i = 0; i < model->componentCount(); ++i) {
+        auto component = model->component(i);
+        traverseComponentTree(component, resetOrderMap);
+    }
+
+    return resetOrderMap;
 }
 
 void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
