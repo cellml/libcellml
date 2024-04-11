@@ -1628,7 +1628,11 @@ void Parser::ParserImpl::loadResetChild(const std::string &childType, const Rese
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("The " + childType + " in the reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' should have a MathML block as a child.");
                 issue->mPimpl->mItem->mPimpl->setReset(reset);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_CHILD);
+                if (childType == "test_value") {
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::TEST_VALUE_CHILD);
+                } else {
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VALUE_CHILD);
+                }
                 addIssue(issue);
             }
         }
