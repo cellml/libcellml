@@ -896,9 +896,12 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         childNode = childNode->next();
     }
     XmlAttributePtr attribute = node->firstAttribute();
+    bool nameAttributePresent = false;
+    bool unitsAttributePresent = false;
     while (attribute != nullptr) {
         if (attribute->isType("name")) {
             variable->setName(attribute->value());
+            nameAttributePresent = true;
         } else if (isIdAttribute(attribute, mParsing1XVersion)) {
             variable->setId(attribute->value());
         } else if (attribute->isType("units")) {
@@ -907,6 +910,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             } else {
                 variable->setUnits(attribute->value());
             }
+            unitsAttributePresent = true;
         } else if (attribute->isType("interface")) {
             variable->setInterfaceType(attribute->value());
         } else if (attribute->isType("initial_value")) {
@@ -936,6 +940,23 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             addIssue(issue);
         }
         attribute = attribute->next();
+    }
+
+    if (!nameAttributePresent or !unitsAttributePresent) {
+        auto issue = Issue::IssueImpl::create();
+        std::string description = "Variable ";
+        if (nameAttributePresent) {
+            description += "'" + node->attribute("name") + "' does not specify a units attribute.";
+        } else if (unitsAttributePresent) {
+            description += "with units '"  + node->attribute("units") + "' does not specify a name attribute.";
+        } else {
+            description += "does not specify a name attribute or a units attribute.";
+        }
+
+        issue->mPimpl->setDescription(description);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_ATTRIBUTE_REQUIRED);
+        issue->mPimpl->mItem->mPimpl->setVariable(variable);
+        addIssue(issue);
     }
 }
 

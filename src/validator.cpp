@@ -1298,7 +1298,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         auto issue = makeIssueIllegalIdentifier(variableName);
         issue->mPimpl->setDescription("Variable '" + variableName + "' in component '" + component->name() + "' does not have a valid name attribute. " + issue->description());
         issue->mPimpl->mItem->mPimpl->setVariable(variable);
-        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_ATTRIBUTE_REQUIRED);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME_VALUE);
         addIssue(issue);
     }
     // Check for a valid identifier.
