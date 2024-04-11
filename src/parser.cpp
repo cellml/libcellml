@@ -692,9 +692,11 @@ void Parser::ParserImpl::loadUnitsFromComponent(const ModelPtr &model, const Xml
 void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
 {
     XmlAttributePtr attribute = node->firstAttribute();
+    bool nameAttributePresent = false;
     while (attribute != nullptr) {
         if (attribute->isType("name")) {
             units->setName(attribute->value());
+            nameAttributePresent = true;
         } else if (isIdAttribute(attribute, mParsing1XVersion)) {
             units->setId(attribute->value());
         } else {
@@ -711,6 +713,15 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
         }
         attribute = attribute->next();
     }
+
+    if (!nameAttributePresent) {
+        auto issue = Issue::IssueImpl::create();
+        issue->mPimpl->setDescription("Units does not specify a name attribute.");
+        issue->mPimpl->mItem->mPimpl->setUnits(units);
+        issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_NAME);
+        addIssue(issue);
+    }
+
     XmlNodePtr childNode = node->firstChild();
     while (childNode != nullptr) {
         if (parseNode(childNode, "unit")) {

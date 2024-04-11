@@ -328,7 +328,7 @@ TEST(Parser, unitsElementIssues)
     const std::string in1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
-        "  <units>\n"
+        "  <units name=\"\">\n"
         "    <son name=\"stan\"/>\n"
         "  </units>\n"
         "</model>\n";
@@ -624,6 +624,7 @@ TEST(Parser, modelWithInvalidUnits)
         "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
         "Unit referencing '' in units 'fahrenheitish' has an invalid attribute 'GUnit'.",
         "Units '' has an invalid attribute 'jerry'.",
+        "Units does not specify a name attribute.",
         "Unit referencing 'friends' in units '' has an invalid attribute 'neighbor'.",
         "Unit referencing '' in units '' has an invalid attribute 'george'.",
     };
@@ -1425,6 +1426,7 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
         "Import does not specify an xlink href attribute.",
         "Import from '' is empty and will be disregarded.",
         "Units '' has an invalid attribute 'jedi'.",
+        "Units does not specify a name attribute.",
         "Component '' has an invalid attribute 'ship'.",
         "Variable '' has an invalid attribute 'pilot'.",
         "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
