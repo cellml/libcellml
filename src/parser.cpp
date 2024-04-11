@@ -946,7 +946,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         attribute = attribute->next();
     }
 
-    if (!nameAttributePresent or !unitsAttributePresent) {
+    if (!nameAttributePresent || !unitsAttributePresent) {
         auto issue = Issue::IssueImpl::create();
         std::string description = "Variable ";
         if (nameAttributePresent) {
