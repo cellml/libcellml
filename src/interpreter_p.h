@@ -29,11 +29,11 @@ struct Interpreter::InterpreterImpl
 {
     AnalyserModelPtr mModel;
 
-    std::vector<InterpreterStatementPtr> mNlaSystemsInstructions;
-    std::vector<InterpreterStatementPtr> mInitialiseVariablesInstructions;
-    std::vector<InterpreterStatementPtr> mComputeComputedConstantsInstructions;
-    std::vector<InterpreterStatementPtr> mComputeRatesInstructions;
-    std::vector<InterpreterStatementPtr> mComputeVariablesInstructions;
+    std::vector<InterpreterStatementPtr> mNlaSystemsStatements;
+    std::vector<InterpreterStatementPtr> mInitialiseVariablesStatements;
+    std::vector<InterpreterStatementPtr> mComputeComputedConstantsStatements;
+    std::vector<InterpreterStatementPtr> mComputeRatesStatements;
+    std::vector<InterpreterStatementPtr> mComputeVariablesStatements;
 
     double mVoi = 0.0;
     std::vector<double> mStates;

@@ -42,11 +42,11 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
 
         auto generatorInterpreter = GeneratorInterpreter::create(mModel);
 
-        mNlaSystemsInstructions = generatorInterpreter->nlaSystemsInstructions();
-        mInitialiseVariablesInstructions = generatorInterpreter->initialiseVariablesInstructions();
-        mComputeComputedConstantsInstructions = generatorInterpreter->computeComputedConstantsInstructions();
-        mComputeRatesInstructions = generatorInterpreter->computeRatesInstructions();
-        mComputeVariablesInstructions = generatorInterpreter->computeVariablesInstructions();
+        mNlaSystemsStatements = generatorInterpreter->nlaSystemsStatements();
+        mInitialiseVariablesStatements = generatorInterpreter->initialiseVariablesStatements();
+        mComputeComputedConstantsStatements = generatorInterpreter->computeComputedConstantsStatements();
+        mComputeRatesStatements = generatorInterpreter->computeRatesStatements();
+        mComputeVariablesStatements = generatorInterpreter->computeVariablesStatements();
     } else {
         mStates.clear();
         mRates.clear();
@@ -101,34 +101,34 @@ std::vector<double> Interpreter::variables()
 
 void Interpreter::initialiseVariables()
 {
-    for (const auto &instruction : mPimpl->mInitialiseVariablesInstructions) {
-        instruction->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+    for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
+        statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
 }
 
 void Interpreter::computeComputedConstants()
 {
-    /*---GRY----
-    for (const auto &instruction : mPimpl->mComputeComputedConstantsInstructions) {
-        instruction->evaluate(shared_from_this());
+    /*---GRY---
+    for (const auto &statement : mPimpl->mComputeComputedConstantsStatements) {
+        statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
     */
 }
 
 void Interpreter::computeRates()
 {
-    /*---GRY----
-    for (const auto &instruction : mPimpl->mComputeRatesInstructions) {
-        instruction->evaluate(shared_from_this());
+    /*---GRY---
+    for (const auto &statement : mPimpl->mComputeRatesStatements) {
+        statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
     */
 }
 
 void Interpreter::computeVariables()
 {
-    /*---GRY----
-    for (const auto &instruction : mPimpl->mComputeVariablesInstructions) {
-        instruction->evaluate(shared_from_this());
+    /*---GRY---
+    for (const auto &statement : mPimpl->mComputeVariablesStatements) {
+        statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
     */
 }

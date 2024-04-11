@@ -67,35 +67,35 @@ void GeneratorInterpreter::GeneratorInterpreterImpl::initialise(const AnalyserMo
 
     nlaSystems();
 
-    mNlaSystemsInstructions = mInstructions;
+    mNlaSystemsStatements = mStatements;
 
     // Add code for the implementation to initialise our variables.
 
     auto equations = mModel->equations();
     std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
 
-    mInstructions.clear();
+    mStatements.clear();
 
     initialiseVariables(remainingEquations);
 
-    mInitialiseVariablesInstructions = mInstructions;
+    mInitialiseVariablesStatements = mStatements;
 
     // Add code for the implementation to compute our computed constants.
 
-    mInstructions.clear();
+    mStatements.clear();
 
     computeComputedConstants(remainingEquations);
 
-    mComputeComputedConstantsInstructions = mInstructions;
+    mComputeComputedConstantsStatements = mStatements;
 
     // Add code for the implementation to compute our rates (and any variables
     // on which they depend).
 
-    mInstructions.clear();
+    mStatements.clear();
 
     computeRates(remainingEquations);
 
-    mComputeRatesInstructions = mInstructions;
+    mComputeRatesStatements = mStatements;
 
     // Add code for the implementation to compute our variables.
     // Note: this method computes the remaining variables, i.e. the ones not needed to compute our rates, but also the
@@ -103,11 +103,11 @@ void GeneratorInterpreter::GeneratorInterpreterImpl::initialise(const AnalyserMo
     //       typically called after having integrated a model, thus ensuring that variables that rely on the value of
     //       some states/rates are up to date.
 
-    mInstructions.clear();
+    mStatements.clear();
 
     computeVariables(remainingEquations);
 
-    mComputeVariablesInstructions = mInstructions;
+    mComputeVariablesStatements = mStatements;
 }
 
 bool modelHasOdes(const AnalyserModelPtr &model)
@@ -1100,7 +1100,7 @@ bool GeneratorInterpreter::GeneratorInterpreterImpl::isSomeConstant(const Analys
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable)
 {
-    mInstructions.push_back(InterpreterStatement::createEquality(variable, 0.0));
+    mStatements.push_back(InterpreterStatement::createEquality(variable, 0.0));
 
     return mProfile->indentString()
            + generateVariableNameCode(variable->variable(), false)
@@ -1487,29 +1487,29 @@ std::string GeneratorInterpreter::code() const
     return mPimpl->mCode;
 }
 
-std::vector<InterpreterStatementPtr> GeneratorInterpreter::nlaSystemsInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::nlaSystemsStatements() const
 {
-    return mPimpl->mNlaSystemsInstructions;
+    return mPimpl->mNlaSystemsStatements;
 }
 
-std::vector<InterpreterStatementPtr> GeneratorInterpreter::initialiseVariablesInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::initialiseVariablesStatements() const
 {
-    return mPimpl->mInitialiseVariablesInstructions;
+    return mPimpl->mInitialiseVariablesStatements;
 }
 
-std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeComputedConstantsInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeComputedConstantsStatements() const
 {
-    return mPimpl->mComputeComputedConstantsInstructions;
+    return mPimpl->mComputeComputedConstantsStatements;
 }
 
-std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeRatesInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeRatesStatements() const
 {
-    return mPimpl->mComputeRatesInstructions;
+    return mPimpl->mComputeRatesStatements;
 }
 
-std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeVariablesInstructions() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeVariablesStatements() const
 {
-    return mPimpl->mComputeVariablesInstructions;
+    return mPimpl->mComputeVariablesStatements;
 }
 
 } // namespace libcellml

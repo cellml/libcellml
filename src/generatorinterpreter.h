@@ -47,7 +47,7 @@ public:
      * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
      *
      * @code
-     *   auto interpreterInstruction = libcellml::GeneratorInterpreter::create(model, profile, code);
+     *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(model, profile, code);
      * @endcode
      *
      * @param model The model for which we want to generate the code to compute.
@@ -65,7 +65,7 @@ public:
      * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
      *
      * @code
-     *   auto interpreterInstruction = libcellml::GeneratorInterpreter::create(model);
+     *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(model);
      * @endcode
      *
      * @param model The model for which we want to generate the code to compute.
@@ -80,7 +80,7 @@ public:
      * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
      *
      * @code
-     *   auto interpreterInstruction = libcellml::GeneratorInterpreter::create(profile);
+     *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(profile);
      * @endcode
      *
      * @param ast The AST for which we want to generate some code.
@@ -101,49 +101,49 @@ public:
     std::string code() const;
 
     /**
-     * @brief Get the instructions to compute the NLA systems.
+     * @brief Get the statements to compute the NLA systems.
      *
-     * Get the instructions to compute the NLA systems.
+     * Get the statements to compute the NLA systems.
      *
-     * @return The instructions to compute the NLA systems as a @c std::vector.
+     * @return The statements to compute the NLA systems as a @c std::vector.
      */
-    std::vector<InterpreterStatementPtr> nlaSystemsInstructions() const;
+    std::vector<InterpreterStatementPtr> nlaSystemsStatements() const;
 
     /**
-     * @brief Get the instructions to initialise variables.
+     * @brief Get the statements to initialise variables.
      *
-     * Get the instructions to initialise variables.
+     * Get the statements to initialise variables.
      *
-     * @return The instructions to initialise variables as a @c std::vector.
+     * @return The statements to initialise variables as a @c std::vector.
      */
-    std::vector<InterpreterStatementPtr> initialiseVariablesInstructions() const;
+    std::vector<InterpreterStatementPtr> initialiseVariablesStatements() const;
 
     /**
-     * @brief Get the instructions to compute computed constants.
+     * @brief Get the statements to compute computed constants.
      *
-     * Get the instructions to compute computed constants.
+     * Get the statements to compute computed constants.
      *
-     * @return The instructions to compute computed constants as a @c std::vector.
+     * @return The statements to compute computed constants as a @c std::vector.
      */
-    std::vector<InterpreterStatementPtr> computeComputedConstantsInstructions() const;
+    std::vector<InterpreterStatementPtr> computeComputedConstantsStatements() const;
 
     /**
-     * @brief Get the instructions to compute rates.
+     * @brief Get the statements to compute rates.
      *
-     * Get the instructions to compute rates.
+     * Get the statements to compute rates.
      *
-     * @return The instructions to compute rates as a @c std::vector.
+     * @return The statements to compute rates as a @c std::vector.
      */
-    std::vector<InterpreterStatementPtr> computeRatesInstructions() const;
+    std::vector<InterpreterStatementPtr> computeRatesStatements() const;
 
     /**
-     * @brief Get the instructions to compute variables.
+     * @brief Get the statements to compute variables.
      *
-     * Get the instructions to compute variables.
+     * Get the statements to compute variables.
      *
-     * @return The instructions to compute variables as a @c std::vector.
+     * @return The statements to compute variables as a @c std::vector.
      */
-    std::vector<InterpreterStatementPtr> computeVariablesInstructions() const;
+    std::vector<InterpreterStatementPtr> computeVariablesStatements() const;
 
 private:
     GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,

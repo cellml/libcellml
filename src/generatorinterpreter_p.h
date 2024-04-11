@@ -43,12 +43,12 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     GeneratorProfilePtr mProfile = GeneratorProfile::create();
     std::string mCode;
 
-    InterpreterStatementPtrs mInstructions;
-    InterpreterStatementPtrs mNlaSystemsInstructions;
-    InterpreterStatementPtrs mInitialiseVariablesInstructions;
-    InterpreterStatementPtrs mComputeComputedConstantsInstructions;
-    InterpreterStatementPtrs mComputeRatesInstructions;
-    InterpreterStatementPtrs mComputeVariablesInstructions;
+    InterpreterStatementPtrs mStatements;
+    InterpreterStatementPtrs mNlaSystemsStatements;
+    InterpreterStatementPtrs mInitialiseVariablesStatements;
+    InterpreterStatementPtrs mComputeComputedConstantsStatements;
+    InterpreterStatementPtrs mComputeRatesStatements;
+    InterpreterStatementPtrs mComputeVariablesStatements;
 
     explicit GeneratorInterpreterImpl(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
                                       const std::string &code);

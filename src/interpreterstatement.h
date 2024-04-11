@@ -35,11 +35,11 @@ class InterpreterStatement
 {
 public:
     /**
-     * @brief The type of an instruction.
+     * @brief The type of a statement.
      *
-     * The type of an instruction, i.e. whether it is an equality type, a relational or a logical operator, an
-     * arithmetic operator, a calculus element, a trigonometric operator, a piecewise statement, a token element, a
-     * qualifier element, or a constant.
+     * The type of a statement, i.e. whether it is an equality type, a relational or a logical operator, an arithmetic
+     * operator, a calculus element, a trigonometric operator, a piecewise statement, a token element, a qualifier
+     * element, or a constant.
      */
     enum class Type
     {
@@ -152,20 +152,23 @@ public:
      * @brief Create an @ref InterpreterStatement object.
      *
      * Factory method to create an @ref InterpreterStatement for an equality statement. Create an interpreter
-     * instruction with::
+     * statement with::
      *
      * @code
-     *   auto interpreterInstruction = libcellml::InterpreterStatement::createEquality(variable, value);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::createEquality(variable, value);
      * @endcode
+     *
+     * @param variable The variable to set.
+     * @param value The value to set the variable to.
      *
      * @return A smart pointer to an @ref InterpreterStatement object.
      */
     static InterpreterStatementPtr createEquality(const AnalyserVariablePtr &variable, double value) noexcept;
 
     /**
-     * @brief Evaluate the instruction.
+     * @brief Evaluate the statement.
      *
-     * Evaluate the instruction using the given arrays of states, rates, and variables.
+     * Evaluate the statement using the given arrays of states, rates, and variables.
      *
      * @param states The array of states.
      * @param rates The array of rates.
