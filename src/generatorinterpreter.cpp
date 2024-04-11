@@ -24,7 +24,7 @@ limitations under the License.
 
 #include "commonutils.h"
 #include "generatorinterpreter_p.h"
-#include "interpreterinstruction.h"
+#include "interpreterstatement.h"
 #include "utilities.h"
 
 #include "libcellml/undefines.h"

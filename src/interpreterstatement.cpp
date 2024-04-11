@@ -15,13 +15,13 @@ limitations under the License.
 */
 #include "libcellml/variable.h"
 
-#include "interpreterinstruction.h"
+#include "interpreterstatement.h"
 
 #include <cassert>
 
 #include "libcellml/interpreter.h"
 
-#include "interpreterinstruction_p.h"
+#include "interpreterstatement_p.h"
 
 #include "libcellml/undefines.h"
 
