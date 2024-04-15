@@ -82,16 +82,20 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
                                          bool state = true) const;
 
     std::string generateOperatorCode(const std::string &op,
-                                     const AnalyserEquationAstPtr &ast) const;
-    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const;
+                                     const AnalyserEquationAstPtr &ast,
+                                     const InterpreterStatementPtr &statement) const;
+    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast,
+                                       const InterpreterStatementPtr &statement) const;
     std::string generateOneParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast) const;
+                                                 const AnalyserEquationAstPtr &ast,
+                                                 const InterpreterStatementPtr &statement) const;
     std::string generateTwoParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast) const;
+                                                 const AnalyserEquationAstPtr &ast,
+                                                 const InterpreterStatementPtr &statement) const;
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
-    std::string generateCode(const AnalyserEquationAstPtr &ast) const;
+    std::tuple<std::string, InterpreterStatementPtr> generateCode(const AnalyserEquationAstPtr &ast) const;
 
     bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
     bool isSomeConstant(const AnalyserEquationPtr &equation,

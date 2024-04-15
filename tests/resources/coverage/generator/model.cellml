@@ -129,6 +129,7 @@
         <variable name="eqnPowerParenthesesRightRoot" units="dimensionless"/>
         <variable name="eqnRootSqrt" units="dimensionless"/>
         <variable name="eqnRootSqrtOther" units="dimensionless"/>
+        <variable name="eqnRootSqr" units="dimensionless"/>
         <variable name="eqnRootCube" units="dimensionless"/>
         <variable name="eqnRootCi" units="dimensionless"/>
         <variable name="eqnRootParentheses" units="dimensionless"/>
@@ -1980,6 +1981,17 @@
                     <root/>
                     <degree>
                         <cn cellml:units="dimensionless">2</cn>
+                    </degree>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnRootSqr</ci>
+                <apply>
+                    <root/>
+                    <degree>
+                        <cn cellml:units="dimensionless">0.5</cn>
                     </degree>
                     <ci>m</ci>
                 </apply>

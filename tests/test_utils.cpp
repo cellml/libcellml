@@ -268,7 +268,7 @@ void expectEqualValues(const std::vector<double> &expectedValues, const std::vec
         if (std::isnan(expectedValues.at(i))) {
             EXPECT_TRUE(std::isnan(values.at(i)));
         } else {
-            EXPECT_EQ(expectedValues.at(i), values.at(i));
+            EXPECT_DOUBLE_EQ(expectedValues.at(i), values.at(i));
         }
     }
 }

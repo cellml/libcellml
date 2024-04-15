@@ -21,6 +21,8 @@ limitations under the License.
 #include "generatorinterpreter_p.h"
 #include "interpreter_p.h"
 
+#include "libcellml/undefines.h"
+
 namespace libcellml {
 
 void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
@@ -30,11 +32,11 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
     mVoi = 0.0;
 
     if (mModel != nullptr) {
-        static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+        static const auto NAN = std::numeric_limits<double>::quiet_NaN();
 
-        mStates = std::vector<double>(mModel->stateCount(), NaN);
-        mRates = std::vector<double>(mModel->stateCount(), NaN);
-        mVariables = std::vector<double>(mModel->variableCount(), NaN);
+        mStates = std::vector<double>(mModel->stateCount(), NAN);
+        mRates = std::vector<double>(mModel->stateCount(), NAN);
+        mVariables = std::vector<double>(mModel->variableCount(), NAN);
 
         mStatesData = mStates.data();
         mRatesData = mRates.data();

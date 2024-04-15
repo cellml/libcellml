@@ -112,7 +112,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
 
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 1.0}), interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariable)
@@ -256,7 +256,7 @@ TEST(Generator, algebraicEqnConstantOnRhs)
 
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnDerivativeOnRhs)
@@ -302,7 +302,7 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, NAN}), interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
@@ -348,7 +348,7 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, NAN}), interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnStateVarOnRhs)
@@ -394,7 +394,7 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, NAN}), interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
@@ -440,7 +440,7 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, NAN}), interpreter->variables());
 }
 
 TEST(Generator, algebraicUnknownVarOnRhs)
@@ -486,7 +486,7 @@ TEST(Generator, algebraicUnknownVarOnRhs)
 
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, NAN}), interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
@@ -532,7 +532,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, NAN, NAN, 1.0}), interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, 1.0}), interpreter->variables());
 }
 
 TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
@@ -584,7 +584,7 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
 
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, NAN}), interpreter->variables());
 }
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
@@ -830,7 +830,7 @@ TEST(Generator, odeComputedVarOnRhs)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
 }
 
 TEST(Generator, odeComputedVarOnRhsOneComponent)
@@ -876,7 +876,7 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
 }
 
 TEST(Generator, odeConstVarOnRhs)
@@ -2772,7 +2772,7 @@ TEST(Generator, sineImports)
 
     EXPECT_EQ_VALUES(std::vector<double>({0.0}), interpreter->states());
     EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, 0.0, NAN, 0.75, NAN, NAN, NAN, NAN, NAN, NAN}), interpreter->variables());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 0.0, NAN, 0.75, 0.63661977236758138, 6.2831853071795862, 1.5707963267948966, 3.1415926535897931, 4.7123889803846897, NAN}), interpreter->variables());
 }
 
 TEST(Generator, analyserModelScopeTest)
