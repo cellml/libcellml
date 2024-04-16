@@ -996,6 +996,13 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
         res = "NAN";
 
         break;
+
+        // Miscellaneous.
+
+    case InterpreterStatement::Type::EXTERNAL:
+        res = "EXTERNAL[" + convertToString(interpreterStatement->index()) + "]";
+
+        break;
     }
 
     return res;

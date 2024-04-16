@@ -1365,6 +1365,10 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateEquationCode
         switch (equation->type()) {
         case AnalyserEquation::Type::EXTERNAL:
             for (const auto &variable : equation->variables()) {
+                mStatements.push_back(InterpreterStatement::create(InterpreterStatement::Type::EQUALITY,
+                                                                   InterpreterStatement::create(variable),
+                                                                   InterpreterStatement::create(variable->index())));
+
                 res += mProfile->indentString()
                        + generateVariableNameCode(variable->variable())
                        + mProfile->equalityString()

@@ -138,7 +138,11 @@ public:
         E, /**< Euler's number. */
         PI, /**< The π constant. */
         INF, /**< The infinity value. */
-        NAN /**< The not-a-number value. */
+        NAN, /**< The not-a-number value. */
+
+        // Miscellaneous.
+
+        EXTERNAL /**< An external variable. */
     };
 
     ~InterpreterStatement(); /**< Destructor, @private. */
@@ -201,6 +205,22 @@ public:
     static InterpreterStatementPtr create(double value) noexcept;
 
     /**
+     * @brief Create an @ref InterpreterStatement object.
+     *
+     * Factory method to create an @ref InterpreterStatement for an external variable. Create such an interpreter
+     * statement with::
+     *
+     * @code
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(index);
+     * @endcode
+     *
+     * @param index The index of the external variable.
+     *
+     * @return A smart pointer to an @ref InterpreterStatement object.
+     */
+    static InterpreterStatementPtr create(size_t index) noexcept;
+
+    /**
      * @brief Get the left child of the statement.
      *
      * Return the left child of the statement.
@@ -255,6 +275,15 @@ public:
     double value() const;
 
     /**
+     * @brief Get the index associated with the statement.
+     *
+     * Return the index associated with the statement.
+     *
+     * @return The index associated with the statement.
+     */
+    size_t index() const;
+
+    /**
      * @brief Evaluate the statement.
      *
      * Evaluate the statement using the given arrays of states, rates, and variables.
@@ -271,6 +300,7 @@ private:
                          const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
     InterpreterStatement(const AnalyserVariablePtr &variable, bool state); /**< Constructor, @private. */
     InterpreterStatement(double value); /**< Constructor, @private. */
+    InterpreterStatement(size_t index); /**< Constructor, @private. */
 
     struct InterpreterStatementImpl;
     InterpreterStatementImpl *mPimpl; /**< Private member to implementation pointer, @private. */

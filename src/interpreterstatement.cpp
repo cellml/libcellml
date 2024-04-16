@@ -49,6 +49,12 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(double 
 {
 }
 
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(size_t index)
+    : mType(Type::EXTERNAL)
+    , mIndex(index)
+{
+}
+
 void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, double *rates, double *variables) const
 {
     //---GRY--- AT THIS STAGE, WE ONLY HANDLE AN EQUALITY STATEMENT.
@@ -163,16 +169,25 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *
         return M_E;
     case Type::PI:
         return M_PI;
-    case Type::INF:
+    case Type::INF: {
         static const auto INF = std::numeric_limits<double>::infinity();
 
         return INF;
-    default: // Type::NAN:
-        assert(mType == Type::NAN);
+    }
+    case Type::NAN: {
+        static const auto NAN = std::numeric_limits<double>::quiet_NaN();
+
+        return NAN;
+    }
+    default: { // Type::EXTERNAL:
+        //---GRY--- JUST RETURN NAN FOR NOW.
+
+        assert(mType == Type::EXTERNAL);
 
         static const auto NAN = std::numeric_limits<double>::quiet_NaN();
 
         return NAN;
+    }
     }
 }
 
@@ -190,6 +205,11 @@ InterpreterStatement::InterpreterStatement(const AnalyserVariablePtr &variable, 
 
 InterpreterStatement::InterpreterStatement(double value)
     : mPimpl(new InterpreterStatementImpl(value))
+{
+}
+
+InterpreterStatement::InterpreterStatement(size_t index)
+    : mPimpl(new InterpreterStatementImpl(index))
 {
 }
 
@@ -213,6 +233,11 @@ InterpreterStatementPtr InterpreterStatement::create(const AnalyserVariablePtr &
 InterpreterStatementPtr InterpreterStatement::create(double value) noexcept
 {
     return InterpreterStatementPtr {new InterpreterStatement {value}};
+}
+
+InterpreterStatementPtr InterpreterStatement::create(size_t index) noexcept
+{
+    return InterpreterStatementPtr {new InterpreterStatement {index}};
 }
 
 InterpreterStatementPtr InterpreterStatement::leftChild() const
@@ -243,6 +268,11 @@ bool InterpreterStatement::state() const
 double InterpreterStatement::value() const
 {
     return mPimpl->mValue;
+}
+
+size_t InterpreterStatement::index() const
+{
+    return mPimpl->mIndex;
 }
 
 void InterpreterStatement::evaluate(double *states, double *rates, double *variables) const
