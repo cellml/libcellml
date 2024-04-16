@@ -1192,7 +1192,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('double max(double x, double y)\n{\n    return (x > y)?x:y;\n}\n', g.maxFunctionString())
+        self.assertEqual('', g.maxFunctionString())
         g.setMaxFunctionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.maxFunctionString())
 
@@ -1201,7 +1201,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('max', g.maxString())
+        self.assertEqual('fmax', g.maxString())
         g.setMaxString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.maxString())
 
@@ -1210,7 +1210,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('double min(double x, double y)\n{\n    return (x < y)?x:y;\n}\n', g.minFunctionString())
+        self.assertEqual('', g.minFunctionString())
         g.setMinFunctionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.minFunctionString())
 
@@ -1219,7 +1219,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('min', g.minString())
+        self.assertEqual('fmin', g.minString())
         g.setMinString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.minString())
 

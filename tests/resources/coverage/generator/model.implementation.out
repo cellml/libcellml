@@ -5,16 +5,6 @@ double xor(double x, double y)
     return (x != 0.0) ^ (y != 0.0);
 }
 
-double min(double x, double y)
-{
-    return (x < y)?x:y;
-}
-
-double max(double x, double y)
-{
-    return (x > y)?x:y;
-}
-
 double sec(double x)
 {
     return 1.0/cos(x);
@@ -317,10 +307,10 @@ void computeComputedConstants(double *variables)
     variables[144] = log(variables[1])/log(variables[2]);
     variables[145] = ceil(variables[1]);
     variables[146] = floor(variables[1]);
-    variables[147] = min(variables[1], variables[2]);
-    variables[148] = min(variables[1], min(variables[2], variables[6]));
-    variables[149] = max(variables[1], variables[2]);
-    variables[150] = max(variables[1], max(variables[2], variables[6]));
+    variables[147] = fmin(variables[1], variables[2]);
+    variables[148] = fmin(variables[1], fmin(variables[2], variables[6]));
+    variables[149] = fmax(variables[1], variables[2]);
+    variables[150] = fmax(variables[1], fmax(variables[2], variables[6]));
     variables[151] = fmod(variables[1], variables[2]);
     variables[152] = sin(variables[1]);
     variables[153] = cos(variables[1]);

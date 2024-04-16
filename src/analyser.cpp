@@ -635,6 +635,8 @@ Analyser::AnalyserImpl::AnalyserImpl()
     mGeneratorProfile->setAbsoluteValueString("abs");
     mGeneratorProfile->setNaturalLogarithmString("ln");
     mGeneratorProfile->setCommonLogarithmString("log");
+    mGeneratorProfile->setMinString("min");
+    mGeneratorProfile->setMaxString("max");
     mGeneratorProfile->setRemString("rem");
     mGeneratorProfile->setAsinString("arcsin");
     mGeneratorProfile->setAcosString("arccos");

@@ -351,8 +351,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCommonLogarithmString = "log10";
         mCeilingString = "ceil";
         mFloorString = "floor";
-        mMinString = "min";
-        mMaxString = "max";
+        mMinString = "fmin";
+        mMaxString = "fmax";
         mRemString = "fmod";
 
         mHasPowerOperator = false;
@@ -415,14 +415,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                              "    return (x != 0.0) ^ (y != 0.0);\n"
                              "}\n";
         mNotFunctionString = "";
-        mMinFunctionString = "double min(double x, double y)\n"
-                             "{\n"
-                             "    return (x < y)?x:y;\n"
-                             "}\n";
-        mMaxFunctionString = "double max(double x, double y)\n"
-                             "{\n"
-                             "    return (x > y)?x:y;\n"
-                             "}\n";
+        mMinFunctionString = "";
+        mMaxFunctionString = "";
 
         // Trigonometric functions.
 
