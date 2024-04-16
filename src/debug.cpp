@@ -628,24 +628,30 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
     }
 
     if (prevTrunk == nullptr) {
-        trunk.mStr = "──┤ ";
+        trunk.mStr = "──";
     } else if (isLeft) {
-        trunk.mStr = "╭── ";
+        trunk.mStr = "╭──";
         prevStr = TRUNK;
     } else {
-        trunk.mStr = "╰── ";
+        trunk.mStr = "╰──";
         prevTrunk->mStr = prevStr;
     }
 
-    res += doPrintAstAsTree(&trunk) + doPrintAstAsTree(ast) + "\n";
+    auto astRightChild = ast->rightChild();
+
+    res += doPrintAstAsTree(&trunk);
+
+    if (astLeftChild != nullptr) {
+        res += (astRightChild != nullptr) ? "┤" : "┘";
+    }
+
+    res += " " + doPrintAstAsTree(ast) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
     }
 
     trunk.mStr = TRUNK;
-
-    auto astRightChild = ast->rightChild();
 
     if (astRightChild != nullptr) {
         res += doPrintAstAsTree(astRightChild, &trunk, false);
@@ -945,7 +951,7 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
         auto interpreterStatementVariable = interpreterStatement->variable();
 
         if (interpreterStatementVariable != nullptr) {
-            res = owningComponent(interpreterStatementVariable)->name() + " | " + interpreterStatementVariable->name();
+            res = owningComponent(interpreterStatementVariable)->name() + " | " + interpreterStatementVariable->name() + std::string(interpreterStatement->rate() ? "'" : "");
         }
 
         break;
@@ -1025,24 +1031,30 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
     }
 
     if (prevTrunk == nullptr) {
-        trunk.mStr = "──┤ ";
+        trunk.mStr = "──";
     } else if (isLeft) {
-        trunk.mStr = "╭── ";
+        trunk.mStr = "╭──";
         prevStr = TRUNK;
     } else {
-        trunk.mStr = "╰── ";
+        trunk.mStr = "╰──";
         prevTrunk->mStr = prevStr;
     }
 
-    res += doPrintInterpreterStatementAsTree(&trunk) + doPrintInterpreterStatementAsTree(interpreterStatement) + "\n";
+    auto astRightChild = interpreterStatement->rightChild();
+
+    res += doPrintInterpreterStatementAsTree(&trunk);
+
+    if (astLeftChild != nullptr) {
+        res += (astRightChild != nullptr) ? "┤" : "┘";
+    }
+
+    res += " " + doPrintInterpreterStatementAsTree(interpreterStatement) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
     }
 
     trunk.mStr = TRUNK;
-
-    auto astRightChild = interpreterStatement->rightChild();
 
     if (astRightChild != nullptr) {
         res += doPrintInterpreterStatementAsTree(astRightChild, &trunk, false);
