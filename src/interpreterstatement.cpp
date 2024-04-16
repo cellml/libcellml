@@ -215,6 +215,36 @@ InterpreterStatementPtr InterpreterStatement::create(double value) noexcept
     return InterpreterStatementPtr {new InterpreterStatement {value}};
 }
 
+InterpreterStatementPtr InterpreterStatement::leftChild() const
+{
+    return mPimpl->mLeftChild;
+}
+
+InterpreterStatementPtr InterpreterStatement::rightChild() const
+{
+    return mPimpl->mRightChild;
+}
+
+InterpreterStatement::Type InterpreterStatement::type() const
+{
+    return mPimpl->mType;
+}
+
+VariablePtr InterpreterStatement::variable() const
+{
+    return mPimpl->mVariable->variable();
+}
+
+bool InterpreterStatement::state() const
+{
+    return mPimpl->mState;
+}
+
+double InterpreterStatement::value() const
+{
+    return mPimpl->mValue;
+}
+
 void InterpreterStatement::evaluate(double *states, double *rates, double *variables) const
 {
     mPimpl->evaluate(states, rates, variables);
