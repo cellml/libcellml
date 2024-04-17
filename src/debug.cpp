@@ -554,9 +554,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
     case AnalyserEquationAst::Type::CI: {
         auto astVariable = ast->variable();
 
-        if (astVariable != nullptr) {
-            res = owningComponent(astVariable)->name() + " | " + astVariable->name();
-        }
+        res = owningComponent(astVariable)->name() + " | " + astVariable->name();
 
         break;
     }
@@ -948,11 +946,7 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
         // Token elements.
 
     case InterpreterStatement::Type::CI: {
-        auto interpreterStatementVariable = interpreterStatement->variable();
-
-        if (interpreterStatementVariable != nullptr) {
-            res = owningComponent(interpreterStatementVariable)->name() + " | " + interpreterStatementVariable->name() + std::string(interpreterStatement->rate() ? "'" : "");
-        }
+        res = interpreterStatement->variableName();
 
         break;
     }

@@ -19,7 +19,9 @@ limitations under the License.
 #include <cassert>
 
 #include "libcellml/interpreter.h"
+#include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "interpreterstatement_p.h"
 
 #include "libcellml/undefines.h"
@@ -53,6 +55,23 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(size_t 
     : mType(Type::EXTERNAL)
     , mIndex(index)
 {
+}
+
+std::string InterpreterStatement::InterpreterStatementImpl::variableName() const
+{
+    std::string res;
+
+    if (mVariable->type() == AnalyserVariable::Type::STATE) {
+        res = mRate ? "rates" : "states";
+    } else {
+        res = "variables";
+    }
+
+    auto variable = mVariable->variable();
+
+    return res + "[" + std::to_string(mVariable->index()) + "] | "
+           + owningComponent(variable)->name() + " | "
+           + variable->name() + std::string(mRate ? "'" : "");
 }
 
 void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, double *rates, double *variables) const
@@ -249,14 +268,9 @@ InterpreterStatement::Type InterpreterStatement::type() const
     return mPimpl->mType;
 }
 
-VariablePtr InterpreterStatement::variable() const
+std::string InterpreterStatement::variableName() const
 {
-    return mPimpl->mVariable->variable();
-}
-
-bool InterpreterStatement::rate() const
-{
-    return mPimpl->mRate;
+    return mPimpl->variableName();
 }
 
 double InterpreterStatement::value() const
