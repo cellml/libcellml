@@ -326,7 +326,7 @@ std::string generateDoubleCode(const std::string &value)
 }
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateVariableNameCode(const VariablePtr &variable,
-                                                                                     bool state) const
+                                                                                     bool rate) const
 {
     // Generate some code for a variable name, but only if we have a model. If we don't have a model, it means that we
     // are using the generator from the analyser, in which case we just want to return the original name of the
@@ -345,9 +345,9 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateVariableName
     std::string arrayName;
 
     if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
-        arrayName = state ?
-                        mProfile->statesArrayString() :
-                        mProfile->ratesArrayString();
+        arrayName = rate ?
+                        mProfile->ratesArrayString() :
+                        mProfile->statesArrayString();
     } else {
         arrayName = mProfile->variablesArrayString();
     }
@@ -1178,10 +1178,10 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
         code = leftCode;
     } break;
     case AnalyserEquationAst::Type::CI: {
-        bool state = ast->parent()->type() != AnalyserEquationAst::Type::DIFF;
+        bool rate = ast->parent()->type() == AnalyserEquationAst::Type::DIFF;
 
-        statement = InterpreterStatement::create(analyserVariable(ast->variable()));
-        code = generateVariableNameCode(ast->variable(), state);
+        statement = InterpreterStatement::create(analyserVariable(ast->variable()), rate);
+        code = generateVariableNameCode(ast->variable(), rate);
     } break;
     case AnalyserEquationAst::Type::CN: {
         double doubleValue;
@@ -1266,12 +1266,14 @@ bool GeneratorInterpreter::GeneratorInterpreterImpl::isSomeConstant(const Analys
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable)
 {
+    bool rate = variable->type() == AnalyserVariable::Type::STATE;
+
     mStatements.push_back(InterpreterStatement::create(InterpreterStatement::Type::EQUALITY,
-                                                       InterpreterStatement::create(variable, false),
+                                                       InterpreterStatement::create(variable, rate),
                                                        InterpreterStatement::create(0.0)));
 
     return mProfile->indentString()
-           + generateVariableNameCode(variable->variable(), false)
+           + generateVariableNameCode(variable->variable(), rate)
            + mProfile->equalityString()
            + "0.0"
            + mProfile->commandSeparatorString() + "\n";

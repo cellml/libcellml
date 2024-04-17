@@ -186,7 +186,7 @@ public:
      *
      * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterStatementPtr create(const AnalyserVariablePtr &variable, bool state = true) noexcept;
+    static InterpreterStatementPtr create(const AnalyserVariablePtr &variable, bool rate = false) noexcept;
 
     /**
      * @brief Create an @ref InterpreterStatement object.
@@ -257,13 +257,15 @@ public:
     VariablePtr variable() const;
 
     /**
-     * @brief Get the state associated with the statement.
+     * @brief Get whether the variable associated with the statement is a rate.
      *
-     * Return the state associated with the statement.
+     * Return whether the variable associated with the statement is a rate.
      *
-     * @return The state associated with the statement.
+     * @sa variable()
+     *
+     * @return Whether the variable associated with the statement is a rate.
      */
-    bool state() const;
+    bool rate() const;
 
     /**
      * @brief Get the value associated with the statement.
@@ -298,7 +300,7 @@ private:
     InterpreterStatement(Type type,
                          const InterpreterStatementPtr &leftChild,
                          const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
-    InterpreterStatement(const AnalyserVariablePtr &variable, bool state); /**< Constructor, @private. */
+    InterpreterStatement(const AnalyserVariablePtr &variable, bool rate); /**< Constructor, @private. */
     InterpreterStatement(double value); /**< Constructor, @private. */
     InterpreterStatement(size_t index); /**< Constructor, @private. */
 

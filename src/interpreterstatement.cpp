@@ -36,10 +36,10 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(Type ty
 }
 
 InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(const AnalyserVariablePtr &variable,
-                                                                         bool state)
+                                                                         bool rate)
     : mType(Type::CI)
     , mVariable(variable)
-    , mState(state)
+    , mRate(rate)
 {
 }
 
@@ -62,10 +62,10 @@ void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, do
     assert(mType == Type::EQUALITY);
 
     if (mLeftChild->mPimpl->mVariable->type() == AnalyserVariable::Type::STATE) {
-        if (mLeftChild->mPimpl->mState) {
-            states[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        } else {
+        if (mLeftChild->mPimpl->mRate) {
             rates[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        } else {
+            states[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
         }
     } else {
         variables[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
@@ -150,9 +150,9 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *
 
     case Type::CI:
         if (mVariable->type() == AnalyserVariable::Type::STATE) {
-            return mState ?
-                       states[mVariable->index()] :
-                       rates[mVariable->index()];
+            return mRate ?
+                       rates[mVariable->index()] :
+                       states[mVariable->index()];
         } else {
             return variables[mVariable->index()];
         }
@@ -198,8 +198,8 @@ InterpreterStatement::InterpreterStatement(Type type,
 {
 }
 
-InterpreterStatement::InterpreterStatement(const AnalyserVariablePtr &variable, bool state)
-    : mPimpl(new InterpreterStatementImpl(variable, state))
+InterpreterStatement::InterpreterStatement(const AnalyserVariablePtr &variable, bool rate)
+    : mPimpl(new InterpreterStatementImpl(variable, rate))
 {
 }
 
@@ -225,9 +225,9 @@ InterpreterStatementPtr InterpreterStatement::create(Type type,
     return InterpreterStatementPtr {new InterpreterStatement {type, leftChild, rightChild}};
 }
 
-InterpreterStatementPtr InterpreterStatement::create(const AnalyserVariablePtr &variable, bool state) noexcept
+InterpreterStatementPtr InterpreterStatement::create(const AnalyserVariablePtr &variable, bool rate) noexcept
 {
-    return InterpreterStatementPtr {new InterpreterStatement {variable, state}};
+    return InterpreterStatementPtr {new InterpreterStatement {variable, rate}};
 }
 
 InterpreterStatementPtr InterpreterStatement::create(double value) noexcept
@@ -260,9 +260,9 @@ VariablePtr InterpreterStatement::variable() const
     return mPimpl->mVariable->variable();
 }
 
-bool InterpreterStatement::state() const
+bool InterpreterStatement::rate() const
 {
-    return mPimpl->mState;
+    return mPimpl->mRate;
 }
 
 double InterpreterStatement::value() const

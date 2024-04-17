@@ -79,7 +79,7 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
     std::string generateVariableNameCode(const VariablePtr &variable,
-                                         bool state = true) const;
+                                         bool rate = false) const;
 
     std::string generateOperatorCode(const std::string &op,
                                      const AnalyserEquationAstPtr &ast,
