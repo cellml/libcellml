@@ -1142,30 +1142,32 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
 
         if (astRightChild != nullptr) {
             if (astRightChild->type() == AnalyserEquationAst::Type::PIECE) {
-                //---GRY---
-                // statement = InterpreterStatement::create(InterpreterStatement::Type::PIECE,
-                //                                          leftStatement,
-                //                                          InterpreterStatement::create(InterpreterStatement::Type::NAN));
+                statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                         leftStatement,
+                                                         InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                                                      rightStatement,
+                                                                                      InterpreterStatement::create(InterpreterStatement::Type::OTHERWISE,
+                                                                                                                   InterpreterStatement::create(InterpreterStatement::Type::NAN))));
                 code = leftCode + generatePiecewiseElseCode(rightCode + generatePiecewiseElseCode(mProfile->nanString()));
-                // printf(">>> PIECEWISE [1]: %s\n", code.c_str());
             } else {
-                //---GRY---
-                // statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
-                //                                          leftStatement,
-                //                                          rightStatement);
+                statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                         leftStatement,
+                                                         rightStatement);
                 code = leftCode + generatePiecewiseElseCode(rightCode);
-                // printf(">>> PIECEWISE [2]: %s\n", code.c_str());
             }
         } else {
+            statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                     leftStatement,
+                                                     InterpreterStatement::create(InterpreterStatement::Type::OTHERWISE,
+                                                                                  InterpreterStatement::create(InterpreterStatement::Type::NAN)));
             code = leftCode + generatePiecewiseElseCode(mProfile->nanString());
-            // printf(">>> PIECEWISE [3]: %s\n", code.c_str());
         }
     } break;
     case AnalyserEquationAst::Type::PIECE: {
         auto [leftCode, leftStatement] = generateCode(ast->leftChild());
         auto [rightCode, rightStatement] = generateCode(ast->rightChild());
 
-        statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+        statement = InterpreterStatement::create(InterpreterStatement::Type::PIECE,
                                                  leftStatement,
                                                  rightStatement);
         code = generatePiecewiseIfCode(rightCode, leftCode);
