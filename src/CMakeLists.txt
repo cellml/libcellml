@@ -202,13 +202,7 @@ else()
   target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
 endif()
 
-if(HAVE_LIBXML2_CONFIG)
-  target_link_libraries(cellml PUBLIC ${LIBXML2_TARGET_NAME})
-else()
-  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
-  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES} ${ZLIB_LIBRARIES})
-  target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
-endif()
+link_libxml2(cellml)
 
 # Use target compile features to propogate features to consuming projects.
 target_compile_features(cellml PUBLIC cxx_std_17)
@@ -231,6 +225,8 @@ set(DEBUG_HEADER_FILES
 )
 
 add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
+
+link_libxml2(cellml_debug_utilities)
 
 target_compile_features(cellml_debug_utilities PUBLIC cxx_std_17)
 
