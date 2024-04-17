@@ -42,8 +42,6 @@ struct InterpreterStatement::InterpreterStatementImpl
     explicit InterpreterStatementImpl(double value);
     explicit InterpreterStatementImpl(size_t index);
 
-    std::string variableName() const;
-
     void evaluate(double *states, double *rates, double *variables) const;
     double evaluateToDouble(double *states, double *rates, double *variables) const;
 };

@@ -248,13 +248,22 @@ public:
     Type type() const;
 
     /**
-     * @brief Get the name of the variable associated with the statement.
+     * @brief Get the variable associated with the statement.
      *
-     * Return the name of the variable associated with the statement.
+     * Return the variable associated with the statement.
      *
-     * @return The name of the variable associated with the statement.
+     * @return The variable associated with the statement.
      */
-    std::string variableName() const; /**< Get the name of the variable associated with the statement. */
+    AnalyserVariablePtr variable() const;
+
+    /**
+     * @brief Get whether the variable associated with the statement is a rate.
+     *
+     * Return whether the variable associated with the statement is a rate.
+     *
+     * @return @c true if the variable associated with the statement is a rate, @c false otherwise.
+     */
+    bool rate() const;
 
     /**
      * @brief Get the value associated with the statement.

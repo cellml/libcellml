@@ -62,23 +62,6 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(size_t 
 {
 }
 
-std::string InterpreterStatement::InterpreterStatementImpl::variableName() const
-{
-    std::string res;
-
-    if (mVariable->type() == AnalyserVariable::Type::STATE) {
-        res = mRate ? "rates" : "states";
-    } else {
-        res = "variables";
-    }
-
-    auto variable = mVariable->variable();
-
-    return res + "[" + std::to_string(mVariable->index()) + "] | "
-           + owningComponent(variable)->name() + " | "
-           + variable->name() + std::string(mRate ? "'" : "");
-}
-
 void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, double *rates, double *variables) const
 {
     //---GRY--- ONLY HANDLE AN EQUALITY STATEMENT FOR NOW.
@@ -273,9 +256,14 @@ InterpreterStatement::Type InterpreterStatement::type() const
     return mPimpl->mType;
 }
 
-std::string InterpreterStatement::variableName() const
+AnalyserVariablePtr InterpreterStatement::variable() const
 {
-    return mPimpl->variableName();
+    return mPimpl->mVariable;
+}
+
+bool InterpreterStatement::rate() const
+{
+    return mPimpl->mRate;
 }
 
 double InterpreterStatement::value() const

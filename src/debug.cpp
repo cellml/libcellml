@@ -312,6 +312,25 @@ std::string doPrintAstAsTree(AnalyserEquationAstTrunk *trunk)
     return res + trunk->mStr;
 }
 
+std::string ciValue(const AnalyserVariablePtr &analyserVariable, bool rate)
+{
+    std::string res;
+
+    if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
+        res = rate ? "rates" : "states";
+    } else {
+        res = "variables";
+    }
+
+    auto variable = analyserVariable->variable();
+
+    res += "[" + std::to_string(analyserVariable->index()) + "] | "
+           + owningComponent(variable)->name() + " | "
+           + variable->name() + std::string(rate ? "'" : "");
+
+    return res;
+}
+
 std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast)
 {
     std::string res;
@@ -553,24 +572,11 @@ std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquati
 
         // Token elements.
 
-    case AnalyserEquationAst::Type::CI: {
-        auto analyserVariable = libcellml::analyserVariable(model, ast->variable());
-        auto rate = ast->parent()->type() == AnalyserEquationAst::Type::DIFF;
-
-        if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
-            res = rate ? "rates" : "states";
-        } else {
-            res = "variables";
-        }
-
-        auto variable = analyserVariable->variable();
-
-        res += "[" + std::to_string(analyserVariable->index()) + "] | "
-               + owningComponent(variable)->name() + " | "
-               + variable->name() + std::string(rate ? "'" : "");
+    case AnalyserEquationAst::Type::CI:
+        res = ciValue(libcellml::analyserVariable(model, ast->variable()),
+                      ast->parent()->type() == AnalyserEquationAst::Type::DIFF);
 
         break;
-    }
     case AnalyserEquationAst::Type::CN:
         res = ast->value();
 
@@ -958,11 +964,10 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
 
         // Token elements.
 
-    case InterpreterStatement::Type::CI: {
-        res = interpreterStatement->variableName();
+    case InterpreterStatement::Type::CI:
+        res = ciValue(interpreterStatement->variable(), interpreterStatement->rate());
 
         break;
-    }
     case InterpreterStatement::Type::CN:
         res = convertToString(interpreterStatement->value());
 
