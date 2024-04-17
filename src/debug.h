@@ -96,7 +96,7 @@ private:
 
 void printAnalyserModelEquations(const AnalyserModelPtr &model);
 void printAnalyserModelVariables(const AnalyserModelPtr &model);
-void printAstAsTree(const AnalyserEquationAstPtr &ast);
+void printAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
 void printAstAsCode(const AnalyserEquationAstPtr &ast);
 void printInterpreterStatementAsTree(const InterpreterStatementPtr &interpreterStatement);
 void printComponentMap(const ComponentMap &map);

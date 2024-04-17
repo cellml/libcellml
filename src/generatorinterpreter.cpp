@@ -135,26 +135,26 @@ bool modelHasNlas(const AnalyserModelPtr &model)
     }
 }
 
-AnalyserVariablePtr GeneratorInterpreter::GeneratorInterpreterImpl::analyserVariable(const VariablePtr &variable) const
+AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
 {
     // Make sure that we have a model.
 
-    if (mModel == nullptr) {
+    if (model == nullptr) {
         return nullptr;
     }
 
     // Find and return the analyser variable associated with the given variable.
 
     AnalyserVariablePtr res;
-    auto modelVoi = mModel->voi();
-    VariablePtr modelVoiVariable = (modelVoi != nullptr) ? modelVoi->variable() : nullptr;
+    auto modelVoi = model->voi();
+    auto modelVoiVariable = (modelVoi != nullptr) ? modelVoi->variable() : nullptr;
 
     if ((modelVoiVariable != nullptr)
-        && mModel->areEquivalentVariables(variable, modelVoiVariable)) {
+        && model->areEquivalentVariables(variable, modelVoiVariable)) {
         res = modelVoi;
     } else {
-        for (const auto &modelState : mModel->states()) {
-            if (mModel->areEquivalentVariables(variable, modelState->variable())) {
+        for (const auto &modelState : model->states()) {
+            if (model->areEquivalentVariables(variable, modelState->variable())) {
                 res = modelState;
 
                 break;
@@ -164,8 +164,8 @@ AnalyserVariablePtr GeneratorInterpreter::GeneratorInterpreterImpl::analyserVari
         if (res == nullptr) {
             // Normally, we would have:
             //
-            //     for (const auto &modelVariable : mModel->variables()) {
-            //         if (mModel->areEquivalentVariables(variable, modelVariable->variable())) {
+            //     for (const auto &modelVariable : model->variables()) {
+            //         if (model->areEquivalentVariables(variable, modelVariable->variable())) {
             //             res = modelVariable;
             //
             //             break;
@@ -176,11 +176,11 @@ AnalyserVariablePtr GeneratorInterpreter::GeneratorInterpreterImpl::analyserVari
             // false branch of our for loop is never reached. The below code is
             // a bit more verbose but at least it makes llvm-cov happy.
 
-            auto modelVariables = mModel->variables();
+            auto modelVariables = model->variables();
             auto modelVariable = modelVariables.begin();
 
             do {
-                if (mModel->areEquivalentVariables(variable, (*modelVariable)->variable())) {
+                if (model->areEquivalentVariables(variable, (*modelVariable)->variable())) {
                     res = *modelVariable;
                 } else {
                     ++modelVariable;
@@ -196,7 +196,7 @@ double GeneratorInterpreter::GeneratorInterpreterImpl::scalingFactor(const Varia
 {
     // Return the scaling factor for the given variable.
 
-    return Units::scalingFactor(variable->units(), analyserVariable(variable)->variable()->units());
+    return Units::scalingFactor(variable->units(), analyserVariable(mModel, variable)->variable()->units());
 }
 
 bool GeneratorInterpreter::GeneratorInterpreterImpl::isNegativeNumber(const AnalyserEquationAstPtr &ast) const
@@ -336,7 +336,7 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateVariableName
         return variable->name();
     }
 
-    auto analyserVariable = GeneratorInterpreter::GeneratorInterpreterImpl::analyserVariable(variable);
+    auto analyserVariable = libcellml::analyserVariable(mModel, variable);
 
     if (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
         return mProfile->voiString();
@@ -1182,7 +1182,7 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
     case AnalyserEquationAst::Type::CI: {
         bool rate = ast->parent()->type() == AnalyserEquationAst::Type::DIFF;
 
-        statement = InterpreterStatement::create(analyserVariable(ast->variable()), rate);
+        statement = InterpreterStatement::create(analyserVariable(mModel, ast->variable()), rate);
         code = generateVariableNameCode(ast->variable(), rate);
     } break;
     case AnalyserEquationAst::Type::CN: {
@@ -1298,7 +1298,7 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateInitialisati
         initialValueCode = generateDoubleCode(initialisingVariable->initialValue());
     } else {
         auto initValueVariable = owningComponent(initialisingVariable)->variable(initialisingVariable->initialValue());
-        auto analyserInitialValueVariable = analyserVariable(initValueVariable);
+        auto analyserInitialValueVariable = analyserVariable(mModel, initValueVariable);
 
         initialValueStatement = InterpreterStatement::create(analyserInitialValueVariable);
         initialValueCode = mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();

@@ -30,6 +30,7 @@ limitations under the License.
 #include "libcellml/undefines.h"
 
 #include "commonutils.h"
+#include "generatorinterpreter_p.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -310,7 +311,7 @@ std::string doPrintAstAsTree(AnalyserEquationAstTrunk *trunk)
     return res + trunk->mStr;
 }
 
-std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
+std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast)
 {
     std::string res;
 
@@ -552,9 +553,20 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
         // Token elements.
 
     case AnalyserEquationAst::Type::CI: {
-        auto astVariable = ast->variable();
+        auto analyserVariable = libcellml::analyserVariable(model, ast->variable());
+        auto rate = ast->parent()->type() == AnalyserEquationAst::Type::DIFF;
 
-        res = owningComponent(astVariable)->name() + " | " + astVariable->name();
+        if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
+            res = rate ? "rates" : "states";
+        } else {
+            res = "variables";
+        }
+
+        auto variable = analyserVariable->variable();
+
+        res += "[" + std::to_string(analyserVariable->index()) + "] | "
+            + owningComponent(variable)->name() + " | "
+            + variable->name() + std::string(rate ? "'" : "");
 
         break;
     }
@@ -609,7 +621,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast)
     return res;
 }
 
-std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
+std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast,
                              AnalyserEquationAstTrunk *prevTrunk, bool isLeft)
 {
     if (ast == nullptr) {
@@ -622,7 +634,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
     auto astLeftChild = ast->leftChild();
 
     if (astLeftChild != nullptr) {
-        res += doPrintAstAsTree(astLeftChild, &trunk, true);
+        res += doPrintAstAsTree(model, astLeftChild, &trunk, true);
     }
 
     if (prevTrunk == nullptr) {
@@ -643,7 +655,7 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
         res += (astRightChild != nullptr) ? "┤" : "┘";
     }
 
-    res += " " + doPrintAstAsTree(ast) + "\n";
+    res += " " + doPrintAstAsTree(model, ast) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
@@ -652,15 +664,15 @@ std::string doPrintAstAsTree(const AnalyserEquationAstPtr &ast,
     trunk.mStr = TRUNK;
 
     if (astRightChild != nullptr) {
-        res += doPrintAstAsTree(astRightChild, &trunk, false);
+        res += doPrintAstAsTree(model, astRightChild, &trunk, false);
     }
 
     return res;
 }
 
-void printAstAsTree(const AnalyserEquationAstPtr &ast)
+void printAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast)
 {
-    Debug() << doPrintAstAsTree(ast, nullptr, false);
+    Debug() << doPrintAstAsTree(model, ast, nullptr, false);
 }
 
 void printAstAsCode(const AnalyserEquationAstPtr &ast)

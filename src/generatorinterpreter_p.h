@@ -25,6 +25,8 @@ namespace libcellml {
 bool modelHasOdes(const AnalyserModelPtr &model);
 bool modelHasNlas(const AnalyserModelPtr &model);
 
+AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &model, const VariablePtr &variable);
+
 std::string newLineIfNotEmpty(const std::string &code);
 
 std::string generateDoubleCode(const std::string &value);
@@ -56,8 +58,6 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     explicit GeneratorInterpreterImpl(const AnalyserEquationAstPtr &ast, const GeneratorProfilePtr &profile);
 
     void initialise(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile, const std::string &code);
-
-    AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
     double scalingFactor(const VariablePtr &variable) const;
 
