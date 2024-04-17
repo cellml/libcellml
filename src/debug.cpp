@@ -27,11 +27,11 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 
-#include "libcellml/undefines.h"
-
 #include "commonutils.h"
 #include "generatorinterpreter_p.h"
 #include "utilities.h"
+
+#include "libcellml/undefines.h"
 
 namespace libcellml {
 
