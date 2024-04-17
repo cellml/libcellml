@@ -81,7 +81,8 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
         Debug() << "\n---------------------------------------[API equation #" << ++eqnNb << "]";
 
         if (eqn->ast() != nullptr) {
-            Debug() << "\n" << astAsCode(eqn->ast());
+            Debug() << "\n"
+                    << astAsCode(eqn->ast());
         } else {
             Debug() << "\nNo equation";
         }
@@ -168,7 +169,6 @@ void printHistory(const History &history)
     for (const auto &h : history) {
         printHistoryEpoch(h);
     }
-
 }
 
 void printHistoryEpoch(const HistoryEpochPtr &historyEpoch)
@@ -208,7 +208,8 @@ void printEquivalenceMap(const EquivalenceMap &map)
 void printEquivalenceMapWithModelInfo(const EquivalenceMap &map, const ModelPtr &model)
 {
     for (const auto &iter : map) {
-        auto key = iter.first;    Debug(false) << "key: ";
+        auto key = iter.first;
+        Debug(false) << "key: ";
         printStackWithModelInfo(key, model);
         auto vector = iter.second;
         for (const auto &vectorIt : vector) {
@@ -565,8 +566,8 @@ std::string doPrintAstAsTree(const AnalyserModelPtr &model, const AnalyserEquati
         auto variable = analyserVariable->variable();
 
         res += "[" + std::to_string(analyserVariable->index()) + "] | "
-            + owningComponent(variable)->name() + " | "
-            + variable->name() + std::string(rate ? "'" : "");
+               + owningComponent(variable)->name() + " | "
+               + variable->name() + std::string(rate ? "'" : "");
 
         break;
     }
@@ -690,7 +691,7 @@ struct InterpreterStatementTrunk
 };
 
 InterpreterStatementTrunk::InterpreterStatementTrunk(InterpreterStatementTrunk *prev,
-                                                   const std::string &str)
+                                                     const std::string &str)
     : mPrev(prev)
     , mStr(str)
 {
@@ -963,7 +964,7 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
         break;
     }
     case InterpreterStatement::Type::CN:
-        res =  convertToString(interpreterStatement->value());
+        res = convertToString(interpreterStatement->value());
 
         break;
 
