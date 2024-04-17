@@ -20,7 +20,10 @@ limitations under the License.
 #include <sstream>
 
 #include "internaltypes.h"
+
+#define DEBUG
 #include "interpreterstatement.h"
+#undef DEBUG
 
 namespace libcellml {
 

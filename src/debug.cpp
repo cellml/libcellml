@@ -33,6 +33,8 @@ limitations under the License.
 
 #include "libcellml/undefines.h"
 
+#include "interpreterstatement_debug.cpp"
+
 namespace libcellml {
 
 std::string astAsCode(const AnalyserEquationAstPtr &ast)

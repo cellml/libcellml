@@ -845,7 +845,7 @@ TEST(Coverage, interpreter)
     // Get an interpreter for the HH52 model.
 
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);

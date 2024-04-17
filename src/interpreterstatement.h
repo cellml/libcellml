@@ -220,6 +220,7 @@ public:
      */
     static InterpreterStatementPtr create(size_t index) noexcept;
 
+#ifdef DEBUG
     /**
      * @brief Get the left child of the statement.
      *
@@ -282,6 +283,7 @@ public:
      * @return The index associated with the statement.
      */
     size_t index() const;
+#endif
 
     /**
      * @brief Evaluate the statement.

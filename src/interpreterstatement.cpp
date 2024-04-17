@@ -255,41 +255,6 @@ InterpreterStatementPtr InterpreterStatement::create(size_t index) noexcept
     return InterpreterStatementPtr {new InterpreterStatement {index}};
 }
 
-InterpreterStatementPtr InterpreterStatement::leftChild() const
-{
-    return mPimpl->mLeftChild;
-}
-
-InterpreterStatementPtr InterpreterStatement::rightChild() const
-{
-    return mPimpl->mRightChild;
-}
-
-InterpreterStatement::Type InterpreterStatement::type() const
-{
-    return mPimpl->mType;
-}
-
-AnalyserVariablePtr InterpreterStatement::variable() const
-{
-    return mPimpl->mVariable;
-}
-
-bool InterpreterStatement::rate() const
-{
-    return mPimpl->mRate;
-}
-
-double InterpreterStatement::value() const
-{
-    return mPimpl->mValue;
-}
-
-size_t InterpreterStatement::index() const
-{
-    return mPimpl->mIndex;
-}
-
 void InterpreterStatement::evaluate(double *states, double *rates, double *variables) const
 {
     mPimpl->evaluate(states, rates, variables);
