@@ -84,32 +84,29 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *
     switch (mType) {
         // Relational and logical operators.
 
-        /*---GRY---
-        case Type::EQ:
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) == mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        case Type::NEQ:
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) != mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        case Type::LT:
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) < mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        case Type::LEQ:
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) <= mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        case Type::GT:
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) > mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        case Type::GEQ:
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) >= mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        case Type::AND:
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) && mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        case Type::OR:
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) || mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        case Type::XOR:
-            return (mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) != 0.0) ^ (mRightChild->mPimpl->evaluateToDouble(states, rates, variables) != 0.0);
-        case Type::NOT:
-            return !mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
-        */
+    case Type::EQ:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) == mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::NEQ:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) != mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::LT:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) < mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::LEQ:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) <= mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::GT:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) > mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::GEQ:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) >= mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::AND:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) && mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::OR:
+        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) || mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::XOR:
+        return (mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) != 0.0) ^ (mRightChild->mPimpl->evaluateToDouble(states, rates, variables) != 0.0);
+    case Type::NOT:
+        return !mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
 
         // Arithmetic operators.
 
-    /*---GRY---
     case Type::PLUS:
         return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) + mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
     case Type::MINUS:
@@ -118,71 +115,61 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *
         }
 
         return -mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
-    */
     case Type::TIMES:
         return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) * mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
     case Type::DIVIDE:
         return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) / mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
-        /*---GRY---
-        case Type::POWER:
-            return pow(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::SQUARE_ROOT:
-            return sqrt(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::SQUARE: {
-            auto x = mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
+    case Type::POWER:
+        return pow(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::SQUARE_ROOT:
+        return sqrt(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::SQUARE: {
+        auto x = mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
 
-            return x * x;
-        }
-        case Type::ABS:
-            return fabs(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::EXP:
-            return exp(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::LN:
-            return log(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::LOG:
-            return log10(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::CEILING:
-            return ceil(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::FLOOR:
-            return floor(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::MIN:
-            return fmin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::MAX:
-            return fmax(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
-        case Type::REM:
-            return fmod(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
-        */
+        return x * x;
+    }
+    case Type::ABS:
+        return fabs(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::EXP:
+        return exp(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::LN:
+        return log(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::LOG:
+        return log10(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::CEILING:
+        return ceil(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::FLOOR:
+        return floor(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::MIN:
+        return fmin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::MAX:
+        return fmax(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::REM:
+        return fmod(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
 
         // Token elements.
 
     case Type::CI:
-        /*---GRY---
         if (mVariable->type() == AnalyserVariable::Type::STATE) {
             return mRate ?
                        rates[mVariable->index()] :
                        states[mVariable->index()];
         } else {
-        */
-        return variables[mVariable->index()];
-        /*---GRY---
+            return variables[mVariable->index()];
         }
-        */
     case Type::CN:
         return mValue;
 
         // Constants.
 
-    /*---GRY---
     case Type::TRUE:
         return 1.0;
     case Type::FALSE:
         return 0.0;
     case Type::E:
         return M_E;
-    */
     case Type::PI:
         return M_PI;
-    /*---GRY---
     case Type::INF: {
         static const auto INF = std::numeric_limits<double>::infinity();
 
@@ -193,7 +180,6 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *
 
         return NAN;
     }
-    */
     default: { // Type::EXTERNAL:
         //---GRY--- JUST RETURN NAN FOR NOW.
 
