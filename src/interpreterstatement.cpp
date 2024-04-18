@@ -147,6 +147,57 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *
     case Type::REM:
         return fmod(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
 
+        // Trigonometric operators.
+
+    case Type::SIN:
+        return sin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::COS:
+        return cos(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::TAN:
+        return tan(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::SEC:
+        return 1.0 / cos(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::CSC:
+        return 1.0 / sin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::COT:
+        return 1.0 / tan(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::SINH:
+        return sinh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::COSH:
+        return cosh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::TANH:
+        return tanh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::SECH:
+        return 1.0 / cosh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::CSCH:
+        return 1.0 / sinh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::COTH:
+        return 1.0 / tanh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ASIN:
+        return asin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ACOS:
+        return acos(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ATAN:
+        return atan(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ASEC:
+        return acos(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ACSC:
+        return asin(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ACOT:
+        return atan(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ASINH:
+        return asinh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ACOSH:
+        return acosh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ATANH:
+        return atanh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ASECH:
+        return acosh(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ACSCH:
+        return asinh(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+    case Type::ACOTH:
+        return atanh(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+
         // Token elements.
 
     case Type::CI:
