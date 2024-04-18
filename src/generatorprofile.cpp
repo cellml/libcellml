@@ -458,15 +458,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                               "}\n";
         mAsechFunctionString = "double asech(double x)\n"
                                "{\n"
-                              "    return acosh(1.0/x);\n"
+                               "    return acosh(1.0/x);\n"
                                "}\n";
         mAcschFunctionString = "double acsch(double x)\n"
                                "{\n"
-                              "    return asinh(1.0/x);\n"
+                               "    return asinh(1.0/x);\n"
                                "}\n";
         mAcothFunctionString = "double acoth(double x)\n"
                                "{\n"
-                              "    return atanh(1.0/x);\n"
+                               "    return atanh(1.0/x);\n"
                                "}\n";
 
         // Miscellaneous.
@@ -887,13 +887,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                               "    return atan(1.0/x)\n";
         mAsechFunctionString = "\n"
                                "def asech(x):\n"
-                              "    return acosh(1.0/x)\n";
+                               "    return acosh(1.0/x)\n";
         mAcschFunctionString = "\n"
                                "def acsch(x):\n"
-                              "    return asinh(1.0/x)\n";
+                               "    return asinh(1.0/x)\n";
         mAcothFunctionString = "\n"
                                "def acoth(x):\n"
-                              "    return atanh(1.0/x)\n";
+                               "    return atanh(1.0/x)\n";
 
         // Miscellaneous.
 

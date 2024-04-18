@@ -947,30 +947,32 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         ast->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
+        if (childCount >= 1) {
+            analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
 
-        if (childCount >= 2) {
-            AnalyserEquationAstPtr astRight;
-            AnalyserEquationAstPtr tempAst;
+            if (childCount >= 2) {
+                AnalyserEquationAstPtr astRight;
+                AnalyserEquationAstPtr tempAst;
 
-            analyseNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
+                analyseNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
-            for (auto i = childCount - 2; i > 0; --i) {
-                tempAst = AnalyserEquationAst::create();
+                for (auto i = childCount - 2; i > 0; --i) {
+                    tempAst = AnalyserEquationAst::create();
 
-                tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
+                    tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
+                    analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
 
-                astRight->mPimpl->mParent = tempAst;
+                    astRight->mPimpl->mParent = tempAst;
 
-                tempAst->mPimpl->mOwnedRightChild = astRight;
-                astRight = tempAst;
+                    tempAst->mPimpl->mOwnedRightChild = astRight;
+                    astRight = tempAst;
+                }
+
+                astRight->mPimpl->mParent = ast;
+
+                ast->mPimpl->mOwnedRightChild = astRight;
             }
-
-            astRight->mPimpl->mParent = ast;
-
-            ast->mPimpl->mOwnedRightChild = astRight;
         }
     } else if (node->isMathmlElement("piece")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::PIECE, astParent);

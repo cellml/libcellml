@@ -185,7 +185,9 @@
         <variable name="eqnArcsech" units="dimensionless"/>
         <variable name="eqnArccsch" units="dimensionless"/>
         <variable name="eqnArccoth" units="dimensionless"/>
+        <variable name="eqnPiecewise" units="dimensionless"/>
         <variable name="eqnPiecewisePiece" units="dimensionless"/>
+        <variable name="eqnPiecewiseOtherwise" units="dimensionless"/>
         <variable name="eqnPiecewisePieceOtherwise" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePiece" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePieceOtherwise" units="dimensionless"/>
@@ -2699,6 +2701,11 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
+                <ci>eqnPiecewise</ci>
+                <piecewise/>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnPiecewisePiece</ci>
                 <piecewise>
                     <piece>
@@ -2709,6 +2716,15 @@
                             <ci>n</ci>
                         </apply>
                     </piece>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPiecewiseOtherwise</ci>
+                <piecewise>
+                    <otherwise>
+                        <ci>m</ci>
+                    </otherwise>
                 </piecewise>
             </apply>
             <apply>

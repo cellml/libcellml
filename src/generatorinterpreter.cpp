@@ -1136,8 +1136,9 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
 
         break;
     case AnalyserEquationAst::Type::PIECEWISE: {
+        auto astLeftChild = ast->leftChild();
         auto astRightChild = ast->rightChild();
-        auto [leftCode, leftStatement] = generateCode(ast->leftChild());
+        auto [leftCode, leftStatement] = generateCode(astLeftChild);
         auto [rightCode, rightStatement] = generateCode(astRightChild);
 
         if (astRightChild != nullptr) {
@@ -1155,12 +1156,20 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
                                                          rightStatement);
                 code = leftCode + generatePiecewiseElseCode(rightCode);
             }
+        } else if (astLeftChild != nullptr) {
+            if (astLeftChild->type() == AnalyserEquationAst::Type::PIECE) {
+                statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                         leftStatement,
+                                                         InterpreterStatement::create(InterpreterStatement::Type::OTHERWISE,
+                                                                                      InterpreterStatement::create(InterpreterStatement::Type::NAN)));
+                code = leftCode + generatePiecewiseElseCode(mProfile->nanString());
+            } else {
+                statement = InterpreterStatement::create(InterpreterStatement::Type::NAN);
+                code = mProfile->nanString();
+            }
         } else {
-            statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
-                                                     leftStatement,
-                                                     InterpreterStatement::create(InterpreterStatement::Type::OTHERWISE,
-                                                                                  InterpreterStatement::create(InterpreterStatement::Type::NAN)));
-            code = leftCode + generatePiecewiseElseCode(mProfile->nanString());
+            statement = InterpreterStatement::create(InterpreterStatement::Type::NAN);
+            code = mProfile->nanString();
         }
     } break;
     case AnalyserEquationAst::Type::PIECE: {
