@@ -843,13 +843,6 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
 
         break;
 
-        // Calculus elements.
-
-    case InterpreterStatement::Type::DIFF:
-        res = "DIFF";
-
-        break;
-
         // Trigonometric operators.
 
     case InterpreterStatement::Type::SIN:

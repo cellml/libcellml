@@ -83,10 +83,6 @@ public:
         MAX, /**< The maximum function. */
         REM, /**< The remainder function. */
 
-        // Calculus elements.
-
-        DIFF, /**< The differentiation operator. */
-
         // Trigonometric operators.
 
         SIN, /**< The sine function. */
