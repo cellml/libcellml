@@ -198,6 +198,18 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *
     case Type::ACOTH:
         return atanh(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
 
+        // Piecewise statement.
+
+    case Type::PIECEWISE: {
+        assert(mLeftChild->mPimpl->mType == Type::PIECE);
+
+        if (mLeftChild->mPimpl->mRightChild->mPimpl->evaluateToDouble(states, rates, variables)) {
+            return mLeftChild->mPimpl->mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
+        }
+
+        return mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+    }
+
         // Token elements.
 
     case Type::CI:
