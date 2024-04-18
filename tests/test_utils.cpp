@@ -260,16 +260,31 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
     }
 }
 
+testing::AssertionResult areEqualValues(const char *evExpr, const char *vExpr, const char *ndxExpr,
+                                        const void *ev, const void *v, const void *ndx)
+{
+    auto expectedValues = *(static_cast<const std::vector<double> *>(ev));
+    auto values = *(static_cast<const std::vector<double> *>(v));
+    auto i = *(static_cast<const size_t *>(ndx));
+
+    if ((std::isnan(expectedValues[i]) && std::isnan(values[i]))
+        || areNearlyEqual(expectedValues[i], values[i])) {
+        return testing::AssertionSuccess();
+    }
+
+    return testing::AssertionFailure() << "Expected equality of these values:" << std::endl
+                                       << "  expectedValues[" << i << "]" << std::endl
+                                       << "    Which is: " << expectedValues[i] << std::endl
+                                       << "  values[" << i << "]" << std::endl
+                                       << "    Which is: " << values[i];
+}
+
 void expectEqualValues(const std::vector<double> &expectedValues, const std::vector<double> &values)
 {
     EXPECT_EQ(expectedValues.size(), values.size());
 
     for (size_t i = 0; i < values.size(); ++i) {
-        if (std::isnan(expectedValues.at(i))) {
-            EXPECT_TRUE(std::isnan(values.at(i)));
-        } else {
-            EXPECT_DOUBLE_EQ(expectedValues.at(i), values.at(i));
-        }
+        EXPECT_PRED_FORMAT3(areEqualValues, &expectedValues, &values, &i);
     }
 }
 

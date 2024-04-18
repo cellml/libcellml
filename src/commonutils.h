@@ -45,6 +45,23 @@ libcellml::ModelPtr TEST_EXPORT owningModel(const libcellml::ParentedEntityConst
  */
 libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::ParentedEntityConstPtr &entity);
 
+/**
+ * @brief Decide if two doubles are nearly equal.
+ *
+ * Test two doubles to determine if they are close enough
+ * to be considered equal.
+ *
+ * Uses a modified form of comparing floats:
+ *
+ *   https://bitbashing.io/comparing-floats.html
+ *
+ * @param a A @c double to test.
+ * @param b A @c double to test.
+ *
+ * @return @c true if the given doubles are considered close, @c false otherwise.
+ */
+bool areNearlyEqual(double a, double b);
+
 #ifndef TEST_UTILS
 } // namespace libcellml
 
