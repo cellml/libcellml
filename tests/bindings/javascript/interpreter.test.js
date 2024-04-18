@@ -67,6 +67,6 @@ describe("Interpreter tests", () => {
 
         expectArray([0.0, 0.6, 0.05, 0.325], i.states())
         expectArray(NaN_x_4, i.rates())
-        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN, 1.0, 0.0, Number.NaN, 0.3, Number.NaN, 120.0, Number.NaN, Number.NaN, Number.NaN, Number.NaN, Number.NaN, 36.0, Number.NaN, Number.NaN], i.variables())
+        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, Number.NaN, Number.NaN, Number.NaN, Number.NaN, 12.0, 36.0, Number.NaN, Number.NaN], i.variables())
     })
 })

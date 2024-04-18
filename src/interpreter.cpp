@@ -117,6 +117,7 @@ void Interpreter::computeComputedConstants()
 
 void Interpreter::computeRates(double voi)
 {
+    (void)voi;
     /*---GRY---
     for (const auto &statement : mPimpl->mComputeRatesStatements) {
         statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
@@ -126,6 +127,7 @@ void Interpreter::computeRates(double voi)
 
 void Interpreter::computeVariables(double voi)
 {
+    (void)voi;
     /*---GRY---
     for (const auto &statement : mPimpl->mComputeVariablesStatements) {
         statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
