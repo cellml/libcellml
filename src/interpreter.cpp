@@ -110,11 +110,9 @@ void Interpreter::initialiseVariables()
 
 void Interpreter::computeComputedConstants()
 {
-    /*---GRY---
     for (const auto &statement : mPimpl->mComputeComputedConstantsStatements) {
         statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
-    */
 }
 
 void Interpreter::computeRates()
