@@ -114,7 +114,6 @@ public:
 
         PIECEWISE, /**< The "piecewise" statement. */
         PIECE, /**< The "piece" part of a "piecewise" statement. */
-        OTHERWISE, /**< The "otherwise" part of a "piecewise" statement. */
 
         // Token elements.
 

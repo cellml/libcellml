@@ -1147,8 +1147,7 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
                                                          leftStatement,
                                                          InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
                                                                                       rightStatement,
-                                                                                      InterpreterStatement::create(InterpreterStatement::Type::OTHERWISE,
-                                                                                                                   InterpreterStatement::create(InterpreterStatement::Type::NAN))));
+                                                                                      InterpreterStatement::create(InterpreterStatement::Type::NAN)));
                 code = leftCode + generatePiecewiseElseCode(rightCode + generatePiecewiseElseCode(mProfile->nanString()));
             } else {
                 statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
@@ -1160,8 +1159,7 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
             if (astLeftChild->type() == AnalyserEquationAst::Type::PIECE) {
                 statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
                                                          leftStatement,
-                                                         InterpreterStatement::create(InterpreterStatement::Type::OTHERWISE,
-                                                                                      InterpreterStatement::create(InterpreterStatement::Type::NAN)));
+                                                         InterpreterStatement::create(InterpreterStatement::Type::NAN));
                 code = leftCode + generatePiecewiseElseCode(mProfile->nanString());
             } else {
                 statement = InterpreterStatement::create(InterpreterStatement::Type::NAN);
@@ -1184,8 +1182,7 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
     case AnalyserEquationAst::Type::OTHERWISE: {
         auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-        statement = InterpreterStatement::create(InterpreterStatement::Type::OTHERWISE,
-                                                 leftStatement);
+        statement = leftStatement;
         code = leftCode;
     } break;
     case AnalyserEquationAst::Type::CI: {

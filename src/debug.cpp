@@ -952,10 +952,6 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
         res = "PIECE";
 
         break;
-    case InterpreterStatement::Type::OTHERWISE:
-        res = "OTHERWISE";
-
-        break;
 
         // Token elements.
 
