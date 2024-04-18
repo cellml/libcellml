@@ -324,21 +324,15 @@ def acot(x):
 
 
 def asech(x):
-    one_over_x = 1.0/x
-
-    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))
+    return acosh(1.0/x)
 
 
 def acsch(x):
-    one_over_x = 1.0/x
-
-    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))
+    return asinh(1.0/x)
 
 
 def acoth(x):
-    one_over_x = 1.0/x
-
-    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))
+    return atanh(1.0/x)
 
 
 def create_states_vector():

@@ -162,7 +162,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'double acoth(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n}\n',
+            'double acoth(double x)\n{\n    return atanh(1.0/x);\n}\n',
             g.acothFunctionString())
         g.setAcothFunctionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.acothFunctionString())
@@ -200,7 +200,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'double acsch(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n}\n',
+            'double acsch(double x)\n{\n    return asinh(1.0/x);\n}\n',
             g.acschFunctionString())
         g.setAcschFunctionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.acschFunctionString())
@@ -283,7 +283,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            'double asech(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n}\n',
+            'double asech(double x)\n{\n    return acosh(1.0/x);\n}\n',
             g.asechFunctionString())
         g.setAsechFunctionString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.asechFunctionString())

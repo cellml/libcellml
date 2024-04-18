@@ -52,23 +52,17 @@ double acot(double x)
 
 double asech(double x)
 {
-    double oneOverX = 1.0/x;
-
-    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));
+    return acosh(1.0/x);
 }
 
 double acsch(double x)
 {
-    double oneOverX = 1.0/x;
-
-    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));
+    return asinh(1.0/x);
 }
 
 double acoth(double x)
 {
-    double oneOverX = 1.0/x;
-
-    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
+    return atanh(1.0/x);
 }
 
 double * createStatesArray()
