@@ -802,10 +802,10 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
         break;
     case AnalyserEquationAst::Type::XOR:
         if (mProfile->hasXorOperator()) {
-            statement = InterpreterStatement::create(InterpreterStatement::Type::XOR);
-            code = generateOperatorCode(mProfile->xorString(), ast, statement);
+            code = generateOperatorCode(mProfile->xorString(), ast, nullptr);
         } else {
-            code = generateTwoParameterFunctionCode(mProfile->xorString(), ast, nullptr);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::XOR);
+            code = generateTwoParameterFunctionCode(mProfile->xorString(), ast, statement);
         }
 
         break;
