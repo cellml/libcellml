@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "commonutils.h"
 
+#include <cmath>
+
 #include "libcellml/component.h"
 #include "libcellml/model.h"
 
