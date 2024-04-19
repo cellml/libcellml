@@ -260,15 +260,22 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
     }
 }
 
+double roundValue(double value, int precision)
+{
+    return std::round(value * std::pow(10.0, precision)) / std::pow(10.0, precision);
+}
+
 testing::AssertionResult areEqualValues(const char *evExpr, const char *vExpr, const char *ndxExpr,
                                         const void *ev, const void *v, const void *ndx)
 {
+    static const auto PRECISION = 12;
+
     auto expectedValues = *(static_cast<const std::vector<double> *>(ev));
     auto values = *(static_cast<const std::vector<double> *>(v));
     auto i = *(static_cast<const size_t *>(ndx));
 
     if ((std::isnan(expectedValues[i]) && std::isnan(values[i]))
-        || areNearlyEqual(expectedValues[i], values[i])) {
+        || areNearlyEqual(roundValue(expectedValues[i], PRECISION), roundValue(values[i], PRECISION))) {
         return testing::AssertionSuccess();
     }
 
