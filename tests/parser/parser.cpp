@@ -65,6 +65,46 @@ TEST(Parser, invalidXMLElements)
     }
 }
 
+TEST(Parser, xmlAttributesWithNamespacePrefixDefault)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" name=\"mymodel\">\n"
+        "  <component cellml:name=\"\"/>\n"
+        "</model>\n";
+
+    const std::vector<std::string> expectedIssues = {
+        "Element 'component' attribute 'name' has a namespace specified.",
+        "Component '' has an invalid attribute 'name'.",
+        "Component does not specify a name attribute.",
+    };
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+
+    EXPECT_EQ_ISSUES(expectedIssues, p);
+}
+
+TEST(Parser, xmlAttributesWithNamespacePrefix)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:foo=\"http://www.example.com/\" name=\"mymodel\">\n"
+        "  <component foo:name=\"\"/>\n"
+        "</model>\n";
+
+    const std::vector<std::string> expectedIssues = {
+        "Element 'component' attribute 'name' has a namespace specified.",
+        "Component '' has an invalid attribute 'name'.",
+        "Component does not specify a name attribute.",
+    };
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+
+    EXPECT_EQ_ISSUES(expectedIssues, p);
+}
+
 TEST(Parser, parse)
 {
     const std::string e =

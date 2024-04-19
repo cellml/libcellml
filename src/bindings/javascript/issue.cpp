@@ -160,7 +160,7 @@ EMSCRIPTEN_BINDINGS(libcellml_issue) {
         .value("XML_UNEXPECTED_CHARACTER", libcellml::Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER)
         .value("XML_UNEXPECTED_ELEMENT", libcellml::Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT)
         .value("XML_UNEXPECTED_NAMESPACE", libcellml::Issue::ReferenceRule::XML_UNEXPECTED_NAMESPACE)
-        .value("XML_UNEXPECTED_NAMESPACE_PREFIX", libcellml::Issue::ReferenceRule::XML_UNEXPECTED_NAMESPACE_PREFIX)
+        .value("XML_ATTRIBUTE_HAS_NAMESPACE", libcellml::Issue::ReferenceRule::XML_ATTRIBUTE_HAS_NAMESPACE)
     ;
 
     class_<libcellml::Issue>("Issue")

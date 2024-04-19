@@ -23,20 +23,23 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief Return a map of namespaces on attributes for this node.
+ * @brief Return a list of namespaces on attributes for this node.
  *
- * Scans all attributes of the node and records any associated namespace
- * attached to the attribute in an @c XmlNamespaceMap.
+ * Scans all attributes of the node and records anyassociated
+ * non-empty namespace attached to the attribute in an
+ * @c NodeAttributeNamespaceInfo list.
  *
  * @param node The @c XmlNode to scan attributes of.
- * @return @c XmlNamespaceMap of namespaces on attributes for the given @p node.
+ * @return @c NodeAttributeNamespaceInfo of namespaces on attributes for the given @p node.
  */
-XmlNamespaceMap attributeNamespaces(const XmlNodePtr &node)
+NodeAttributeNamespaceInfo attributeNamespaces(const XmlNodePtr &node)
 {
-    XmlNamespaceMap namespaceMap;
+    NodeAttributeNamespaceInfo namespaceMap;
     auto tempAttribute = node->firstAttribute();
     while (tempAttribute != nullptr) {
-        namespaceMap.emplace(tempAttribute->namespacePrefix(), tempAttribute->namespaceUri());
+        if (!tempAttribute->namespacePrefix().empty()) {
+            namespaceMap.emplace_back(std::make_tuple(node->name(), tempAttribute->name(), tempAttribute->namespacePrefix(), tempAttribute->namespaceUri(), node->namespaceUri()));
+        }
         tempAttribute = tempAttribute->next();
     }
     return namespaceMap;
@@ -55,6 +58,25 @@ XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1,
     return undefinedNamespaces;
 }
 
+NodeAttributeNamespaceInfo traverseTreeForAttributeNamespaces(const XmlNodePtr &node)
+{
+    NodeAttributeNamespaceInfo nodeAttributeNamespaceInfo;
+    auto tempNode = node;
+    while (tempNode != nullptr) {
+        auto attributeNamespaceList = attributeNamespaces(tempNode);
+        nodeAttributeNamespaceInfo.insert(nodeAttributeNamespaceInfo.end(), attributeNamespaceList.begin(), attributeNamespaceList.end());
+
+        auto subNodeAttributeNamespaceInfo = traverseTreeForAttributeNamespaces(tempNode->firstChild());
+
+        nodeAttributeNamespaceInfo.insert(nodeAttributeNamespaceInfo.end(), subNodeAttributeNamespaceInfo.begin(), subNodeAttributeNamespaceInfo.end());
+
+        tempNode = tempNode->next();
+    }
+
+    return nodeAttributeNamespaceInfo;
+
+}
+
 XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node)
 {
     XmlNamespaceMap undefinedNamespaces;
@@ -62,7 +84,12 @@ XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node)
     while (tempNode != nullptr) {
         auto definedNamespaces = tempNode->definedNamespaces();
         auto usedNamespaces = attributeNamespaces(tempNode);
-        auto missingNamespaces = determineMissingNamespaces(usedNamespaces, definedNamespaces);
+        XmlNamespaceMap usedNamespaceMap;
+        for (const auto &entry : usedNamespaces) {
+            usedNamespaceMap.emplace(std::get<2>(entry), std::get<3>(entry));
+        }
+
+        auto missingNamespaces = determineMissingNamespaces(usedNamespaceMap, definedNamespaces);
 
         // Update undefined namespaces with missing namespaces.
         missingNamespaces.insert(undefinedNamespaces.begin(), undefinedNamespaces.end());

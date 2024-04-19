@@ -84,7 +84,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
     {Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT, {"XML_UNEXPECTED_ELEMENT", "1.2.2.2", baseSpecificationUrl, "specA02"}},
     {Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER, {"XML_UNEXPECTED_CHARACTER", "1.2.3.2", baseSpecificationUrl, "specA02"}},
     {Issue::ReferenceRule::XML_UNEXPECTED_NAMESPACE, {"XML_UNEXPECTED_NAMESPACE", "1.2.4.1", baseSpecificationUrl, "specA02"}},
-    {Issue::ReferenceRule::XML_UNEXPECTED_NAMESPACE_PREFIX, {"XML_UNEXPECTED_NAMESPACE_PREFIX", "1.2.4.2", baseSpecificationUrl, "specA02"}},
+    {Issue::ReferenceRule::XML_ATTRIBUTE_HAS_NAMESPACE, {"XML_ATTRIBUTE_HAS_NAMESPACE", "1.2.4.2", baseSpecificationUrl, "specA02"}},
     {Issue::ReferenceRule::XML_ID_ATTRIBUTE, {"XML_ID_ATTRIBUTE", "1.2.5.1.1", baseSpecificationUrl, "specA02"}},
     {Issue::ReferenceRule::MODEL_ELEMENT, {"MODEL_ELEMENT", "2.1", baseSpecificationUrl, "specB01"}},
     {Issue::ReferenceRule::MODEL_NAME, {"MODEL_NAME", "2.1.1", baseSpecificationUrl, "specB01"}},
