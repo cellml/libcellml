@@ -38,11 +38,6 @@ AnalyserVariablePtr InterpreterStatement::variable() const
     return mPimpl->mVariable;
 }
 
-bool InterpreterStatement::rate() const
-{
-    return mPimpl->mRate;
-}
-
 double InterpreterStatement::value() const
 {
     return mPimpl->mValue;

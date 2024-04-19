@@ -44,14 +44,17 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(Type ty
 
 InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(const AnalyserVariablePtr &variable,
                                                                          bool rate)
-    : mType(Type::CI)
+    : mType((variable->type() == AnalyserVariable::Type::STATE) ?
+                (rate ?
+                     Type::RATE :
+                     Type::STATE) :
+                Type::VARIABLE)
     , mVariable(variable)
-    , mRate(rate)
 {
 }
 
 InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(double value)
-    : mType(Type::CN)
+    : mType(Type::NUMBER)
     , mValue(value)
 {
 }
@@ -68,12 +71,12 @@ void InterpreterStatement::InterpreterStatementImpl::evaluate(double voi, double
 
     assert(mType == Type::EQUALITY);
 
-    if (mLeftChild->mPimpl->mVariable->type() == AnalyserVariable::Type::STATE) {
-        if (mLeftChild->mPimpl->mRate) {
-            rates[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
-        } else {
-            states[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
-        }
+    //---GRY--- SHOULD CACHE mVariable->index().
+
+    if (mLeftChild->mPimpl->mType == InterpreterStatement::Type::STATE) {
+        states[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
+    } else if (mLeftChild->mPimpl->mType == InterpreterStatement::Type::RATE) {
+        rates[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     } else {
         variables[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     }
@@ -214,15 +217,13 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double v
 
     case Type::VOI:
         return voi;
-    case Type::CI:
-        if (mVariable->type() == AnalyserVariable::Type::STATE) {
-            return mRate ?
-                       rates[mVariable->index()] :
-                       states[mVariable->index()];
-        } else {
-            return variables[mVariable->index()];
-        }
-    case Type::CN:
+    case Type::STATE:
+        return states[mVariable->index()];
+    case Type::RATE:
+        return rates[mVariable->index()];
+    case Type::VARIABLE:
+        return variables[mVariable->index()];
+    case Type::NUMBER:
         return mValue;
 
         // Constants.

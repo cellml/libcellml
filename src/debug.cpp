@@ -959,11 +959,14 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
         res = "VOI";
 
         break;
-    case InterpreterStatement::Type::CI:
-        res = ciValue(interpreterStatement->variable(), interpreterStatement->rate());
+    case InterpreterStatement::Type::STATE:
+    case InterpreterStatement::Type::RATE:
+    case InterpreterStatement::Type::VARIABLE:
+        res = ciValue(interpreterStatement->variable(),
+                      interpreterStatement->type() == InterpreterStatement::Type::RATE);
 
         break;
-    case InterpreterStatement::Type::CN:
+    case InterpreterStatement::Type::NUMBER:
         res = convertToString(interpreterStatement->value());
 
         break;

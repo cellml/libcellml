@@ -31,7 +31,6 @@ struct InterpreterStatement::InterpreterStatementImpl
     InterpreterStatementPtr mLeftChild;
     InterpreterStatementPtr mRightChild;
     AnalyserVariablePtr mVariable;
-    bool mRate = false;
     double mValue = std::numeric_limits<double>::quiet_NaN();
     size_t mIndex = 0;
 

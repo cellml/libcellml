@@ -304,9 +304,9 @@ std::string newLineIfNotEmpty(const std::string &code)
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateMethodBodyCode(const std::string &methodBody) const
 {
     return methodBody.empty() ?
-               mProfile->emptyMethodString().empty() ?
-               "" :
-               mProfile->indentString() + mProfile->emptyMethodString() :
+               (mProfile->emptyMethodString().empty() ?
+                    "" :
+                    mProfile->indentString() + mProfile->emptyMethodString()) :
                methodBody;
 }
 
@@ -1186,16 +1186,18 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
         code = leftCode;
     } break;
     case AnalyserEquationAst::Type::CI: {
-        auto astVariable = ast->variable();
+        auto variable = ast->variable();
         bool rate = ast->parent()->type() == AnalyserEquationAst::Type::DIFF;
 
         if (mModel != nullptr) {
-            statement = (libcellml::analyserVariable(mModel, astVariable)->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
+            auto analyserVariable = libcellml::analyserVariable(mModel, variable);
+
+            statement = (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
                             InterpreterStatement::create(InterpreterStatement::Type::VOI) :
-                            InterpreterStatement::create(analyserVariable(mModel, astVariable), rate);
+                            InterpreterStatement::create(analyserVariable, rate);
         }
 
-        code = generateVariableNameCode(astVariable, rate);
+        code = generateVariableNameCode(variable, rate);
     } break;
     case AnalyserEquationAst::Type::CN: {
         double doubleValue;

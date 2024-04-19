@@ -118,8 +118,10 @@ public:
         // Token elements.
 
         VOI, /**< The variable of integration. */
-        CI, /**< An identifier (i.e. the name of a model variable). */
-        CN, /**< A number. */
+        STATE, /**< A state variable. */
+        RATE, /**< A rate variable. */
+        VARIABLE, /**< A variable. */
+        NUMBER, /**< A number. */
 
         // Qualifier elements.
 
@@ -173,12 +175,11 @@ public:
      * with::
      *
      * @code
-     *   auto interpreterStatement = libcellml::InterpreterStatement::create(variable, state);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(variable, rate);
      * @endcode
      *
      * @param variable The variable associated with the CI element.
-     * @param state Whether the variable is a state. If it is not a state, it is a rate if its type is
-     * AnalyserVariable::Type::STATE otherwise it is a variable.
+     * @param rate Whether the variable is a rate.
      *
      * @return A smart pointer to an @ref InterpreterStatement object.
      */
@@ -252,15 +253,6 @@ public:
      * @return The variable associated with the statement.
      */
     AnalyserVariablePtr variable() const;
-
-    /**
-     * @brief Get whether the variable associated with the statement is a rate.
-     *
-     * Return whether the variable associated with the statement is a rate.
-     *
-     * @return @c true if the variable associated with the statement is a rate, @c false otherwise.
-     */
-    bool rate() const;
 
     /**
      * @brief Get the value associated with the statement.
