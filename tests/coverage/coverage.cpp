@@ -92,7 +92,7 @@ TEST(Coverage, importWithNamespaceViolations)
     EXPECT_EQ(size_t(5), parser->issueCount());
 }
 
-TEST(Coverage, importWithCnWrongNamespace)
+TEST(Coverage, mathCnWithNamespaceViolations)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -116,6 +116,21 @@ TEST(Coverage, importWithCnWrongNamespace)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(in);
     EXPECT_EQ(size_t(3), parser->issueCount());
+}
+
+TEST(Coverage, invalidNamespaceElement)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelA\">\n"
+        "  <component name=\"componentA\" xmlns=\"http://www.cellml.org/notcellml/2.0#\">\n"
+        "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+    EXPECT_EQ(size_t(3), p->issueCount());
 }
 
 TEST(Coverage, entityHasParent)

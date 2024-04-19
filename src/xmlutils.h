@@ -38,6 +38,18 @@ namespace libcellml {
 XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1, const XmlNamespaceMap &namespaceMap2);
 
 /**
+ * @brief Traverse the tree and return an @c XmlNamespaceMap of element namespaces.
+ *
+ * From the root node of the tree given by the @p node, traverse the tree
+ * recording element namespaces. Returning information on any element namespace.
+ * Text nodes and comment nodes are ignored.
+ *
+ * @param node The root node of the tree to traverse.
+ * @return @c XmlNamespaceMap of element namespaces.
+ */
+XmlNamespaceMap traverseTreeForElementNamespaces(const XmlNodePtr &node);
+
+/**
  * @brief Traverse the tree and return an @c NodeAttributeNamespaceInfo of attribute namespaces.
  *
  * From the root node of the tree given by the @p node, traverse the tree

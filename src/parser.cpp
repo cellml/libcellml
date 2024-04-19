@@ -404,8 +404,22 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
 
     mParsing20Version = node->isCellml20Element("model");
 
+    auto elementNamespaceMap = traverseTreeForElementNamespaces(node);
+    if (mParsing20Version) {
+        for (const auto &e : elementNamespaceMap) {
+            std::string name = e.first;
+            std::string uri = e.second;
+            if (uri != CELLML_2_0_NS && uri != MATHML_NS) {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Element '" + name + "' uses namespace '" + uri + "' which does not belong to an allowed namespace. ");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_NAMESPACE);
+                addIssue(issue);
+            }
+        }
+    }
+
     auto attributeNamespaceMap = traverseTreeForAttributeNamespaces(node);
-    if (!attributeNamespaceMap.empty() && mParsing20Version) {
+    if (mParsing20Version) {
         for (const auto &e : attributeNamespaceMap) {
             std::string nodeName = std::get<0>(e);
             std::string nodeUri = std::get<4>(e);

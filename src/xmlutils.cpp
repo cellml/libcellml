@@ -58,6 +58,25 @@ XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1,
     return undefinedNamespaces;
 }
 
+XmlNamespaceMap traverseTreeForElementNamespaces(const XmlNodePtr &node)
+{
+    XmlNamespaceMap nodeNamespaceMap;
+    auto tempNode = node;
+    while (tempNode != nullptr) {
+        if (!tempNode->isText() && !tempNode->isComment()) {
+            nodeNamespaceMap.emplace(tempNode->name(), tempNode->namespaceUri());
+        }
+
+        auto subNodeNamespaceMap = traverseTreeForElementNamespaces(tempNode->firstChild());
+
+        nodeNamespaceMap.insert(subNodeNamespaceMap.begin(), subNodeNamespaceMap.end());
+
+        tempNode = tempNode->next();
+    }
+
+    return nodeNamespaceMap;
+}
+
 NodeAttributeNamespaceInfo traverseTreeForAttributeNamespaces(const XmlNodePtr &node)
 {
     NodeAttributeNamespaceInfo nodeAttributeNamespaceInfo;
@@ -74,7 +93,6 @@ NodeAttributeNamespaceInfo traverseTreeForAttributeNamespaces(const XmlNodePtr &
     }
 
     return nodeAttributeNamespaceInfo;
-
 }
 
 XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node)
