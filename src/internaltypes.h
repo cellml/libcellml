@@ -39,6 +39,7 @@ using NameList = std::vector<std::string>; /**< Type definition for list of name
 using DescriptionList = std::vector<std::pair<VariablePtr, std::string>>; /**< Type definition for list of variables and associated description. */
 using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
 using UniqueNames = std::set<std::string>; /**< Type definition for a set of unique names. */
+using NodeAttributeNamespaceInfo = std::vector<std::tuple<std::string, std::string, std::string, std::string, std::string>>; /**< Type definition for attribute namespace information. */
 
 // VariableMap
 using VariableMap = std::vector<VariablePairPtr>; /**< Type definition for vector of VariablePair.*/

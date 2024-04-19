@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <vector>
 
+#include "internaltypes.h"
 #include "xmldoc.h"
 
 namespace libcellml {
@@ -35,6 +36,18 @@ namespace libcellml {
  * @return The @c XmlNamespaceMap of missing namespaces.
  */
 XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1, const XmlNamespaceMap &namespaceMap2);
+
+/**
+ * @brief Traverse the tree and return an @c NodeAttributeNamespaceInfo of attribute namespaces.
+ *
+ * From the root node of the tree given by the @p node, traverse the tree
+ * searching for attribute namespaces. Returning information on any non-empty
+ * attribute namespaces.
+ *
+ * @param node The root node of the tree to traverse.
+ * @return @c NodeAttributeNamespaceInfo of attribute namespaces.
+ */
+NodeAttributeNamespaceInfo traverseTreeForAttributeNamespaces(const XmlNodePtr &node);
 
 /**
  * @brief Traverse the tree and return an @c XmlNamespaceMap of any undefined namespaces.

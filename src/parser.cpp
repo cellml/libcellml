@@ -17,8 +17,6 @@ limitations under the License.
 #include "libcellml/parser.h"
 
 #include <algorithm>
-#include <limits>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -405,6 +403,27 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
 
     mParsing20Version = node->isCellml20Element("model");
+
+    auto attributeNamespaceMap = traverseTreeForAttributeNamespaces(node);
+    if (!attributeNamespaceMap.empty() && mParsing20Version) {
+        for (const auto &e : attributeNamespaceMap) {
+            std::string nodeName = std::get<0>(e);
+            std::string nodeUri = std::get<4>(e);
+            std::string attributeName = std::get<1>(e);
+            std::string uri = std::get<3>(e);
+            if (nodeName == "cn" && nodeUri == MATHML_NS && attributeName == "units" && uri == CELLML_2_0_NS) {
+                // Explicitly allowed attribute namespace prefix.
+            } else if (nodeName == "import" && nodeUri == CELLML_2_0_NS && attributeName == "href" && uri == XLINK_NS) {
+                // Explicitly allowed attribute namespace prefix.
+            } else {
+                auto issue = Issue::IssueImpl::create();
+                issue->mPimpl->setDescription("Element '" + nodeName + "' attribute '" + attributeName + "' has a namespace specified.");
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ATTRIBUTE_HAS_NAMESPACE);
+                addIssue(issue);
+            }
+        }
+    }
+
     if ((mParser->isStrict() && !mParsing20Version) || !node->isCellmlElement("model")) {
         auto issue = Issue::IssueImpl::create();
         if (node->name() == "model") {

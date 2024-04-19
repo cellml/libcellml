@@ -155,7 +155,7 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(Issue.ReferenceRule.XML_UNEXPECTED_CHARACTER, int)
         self.assertIsInstance(Issue.ReferenceRule.XML_UNEXPECTED_ELEMENT, int)
         self.assertIsInstance(Issue.ReferenceRule.XML_UNEXPECTED_NAMESPACE, int)
-        self.assertIsInstance(Issue.ReferenceRule.XML_UNEXPECTED_NAMESPACE_PREFIX, int)
+        self.assertIsInstance(Issue.ReferenceRule.XML_ATTRIBUTE_HAS_NAMESPACE, int)
 
     def test_coverage(self):
         from libcellml import Issue
