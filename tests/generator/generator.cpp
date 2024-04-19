@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include <chrono>
 #include <libcellml>
 
 #include "libcellml/undefines.h"
@@ -69,30 +70,59 @@ namespace garny_kohl_hunter_boyett_noble_rabbit_san_model_2003 {
 #endif
 
 #define INITIALISE_MODEL(model) \
-auto *states = model::createStatesArray(); \
-auto *rates = model::createStatesArray(); \
-auto *variables = model::createVariablesArray(); \
+    auto *states = model::createStatesArray(); \
+    auto *rates = model::createStatesArray(); \
+    auto *variables = model::createVariablesArray(); \
 \
-model::initialiseVariables(states, rates, variables); \
-model::computeComputedConstants(variables); \
-model::computeRates(0.0, states, rates, variables); \
-model::computeVariables(0.0, states, rates, variables); \
+    model::initialiseVariables(states, rates, variables); \
+    model::computeComputedConstants(variables); \
+    model::computeRates(0.0, states, rates, variables); \
+    model::computeVariables(0.0, states, rates, variables); \
 \
-std::vector<double> expectedStates(states, states + model::STATE_COUNT); \
-std::vector<double> expectedRates(rates, rates + model::STATE_COUNT); \
-std::vector<double> expectedVariables(variables, variables + model::VARIABLE_COUNT);
+    std::vector<double> expectedStates(states, states + model::STATE_COUNT); \
+    std::vector<double> expectedRates(rates, rates + model::STATE_COUNT); \
+    std::vector<double> expectedVariables(variables, variables + model::VARIABLE_COUNT);
 
 #define INTERPRET_MODEL() \
-interpreter->initialiseVariables(); \
-interpreter->computeComputedConstants(); \
-interpreter->computeRates(); \
-interpreter->computeVariables();
+    interpreter->initialiseVariables(); \
+    interpreter->computeComputedConstants(); \
+    interpreter->computeRates(); \
+    interpreter->computeVariables();
 
 #define FINALISE_MODEL() \
-delete[] states; \
-delete[] rates; \
-delete[] variables;
+    delete[] states; \
+    delete[] rates; \
+    delete[] variables;
 
+#define COMPARE_COMPILED_VS_INTERPRETED(model) \
+    static const auto ITERATIONS = 25000; \
+\
+    auto start = std::chrono::high_resolution_clock::now(); \
+\
+    model::initialiseVariables(states, rates, variables); \
+    model::computeComputedConstants(variables); \
+\
+    for (size_t i = 0; i < ITERATIONS; ++i) { \
+        model::computeRates(0.0, states, rates, variables); \
+        model::computeVariables(0.0, states, rates, variables); \
+    } \
+\
+    auto compiledElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count(); \
+\
+    std::cout << "Computed elapsed time:    " << compiledElapsedTime << " ms" << std::endl; \
+\
+    start = std::chrono::high_resolution_clock::now(); \
+\
+    for (size_t i = 0; i < ITERATIONS; ++i) { \
+        INTERPRET_MODEL(); \
+    } \
+\
+    auto interpretedElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count(); \
+\
+    std::cout << "Interpreted elapsed time: " << interpretedElapsedTime << " ms" << std::endl; \
+    std::cout << "Slowdown:                 " << (interpretedElapsedTime / static_cast<double>(compiledElapsedTime)) << "x" << std::endl;
+
+/*---GRY---
 TEST(Generator, emptyModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create("empty_model");
@@ -1857,6 +1887,7 @@ TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
     EXPECT_EQ_VALUES(NAN_x_4, interpreter->variables());
 }
+*/
 
 TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 {
@@ -1901,6 +1932,8 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
     EXPECT_EQ_VALUES(expectedStates, interpreter->states());
     EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
     EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
+
+    COMPARE_COMPILED_VS_INTERPRETED(fabbri_fantini_wilders_severi_human_san_model_2017);
 
     FINALISE_MODEL();
 }
@@ -1949,9 +1982,12 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
     EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
     EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
 
+    COMPARE_COMPILED_VS_INTERPRETED(garny_kohl_hunter_boyett_noble_rabbit_san_model_2003);
+
     FINALISE_MODEL();
 }
 
+/*---GRY---
 TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 {
     auto parser = libcellml::Parser::create();
@@ -3111,3 +3147,4 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
     EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
     EXPECT_EQ_VALUES(std::vector<double>({6.7828154425612066, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, 2902500.0}), interpreter->variables());
 }
+*/

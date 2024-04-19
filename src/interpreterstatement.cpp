@@ -50,6 +50,7 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(const A
                      Type::STATE) :
                 Type::VARIABLE)
     , mVariable(variable)
+    , mIndex(variable->index())
 {
 }
 
@@ -59,9 +60,9 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(double 
 {
 }
 
-InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(size_t index)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(size_t externalIndex)
     : mType(Type::EXTERNAL)
-    , mIndex(index)
+    , mExternalIndex(externalIndex)
 {
 }
 
@@ -71,14 +72,12 @@ void InterpreterStatement::InterpreterStatementImpl::evaluate(double voi, double
 
     assert(mType == Type::EQUALITY);
 
-    //---GRY--- SHOULD CACHE mVariable->index().
-
     if (mLeftChild->mPimpl->mType == InterpreterStatement::Type::STATE) {
-        states[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
+        states[mLeftChild->mPimpl->mIndex] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     } else if (mLeftChild->mPimpl->mType == InterpreterStatement::Type::RATE) {
-        rates[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
+        rates[mLeftChild->mPimpl->mIndex] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     } else {
-        variables[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
+        variables[mLeftChild->mPimpl->mIndex] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     }
 }
 
@@ -218,11 +217,11 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double v
     case Type::VOI:
         return voi;
     case Type::STATE:
-        return states[mVariable->index()];
+        return states[mIndex];
     case Type::RATE:
-        return rates[mVariable->index()];
+        return rates[mIndex];
     case Type::VARIABLE:
-        return variables[mVariable->index()];
+        return variables[mIndex];
     case Type::NUMBER:
         return mValue;
 
@@ -275,8 +274,8 @@ InterpreterStatement::InterpreterStatement(double value)
 {
 }
 
-InterpreterStatement::InterpreterStatement(size_t index)
-    : mPimpl(new InterpreterStatementImpl(index))
+InterpreterStatement::InterpreterStatement(size_t externalIndex)
+    : mPimpl(new InterpreterStatementImpl(externalIndex))
 {
 }
 
@@ -302,9 +301,9 @@ InterpreterStatementPtr InterpreterStatement::create(double value) noexcept
     return InterpreterStatementPtr {new InterpreterStatement {value}};
 }
 
-InterpreterStatementPtr InterpreterStatement::create(size_t index) noexcept
+InterpreterStatementPtr InterpreterStatement::create(size_t externalIndex) noexcept
 {
-    return InterpreterStatementPtr {new InterpreterStatement {index}};
+    return InterpreterStatementPtr {new InterpreterStatement {externalIndex}};
 }
 
 void InterpreterStatement::evaluate(double voi, double *states, double *rates, double *variables) const

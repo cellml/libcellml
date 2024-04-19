@@ -43,9 +43,9 @@ double InterpreterStatement::value() const
     return mPimpl->mValue;
 }
 
-size_t InterpreterStatement::index() const
+size_t InterpreterStatement::externalIndex() const
 {
-    return mPimpl->mIndex;
+    return mPimpl->mExternalIndex;
 }
 
 } // namespace libcellml

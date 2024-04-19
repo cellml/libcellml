@@ -1016,7 +1016,7 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
         // Miscellaneous.
 
     case InterpreterStatement::Type::EXTERNAL:
-        res = "EXTERNAL[" + convertToString(interpreterStatement->index()) + "]";
+        res = "EXTERNAL[" + convertToString(interpreterStatement->externalIndex()) + "]";
 
         break;
     }

@@ -31,8 +31,9 @@ struct InterpreterStatement::InterpreterStatementImpl
     InterpreterStatementPtr mLeftChild;
     InterpreterStatementPtr mRightChild;
     AnalyserVariablePtr mVariable;
-    double mValue = std::numeric_limits<double>::quiet_NaN();
     size_t mIndex = 0;
+    double mValue = std::numeric_limits<double>::quiet_NaN();
+    size_t mExternalIndex = 0;
 
     explicit InterpreterStatementImpl(Type type,
                                       const InterpreterStatementPtr &leftChild,

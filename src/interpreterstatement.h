@@ -208,14 +208,14 @@ public:
      * statement with::
      *
      * @code
-     *   auto interpreterStatement = libcellml::InterpreterStatement::create(index);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(externalIndex);
      * @endcode
      *
-     * @param index The index of the external variable.
+     * @param externalIndex
      *
      * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterStatementPtr create(size_t index) noexcept;
+    static InterpreterStatementPtr create(size_t externalIndex) noexcept;
 
 #ifdef DEBUG
     /**
@@ -264,13 +264,13 @@ public:
     double value() const;
 
     /**
-     * @brief Get the index associated with the statement.
+     * @brief Get the external index associated with the statement.
      *
-     * Return the index associated with the statement.
+     * Return the external index associated with the statement.
      *
-     * @return The index associated with the statement.
+     * @return The external index associated with the statement.
      */
-    size_t index() const;
+    size_t externalIndex() const;
 #endif
 
     /**
@@ -291,7 +291,7 @@ private:
                          const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
     InterpreterStatement(const AnalyserVariablePtr &variable, bool rate); /**< Constructor, @private. */
     InterpreterStatement(double value); /**< Constructor, @private. */
-    InterpreterStatement(size_t index); /**< Constructor, @private. */
+    InterpreterStatement(size_t externalIndex); /**< Constructor, @private. */
 
     struct InterpreterStatementImpl;
     InterpreterStatementImpl *mPimpl; /**< Private member to implementation pointer, @private. */
