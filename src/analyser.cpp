@@ -2690,9 +2690,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                + "' is";
                 description += hasPrimaryVariable ?
                                    " the" :
-                               (equivalentVariableCount == 1) ?
-                                   " its corresponding" :
-                                   " their corresponding";
+                                   ((equivalentVariableCount == 1) ?
+                                        " its corresponding" :
+                                        " their corresponding");
                 description += " primary variable and will therefore be the one used as an external variable.";
 
                 referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE;
