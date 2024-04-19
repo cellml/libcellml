@@ -31,7 +31,7 @@ describe("Interpreter tests", () => {
             if (Number.isNaN(expectedValues[i])) {
                 expect(Number.isNaN(values.get(i))).toBe(true)
             } else {
-                expect(expectedValues[i]).toBe(values.get(i))
+                expect(expectedValues[i]).toBeCloseTo(values.get(i))
             }
         }
     }
@@ -62,11 +62,11 @@ describe("Interpreter tests", () => {
 
         i.initialiseVariables()
         i.computeComputedConstants()
-        i.computeRates()
-        i.computeVariables()
+        i.computeRates(0.0)
+        i.computeVariables(0.0)
 
         expectArray([0.0, 0.6, 0.05, 0.325], i.states())
-        expectArray(NaN_x_4, i.rates())
-        expectArray([Number.NaN, Number.NaN, Number.NaN, Number.NaN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, Number.NaN, Number.NaN, Number.NaN, Number.NaN, 12.0, 36.0, Number.NaN, Number.NaN], i.variables())
+        expectArray([0.60076875, -0.0004555239065400646, 0.012385538355398518, -0.0013415722863204596], i.rates())
+        expectArray([0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.04742587317756678, 12.0, 36.0, 0.05819767068693265, 0.125], i.variables())
     })
 })

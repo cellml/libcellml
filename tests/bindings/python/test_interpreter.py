@@ -20,7 +20,7 @@ class InterpreterTestCase(unittest.TestCase):
             if math.isnan(expected_values[i]):
                 self.assertTrue(math.isnan(values[i]))
             else:
-                self.assertEqual(expected_values[i], values[i])
+                self.assertAlmostEqual(expected_values[i], values[i])
 
     def test_hodgkin_huxley_squid_axon_model_1952(self):
         from libcellml import Analyser
@@ -62,8 +62,8 @@ class InterpreterTestCase(unittest.TestCase):
         i.computeVariables()
 
         self.assert_array_equal([0.0, 0.6, 0.05, 0.325], i.states())
-        self.assert_array_equal(nan_x_4, i.rates())
-        self.assert_array_equal([math.nan, math.nan, math.nan, math.nan, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, math.nan, math.nan, math.nan, math.nan, 12.0, 36.0, math.nan, math.nan], i.variables())
+        self.assert_array_equal([0.60076875, -0.0004555239065400646, 0.012385538355398518, -0.0013415722863204596], i.rates())
+        self.assert_array_equal([0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.04742587317756678, 12.0, 36.0, 0.05819767068693265, 0.125], i.variables())
 
 
 if __name__ == '__main__':
