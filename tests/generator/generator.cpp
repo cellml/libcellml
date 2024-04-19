@@ -76,6 +76,7 @@ auto *variables = model::createVariablesArray(); \
 model::initialiseVariables(states, rates, variables); \
 model::computeComputedConstants(variables); \
 model::computeRates(0.0, states, rates, variables); \
+model::computeVariables(0.0, states, rates, variables); \
 \
 std::vector<double> expectedStates(states, states + model::STATE_COUNT); \
 std::vector<double> expectedRates(rates, rates + model::STATE_COUNT); \
