@@ -128,8 +128,10 @@ public:
      * Compute the model's rates.
      *
      * @sa initialiseVariables, computeComputedConstants, computeVariables
+     *
+     * @param voi The value of the variable of integration.
      */
-    void computeRates();
+    void computeRates(double voi = 0.0);
 
     /**
      * @brief Compute the model's variables.
@@ -137,8 +139,10 @@ public:
      * Compute the model's variables.
      *
      * @sa initialiseVariables, computeComputedConstants, computeRates
+     *
+     * @param voi The value of the variable of integration.
      */
-    void computeVariables();
+    void computeVariables(double voi = 0.0);
 
 private:
     Interpreter(); /**< Constructor, @private. */

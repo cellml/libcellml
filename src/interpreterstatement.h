@@ -117,6 +117,7 @@ public:
 
         // Token elements.
 
+        VOI, /**< The variable of integration. */
         CI, /**< An identifier (i.e. the name of a model variable). */
         CN, /**< A number. */
 
@@ -283,13 +284,14 @@ public:
     /**
      * @brief Evaluate the statement.
      *
-     * Evaluate the statement using the given arrays of states, rates, and variables.
+     * Evaluate the statement using the given variable of integration and arrays of states, rates, and variables.
      *
+     * @param voi The variable of integration.
      * @param states The array of states.
      * @param rates The array of rates.
      * @param variables The array of variables.
      */
-    void evaluate(double *states, double *rates, double *variables) const;
+    void evaluate(double voi, double *states, double *rates, double *variables) const;
 
 private:
     InterpreterStatement(Type type,

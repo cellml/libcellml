@@ -1186,10 +1186,16 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
         code = leftCode;
     } break;
     case AnalyserEquationAst::Type::CI: {
+        auto astVariable = ast->variable();
         bool rate = ast->parent()->type() == AnalyserEquationAst::Type::DIFF;
 
-        statement = InterpreterStatement::create(analyserVariable(mModel, ast->variable()), rate);
-        code = generateVariableNameCode(ast->variable(), rate);
+        if (mModel != nullptr) {
+            statement = (libcellml::analyserVariable(mModel, astVariable)->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
+                            InterpreterStatement::create(InterpreterStatement::Type::VOI) :
+                            InterpreterStatement::create(analyserVariable(mModel, astVariable), rate);
+        }
+
+        code = generateVariableNameCode(astVariable, rate);
     } break;
     case AnalyserEquationAst::Type::CN: {
         double doubleValue;

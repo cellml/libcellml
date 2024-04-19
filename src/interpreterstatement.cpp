@@ -62,7 +62,7 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(size_t 
 {
 }
 
-void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, double *rates, double *variables) const
+void InterpreterStatement::InterpreterStatementImpl::evaluate(double voi, double *states, double *rates, double *variables) const
 {
     //---GRY--- ONLY HANDLE AN EQUALITY STATEMENT FOR NOW.
 
@@ -70,148 +70,150 @@ void InterpreterStatement::InterpreterStatementImpl::evaluate(double *states, do
 
     if (mLeftChild->mPimpl->mVariable->type() == AnalyserVariable::Type::STATE) {
         if (mLeftChild->mPimpl->mRate) {
-            rates[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+            rates[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
         } else {
-            states[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+            states[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
         }
     } else {
-        variables[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        variables[mLeftChild->mPimpl->mVariable->index()] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     }
 }
 
-double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double *states, double *rates, double *variables) const
+double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double voi, double *states, double *rates, double *variables) const
 {
     switch (mType) {
         // Relational and logical operators.
 
     case Type::EQ:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) == mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) == mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::NEQ:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) != mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) != mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::LT:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) < mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) < mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::LEQ:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) <= mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) <= mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::GT:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) > mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) > mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::GEQ:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) >= mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) >= mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::AND:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) && mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) && mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::OR:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) || mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) || mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::XOR:
-        return (mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) != 0.0) ^ (mRightChild->mPimpl->evaluateToDouble(states, rates, variables) != 0.0);
+        return (mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) != 0.0) ^ (mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables) != 0.0);
     case Type::NOT:
-        return !mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return !mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
 
         // Arithmetic operators.
 
     case Type::PLUS:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) + mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) + mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::MINUS:
         if (mRightChild != nullptr) {
-            return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) - mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+            return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) - mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
         }
 
-        return -mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return -mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::TIMES:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) * mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) * mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::DIVIDE:
-        return mLeftChild->mPimpl->evaluateToDouble(states, rates, variables) / mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) / mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     case Type::POWER:
-        return pow(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return pow(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables), mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::SQUARE_ROOT:
-        return sqrt(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return sqrt(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::SQUARE: {
-        auto x = mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
+        auto x = mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
 
         return x * x;
     }
     case Type::ABS:
-        return fabs(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return fabs(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::EXP:
-        return exp(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return exp(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::LN:
-        return log(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return log(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::LOG:
-        return log10(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return log10(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::CEILING:
-        return ceil(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return ceil(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::FLOOR:
-        return floor(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return floor(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::MIN:
-        return fmin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return fmin(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables), mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::MAX:
-        return fmax(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return fmax(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables), mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::REM:
-        return fmod(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables), mRightChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return fmod(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables), mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
 
         // Trigonometric operators.
 
     case Type::SIN:
-        return sin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return sin(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::COS:
-        return cos(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return cos(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::TAN:
-        return tan(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return tan(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::SEC:
-        return 1.0 / cos(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return 1.0 / cos(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::CSC:
-        return 1.0 / sin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return 1.0 / sin(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::COT:
-        return 1.0 / tan(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return 1.0 / tan(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::SINH:
-        return sinh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return sinh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::COSH:
-        return cosh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return cosh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::TANH:
-        return tanh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return tanh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::SECH:
-        return 1.0 / cosh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return 1.0 / cosh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::CSCH:
-        return 1.0 / sinh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return 1.0 / sinh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::COTH:
-        return 1.0 / tanh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return 1.0 / tanh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ASIN:
-        return asin(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return asin(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ACOS:
-        return acos(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return acos(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ATAN:
-        return atan(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return atan(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ASEC:
-        return acos(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return acos(1.0 / mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ACSC:
-        return asin(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return asin(1.0 / mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ACOT:
-        return atan(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return atan(1.0 / mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ASINH:
-        return asinh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return asinh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ACOSH:
-        return acosh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return acosh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ATANH:
-        return atanh(mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return atanh(mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ASECH:
-        return acosh(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return acosh(1.0 / mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ACSCH:
-        return asinh(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return asinh(1.0 / mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
     case Type::ACOTH:
-        return atanh(1.0 / mLeftChild->mPimpl->evaluateToDouble(states, rates, variables));
+        return atanh(1.0 / mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables));
 
         // Piecewise statement.
 
     case Type::PIECEWISE: {
         assert(mLeftChild->mPimpl->mType == Type::PIECE);
 
-        if (mLeftChild->mPimpl->mRightChild->mPimpl->evaluateToDouble(states, rates, variables)) {
-            return mLeftChild->mPimpl->mLeftChild->mPimpl->evaluateToDouble(states, rates, variables);
+        if (mLeftChild->mPimpl->mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables)) {
+            return mLeftChild->mPimpl->mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
         }
 
-        return mRightChild->mPimpl->evaluateToDouble(states, rates, variables);
+        return mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     }
 
         // Token elements.
 
+    case Type::VOI:
+        return voi;
     case Type::CI:
         if (mVariable->type() == AnalyserVariable::Type::STATE) {
             return mRate ?
@@ -304,9 +306,9 @@ InterpreterStatementPtr InterpreterStatement::create(size_t index) noexcept
     return InterpreterStatementPtr {new InterpreterStatement {index}};
 }
 
-void InterpreterStatement::evaluate(double *states, double *rates, double *variables) const
+void InterpreterStatement::evaluate(double voi, double *states, double *rates, double *variables) const
 {
-    mPimpl->evaluate(states, rates, variables);
+    mPimpl->evaluate(voi, states, rates, variables);
 }
 
 } // namespace libcellml

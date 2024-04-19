@@ -104,31 +104,31 @@ std::vector<double> Interpreter::variables()
 void Interpreter::initialiseVariables()
 {
     for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
-        statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+        statement->evaluate(0.0, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
 }
 
 void Interpreter::computeComputedConstants()
 {
     for (const auto &statement : mPimpl->mComputeComputedConstantsStatements) {
-        statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+        statement->evaluate(0.0, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
 }
 
-void Interpreter::computeRates()
+void Interpreter::computeRates(double voi)
 {
     /*---GRY---
     for (const auto &statement : mPimpl->mComputeRatesStatements) {
-        statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+        statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
     */
 }
 
-void Interpreter::computeVariables()
+void Interpreter::computeVariables(double voi)
 {
     /*---GRY---
     for (const auto &statement : mPimpl->mComputeVariablesStatements) {
-        statement->evaluate(mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+        statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
     */
 }

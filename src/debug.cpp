@@ -955,6 +955,10 @@ std::string doPrintInterpreterStatementAsTree(const InterpreterStatementPtr &int
 
         // Token elements.
 
+    case InterpreterStatement::Type::VOI:
+        res = "VOI";
+
+        break;
     case InterpreterStatement::Type::CI:
         res = ciValue(interpreterStatement->variable(), interpreterStatement->rate());
 
