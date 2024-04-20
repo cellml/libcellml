@@ -459,7 +459,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         }
         issue->mPimpl->mItem->mPimpl->setModel(model);
         if (mParser->isStrict()) {
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_ELEMENT);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
         }
         addIssue(issue);
         return;
