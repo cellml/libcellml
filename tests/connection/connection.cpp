@@ -1410,6 +1410,5 @@ TEST(Connection, repeatedMapVariables)
         "Connection in model 'connection' between 'variable3' and 'variable6' is not unique.",
     };
 
-    printIssues(p);
     EXPECT_EQ_ISSUES(expectedIssues, p);
 }

@@ -1595,9 +1595,9 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "Component 'ship' has an invalid non-whitespace child text element '\n    falcon\n    '.",
         "Variable 'jedi' has an invalid non-whitespace child text element '\n      rey\n    '.",
         "Reset has an invalid non-whitespace child text element '\n      boba fet\n      '. Either a test_value block or a reset_value block is expected.",
+        "test_value has an invalid non-whitespace child text element '\n      boba fet\n      '.",
         "The test_value in the reset in component 'ship' referencing variable 'jedi' and test_variable 'jedi' should have a MathML block as a child.",
-        "The test_value in the reset in component 'ship' referencing variable 'jedi' and test_variable 'jedi' should have a MathML block as a child.",
-        "The reset_value in the reset in component 'ship' referencing variable 'jedi' and test_variable 'jedi' should have a MathML block as a child.",
+        "reset_value has an invalid non-whitespace child text element '\n      boba fet\n      '.",
         "The reset_value in the reset in component 'ship' referencing variable 'jedi' and test_variable 'jedi' should have a MathML block as a child.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n    awakens\n    '.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n      force\n    '.",
@@ -1833,12 +1833,12 @@ TEST(Parser, parseResets)
         "    <reset order=\"1\" id=\"rid\" variable=\"variable1\" test_variable=\"variable2\">\n"
         "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </reset_value>\n"
         "    </reset>\n"
@@ -1862,16 +1862,12 @@ TEST(Parser, parseResets)
 
     std::string testValueString = r->testValue();
     std::string t =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
-        "        </math>\n";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply/></math>\n";
     EXPECT_EQ(t, testValueString);
 
     std::string resetValueString = r->resetValue();
     std::string rt =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
-        "        </math>\n";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply/></math>\n";
     EXPECT_EQ(rt, resetValueString);
 }
 
@@ -1904,22 +1900,22 @@ TEST(Parser, parseResetsWithIssues)
         "      </test_value>\n"
         "      <test_value>\n" // duplicated test_value block inside reset
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value another_invalid_attribute=\"bananas\">\n" // invalid attribute
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </reset_value>\n"
         "      <test_value>\n" // duplicated test_value block inside reset
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </reset_value>\n" // duplicated reset_value block inside reset
         "    </reset>\n"
@@ -1983,17 +1979,17 @@ TEST(Parser, parseResetIllegalChild)
         "    <reset order=\"1\" id=\"rid\" variable=\"variable1\" test_variable=\"variable2\">\n"
         "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </reset_value>\n"
         "      <initial_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </initial_value>\n"
         "    </reset>\n"
@@ -2021,14 +2017,14 @@ TEST(Parser, parseResetIllegalChild)
     std::string testValueString = r->testValue();
     const std::string t =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
+        "          <apply/>\n"
         "        </math>\n";
     EXPECT_EQ(t, testValueString);
 
     std::string resetValueString = r->resetValue();
     const std::string rt =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply/>\n"
         "        </math>\n";
     EXPECT_EQ(rt, resetValueString);
 }
@@ -2044,24 +2040,24 @@ TEST(Parser, parseResetsWithOrderIssues)
         "    <reset order=\"12345678901\" id=\"rid\" variable=\"variable3\" test_variable=\"variable2\">\n"
         "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </reset_value>\n"
         "    </reset>\n"
         "    <reset order=\"a\" id=\"rid\" variable=\"variable3\" test_variable=\"variable2\">\n"
         "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </reset_value>\n"
         "    </reset>\n"
@@ -2145,13 +2141,13 @@ TEST(Parser, xmlComments)
         "      <test_value>\n"
         "        <!-- THIS COMMENT SHOULD BE IGNORED 5 -->\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
         "        <!-- THIS COMMENT SHOULD BE IGNORED 6 -->\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
+        "          <apply />\n"
         "        </math>\n"
         "      </reset_value>\n"
         "    </reset>\n"
