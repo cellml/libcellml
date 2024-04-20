@@ -564,7 +564,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setModel(model);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (mParsing1XVersion && childNode->isCellml1XElement("group")) {
@@ -701,7 +701,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Component '" + component->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setComponent(component);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (childNode->isComment()) {
@@ -781,7 +781,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Units '" + units->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setUnits(units);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (childNode->isComment()) {
@@ -814,7 +814,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setUnits(units);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_ELEMENT);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (childNode->isComment()) {
@@ -913,7 +913,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Variable '" + node->attribute("name") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setVariable(variable);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_ELEMENT);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (childNode->isComment()) {
@@ -1161,7 +1161,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 if (hasNonWhitespaceCharacters(textNode)) {
                     auto issue = Issue::IssueImpl::create();
                     issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
+                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                     issue->mPimpl->mItem->mPimpl->setModel(model);
                     addIssue(issue);
                 }
@@ -1269,7 +1269,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setModel(model);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (childNode->isComment()) {
@@ -1452,7 +1452,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (childComponentNode->isComment()) {
@@ -1499,7 +1499,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Encapsulation in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setEncapsulation(model);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             } else {
                 // Continue to next node if this is whitespace (don't try to parse children of whitespace).
@@ -1659,7 +1659,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Import from '" + node->attribute("href") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (childNode->isComment()) {
@@ -1720,22 +1720,29 @@ void Parser::ParserImpl::loadResetChild(const std::string &childType, const Rese
             } else {
                 reset->appendResetValue(math);
             }
-        } else if (mathNode->isComment()) {
-            // Do nothing
-        } else {
+        } else if (mathNode->isText()) {
             std::string textNode = mathNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 auto issue = Issue::IssueImpl::create();
-                issue->mPimpl->setDescription("The " + childType + " in the reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' should have a MathML block as a child.");
+                issue->mPimpl->setDescription(childType + " has an invalid non-whitespace child text element '" + textNode + "'.");
                 issue->mPimpl->mItem->mPimpl->setReset(reset);
-                if (childType == "test_value") {
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::TEST_VALUE_CHILD);
-                } else {
-                    issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VALUE_CHILD);
-                }
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
+        } else if (mathNode->isComment()) {
+            // Do nothing
+        } else {
+            std::string textNode = mathNode->convertToString();
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("The " + childType + " in the reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' should have a MathML block as a child.");
+            issue->mPimpl->mItem->mPimpl->setReset(reset);
+            if (childType == "test_value") {
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::TEST_VALUE_CHILD);
+            } else {
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_VALUE_CHILD);
+            }
+            addIssue(issue);
         }
         mathNode = mathNode->next();
     }
@@ -1885,7 +1892,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Reset has an invalid non-whitespace child text element '" + textNode + "'. Either a test_value block or a reset_value block is expected.");
                 issue->mPimpl->mItem->mPimpl->setReset(reset);
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_CHARACTER);
                 addIssue(issue);
             }
         } else if (childNode->isComment()) {
