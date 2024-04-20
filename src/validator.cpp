@@ -439,6 +439,17 @@ public:
     void validateMath(const std::string &input, const ComponentPtr &component);
 
     /**
+     * @brief Validate an individual MathML math element.
+     *
+     * Validate the MathML to determine that all MathML elements are listed in the
+     * supported MathML elements table from the CellML specification 2.0 document.
+     *
+     * @param node The node to check children and sibling nodes.
+     * @param component The component the MathML belongs to.
+     */
+    void validateMathMLElement(const XmlNodePtr &node, const ComponentPtr &component);
+
+    /**
      * @brief Traverse the node tree for invalid MathML elements.
      *
      * Traverse the Xml node tree checking that all MathML elements are listed in the
@@ -1735,31 +1746,24 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     }
 }
 
+void Validator::ValidatorImpl::validateMathMLElement(const XmlNodePtr &node, const ComponentPtr &component)
+{
+    if (node != nullptr) {
+        if (!node->isComment() && !node->isText() && !isSupportedMathMLElement(node)) {
+            auto issue = Issue::IssueImpl::create();
+            issue->mPimpl->setDescription("Math has a '" + node->name() + "' element that is not a supported MathML element.");
+            issue->mPimpl->mItem->mPimpl->setMath(component);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CHILD);
+            addIssue(issue);
+        }
+        validateMathMLElements(node, component);
+    }
+}
+
 void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component)
 {
-    XmlNodePtr childNode = node->firstChild();
-    if (childNode != nullptr) {
-        if (!childNode->isComment() && !childNode->isText() && !isSupportedMathMLElement(childNode)) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Math has a '" + childNode->name() + "' element that is not a supported MathML element.");
-            issue->mPimpl->mItem->mPimpl->setMath(component);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CHILD);
-            addIssue(issue);
-        }
-        validateMathMLElements(childNode, component);
-    }
-
-    XmlNodePtr nextNode = node->next();
-    if (nextNode != nullptr) {
-        if (!nextNode->isComment() && !nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
-            auto issue = Issue::IssueImpl::create();
-            issue->mPimpl->setDescription("Math has a '" + nextNode->name() + "' element that is not a supported MathML element.");
-            issue->mPimpl->mItem->mPimpl->setMath(component);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MATH_CHILD);
-            addIssue(issue);
-        }
-        validateMathMLElements(nextNode, component);
-    }
+    validateMathMLElement(node->firstChild(), component);
+    validateMathMLElement(node->next(), component);
 }
 
 void Validator::ValidatorImpl::addMathmlIssue(const std::string &description,
