@@ -1712,7 +1712,7 @@ void Parser::ParserImpl::loadResetChild(const std::string &childType, const Rese
     }
 
     XmlNodePtr mathNode = node->firstChild();
-    while (mathNode) {
+    while (mathNode != nullptr) {
         if (mathNode->isMathmlElement("math")) {
             std::string math = mathNode->convertToString() + "\n";
             if (childType == "test_value") {
