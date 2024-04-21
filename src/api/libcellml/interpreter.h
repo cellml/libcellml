@@ -84,7 +84,7 @@ public:
      *
      * @return The model's states as a @c std::vector of @c double.
      */
-    std::vector<double> states();
+    std::vector<double> &states();
 
     /**
      * @brief Get the model's rates.
@@ -93,7 +93,7 @@ public:
      *
      * @return The model's rates as a @c std::vector of @c double.
      */
-    std::vector<double> rates();
+    std::vector<double> &rates();
 
     /**
      * @brief Get the model's variables.
@@ -102,7 +102,7 @@ public:
      *
      * @return The model's variables as a @c std::vector of @c double.
      */
-    std::vector<double> variables();
+    std::vector<double> &variables();
 
     /**
      * @brief Initialise the model's variables.

@@ -86,17 +86,17 @@ double Interpreter::voi()
     return mPimpl->mVoi;
 }
 
-std::vector<double> Interpreter::states()
+std::vector<double> &Interpreter::states()
 {
     return mPimpl->mStates;
 }
 
-std::vector<double> Interpreter::rates()
+std::vector<double> &Interpreter::rates()
 {
     return mPimpl->mRates;
 }
 
-std::vector<double> Interpreter::variables()
+std::vector<double> &Interpreter::variables()
 {
     return mPimpl->mVariables;
 }
