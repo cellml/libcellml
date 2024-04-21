@@ -24,6 +24,8 @@ limitations under the License.
 
 #include <chrono>
 #include <cmath>
+#include <fstream>
+#include <iostream>
 #include <libcellml>
 
 #include "libcellml/undefines.h"
@@ -99,32 +101,93 @@ namespace garny_kohl_hunter_boyett_noble_rabbit_san_model_2003 {
     delete[] rates; \
     delete[] variables;
 
-#define COMPARE_COMPILED_VS_INTERPRETED(model) \
-    static const auto ITERATIONS = 25000; \
+#define STRINGIFY(x) #x
+
+#define COMPARE_COMPILED_AND_INTERPRETED_MODELS(model, endingPoint, pointInterval, solverStep, trackedVariableIndex) \
+    double point, voi; \
+    size_t pointCounter, voiCounter; \
+    std::chrono::high_resolution_clock::time_point start; \
+    std::ofstream file; \
 \
-    auto start = std::chrono::high_resolution_clock::now(); \
+    file.open((std::string(STRINGIFY(model)) + "_compiled.csv").c_str()); \
+\
+    start = std::chrono::high_resolution_clock::now(); \
+\
+    point = voi = 0.0; \
+    pointCounter = 0; \
+    voiCounter = 0; \
 \
     model::initialiseVariables(states, rates, variables); \
     model::computeComputedConstants(variables); \
 \
-    for (size_t i = 0; i < ITERATIONS; ++i) { \
-        model::computeRates(0.0, states, rates, variables); \
-        model::computeVariables(0.0, states, rates, variables); \
+    file << "t,X\n"; \
+    file << voi << "," << states[trackedVariableIndex] << "\n"; \
+\
+    while (!areNearlyEqual(point, endingPoint)) { \
+        point = std::min(static_cast<double>(++pointCounter) * pointInterval, endingPoint); \
+\
+        while (!areNearlyEqual(voi, point)) { \
+            voi = std::min(static_cast<double>(++voiCounter) * solverStep, point); \
+\
+            model::computeRates(voi, states, rates, variables); \
+\
+            for (size_t i = 0; i < model::STATE_COUNT; ++i) { \
+                states[i] += solverStep * rates[i]; \
+            } \
+        } \
+\
+        model::computeVariables(voi, states, rates, variables); \
+\
+        file << voi << "," << states[trackedVariableIndex] << "\n"; \
     } \
 \
     auto compiledElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count(); \
 \
     std::cout << "Computed elapsed time:    " << compiledElapsedTime << " ms" << std::endl; \
 \
+    file.close(); \
+\
+    auto statesData = interpreter->states().data(); \
+    auto ratesData = interpreter->rates().data(); \
+\
+    file.open((std::string(STRINGIFY(model)) + "_interpreted.csv").c_str()); \
+\
     start = std::chrono::high_resolution_clock::now(); \
 \
-    for (size_t i = 0; i < ITERATIONS; ++i) { \
-        INTERPRET_MODEL(); \
+    point = voi = 0.0; \
+    pointCounter = 0; \
+    voiCounter = 0; \
+\
+    interpreter->initialiseVariables(); \
+    interpreter->computeComputedConstants(); \
+\
+    file << "t,X\n"; \
+    file << voi << "," << statesData[trackedVariableIndex] << "\n"; \
+\
+    while (!areNearlyEqual(point, endingPoint)) { \
+        point = std::min(static_cast<double>(++pointCounter) * pointInterval, endingPoint); \
+\
+        while (!areNearlyEqual(voi, point)) { \
+            voi = std::min(static_cast<double>(++voiCounter) * solverStep, point); \
+\
+            interpreter->computeRates(voi); \
+\
+            for (size_t i = 0; i < model::STATE_COUNT; ++i) { \
+                statesData[i] += solverStep * ratesData[i]; \
+            } \
+        } \
+\
+        interpreter->computeVariables(voi); \
+\
+        file << voi << "," << statesData[trackedVariableIndex] << "\n"; \
     } \
 \
     auto interpretedElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count(); \
 \
     std::cout << "Interpreted elapsed time: " << interpretedElapsedTime << " ms" << std::endl; \
+\
+    file.close(); \
+\
     std::cout << "Slowdown:                 " << (interpretedElapsedTime / static_cast<double>(compiledElapsedTime)) << "x" << std::endl;
 
 /*---GRY---
@@ -1938,7 +2001,7 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
     EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
     EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
 
-    COMPARE_COMPILED_VS_INTERPRETED(fabbri_fantini_wilders_severi_human_san_model_2017);
+    COMPARE_COMPILED_AND_INTERPRETED_MODELS(fabbri_fantini_wilders_severi_human_san_model_2017, 1.0, 1.0e-3, 1.0e-5, 15);
 
     FINALISE_MODEL();
 }
@@ -1987,7 +2050,7 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
     EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
     EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
 
-    COMPARE_COMPILED_VS_INTERPRETED(garny_kohl_hunter_boyett_noble_rabbit_san_model_2003);
+    COMPARE_COMPILED_AND_INTERPRETED_MODELS(garny_kohl_hunter_boyett_noble_rabbit_san_model_2003, 1.0, 1.0e-3, 1.0e-5, 0);
 
     FINALISE_MODEL();
 }
