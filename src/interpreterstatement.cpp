@@ -205,11 +205,9 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double v
     case Type::PIECEWISE: {
         assert(mLeftChild->mPimpl->mType == Type::PIECE);
 
-        if (mLeftChild->mPimpl->mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables)) {
-            return mLeftChild->mPimpl->mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
-        }
-
-        return mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
+        return (mLeftChild->mPimpl->mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables)) ?
+                   mLeftChild->mPimpl->mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) :
+                   mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     }
 
         // Token elements.
