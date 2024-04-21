@@ -60,7 +60,7 @@ libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::ParentedEnt
  *
  * @return @c true if the given doubles are considered close, @c false otherwise.
  */
-bool areNearlyEqual(double a, double b);
+bool TEST_EXPORT areNearlyEqual(double a, double b);
 
 #ifndef TEST_UTILS
 } // namespace libcellml
