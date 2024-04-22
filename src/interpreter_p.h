@@ -29,7 +29,6 @@ struct Interpreter::InterpreterImpl
 {
     AnalyserModelPtr mModel;
 
-    std::vector<InterpreterStatementPtr> mNlaSystemsStatements;
     std::vector<InterpreterStatementPtr> mInitialiseVariablesStatements;
     std::vector<InterpreterStatementPtr> mComputeComputedConstantsStatements;
     std::vector<InterpreterStatementPtr> mComputeRatesStatements;

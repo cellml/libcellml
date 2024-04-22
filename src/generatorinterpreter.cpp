@@ -70,14 +70,10 @@ void GeneratorInterpreter::GeneratorInterpreterImpl::initialise(const AnalyserMo
 
     nlaSystems();
 
-    mNlaSystemsStatements = mStatements;
-
     // Add code for the implementation to initialise our variables.
 
     auto equations = mModel->equations();
     std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
-
-    mStatements.clear();
 
     initialiseVariables(remainingEquations);
 
@@ -1717,11 +1713,6 @@ GeneratorInterpreterPtr GeneratorInterpreter::create(const AnalyserEquationAstPt
 std::string GeneratorInterpreter::code() const
 {
     return mPimpl->mCode;
-}
-
-std::vector<InterpreterStatementPtr> GeneratorInterpreter::nlaSystemsStatements() const
-{
-    return mPimpl->mNlaSystemsStatements;
 }
 
 std::vector<InterpreterStatementPtr> GeneratorInterpreter::initialiseVariablesStatements() const

@@ -46,7 +46,6 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     std::string mCode;
 
     InterpreterStatementPtrs mStatements;
-    InterpreterStatementPtrs mNlaSystemsStatements;
     InterpreterStatementPtrs mInitialiseVariablesStatements;
     InterpreterStatementPtrs mComputeComputedConstantsStatements;
     InterpreterStatementPtrs mComputeRatesStatements;

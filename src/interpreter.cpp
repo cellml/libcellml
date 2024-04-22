@@ -44,7 +44,6 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
 
         auto generatorInterpreter = GeneratorInterpreter::create(mModel);
 
-        mNlaSystemsStatements = generatorInterpreter->nlaSystemsStatements();
         mInitialiseVariablesStatements = generatorInterpreter->initialiseVariablesStatements();
         mComputeComputedConstantsStatements = generatorInterpreter->computeComputedConstantsStatements();
         mComputeRatesStatements = generatorInterpreter->computeRatesStatements();

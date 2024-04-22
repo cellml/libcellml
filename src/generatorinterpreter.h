@@ -101,15 +101,6 @@ public:
     std::string code() const;
 
     /**
-     * @brief Get the statements to compute the NLA systems.
-     *
-     * Get the statements to compute the NLA systems.
-     *
-     * @return The statements to compute the NLA systems as a @c std::vector.
-     */
-    std::vector<InterpreterStatementPtr> nlaSystemsStatements() const;
-
-    /**
      * @brief Get the statements to initialise variables.
      *
      * Get the statements to initialise variables.
