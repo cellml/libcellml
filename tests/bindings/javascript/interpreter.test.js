@@ -60,10 +60,10 @@ describe("Interpreter tests", () => {
         expectArray(NaN_x_4, i.rates())
         expectArray(NaN_x_18, i.variables())
 
-        i.initialiseVariables()
-        i.computeComputedConstants()
-        i.computeRates(0.0)
-        i.computeVariables(0.0)
+        i.initialiseAstVariables()
+        i.computeAstComputedConstants()
+        i.computeAstRates(0.0)
+        i.computeAstVariables(0.0)
 
         expectArray([0.0, 0.6, 0.05, 0.325], i.states())
         expectArray([0.60076875, -0.0004555239065400646, 0.012385538355398518, -0.0013415722863204596], i.rates())

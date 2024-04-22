@@ -14,36 +14,36 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "interpreterstatement_p.h"
+#include "interpreteraststatement_p.h"
 
 namespace libcellml {
 
-InterpreterStatementPtr InterpreterStatement::leftChild() const
+InterpreterAstStatementPtr InterpreterAstStatement::leftChild() const
 {
     return mPimpl->mLeftChild;
 }
 
-InterpreterStatementPtr InterpreterStatement::rightChild() const
+InterpreterAstStatementPtr InterpreterAstStatement::rightChild() const
 {
     return mPimpl->mRightChild;
 }
 
-InterpreterStatement::Type InterpreterStatement::type() const
+InterpreterAstStatement::Type InterpreterAstStatement::type() const
 {
     return mPimpl->mType;
 }
 
-AnalyserVariablePtr InterpreterStatement::variable() const
+AnalyserVariablePtr InterpreterAstStatement::variable() const
 {
     return mPimpl->mVariable;
 }
 
-double InterpreterStatement::value() const
+double InterpreterAstStatement::value() const
 {
     return mPimpl->mValue;
 }
 
-size_t InterpreterStatement::externalIndex() const
+size_t InterpreterAstStatement::externalIndex() const
 {
     return mPimpl->mExternalIndex;
 }

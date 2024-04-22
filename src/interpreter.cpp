@@ -44,10 +44,10 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
 
         auto generatorInterpreter = GeneratorInterpreter::create(mModel);
 
-        mInitialiseVariablesStatements = generatorInterpreter->initialiseVariablesStatements();
-        mComputeComputedConstantsStatements = generatorInterpreter->computeComputedConstantsStatements();
-        mComputeRatesStatements = generatorInterpreter->computeRatesStatements();
-        mComputeVariablesStatements = generatorInterpreter->computeVariablesStatements();
+        mInitialiseVariablesAstStatements = generatorInterpreter->initialiseVariablesAstStatements();
+        mComputeComputedConstantsAstStatements = generatorInterpreter->computeComputedConstantsAstStatements();
+        mComputeRatesAstStatements = generatorInterpreter->computeRatesAstStatements();
+        mComputeVariablesAstStatements = generatorInterpreter->computeVariablesAstStatements();
     } else {
         mStates.clear();
         mRates.clear();
@@ -100,30 +100,30 @@ std::vector<double> &Interpreter::variables()
     return mPimpl->mVariables;
 }
 
-void Interpreter::initialiseVariables()
+void Interpreter::initialiseAstVariables()
 {
-    for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
+    for (const auto &statement : mPimpl->mInitialiseVariablesAstStatements) {
         statement->evaluate(0.0, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
 }
 
-void Interpreter::computeComputedConstants()
+void Interpreter::computeAstComputedConstants()
 {
-    for (const auto &statement : mPimpl->mComputeComputedConstantsStatements) {
+    for (const auto &statement : mPimpl->mComputeComputedConstantsAstStatements) {
         statement->evaluate(0.0, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
 }
 
-void Interpreter::computeRates(double voi)
+void Interpreter::computeAstRates(double voi)
 {
-    for (const auto &statement : mPimpl->mComputeRatesStatements) {
+    for (const auto &statement : mPimpl->mComputeRatesAstStatements) {
         statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
 }
 
-void Interpreter::computeVariables(double voi)
+void Interpreter::computeAstVariables(double voi)
 {
-    for (const auto &statement : mPimpl->mComputeVariablesStatements) {
+    for (const auto &statement : mPimpl->mComputeVariablesAstStatements) {
         statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
     }
 }

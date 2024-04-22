@@ -22,7 +22,7 @@ limitations under the License.
 #include "internaltypes.h"
 
 #define DEBUG
-#include "interpreterstatement.h"
+#include "interpreteraststatement.h"
 #undef DEBUG
 
 namespace libcellml {
@@ -101,7 +101,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model);
 void printAnalyserModelVariables(const AnalyserModelPtr &model);
 void printAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
 void printAstAsCode(const AnalyserEquationAstPtr &ast);
-void printInterpreterStatementAsTree(const InterpreterStatementPtr &interpreterStatement);
+void printInterpreterAstStatementAsTree(const InterpreterAstStatementPtr &interpreterAstStatement);
 void printComponentMap(const ComponentMap &map);
 void printConnectionMap(const ConnectionMap &map);
 void printEquivalenceMap(const EquivalenceMap &map);

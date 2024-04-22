@@ -45,11 +45,11 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
     GeneratorProfilePtr mProfile = GeneratorProfile::create();
     std::string mCode;
 
-    InterpreterStatementPtrs mStatements;
-    InterpreterStatementPtrs mInitialiseVariablesStatements;
-    InterpreterStatementPtrs mComputeComputedConstantsStatements;
-    InterpreterStatementPtrs mComputeRatesStatements;
-    InterpreterStatementPtrs mComputeVariablesStatements;
+    InterpreterAstStatementPtrs mAstStatements;
+    InterpreterAstStatementPtrs mInitialiseVariablesAstStatements;
+    InterpreterAstStatementPtrs mComputeComputedConstantsAstStatements;
+    InterpreterAstStatementPtrs mComputeRatesAstStatements;
+    InterpreterAstStatementPtrs mComputeVariablesAstStatements;
 
     explicit GeneratorInterpreterImpl(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
                                       const std::string &code);
@@ -82,19 +82,19 @@ struct GeneratorInterpreter::GeneratorInterpreterImpl
 
     std::string generateOperatorCode(const std::string &op,
                                      const AnalyserEquationAstPtr &ast,
-                                     const InterpreterStatementPtr &statement) const;
+                                     const InterpreterAstStatementPtr &astStatement) const;
     std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast,
-                                       const InterpreterStatementPtr &statement) const;
+                                       const InterpreterAstStatementPtr &astStatement) const;
     std::string generateOneParameterFunctionCode(const std::string &function,
                                                  const AnalyserEquationAstPtr &ast,
-                                                 const InterpreterStatementPtr &statement) const;
+                                                 const InterpreterAstStatementPtr &astStatement) const;
     std::string generateTwoParameterFunctionCode(const std::string &function,
                                                  const AnalyserEquationAstPtr &ast,
-                                                 const InterpreterStatementPtr &statement) const;
+                                                 const InterpreterAstStatementPtr &astStatement) const;
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
-    std::tuple<std::string, InterpreterStatementPtr> generateCode(const AnalyserEquationAstPtr &ast) const;
+    std::tuple<std::string, InterpreterAstStatementPtr> generateCode(const AnalyserEquationAstPtr &ast) const;
 
     bool isToBeComputedAgain(const AnalyserEquationPtr &equation) const;
     bool isSomeConstant(const AnalyserEquationPtr &equation,

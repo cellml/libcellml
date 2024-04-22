@@ -30,9 +30,9 @@ EMSCRIPTEN_BINDINGS(libcellml_interpreter)
         .function("states", &libcellml::Interpreter::states)
         .function("rates", &libcellml::Interpreter::rates)
         .function("variables", &libcellml::Interpreter::variables)
-        .function("initialiseVariables", &libcellml::Interpreter::initialiseVariables)
-        .function("computeComputedConstants", &libcellml::Interpreter::computeComputedConstants)
-        .function("computeRates", &libcellml::Interpreter::computeRates)
-        .function("computeVariables", &libcellml::Interpreter::computeVariables)
+        .function("initialiseAstVariables", &libcellml::Interpreter::initialiseAstVariables)
+        .function("computeAstComputedConstants", &libcellml::Interpreter::computeAstComputedConstants)
+        .function("computeAstRates", &libcellml::Interpreter::computeAstRates)
+        .function("computeAstVariables", &libcellml::Interpreter::computeAstVariables)
     ;
 }
