@@ -23,6 +23,7 @@ limitations under the License.
 
 #define DEBUG
 #include "interpreteraststatement.h"
+#include "interpreterrpnstatement.h"
 #undef DEBUG
 
 namespace libcellml {
@@ -102,6 +103,7 @@ void printAnalyserModelVariables(const AnalyserModelPtr &model);
 void printAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
 void printAstAsCode(const AnalyserEquationAstPtr &ast);
 void printInterpreterAstStatement(const InterpreterAstStatementPtr &interpreterAstStatement);
+void printInterpreterRpnStatements(const InterpreterRpnStatementPtrs &interpreterRpnStatements);
 void printComponentMap(const ComponentMap &map);
 void printConnectionMap(const ConnectionMap &map);
 void printEquivalenceMap(const EquivalenceMap &map);

@@ -210,6 +210,44 @@ public:
      */
     static InterpreterRpnStatementPtr create(size_t externalIndex) noexcept;
 
+#ifdef DEBUG
+    /**
+     * @brief Get the type of the statement.
+     *
+     * Return the type of the statement.
+     *
+     * @return The type of the statement.
+     */
+    Type type() const;
+
+    /**
+     * @brief Get the variable associated with the statement.
+     *
+     * Return the variable associated with the statement.
+     *
+     * @return The variable associated with the statement.
+     */
+    AnalyserVariablePtr variable() const;
+
+    /**
+     * @brief Get the value associated with the statement.
+     *
+     * Return the value associated with the statement.
+     *
+     * @return The value associated with the statement.
+     */
+    double value() const;
+
+    /**
+     * @brief Get the external index associated with the statement.
+     *
+     * Return the external index associated with the statement.
+     *
+     * @return The external index associated with the statement.
+     */
+    size_t externalIndex() const;
+#endif
+
     /**
      * @brief Evaluate the statement.
      *
