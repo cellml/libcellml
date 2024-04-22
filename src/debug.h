@@ -101,7 +101,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model);
 void printAnalyserModelVariables(const AnalyserModelPtr &model);
 void printAstAsTree(const AnalyserModelPtr &model, const AnalyserEquationAstPtr &ast);
 void printAstAsCode(const AnalyserEquationAstPtr &ast);
-void printInterpreterAstStatementAsTree(const InterpreterAstStatementPtr &interpreterAstStatement);
+void printInterpreterAstStatement(const InterpreterAstStatementPtr &interpreterAstStatement);
 void printComponentMap(const ComponentMap &map);
 void printConnectionMap(const ConnectionMap &map);
 void printEquivalenceMap(const EquivalenceMap &map);

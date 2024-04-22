@@ -705,13 +705,13 @@ InterpreterAstStatementTrunk::InterpreterAstStatementTrunk(InterpreterAstStateme
 {
 }
 
-std::string doPrintInterpreterAstStatementAsTree(InterpreterAstStatementTrunk *trunk)
+std::string doPrintInterpreterAstStatement(InterpreterAstStatementTrunk *trunk)
 {
     if (trunk == nullptr) {
         return {};
     }
 
-    auto res = doPrintInterpreterAstStatementAsTree(trunk->mPrev);
+    auto res = doPrintInterpreterAstStatement(trunk->mPrev);
 
     if ((trunk->mPrev != nullptr) && (trunk->mPrev->mStr == SPACES)
         && ((trunk->mStr == SPACES) || (trunk->mStr == TRUNK))) {
@@ -721,7 +721,7 @@ std::string doPrintInterpreterAstStatementAsTree(InterpreterAstStatementTrunk *t
     return res + trunk->mStr;
 }
 
-std::string doPrintInterpreterAstStatementAsTree(const InterpreterAstStatementPtr &interpreterAstStatement)
+std::string doPrintInterpreterAstStatement(const InterpreterAstStatementPtr &interpreterAstStatement)
 {
     std::string res;
 
@@ -1024,8 +1024,8 @@ std::string doPrintInterpreterAstStatementAsTree(const InterpreterAstStatementPt
     return res;
 }
 
-std::string doPrintInterpreterAstStatementAsTree(const InterpreterAstStatementPtr &interpreterAstStatement,
-                                                 InterpreterAstStatementTrunk *prevTrunk, bool isLeft)
+std::string doPrintInterpreterAstStatement(const InterpreterAstStatementPtr &interpreterAstStatement,
+                                           InterpreterAstStatementTrunk *prevTrunk, bool isLeft)
 {
     if (interpreterAstStatement == nullptr) {
         return {};
@@ -1037,7 +1037,7 @@ std::string doPrintInterpreterAstStatementAsTree(const InterpreterAstStatementPt
     auto astLeftChild = interpreterAstStatement->leftChild();
 
     if (astLeftChild != nullptr) {
-        res += doPrintInterpreterAstStatementAsTree(astLeftChild, &trunk, true);
+        res += doPrintInterpreterAstStatement(astLeftChild, &trunk, true);
     }
 
     if (prevTrunk == nullptr) {
@@ -1052,13 +1052,13 @@ std::string doPrintInterpreterAstStatementAsTree(const InterpreterAstStatementPt
 
     auto astRightChild = interpreterAstStatement->rightChild();
 
-    res += doPrintInterpreterAstStatementAsTree(&trunk);
+    res += doPrintInterpreterAstStatement(&trunk);
 
     if (astLeftChild != nullptr) {
         res += (astRightChild != nullptr) ? "┤" : "┘";
     }
 
-    res += " " + doPrintInterpreterAstStatementAsTree(interpreterAstStatement) + "\n";
+    res += " " + doPrintInterpreterAstStatement(interpreterAstStatement) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
@@ -1067,15 +1067,15 @@ std::string doPrintInterpreterAstStatementAsTree(const InterpreterAstStatementPt
     trunk.mStr = TRUNK;
 
     if (astRightChild != nullptr) {
-        res += doPrintInterpreterAstStatementAsTree(astRightChild, &trunk, false);
+        res += doPrintInterpreterAstStatement(astRightChild, &trunk, false);
     }
 
     return res;
 }
 
-void printInterpreterAstStatementAsTree(const InterpreterAstStatementPtr &interpreterAstStatement)
+void printInterpreterAstStatement(const InterpreterAstStatementPtr &interpreterAstStatement)
 {
-    Debug() << doPrintInterpreterAstStatementAsTree(interpreterAstStatement, nullptr, false);
+    Debug() << doPrintInterpreterAstStatement(interpreterAstStatement, nullptr, false);
 }
 
 void printImportLibrary(const ImportLibrary &importlibrary)
