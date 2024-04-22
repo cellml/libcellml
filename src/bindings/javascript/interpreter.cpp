@@ -34,5 +34,9 @@ EMSCRIPTEN_BINDINGS(libcellml_interpreter)
         .function("computeAstComputedConstants", &libcellml::Interpreter::computeAstComputedConstants)
         .function("computeAstRates", &libcellml::Interpreter::computeAstRates)
         .function("computeAstVariables", &libcellml::Interpreter::computeAstVariables)
+        .function("initialiseRpnVariables", &libcellml::Interpreter::initialiseRpnVariables)
+        .function("computeRpnComputedConstants", &libcellml::Interpreter::computeRpnComputedConstants)
+        .function("computeRpnRates", &libcellml::Interpreter::computeRpnRates)
+        .function("computeRpnVariables", &libcellml::Interpreter::computeRpnVariables)
     ;
 }

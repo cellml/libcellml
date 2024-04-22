@@ -18,7 +18,27 @@ limitations under the License.
 
 #include "libcellml/interpreter.h"
 
+#include "internaltypes.h"
+
 namespace libcellml {
+
+struct InterpreterStackElement
+{
+    enum class Type
+    {
+        NUMBER,
+        STATE,
+        RATE,
+        VARIABLE
+    };
+
+    Type mType = Type::NUMBER;
+    double mValue = std::numeric_limits<double>::quiet_NaN();
+    size_t mIndex = 0;
+
+    explicit InterpreterStackElement(double value);
+    explicit InterpreterStackElement(Type type, size_t index);
+};
 
 /**
  * @brief The Interpreter::InterpreterImpl struct.
@@ -33,6 +53,11 @@ struct Interpreter::InterpreterImpl
     std::vector<InterpreterAstStatementPtr> mComputeComputedConstantsAstStatements;
     std::vector<InterpreterAstStatementPtr> mComputeRatesAstStatements;
     std::vector<InterpreterAstStatementPtr> mComputeVariablesAstStatements;
+
+    std::vector<InterpreterRpnStatementPtr> mInitialiseVariablesRpnStatements;
+    std::vector<InterpreterRpnStatementPtr> mComputeComputedConstantsRpnStatements;
+    std::vector<InterpreterRpnStatementPtr> mComputeRatesRpnStatements;
+    std::vector<InterpreterRpnStatementPtr> mComputeVariablesRpnStatements;
 
     double mVoi = 0.0;
     std::vector<double> mStates;

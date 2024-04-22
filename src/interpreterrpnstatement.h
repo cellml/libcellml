@@ -17,24 +17,23 @@ limitations under the License.
 #pragma once
 
 #include <memory>
+#include <stack>
 
 #include "libcellml/analyservariable.h"
 
-#include "internaltypes.h"
+#include "interpreter_p.h"
 
 #include "libcellml/undefines.h"
 
 namespace libcellml {
 
 /**
- * @brief The InterpreterAstStatement class.
+ * @brief The InterpreterRpnStatement class.
  *
- * The InterpreterAstStatement class is for representing a CellML Interpreter Statement.
+ * The InterpreterRpnStatement class is for representing a CellML Interpreter Statement.
  */
-class InterpreterAstStatement
+class InterpreterRpnStatement
 {
-    friend class GeneratorInterpreter;
-
 public:
     /**
      * @brief The type of a statement.
@@ -65,6 +64,7 @@ public:
         // Arithmetic operators.
 
         PLUS, /**< The plus operator. */
+        UNARY_MINUS, /**< The unary minus operator. */
         MINUS, /**< The minus operator. */
         TIMES, /**< The times operator. */
         DIVIDE, /**< The divide operator. */
@@ -111,7 +111,6 @@ public:
         // Piecewise statement.
 
         PIECEWISE, /**< The "piecewise" statement. */
-        PIECE, /**< The "piece" part of a "piecewise" statement. */
 
         // Token elements.
 
@@ -141,135 +140,75 @@ public:
         EXTERNAL /**< An external variable. */
     };
 
-    ~InterpreterAstStatement(); /**< Destructor, @private. */
-    InterpreterAstStatement(const InterpreterAstStatement &rhs) = delete; /**< Copy constructor, @private. */
-    InterpreterAstStatement(InterpreterAstStatement &&rhs) noexcept = delete; /**< Move constructor, @private. */
-    InterpreterAstStatement &operator=(InterpreterAstStatement rhs) = delete; /**< Assignment operator, @private. */
+    ~InterpreterRpnStatement(); /**< Destructor, @private. */
+    InterpreterRpnStatement(const InterpreterRpnStatement &rhs) = delete; /**< Copy constructor, @private. */
+    InterpreterRpnStatement(InterpreterRpnStatement &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    InterpreterRpnStatement &operator=(InterpreterRpnStatement rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Create an @ref InterpreterAstStatement object.
+     * @brief Create an @ref InterpreterRpnStatement object.
      *
-     * Factory method to create an @ref InterpreterAstStatement for an element of the given type. Create such an
+     * Factory method to create an @ref InterpreterRpnStatement for an element of the given type. Create such an
      * interpreter statement with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::InterpreterAstStatement::create(type, leftChild, rightChild);
+     *   auto InterpreterRpnStatement = libcellml::InterpreterRpnStatement::create(type);
      * @endcode
      *
      * @param type The type of the statement.
-     * @param leftChild The left child of the statement.
-     * @param rightChild The right child of the statement.
      *
-     * @return A smart pointer to an @ref InterpreterAstStatement object.
+     * @return A smart pointer to an @ref InterpreterRpnStatement object.
      */
-    static InterpreterAstStatementPtr create(Type type,
-                                             const InterpreterAstStatementPtr &leftChild = nullptr,
-                                             const InterpreterAstStatementPtr &rightChild = nullptr) noexcept;
+    static InterpreterRpnStatementPtr create(Type type) noexcept;
 
     /**
-     * @brief Create an @ref InterpreterAstStatement object.
+     * @brief Create an @ref InterpreterRpnStatement object.
      *
-     * Factory method to create an @ref InterpreterAstStatement for a CI element. Create such an interpreter statement
+     * Factory method to create an @ref InterpreterRpnStatement for a CI element. Create such an interpreter statement
      * with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::InterpreterAstStatement::create(variable, rate);
+     *   auto InterpreterRpnStatement = libcellml::InterpreterRpnStatement::create(variable, rate);
      * @endcode
      *
      * @param variable The variable associated with the CI element.
      * @param rate Whether the variable is a rate.
      *
-     * @return A smart pointer to an @ref InterpreterAstStatement object.
+     * @return A smart pointer to an @ref InterpreterRpnStatement object.
      */
-    static InterpreterAstStatementPtr create(const AnalyserVariablePtr &variable, bool rate = false) noexcept;
+    static InterpreterRpnStatementPtr create(const AnalyserVariablePtr &variable, bool rate = false) noexcept;
 
     /**
-     * @brief Create an @ref InterpreterAstStatement object.
+     * @brief Create an @ref InterpreterRpnStatement object.
      *
-     * Factory method to create an @ref InterpreterAstStatement for a CN element. Create such an interpreter statement
+     * Factory method to create an @ref InterpreterRpnStatement for a CN element. Create such an interpreter statement
      * with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::InterpreterAstStatement::create(value);
+     *   auto InterpreterRpnStatement = libcellml::InterpreterRpnStatement::create(value);
      * @endcode
      *
      * @param value The value associated with the CN element.
      *
-     * @return A smart pointer to an @ref InterpreterAstStatement object.
+     * @return A smart pointer to an @ref InterpreterRpnStatement object.
      */
-    static InterpreterAstStatementPtr create(double value) noexcept;
+    static InterpreterRpnStatementPtr create(double value) noexcept;
 
     /**
-     * @brief Create an @ref InterpreterAstStatement object.
+     * @brief Create an @ref InterpreterRpnStatement object.
      *
-     * Factory method to create an @ref InterpreterAstStatement for an external variable. Create such an interpreter
+     * Factory method to create an @ref InterpreterRpnStatement for an external variable. Create such an interpreter
      * statement with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::InterpreterAstStatement::create(externalIndex);
+     *   auto InterpreterRpnStatement = libcellml::InterpreterRpnStatement::create(externalIndex);
      * @endcode
      *
      * @param externalIndex
      *
-     * @return A smart pointer to an @ref InterpreterAstStatement object.
+     * @return A smart pointer to an @ref InterpreterRpnStatement object.
      */
-    static InterpreterAstStatementPtr create(size_t externalIndex) noexcept;
-
-#ifdef DEBUG
-    /**
-     * @brief Get the left child of the statement.
-     *
-     * Return the left child of the statement.
-     *
-     * @return The left child of the statement.
-     */
-    InterpreterAstStatementPtr leftChild() const;
-
-    /**
-     * @brief Get the right child of the statement.
-     *
-     * Return the right child of the statement.
-     *
-     * @return The right child of the statement.
-     */
-    InterpreterAstStatementPtr rightChild() const;
-
-    /**
-     * @brief Get the type of the statement.
-     *
-     * Return the type of the statement.
-     *
-     * @return The type of the statement.
-     */
-    Type type() const;
-
-    /**
-     * @brief Get the variable associated with the statement.
-     *
-     * Return the variable associated with the statement.
-     *
-     * @return The variable associated with the statement.
-     */
-    AnalyserVariablePtr variable() const;
-
-    /**
-     * @brief Get the value associated with the statement.
-     *
-     * Return the value associated with the statement.
-     *
-     * @return The value associated with the statement.
-     */
-    double value() const;
-
-    /**
-     * @brief Get the external index associated with the statement.
-     *
-     * Return the external index associated with the statement.
-     *
-     * @return The external index associated with the statement.
-     */
-    size_t externalIndex() const;
-#endif
+    static InterpreterRpnStatementPtr create(size_t externalIndex) noexcept;
 
     /**
      * @brief Evaluate the statement.
@@ -280,19 +219,19 @@ public:
      * @param states The array of states.
      * @param rates The array of rates.
      * @param variables The array of variables.
+     * @param stack The stack to use for the evaluation.
      */
-    void evaluate(double voi, double *states, double *rates, double *variables) const;
+    void evaluate(double voi, double *states, double *rates, double *variables,
+                  std::stack<InterpreterStackElement> &stack) const;
 
 private:
-    InterpreterAstStatement(Type type,
-                            const InterpreterAstStatementPtr &leftChild,
-                            const InterpreterAstStatementPtr &rightChild); /**< Constructor, @private. */
-    InterpreterAstStatement(const AnalyserVariablePtr &variable, bool rate); /**< Constructor, @private. */
-    InterpreterAstStatement(double value); /**< Constructor, @private. */
-    InterpreterAstStatement(size_t externalIndex); /**< Constructor, @private. */
+    InterpreterRpnStatement(Type type); /**< Constructor, @private. */
+    InterpreterRpnStatement(const AnalyserVariablePtr &variable, bool rate); /**< Constructor, @private. */
+    InterpreterRpnStatement(double value); /**< Constructor, @private. */
+    InterpreterRpnStatement(size_t externalIndex); /**< Constructor, @private. */
 
-    struct InterpreterAstStatementImpl;
-    InterpreterAstStatementImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    struct InterpreterRpnStatementImpl;
+    InterpreterRpnStatementImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml

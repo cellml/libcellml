@@ -96,6 +96,12 @@ namespace garny_kohl_hunter_boyett_noble_rabbit_san_model_2003 {
     interpreter->computeAstRates(); \
     interpreter->computeAstVariables();
 
+#define INTERPRET_RPN_MODEL() \
+    interpreter->initialiseRpnVariables(); \
+    interpreter->computeRpnComputedConstants(); \
+    interpreter->computeRpnRates(); \
+    interpreter->computeRpnVariables();
+
 #define FINALISE_MODEL() \
     delete[] states; \
     delete[] rates; \
@@ -143,14 +149,14 @@ namespace garny_kohl_hunter_boyett_noble_rabbit_san_model_2003 {
 \
     auto compiledElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count(); \
 \
-    std::cout << "Computed elapsed time:    " << compiledElapsedTime << " ms" << std::endl; \
+    std::cout << "Computed elapsed time:        " << compiledElapsedTime << " ms" << std::endl; \
 \
     file.close(); \
 \
     auto statesData = interpreter->states().data(); \
     auto ratesData = interpreter->rates().data(); \
 \
-    file.open((std::string(STRINGIFY(model)) + "_interpreted.csv").c_str()); \
+    file.open((std::string(STRINGIFY(model)) + "_ast_interpreted.csv").c_str()); \
 \
     start = std::chrono::high_resolution_clock::now(); \
 \
@@ -184,11 +190,51 @@ namespace garny_kohl_hunter_boyett_noble_rabbit_san_model_2003 {
 \
     auto interpretedElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count(); \
 \
-    std::cout << "Interpreted elapsed time: " << interpretedElapsedTime << " ms" << std::endl; \
+    std::cout << "AST interpreted elapsed time: " << interpretedElapsedTime << " ms" << std::endl; \
 \
     file.close(); \
 \
-    std::cout << "Slowdown:                 " << (interpretedElapsedTime / static_cast<double>(compiledElapsedTime)) << "x" << std::endl;
+    std::cout << "AST slowdown:                 " << (interpretedElapsedTime / static_cast<double>(compiledElapsedTime)) << "x" << std::endl; \
+\
+    file.open((std::string(STRINGIFY(model)) + "_rpn_interpreted.csv").c_str()); \
+\
+    start = std::chrono::high_resolution_clock::now(); \
+\
+    point = voi = 0.0; \
+    pointCounter = 0; \
+    voiCounter = 0; \
+\
+    interpreter->initialiseRpnVariables(); \
+    interpreter->computeRpnComputedConstants(); \
+\
+    file << "t,X\n"; \
+    file << voi << "," << statesData[trackedVariableIndex] << "\n"; \
+\
+    while (!areNearlyEqual(point, endingPoint)) { \
+        point = std::min(static_cast<double>(++pointCounter) * pointInterval, endingPoint); \
+\
+        while (!areNearlyEqual(voi, point)) { \
+            voi = std::min(static_cast<double>(++voiCounter) * solverStep, point); \
+\
+            interpreter->computeRpnRates(voi); \
+\
+            for (size_t i = 0; i < model::STATE_COUNT; ++i) { \
+                statesData[i] += solverStep * ratesData[i]; \
+            } \
+        } \
+\
+        interpreter->computeRpnVariables(voi); \
+\
+        file << voi << "," << statesData[trackedVariableIndex] << "\n"; \
+    } \
+\
+    interpretedElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count(); \
+\
+    std::cout << "RPN interpreted elapsed time: " << interpretedElapsedTime << " ms" << std::endl; \
+\
+    file.close(); \
+\
+    std::cout << "RPN slowdown:                 " << (interpretedElapsedTime / static_cast<double>(compiledElapsedTime)) << "x" << std::endl;
 
 TEST(Generator, emptyModel)
 {
@@ -1888,6 +1934,15 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
     EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
     EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
 
+    interpreter->setModel(nullptr);
+    interpreter->setModel(analyserModel);
+
+    INTERPRET_RPN_MODEL();
+
+    EXPECT_EQ_VALUES(expectedStates, interpreter->states());
+    EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
+    EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
+
     COMPARE_COMPILED_AND_INTERPRETED_MODELS(fabbri_fantini_wilders_severi_human_san_model_2017, 1.0, 1.0e-3, 1.0e-5, 15);
 
     FINALISE_MODEL();
@@ -1932,6 +1987,15 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
     EXPECT_EQ_VALUES(NAN_x_185, interpreter->variables());
 
     INTERPRET_AST_MODEL();
+
+    EXPECT_EQ_VALUES(expectedStates, interpreter->states());
+    EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
+    EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
+
+    interpreter->setModel(nullptr);
+    interpreter->setModel(analyserModel);
+
+    INTERPRET_RPN_MODEL();
 
     EXPECT_EQ_VALUES(expectedStates, interpreter->states());
     EXPECT_EQ_VALUES(expectedRates, interpreter->rates());

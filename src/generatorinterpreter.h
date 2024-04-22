@@ -21,6 +21,7 @@ limitations under the License.
 #include "libcellml/analysermodel.h"
 
 #include "interpreteraststatement.h"
+#include "interpreterrpnstatement.h"
 
 namespace libcellml {
 
@@ -135,6 +136,42 @@ public:
      * @return The statements to compute variables as a @c std::vector.
      */
     std::vector<InterpreterAstStatementPtr> computeVariablesAstStatements() const;
+
+    /**
+     * @brief Get the statements to initialise variables.
+     *
+     * Get the statements to initialise variables.
+     *
+     * @return The statements to initialise variables as a @c std::vector.
+     */
+    std::vector<InterpreterRpnStatementPtr> initialiseVariablesRpnStatements() const;
+
+    /**
+     * @brief Get the statements to compute computed constants.
+     *
+     * Get the statements to compute computed constants.
+     *
+     * @return The statements to compute computed constants as a @c std::vector.
+     */
+    std::vector<InterpreterRpnStatementPtr> computeComputedConstantsRpnStatements() const;
+
+    /**
+     * @brief Get the statements to compute rates.
+     *
+     * Get the statements to compute rates.
+     *
+     * @return The statements to compute rates as a @c std::vector.
+     */
+    std::vector<InterpreterRpnStatementPtr> computeRatesRpnStatements() const;
+
+    /**
+     * @brief Get the statements to compute variables.
+     *
+     * Get the statements to compute variables.
+     *
+     * @return The statements to compute variables as a @c std::vector.
+     */
+    std::vector<InterpreterRpnStatementPtr> computeVariablesRpnStatements() const;
 
 private:
     GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,
