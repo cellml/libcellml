@@ -9,7 +9,7 @@ const char VERSION[] = "0.5.0.post0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 1;
-const size_t VARIABLE_COUNT = 212;
+const size_t VARIABLE_COUNT = 220;
 
 const VariableInfo VOI_INFO = {"t", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
@@ -81,7 +81,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnXorParenthesesRightMinusWithout", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnXorParenthesesRightPower", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnXorParenthesesRightRoot", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnXorCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnXorCoverageParentheses", "dimensionless", "my_component", ALGEBRAIC},
     {"eqnNot", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPlus", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPlusMultiple", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -197,14 +197,17 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnArccoth", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewise", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewisePiece", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnPiecewisePiece2", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewiseOtherwise", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewisePieceOtherwise", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewisePiecePiecePiece", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"q", "dimensionless", "my_component", CONSTANT},
     {"r", "dimensionless", "my_component", CONSTANT},
+    {"eqnPiecewisePiecePiecePiece2", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewisePiecePiecePieceOtherwise", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"s", "dimensionless", "my_component", CONSTANT},
     {"eqnWithPiecewise", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnWithPiecewise2", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCnInteger", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCnDouble", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCnIntegerWithExponent", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -217,15 +220,20 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnInfinity", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNotanumber", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForPlusOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCoverageForPlusOperator2", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForMinusOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCoverageForMinusOperator2", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForTimesOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCoverageForTimesOperator2", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForDivideOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCoverageForDivideOperator2", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForAndOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForOrOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForXorOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForPowerOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForRootOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnCoverageForMinusUnary2", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNlaVariable1", "dimensionless", "my_component", ALGEBRAIC},
     {"eqnNlaVariable2", "dimensionless", "my_component", ALGEBRAIC},
     {"eqnComputedConstant1", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -341,11 +349,11 @@ void objectiveFunction0(double *u, double *f, void *data)
     double *rates = ((RootFindingInfo *) data)->rates;
     double *variables = ((RootFindingInfo *) data)->variables;
 
-    variables[208] = u[0];
-    variables[209] = u[1];
+    variables[216] = u[0];
+    variables[217] = u[1];
 
-    f[0] = variables[208]+variables[209]+states[0]-0.0;
-    f[1] = variables[208]-variables[209]-(variables[210]+variables[211]);
+    f[0] = variables[216]+variables[217]+states[0]-0.0;
+    f[1] = variables[216]-variables[217]-(variables[218]+variables[219]);
 }
 
 void findRoot0(double voi, double *states, double *rates, double *variables)
@@ -353,13 +361,13 @@ void findRoot0(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[2];
 
-    u[0] = variables[208];
-    u[1] = variables[209];
+    u[0] = variables[216];
+    u[1] = variables[217];
 
     nlaSolve(objectiveFunction0, u, 2, &rfi);
 
-    variables[208] = u[0];
-    variables[209] = u[1];
+    variables[216] = u[0];
+    variables[217] = u[1];
 }
 
 void initialiseVariables(double *states, double *rates, double *variables)
@@ -368,24 +376,24 @@ void initialiseVariables(double *states, double *rates, double *variables)
     variables[2] = 2.0;
     variables[6] = 3.0;
     variables[18] = 4.0;
-    variables[182] = 5.0;
-    variables[183] = 6.0;
-    variables[185] = 7.0;
-    variables[208] = 1.0;
-    variables[209] = 2.0;
+    variables[183] = 5.0;
+    variables[184] = 6.0;
+    variables[187] = 7.0;
+    variables[216] = 1.0;
+    variables[217] = 2.0;
     variables[177] = NAN;
-    variables[187] = 123.0;
-    variables[188] = 123.456789;
-    variables[189] = 123.0e99;
-    variables[190] = 123.456789e99;
-    variables[192] = 1.0;
-    variables[193] = 0.0;
-    variables[194] = 2.71828182845905;
-    variables[195] = 3.14159265358979;
-    variables[196] = INFINITY;
-    variables[197] = NAN;
-    variables[210] = 1.0;
-    variables[211] = 3.0;
+    variables[190] = 123.0;
+    variables[191] = 123.456789;
+    variables[192] = 123.0e99;
+    variables[193] = 123.456789e99;
+    variables[195] = 1.0;
+    variables[196] = 0.0;
+    variables[197] = 2.71828182845905;
+    variables[198] = 3.14159265358979;
+    variables[199] = INFINITY;
+    variables[200] = NAN;
+    variables[218] = 1.0;
+    variables[219] = 3.0;
     states[0] = 0.0;
 }
 
@@ -400,9 +408,9 @@ void computeComputedConstants(double *variables)
     variables[9] = variables[1] <= variables[2];
     variables[10] = variables[1]/(variables[2] <= variables[6]);
     variables[11] = variables[1] > variables[2];
-    variables[12] = variables[1]/(variables[2] > variables[6]);
+    variables[12] = variables[1]/(variables[6] > variables[2]);
     variables[13] = variables[1] >= variables[2];
-    variables[14] = variables[1]/(variables[2] >= variables[6]);
+    variables[14] = variables[1]/(variables[6] >= variables[2]);
     variables[15] = variables[1] && variables[2];
     variables[16] = variables[1] && variables[2] && variables[6];
     variables[17] = (variables[1] < variables[2]) && (variables[6] > variables[18]);
@@ -450,7 +458,6 @@ void computeComputedConstants(double *variables)
     variables[60] = xor(variables[1] < variables[2], -variables[6]);
     variables[61] = xor(variables[1] < variables[2], pow(variables[6], variables[18]));
     variables[62] = xor(variables[1] < variables[2], pow(variables[6], 1.0/variables[18]));
-    variables[63] = variables[1]/xor(variables[2], variables[6]);
     variables[64] = !variables[1];
     variables[65] = variables[1]+variables[2];
     variables[66] = variables[1]+variables[2]+variables[6];
@@ -565,22 +572,30 @@ void computeComputedConstants(double *variables)
     variables[175] = acsch(variables[1]);
     variables[176] = acoth(2.0*variables[1]);
     variables[178] = (variables[1] > variables[2])?variables[1]:NAN;
-    variables[179] = NAN;
-    variables[180] = (variables[1] > variables[2])?variables[1]:variables[6];
-    variables[181] = (variables[1] > variables[2])?variables[1]:(variables[6] > variables[18])?variables[6]:(variables[182] > variables[183])?variables[182]:NAN;
-    variables[184] = (variables[1] > variables[2])?variables[1]:(variables[6] > variables[18])?variables[6]:(variables[182] > variables[183])?variables[182]:variables[185];
-    variables[186] = 123.0+((variables[1] > variables[2])?variables[1]:NAN);
-    variables[191] = variables[1];
-    variables[198] = (variables[1] && variables[2])+((variables[6] > variables[18])?variables[2]:NAN)+variables[182]+(variables[183] && variables[185]);
-    variables[199] = (variables[1] && variables[2])-(((variables[6] > variables[18])?variables[2]:NAN)-(variables[182]-((variables[6] > variables[18])?variables[2]:NAN)))-(variables[183] && variables[185]);
-    variables[200] = (variables[1] && variables[2])*((variables[6] > variables[18])?variables[2]:NAN)*variables[182]*((variables[6] > variables[18])?variables[2]:NAN)*(variables[183] && variables[185]);
-    variables[201] = (variables[1] && variables[2])/(((variables[6] > variables[18])?variables[2]:NAN)/(variables[182]/((variables[6] > variables[18])?variables[2]:NAN)));
-    variables[202] = (variables[1] || variables[2]) && xor(variables[1], variables[2]) && ((variables[6] > variables[18])?variables[2]:NAN) && variables[182] && ((variables[6] > variables[18])?variables[2]:NAN) && xor(variables[1], variables[2]) && (variables[1] || variables[2]);
-    variables[203] = (variables[1] && variables[2]) || xor(variables[1], variables[2]) || ((variables[6] > variables[18])?variables[2]:NAN) || variables[182] || ((variables[6] > variables[18])?variables[2]:NAN) || xor(variables[1], variables[2]) || (variables[1] && variables[2]);
-    variables[204] = xor(variables[1] && variables[2], xor(variables[1] || variables[2], xor((variables[6] > variables[18])?variables[2]:NAN, xor(xor(xor(variables[182], (variables[6] > variables[18])?variables[2]:NAN), variables[1] || variables[2]), variables[1] && variables[2]))));
-    variables[205] = pow(variables[1] && variables[2], pow((variables[6] > variables[18])?variables[2]:NAN, pow(pow(variables[182], (variables[6] > variables[18])?variables[2]:NAN), variables[1] && variables[2])));
-    variables[206] = pow(pow(pow(variables[1] && variables[2], 1.0/pow((variables[6] > variables[18])?variables[2]:NAN, 1.0/variables[182])), 1.0/((variables[6] > variables[18])?variables[2]:NAN)), 1.0/(variables[1] && variables[2]));
-    variables[207] = -(variables[1] && variables[2])+-((variables[6] > variables[18])?variables[2]:NAN);
+    variables[179] = (variables[1] < variables[2])?variables[1]:NAN;
+    variables[180] = variables[1];
+    variables[181] = (variables[1] > variables[2])?variables[1]:variables[6];
+    variables[182] = (variables[1] > variables[2])?variables[1]:(variables[6] > variables[18])?variables[6]:(variables[183] > variables[184])?variables[183]:NAN;
+    variables[185] = (variables[1] < variables[2])?variables[1]:(variables[6] > variables[18])?variables[6]:(variables[183] > variables[184])?variables[183]:NAN;
+    variables[186] = (variables[1] > variables[2])?variables[1]:(variables[6] > variables[18])?variables[6]:(variables[183] > variables[184])?variables[183]:variables[187];
+    variables[188] = 123.0+((variables[1] > variables[2])?variables[1]:NAN);
+    variables[189] = 123.0+((variables[1] < variables[2])?variables[1]:NAN);
+    variables[194] = variables[1];
+    variables[201] = (variables[1] && variables[2])+((variables[6] > variables[18])?variables[2]:NAN)+variables[183]+(variables[184] && variables[187]);
+    variables[202] = (variables[1] && variables[2])+((variables[6] < variables[18])?variables[2]:NAN)+variables[183]+(variables[184] && variables[187]);
+    variables[203] = (variables[1] && variables[2])-(((variables[6] > variables[18])?variables[2]:NAN)-(variables[183]-((variables[6] > variables[18])?variables[2]:NAN)))-(variables[184] && variables[187]);
+    variables[204] = (variables[1] && variables[2])-(((variables[6] < variables[18])?variables[2]:NAN)-(variables[183]-((variables[6] < variables[18])?variables[2]:NAN)))-(variables[184] && variables[187]);
+    variables[205] = (variables[1] && variables[2])*((variables[6] > variables[18])?variables[2]:NAN)*variables[183]*((variables[6] > variables[18])?variables[2]:NAN)*(variables[184] && variables[187]);
+    variables[206] = (variables[1] && variables[2])*((variables[6] < variables[18])?variables[2]:NAN)*variables[183]*((variables[6] < variables[18])?variables[2]:NAN)*(variables[184] && variables[187]);
+    variables[207] = (variables[1] && variables[2])/(((variables[6] > variables[18])?variables[2]:NAN)/(variables[183]/((variables[6] > variables[18])?variables[2]:NAN)));
+    variables[208] = (variables[1] && variables[2])/(((variables[6] < variables[18])?variables[2]:NAN)/(variables[183]/((variables[6] < variables[18])?variables[2]:NAN)));
+    variables[209] = (variables[1] || variables[2]) && xor(variables[1], variables[2]) && ((variables[6] > variables[18])?variables[2]:NAN) && variables[183] && ((variables[6] > variables[18])?variables[2]:NAN) && xor(variables[1], variables[2]) && (variables[1] || variables[2]);
+    variables[210] = (variables[1] && variables[2]) || xor(variables[1], variables[2]) || ((variables[6] > variables[18])?variables[2]:NAN) || variables[183] || ((variables[6] > variables[18])?variables[2]:NAN) || xor(variables[1], variables[2]) || (variables[1] && variables[2]);
+    variables[211] = xor(variables[1] && variables[2], xor(variables[1] || variables[2], xor((variables[6] > variables[18])?variables[2]:NAN, xor(xor(xor(variables[183], (variables[6] > variables[18])?variables[2]:NAN), variables[1] || variables[2]), variables[1] && variables[2]))));
+    variables[212] = pow(variables[1] && variables[2], pow((variables[6] > variables[18])?variables[2]:NAN, pow(pow(variables[183], (variables[6] > variables[18])?variables[2]:NAN), variables[1] && variables[2])));
+    variables[213] = pow(pow(pow(variables[1] && variables[2], 1.0/pow((variables[6] > variables[18])?variables[2]:NAN, 1.0/variables[183])), 1.0/((variables[6] > variables[18])?variables[2]:NAN)), 1.0/(variables[1] && variables[2]));
+    variables[214] = -(variables[1] && variables[2])+-((variables[6] > variables[18])?variables[2]:NAN);
+    variables[215] = -(variables[1] && variables[2])+-((variables[6] < variables[18])?variables[2]:NAN);
 }
 
 void computeRates(double voi, double *states, double *rates, double *variables)
@@ -590,5 +605,6 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
+    variables[63] = variables[1]/xor(variables[2], states[0]);
     findRoot0(voi, states, rates, variables);
 }

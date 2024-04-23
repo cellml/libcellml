@@ -79,11 +79,11 @@ void objectiveFunction0(double *u, double *f, void *data)
     double *rates = ((RootFindingInfo *) data)->rates;
     double *variables = ((RootFindingInfo *) data)->variables;
 
-    variables[208] = u[0];
-    variables[209] = u[1];
+    variables[216] = u[0];
+    variables[217] = u[1];
 
-    f[0] = variables[208]+variables[209]+states[0]-0.0;
-    f[1] = variables[208]-variables[209]-(variables[210]+variables[211]);
+    f[0] = variables[216]+variables[217]+states[0]-0.0;
+    f[1] = variables[216]-variables[217]-(variables[218]+variables[219]);
 }
 
 void findRoot0(double voi, double *states, double *rates, double *variables)
@@ -91,13 +91,13 @@ void findRoot0(double voi, double *states, double *rates, double *variables)
     RootFindingInfo rfi = { voi, states, rates, variables };
     double u[2];
 
-    u[0] = variables[208];
-    u[1] = variables[209];
+    u[0] = variables[216];
+    u[1] = variables[217];
 
     nlaSolve(objectiveFunction0, u, 2, &rfi);
 
-    variables[208] = u[0];
-    variables[209] = u[1];
+    variables[216] = u[0];
+    variables[217] = u[1];
 }
 
 void initialiseVariables(double *states, double *rates, double *variables)
@@ -106,24 +106,24 @@ void initialiseVariables(double *states, double *rates, double *variables)
     variables[2] = 2.0;
     variables[6] = 3.0;
     variables[18] = 4.0;
-    variables[182] = 5.0;
-    variables[183] = 6.0;
-    variables[185] = 7.0;
-    variables[208] = 1.0;
-    variables[209] = 2.0;
+    variables[183] = 5.0;
+    variables[184] = 6.0;
+    variables[187] = 7.0;
+    variables[216] = 1.0;
+    variables[217] = 2.0;
     variables[177] = NAN;
-    variables[187] = 123.0;
-    variables[188] = 123.456789;
-    variables[189] = 123.0e99;
-    variables[190] = 123.456789e99;
-    variables[192] = 1.0;
-    variables[193] = 0.0;
-    variables[194] = 2.71828182845905;
-    variables[195] = 3.14159265358979;
-    variables[196] = INFINITY;
-    variables[197] = NAN;
-    variables[210] = 1.0;
-    variables[211] = 3.0;
+    variables[190] = 123.0;
+    variables[191] = 123.456789;
+    variables[192] = 123.0e99;
+    variables[193] = 123.456789e99;
+    variables[195] = 1.0;
+    variables[196] = 0.0;
+    variables[197] = 2.71828182845905;
+    variables[198] = 3.14159265358979;
+    variables[199] = INFINITY;
+    variables[200] = NAN;
+    variables[218] = 1.0;
+    variables[219] = 3.0;
     states[0] = 0.0;
 }
 
@@ -138,9 +138,9 @@ void computeComputedConstants(double *variables)
     variables[9] = variables[1] <= variables[2];
     variables[10] = variables[1]/(variables[2] <= variables[6]);
     variables[11] = variables[1] > variables[2];
-    variables[12] = variables[1]/(variables[2] > variables[6]);
+    variables[12] = variables[1]/(variables[6] > variables[2]);
     variables[13] = variables[1] >= variables[2];
-    variables[14] = variables[1]/(variables[2] >= variables[6]);
+    variables[14] = variables[1]/(variables[6] >= variables[2]);
     variables[15] = variables[1] && variables[2];
     variables[16] = variables[1] && variables[2] && variables[6];
     variables[17] = (variables[1] < variables[2]) && (variables[6] > variables[18]);
@@ -188,7 +188,6 @@ void computeComputedConstants(double *variables)
     variables[60] = (variables[1] < variables[2])^-variables[6];
     variables[61] = (variables[1] < variables[2])^(variables[6]^^variables[18]);
     variables[62] = (variables[1] < variables[2])^(variables[6]^^(1.0/variables[18]));
-    variables[63] = variables[1]/(variables[2]^variables[6]);
     variables[64] = !variables[1];
     variables[65] = variables[1]+variables[2];
     variables[66] = variables[1]+variables[2]+variables[6];
@@ -303,22 +302,30 @@ void computeComputedConstants(double *variables)
     variables[175] = acsch(variables[1]);
     variables[176] = acoth(2.0*variables[1]);
     variables[178] = piecewise(variables[1] > variables[2], variables[1], NAN);
-    variables[179] = NAN;
-    variables[180] = piecewise(variables[1] > variables[2], variables[1], variables[6]);
-    variables[181] = piecewise(variables[1] > variables[2], variables[1], piecewise(variables[6] > variables[18], variables[6], piecewise(variables[182] > variables[183], variables[182], NAN)));
-    variables[184] = piecewise(variables[1] > variables[2], variables[1], piecewise(variables[6] > variables[18], variables[6], piecewise(variables[182] > variables[183], variables[182], variables[185])));
-    variables[186] = 123.0+piecewise(variables[1] > variables[2], variables[1], NAN);
-    variables[191] = variables[1];
-    variables[198] = (variables[1] && variables[2])+piecewise(variables[6] > variables[18], variables[2], NAN)+variables[182]+(variables[183] && variables[185]);
-    variables[199] = (variables[1] && variables[2])-(piecewise(variables[6] > variables[18], variables[2], NAN)-(variables[182]-piecewise(variables[6] > variables[18], variables[2], NAN)))-(variables[183] && variables[185]);
-    variables[200] = (variables[1] && variables[2])*piecewise(variables[6] > variables[18], variables[2], NAN)*variables[182]*piecewise(variables[6] > variables[18], variables[2], NAN)*(variables[183] && variables[185]);
-    variables[201] = (variables[1] && variables[2])/(piecewise(variables[6] > variables[18], variables[2], NAN)/(variables[182]/piecewise(variables[6] > variables[18], variables[2], NAN)));
-    variables[202] = (variables[1] || variables[2]) && (variables[1]^variables[2]) && piecewise(variables[6] > variables[18], variables[2], NAN) && variables[182] && piecewise(variables[6] > variables[18], variables[2], NAN) && (variables[1]^variables[2]) && (variables[1] || variables[2]);
-    variables[203] = (variables[1] && variables[2]) || (variables[1]^variables[2]) || piecewise(variables[6] > variables[18], variables[2], NAN) || variables[182] || piecewise(variables[6] > variables[18], variables[2], NAN) || (variables[1]^variables[2]) || (variables[1] && variables[2]);
-    variables[204] = (variables[1] && variables[2])^(variables[1] || variables[2])^piecewise(variables[6] > variables[18], variables[2], NAN)^variables[182]^piecewise(variables[6] > variables[18], variables[2], NAN)^(variables[1] || variables[2])^(variables[1] && variables[2]);
-    variables[205] = (variables[1] && variables[2])^^(piecewise(variables[6] > variables[18], variables[2], NAN)^^(variables[182]^^piecewise(variables[6] > variables[18], variables[2], NAN)^^(variables[1] && variables[2])));
-    variables[206] = (variables[1] && variables[2])^^(1.0/(piecewise(variables[6] > variables[18], variables[2], NAN)^^(1.0/variables[182])))^^(1.0/piecewise(variables[6] > variables[18], variables[2], NAN))^^(1.0/(variables[1] && variables[2]));
-    variables[207] = -(variables[1] && variables[2])+-piecewise(variables[6] > variables[18], variables[2], NAN);
+    variables[179] = piecewise(variables[1] < variables[2], variables[1], NAN);
+    variables[180] = variables[1];
+    variables[181] = piecewise(variables[1] > variables[2], variables[1], variables[6]);
+    variables[182] = piecewise(variables[1] > variables[2], variables[1], piecewise(variables[6] > variables[18], variables[6], piecewise(variables[183] > variables[184], variables[183], NAN)));
+    variables[185] = piecewise(variables[1] < variables[2], variables[1], piecewise(variables[6] > variables[18], variables[6], piecewise(variables[183] > variables[184], variables[183], NAN)));
+    variables[186] = piecewise(variables[1] > variables[2], variables[1], piecewise(variables[6] > variables[18], variables[6], piecewise(variables[183] > variables[184], variables[183], variables[187])));
+    variables[188] = 123.0+piecewise(variables[1] > variables[2], variables[1], NAN);
+    variables[189] = 123.0+piecewise(variables[1] < variables[2], variables[1], NAN);
+    variables[194] = variables[1];
+    variables[201] = (variables[1] && variables[2])+piecewise(variables[6] > variables[18], variables[2], NAN)+variables[183]+(variables[184] && variables[187]);
+    variables[202] = (variables[1] && variables[2])+piecewise(variables[6] < variables[18], variables[2], NAN)+variables[183]+(variables[184] && variables[187]);
+    variables[203] = (variables[1] && variables[2])-(piecewise(variables[6] > variables[18], variables[2], NAN)-(variables[183]-piecewise(variables[6] > variables[18], variables[2], NAN)))-(variables[184] && variables[187]);
+    variables[204] = (variables[1] && variables[2])-(piecewise(variables[6] < variables[18], variables[2], NAN)-(variables[183]-piecewise(variables[6] < variables[18], variables[2], NAN)))-(variables[184] && variables[187]);
+    variables[205] = (variables[1] && variables[2])*piecewise(variables[6] > variables[18], variables[2], NAN)*variables[183]*piecewise(variables[6] > variables[18], variables[2], NAN)*(variables[184] && variables[187]);
+    variables[206] = (variables[1] && variables[2])*piecewise(variables[6] < variables[18], variables[2], NAN)*variables[183]*piecewise(variables[6] < variables[18], variables[2], NAN)*(variables[184] && variables[187]);
+    variables[207] = (variables[1] && variables[2])/(piecewise(variables[6] > variables[18], variables[2], NAN)/(variables[183]/piecewise(variables[6] > variables[18], variables[2], NAN)));
+    variables[208] = (variables[1] && variables[2])/(piecewise(variables[6] < variables[18], variables[2], NAN)/(variables[183]/piecewise(variables[6] < variables[18], variables[2], NAN)));
+    variables[209] = (variables[1] || variables[2]) && (variables[1]^variables[2]) && piecewise(variables[6] > variables[18], variables[2], NAN) && variables[183] && piecewise(variables[6] > variables[18], variables[2], NAN) && (variables[1]^variables[2]) && (variables[1] || variables[2]);
+    variables[210] = (variables[1] && variables[2]) || (variables[1]^variables[2]) || piecewise(variables[6] > variables[18], variables[2], NAN) || variables[183] || piecewise(variables[6] > variables[18], variables[2], NAN) || (variables[1]^variables[2]) || (variables[1] && variables[2]);
+    variables[211] = (variables[1] && variables[2])^(variables[1] || variables[2])^piecewise(variables[6] > variables[18], variables[2], NAN)^variables[183]^piecewise(variables[6] > variables[18], variables[2], NAN)^(variables[1] || variables[2])^(variables[1] && variables[2]);
+    variables[212] = (variables[1] && variables[2])^^(piecewise(variables[6] > variables[18], variables[2], NAN)^^(variables[183]^^piecewise(variables[6] > variables[18], variables[2], NAN)^^(variables[1] && variables[2])));
+    variables[213] = (variables[1] && variables[2])^^(1.0/(piecewise(variables[6] > variables[18], variables[2], NAN)^^(1.0/variables[183])))^^(1.0/piecewise(variables[6] > variables[18], variables[2], NAN))^^(1.0/(variables[1] && variables[2]));
+    variables[214] = -(variables[1] && variables[2])+-piecewise(variables[6] > variables[18], variables[2], NAN);
+    variables[215] = -(variables[1] && variables[2])+-piecewise(variables[6] < variables[18], variables[2], NAN);
 }
 
 void computeRates(double voi, double *states, double *rates, double *variables)

@@ -187,11 +187,14 @@
         <variable name="eqnArccoth" units="dimensionless"/>
         <variable name="eqnPiecewise" units="dimensionless"/>
         <variable name="eqnPiecewisePiece" units="dimensionless"/>
+        <variable name="eqnPiecewisePiece2" units="dimensionless"/>
         <variable name="eqnPiecewiseOtherwise" units="dimensionless"/>
         <variable name="eqnPiecewisePieceOtherwise" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePiece" units="dimensionless"/>
+        <variable name="eqnPiecewisePiecePiecePiece2" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePieceOtherwise" units="dimensionless"/>
         <variable name="eqnWithPiecewise" units="dimensionless"/>
+        <variable name="eqnWithPiecewise2" units="dimensionless"/>
         <variable name="eqnCnInteger" units="dimensionless"/>
         <variable name="eqnCnDouble" units="dimensionless"/>
         <variable name="eqnCnIntegerWithExponent" units="dimensionless"/>
@@ -204,15 +207,20 @@
         <variable name="eqnInfinity" units="dimensionless"/>
         <variable name="eqnNotanumber" units="dimensionless"/>
         <variable name="eqnCoverageForPlusOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForPlusOperator2" units="dimensionless"/>
         <variable name="eqnCoverageForMinusOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForMinusOperator2" units="dimensionless"/>
         <variable name="eqnCoverageForTimesOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForTimesOperator2" units="dimensionless"/>
         <variable name="eqnCoverageForDivideOperator" units="dimensionless"/>
+        <variable name="eqnCoverageForDivideOperator2" units="dimensionless"/>
         <variable name="eqnCoverageForAndOperator" units="dimensionless"/>
         <variable name="eqnCoverageForOrOperator" units="dimensionless"/>
         <variable name="eqnCoverageForXorOperator" units="dimensionless"/>
         <variable name="eqnCoverageForPowerOperator" units="dimensionless"/>
         <variable name="eqnCoverageForRootOperator" units="dimensionless"/>
         <variable name="eqnCoverageForMinusUnary" units="dimensionless"/>
+        <variable name="eqnCoverageForMinusUnary2" units="dimensionless"/>
         <variable name="eqnNlaVariable1" initial_value="1" units="dimensionless"/>
         <variable name="eqnNlaVariable2" initial_value="2" units="dimensionless"/>
         <variable name="eqnComputedConstant1" units="dimensionless"/>
@@ -352,8 +360,8 @@
                     <ci>m</ci>
                     <apply>
                         <gt/>
-                        <ci>n</ci>
                         <ci>o</ci>
+                        <ci>n</ci>
                     </apply>
                 </apply>
             </apply>
@@ -376,8 +384,8 @@
                     <ci>m</ci>
                     <apply>
                         <geq/>
-                        <ci>n</ci>
                         <ci>o</ci>
+                        <ci>n</ci>
                     </apply>
                 </apply>
             </apply>
@@ -1142,7 +1150,7 @@
                     <apply>
                         <xor/>
                         <ci>n</ci>
-                        <ci>o</ci>
+                        <ci>x</ci>
                     </apply>
                 </apply>
             </apply>
@@ -2720,6 +2728,20 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnPiecewisePiece2</ci>
+                <piecewise>
+                    <piece>
+                        <ci>m</ci>
+                        <apply>
+                            <lt/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </piece>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnPiecewiseOtherwise</ci>
                 <piecewise>
                     <otherwise>
@@ -2752,6 +2774,36 @@
                         <ci>m</ci>
                         <apply>
                             <gt/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <ci>o</ci>
+                        <apply>
+                            <gt/>
+                            <ci>o</ci>
+                            <ci>p</ci>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <ci>q</ci>
+                        <apply>
+                            <gt/>
+                            <ci>q</ci>
+                            <ci>r</ci>
+                        </apply>
+                    </piece>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPiecewisePiecePiecePiece2</ci>
+                <piecewise>
+                    <piece>
+                        <ci>m</ci>
+                        <apply>
+                            <lt/>
                             <ci>m</ci>
                             <ci>n</ci>
                         </apply>
@@ -2820,6 +2872,24 @@
                             <ci>m</ci>
                             <apply>
                                 <gt/>
+                                <ci>m</ci>
+                                <ci>n</ci>
+                            </apply>
+                        </piece>
+                    </piecewise>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnWithPiecewise2</ci>
+                <apply>
+                    <plus/>
+                    <cn cellml:units="dimensionless">123</cn>
+                    <piecewise>
+                        <piece>
+                            <ci>m</ci>
+                            <apply>
+                                <lt/>
                                 <ci>m</ci>
                                 <ci>n</ci>
                             </apply>
@@ -2950,6 +3020,40 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnCoverageForPlusOperator2</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <plus/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <lt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <ci>q</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <and/>
+                        <ci>r</ci>
+                        <ci>s</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnCoverageForMinusOperator</ci>
                 <apply>
                     <minus/>
@@ -2980,6 +3084,53 @@
                                         <ci>n</ci>
                                         <apply>
                                             <gt/>
+                                            <ci>o</ci>
+                                            <ci>p</ci>
+                                        </apply>
+                                    </piece>
+                                </piecewise>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <and/>
+                        <ci>r</ci>
+                        <ci>s</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForMinusOperator2</ci>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <minus/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <lt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <apply>
+                                <minus/>
+                                <ci>q</ci>
+                                <piecewise>
+                                    <piece>
+                                        <ci>n</ci>
+                                        <apply>
+                                            <lt/>
                                             <ci>o</ci>
                                             <ci>p</ci>
                                         </apply>
@@ -3044,6 +3195,53 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnCoverageForTimesOperator2</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <lt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                            <apply>
+                                <times/>
+                                <ci>q</ci>
+                                <piecewise>
+                                    <piece>
+                                        <ci>n</ci>
+                                        <apply>
+                                            <lt/>
+                                            <ci>o</ci>
+                                            <ci>p</ci>
+                                        </apply>
+                                    </piece>
+                                </piecewise>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <and/>
+                        <ci>r</ci>
+                        <ci>s</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnCoverageForDivideOperator</ci>
                 <apply>
                     <divide/>
@@ -3072,6 +3270,45 @@
                                     <ci>n</ci>
                                     <apply>
                                         <gt/>
+                                        <ci>o</ci>
+                                        <ci>p</ci>
+                                    </apply>
+                                </piece>
+                            </piecewise>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForDivideOperator2</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <and/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <divide/>
+                        <piecewise>
+                            <piece>
+                                <ci>n</ci>
+                                <apply>
+                                    <lt/>
+                                    <ci>o</ci>
+                                    <ci>p</ci>
+                                </apply>
+                            </piece>
+                        </piecewise>
+                        <apply>
+                            <divide/>
+                            <ci>q</ci>
+                            <piecewise>
+                                <piece>
+                                    <ci>n</ci>
+                                    <apply>
+                                        <lt/>
                                         <ci>o</ci>
                                         <ci>p</ci>
                                     </apply>
@@ -3392,6 +3629,34 @@
                                 <ci>n</ci>
                                 <apply>
                                     <gt/>
+                                    <ci>o</ci>
+                                    <ci>p</ci>
+                                </apply>
+                            </piece>
+                        </piecewise>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoverageForMinusUnary2</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <and/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <piecewise>
+                            <piece>
+                                <ci>n</ci>
+                                <apply>
+                                    <lt/>
                                     <ci>o</ci>
                                     <ci>p</ci>
                                 </apply>

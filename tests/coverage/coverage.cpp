@@ -20,6 +20,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "libcellml/undefines.h"
+
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
@@ -516,8 +518,8 @@ TEST(Coverage, generator)
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(212), analyserModel->variableCount());
-    EXPECT_EQ(size_t(206), analyserModel->equationCount());
+    EXPECT_EQ(size_t(220), analyserModel->variableCount());
+    EXPECT_EQ(size_t(214), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
@@ -530,19 +532,19 @@ TEST(Coverage, generator)
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->variable(0));
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(202));
-    EXPECT_NE(size_t(0), analyserModel->equation(202)->dependencyCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(202)->dependencies().size());
-    EXPECT_NE(nullptr, analyserModel->equation(202)->dependency(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(202)->dependency(analyserModel->equation(202)->dependencyCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(202)->nlaSiblingCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(202)->nlaSiblings().size());
-    EXPECT_NE(nullptr, analyserModel->equation(202)->nlaSibling(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(202)->nlaSibling(analyserModel->equation(202)->nlaSiblingCount()));
-    EXPECT_NE(size_t(0), analyserModel->equation(202)->variableCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(202)->variables().size());
-    EXPECT_NE(nullptr, analyserModel->equation(202)->variable(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(202)->variable(analyserModel->equation(202)->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(210));
+    EXPECT_NE(size_t(0), analyserModel->equation(210)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(210)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->equation(210)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(210)->dependency(analyserModel->equation(210)->dependencyCount()));
+    EXPECT_EQ(size_t(1), analyserModel->equation(210)->nlaSiblingCount());
+    EXPECT_EQ(size_t(1), analyserModel->equation(210)->nlaSiblings().size());
+    EXPECT_NE(nullptr, analyserModel->equation(210)->nlaSibling(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(210)->nlaSibling(analyserModel->equation(210)->nlaSiblingCount()));
+    EXPECT_NE(size_t(0), analyserModel->equation(210)->variableCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(210)->variables().size());
+    EXPECT_NE(nullptr, analyserModel->equation(210)->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(210)->variable(analyserModel->equation(210)->variableCount()));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     for (const auto &equation : analyserModel->equations()) {
@@ -558,7 +560,7 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 182) || (i == 183) || (i == 185) || (i == 208) || (i == 209)) {
+        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 183) || (i == 184) || (i == 187) || (i == 216) || (i == 217)) {
             EXPECT_TRUE(analyserModel->variable(i)->initialisingVariable() != nullptr);
         }
     }
@@ -861,10 +863,24 @@ TEST(Coverage, interpreter)
 
     EXPECT_EQ(analyserModel, interpreter->model());
 
+    static const auto INF = std::numeric_limits<double>::infinity();
+    static const auto NAN = std::numeric_limits<double>::quiet_NaN();
+    static const auto NAN_x_1 = std::vector<double>(1, NAN);
+    static const auto NAN_x_220 = std::vector<double>(220, NAN);
+
+    EXPECT_EQ(0.0, interpreter->voi());
+    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
+    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
+    EXPECT_EQ_VALUES(NAN_x_220, interpreter->variables());
+
     interpreter->initialiseVariables();
     interpreter->computeComputedConstants();
     interpreter->computeRates();
     interpreter->computeVariables();
+
+    EXPECT_EQ_VALUES(std::vector<double>({0.0}), interpreter->states());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 2.0, 1.0, 1.0, 1.0, 3.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 3.0, 6.0, 1.0, 1.0, -1.0, 1.0, -6.0, -2.0, 3.0, 7.0, -1.0, -1.0, 2.0, 6.0, 0.0, 0.0, 0.0, -0.0, -0.0, 7.0, 3.0, -1.0, -3.0, 0.5000000000000, 1.0, 3.0, 1.0, -1.0, -1.0, 0.1428571428571, 0.3333333333333, -1.0, -0.3333333333333, 0.0833333333333, 1.3333333333333, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 3.0, 1.0, -1.0, -1.0, 2.0, 0.5000000000000, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.7182818284590, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 0.8414709848079, 0.5403023058681, 1.5574077246549, 1.8508157176809, 1.1883951057781, 0.6420926159343, 1.1752011936438, 1.5430806348152, 0.7615941559558, 0.6480542736639, 0.8509181282393, 1.3130352854993, 1.5707963267949, 0.0, 0.7853981633974, 0.0, 1.5707963267949, 0.7853981633974, 0.8813735870195, 0.0, 0.5493061443341, 0.0, 0.8813735870195, 0.5493061443341, NAN, NAN, 1.0, 1.0, 3.0, NAN, 5.0, 6.0, 1.0, 7.0, 7.0, NAN, 124.0, 123.0, 123.4567890000000, 122999999999999992825511813039543286439366983265988099874998185415242667014177361275155540361558884352.0, 123456788999999994484262021807589179008641698391664322400772966218228802243136080981312758589637525504.0, 1.0, 1.0, 0.0, 2.7182818284590, 3.1415926535898, INF, NAN, NAN, 9.0, NAN, 1.0, NAN, 20.0, NAN, 1.2500000000000, 0.0, 1.0, 1.0, 1.0, 1.0, NAN, -3.0, 1.0, 2.0, 1.0, 3.0}), interpreter->variables());
 
     interpreter->setModel(nullptr);
 

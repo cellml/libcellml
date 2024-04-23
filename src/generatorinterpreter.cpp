@@ -1157,7 +1157,7 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
                 code = leftCode + generatePiecewiseElseCode(mProfile->nanString());
             } else {
                 statement = leftStatement;
-                code = mProfile->nanString();
+                code = leftCode;
             }
         } else {
             statement = InterpreterStatement::create(InterpreterStatement::Type::NAN);
