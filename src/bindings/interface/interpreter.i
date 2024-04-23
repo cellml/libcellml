@@ -41,18 +41,6 @@
 %feature("docstring") libcellml::Interpreter::computeAstVariables
 "Computes the model's variables.";
 
-%feature("docstring") libcellml::Interpreter::initialiseRpnVariables
-"Initialises the model's variables.";
-
-%feature("docstring") libcellml::Interpreter::computeRpnComputedConstants
-"Computes the model's computed constants.";
-
-%feature("docstring") libcellml::Interpreter::computeRpnRates
-"Computes the model's rates.";
-
-%feature("docstring") libcellml::Interpreter::computeRpnVariables
-"Computes the model's variables.";
-
 %{
 #include "libcellml/interpreter.h"
 %}

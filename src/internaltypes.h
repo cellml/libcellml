@@ -76,10 +76,6 @@ class InterpreterAstStatement; /**< Forward declaration of InterpreterAstStateme
 using InterpreterAstStatementPtr = std::shared_ptr<InterpreterAstStatement>; /**< Type definition for shared InterpreterAstStatement pointer. */
 using InterpreterAstStatementPtrs = std::vector<InterpreterAstStatementPtr>; /**< Type definition for a list of shared InterpreterAstStatement pointers. */
 
-class InterpreterRpnStatement; /**< Forward declaration of InterpreterRpnStatement class. */
-using InterpreterRpnStatementPtr = std::shared_ptr<InterpreterRpnStatement>; /**< Type definition for shared InterpreterRpnStatement pointer. */
-using InterpreterRpnStatementPtrs = std::vector<InterpreterRpnStatementPtr>; /**< Type definition for a list of shared InterpreterRpnStatement pointers. */
-
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
  *

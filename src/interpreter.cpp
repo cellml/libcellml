@@ -25,18 +25,6 @@ limitations under the License.
 
 namespace libcellml {
 
-InterpreterStackElement::InterpreterStackElement(double value)
-    : mType(Type::NUMBER)
-    , mValue(value)
-{
-}
-
-InterpreterStackElement::InterpreterStackElement(Type type, size_t index)
-    : mType(type)
-    , mIndex(index)
-{
-}
-
 void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
 {
     mModel = model;
@@ -60,11 +48,6 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
         mComputeComputedConstantsAstStatements = generatorInterpreter->computeComputedConstantsAstStatements();
         mComputeRatesAstStatements = generatorInterpreter->computeRatesAstStatements();
         mComputeVariablesAstStatements = generatorInterpreter->computeVariablesAstStatements();
-
-        mInitialiseVariablesRpnStatements = generatorInterpreter->initialiseVariablesRpnStatements();
-        mComputeComputedConstantsRpnStatements = generatorInterpreter->computeComputedConstantsRpnStatements();
-        mComputeRatesRpnStatements = generatorInterpreter->computeRatesRpnStatements();
-        mComputeVariablesRpnStatements = generatorInterpreter->computeVariablesRpnStatements();
     } else {
         mStates.clear();
         mRates.clear();
@@ -142,42 +125,6 @@ void Interpreter::computeAstVariables(double voi)
 {
     for (const auto &statement : mPimpl->mComputeVariablesAstStatements) {
         statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
-    }
-}
-
-void Interpreter::initialiseRpnVariables()
-{
-    std::stack<InterpreterStackElement> stack;
-
-    for (const auto &statement : mPimpl->mInitialiseVariablesRpnStatements) {
-        statement->evaluate(0.0, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData, stack);
-    }
-}
-
-void Interpreter::computeRpnComputedConstants()
-{
-    std::stack<InterpreterStackElement> stack;
-
-    for (const auto &statement : mPimpl->mComputeComputedConstantsRpnStatements) {
-        statement->evaluate(0.0, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData, stack);
-    }
-}
-
-void Interpreter::computeRpnRates(double voi)
-{
-    std::stack<InterpreterStackElement> stack;
-
-    for (const auto &statement : mPimpl->mComputeRatesRpnStatements) {
-        statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData, stack);
-    }
-}
-
-void Interpreter::computeRpnVariables(double voi)
-{
-    std::stack<InterpreterStackElement> stack;
-
-    for (const auto &statement : mPimpl->mComputeVariablesRpnStatements) {
-        statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData, stack);
     }
 }
 

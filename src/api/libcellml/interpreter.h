@@ -144,46 +144,6 @@ public:
      */
     void computeAstVariables(double voi = 0.0);
 
-    /**
-     * @brief Initialise the model's variables.
-     *
-     * Initialise the model's variables.
-     *
-     * @sa computeComputedConstants, computeRates, computeVariables
-     */
-    void initialiseRpnVariables();
-
-    /**
-     * @brief Compute the model's computed constants.
-     *
-     * Compute the model's computed constants.
-     *
-     * @sa initialiseVariables, computeRates, computeVariables
-     */
-    void computeRpnComputedConstants();
-
-    /**
-     * @brief Compute the model's rates.
-     *
-     * Compute the model's rates.
-     *
-     * @sa initialiseVariables, computeComputedConstants, computeVariables
-     *
-     * @param voi The value of the variable of integration.
-     */
-    void computeRpnRates(double voi = 0.0);
-
-    /**
-     * @brief Compute the model's variables.
-     *
-     * Compute the model's variables.
-     *
-     * @sa initialiseVariables, computeComputedConstants, computeRates
-     *
-     * @param voi The value of the variable of integration.
-     */
-    void computeRpnVariables(double voi = 0.0);
-
 private:
     Interpreter(); /**< Constructor, @private. */
 
