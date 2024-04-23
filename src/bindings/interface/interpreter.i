@@ -29,16 +29,16 @@
 %feature("docstring") libcellml::Interpreter::variables
 "Returns the model's variables.";
 
-%feature("docstring") libcellml::Interpreter::initialiseAstVariables
+%feature("docstring") libcellml::Interpreter::initialiseVariables
 "Initialises the model's variables.";
 
-%feature("docstring") libcellml::Interpreter::computeAstComputedConstants
+%feature("docstring") libcellml::Interpreter::computeComputedConstants
 "Computes the model's computed constants.";
 
-%feature("docstring") libcellml::Interpreter::computeAstRates
+%feature("docstring") libcellml::Interpreter::computeRates
 "Computes the model's rates.";
 
-%feature("docstring") libcellml::Interpreter::computeAstVariables
+%feature("docstring") libcellml::Interpreter::computeVariables
 "Computes the model's variables.";
 
 %{

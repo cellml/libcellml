@@ -18,7 +18,7 @@ limitations under the License.
 #    define _USE_MATH_DEFINES
 #endif
 
-#include "interpreteraststatement.h"
+#include "interpreterstatement.h"
 
 #include <cassert>
 #include <cmath>
@@ -27,23 +27,23 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "commonutils.h"
-#include "interpreteraststatement_p.h"
+#include "interpreterstatement_p.h"
 
 #include "libcellml/undefines.h"
 
 namespace libcellml {
 
-InterpreterAstStatement::InterpreterAstStatementImpl::InterpreterAstStatementImpl(Type type,
-                                                                                  const InterpreterAstStatementPtr &leftChild,
-                                                                                  const InterpreterAstStatementPtr &rightChild)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(Type type,
+                                                                         const InterpreterStatementPtr &leftChild,
+                                                                         const InterpreterStatementPtr &rightChild)
     : mType(type)
     , mLeftChild(leftChild)
     , mRightChild(rightChild)
 {
 }
 
-InterpreterAstStatement::InterpreterAstStatementImpl::InterpreterAstStatementImpl(const AnalyserVariablePtr &variable,
-                                                                                  bool rate)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(const AnalyserVariablePtr &variable,
+                                                                         bool rate)
     : mType((variable->type() == AnalyserVariable::Type::STATE) ?
                 (rate ?
                      Type::RATE :
@@ -54,34 +54,34 @@ InterpreterAstStatement::InterpreterAstStatementImpl::InterpreterAstStatementImp
 {
 }
 
-InterpreterAstStatement::InterpreterAstStatementImpl::InterpreterAstStatementImpl(double value)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(double value)
     : mType(Type::NUMBER)
     , mValue(value)
 {
 }
 
-InterpreterAstStatement::InterpreterAstStatementImpl::InterpreterAstStatementImpl(size_t externalIndex)
+InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(size_t externalIndex)
     : mType(Type::EXTERNAL)
     , mExternalIndex(externalIndex)
 {
 }
 
-void InterpreterAstStatement::InterpreterAstStatementImpl::evaluate(double voi, double *states, double *rates, double *variables) const
+void InterpreterStatement::InterpreterStatementImpl::evaluate(double voi, double *states, double *rates, double *variables) const
 {
     //---GRY--- ONLY HANDLE AN EQUALITY STATEMENT FOR NOW.
 
     assert(mType == Type::EQUALITY);
 
-    if (mLeftChild->mPimpl->mType == InterpreterAstStatement::Type::STATE) {
+    if (mLeftChild->mPimpl->mType == InterpreterStatement::Type::STATE) {
         states[mLeftChild->mPimpl->mIndex] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
-    } else if (mLeftChild->mPimpl->mType == InterpreterAstStatement::Type::RATE) {
+    } else if (mLeftChild->mPimpl->mType == InterpreterStatement::Type::RATE) {
         rates[mLeftChild->mPimpl->mIndex] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     } else {
         variables[mLeftChild->mPimpl->mIndex] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     }
 }
 
-double InterpreterAstStatement::InterpreterAstStatementImpl::evaluateToDouble(double voi, double *states, double *rates, double *variables) const
+double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double voi, double *states, double *rates, double *variables) const
 {
     switch (mType) {
         // Relational and logical operators.
@@ -255,56 +255,56 @@ double InterpreterAstStatement::InterpreterAstStatementImpl::evaluateToDouble(do
     }
 }
 
-InterpreterAstStatement::InterpreterAstStatement(Type type,
-                                                 const InterpreterAstStatementPtr &leftChild,
-                                                 const InterpreterAstStatementPtr &rightChild)
-    : mPimpl(new InterpreterAstStatementImpl(type, leftChild, rightChild))
+InterpreterStatement::InterpreterStatement(Type type,
+                                           const InterpreterStatementPtr &leftChild,
+                                           const InterpreterStatementPtr &rightChild)
+    : mPimpl(new InterpreterStatementImpl(type, leftChild, rightChild))
 {
 }
 
-InterpreterAstStatement::InterpreterAstStatement(const AnalyserVariablePtr &variable, bool rate)
-    : mPimpl(new InterpreterAstStatementImpl(variable, rate))
+InterpreterStatement::InterpreterStatement(const AnalyserVariablePtr &variable, bool rate)
+    : mPimpl(new InterpreterStatementImpl(variable, rate))
 {
 }
 
-InterpreterAstStatement::InterpreterAstStatement(double value)
-    : mPimpl(new InterpreterAstStatementImpl(value))
+InterpreterStatement::InterpreterStatement(double value)
+    : mPimpl(new InterpreterStatementImpl(value))
 {
 }
 
-InterpreterAstStatement::InterpreterAstStatement(size_t externalIndex)
-    : mPimpl(new InterpreterAstStatementImpl(externalIndex))
+InterpreterStatement::InterpreterStatement(size_t externalIndex)
+    : mPimpl(new InterpreterStatementImpl(externalIndex))
 {
 }
 
-InterpreterAstStatement::~InterpreterAstStatement()
+InterpreterStatement::~InterpreterStatement()
 {
     delete mPimpl;
 }
 
-InterpreterAstStatementPtr InterpreterAstStatement::create(Type type,
-                                                           const InterpreterAstStatementPtr &leftChild,
-                                                           const InterpreterAstStatementPtr &rightChild) noexcept
+InterpreterStatementPtr InterpreterStatement::create(Type type,
+                                                     const InterpreterStatementPtr &leftChild,
+                                                     const InterpreterStatementPtr &rightChild) noexcept
 {
-    return InterpreterAstStatementPtr {new InterpreterAstStatement {type, leftChild, rightChild}};
+    return InterpreterStatementPtr {new InterpreterStatement {type, leftChild, rightChild}};
 }
 
-InterpreterAstStatementPtr InterpreterAstStatement::create(const AnalyserVariablePtr &variable, bool rate) noexcept
+InterpreterStatementPtr InterpreterStatement::create(const AnalyserVariablePtr &variable, bool rate) noexcept
 {
-    return InterpreterAstStatementPtr {new InterpreterAstStatement {variable, rate}};
+    return InterpreterStatementPtr {new InterpreterStatement {variable, rate}};
 }
 
-InterpreterAstStatementPtr InterpreterAstStatement::create(double value) noexcept
+InterpreterStatementPtr InterpreterStatement::create(double value) noexcept
 {
-    return InterpreterAstStatementPtr {new InterpreterAstStatement {value}};
+    return InterpreterStatementPtr {new InterpreterStatement {value}};
 }
 
-InterpreterAstStatementPtr InterpreterAstStatement::create(size_t externalIndex) noexcept
+InterpreterStatementPtr InterpreterStatement::create(size_t externalIndex) noexcept
 {
-    return InterpreterAstStatementPtr {new InterpreterAstStatement {externalIndex}};
+    return InterpreterStatementPtr {new InterpreterStatement {externalIndex}};
 }
 
-void InterpreterAstStatement::evaluate(double voi, double *states, double *rates, double *variables) const
+void InterpreterStatement::evaluate(double voi, double *states, double *rates, double *variables) const
 {
     mPimpl->evaluate(voi, states, rates, variables);
 }

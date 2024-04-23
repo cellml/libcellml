@@ -21,26 +21,26 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The InterpreterAstStatement::InterpreterAstStatementImpl struct.
+ * @brief The InterpreterStatement::InterpreterStatementImpl struct.
  *
- * The private implementation for the InterpreterAstStatement class.
+ * The private implementation for the InterpreterStatement class.
  */
-struct InterpreterAstStatement::InterpreterAstStatementImpl
+struct InterpreterStatement::InterpreterStatementImpl
 {
-    InterpreterAstStatement::Type mType = Type::EQUALITY;
-    InterpreterAstStatementPtr mLeftChild;
-    InterpreterAstStatementPtr mRightChild;
+    InterpreterStatement::Type mType = Type::EQUALITY;
+    InterpreterStatementPtr mLeftChild;
+    InterpreterStatementPtr mRightChild;
     AnalyserVariablePtr mVariable;
     size_t mIndex = 0;
     double mValue = std::numeric_limits<double>::quiet_NaN();
     size_t mExternalIndex = 0;
 
-    explicit InterpreterAstStatementImpl(Type type,
-                                         const InterpreterAstStatementPtr &leftChild,
-                                         const InterpreterAstStatementPtr &rightChild);
-    explicit InterpreterAstStatementImpl(const AnalyserVariablePtr &variable, bool rate);
-    explicit InterpreterAstStatementImpl(double value);
-    explicit InterpreterAstStatementImpl(size_t index);
+    explicit InterpreterStatementImpl(Type type,
+                                      const InterpreterStatementPtr &leftChild,
+                                      const InterpreterStatementPtr &rightChild);
+    explicit InterpreterStatementImpl(const AnalyserVariablePtr &variable, bool rate);
+    explicit InterpreterStatementImpl(double value);
+    explicit InterpreterStatementImpl(size_t index);
 
     void evaluate(double voi, double *states, double *rates, double *variables) const;
     double evaluateToDouble(double voi, double *states, double *rates, double *variables) const;

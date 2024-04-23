@@ -111,7 +111,7 @@ public:
      *
      * @sa computeComputedConstants, computeRates, computeVariables
      */
-    void initialiseAstVariables();
+    void initialiseVariables();
 
     /**
      * @brief Compute the model's computed constants.
@@ -120,7 +120,7 @@ public:
      *
      * @sa initialiseVariables, computeRates, computeVariables
      */
-    void computeAstComputedConstants();
+    void computeComputedConstants();
 
     /**
      * @brief Compute the model's rates.
@@ -131,7 +131,7 @@ public:
      *
      * @param voi The value of the variable of integration.
      */
-    void computeAstRates(double voi = 0.0);
+    void computeRates(double voi = 0.0);
 
     /**
      * @brief Compute the model's variables.
@@ -142,7 +142,7 @@ public:
      *
      * @param voi The value of the variable of integration.
      */
-    void computeAstVariables(double voi = 0.0);
+    void computeVariables(double voi = 0.0);
 
 private:
     Interpreter(); /**< Constructor, @private. */

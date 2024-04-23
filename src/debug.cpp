@@ -33,7 +33,7 @@ limitations under the License.
 
 #include "libcellml/undefines.h"
 
-#include "interpreteraststatement_debug.cpp"
+#include "interpreterstatement_debug.cpp"
 
 namespace libcellml {
 
@@ -689,29 +689,29 @@ void printAstAsCode(const AnalyserEquationAstPtr &ast)
     Debug() << astAsCode(ast);
 }
 
-struct InterpreterAstStatementTrunk
+struct InterpreterStatementTrunk
 {
-    InterpreterAstStatementTrunk *mPrev;
+    InterpreterStatementTrunk *mPrev;
     std::string mStr;
 
-    InterpreterAstStatementTrunk(InterpreterAstStatementTrunk *prev,
-                                 const std::string &str);
+    InterpreterStatementTrunk(InterpreterStatementTrunk *prev,
+                              const std::string &str);
 };
 
-InterpreterAstStatementTrunk::InterpreterAstStatementTrunk(InterpreterAstStatementTrunk *prev,
-                                                           const std::string &str)
+InterpreterStatementTrunk::InterpreterStatementTrunk(InterpreterStatementTrunk *prev,
+                                                     const std::string &str)
     : mPrev(prev)
     , mStr(str)
 {
 }
 
-std::string doPrintInterpreterAstStatement(InterpreterAstStatementTrunk *trunk)
+std::string doPrintInterpreterStatement(InterpreterStatementTrunk *trunk)
 {
     if (trunk == nullptr) {
         return {};
     }
 
-    auto res = doPrintInterpreterAstStatement(trunk->mPrev);
+    auto res = doPrintInterpreterStatement(trunk->mPrev);
 
     if ((trunk->mPrev != nullptr) && (trunk->mPrev->mStr == SPACES)
         && ((trunk->mStr == SPACES) || (trunk->mStr == TRUNK))) {
@@ -721,302 +721,302 @@ std::string doPrintInterpreterAstStatement(InterpreterAstStatementTrunk *trunk)
     return res + trunk->mStr;
 }
 
-std::string doPrintInterpreterAstStatement(const InterpreterAstStatementPtr &interpreterAstStatement)
+std::string doPrintInterpreterStatement(const InterpreterStatementPtr &interpreterStatement)
 {
     std::string res;
 
-    switch (interpreterAstStatement->type()) {
+    switch (interpreterStatement->type()) {
         // Equality.
 
-    case InterpreterAstStatement::Type::EQUALITY:
+    case InterpreterStatement::Type::EQUALITY:
         res = "EQUALITY";
 
         break;
 
         // Relational and logical operators.
 
-    case InterpreterAstStatement::Type::EQ:
+    case InterpreterStatement::Type::EQ:
         res = "EQ";
 
         break;
-    case InterpreterAstStatement::Type::NEQ:
+    case InterpreterStatement::Type::NEQ:
         res = "NEQ";
 
         break;
-    case InterpreterAstStatement::Type::LT:
+    case InterpreterStatement::Type::LT:
         res = "LT";
 
         break;
-    case InterpreterAstStatement::Type::LEQ:
+    case InterpreterStatement::Type::LEQ:
         res = "LEQ";
 
         break;
-    case InterpreterAstStatement::Type::GT:
+    case InterpreterStatement::Type::GT:
         res = "GT";
 
         break;
-    case InterpreterAstStatement::Type::GEQ:
+    case InterpreterStatement::Type::GEQ:
         res = "LEQ";
 
         break;
-    case InterpreterAstStatement::Type::AND:
+    case InterpreterStatement::Type::AND:
         res = "AND";
 
         break;
-    case InterpreterAstStatement::Type::OR:
+    case InterpreterStatement::Type::OR:
         res = "OR";
 
         break;
-    case InterpreterAstStatement::Type::XOR:
+    case InterpreterStatement::Type::XOR:
         res = "XOR";
 
         break;
-    case InterpreterAstStatement::Type::NOT:
+    case InterpreterStatement::Type::NOT:
         res = "NOT";
 
         break;
 
         // Arithmetic operators.
 
-    case InterpreterAstStatement::Type::PLUS:
+    case InterpreterStatement::Type::PLUS:
         res = "PLUS";
 
         break;
-    case InterpreterAstStatement::Type::MINUS:
+    case InterpreterStatement::Type::MINUS:
         res = "MINUS";
 
         break;
-    case InterpreterAstStatement::Type::TIMES:
+    case InterpreterStatement::Type::TIMES:
         res = "TIMES";
 
         break;
-    case InterpreterAstStatement::Type::DIVIDE:
+    case InterpreterStatement::Type::DIVIDE:
         res = "DIVIDE";
 
         break;
-    case InterpreterAstStatement::Type::POWER:
+    case InterpreterStatement::Type::POWER:
         res = "POWER";
 
         break;
-    case InterpreterAstStatement::Type::SQUARE_ROOT:
+    case InterpreterStatement::Type::SQUARE_ROOT:
         res = "SQUARE_ROOT";
 
         break;
-    case InterpreterAstStatement::Type::SQUARE:
+    case InterpreterStatement::Type::SQUARE:
         res = "SQUARE";
 
         break;
-    case InterpreterAstStatement::Type::ABS:
+    case InterpreterStatement::Type::ABS:
         res = "ABS";
 
         break;
-    case InterpreterAstStatement::Type::EXP:
+    case InterpreterStatement::Type::EXP:
         res = "EXP";
 
         break;
-    case InterpreterAstStatement::Type::LN:
+    case InterpreterStatement::Type::LN:
         res = "LN";
 
         break;
-    case InterpreterAstStatement::Type::LOG:
+    case InterpreterStatement::Type::LOG:
         res = "LOG";
 
         break;
-    case InterpreterAstStatement::Type::CEILING:
+    case InterpreterStatement::Type::CEILING:
         res = "CEILING";
 
         break;
-    case InterpreterAstStatement::Type::FLOOR:
+    case InterpreterStatement::Type::FLOOR:
         res = "FLOOR";
 
         break;
-    case InterpreterAstStatement::Type::MIN:
+    case InterpreterStatement::Type::MIN:
         res = "MIN";
 
         break;
-    case InterpreterAstStatement::Type::MAX:
+    case InterpreterStatement::Type::MAX:
         res = "MAX";
 
         break;
-    case InterpreterAstStatement::Type::REM:
+    case InterpreterStatement::Type::REM:
         res = "REM";
 
         break;
 
         // Trigonometric operators.
 
-    case InterpreterAstStatement::Type::SIN:
+    case InterpreterStatement::Type::SIN:
         res = "SIN";
 
         break;
-    case InterpreterAstStatement::Type::COS:
+    case InterpreterStatement::Type::COS:
         res = "COS";
 
         break;
-    case InterpreterAstStatement::Type::TAN:
+    case InterpreterStatement::Type::TAN:
         res = "TAN";
 
         break;
-    case InterpreterAstStatement::Type::SEC:
+    case InterpreterStatement::Type::SEC:
         res = "SEC";
 
         break;
-    case InterpreterAstStatement::Type::CSC:
+    case InterpreterStatement::Type::CSC:
         res = "CSC";
 
         break;
-    case InterpreterAstStatement::Type::COT:
+    case InterpreterStatement::Type::COT:
         res = "COT";
 
         break;
-    case InterpreterAstStatement::Type::SINH:
+    case InterpreterStatement::Type::SINH:
         res = "SINH";
 
         break;
-    case InterpreterAstStatement::Type::COSH:
+    case InterpreterStatement::Type::COSH:
         res = "COSH";
 
         break;
-    case InterpreterAstStatement::Type::TANH:
+    case InterpreterStatement::Type::TANH:
         res = "TANH";
 
         break;
-    case InterpreterAstStatement::Type::SECH:
+    case InterpreterStatement::Type::SECH:
         res = "SECH";
 
         break;
-    case InterpreterAstStatement::Type::CSCH:
+    case InterpreterStatement::Type::CSCH:
         res = "CSCH";
 
         break;
-    case InterpreterAstStatement::Type::COTH:
+    case InterpreterStatement::Type::COTH:
         res = "COTH";
 
         break;
-    case InterpreterAstStatement::Type::ASIN:
+    case InterpreterStatement::Type::ASIN:
         res = "ASIN";
 
         break;
-    case InterpreterAstStatement::Type::ACOS:
+    case InterpreterStatement::Type::ACOS:
         res = "ACOS";
 
         break;
-    case InterpreterAstStatement::Type::ATAN:
+    case InterpreterStatement::Type::ATAN:
         res = "ATAN";
 
         break;
-    case InterpreterAstStatement::Type::ASEC:
+    case InterpreterStatement::Type::ASEC:
         res = "ASEC";
 
         break;
-    case InterpreterAstStatement::Type::ACSC:
+    case InterpreterStatement::Type::ACSC:
         res = "ACSC";
 
         break;
-    case InterpreterAstStatement::Type::ACOT:
+    case InterpreterStatement::Type::ACOT:
         res = "ACOT";
 
         break;
-    case InterpreterAstStatement::Type::ASINH:
+    case InterpreterStatement::Type::ASINH:
         res = "ASINH";
 
         break;
-    case InterpreterAstStatement::Type::ACOSH:
+    case InterpreterStatement::Type::ACOSH:
         res = "ACOSH";
 
         break;
-    case InterpreterAstStatement::Type::ATANH:
+    case InterpreterStatement::Type::ATANH:
         res = "ATANH";
 
         break;
-    case InterpreterAstStatement::Type::ASECH:
+    case InterpreterStatement::Type::ASECH:
         res = "ASECH";
 
         break;
-    case InterpreterAstStatement::Type::ACSCH:
+    case InterpreterStatement::Type::ACSCH:
         res = "ACSCH";
 
         break;
-    case InterpreterAstStatement::Type::ACOTH:
+    case InterpreterStatement::Type::ACOTH:
         res = "ACOTH";
 
         break;
 
         // Piecewise statement.
 
-    case InterpreterAstStatement::Type::PIECEWISE:
+    case InterpreterStatement::Type::PIECEWISE:
         res = "PIECEWISE";
 
         break;
-    case InterpreterAstStatement::Type::PIECE:
+    case InterpreterStatement::Type::PIECE:
         res = "PIECE";
 
         break;
 
         // Token elements.
 
-    case InterpreterAstStatement::Type::VOI:
+    case InterpreterStatement::Type::VOI:
         res = "VOI";
 
         break;
-    case InterpreterAstStatement::Type::STATE:
-    case InterpreterAstStatement::Type::RATE:
-    case InterpreterAstStatement::Type::VARIABLE:
-        res = ciValue(interpreterAstStatement->variable(),
-                      interpreterAstStatement->type() == InterpreterAstStatement::Type::RATE);
+    case InterpreterStatement::Type::STATE:
+    case InterpreterStatement::Type::RATE:
+    case InterpreterStatement::Type::VARIABLE:
+        res = ciValue(interpreterStatement->variable(),
+                      interpreterStatement->type() == InterpreterStatement::Type::RATE);
 
         break;
-    case InterpreterAstStatement::Type::NUMBER:
-        res = convertToString(interpreterAstStatement->value());
+    case InterpreterStatement::Type::NUMBER:
+        res = convertToString(interpreterStatement->value());
 
         break;
 
         // Qualifier elements.
 
-    case InterpreterAstStatement::Type::DEGREE:
+    case InterpreterStatement::Type::DEGREE:
         res = "DEGREE";
 
         break;
-    case InterpreterAstStatement::Type::LOGBASE:
+    case InterpreterStatement::Type::LOGBASE:
         res = "LOGBASE";
 
         break;
-    case InterpreterAstStatement::Type::BVAR:
+    case InterpreterStatement::Type::BVAR:
         res = "BVAR";
 
         break;
 
         // Constants.
 
-    case InterpreterAstStatement::Type::TRUE:
+    case InterpreterStatement::Type::TRUE:
         res = "TRUE";
 
         break;
-    case InterpreterAstStatement::Type::FALSE:
+    case InterpreterStatement::Type::FALSE:
         res = "FALSE";
 
         break;
-    case InterpreterAstStatement::Type::E:
+    case InterpreterStatement::Type::E:
         res = "E";
 
         break;
-    case InterpreterAstStatement::Type::PI:
+    case InterpreterStatement::Type::PI:
         res = "PI";
 
         break;
-    case InterpreterAstStatement::Type::INF:
+    case InterpreterStatement::Type::INF:
         res = "INF";
 
         break;
-    case InterpreterAstStatement::Type::NAN:
+    case InterpreterStatement::Type::NAN:
         res = "NAN";
 
         break;
 
         // Miscellaneous.
 
-    case InterpreterAstStatement::Type::EXTERNAL:
-        res = "EXTERNAL[" + convertToString(interpreterAstStatement->externalIndex()) + "]";
+    case InterpreterStatement::Type::EXTERNAL:
+        res = "EXTERNAL[" + convertToString(interpreterStatement->externalIndex()) + "]";
 
         break;
     }
@@ -1024,20 +1024,20 @@ std::string doPrintInterpreterAstStatement(const InterpreterAstStatementPtr &int
     return res;
 }
 
-std::string doPrintInterpreterAstStatement(const InterpreterAstStatementPtr &interpreterAstStatement,
-                                           InterpreterAstStatementTrunk *prevTrunk, bool isLeft)
+std::string doPrintInterpreterStatement(const InterpreterStatementPtr &interpreterStatement,
+                                        InterpreterStatementTrunk *prevTrunk, bool isLeft)
 {
-    if (interpreterAstStatement == nullptr) {
+    if (interpreterStatement == nullptr) {
         return {};
     }
 
     std::string res;
     std::string prevStr = SPACES;
-    InterpreterAstStatementTrunk trunk(prevTrunk, prevStr);
-    auto astLeftChild = interpreterAstStatement->leftChild();
+    InterpreterStatementTrunk trunk(prevTrunk, prevStr);
+    auto astLeftChild = interpreterStatement->leftChild();
 
     if (astLeftChild != nullptr) {
-        res += doPrintInterpreterAstStatement(astLeftChild, &trunk, true);
+        res += doPrintInterpreterStatement(astLeftChild, &trunk, true);
     }
 
     if (prevTrunk == nullptr) {
@@ -1050,15 +1050,15 @@ std::string doPrintInterpreterAstStatement(const InterpreterAstStatementPtr &int
         prevTrunk->mStr = prevStr;
     }
 
-    auto astRightChild = interpreterAstStatement->rightChild();
+    auto astRightChild = interpreterStatement->rightChild();
 
-    res += doPrintInterpreterAstStatement(&trunk);
+    res += doPrintInterpreterStatement(&trunk);
 
     if (astLeftChild != nullptr) {
         res += (astRightChild != nullptr) ? "┤" : "┘";
     }
 
-    res += " " + doPrintInterpreterAstStatement(interpreterAstStatement) + "\n";
+    res += " " + doPrintInterpreterStatement(interpreterStatement) + "\n";
 
     if (prevTrunk != nullptr) {
         prevTrunk->mStr = prevStr;
@@ -1067,15 +1067,15 @@ std::string doPrintInterpreterAstStatement(const InterpreterAstStatementPtr &int
     trunk.mStr = TRUNK;
 
     if (astRightChild != nullptr) {
-        res += doPrintInterpreterAstStatement(astRightChild, &trunk, false);
+        res += doPrintInterpreterStatement(astRightChild, &trunk, false);
     }
 
     return res;
 }
 
-void printInterpreterAstStatement(const InterpreterAstStatementPtr &interpreterAstStatement)
+void printInterpreterStatement(const InterpreterStatementPtr &interpreterStatement)
 {
-    Debug() << doPrintInterpreterAstStatement(interpreterAstStatement, nullptr, false);
+    Debug() << doPrintInterpreterStatement(interpreterStatement, nullptr, false);
 }
 
 void printImportLibrary(const ImportLibrary &importlibrary)

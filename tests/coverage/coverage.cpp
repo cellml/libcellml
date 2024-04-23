@@ -861,10 +861,10 @@ TEST(Coverage, interpreter)
 
     EXPECT_EQ(analyserModel, interpreter->model());
 
-    interpreter->initialiseAstVariables();
-    interpreter->computeAstComputedConstants();
-    interpreter->computeAstRates();
-    interpreter->computeAstVariables();
+    interpreter->initialiseVariables();
+    interpreter->computeComputedConstants();
+    interpreter->computeRates();
+    interpreter->computeVariables();
 
     interpreter->setModel(nullptr);
 

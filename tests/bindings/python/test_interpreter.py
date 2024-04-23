@@ -56,10 +56,10 @@ class InterpreterTestCase(unittest.TestCase):
         self.assert_array_equal(nan_x_4, i.rates())
         self.assert_array_equal(nan_x_18, i.variables())
 
-        i.initialiseAstVariables()
-        i.computeAstComputedConstants()
-        i.computeAstRates()
-        i.computeAstVariables()
+        i.initialiseVariables()
+        i.computeComputedConstants()
+        i.computeRates()
+        i.computeVariables()
 
         self.assert_array_equal([0.0, 0.6, 0.05, 0.325], i.states())
         self.assert_array_equal([0.60076875, -0.0004555239065400646, 0.012385538355398518, -0.0013415722863204596], i.rates())

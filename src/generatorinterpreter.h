@@ -20,7 +20,7 @@ limitations under the License.
 
 #include "libcellml/analysermodel.h"
 
-#include "interpreteraststatement.h"
+#include "interpreterstatement.h"
 
 namespace libcellml {
 
@@ -47,7 +47,7 @@ public:
      * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::GeneratorInterpreter::create(model, profile, code);
+     *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(model, profile, code);
      * @endcode
      *
      * @param model The model for which we want to generate the code to compute.
@@ -65,7 +65,7 @@ public:
      * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::GeneratorInterpreter::create(model);
+     *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(model);
      * @endcode
      *
      * @param model The model for which we want to generate the code to compute.
@@ -80,7 +80,7 @@ public:
      * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::GeneratorInterpreter::create(profile);
+     *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(profile);
      * @endcode
      *
      * @param ast The AST for which we want to generate some code.
@@ -107,7 +107,7 @@ public:
      *
      * @return The statements to initialise variables as a @c std::vector.
      */
-    std::vector<InterpreterAstStatementPtr> initialiseVariablesAstStatements() const;
+    std::vector<InterpreterStatementPtr> initialiseVariablesStatements() const;
 
     /**
      * @brief Get the statements to compute computed constants.
@@ -116,7 +116,7 @@ public:
      *
      * @return The statements to compute computed constants as a @c std::vector.
      */
-    std::vector<InterpreterAstStatementPtr> computeComputedConstantsAstStatements() const;
+    std::vector<InterpreterStatementPtr> computeComputedConstantsStatements() const;
 
     /**
      * @brief Get the statements to compute rates.
@@ -125,7 +125,7 @@ public:
      *
      * @return The statements to compute rates as a @c std::vector.
      */
-    std::vector<InterpreterAstStatementPtr> computeRatesAstStatements() const;
+    std::vector<InterpreterStatementPtr> computeRatesStatements() const;
 
     /**
      * @brief Get the statements to compute variables.
@@ -134,7 +134,7 @@ public:
      *
      * @return The statements to compute variables as a @c std::vector.
      */
-    std::vector<InterpreterAstStatementPtr> computeVariablesAstStatements() const;
+    std::vector<InterpreterStatementPtr> computeVariablesStatements() const;
 
 private:
     GeneratorInterpreter(const AnalyserModelPtr &model, const GeneratorProfilePtr &profile,

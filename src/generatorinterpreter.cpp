@@ -24,8 +24,8 @@ limitations under the License.
 
 #include "commonutils.h"
 #include "generatorinterpreter_p.h"
-#include "interpreteraststatement.h"
-#include "interpreteraststatement_p.h"
+#include "interpreterstatement.h"
+#include "interpreterstatement_p.h"
 #include "utilities.h"
 
 #include "libcellml/undefines.h"
@@ -51,7 +51,7 @@ GeneratorInterpreter::GeneratorInterpreterImpl::GeneratorInterpreterImpl(const A
         mProfile = profile;
     }
 
-    auto [code, dummyAstStatement] = generateCode(ast);
+    auto [code, dummyStatement] = generateCode(ast);
 
     mCode = code;
 }
@@ -77,24 +77,24 @@ void GeneratorInterpreter::GeneratorInterpreterImpl::initialise(const AnalyserMo
 
     initialiseVariables(remainingEquations);
 
-    mInitialiseVariablesAstStatements = mAstStatements;
+    mInitialiseVariablesStatements = mStatements;
 
     // Add code for the implementation to compute our computed constants.
 
-    mAstStatements.clear();
+    mStatements.clear();
 
     computeComputedConstants(remainingEquations);
 
-    mComputeComputedConstantsAstStatements = mAstStatements;
+    mComputeComputedConstantsStatements = mStatements;
 
     // Add code for the implementation to compute our rates (and any variables
     // on which they depend).
 
-    mAstStatements.clear();
+    mStatements.clear();
 
     computeRates(remainingEquations);
 
-    mComputeRatesAstStatements = mAstStatements;
+    mComputeRatesStatements = mStatements;
 
     // Add code for the implementation to compute our variables.
     // Note: this method computes the remaining variables, i.e. the ones not needed to compute our rates, but also the
@@ -102,11 +102,11 @@ void GeneratorInterpreter::GeneratorInterpreterImpl::initialise(const AnalyserMo
     //       typically called after having integrated a model, thus ensuring that variables that rely on the value of
     //       some states/rates are up to date.
 
-    mAstStatements.clear();
+    mStatements.clear();
 
     computeVariables(remainingEquations);
 
-    mComputeVariablesAstStatements = mAstStatements;
+    mComputeVariablesStatements = mStatements;
 }
 
 bool modelHasOdes(const AnalyserModelPtr &model)
@@ -353,19 +353,19 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateVariableName
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateOperatorCode(const std::string &op,
                                                                                  const AnalyserEquationAstPtr &ast,
-                                                                                 const InterpreterAstStatementPtr &astStatement) const
+                                                                                 const InterpreterStatementPtr &statement) const
 {
     // Generate the code for the left and right branches of the given AST.
 
     std::string res;
     auto astLeftChild = ast->leftChild();
     auto astRightChild = ast->rightChild();
-    auto [leftCode, leftAstStatement] = generateCode(astLeftChild);
-    auto [rightCode, rightAstStatement] = generateCode(astRightChild);
+    auto [leftCode, leftStatement] = generateCode(astLeftChild);
+    auto [rightCode, rightStatement] = generateCode(astRightChild);
 
-    if (astStatement != nullptr) {
-        astStatement->mPimpl->mLeftChild = leftAstStatement;
-        astStatement->mPimpl->mRightChild = rightAstStatement;
+    if (statement != nullptr) {
+        statement->mPimpl->mLeftChild = leftStatement;
+        statement->mPimpl->mRightChild = rightStatement;
     }
 
     // Determine whether parentheses should be added around the left and/or right piece of code, and this based on the
@@ -633,14 +633,14 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateOperatorCode
 }
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast,
-                                                                                   const InterpreterAstStatementPtr &astStatement) const
+                                                                                   const InterpreterStatementPtr &statement) const
 {
     // Generate the code for the left branch of the given AST.
 
     auto astLeftChild = ast->leftChild();
-    auto [leftCode, leftAstStatement] = generateCode(astLeftChild);
+    auto [leftCode, leftStatement] = generateCode(astLeftChild);
 
-    astStatement->mPimpl->mLeftChild = leftAstStatement;
+    statement->mPimpl->mLeftChild = leftStatement;
 
     // Determine whether parentheses should be added around the left code.
 
@@ -657,12 +657,12 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateMinusUnaryCo
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateOneParameterFunctionCode(const std::string &function,
                                                                                              const AnalyserEquationAstPtr &ast,
-                                                                                             const InterpreterAstStatementPtr &astStatement) const
+                                                                                             const InterpreterStatementPtr &statement) const
 {
-    auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+    auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-    if (astStatement != nullptr) {
-        astStatement->mPimpl->mLeftChild = leftAstStatement;
+    if (statement != nullptr) {
+        statement->mPimpl->mLeftChild = leftStatement;
     }
 
     return function + "(" + leftCode + ")";
@@ -670,14 +670,14 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateOneParameter
 
 std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateTwoParameterFunctionCode(const std::string &function,
                                                                                              const AnalyserEquationAstPtr &ast,
-                                                                                             const InterpreterAstStatementPtr &astStatement) const
+                                                                                             const InterpreterStatementPtr &statement) const
 {
-    auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
-    auto [rightCode, rightAstStatement] = generateCode(ast->rightChild());
+    auto [leftCode, leftStatement] = generateCode(ast->leftChild());
+    auto [rightCode, rightStatement] = generateCode(ast->rightChild());
 
-    if (astStatement != nullptr) {
-        astStatement->mPimpl->mLeftChild = leftAstStatement;
-        astStatement->mPimpl->mRightChild = rightAstStatement;
+    if (statement != nullptr) {
+        statement->mPimpl->mLeftChild = leftStatement;
+        statement->mPimpl->mRightChild = rightStatement;
     }
 
     return function + "(" + leftCode + ", " + rightCode + ")";
@@ -701,7 +701,7 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generatePiecewiseEls
                    "[ELSE_STATEMENT]", value);
 }
 
-std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::GeneratorInterpreterImpl::generateCode(const AnalyserEquationAstPtr &ast) const
+std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::GeneratorInterpreterImpl::generateCode(const AnalyserEquationAstPtr &ast) const
 {
     // Make sure that we have an AST to work on.
 
@@ -716,18 +716,18 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
     //       like rates[0]).
 
     std::string code;
-    InterpreterAstStatementPtr astStatement;
+    InterpreterStatementPtr statement;
 
     switch (ast->type()) {
     case AnalyserEquationAst::Type::EQUALITY:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::EQUALITY);
-        code = generateOperatorCode(mProfile->equalityString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::EQUALITY);
+        code = generateOperatorCode(mProfile->equalityString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::EQ:
         if (mProfile->hasEqOperator()) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::EQ);
-            code = generateOperatorCode(mProfile->eqString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::EQ);
+            code = generateOperatorCode(mProfile->eqString(), ast, statement);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->eqString(), ast);
         }
@@ -735,8 +735,8 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         break;
     case AnalyserEquationAst::Type::NEQ:
         if (mProfile->hasNeqOperator()) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::NEQ);
-            code = generateOperatorCode(mProfile->neqString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::NEQ);
+            code = generateOperatorCode(mProfile->neqString(), ast, statement);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->neqString(), ast);
         }
@@ -744,8 +744,8 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         break;
     case AnalyserEquationAst::Type::LT:
         if (mProfile->hasLtOperator()) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::LT);
-            code = generateOperatorCode(mProfile->ltString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::LT);
+            code = generateOperatorCode(mProfile->ltString(), ast, statement);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->ltString(), ast);
         }
@@ -753,8 +753,8 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         break;
     case AnalyserEquationAst::Type::LEQ:
         if (mProfile->hasLeqOperator()) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::LEQ);
-            code = generateOperatorCode(mProfile->leqString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::LEQ);
+            code = generateOperatorCode(mProfile->leqString(), ast, statement);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->leqString(), ast);
         }
@@ -762,8 +762,8 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         break;
     case AnalyserEquationAst::Type::GT:
         if (mProfile->hasGtOperator()) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::GT);
-            code = generateOperatorCode(mProfile->gtString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::GT);
+            code = generateOperatorCode(mProfile->gtString(), ast, statement);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->gtString(), ast);
         }
@@ -771,8 +771,8 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         break;
     case AnalyserEquationAst::Type::GEQ:
         if (mProfile->hasGeqOperator()) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::GEQ);
-            code = generateOperatorCode(mProfile->geqString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::GEQ);
+            code = generateOperatorCode(mProfile->geqString(), ast, statement);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->geqString(), ast);
         }
@@ -780,8 +780,8 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         break;
     case AnalyserEquationAst::Type::AND:
         if (mProfile->hasAndOperator()) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::AND);
-            code = generateOperatorCode(mProfile->andString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::AND);
+            code = generateOperatorCode(mProfile->andString(), ast, statement);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->andString(), ast);
         }
@@ -789,8 +789,8 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         break;
     case AnalyserEquationAst::Type::OR:
         if (mProfile->hasOrOperator()) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::OR);
-            code = generateOperatorCode(mProfile->orString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::OR);
+            code = generateOperatorCode(mProfile->orString(), ast, statement);
         } else {
             code = generateTwoParameterFunctionCode(mProfile->orString(), ast);
         }
@@ -800,16 +800,16 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         if (mProfile->hasXorOperator()) {
             code = generateOperatorCode(mProfile->xorString(), ast);
         } else {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::XOR);
-            code = generateTwoParameterFunctionCode(mProfile->xorString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::XOR);
+            code = generateTwoParameterFunctionCode(mProfile->xorString(), ast, statement);
         }
 
         break;
     case AnalyserEquationAst::Type::NOT:
         if (mProfile->hasNotOperator()) {
-            auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+            auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::NOT, leftAstStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::NOT, leftStatement);
             code = mProfile->notString() + leftCode;
         } else {
             code = generateOneParameterFunctionCode(mProfile->notString(), ast);
@@ -818,60 +818,60 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         break;
     case AnalyserEquationAst::Type::PLUS:
         if (ast->rightChild() != nullptr) {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::PLUS);
-            code = generateOperatorCode(mProfile->plusString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::PLUS);
+            code = generateOperatorCode(mProfile->plusString(), ast, statement);
         } else {
-            auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+            auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-            astStatement = leftAstStatement;
+            statement = leftStatement;
             code = leftCode;
         }
 
         break;
     case AnalyserEquationAst::Type::MINUS:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::MINUS);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::MINUS);
 
         code = (ast->rightChild() != nullptr) ?
-                   generateOperatorCode(mProfile->minusString(), ast, astStatement) :
-                   generateMinusUnaryCode(ast, astStatement);
+                   generateOperatorCode(mProfile->minusString(), ast, statement) :
+                   generateMinusUnaryCode(ast, statement);
 
         break;
     case AnalyserEquationAst::Type::TIMES:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::TIMES);
-        code = generateOperatorCode(mProfile->timesString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::TIMES);
+        code = generateOperatorCode(mProfile->timesString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::DIVIDE:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::DIVIDE);
-        code = generateOperatorCode(mProfile->divideString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::DIVIDE);
+        code = generateOperatorCode(mProfile->divideString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::POWER: {
-        auto [rightCode, rightAstStatement] = generateCode(ast->rightChild());
+        auto [rightCode, rightStatement] = generateCode(ast->rightChild());
         double doubleValue;
         auto validConversion = convertToDouble(rightCode, doubleValue);
 
         if (validConversion && areEqual(doubleValue, 0.5)) {
-            auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+            auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SQUARE_ROOT,
-                                                           leftAstStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::SQUARE_ROOT,
+                                                     leftStatement);
             code = mProfile->squareRootString() + "(" + leftCode + ")";
         } else if (validConversion && areEqual(doubleValue, 2.0)
                    && !mProfile->squareString().empty()) {
-            auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+            auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SQUARE,
-                                                           leftAstStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::SQUARE,
+                                                     leftStatement);
             code = mProfile->squareString() + "(" + leftCode + ")";
         } else if (mProfile->hasPowerOperator()) {
             code = generateOperatorCode(mProfile->powerString(), ast);
         } else {
-            auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+            auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::POWER,
-                                                           leftAstStatement,
-                                                           rightAstStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::POWER,
+                                                     leftStatement,
+                                                     rightStatement);
             code = mProfile->powerString() + "(" + leftCode + ", " + rightCode + ")";
         }
     } break;
@@ -880,29 +880,29 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
 
         if (astRightChild != nullptr) {
             auto astLeftChild = ast->leftChild();
-            auto [leftCode, leftAstStatement] = generateCode(astLeftChild);
+            auto [leftCode, leftStatement] = generateCode(astLeftChild);
             double doubleValue;
             auto validConversion = convertToDouble(leftCode, doubleValue);
 
             if (validConversion && areEqual(doubleValue, 2.0)) {
-                auto [rightCode, rightAstStatement] = generateCode(astRightChild);
+                auto [rightCode, rightStatement] = generateCode(astRightChild);
 
-                astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SQUARE_ROOT,
-                                                               rightAstStatement);
+                statement = InterpreterStatement::create(InterpreterStatement::Type::SQUARE_ROOT,
+                                                         rightStatement);
                 code = mProfile->squareRootString() + "(" + rightCode + ")";
             } else if (validConversion && areEqual(doubleValue, 0.5)
                        && !mProfile->squareString().empty()) {
-                auto [rightCode, rightAstStatement] = generateCode(astRightChild);
+                auto [rightCode, rightStatement] = generateCode(astRightChild);
 
-                astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SQUARE,
-                                                               rightAstStatement);
+                statement = InterpreterStatement::create(InterpreterStatement::Type::SQUARE,
+                                                         rightStatement);
                 code = mProfile->squareString() + "(" + rightCode + ")";
             } else if (mProfile->hasPowerOperator()) {
                 code = generateOperatorCode(mProfile->powerString(), ast);
             } else {
-                auto [rightCode, rightAstStatement] = generateCode(astRightChild);
+                auto [rightCode, rightStatement] = generateCode(astRightChild);
                 auto inverseValueAst = AnalyserEquationAst::create();
-                auto inverseValueAstStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::DIVIDE);
+                auto inverseValueStatement = InterpreterStatement::create(InterpreterStatement::Type::DIVIDE);
 
                 inverseValueAst->setType(AnalyserEquationAst::Type::DIVIDE);
                 inverseValueAst->setParent(ast);
@@ -916,267 +916,267 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
                 inverseValueAst->setLeftChild(inverseValueAstLeftChild);
                 inverseValueAst->setRightChild(astLeftChild->leftChild());
 
-                astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::POWER,
-                                                               rightAstStatement,
-                                                               inverseValueAstStatement);
-                code = mProfile->powerString() + "(" + rightCode + ", " + generateOperatorCode(mProfile->divideString(), inverseValueAst, inverseValueAstStatement) + ")";
+                statement = InterpreterStatement::create(InterpreterStatement::Type::POWER,
+                                                         rightStatement,
+                                                         inverseValueStatement);
+                code = mProfile->powerString() + "(" + rightCode + ", " + generateOperatorCode(mProfile->divideString(), inverseValueAst, inverseValueStatement) + ")";
             }
         } else {
-            auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+            auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SQUARE_ROOT,
-                                                           leftAstStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::SQUARE_ROOT,
+                                                     leftStatement);
             code = mProfile->squareRootString() + "(" + leftCode + ")";
         }
     } break;
     case AnalyserEquationAst::Type::ABS:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ABS);
-        code = generateOneParameterFunctionCode(mProfile->absoluteValueString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ABS);
+        code = generateOneParameterFunctionCode(mProfile->absoluteValueString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::EXP:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::EXP);
-        code = generateOneParameterFunctionCode(mProfile->exponentialString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::EXP);
+        code = generateOneParameterFunctionCode(mProfile->exponentialString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::LN:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::LN);
-        code = generateOneParameterFunctionCode(mProfile->naturalLogarithmString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::LN);
+        code = generateOneParameterFunctionCode(mProfile->naturalLogarithmString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::LOG: {
         auto astRightChild = ast->rightChild();
 
         if (astRightChild != nullptr) {
-            auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+            auto [leftCode, leftStatement] = generateCode(ast->leftChild());
             double doubleValue;
-            auto [rightCode, rightAstStatement] = generateCode(astRightChild);
+            auto [rightCode, rightStatement] = generateCode(astRightChild);
 
             if (convertToDouble(leftCode, doubleValue)
                 && areEqual(doubleValue, 10.0)) {
-                astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::LOG,
-                                                               rightAstStatement);
+                statement = InterpreterStatement::create(InterpreterStatement::Type::LOG,
+                                                         rightStatement);
                 code = mProfile->commonLogarithmString() + "(" + rightCode + ")";
             } else {
-                astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::DIVIDE,
-                                                               InterpreterAstStatement::create(InterpreterAstStatement::Type::LN,
-                                                                                               rightAstStatement),
-                                                               InterpreterAstStatement::create(InterpreterAstStatement::Type::LN,
-                                                                                               leftAstStatement));
+                statement = InterpreterStatement::create(InterpreterStatement::Type::DIVIDE,
+                                                         InterpreterStatement::create(InterpreterStatement::Type::LN,
+                                                                                      rightStatement),
+                                                         InterpreterStatement::create(InterpreterStatement::Type::LN,
+                                                                                      leftStatement));
                 code = mProfile->naturalLogarithmString() + "(" + rightCode + ")/" + mProfile->naturalLogarithmString() + "(" + leftCode + ")";
             }
         } else {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::LOG);
-            code = generateOneParameterFunctionCode(mProfile->commonLogarithmString(), ast, astStatement);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::LOG);
+            code = generateOneParameterFunctionCode(mProfile->commonLogarithmString(), ast, statement);
         }
     } break;
     case AnalyserEquationAst::Type::CEILING:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::CEILING);
-        code = generateOneParameterFunctionCode(mProfile->ceilingString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::CEILING);
+        code = generateOneParameterFunctionCode(mProfile->ceilingString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::FLOOR:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::FLOOR);
-        code = generateOneParameterFunctionCode(mProfile->floorString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::FLOOR);
+        code = generateOneParameterFunctionCode(mProfile->floorString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::MIN:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::MIN);
-        code = generateTwoParameterFunctionCode(mProfile->minString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::MIN);
+        code = generateTwoParameterFunctionCode(mProfile->minString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::MAX:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::MAX);
-        code = generateTwoParameterFunctionCode(mProfile->maxString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::MAX);
+        code = generateTwoParameterFunctionCode(mProfile->maxString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::REM:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::REM);
-        code = generateTwoParameterFunctionCode(mProfile->remString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::REM);
+        code = generateTwoParameterFunctionCode(mProfile->remString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::DIFF:
         if (mModel != nullptr) {
-            auto [rightCode, rightAstStatement] = generateCode(ast->rightChild());
+            auto [rightCode, rightStatement] = generateCode(ast->rightChild());
 
-            astStatement = rightAstStatement;
+            statement = rightStatement;
             code = rightCode;
         } else {
-            auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
-            auto [rightCode, rightAstStatement] = generateCode(ast->rightChild());
+            auto [leftCode, leftStatement] = generateCode(ast->leftChild());
+            auto [rightCode, rightStatement] = generateCode(ast->rightChild());
 
             code = "d" + rightCode + "/d" + leftCode;
         }
 
         break;
     case AnalyserEquationAst::Type::SIN:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SIN);
-        code = generateOneParameterFunctionCode(mProfile->sinString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::SIN);
+        code = generateOneParameterFunctionCode(mProfile->sinString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::COS:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::COS);
-        code = generateOneParameterFunctionCode(mProfile->cosString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::COS);
+        code = generateOneParameterFunctionCode(mProfile->cosString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::TAN:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::TAN);
-        code = generateOneParameterFunctionCode(mProfile->tanString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::TAN);
+        code = generateOneParameterFunctionCode(mProfile->tanString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::SEC:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SEC);
-        code = generateOneParameterFunctionCode(mProfile->secString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::SEC);
+        code = generateOneParameterFunctionCode(mProfile->secString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::CSC:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::CSC);
-        code = generateOneParameterFunctionCode(mProfile->cscString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::CSC);
+        code = generateOneParameterFunctionCode(mProfile->cscString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::COT:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::COT);
-        code = generateOneParameterFunctionCode(mProfile->cotString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::COT);
+        code = generateOneParameterFunctionCode(mProfile->cotString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::SINH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SINH);
-        code = generateOneParameterFunctionCode(mProfile->sinhString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::SINH);
+        code = generateOneParameterFunctionCode(mProfile->sinhString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::COSH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::COSH);
-        code = generateOneParameterFunctionCode(mProfile->coshString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::COSH);
+        code = generateOneParameterFunctionCode(mProfile->coshString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::TANH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::TANH);
-        code = generateOneParameterFunctionCode(mProfile->tanhString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::TANH);
+        code = generateOneParameterFunctionCode(mProfile->tanhString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::SECH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::SECH);
-        code = generateOneParameterFunctionCode(mProfile->sechString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::SECH);
+        code = generateOneParameterFunctionCode(mProfile->sechString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::CSCH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::CSCH);
-        code = generateOneParameterFunctionCode(mProfile->cschString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::CSCH);
+        code = generateOneParameterFunctionCode(mProfile->cschString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::COTH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::COTH);
-        code = generateOneParameterFunctionCode(mProfile->cothString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::COTH);
+        code = generateOneParameterFunctionCode(mProfile->cothString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ASIN:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ASIN);
-        code = generateOneParameterFunctionCode(mProfile->asinString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ASIN);
+        code = generateOneParameterFunctionCode(mProfile->asinString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ACOS:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ACOS);
-        code = generateOneParameterFunctionCode(mProfile->acosString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ACOS);
+        code = generateOneParameterFunctionCode(mProfile->acosString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ATAN:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ATAN);
-        code = generateOneParameterFunctionCode(mProfile->atanString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ATAN);
+        code = generateOneParameterFunctionCode(mProfile->atanString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ASEC:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ASEC);
-        code = generateOneParameterFunctionCode(mProfile->asecString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ASEC);
+        code = generateOneParameterFunctionCode(mProfile->asecString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ACSC:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ACSC);
-        code = generateOneParameterFunctionCode(mProfile->acscString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ACSC);
+        code = generateOneParameterFunctionCode(mProfile->acscString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ACOT:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ACOT);
-        code = generateOneParameterFunctionCode(mProfile->acotString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ACOT);
+        code = generateOneParameterFunctionCode(mProfile->acotString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ASINH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ASINH);
-        code = generateOneParameterFunctionCode(mProfile->asinhString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ASINH);
+        code = generateOneParameterFunctionCode(mProfile->asinhString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ACOSH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ACOSH);
-        code = generateOneParameterFunctionCode(mProfile->acoshString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ACOSH);
+        code = generateOneParameterFunctionCode(mProfile->acoshString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ATANH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ATANH);
-        code = generateOneParameterFunctionCode(mProfile->atanhString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ATANH);
+        code = generateOneParameterFunctionCode(mProfile->atanhString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ASECH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ASECH);
-        code = generateOneParameterFunctionCode(mProfile->asechString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ASECH);
+        code = generateOneParameterFunctionCode(mProfile->asechString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ACSCH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ACSCH);
-        code = generateOneParameterFunctionCode(mProfile->acschString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ACSCH);
+        code = generateOneParameterFunctionCode(mProfile->acschString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::ACOTH:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::ACOTH);
-        code = generateOneParameterFunctionCode(mProfile->acothString(), ast, astStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::ACOTH);
+        code = generateOneParameterFunctionCode(mProfile->acothString(), ast, statement);
 
         break;
     case AnalyserEquationAst::Type::PIECEWISE: {
         auto astLeftChild = ast->leftChild();
         auto astRightChild = ast->rightChild();
-        auto [leftCode, leftAstStatement] = generateCode(astLeftChild);
-        auto [rightCode, rightAstStatement] = generateCode(astRightChild);
+        auto [leftCode, leftStatement] = generateCode(astLeftChild);
+        auto [rightCode, rightStatement] = generateCode(astRightChild);
 
         if (astRightChild != nullptr) {
             if (astRightChild->type() == AnalyserEquationAst::Type::PIECE) {
-                astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::PIECEWISE,
-                                                               leftAstStatement,
-                                                               InterpreterAstStatement::create(InterpreterAstStatement::Type::PIECEWISE,
-                                                                                               rightAstStatement,
-                                                                                               InterpreterAstStatement::create(InterpreterAstStatement::Type::NAN)));
+                statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                         leftStatement,
+                                                         InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                                                      rightStatement,
+                                                                                      InterpreterStatement::create(InterpreterStatement::Type::NAN)));
                 code = leftCode + generatePiecewiseElseCode(rightCode + generatePiecewiseElseCode(mProfile->nanString()));
             } else {
-                astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::PIECEWISE,
-                                                               leftAstStatement,
-                                                               rightAstStatement);
+                statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                         leftStatement,
+                                                         rightStatement);
                 code = leftCode + generatePiecewiseElseCode(rightCode);
             }
         } else if (astLeftChild != nullptr) {
             if (astLeftChild->type() == AnalyserEquationAst::Type::PIECE) {
-                astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::PIECEWISE,
-                                                               leftAstStatement,
-                                                               InterpreterAstStatement::create(InterpreterAstStatement::Type::NAN));
+                statement = InterpreterStatement::create(InterpreterStatement::Type::PIECEWISE,
+                                                         leftStatement,
+                                                         InterpreterStatement::create(InterpreterStatement::Type::NAN));
                 code = leftCode + generatePiecewiseElseCode(mProfile->nanString());
             } else {
-                astStatement = leftAstStatement;
+                statement = leftStatement;
                 code = mProfile->nanString();
             }
         } else {
-            astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::NAN);
+            statement = InterpreterStatement::create(InterpreterStatement::Type::NAN);
             code = mProfile->nanString();
         }
     } break;
     case AnalyserEquationAst::Type::PIECE: {
-        auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
-        auto [rightCode, rightAstStatement] = generateCode(ast->rightChild());
+        auto [leftCode, leftStatement] = generateCode(ast->leftChild());
+        auto [rightCode, rightStatement] = generateCode(ast->rightChild());
 
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::PIECE,
-                                                       leftAstStatement,
-                                                       rightAstStatement);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::PIECE,
+                                                 leftStatement,
+                                                 rightStatement);
         code = generatePiecewiseIfCode(rightCode, leftCode);
     } break;
     case AnalyserEquationAst::Type::OTHERWISE: {
-        auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+        auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-        astStatement = leftAstStatement;
+        statement = leftStatement;
         code = leftCode;
     } break;
     case AnalyserEquationAst::Type::CI: {
@@ -1186,9 +1186,9 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
         if (mModel != nullptr) {
             auto analyserVariable = libcellml::analyserVariable(mModel, variable);
 
-            astStatement = (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
-                               InterpreterAstStatement::create(InterpreterAstStatement::Type::VOI) :
-                               InterpreterAstStatement::create(analyserVariable, rate);
+            statement = (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) ?
+                            InterpreterStatement::create(InterpreterStatement::Type::VOI) :
+                            InterpreterStatement::create(analyserVariable, rate);
         }
 
         code = generateVariableNameCode(variable, rate);
@@ -1198,55 +1198,55 @@ std::tuple<std::string, InterpreterAstStatementPtr> GeneratorInterpreter::Genera
 
         convertToDouble(ast->value(), doubleValue);
 
-        astStatement = InterpreterAstStatement::create(doubleValue);
+        statement = InterpreterStatement::create(doubleValue);
         code = generateDoubleCode(ast->value());
     } break;
     case AnalyserEquationAst::Type::DEGREE:
     case AnalyserEquationAst::Type::LOGBASE: {
-        auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+        auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-        astStatement = leftAstStatement;
+        statement = leftStatement;
         code = leftCode;
     } break;
     case AnalyserEquationAst::Type::BVAR: {
-        auto [leftCode, leftAstStatement] = generateCode(ast->leftChild());
+        auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-        astStatement = leftAstStatement;
+        statement = leftStatement;
         code = leftCode;
     } break;
     case AnalyserEquationAst::Type::TRUE:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::TRUE);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::TRUE);
         code = mProfile->trueString();
 
         break;
     case AnalyserEquationAst::Type::FALSE:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::FALSE);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::FALSE);
         code = mProfile->falseString();
 
         break;
     case AnalyserEquationAst::Type::E:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::E);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::E);
         code = mProfile->eString();
 
         break;
     case AnalyserEquationAst::Type::PI:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::PI);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::PI);
         code = mProfile->piString();
 
         break;
     case AnalyserEquationAst::Type::INF:
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::INF);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::INF);
         code = mProfile->infString();
 
         break;
     default: // AnalyserEquationAst::Type::NAN.
-        astStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::NAN);
+        statement = InterpreterStatement::create(InterpreterStatement::Type::NAN);
         code = mProfile->nanString();
 
         break;
     }
 
-    return {code, astStatement};
+    return {code, statement};
 }
 
 bool GeneratorInterpreter::GeneratorInterpreterImpl::isToBeComputedAgain(const AnalyserEquationPtr &equation) const
@@ -1278,9 +1278,9 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateZeroInitiali
 {
     bool rate = variable->type() == AnalyserVariable::Type::STATE;
 
-    mAstStatements.push_back(InterpreterAstStatement::create(InterpreterAstStatement::Type::EQUALITY,
-                                                             InterpreterAstStatement::create(variable, rate),
-                                                             InterpreterAstStatement::create(0.0)));
+    mStatements.push_back(InterpreterStatement::create(InterpreterStatement::Type::EQUALITY,
+                                                       InterpreterStatement::create(variable, rate),
+                                                       InterpreterStatement::create(0.0)));
 
     return mProfile->indentString()
            + generateVariableNameCode(variable->variable(), rate)
@@ -1294,7 +1294,7 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateInitialisati
     // Determine whether the initialising variable
 
     auto initialisingVariable = variable->initialisingVariable();
-    InterpreterAstStatementPtr initialValueAstStatement;
+    InterpreterStatementPtr initialValueStatement;
     std::string initialValueCode;
 
     if (isCellMLReal(initialisingVariable->initialValue())) {
@@ -1302,13 +1302,13 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateInitialisati
 
         convertToDouble(initialisingVariable->initialValue(), initialValue);
 
-        initialValueAstStatement = InterpreterAstStatement::create(initialValue);
+        initialValueStatement = InterpreterStatement::create(initialValue);
         initialValueCode = generateDoubleCode(initialisingVariable->initialValue());
     } else {
         auto initValueVariable = owningComponent(initialisingVariable)->variable(initialisingVariable->initialValue());
         auto analyserInitialValueVariable = analyserVariable(mModel, initValueVariable);
 
-        initialValueAstStatement = InterpreterAstStatement::create(analyserInitialValueVariable);
+        initialValueStatement = InterpreterStatement::create(analyserInitialValueVariable);
         initialValueCode = mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
     }
 
@@ -1317,15 +1317,15 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateInitialisati
     auto scalingFactor = GeneratorInterpreter::GeneratorInterpreterImpl::scalingFactor(initialisingVariable);
 
     if (!areNearlyEqual(scalingFactor, 1.0)) {
-        initialValueAstStatement = InterpreterAstStatement::create(InterpreterAstStatement::Type::TIMES,
-                                                                   InterpreterAstStatement::create(1.0 / scalingFactor),
-                                                                   initialValueAstStatement);
+        initialValueStatement = InterpreterStatement::create(InterpreterStatement::Type::TIMES,
+                                                             InterpreterStatement::create(1.0 / scalingFactor),
+                                                             initialValueStatement);
         initialValueCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString() + initialValueCode;
     }
 
-    mAstStatements.push_back(InterpreterAstStatement::create(InterpreterAstStatement::Type::EQUALITY,
-                                                             InterpreterAstStatement::create(variable),
-                                                             initialValueAstStatement));
+    mStatements.push_back(InterpreterStatement::create(InterpreterStatement::Type::EQUALITY,
+                                                       InterpreterStatement::create(variable),
+                                                       initialValueStatement));
 
     return mProfile->indentString()
            + generateVariableNameCode(variable->variable())
@@ -1377,9 +1377,9 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateEquationCode
         switch (equation->type()) {
         case AnalyserEquation::Type::EXTERNAL:
             for (const auto &variable : equation->variables()) {
-                mAstStatements.push_back(InterpreterAstStatement::create(InterpreterAstStatement::Type::EQUALITY,
-                                                                         InterpreterAstStatement::create(variable),
-                                                                         InterpreterAstStatement::create(variable->index())));
+                mStatements.push_back(InterpreterStatement::create(InterpreterStatement::Type::EQUALITY,
+                                                                   InterpreterStatement::create(variable),
+                                                                   InterpreterStatement::create(variable->index())));
 
                 res += mProfile->indentString()
                        + generateVariableNameCode(variable->variable())
@@ -1399,9 +1399,9 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateEquationCode
 
             break;
         default:
-            auto [code, astStatement] = generateCode(equation->ast());
+            auto [code, statement] = generateCode(equation->ast());
 
-            mAstStatements.push_back(astStatement);
+            mStatements.push_back(statement);
 
             res += mProfile->indentString() + code + mProfile->commandSeparatorString() + "\n";
 
@@ -1452,7 +1452,7 @@ void GeneratorInterpreter::GeneratorInterpreterImpl::nlaSystems()
 
                 i = MAX_SIZE_T;
 
-                auto [equationCode, equationAstStatement] = generateCode(equation->ast());
+                auto [equationCode, equationStatement] = generateCode(equation->ast());
 
                 methodBody += mProfile->indentString()
                               + mProfile->fArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
@@ -1463,7 +1463,7 @@ void GeneratorInterpreter::GeneratorInterpreterImpl::nlaSystems()
                 handledNlaEquations.push_back(equation);
 
                 for (const auto &nlaSibling : equation->nlaSiblings()) {
-                    auto [nlaSiblingCode, nlaSiblingAstStatement] = generateCode(nlaSibling->ast());
+                    auto [nlaSiblingCode, nlaSiblingStatement] = generateCode(nlaSibling->ast());
 
                     methodBody += mProfile->indentString()
                                   + mProfile->fArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
@@ -1713,24 +1713,24 @@ std::string GeneratorInterpreter::code() const
     return mPimpl->mCode;
 }
 
-std::vector<InterpreterAstStatementPtr> GeneratorInterpreter::initialiseVariablesAstStatements() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::initialiseVariablesStatements() const
 {
-    return mPimpl->mInitialiseVariablesAstStatements;
+    return mPimpl->mInitialiseVariablesStatements;
 }
 
-std::vector<InterpreterAstStatementPtr> GeneratorInterpreter::computeComputedConstantsAstStatements() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeComputedConstantsStatements() const
 {
-    return mPimpl->mComputeComputedConstantsAstStatements;
+    return mPimpl->mComputeComputedConstantsStatements;
 }
 
-std::vector<InterpreterAstStatementPtr> GeneratorInterpreter::computeRatesAstStatements() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeRatesStatements() const
 {
-    return mPimpl->mComputeRatesAstStatements;
+    return mPimpl->mComputeRatesStatements;
 }
 
-std::vector<InterpreterAstStatementPtr> GeneratorInterpreter::computeVariablesAstStatements() const
+std::vector<InterpreterStatementPtr> GeneratorInterpreter::computeVariablesStatements() const
 {
-    return mPimpl->mComputeVariablesAstStatements;
+    return mPimpl->mComputeVariablesStatements;
 }
 
 } // namespace libcellml

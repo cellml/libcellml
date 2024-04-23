@@ -27,11 +27,11 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The InterpreterAstStatement class.
+ * @brief The InterpreterStatement class.
  *
- * The InterpreterAstStatement class is for representing a CellML Interpreter Statement.
+ * The InterpreterStatement class is for representing a CellML Interpreter Statement.
  */
-class InterpreterAstStatement
+class InterpreterStatement
 {
     friend class GeneratorInterpreter;
 
@@ -141,79 +141,79 @@ public:
         EXTERNAL /**< An external variable. */
     };
 
-    ~InterpreterAstStatement(); /**< Destructor, @private. */
-    InterpreterAstStatement(const InterpreterAstStatement &rhs) = delete; /**< Copy constructor, @private. */
-    InterpreterAstStatement(InterpreterAstStatement &&rhs) noexcept = delete; /**< Move constructor, @private. */
-    InterpreterAstStatement &operator=(InterpreterAstStatement rhs) = delete; /**< Assignment operator, @private. */
+    ~InterpreterStatement(); /**< Destructor, @private. */
+    InterpreterStatement(const InterpreterStatement &rhs) = delete; /**< Copy constructor, @private. */
+    InterpreterStatement(InterpreterStatement &&rhs) noexcept = delete; /**< Move constructor, @private. */
+    InterpreterStatement &operator=(InterpreterStatement rhs) = delete; /**< Assignment operator, @private. */
 
     /**
-     * @brief Create an @ref InterpreterAstStatement object.
+     * @brief Create an @ref InterpreterStatement object.
      *
-     * Factory method to create an @ref InterpreterAstStatement for an element of the given type. Create such an
+     * Factory method to create an @ref InterpreterStatement for an element of the given type. Create such an
      * interpreter statement with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::InterpreterAstStatement::create(type, leftChild, rightChild);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(type, leftChild, rightChild);
      * @endcode
      *
      * @param type The type of the statement.
      * @param leftChild The left child of the statement.
      * @param rightChild The right child of the statement.
      *
-     * @return A smart pointer to an @ref InterpreterAstStatement object.
+     * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterAstStatementPtr create(Type type,
-                                             const InterpreterAstStatementPtr &leftChild = nullptr,
-                                             const InterpreterAstStatementPtr &rightChild = nullptr) noexcept;
+    static InterpreterStatementPtr create(Type type,
+                                          const InterpreterStatementPtr &leftChild = nullptr,
+                                          const InterpreterStatementPtr &rightChild = nullptr) noexcept;
 
     /**
-     * @brief Create an @ref InterpreterAstStatement object.
+     * @brief Create an @ref InterpreterStatement object.
      *
-     * Factory method to create an @ref InterpreterAstStatement for a CI element. Create such an interpreter statement
+     * Factory method to create an @ref InterpreterStatement for a CI element. Create such an interpreter statement
      * with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::InterpreterAstStatement::create(variable, rate);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(variable, rate);
      * @endcode
      *
      * @param variable The variable associated with the CI element.
      * @param rate Whether the variable is a rate.
      *
-     * @return A smart pointer to an @ref InterpreterAstStatement object.
+     * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterAstStatementPtr create(const AnalyserVariablePtr &variable, bool rate = false) noexcept;
+    static InterpreterStatementPtr create(const AnalyserVariablePtr &variable, bool rate = false) noexcept;
 
     /**
-     * @brief Create an @ref InterpreterAstStatement object.
+     * @brief Create an @ref InterpreterStatement object.
      *
-     * Factory method to create an @ref InterpreterAstStatement for a CN element. Create such an interpreter statement
+     * Factory method to create an @ref InterpreterStatement for a CN element. Create such an interpreter statement
      * with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::InterpreterAstStatement::create(value);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(value);
      * @endcode
      *
      * @param value The value associated with the CN element.
      *
-     * @return A smart pointer to an @ref InterpreterAstStatement object.
+     * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterAstStatementPtr create(double value) noexcept;
+    static InterpreterStatementPtr create(double value) noexcept;
 
     /**
-     * @brief Create an @ref InterpreterAstStatement object.
+     * @brief Create an @ref InterpreterStatement object.
      *
-     * Factory method to create an @ref InterpreterAstStatement for an external variable. Create such an interpreter
+     * Factory method to create an @ref InterpreterStatement for an external variable. Create such an interpreter
      * statement with::
      *
      * @code
-     *   auto interpreterAstStatement = libcellml::InterpreterAstStatement::create(externalIndex);
+     *   auto interpreterStatement = libcellml::InterpreterStatement::create(externalIndex);
      * @endcode
      *
      * @param externalIndex
      *
-     * @return A smart pointer to an @ref InterpreterAstStatement object.
+     * @return A smart pointer to an @ref InterpreterStatement object.
      */
-    static InterpreterAstStatementPtr create(size_t externalIndex) noexcept;
+    static InterpreterStatementPtr create(size_t externalIndex) noexcept;
 
 #ifdef DEBUG
     /**
@@ -223,7 +223,7 @@ public:
      *
      * @return The left child of the statement.
      */
-    InterpreterAstStatementPtr leftChild() const;
+    InterpreterStatementPtr leftChild() const;
 
     /**
      * @brief Get the right child of the statement.
@@ -232,7 +232,7 @@ public:
      *
      * @return The right child of the statement.
      */
-    InterpreterAstStatementPtr rightChild() const;
+    InterpreterStatementPtr rightChild() const;
 
     /**
      * @brief Get the type of the statement.
@@ -284,15 +284,15 @@ public:
     void evaluate(double voi, double *states, double *rates, double *variables) const;
 
 private:
-    InterpreterAstStatement(Type type,
-                            const InterpreterAstStatementPtr &leftChild,
-                            const InterpreterAstStatementPtr &rightChild); /**< Constructor, @private. */
-    InterpreterAstStatement(const AnalyserVariablePtr &variable, bool rate); /**< Constructor, @private. */
-    InterpreterAstStatement(double value); /**< Constructor, @private. */
-    InterpreterAstStatement(size_t externalIndex); /**< Constructor, @private. */
+    InterpreterStatement(Type type,
+                         const InterpreterStatementPtr &leftChild,
+                         const InterpreterStatementPtr &rightChild); /**< Constructor, @private. */
+    InterpreterStatement(const AnalyserVariablePtr &variable, bool rate); /**< Constructor, @private. */
+    InterpreterStatement(double value); /**< Constructor, @private. */
+    InterpreterStatement(size_t externalIndex); /**< Constructor, @private. */
 
-    struct InterpreterAstStatementImpl;
-    InterpreterAstStatementImpl *mPimpl; /**< Private member to implementation pointer, @private. */
+    struct InterpreterStatementImpl;
+    InterpreterStatementImpl *mPimpl; /**< Private member to implementation pointer, @private. */
 };
 
 } // namespace libcellml
