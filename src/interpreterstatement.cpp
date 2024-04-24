@@ -20,7 +20,6 @@ limitations under the License.
 
 #include "interpreterstatement.h"
 
-#include <cassert>
 #include <cmath>
 
 #include "libcellml/interpreter.h"
@@ -68,10 +67,6 @@ InterpreterStatement::InterpreterStatementImpl::InterpreterStatementImpl(size_t 
 
 void InterpreterStatement::InterpreterStatementImpl::evaluate(double voi, double *states, double *rates, double *variables) const
 {
-    //---GRY--- ONLY HANDLE AN EQUALITY STATEMENT FOR NOW.
-
-    assert(mType == Type::EQUALITY);
-
     if (mLeftChild->mPimpl->mType == InterpreterStatement::Type::STATE) {
         states[mLeftChild->mPimpl->mIndex] = mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
     } else if (mLeftChild->mPimpl->mType == InterpreterStatement::Type::RATE) {
@@ -203,8 +198,6 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double v
         // Piecewise statement.
 
     case Type::PIECEWISE: {
-        assert(mLeftChild->mPimpl->mType == Type::PIECE);
-
         return (mLeftChild->mPimpl->mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables)) ?
                    mLeftChild->mPimpl->mLeftChild->mPimpl->evaluateToDouble(voi, states, rates, variables) :
                    mRightChild->mPimpl->evaluateToDouble(voi, states, rates, variables);
@@ -244,10 +237,6 @@ double InterpreterStatement::InterpreterStatementImpl::evaluateToDouble(double v
         return NAN;
     }
     default: { // Type::EXTERNAL:
-        //---GRY--- JUST RETURN NAN FOR NOW.
-
-        assert(mType == Type::EXTERNAL);
-
         static const auto NAN = std::numeric_limits<double>::quiet_NaN();
 
         return NAN;
