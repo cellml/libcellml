@@ -316,14 +316,11 @@ std::string doPrintAstAsTree(AnalyserEquationAstTrunk *trunk)
 
 std::string ciValue(const AnalyserVariablePtr &analyserVariable, bool rate)
 {
-    std::string res;
-
-    if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
-        res = rate ? "rates" : "states";
-    } else {
-        res = "variables";
-    }
-
+    std::string res = (analyserVariable->type() == AnalyserVariable::Type::STATE) ?
+                          (rate ?
+                               "rates" :
+                               "states") :
+                          "variables";
     auto variable = analyserVariable->variable();
 
     res += "[" + std::to_string(analyserVariable->index()) + "] | "

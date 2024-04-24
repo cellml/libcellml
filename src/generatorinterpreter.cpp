@@ -1361,12 +1361,6 @@ std::string GeneratorInterpreter::GeneratorInterpreterImpl::generateEquationCode
                     && (equationsForDependencies.empty()
                         || isToBeComputedAgain(dependency)
                         || (std::find(equationsForDependencies.begin(), equationsForDependencies.end(), dependency) != equationsForDependencies.end()))) {
-                    //---GRY--- TO BE REMOVED...
-                    // auto r = generateEquationCode(dependency, remainingEquations, equationsForDependencies, includeComputedConstants);
-                    // if (!r.empty()) {
-                    //     printf(">>> DEP: %s", r.c_str());
-                    // }
-                    // res += r;
                     res += generateEquationCode(dependency, remainingEquations, equationsForDependencies, includeComputedConstants);
                 }
             }
