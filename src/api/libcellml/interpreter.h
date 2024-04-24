@@ -27,6 +27,9 @@ namespace libcellml {
  * @brief The Interpreter class.
  *
  * The Interpreter class is for representing a CellML Interpreter.
+ *
+ * @warning The Interpreter class currently supports pure algebraic models and ODE models. NLA and DAE models are not
+ * currently supported and neither are models with external variables.
  */
 class LIBCELLML_EXPORT Interpreter
 {
@@ -82,7 +85,7 @@ public:
      *
      * Return the model's states. If the model doesn't have any states then @c nullptr is returned.
      *
-     * @return The model's states as a @c std::vector of @c double.
+     * @return The model's states as a reference to a @c std::vector of @c double.
      */
     std::vector<double> &states();
 
@@ -91,7 +94,7 @@ public:
      *
      * Return the model's rates. If the model doesn't have any rates then @c nullptr is returned.
      *
-     * @return The model's rates as a @c std::vector of @c double.
+     * @return The model's rates as a reference to a @c std::vector of @c double.
      */
     std::vector<double> &rates();
 
@@ -100,7 +103,7 @@ public:
      *
      * Return the model's variables.
      *
-     * @return The model's variables as a @c std::vector of @c double.
+     * @return The model's variables as a reference to a @c std::vector of @c double.
      */
     std::vector<double> &variables();
 
@@ -125,7 +128,7 @@ public:
     /**
      * @brief Compute the model's rates.
      *
-     * Compute the model's rates.
+     * Compute the model's rates. This method is only relevant for ODE models.
      *
      * @sa initialiseVariables, computeComputedConstants, computeVariables
      *
@@ -140,7 +143,7 @@ public:
      *
      * @sa initialiseVariables, computeComputedConstants, computeRates
      *
-     * @param voi The value of the variable of integration.
+     * @param voi The value of the variable of integration. This parameter is only relevant for ODE models.
      */
     void computeVariables(double voi = 0.0);
 

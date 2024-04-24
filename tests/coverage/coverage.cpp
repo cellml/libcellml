@@ -855,7 +855,8 @@ TEST(Coverage, interpreter)
     auto analyserModel = analyser->model();
     auto interpreter = libcellml::Interpreter::create();
 
-    // Make sure that Interpreter::model() works as expected and that we can evaluate it.
+    // Make sure that Interpreter::model() works as expected and that our interpreter can be evaluated and that its
+    // results are what we expect.
 
     EXPECT_EQ(nullptr, interpreter->model());
 

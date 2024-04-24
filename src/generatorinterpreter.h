@@ -44,7 +44,7 @@ public:
     /**
      * @brief Create an @ref GeneratorInterpreter object.
      *
-     * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
+     * Factory method to create an @ref GeneratorInterpreter. Create a generator-interpreter with::
      *
      * @code
      *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(model, profile, code);
@@ -62,7 +62,7 @@ public:
     /**
      * @brief Create an @ref GeneratorInterpreter object.
      *
-     * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
+     * Factory method to create an @ref GeneratorInterpreter. Create a generator-interpreter with::
      *
      * @code
      *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(model);
@@ -77,7 +77,7 @@ public:
     /**
      * @brief Create an @ref GeneratorInterpreter object.
      *
-     * Factory method to create an @ref GeneratorInterpreter. Create an interpreter with::
+     * Factory method to create an @ref GeneratorInterpreter. Create a generator-interpreter with::
      *
      * @code
      *   auto interpreterStatement = libcellml::GeneratorInterpreter::create(profile);
@@ -121,7 +121,7 @@ public:
     /**
      * @brief Get the statements to compute rates.
      *
-     * Get the statements to compute rates.
+     * Get the statements to compute rates. This method is only relevant for ODE models.
      *
      * @return The statements to compute rates as a @c std::vector.
      */
