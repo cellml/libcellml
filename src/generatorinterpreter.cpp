@@ -133,12 +133,6 @@ bool modelHasNlas(const AnalyserModelPtr &model)
 
 AnalyserVariablePtr analyserVariable(const AnalyserModelPtr &model, const VariablePtr &variable)
 {
-    // Make sure that we have a model.
-
-    if (model == nullptr) {
-        return nullptr;
-    }
-
     // Find and return the analyser variable associated with the given variable.
 
     AnalyserVariablePtr res;
@@ -869,9 +863,18 @@ std::tuple<std::string, InterpreterStatementPtr> GeneratorInterpreter::Generator
         } else {
             auto [leftCode, leftStatement] = generateCode(ast->leftChild());
 
-            statement = InterpreterStatement::create(InterpreterStatement::Type::POWER,
-                                                     leftStatement,
-                                                     rightStatement);
+            if (areEqual(doubleValue, 2.0)) {
+                // Note: we need to handle this case here since the default (C) generator profile doesn't have a square
+                //       function (while it does have a square root function).
+
+                statement = InterpreterStatement::create(InterpreterStatement::Type::SQUARE,
+                                                         leftStatement);
+            } else {
+                statement = InterpreterStatement::create(InterpreterStatement::Type::POWER,
+                                                         leftStatement,
+                                                         rightStatement);
+            }
+
             code = mProfile->powerString() + "(" + leftCode + ", " + rightCode + ")";
         }
     } break;
