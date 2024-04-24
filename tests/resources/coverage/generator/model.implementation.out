@@ -187,8 +187,6 @@ void computeComputedConstants(double *variables)
     variables[29] = and(lt(variables[1], variables[2]), pow(variables[6], variables[18]));
     variables[30] = and(lt(variables[1], variables[2]), pow(variables[6], 1.0/variables[18]));
     variables[31] = variables[1]/and(variables[2], variables[6]);
-    variables[32] = or(variables[1], variables[2]);
-    variables[33] = or(variables[1], or(variables[2], variables[6]));
     variables[34] = or(lt(variables[1], variables[2]), gt(variables[6], variables[18]));
     variables[35] = or(variables[1]+variables[2], gt(variables[6], variables[18]));
     variables[36] = or(variables[1], gt(variables[2], variables[6]));
@@ -365,6 +363,8 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
+    variables[32] = or(states[0], states[0]);
+    variables[33] = or(states[0], or(states[0], variables[1]));
     variables[63] = variables[1]/xor(variables[2], states[0]);
     findRoot0(voi, states, rates, variables);
 }

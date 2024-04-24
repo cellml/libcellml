@@ -50,8 +50,8 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnAndParenthesesRightPower", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndParenthesesRightRoot", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnOr", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnOrMultiple", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnOr", "dimensionless", "my_component", ALGEBRAIC},
+    {"eqnOrMultiple", "dimensionless", "my_component", ALGEBRAIC},
     {"eqnOrParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnOrParenthesesLeftPlusWith", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnOrParenthesesLeftPlusWithout", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -427,8 +427,6 @@ void computeComputedConstants(double *variables)
     variables[29] = (variables[1] < variables[2]) && pow(variables[6], variables[18]);
     variables[30] = (variables[1] < variables[2]) && pow(variables[6], 1.0/variables[18]);
     variables[31] = variables[1]/(variables[2] && variables[6]);
-    variables[32] = variables[1] || variables[2];
-    variables[33] = variables[1] || variables[2] || variables[6];
     variables[34] = (variables[1] < variables[2]) || (variables[6] > variables[18]);
     variables[35] = (variables[1]+variables[2]) || (variables[6] > variables[18]);
     variables[36] = variables[1] || (variables[2] > variables[6]);
@@ -605,6 +603,8 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
+    variables[32] = states[0] || states[0];
+    variables[33] = states[0] || states[0] || variables[1];
     variables[63] = variables[1]/xor(variables[2], states[0]);
     findRoot0(voi, states, rates, variables);
 }

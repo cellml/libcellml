@@ -157,8 +157,6 @@ void computeComputedConstants(double *variables)
     variables[29] = (variables[1] < variables[2]) && (variables[6]^^variables[18]);
     variables[30] = (variables[1] < variables[2]) && (variables[6]^^(1.0/variables[18]));
     variables[31] = variables[1]/(variables[2] && variables[6]);
-    variables[32] = variables[1] || variables[2];
-    variables[33] = variables[1] || variables[2] || variables[6];
     variables[34] = (variables[1] < variables[2]) || (variables[6] > variables[18]);
     variables[35] = (variables[1]+variables[2]) || (variables[6] > variables[18]);
     variables[36] = variables[1] || (variables[2] > variables[6]);

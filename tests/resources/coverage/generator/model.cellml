@@ -651,8 +651,8 @@
                 <ci>eqnOr</ci>
                 <apply>
                     <or/>
-                    <ci>m</ci>
-                    <ci>n</ci>
+                    <ci>x</ci>
+                    <ci>x</ci>
                 </apply>
             </apply>
             <apply>
@@ -660,9 +660,9 @@
                 <ci>eqnOrMultiple</ci>
                 <apply>
                     <or/>
+                    <ci>x</ci>
+                    <ci>x</ci>
                     <ci>m</ci>
-                    <ci>n</ci>
-                    <ci>o</ci>
                 </apply>
             </apply>
             <apply>

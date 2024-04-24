@@ -58,8 +58,8 @@ VARIABLE_INFO = [
     {"name": "eqnAndParenthesesRightPower", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnAndParenthesesRightRoot", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnAndCoverageParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOr", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "eqnOrMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "eqnOr", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC},
+    {"name": "eqnOrMultiple", "units": "dimensionless", "component": "my_component", "type": VariableType.ALGEBRAIC},
     {"name": "eqnOrParentheses", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnOrParenthesesLeftPlusWith", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "eqnOrParenthesesLeftPlusWithout", "units": "dimensionless", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
@@ -436,8 +436,6 @@ def compute_computed_constants(variables):
     variables[29] = and_func(lt_func(variables[1], variables[2]), pow(variables[6], variables[18]))
     variables[30] = and_func(lt_func(variables[1], variables[2]), pow(variables[6], 1.0/variables[18]))
     variables[31] = variables[1]/and_func(variables[2], variables[6])
-    variables[32] = or_func(variables[1], variables[2])
-    variables[33] = or_func(variables[1], or_func(variables[2], variables[6]))
     variables[34] = or_func(lt_func(variables[1], variables[2]), gt_func(variables[6], variables[18]))
     variables[35] = or_func(variables[1]+variables[2], gt_func(variables[6], variables[18]))
     variables[36] = or_func(variables[1], gt_func(variables[2], variables[6]))
@@ -612,5 +610,7 @@ def compute_rates(voi, states, rates, variables):
 
 
 def compute_variables(voi, states, rates, variables):
+    variables[32] = or_func(states[0], states[0])
+    variables[33] = or_func(states[0], or_func(states[0], variables[1]))
     variables[63] = variables[1]/xor_func(variables[2], states[0])
     find_root_0(voi, states, rates, variables)
