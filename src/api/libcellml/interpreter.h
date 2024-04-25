@@ -71,81 +71,66 @@ public:
     void setModel(const AnalyserModelPtr &model);
 
     /**
-     * @brief Get the value of the model's variable of integration.
+     * @brief Initialise the model's variables.
      *
-     * Return the value of the model's variable of integration. If no variable of integration is needed to compute the
-     * model then 0.0 is returned.
+     * Initialise the model's variables. This method is only relevant for algebraic models.
      *
-     * @return The value of the variable of integration as a @c double.
+     * @param pVariables The array of variables to initialise.
      */
-    double voi();
-
-    /**
-     * @brief Get the model's states.
-     *
-     * Return the model's states. If the model doesn't have any states then @c nullptr is returned.
-     *
-     * @return The model's states as an array of @c double.
-     */
-    double *states();
-
-    /**
-     * @brief Get the model's rates.
-     *
-     * Return the model's rates. If the model doesn't have any rates then @c nullptr is returned.
-     *
-     * @return The model's rates as an array of @c double.
-     */
-    double *rates();
-
-    /**
-     * @brief Get the model's variables.
-     *
-     * Return the model's variables.
-     *
-     * @return The model's variables as an array of @c double.
-     */
-    double *variables();
+    void initialiseVariablesForAlgebraicModel(double *pVariables) const;
 
     /**
      * @brief Initialise the model's variables.
      *
-     * Initialise the model's variables.
+     * Initialise the model's variables. This method is only relevant for differential models.
      *
-     * @sa computeComputedConstants, computeRates, computeVariables
+     * @param pStates The array of states to initialise.
+     * @param pRates The array of rates to initialise.
+     * @param pVariables The array of variables to initialise.
      */
-    void initialiseVariables();
+    void initialiseVariablesForDifferentialModel(double *pStates, double *pRates, double *pVariables) const;
 
     /**
      * @brief Compute the model's computed constants.
      *
      * Compute the model's computed constants.
      *
-     * @sa initialiseVariables, computeRates, computeVariables
+     * @param pVariables The array of variables to compute.
      */
-    void computeComputedConstants();
+    void computeComputedConstants(double *pVariables) const;
 
     /**
      * @brief Compute the model's rates.
      *
-     * Compute the model's rates. This method is only relevant for ODE models.
+     * Compute the model's rates. This method is only relevant for differential models.
      *
-     * @sa initialiseVariables, computeComputedConstants, computeVariables
-     *
-     * @param voi The value of the variable of integration.
+     * @param pVoi The value of the variable of integration.
+     * @param pStates The array of states.
+     * @param pRates The array of rates to compute.
+     * @param pVariables The array of variables.
      */
-    void computeRates(double voi = 0.0);
+    void computeRates(double pVoi, double *pStates, double *pRates, double *pVariables) const;
 
     /**
      * @brief Compute the model's variables.
      *
-     * Compute the model's variables.
+     * Compute the model's variables. This method is only relevant for algebraic models.
      *
-     * @sa initialiseVariables, computeComputedConstants, computeRates
-     *
-     * @param voi The value of the variable of integration. This parameter is only relevant for ODE models.
+     * @param pVariables The array of variables to compute.
      */
-    void computeVariables(double voi = 0.0);
+    void computeVariablesForAlgebraicModel(double *pVariables) const;
+
+    /**
+     * @brief Compute the model's variables.
+     *
+     * Compute the model's variables. This method is only relevant for differential models.
+     *
+     * @param pVoi The value of the variable of integration.
+     * @param pStates The array of states.
+     * @param pRates The array of rates.
+     * @param pVariables The array of variables to compute.
+     */
+    void computeVariablesForDifferentialModel(double pVoi, double *pStates, double *pRates, double *pVariables) const;
 
 private:
     Interpreter(); /**< Constructor, @private. */

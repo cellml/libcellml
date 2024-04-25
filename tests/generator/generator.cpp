@@ -33,21 +33,9 @@ limitations under the License.
 static const std::string EMPTY_STRING;
 static const std::vector<double> NO_VALUES;
 static const auto NAN = std::numeric_limits<double>::quiet_NaN();
-static const auto NAN_x_1 = std::vector<double>(1, NAN);
 static const auto NAN_x_2 = std::vector<double>(2, NAN);
 static const auto NAN_x_3 = std::vector<double>(3, NAN);
 static const auto NAN_x_4 = std::vector<double>(4, NAN);
-static const auto NAN_x_5 = std::vector<double>(5, NAN);
-static const auto NAN_x_6 = std::vector<double>(6, NAN);
-static const auto NAN_x_10 = std::vector<double>(10, NAN);
-static const auto NAN_x_15 = std::vector<double>(15, NAN);
-static const auto NAN_x_17 = std::vector<double>(17, NAN);
-static const auto NAN_x_18 = std::vector<double>(18, NAN);
-static const auto NAN_x_19 = std::vector<double>(19, NAN);
-static const auto NAN_x_20 = std::vector<double>(20, NAN);
-static const auto NAN_x_33 = std::vector<double>(33, NAN);
-static const auto NAN_x_185 = std::vector<double>(185, NAN);
-static const auto NAN_x_217 = std::vector<double>(217, NAN);
 
 #if defined(_MSC_VER) && !defined(__clang__)
 #    pragma warning(push)
@@ -76,27 +64,55 @@ namespace garny_kohl_hunter_boyett_noble_rabbit_san_model_2003 {
 #    pragma clang diagnostic pop
 #endif
 
-#define INITIALISE_MODEL(model) \
-    auto *states = model::createStatesArray(); \
-    auto *rates = model::createStatesArray(); \
-    auto *variables = model::createVariablesArray(); \
+#define INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel) \
+    double *expectedStatesData = nullptr; \
+    double *expectedRatesData = nullptr; \
+    double *expectedVariablesData = nullptr; \
+    double *states = nullptr; \
+    double *rates = nullptr; \
+    auto *variables = new double[analyserModel->variableCount()]; \
 \
-    model::initialiseVariables(states, rates, variables); \
-    model::computeComputedConstants(variables); \
-    model::computeRates(0.0, states, rates, variables); \
-    model::computeVariables(0.0, states, rates, variables); \
-\
-    std::vector<double> expectedStates(states, states + model::STATE_COUNT); \
-    std::vector<double> expectedRates(rates, rates + model::STATE_COUNT); \
-    std::vector<double> expectedVariables(variables, variables + model::VARIABLE_COUNT);
+    (void)expectedStatesData; \
+    (void)expectedRatesData; \
+    (void)expectedVariablesData; \
+    interpreter->initialiseVariablesForAlgebraicModel(variables); \
+    interpreter->computeComputedConstants(variables); \
+    interpreter->computeVariablesForAlgebraicModel(variables);
 
-#define INTERPRET_MODEL() \
-    interpreter->initialiseVariables(); \
-    interpreter->computeComputedConstants(); \
-    interpreter->computeRates(); \
-    interpreter->computeVariables();
+#define INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel) \
+    double *expectedStatesData = nullptr; \
+    double *expectedRatesData = nullptr; \
+    double *expectedVariablesData = nullptr; \
+    auto *states = new double[analyserModel->stateCount()]; \
+    auto *rates = new double[analyserModel->stateCount()]; \
+    auto *variables = new double[analyserModel->variableCount()]; \
+\
+    (void)expectedStatesData; \
+    (void)expectedRatesData; \
+    (void)expectedVariablesData; \
+    interpreter->initialiseVariablesForDifferentialModel(states, rates, variables); \
+    interpreter->computeComputedConstants(variables); \
+    interpreter->computeRates(0.0, states, rates, variables); \
+    interpreter->computeVariablesForDifferentialModel(0.0, states, rates, variables);
+
+#define INITIALISE_COMPILED_MODEL(model) \
+    expectedStatesData = model::createStatesArray(); \
+    expectedRatesData = model::createStatesArray(); \
+    expectedVariablesData = model::createVariablesArray(); \
+\
+    model::initialiseVariables(expectedStatesData, expectedRatesData, expectedVariablesData); \
+    model::computeComputedConstants(expectedVariablesData); \
+    model::computeRates(0.0, expectedStatesData, expectedRatesData, expectedVariablesData); \
+    model::computeVariables(0.0, expectedStatesData, expectedRatesData, expectedVariablesData); \
+\
+    std::vector<double> expectedStates(expectedStatesData, expectedStatesData + model::STATE_COUNT); \
+    std::vector<double> expectedRates(expectedRatesData, expectedRatesData + model::STATE_COUNT); \
+    std::vector<double> expectedVariables(expectedVariablesData, expectedVariablesData + model::VARIABLE_COUNT);
 
 #define FINALISE_MODEL() \
+    delete[] expectedStatesData; \
+    delete[] expectedRatesData; \
+    delete[] expectedVariablesData; \
     delete[] states; \
     delete[] rates; \
     delete[] variables;
@@ -119,16 +135,6 @@ TEST(Generator, emptyModel)
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-
-    auto interpreter = libcellml::Interpreter::create();
-
-    interpreter->setModel(analyserModel);
-
-    EXPECT_EQ(0.0, interpreter->voi());
-
-    EXPECT_EQ(size_t(0), interpreter->states().size());
-    EXPECT_EQ(size_t(0), interpreter->rates().size());
-    EXPECT_EQ(size_t(0), interpreter->variables().size());
 }
 
 TEST(Generator, algebraicEqnComputedVarOnRhs)
@@ -159,19 +165,19 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
+printf(">>> 00\n"); fflush(stdout);
 
     interpreter->setModel(analyserModel);
+printf(">>> 01\n"); fflush(stdout);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
+printf(">>> 02 [%zu]\n", analyserModel->variableCount()); fflush(stdout);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
+printf(">>> 03\n"); fflush(stdout);
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->variables());
+    FINALISE_MODEL();
+printf(">>> 04\n"); fflush(stdout);
 }
 
 TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariable)
@@ -211,16 +217,11 @@ TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariab
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(NAN_x_2, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicEqnConstVarOnRhs)
@@ -254,16 +255,11 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicEqnConstantOnRhs)
@@ -297,16 +293,11 @@ TEST(Generator, algebraicEqnConstantOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicEqnDerivativeOnRhs)
@@ -340,16 +331,13 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
@@ -383,16 +371,13 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicEqnStateVarOnRhs)
@@ -426,16 +411,13 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
@@ -469,16 +451,13 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 2.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicUnknownVarOnRhs)
@@ -512,16 +491,11 @@ TEST(Generator, algebraicUnknownVarOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
@@ -555,16 +529,11 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknown)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, 1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, 1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
@@ -604,16 +573,11 @@ TEST(Generator, algebraicEqnWithOneNonIsolatedUnknownWithExternalVariable)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, NAN}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0, 7.0, NAN}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
@@ -647,16 +611,11 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknowns)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0, 1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0, 1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables)
@@ -698,16 +657,11 @@ TEST(Generator, algebraicSystemWithThreeLinkedUnknownsWithThreeExternalVariables
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(NAN_x_3, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
@@ -745,16 +699,11 @@ TEST(Generator, algebraicSystemWithVariousDependenciesOrdered)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_6, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({14.0, 3.0, 5.0, 1.0, 1.0, 2.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({14.0, 3.0, 5.0, 1.0, 1.0, 2.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
@@ -792,16 +741,11 @@ TEST(Generator, algebraicSystemWithVariousDependenciesNotOrdered)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_6, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({2.0, 1.0, 1.0, 14.0, 3.0, 5.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({2.0, 1.0, 1.0, 14.0, 3.0, 5.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeComputedVarOnRhs)
@@ -835,16 +779,13 @@ TEST(Generator, odeComputedVarOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeComputedVarOnRhsOneComponent)
@@ -878,16 +819,13 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeConstVarOnRhs)
@@ -921,16 +859,13 @@ TEST(Generator, odeConstVarOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeConstVarOnRhsOneComponent)
@@ -964,16 +899,13 @@ TEST(Generator, odeConstVarOnRhsOneComponent)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeConstantOnRhs)
@@ -1007,16 +939,13 @@ TEST(Generator, odeConstantOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeConstantOnRhsOneComponent)
@@ -1050,16 +979,13 @@ TEST(Generator, odeConstantOnRhsOneComponent)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeMultipleDependentOdes)
@@ -1093,16 +1019,13 @@ TEST(Generator, odeMultipleDependentOdes)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeMultipleDependentOdesOneComponent)
@@ -1136,16 +1059,13 @@ TEST(Generator, odeMultipleDependentOdesOneComponent)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeMultipleOdesWithSameName)
@@ -1179,16 +1099,13 @@ TEST(Generator, odeMultipleOdesWithSameName)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, odeUnknownVarOnRhs)
@@ -1222,16 +1139,13 @@ TEST(Generator, odeUnknownVarOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlMappingsAndEncapsulations)
@@ -1265,16 +1179,13 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, -1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({4.3153879373667952, 0.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, -1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({4.3153879373667952, 0.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlStateInitialisedUsingVariable)
@@ -1308,16 +1219,13 @@ TEST(Generator, cellmlStateInitialisedUsingVariable)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({123.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.23}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({123.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.23}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({123.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlUnitScalingVoiIndirect)
@@ -1351,16 +1259,13 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 7.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({5.0, 9000.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({3.0, 7.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({5.0, 9000.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlUnitScalingVoiDirect)
@@ -1394,16 +1299,13 @@ TEST(Generator, cellmlUnitScalingVoiDirect)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({3.0, 5.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlUnitScalingConstant)
@@ -1437,16 +1339,11 @@ TEST(Generator, cellmlUnitScalingConstant)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 246.0, 0.246}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({123.0, 246.0, 0.246}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlUnitScalingState)
@@ -1480,16 +1377,13 @@ TEST(Generator, cellmlUnitScalingState)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({123.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.23}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({246.0, 0.246}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({123.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.23}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({246.0, 0.246}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
@@ -1523,16 +1417,13 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 0.789}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.23, 7.89}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({123.0, 0.789}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.23, 7.89}), interpreter->rates());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
@@ -1566,16 +1457,13 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 0.789}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.23, 7.89}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({123.0, 789.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({123.0, 0.789}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.23, 7.89}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({123.0, 789.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellmlUnitScalingRate)
@@ -1609,16 +1497,13 @@ TEST(Generator, cellmlUnitScalingRate)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({123.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.23}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({2460.0, 2.46}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({123.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.23}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({2460.0, 2.46}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, dependentEqns)
@@ -1652,16 +1537,13 @@ TEST(Generator, dependentEqns)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellGeometryModel)
@@ -1695,16 +1577,11 @@ TEST(Generator, cellGeometryModel)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.000037994, 0.01, 0.0011, 0.00000075988}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.000037994, 0.01, 0.0011, 0.00000075988}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
@@ -1745,16 +1622,11 @@ TEST(Generator, cellGeometryModelWithSomeConstantsAsExternalVariables)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(NAN_x_4, variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
@@ -1784,22 +1656,16 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 
     EXPECT_EQ(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.py"), generator->implementationCode());
 
-    INITIALISE_MODEL(fabbri_fantini_wilders_severi_human_san_model_2017);
-
     auto interpreter = libcellml::Interpreter::create();
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_33, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_33, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_217, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
+    INITIALISE_COMPILED_MODEL(fabbri_fantini_wilders_severi_human_san_model_2017);
 
-    INTERPRET_MODEL();
-
-    EXPECT_EQ_VALUES(expectedStates, interpreter->states());
-    EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
-    EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
+    EXPECT_EQ_VALUES(expectedStates, states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(expectedRates, rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(expectedVariables, variables, analyserModel->variableCount());
 
     FINALISE_MODEL();
 }
@@ -1831,22 +1697,16 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 
     EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.py"), generator->implementationCode());
 
-    INITIALISE_MODEL(garny_kohl_hunter_boyett_noble_rabbit_san_model_2003);
-
     auto interpreter = libcellml::Interpreter::create();
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_15, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_15, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_185, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
+    INITIALISE_COMPILED_MODEL(garny_kohl_hunter_boyett_noble_rabbit_san_model_2003);
 
-    INTERPRET_MODEL();
-
-    EXPECT_EQ_VALUES(expectedStates, interpreter->states());
-    EXPECT_EQ_VALUES(expectedRates, interpreter->rates());
-    EXPECT_EQ_VALUES(expectedVariables, interpreter->variables());
+    EXPECT_EQ_VALUES(expectedStates, states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(expectedRates, rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(expectedVariables, variables, analyserModel->variableCount());
 
     FINALISE_MODEL();
 }
@@ -1882,16 +1742,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
@@ -1925,16 +1782,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952UnknownVarsOnRhs)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariable)
@@ -1977,16 +1831,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariableAsExternalVariab
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_19, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -2036,16 +1887,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateVariablesAsExternalVaria
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_20, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.6, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(NAN_x_2, rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.6, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
@@ -2088,16 +1936,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, NAN, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, 1.035, NAN, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -2146,16 +1991,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantsAsExternalVariablesI
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, NAN, 0.0, -10.613, 0.3, -115.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.8196687499999999, NAN, NAN, 0.0, -10.613, 0.3, -115.0, NAN, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVariable)
@@ -2198,16 +2040,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, -4.8196687499999999, 1.035, 1.0, 0.0, NAN, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, -4.8196687499999999, 1.035, 1.0, 0.0, NAN, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -2256,16 +2095,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantsAsExternalVa
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, 1.0, NAN, NAN, 0.3, NAN, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, NAN, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, 1.0, NAN, NAN, 0.3, NAN, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, NAN, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVariable)
@@ -2308,16 +2144,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalVariablesIncludingOneDependingOnTheOther)
@@ -2366,16 +2199,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariablesAsExternalV
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, NAN}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, NAN}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, -0.00045552390654006458, 0.012385538355398518, NAN}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, NAN}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
@@ -2431,16 +2261,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithVariousExternalVariables)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_19, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(NAN_x_3, rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, NAN, NAN, NAN, NAN, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, NAN, NAN, NAN, NAN, 12.0, 36.0, NAN, NAN}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
@@ -2481,16 +2308,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Nla)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.3, 0.0, 120.0, 0.0, 0.0, 0.0, 0.0, 0.0, 36.0, 0.0, 0.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, nobleModel1962)
@@ -2524,16 +2348,13 @@ TEST(Generator, nobleModel1962)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_17, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({-87.0, 0.01, 0.8, 0.01}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.41242627135769938, 0.21497864158814481, 0.020474517093977421, 7.3594167713619075e-05}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({-17.82064, -2.025, 14.896524743707609, 12.0, 0.075, -60.0, 0.00032, 400.0, 40.0, 0.31290773193785848, 9.4800013030335055, 0.14632035599225984, 0.01098694263059318, 1.145886506746739, 1.2e-08, 9.3796016230338899e-05, 0.0019263888354416436}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({-87.0, 0.01, 0.8, 0.01}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.41242627135769938, 0.21497864158814481, 0.020474517093977421, 7.3594167713619075e-05}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({-17.82064, -2.025, 14.896524743707609, 12.0, 0.075, -60.0, 0.00032, 400.0, 40.0, 0.31290773193785848, 9.4800013030335055, 0.14632035599225984, 0.01098694263059318, 1.145886506746739, 1.2e-08, 9.3796016230338899e-05, 0.0019263888354416436}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, robertsonOdeModel1966)
@@ -2571,16 +2392,13 @@ TEST(Generator, robertsonOdeModel1966)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_3, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0, 0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({-0.04, 0.0, 0.04}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 30000000.0, 0.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0, 0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({-0.04, 0.0, 0.04}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 30000000.0, 0.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, robertsonDaeModel1966)
@@ -2618,16 +2436,13 @@ TEST(Generator, robertsonDaeModel1966)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_5, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({-0.04, 0.04}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 0.0, 30000000.0, 0.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({-0.04, 0.04}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.04, 10000.0, 0.0, 30000000.0, 0.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, sineImports)
@@ -2669,16 +2484,13 @@ TEST(Generator, sineImports)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_10, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.75, 0.63661977236758138, 6.2831853071795862, 1.5707963267948966, 3.1415926535897931, 4.7123889803846897, -0.5}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0, 0.0, 0.75, 0.63661977236758138, 6.2831853071795862, 1.5707963267948966, 3.1415926535897931, 4.7123889803846897, -0.5}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, analyserModelScopeTest)
@@ -2709,16 +2521,13 @@ TEST(Generator, analyserModelScopeTest)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_4, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_18, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.6, 0.05, 0.325}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.60076874999999963, -0.00045552390654006458, 0.012385538355398518, -0.0013415722863204596}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.047425873177566781, 12.0, 36.0, 0.05819767068693265, 0.125}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, daeModel)
@@ -2752,16 +2561,13 @@ TEST(Generator, daeModel)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_10, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 1.0, 1.0, 0.05, 2.0, 0.0, 20.0, 2.0, 10.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({1.0, 0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 0.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 1.0, 1.0, 0.05, 2.0, 0.0, 20.0, 2.0, 10.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, variableInitialisedUsingAConstant)
@@ -2795,16 +2601,13 @@ TEST(Generator, variableInitialisedUsingAConstant)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({7.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({7.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({7.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({3.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({7.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, modelOutOfScope)
@@ -2839,16 +2642,13 @@ TEST(Generator, modelOutOfScope)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->states());
-    EXPECT_EQ_VALUES(NAN_x_2, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_1, interpreter->variables());
+    INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(std::vector<double>({-2.0, 0.0}), interpreter->states());
-    EXPECT_EQ_VALUES(std::vector<double>({0.0, 2.0}), interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({1.0}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, unknownVariableMarkedAsExternalVariable)
@@ -2884,16 +2684,11 @@ TEST(Generator, unknownVariableMarkedAsExternalVariable)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_10, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({NAN, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, NAN}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({NAN, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, NAN}), interpreter->variables());
+    FINALISE_MODEL();
 }
 
 TEST(Generator, modelWithComplexUnitsOutOfScope)
@@ -2933,14 +2728,9 @@ TEST(Generator, modelWithComplexUnitsOutOfScope)
 
     interpreter->setModel(analyserModel);
 
-    EXPECT_EQ(0.0, interpreter->voi());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(NAN_x_10, interpreter->variables());
+    INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
 
-    INTERPRET_MODEL();
+    EXPECT_EQ_VALUES(std::vector<double>({6.7828154425612066, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, 2902500.0}), variables, analyserModel->variableCount());
 
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->states());
-    EXPECT_EQ_VALUES(NO_VALUES, interpreter->rates());
-    EXPECT_EQ_VALUES(std::vector<double>({6.7828154425612066, 1.1, 21262500.0, 150.0, 3402000.0, 2.0, 2902500.0, 810000.0, 247140.0, 2902500.0}), interpreter->variables());
+    FINALISE_MODEL();
 }

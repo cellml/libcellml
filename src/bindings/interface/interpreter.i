@@ -14,29 +14,11 @@
 %feature("docstring") libcellml::Interpreter::setModel
 "Sets the model to interpret.";
 
-%feature("docstring") libcellml::Interpreter::voi
-"Returns the value of the model's variable of integration.";
+%feature("docstring") libcellml::Interpreter::initialiseVariablesForAlgebraicModel
+"Initialises the model's variables for an algebraic model.";
 
-%feature("docstring") libcellml::Interpreter::states
-"Returns the model's states.";
-
-%feature("docstring") libcellml::Interpreter::setStates
-"Sets the model's states.";
-
-%feature("docstring") libcellml::Interpreter::rates
-"Returns the model's rates.";
-
-%feature("docstring") libcellml::Interpreter::setRates
-"Sets the model's rates.";
-
-%feature("docstring") libcellml::Interpreter::variables
-"Returns the model's variables.";
-
-%feature("docstring") libcellml::Interpreter::setVariables
-"Sets the model's variables.";
-
-%feature("docstring") libcellml::Interpreter::initialiseVariables
-"Initialises the model's variables.";
+%feature("docstring") libcellml::Interpreter::initialiseVariablesForDifferentialModel
+"Initialises the model's variables for a differential model.";
 
 %feature("docstring") libcellml::Interpreter::computeComputedConstants
 "Computes the model's computed constants.";
@@ -44,8 +26,11 @@
 %feature("docstring") libcellml::Interpreter::computeRates
 "Computes the model's rates.";
 
-%feature("docstring") libcellml::Interpreter::computeVariables
-"Computes the model's variables.";
+%feature("docstring") libcellml::Interpreter::computeVariablesForAlgebraicModel
+"Computes the model's variables for an algebraic model.";
+
+%feature("docstring") libcellml::Interpreter::computeVariablesForDifferentialModel
+"Computes the model's variables for a differential model.";
 
 %{
 #include "libcellml/interpreter.h"

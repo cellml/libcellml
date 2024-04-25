@@ -29,19 +29,7 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
 {
     mModel = model;
 
-    mVoi = 0.0;
-
     if (mModel != nullptr) {
-        static const auto NAN = std::numeric_limits<double>::quiet_NaN();
-
-        mStates = std::vector<double>(mModel->stateCount(), NAN);
-        mRates = std::vector<double>(mModel->stateCount(), NAN);
-        mVariables = std::vector<double>(mModel->variableCount(), NAN);
-
-        mStatesData = mStates.data();
-        mRatesData = mRates.data();
-        mVariablesData = mVariables.data();
-
         auto generatorInterpreter = GeneratorInterpreter::create(mModel);
 
         mInitialiseVariablesStatements = generatorInterpreter->initialiseVariablesStatements();
@@ -49,9 +37,10 @@ void Interpreter::InterpreterImpl::setModel(const AnalyserModelPtr &model)
         mComputeRatesStatements = generatorInterpreter->computeRatesStatements();
         mComputeVariablesStatements = generatorInterpreter->computeVariablesStatements();
     } else {
-        mStates.clear();
-        mRates.clear();
-        mVariables.clear();
+        mInitialiseVariablesStatements.clear();
+        mComputeComputedConstantsStatements.clear();
+        mComputeRatesStatements.clear();
+        mComputeVariablesStatements.clear();
     }
 }
 
@@ -80,51 +69,45 @@ void Interpreter::setModel(const AnalyserModelPtr &model)
     mPimpl->setModel(model);
 }
 
-double Interpreter::voi()
-{
-    return mPimpl->mVoi;
-}
-
-std::vector<double> &Interpreter::states()
-{
-    return mPimpl->mStates;
-}
-
-std::vector<double> &Interpreter::rates()
-{
-    return mPimpl->mRates;
-}
-
-std::vector<double> &Interpreter::variables()
-{
-    return mPimpl->mVariables;
-}
-
-void Interpreter::initialiseVariables()
+void Interpreter::initialiseVariablesForAlgebraicModel(double *pVariables) const
 {
     for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
-        statement->evaluate(0.0, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+        statement->evaluate(0.0, nullptr, nullptr, pVariables);
     }
 }
 
-void Interpreter::computeComputedConstants()
+void Interpreter::initialiseVariablesForDifferentialModel(double *pStates, double *pRates, double *pVariables) const
+{
+    for (const auto &statement : mPimpl->mInitialiseVariablesStatements) {
+        statement->evaluate(0.0, pStates, pRates, pVariables);
+    }
+}
+
+void Interpreter::computeComputedConstants(double *pVariables) const
 {
     for (const auto &statement : mPimpl->mComputeComputedConstantsStatements) {
-        statement->evaluate(0.0, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+        statement->evaluate(0.0, nullptr, nullptr, pVariables);
     }
 }
 
-void Interpreter::computeRates(double voi)
+void Interpreter::computeRates(double pVoi, double *pStates, double *pRates, double *pVariables) const
 {
     for (const auto &statement : mPimpl->mComputeRatesStatements) {
-        statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+        statement->evaluate(pVoi, pStates, pRates, pVariables);
     }
 }
 
-void Interpreter::computeVariables(double voi)
+void Interpreter::computeVariablesForAlgebraicModel(double *pVariables) const
 {
     for (const auto &statement : mPimpl->mComputeVariablesStatements) {
-        statement->evaluate(voi, mPimpl->mStatesData, mPimpl->mRatesData, mPimpl->mVariablesData);
+        statement->evaluate(0.0, nullptr, nullptr, pVariables);
+    }
+}
+
+void Interpreter::computeVariablesForDifferentialModel(double pVoi, double *pStates, double *pRates, double *pVariables) const
+{
+    for (const auto &statement : mPimpl->mComputeVariablesStatements) {
+        statement->evaluate(pVoi, pStates, pRates, pVariables);
     }
 }
 

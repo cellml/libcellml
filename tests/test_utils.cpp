@@ -271,7 +271,7 @@ testing::AssertionResult areEqualValues(const char *evExpr, const char *vExpr, c
     static const auto PRECISION = 12;
 
     auto expectedValues = *(static_cast<const std::vector<double> *>(ev));
-    auto values = *(static_cast<const std::vector<double> *>(v));
+    auto values = static_cast<const double *>(v);
     auto i = *(static_cast<const size_t *>(ndx));
 
     if ((std::isnan(expectedValues[i]) && std::isnan(values[i]))
@@ -286,12 +286,12 @@ testing::AssertionResult areEqualValues(const char *evExpr, const char *vExpr, c
                                        << "    Which is: " << values[i];
 }
 
-void expectEqualValues(const std::vector<double> &expectedValues, const std::vector<double> &values)
+void expectEqualValues(const std::vector<double> &expectedValues, double *values, size_t valueCount)
 {
-    EXPECT_EQ(expectedValues.size(), values.size());
+    EXPECT_EQ(expectedValues.size(), valueCount);
 
-    for (size_t i = 0; i < values.size(); ++i) {
-        EXPECT_PRED_FORMAT3(areEqualValues, &expectedValues, &values, &i);
+    for (size_t i = 0; i < valueCount; ++i) {
+        EXPECT_PRED_FORMAT3(areEqualValues, &expectedValues, values, &i);
     }
 }
 
