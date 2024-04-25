@@ -37,9 +37,9 @@ struct Interpreter::InterpreterImpl
     std::vector<InterpreterStatementPtr> mComputeVariablesStatements;
 
     double mVoi = 0.0;
-    std::vector<double> mStates;
-    std::vector<double> mRates;
-    std::vector<double> mVariables;
+    double *mStates;
+    double *mRates;
+    double *mVariables;
     double *mStatesData = nullptr;
     double *mRatesData = nullptr;
     double *mVariablesData = nullptr;

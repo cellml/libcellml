@@ -23,11 +23,20 @@
 %feature("docstring") libcellml::Interpreter::states
 "Returns the model's states.";
 
+%feature("docstring") libcellml::Interpreter::setStates
+"Sets the model's states.";
+
 %feature("docstring") libcellml::Interpreter::rates
 "Returns the model's rates.";
 
+%feature("docstring") libcellml::Interpreter::setRates
+"Sets the model's rates.";
+
 %feature("docstring") libcellml::Interpreter::variables
 "Returns the model's variables.";
+
+%feature("docstring") libcellml::Interpreter::setVariables
+"Sets the model's variables.";
 
 %feature("docstring") libcellml::Interpreter::initialiseVariables
 "Initialises the model's variables.";
@@ -44,8 +53,6 @@
 %{
 #include "libcellml/interpreter.h"
 %}
-
-%template(DoubleVector) std::vector<double>;
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.

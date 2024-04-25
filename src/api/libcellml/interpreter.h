@@ -85,27 +85,27 @@ public:
      *
      * Return the model's states. If the model doesn't have any states then @c nullptr is returned.
      *
-     * @return The model's states as a reference to a @c std::vector of @c double.
+     * @return The model's states as an array of @c double.
      */
-    std::vector<double> &states();
+    double *states();
 
     /**
      * @brief Get the model's rates.
      *
      * Return the model's rates. If the model doesn't have any rates then @c nullptr is returned.
      *
-     * @return The model's rates as a reference to a @c std::vector of @c double.
+     * @return The model's rates as an array of @c double.
      */
-    std::vector<double> &rates();
+    double *rates();
 
     /**
      * @brief Get the model's variables.
      *
      * Return the model's variables.
      *
-     * @return The model's variables as a reference to a @c std::vector of @c double.
+     * @return The model's variables as an array of @c double.
      */
-    std::vector<double> &variables();
+    double *variables();
 
     /**
      * @brief Initialise the model's variables.
