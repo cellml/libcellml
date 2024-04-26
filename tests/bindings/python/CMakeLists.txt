@@ -25,7 +25,8 @@ set(TEST_SRCS
   test_import_requirement.py
   test_import_source.py
   test_importer.py
-  test_interpreter.py
+  #---GRY--- TO BE UNCOMMENTED ONCE WE HAVE BINDINGS FOR Interpreter.
+  # test_interpreter.py
   test_issue.py
   test_model.py
   test_parser.py

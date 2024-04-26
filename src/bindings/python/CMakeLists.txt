@@ -31,7 +31,8 @@ set(SWIG_INTERFACE_SRCS
     ../interface/importer.i
     ../interface/importsource.i
     ../interface/importedentity.i
-    ../interface/interpreter.i
+    #---GRY--- TO BE UNCOMMENTED ONCE WE HAVE FIGURED OUT HOW TO PASS double *.
+    # ../interface/interpreter.i
     ../interface/issue.i
     ../interface/logger.i
     ../interface/model.i
