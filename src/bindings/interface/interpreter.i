@@ -2,8 +2,14 @@
 
 #define LIBCELLML_EXPORT
 
+%{
+#define SWIG_FILE_WITH_INIT
+#include "libcellml/interpreter.h"
+%}
+
 %import "analysermodel.i"
 %import "createconstructor.i"
+%import "numpy.i"
 
 %feature("docstring") libcellml::Interpreter
 "Creates a :class:`Interpreter` object.";
@@ -32,9 +38,11 @@
 %feature("docstring") libcellml::Interpreter::computeVariablesForDifferentialModel
 "Computes the model's variables for a differential model.";
 
-%{
-#include "libcellml/interpreter.h"
+%init %{
+import_array();
 %}
+
+%apply (double* INPLACE_ARRAY1) {(double *array)}
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.

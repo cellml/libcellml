@@ -1,7 +1,7 @@
 #
 # Tests the Interpreter class bindings
 #
-import math
+import numpy as np
 import unittest
 
 
@@ -17,8 +17,8 @@ class InterpreterTestCase(unittest.TestCase):
         self.assertEqual(len(expected_values), len(values))
 
         for i in range(len(expected_values)):
-            if math.isnan(expected_values[i]):
-                self.assertTrue(math.isnan(values[i]))
+            if np.isnan(expected_values[i]):
+                self.assertTrue(np.isnan(values[i]))
             else:
                 self.assertAlmostEqual(expected_values[i], values[i])
 
@@ -47,23 +47,18 @@ class InterpreterTestCase(unittest.TestCase):
 
         self.assertIsNotNone(i.model())
 
-        self.assertEqual(0.0, i.voi())
+        states = np.full(am.stateCount(), np.nan)
+        rates = np.full(am.stateCount(), np.nan)
+        variables = np.full(am.variableCount(), np.nan)
 
-        nan_x_4 = 4 * [math.nan]
-        nan_x_18 = 18 * [math.nan]
+        i.initialiseVariablesForDifferentialModel(states, rates, variables)
+        i.computeComputedConstants(variables)
+        i.computeRates(0.0, states, rates, variables)
+        i.computeVariablesForDifferentialModel(0.0, states, rates, variables)
 
-        self.assert_array_equal(nan_x_4, i.states())
-        self.assert_array_equal(nan_x_4, i.rates())
-        self.assert_array_equal(nan_x_18, i.variables())
-
-        i.initialiseVariables()
-        i.computeComputedConstants()
-        i.computeRates()
-        i.computeVariables()
-
-        self.assert_array_equal([0.0, 0.6, 0.05, 0.325], i.states())
-        self.assert_array_equal([0.60076875, -0.0004555239065400646, 0.012385538355398518, -0.0013415722863204596], i.rates())
-        self.assert_array_equal([0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.04742587317756678, 12.0, 36.0, 0.05819767068693265, 0.125], i.variables())
+        self.assert_array_equal([0.0, 0.6, 0.05, 0.325], states)
+        self.assert_array_equal([0.60076875, -0.0004555239065400646, 0.012385538355398518, -0.0013415722863204596], rates)
+        self.assert_array_equal([0.0, 3.1839, -4.81966875, 1.035, 1.0, 0.0, -10.613, 0.3, -115.0, 120.0, 0.22356372458463003, 4.0, 0.07, 0.04742587317756678, 12.0, 36.0, 0.05819767068693265, 0.125], variables)
 
 
 if __name__ == '__main__':
