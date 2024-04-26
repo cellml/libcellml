@@ -2,9 +2,6 @@
 
 #define LIBCELLML_EXPORT
 
-%include <std_string.i>
-%include <std_vector.i>
-
 %import "analysermodel.i"
 %import "createconstructor.i"
 
