@@ -18,6 +18,8 @@ limitations under the License.
 
 #include "libcellml/analyservariable.h"
 
+#include <limits>
+
 namespace libcellml {
 
 /**
