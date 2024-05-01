@@ -582,7 +582,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Model '" + model->name() + "' has an invalid child element '" + childNode->name() + "'.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::MODEL_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
             }
             issue->mPimpl->mItem->mPimpl->setModel(model);
             addIssue(issue);
@@ -715,7 +715,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Component '" + component->name() + "' has an invalid child element '" + childNode->name() + "'.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::COMPONENT_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
             }
             issue->mPimpl->mItem->mPimpl->setComponent(component);
             addIssue(issue);
@@ -790,7 +790,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Units '" + units->name() + "' has an invalid child element '" + childNode->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setUnits(units);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNITS_CHILD);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
             addIssue(issue);
         }
         childNode = childNode->next();
@@ -823,7 +823,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an invalid child element '" + childNode->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setUnits(units);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::UNIT_ELEMENT);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
             addIssue(issue);
         }
         childNode = childNode->next();
@@ -925,7 +925,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Variable '" + node->attribute("name") + "' has an invalid child element '" + childNode->name() + "'.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::VARIABLE_ELEMENT);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
             }
             issue->mPimpl->mItem->mPimpl->setVariable(variable);
             addIssue(issue);
@@ -1170,7 +1170,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             } else {
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Connection in model '" + model->name() + "' has an invalid child element '" + grandchildNode->name() + "' of element '" + childNode->name() + "'.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
                 issue->mPimpl->mItem->mPimpl->setModel(model);
                 addIssue(issue);
             }
@@ -1671,7 +1671,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                 issue->mPimpl->setLevel(Issue::Level::MESSAGE);
             } else {
                 issue->mPimpl->setDescription("Import from '" + node->attribute("href") + "' has an invalid child element '" + childNode->name() + "'.");
-                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_CHILD);
+                issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
             }
             issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
             addIssue(issue);
@@ -1901,7 +1901,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             auto issue = Issue::IssueImpl::create();
             issue->mPimpl->setDescription("Reset in component '" + component->name() + "' has an invalid child '" + childNode->name() + "'.");
             issue->mPimpl->mItem->mPimpl->setReset(reset);
-            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::RESET_CHILD);
+            issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_ELEMENT);
             addIssue(issue);
         }
         childNode = childNode->next();
