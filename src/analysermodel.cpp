@@ -21,13 +21,18 @@ limitations under the License.
 
 namespace libcellml {
 
-AnalyserModelPtr AnalyserModel::AnalyserModelImpl::create()
+AnalyserModelPtr AnalyserModel::AnalyserModelImpl::create(const ModelPtr &model)
 {
-    return std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
+    return std::shared_ptr<AnalyserModel> {new AnalyserModel(model)};
 }
 
-AnalyserModel::AnalyserModel()
-    : mPimpl(new AnalyserModelImpl())
+AnalyserModel::AnalyserModelImpl::AnalyserModelImpl(const ModelPtr &model)
+    : mModel(model)
+{
+}
+
+AnalyserModel::AnalyserModel(const ModelPtr &model)
+    : mPimpl(new AnalyserModelImpl(model))
 {
 }
 

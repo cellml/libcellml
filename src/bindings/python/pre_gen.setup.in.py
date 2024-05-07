@@ -50,7 +50,7 @@ setup(
     url='@PYPI_PACKAGE_URL@',
     license='Apache Software License',
     description=doclines[0],
-    classifiers=classifiers.split("\n"),
+    classifiers=[cl for cl in classifiers.split("\n") if cl],
     long_description=open('README.rst').read(),
     long_description_content_type='text/x-rst',
     distclass=BinaryDistribution,

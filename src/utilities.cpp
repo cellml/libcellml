@@ -115,6 +115,11 @@ Strings split(const std::string &content, const std::string &delimiter)
 
 std::string convertToString(double value, bool fullPrecision)
 {
+    if (std::isnan(value)) {
+        // Always return "nan" whether we are dealing with +NAN or -NAN. This is to ensure that
+        // the string representation of a NAN is consistent across compilers.
+        return "nan";
+    }
     std::ostringstream strs;
     if (fullPrecision) {
         strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
@@ -493,16 +498,16 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
 }
 
 /**
- * @brief Return a list of names taken from MathML cn units attribute.
+ * @brief Return a set of names taken from MathML cn units attribute.
  *
  * Search the given @p node for MathML @c cn elements.
  * For all @c cn elements return the units reference if it is not empty
  * or a reference to a standard unit.
  *
  * @param node The node to search for MathML @c cn elements.
- * @return A list of units references.
+ * @return A set of units references.
  */
-NameList findCnUnitsNames(const XmlNodePtr &node);
+UniqueNames findCnUnitsNames(const XmlNodePtr &node);
 
 /**
  * @brief Find all MathML @c cn elements units attributes in the given component's math string.
@@ -524,19 +529,18 @@ void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const M
 IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
 void componentNames(const ComponentPtr &component, NameList &names);
 
-NameList findCnUnitsNames(const XmlNodePtr &node)
+UniqueNames findCnUnitsNames(const XmlNodePtr &node)
 {
-    NameList names;
+    UniqueNames names;
     XmlNodePtr childNode = node->firstChild();
     while (childNode != nullptr) {
         if (childNode->isMathmlElement("cn")) {
             std::string u = childNode->attribute("units");
             if (!u.empty() && !isStandardUnitName(u)) {
-                names.push_back(u);
+                names.insert(u);
             }
         }
-        auto childNames = findCnUnitsNames(childNode);
-        names.insert(names.end(), childNames.begin(), childNames.end());
+        names.merge(findCnUnitsNames(childNode));
         childNode = childNode->next();
     }
 
@@ -545,22 +549,23 @@ NameList findCnUnitsNames(const XmlNodePtr &node)
 
 NameList findComponentCnUnitsNames(const ComponentConstPtr &component)
 {
-    NameList names;
+    UniqueNames nodeUnitsNames;
     // Inspect the MathML in this component for any specified constant <cn> units.
     std::string mathContent = component->math();
     if (mathContent.empty()) {
-        return names;
+        return {};
     }
     std::vector<XmlDocPtr> mathDocs = multiRootXml(mathContent);
     for (const auto &doc : mathDocs) {
         auto rootNode = doc->rootNode();
         if (rootNode->isMathmlElement("math")) {
-            auto nodesNames = findCnUnitsNames(rootNode);
-            names.insert(names.end(), nodesNames.begin(), nodesNames.end());
+            nodeUnitsNames.merge(findCnUnitsNames(rootNode));
         }
     }
 
-    return names;
+    NameList unitsNames(nodeUnitsNames.size());
+    std::copy(nodeUnitsNames.begin(), nodeUnitsNames.end(), unitsNames.begin());
+    return unitsNames;
 }
 
 void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const std::string &oldName, const std::string &newName)
@@ -758,8 +763,13 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentConstPtr &
     auto componentCnUnitsNames = findComponentCnUnitsNames(component);
     for (const auto &unitsName : componentCnUnitsNames) {
         auto u = model->units(unitsName);
-        auto requiredUnits = referencedUnits(model, u);
-        usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+        if (u == nullptr) {
+            // We have used a units in the math but it is not defined in the given model, so send back a units that isn't defined.
+            u = Units::create(unitsName);
+        } else {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+        }
         usedUnits.push_back(u);
     }
 

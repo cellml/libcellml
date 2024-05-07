@@ -879,7 +879,7 @@ std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &
                methodBody;
 }
 
-std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value) const
+std::string generateDoubleCode(const std::string &value)
 {
     if (value.find('.') != std::string::npos) {
         return value;
@@ -1674,15 +1674,13 @@ bool Generator::GeneratorImpl::isToBeComputedAgain(const AnalyserEquationPtr &eq
     }
 }
 
-bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equation) const
+bool Generator::GeneratorImpl::isSomeConstant(const AnalyserEquationPtr &equation,
+                                              bool includeComputedConstants) const
 {
-    switch (equation->type()) {
-    case AnalyserEquation::Type::TRUE_CONSTANT:
-    case AnalyserEquation::Type::VARIABLE_BASED_CONSTANT:
-        return true;
-    default:
-        return false;
-    }
+    auto type = equation->type();
+
+    return (type == AnalyserEquation::Type::TRUE_CONSTANT)
+           || (!includeComputedConstants && (type == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT));
 }
 
 std::string Generator::GeneratorImpl::generateZeroInitialisationCode(const AnalyserVariablePtr &variable) const
@@ -1713,7 +1711,8 @@ std::string Generator::GeneratorImpl::generateInitialisationCode(const AnalyserV
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
-                                                           std::vector<AnalyserEquationPtr> &equationsForComputeVariables)
+                                                           std::vector<AnalyserEquationPtr> &equationsForDependencies,
+                                                           bool includeComputedConstants)
 {
     std::string res;
 
@@ -1730,17 +1729,15 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
         }
 
         // Generate any dependency that this equation may have.
-        // Note: this accounts for the special case of the computeVariables()
-        //       method.
 
-        if (!isSomeConstant(equation)) {
+        if (!isSomeConstant(equation, includeComputedConstants)) {
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::ODE)
-                    && !isSomeConstant(dependency)
-                    && (equationsForComputeVariables.empty()
+                    && !isSomeConstant(dependency, includeComputedConstants)
+                    && (equationsForDependencies.empty()
                         || isToBeComputedAgain(dependency)
-                        || (std::find(equationsForComputeVariables.begin(), equationsForComputeVariables.end(), dependency) != equationsForComputeVariables.end()))) {
-                    res += generateEquationCode(dependency, remainingEquations, equationsForComputeVariables);
+                        || (std::find(equationsForDependencies.begin(), equationsForDependencies.end(), dependency) != equationsForDependencies.end()))) {
+                    res += generateEquationCode(dependency, remainingEquations, equationsForDependencies, includeComputedConstants);
                 }
             }
         }
@@ -1782,7 +1779,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 {
     std::vector<AnalyserEquationPtr> dummyEquationsForComputeVariables;
 
-    return generateEquationCode(equation, remainingEquations, dummyEquationsForComputeVariables);
+    return generateEquationCode(equation, remainingEquations, dummyEquationsForComputeVariables, true);
 }
 
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
@@ -1961,7 +1958,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
                 || isToBeComputedAgain(equation)) {
-                methodBody += generateEquationCode(equation, newRemainingEquations, remainingEquations);
+                methodBody += generateEquationCode(equation, newRemainingEquations, remainingEquations, false);
             }
         }
 
