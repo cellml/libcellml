@@ -510,7 +510,7 @@ public:
                                 const VariablePtr &variable2);
 
 private:
-    AnalyserModel(); /**< Constructor, @private. */
+    AnalyserModel(const ModelPtr &model); /**< Constructor, @private. */
 
     struct AnalyserModelImpl;
     AnalyserModelImpl *mPimpl; /**< Private member to implementation pointer, @private. */
