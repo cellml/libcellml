@@ -1,0 +1,7 @@
+    v8->setName("neether");
+        "    <unit units=\"ned\"/>\n"
+                    <ci>ths</ci>
+                <ci>ths</ci>
+        <variable units="dimensionless" name="ths"/>
+                auto ue = std::any_cast<libcellml::UnitsItemPtr>(expectedItems[id][index].second);
+* Fixed typos: occurence -> occurRence by `@agarny <https://github.com/agarny>`_ [`#794 <https://github.com/cellml/libcellml/pull/794>`_].
