@@ -18,3 +18,5 @@ jobs:
         with:
           check_filenames: true
           skip: ./.git,./tests/gtest/include/gtest/gtest.h,./tests/gtest/src/gtest-all.cc,./src/dtds/mathml2/*
+          exclude_file: .codespellexclude
+          ignore_words_file: .codespellignore
