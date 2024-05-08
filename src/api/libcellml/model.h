@@ -356,7 +356,7 @@ public:
     /**
      * @brief Remove any empty components and units from the model.
      *
-     *  Remove any empty components and units fom this model.
+     *  Remove any empty components and units from this model.
      *  In this context, "empty" means:
      *   - components with no name, identifier, resets, variables, maths, or non-empty child components; and
      *   - units which have no name, identifier, or child units.

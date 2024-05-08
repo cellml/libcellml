@@ -327,7 +327,7 @@ public:
     /**
      * @brief Validate the component tree of the given @p component.
      *
-     * Validate the given compoment and all child components of the component.
+     * Validate the given component and all child components of the component.
      *
      * @param model The model the @p component comes from.
      * @param component The @c Component to validate.
@@ -711,7 +711,7 @@ ValidatorPtr Validator::create() noexcept
 
 void Validator::validateModel(const ModelPtr &model)
 {
-    // Clear any pre-existing issues in ths validator instance.
+    // Clear any pre-existing issues in this validator instance.
     pFunc()->removeAllIssues();
 
     if (model == nullptr) {

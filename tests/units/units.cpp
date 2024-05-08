@@ -1722,7 +1722,7 @@ TEST(Units, compareUnitsCompatibleComplex)
     u2->setName("u2");
     u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 3.0);
     u2->addUnit("u");
-    u2->addUnit("metre", "milli", 2.0, 1.0); // Only unit attirbutes which matter now are the exponent and the base unit. Not interested in multipliers.
+    u2->addUnit("metre", "milli", 2.0, 1.0); // Only unit attributes which matter now are the exponent and the base unit. Not interested in multipliers.
 
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("model");

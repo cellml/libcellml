@@ -63,7 +63,7 @@ public:
      * Get the source @ref Model's URL set in this instance. If no source @ref Model
      * URL is set then return an empty string.
      *
-     * @return The URL of the source @ref Model if set otherwise the emtpy string.
+     * @return The URL of the source @ref Model if set otherwise the empty string.
      */
     std::string url() const;
 
