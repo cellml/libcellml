@@ -206,7 +206,7 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
  *
  * @param variable1 The first variable to test.
  * @param variable2 The second variable to test.
- * @param testedVariables Vector of previoulsy tested variables.
+ * @param testedVariables Vector of previously tested variables.
  *
  * @return True if the two given variables are equivalent, false otherwise.
  */
