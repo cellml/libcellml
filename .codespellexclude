@@ -5,3 +5,11 @@
         <variable units="dimensionless" name="ths"/>
                 auto ue = std::any_cast<libcellml::UnitsItemPtr>(expectedItems[id][index].second);
 * Fixed typos: occurence -> occurRence by `@agarny <https://github.com/agarny>`_ [`#794 <https://github.com/cellml/libcellml/pull/794>`_].
+    std::vector<size_t> mErrors;
+        mErrors.push_back(index);
+    mErrors.erase(mErrors.begin() + ptrdiff_t(index));
+    mIssues.erase(mIssues.begin() + ptrdiff_t(mErrors.at(index)));
+    mErrors.clear();
+    if (index < pFunc()->mErrors.size()) {
+        issue = pFunc()->mIssues.at(pFunc()->mErrors.at(index));
+    return pFunc()->mErrors.size();
