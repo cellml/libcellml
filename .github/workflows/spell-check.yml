@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: codespell-project/actions-codespell@94259cd8be02ad2903ba34a22d9c13de21a74461 # v2.0
+      - uses: codespell-project/actions-codespell@v2
         with:
           check_filenames: true
           skip: ./.git,./tests/gtest/include/gtest/gtest.h,./tests/gtest/src/gtest-all.cc,./src/dtds/mathml2/*
