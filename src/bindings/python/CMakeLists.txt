@@ -106,7 +106,7 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   endif()
 
   if (APPLE)
-    # Specifically allow dynamic lookup, here we are really targetting Python symbols.
+    # Specifically allow dynamic lookup, here we are really targeting Python symbols.
     set_target_properties(${MODULE_TARGET} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     # But, we do need to know about the Python include directories.
     target_include_directories(${MODULE_TARGET} PRIVATE ${Python_INCLUDE_DIRS})

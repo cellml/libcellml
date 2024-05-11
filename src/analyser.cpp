@@ -478,7 +478,7 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
 
         // An ODE equation may have a dependency on the state of that ODE (e.g.,
         // dx/dt = x+3). Similarly, an NLA equation will have a "dependency" on
-        // its unknown variables. Either way, we must remove our "depenencies"
+        // its unknown variables. Either way, we must remove our "dependencies"
         // on our unknown variables or we will end up in a circular dependency.
 
         for (const auto &unknownVariable : mUnknownVariables) {

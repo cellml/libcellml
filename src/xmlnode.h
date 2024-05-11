@@ -320,7 +320,7 @@ public:
      *
      * Set the attribute of the given @p attributeName to the given @p attributeValue.
      * The attribute name must already exist.
-     * If the attribute name does not already exist the attibute value will not be modified.
+     * If the attribute name does not already exist the attribute value will not be modified.
      *
      * @param attributeName The @c char attribute type.
      * @param attributeValue The @c char value of the attribute to set.

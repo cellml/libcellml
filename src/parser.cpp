@@ -115,7 +115,7 @@ public:
     /**
      * @brief Recursively update the @p model with the encapsulation parsed from the @p node.
      *
-     * Recusively parse through the @p node to create the component hierarchy.  Returns the
+     * Recursively parse through the @p node to create the component hierarchy.  Returns the
      * root component of the hierarchy to the calling method.
      *
      * @param model The @c ModelPtr to update.
@@ -294,7 +294,7 @@ ModelPtr Parser::ParserImpl::parseModel(const std::string &input)
  * @brief Test to determine if the attribute is an XML identifier.
  *
  * Test to determine if the attribute is an XML identifier. When
- * transfoming from CellML 1.0 and CellML 1.1 it will also test for
+ * transforming from CellML 1.0 and CellML 1.1 it will also test for
  * XML identifiers in the CMETA 1.0 namespace.
  *
  * @param attribute The attribute to test.

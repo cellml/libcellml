@@ -767,7 +767,7 @@ http://www.CellML.org/
          <modified xmlns="http://purl.org/dc/terms/">
             <rdf:Description rdf:about="rdf:#5bc4f7d2-1306-4281-88b5-a5afe628bc66" />
          </modified>
-         <rdf:value xml:lang="en">Added stimulus protocol to allow simulation of trains of action potentials. The stimulus amplitude (20 microamperes per cm2) and duration (0.5 ms) were taken from the single stimulus in the previous version. Set a period of 200 ms (arbitrary) to allow visualisation of 3 action potentials together at a resonable zoom level.</rdf:value>
+         <rdf:value xml:lang="en">Added stimulus protocol to allow simulation of trains of action potentials. The stimulus amplitude (20 microamperes per cm2) and duration (0.5 ms) were taken from the single stimulus in the previous version. Set a period of 200 ms (arbitrary) to allow visualisation of 3 action potentials together at a reasonable zoom level.</rdf:value>
          <cmeta:modifier>
             <rdf:Description rdf:about="rdf:#e897f342-e771-4ae3-876d-062dfdfccc88" />
          </cmeta:modifier>
