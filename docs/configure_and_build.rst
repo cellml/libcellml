@@ -147,7 +147,7 @@ Policy CMP0086 is not set
 -------------------------
 
 Despite being in red and repeated multiple times, this is a warning which can safely be ignored.  
-It's caused by a version mis-match between SWIG and libCellML and will be addressed in the next release.
+It's caused by a version mismatch between SWIG and libCellML and will be addressed in the next release.
 
 .. figure:: ./images/libCellMLBuilding-PolicyCMP0086Error.png
    :align: center
@@ -223,7 +223,7 @@ Once you have used CMake to configure and generate your project files, either pu
 Fatal error: Cannot open include file Python.h
 ++++++++++++++++++++++++++++++++++++++++++++++
 
-If you've included Python bindings in your CMake configuration, but get this error in Visual Studio at build time, it's because the path to the Python installation was not set correctly in the CMake step.  Re-running the CMake configuration with a manually-specified path to the Python installation will solve the problem.  See `ERROR: On Windows without Python debug libaries` for instructions.
+If you've included Python bindings in your CMake configuration, but get this error in Visual Studio at build time, it's because the path to the Python installation was not set correctly in the CMake step.  Re-running the CMake configuration with a manually-specified path to the Python installation will solve the problem.  See `ERROR: On Windows without Python debug libraries` for instructions.
 
 Cannot access xxx  
 +++++++++++++++++
