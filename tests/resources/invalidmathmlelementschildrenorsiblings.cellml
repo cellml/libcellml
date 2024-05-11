@@ -221,7 +221,7 @@
                 <ci>b</ci>
             </apply>
             <apply>
-                <!-- 'root' element with two MathML siblings but first MathML sibling not a 'degree' elelement. -->
+                <!-- 'root' element with two MathML siblings but first MathML sibling not a 'degree' element. -->
                 <root/>
                 <ci>a</ci>
                 <ci>b</ci>
@@ -281,7 +281,7 @@
                 <ci>b</ci>
             </apply>
             <apply>
-                <!-- 'log' element with two MathML siblings but first MathML sibling not a 'logbase' elelement. -->
+                <!-- 'log' element with two MathML siblings but first MathML sibling not a 'logbase' element. -->
                 <log/>
                 <ci>a</ci>
                 <ci>b</ci>
@@ -325,7 +325,7 @@
                 <ci>b</ci>
             </apply>
             <apply>
-                <!-- 'diff' element with first MathML sibling not a 'bvar' elelement. -->
+                <!-- 'diff' element with first MathML sibling not a 'bvar' element. -->
                 <diff/>
                 <ci>a</ci>
                 <ci>b</ci>

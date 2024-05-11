@@ -31,7 +31,7 @@ const std::string ORIGIN_MODEL_REF = ":this:";
 
 using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
 
-using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
+using IndexStack = std::vector<size_t>; /**< Type definition for tracking indices. */
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
 
 using NamePair = std::pair<std::string, std::string>; /**< Type definition for pair of names. */
