@@ -204,7 +204,7 @@ endif()
 
 link_libxml2(cellml)
 
-# Use target compile features to propogate features to consuming projects.
+# Use target compile features to propagate features to consuming projects.
 target_compile_features(cellml PUBLIC cxx_std_17)
 
 set_target_properties(cellml PROPERTIES

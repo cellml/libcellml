@@ -176,7 +176,7 @@ bool canConvertToBasicDouble(const std::string &in);
  * @sa isCellMLReal
  *
  * @param in The @c std::string value to convert to a @c double.
- * @param out The value of the @p in as a doulbe if the conversion was successful,
+ * @param out The value of the @p in as a double if the conversion was successful,
  * left unchanged if the conversion fails.
  *
  * @return @c true if the conversion succeeded, @c false otherwise.
@@ -693,7 +693,7 @@ std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
  * @param owner The owner to compare entities with.
  * @param entities The list of entities to equate.
  *
- * @return @c true if all the entities in @p entities are equal to entites in the @p owner.
+ * @return @c true if all the entities in @p entities are equal to entities in the @p owner.
  */
 bool equalEntities(const EntityPtr &owner, const std::vector<EntityPtr> &entities);
 

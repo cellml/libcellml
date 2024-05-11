@@ -128,7 +128,7 @@ void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::Mo
     expectEqualIssuesSpecificationHeadingsUrls(issues, specificationHeadings, urls, logger)
 
 #define EXPECT_EQ_ISSUES_CELLMLELEMENTTYPES_LEVELS_REFERENCERULES_URLS(issues, cellmlElementTypes, levels, referenceRules, urls, logger) \
-    SCOPED_TRACE("Issue occured here."); \
+    SCOPED_TRACE("Issue occurred here."); \
     expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(issues, cellmlElementTypes, levels, referenceRules, urls, logger)
 
 #define EXPECT_EQ_VALUES(expectedValues, values, valueCount) \
