@@ -25,7 +25,7 @@ namespace libcellml {
 /**
  * @brief Return a list of namespaces on attributes for this node.
  *
- * Scans all attributes of the node and records anyassociated
+ * Scans all attributes of the node and records any associated
  * non-empty namespace attached to the attribute in an
  * @c NodeAttributeNamespaceInfo list.
  *
