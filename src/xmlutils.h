@@ -40,8 +40,8 @@ XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1,
 /**
  * @brief Traverse the tree and return an @c XmlNamespaceMap of element namespaces.
  *
- * From the root node of the tree given by the @p node, traverse the tree
- * recording element namespaces. Returning information on any element namespace.
+ * Traverse the tree from the root @p node recording element namespaces.
+ * Returning information on any element namespace.
  * Text nodes and comment nodes are ignored.
  *
  * @param node The root node of the tree to traverse.
@@ -52,9 +52,8 @@ XmlNamespaceMap traverseTreeForElementNamespaces(const XmlNodePtr &node);
 /**
  * @brief Traverse the tree and return an @c NodeAttributeNamespaceInfo of attribute namespaces.
  *
- * From the root node of the tree given by the @p node, traverse the tree
- * searching for attribute namespaces. Returning information on any non-empty
- * attribute namespaces.
+ * Traverse the tree from the root @p node searching for attribute namespaces.
+ * Returning information on any non-empty attribute namespaces.
  *
  * @param node The root node of the tree to traverse.
  * @return @c NodeAttributeNamespaceInfo of attribute namespaces.
