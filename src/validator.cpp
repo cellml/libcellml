@@ -2613,7 +2613,7 @@ void Validator::ValidatorImpl::addResetOrderMapItem(const VariablePtr &variable,
     bool existingVariableFound = resetOrderMap.count(currentVariable) > 0;
     size_t i = 0;
 
-    while (i < variable->equivalentVariableCount() && !existingVariableFound) {
+    while ((i < variable->equivalentVariableCount()) && !existingVariableFound) {
         currentVariable = variable->equivalentVariable(i);
         existingVariableFound = resetOrderMap.count(currentVariable) > 0;
         ++i;

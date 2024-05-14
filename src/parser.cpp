@@ -409,7 +409,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         for (const auto &e : elementNamespaceMap) {
             std::string name = e.first;
             std::string uri = e.second;
-            if (uri != CELLML_2_0_NS && uri != MATHML_NS) {
+            if ((uri != CELLML_2_0_NS) && (uri != MATHML_NS)) {
                 auto issue = Issue::IssueImpl::create();
                 issue->mPimpl->setDescription("Element '" + name + "' uses namespace '" + uri + "' which does not belong to an allowed namespace. ");
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_UNEXPECTED_NAMESPACE);
@@ -425,9 +425,9 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             std::string nodeUri = std::get<4>(e);
             std::string attributeName = std::get<1>(e);
             std::string uri = std::get<3>(e);
-            if (nodeName == "cn" && nodeUri == MATHML_NS && attributeName == "units" && uri == CELLML_2_0_NS) {
+            if ((nodeName == "cn") && (nodeUri == MATHML_NS) && (attributeName == "units") && (uri == CELLML_2_0_NS)) {
                 // Explicitly allowed attribute namespace prefix.
-            } else if (nodeName == "import" && nodeUri == CELLML_2_0_NS && attributeName == "href" && uri == XLINK_NS) {
+            } else if ((nodeName == "import") && (nodeUri == CELLML_2_0_NS) && (attributeName == "href") && (uri == XLINK_NS)) {
                 // Explicitly allowed attribute namespace prefix.
             } else {
                 auto issue = Issue::IssueImpl::create();
