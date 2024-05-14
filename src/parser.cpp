@@ -431,7 +431,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 // Explicitly allowed attribute namespace prefix.
             } else {
                 auto issue = Issue::IssueImpl::create();
-                issue->mPimpl->setDescription("Element '" + nodeName + "' attribute '" + attributeName + "' has a namespace specified.");
+                issue->mPimpl->setDescription("Element '" + nodeName + "' attribute '" + attributeName + "' has a namespace '" + uri + "' specified.");
                 issue->mPimpl->setReferenceRule(Issue::ReferenceRule::XML_ATTRIBUTE_HAS_NAMESPACE);
                 addIssue(issue);
             }

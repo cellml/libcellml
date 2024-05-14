@@ -74,7 +74,7 @@ TEST(Parser, xmlAttributesWithNamespacePrefixDefault)
         "</model>\n";
 
     const std::vector<std::string> expectedIssues = {
-        "Element 'component' attribute 'name' has a namespace specified.",
+        "Element 'component' attribute 'name' has a namespace 'http://www.cellml.org/cellml/2.0#' specified.",
         "Component '' has an invalid attribute 'name'.",
         "Component does not specify a name attribute.",
     };
@@ -94,7 +94,7 @@ TEST(Parser, xmlAttributesWithNamespacePrefix)
         "</model>\n";
 
     const std::vector<std::string> expectedIssues = {
-        "Element 'component' attribute 'name' has a namespace specified.",
+        "Element 'component' attribute 'name' has a namespace 'http://www.example.com/' specified.",
         "Component '' has an invalid attribute 'name'.",
         "Component does not specify a name attribute.",
     };
