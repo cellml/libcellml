@@ -338,6 +338,7 @@ TEST(ComponentImport, noNameAttribute)
     libcellml::ModelPtr m = p->parseModel(in);
 
     EXPECT_EQ(size_t(1), p->errorCount());
+    EXPECT_EQ("Import of component does not specify a name attribute.", p->error(0)->description());
 }
 
 TEST(ComponentImport, notUniqueImportName)
@@ -361,4 +362,5 @@ TEST(ComponentImport, notUniqueImportName)
     v->validateModel(m);
 
     EXPECT_EQ(size_t(1), v->errorCount());
+    EXPECT_EQ("Model 'model' contains multiple components with the name 'bob'. Valid component names must be unique to their model.", v->error(0)->description());
 }

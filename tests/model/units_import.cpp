@@ -162,6 +162,7 @@ TEST(UnitsImport, noNameAttribute)
     libcellml::ModelPtr m = p->parseModel(in);
 
     EXPECT_EQ(size_t(1), p->errorCount());
+    EXPECT_EQ("Import of units does not specify a name attribute.", p->error(0)->description());
 }
 
 TEST(UnitsImport, importModifyAndParse)
