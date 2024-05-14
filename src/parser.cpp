@@ -1566,7 +1566,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
 
     if (!hrefAttributePresent) {
         auto issue = Issue::IssueImpl::create();
-        issue->mPimpl->setDescription("Import does not specify an xlink href attribute.");
+        issue->mPimpl->setDescription("Import does not specify an xlink:href attribute.");
         issue->mPimpl->mItem->mPimpl->setImportSource(importSource);
         issue->mPimpl->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
         addIssue(issue);

@@ -1227,9 +1227,9 @@ TEST(Parser, emptyImportWithAndWithoutId)
         "  <import id = \"import_id\" />\n"
         "</model>\n";
     std::vector<std::string> e = {
-        "Import does not specify an xlink href attribute.",
+        "Import does not specify an xlink:href attribute.",
         "Import from '' is empty and will be disregarded.",
-        "Import does not specify an xlink href attribute.",
+        "Import does not specify an xlink:href attribute.",
         "Import from '' has an identifier of 'import_id' but is empty. The import will be disregarded and the associated identifier will be lost.",
     };
     libcellml::ParserPtr parser = libcellml::Parser::create();
@@ -1475,7 +1475,7 @@ TEST(Parser, invalidModelWithDifferentItemTypesOfIssues)
     const std::vector<std::string> expectedIssues = {
         "Model 'starwars' has an invalid attribute 'episode'.",
         "Import from '' has an invalid attribute 'princess'.",
-        "Import does not specify an xlink href attribute.",
+        "Import does not specify an xlink:href attribute.",
         "Import from '' is empty and will be disregarded.",
         "Units '' has an invalid attribute 'jedi'.",
         "Units does not specify a name attribute.",
