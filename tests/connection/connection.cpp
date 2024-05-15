@@ -1379,6 +1379,34 @@ TEST(Connection, repeatedConnection)
     EXPECT_EQ(expectedIssue, p->error(0)->description());
 }
 
+TEST(Connection, repeatedConnectionCross)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"connection\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component2\" component_2=\"component1\">\n"
+        "    <map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr m = p->parseModel(in);
+
+    const std::string expectedIssue = "Connection in model 'connection' between 'component1' and 'component2' is not unique.";
+
+    EXPECT_EQ(size_t(1), p->errorCount());
+    EXPECT_EQ(expectedIssue, p->error(0)->description());
+}
+
 TEST(Connection, repeatedMapVariables)
 {
     const std::string in =
