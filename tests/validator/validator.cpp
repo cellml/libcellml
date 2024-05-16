@@ -49,10 +49,10 @@ TEST(Validator, unnamedModel)
         "Model '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "2.1.1",
+        "2.1.1.1",
     };
     const std::vector<std::string> expectedUrls = {
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME_VALUE",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -71,18 +71,18 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
         "Component '' does not have a valid name attribute. CellML identifiers must contain one or more basic Latin alphabetic characters.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "2.1.1",
-        "2.7.1",
-        "2.7.1",
-        "2.7.1",
-        "2.7.1",
+        "2.1.1.1",
+        "2.7.1.1",
+        "2.7.1.1",
+        "2.7.1.1",
+        "2.7.1.1",
     };
     const std::vector<std::string> expectedUrls = {
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME",
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME_VALUE",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME_VALUE",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME_VALUE",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME_VALUE",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB07.html?issue=COMPONENT_NAME_VALUE",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -116,10 +116,10 @@ TEST(Validator, invalidElementIdAttribute)
         "Model 'valid_name' does not have a valid 'id' attribute, '993-++$@'.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "1.2.5",
+        "1.2.5.1.1",
     };
     const std::vector<std::string> expectedUrls = {
-        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specA02.html?issue=XML",
+        "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specA02.html?issue=XML_ID_ATTRIBUTE",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create("valid_name");
@@ -1095,7 +1095,7 @@ TEST(Validator, integerStrings)
         "        </math>\n"
         "      </reset_value>\n"
         "    </reset>\n"
-        "    <reset variable=\"variable\" test_variable=\"other_variable\" order=\"+1\">\n"
+        "    <reset variable=\"variable\" test_variable=\"other_variable\" order=\"+2\">\n"
         "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "        </math>\n"
@@ -1578,7 +1578,7 @@ TEST(Validator, resetVariableOutsideComponent)
 {
     const std::vector<std::string> expectedIssues = {
         "Reset in component 'c1' with order '1', with variable 'v2', with test_variable 'v1', refers to a variable 'v2' in a different component 'c2'.",
-        "Reset in component 'c2' with order '1', with variable 'v2', with test_variable 'v1', refers to a test_variable 'v1' in a different component 'c1'.",
+        "Reset in component 'c2' with order '2', with variable 'v2', with test_variable 'v1', refers to a test_variable 'v1' in a different component 'c1'.",
     };
 
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -1612,7 +1612,7 @@ TEST(Validator, resetVariableOutsideComponent)
 
     r2->setVariable(v2);
     r2->setTestVariable(v1); // test_variable outside parent component
-    r2->setOrder(1);
+    r2->setOrder(2);
     r2->setResetValue(EMPTY_MATH);
     r2->setTestValue(EMPTY_MATH);
 
@@ -1623,6 +1623,113 @@ TEST(Validator, resetVariableOutsideComponent)
     validator->validateModel(m);
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+libcellml::ModelPtr setupResetOrderModel()
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"reset_model\">\n"
+        "  <component name=\"reset_component1\">\n"
+        "    <variable name=\"A\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "    <variable name=\"B\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"C\" units=\"dimensionless\"/>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </test_value>\n"
+        "    </reset>\n"
+        "    <reset variable=\"A\" test_variable=\"C\" order=\"2\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </test_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "  <component name=\"reset_component2\">\n"
+        "    <variable name=\"X\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "    <variable name=\"Y\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"Z\" units=\"dimensionless\"/>\n"
+        "    <reset variable=\"X\" test_variable=\"Y\" order=\"3\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </test_value>\n"
+        "    </reset>\n"
+        "    <reset variable=\"Z\" test_variable=\"Y\" order=\"4\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </test_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "  <connection component_1=\"reset_component1\" component_2=\"reset_component2\">\n"
+        "    <map_variables variable_1=\"A\" variable_2=\"X\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    EXPECT_EQ(size_t(0), p->errorCount());
+
+    return p->parseModel(in);
+}
+
+TEST(Validator, resetOrderSameVariableSetUnique)
+{
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    auto m = setupResetOrderModel();
+
+    v->validateModel(m);
+
+    EXPECT_EQ(size_t(0), v->errorCount());
+}
+
+TEST(Validator, resetOrderVariableSetInComponentNotUnique)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'A' used in resets does not have unique order values across the equivalent variable set.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    auto m = setupResetOrderModel();
+
+    auto c = m->component(0);
+    auto r = c->reset(1);
+    r->setOrder(1);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, resetOrderVariableSetInEquivalentSetNotUnique)
+{
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'A' used in resets does not have unique order values across the equivalent variable set.",
+    };
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    auto m = setupResetOrderModel();
+
+    auto c = m->component(1);
+    auto r = c->reset(0);
+    r->setOrder(1);
+
+    v->validateModel(m);
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, validMathCnElements)
