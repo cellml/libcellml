@@ -1177,7 +1177,7 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"model\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"valid_name\">\n"
         "    <variable units=\"dimensionless\" name=\"variable1\" interface=\"none\"/>\n"
         "    <variable id=\"sin\" units=\"dimensionless\" name=\"sin1\" interface=\"public_and_private\"/>\n"

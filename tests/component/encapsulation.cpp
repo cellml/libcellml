@@ -312,7 +312,7 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
         "  <component name=\"parent_component\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"parent_component\">\n"
