@@ -48,9 +48,9 @@ TEST(Coverage, connectionComment)
 
 TEST(Coverage, importWithNonHrefXlink)
 {
-    const std::string e =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" xlink:type=\"simple\">\n"
         "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "    <!-- Comment in an import block -->\n"
@@ -63,10 +63,76 @@ TEST(Coverage, importWithNonHrefXlink)
         "  </connection>\n"
         "</model>\n";
 
-    // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(e);
-    EXPECT_EQ(size_t(0), parser->issueCount());
+    parser->parseModel(in);
+    EXPECT_EQ(size_t(1), parser->issueCount());
+}
+
+TEST(Coverage, importWithNamespaceViolations)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model name=\"\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlinked\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
+        "    <!-- Comment in an import block -->\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.cellml.org/notcellml/2.0#\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
+        "    <!-- Comment in an import block -->\n"
+        "  </import>\n"
+        "  <component name=\"component_bob\">\n"
+        "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <connection component_2=\"component_in_this_model\" component_1=\"component_bob\">\n"
+        "    <map_variables variable_2=\"variable_import\" variable_1=\"variable_bob\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    parser->parseModel(in);
+    EXPECT_EQ(size_t(5), parser->issueCount());
+}
+
+TEST(Coverage, mathCnWithNamespaceViolations)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
+        "  <units name=\"a\">\n"
+        "    <unit units=\"\"/>\n"
+        "  </units>\n"
+        "   <component name=\"myComponent\">\n"
+        "       <variable name=\"a\" units=\"\"/>\n"
+        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellmlo/2.0#\">\n"
+        "           <apply>"
+        "             <eq/>\n"
+        "             <ci>a</ci>\n"
+        "             <cn cellml:units=\"\">1</cn>\n"
+        "             <cn cellml:units=\"\" xmlns=\"http://www.w3.org/1998/Math/NotMathML\">1</cn>\n"
+        "           </apply>\n"
+        "       </math>\n"
+        "   </component>\n"
+        "</model>";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    parser->parseModel(in);
+    EXPECT_EQ(size_t(3), parser->issueCount());
+}
+
+TEST(Coverage, invalidNamespaceElement)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelA\">\n"
+        "  <component name=\"componentA\" xmlns=\"http://www.cellml.org/notcellml/2.0#\">\n"
+        "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+    EXPECT_EQ(size_t(3), p->issueCount());
 }
 
 TEST(Coverage, entityHasParent)
