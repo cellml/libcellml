@@ -42,7 +42,7 @@ limitations under the License.
 #include "analyservariable_p.h"
 #include "anycellmlelement_p.h"
 #include "commonutils.h"
-#include "generator_p.h"
+#include "generatorinterpreter_p.h"
 #include "issue_p.h"
 #include "logger_p.h"
 #include "utilities.h"
@@ -635,6 +635,8 @@ Analyser::AnalyserImpl::AnalyserImpl()
     mGeneratorProfile->setAbsoluteValueString("abs");
     mGeneratorProfile->setNaturalLogarithmString("ln");
     mGeneratorProfile->setCommonLogarithmString("log");
+    mGeneratorProfile->setMinString("min");
+    mGeneratorProfile->setMaxString("max");
     mGeneratorProfile->setRemString("rem");
     mGeneratorProfile->setAsinString("arcsin");
     mGeneratorProfile->setAcosString("arccos");
@@ -945,30 +947,32 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         ast->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
+        if (childCount >= 1) {
+            analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
 
-        if (childCount >= 2) {
-            AnalyserEquationAstPtr astRight;
-            AnalyserEquationAstPtr tempAst;
+            if (childCount >= 2) {
+                AnalyserEquationAstPtr astRight;
+                AnalyserEquationAstPtr tempAst;
 
-            analyseNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
+                analyseNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
-            for (auto i = childCount - 2; i > 0; --i) {
-                tempAst = AnalyserEquationAst::create();
+                for (auto i = childCount - 2; i > 0; --i) {
+                    tempAst = AnalyserEquationAst::create();
 
-                tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
+                    tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
+                    analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
 
-                astRight->mPimpl->mParent = tempAst;
+                    astRight->mPimpl->mParent = tempAst;
 
-                tempAst->mPimpl->mOwnedRightChild = astRight;
-                astRight = tempAst;
+                    tempAst->mPimpl->mOwnedRightChild = astRight;
+                    astRight = tempAst;
+                }
+
+                astRight->mPimpl->mParent = ast;
+
+                ast->mPimpl->mOwnedRightChild = astRight;
             }
-
-            astRight->mPimpl->mParent = ast;
-
-            ast->mPimpl->mOwnedRightChild = astRight;
         }
     } else if (node->isMathmlElement("piece")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::PIECE, astParent);
@@ -2686,9 +2690,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                + "' is";
                 description += hasPrimaryVariable ?
                                    " the" :
-                               (equivalentVariableCount == 1) ?
-                                   " its corresponding" :
-                                   " their corresponding";
+                                   ((equivalentVariableCount == 1) ?
+                                        " its corresponding" :
+                                        " their corresponding");
                 description += " primary variable and will therefore be the one used as an external variable.";
 
                 referenceRule = Issue::ReferenceRule::ANALYSER_EXTERNAL_VARIABLE_USE_PRIMARY_VARIABLE;

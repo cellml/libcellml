@@ -77,6 +77,10 @@ using UnitsConstPtr = std::shared_ptr<const Units>; /**< Type definition for sha
 using ConnectionMap = std::map<VariablePtr, VariablePtr>; /**< Type definition for a connection map.*/
 using NamePairList = std::vector<NamePair>; /**< Type definition for a list of a pair of names. */
 
+class InterpreterStatement; /**< Forward declaration of InterpreterStatement class. */
+using InterpreterStatementPtr = std::shared_ptr<InterpreterStatement>; /**< Type definition for shared InterpreterStatement pointer. */
+using InterpreterStatementPtrs = std::vector<InterpreterStatementPtr>; /**< Type definition for a list of shared InterpreterStatement pointers. */
+
 /**
  * @brief Class for defining an epoch in the history of a @ref Component or @ref Units.
  *

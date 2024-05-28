@@ -20,6 +20,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "libcellml/undefines.h"
+
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
@@ -582,8 +584,8 @@ TEST(Coverage, generator)
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(209), analyserModel->variableCount());
-    EXPECT_EQ(size_t(203), analyserModel->equationCount());
+    EXPECT_EQ(size_t(220), analyserModel->variableCount());
+    EXPECT_EQ(size_t(214), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_EQ(size_t(0), analyserModel->voi()->equationCount());
@@ -596,19 +598,19 @@ TEST(Coverage, generator)
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->variable(0));
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
-    EXPECT_NE(nullptr, analyserModel->equation(199));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencyCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->dependencies().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->dependency(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->dependency(analyserModel->equation(199)->dependencyCount()));
-    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblingCount());
-    EXPECT_EQ(size_t(1), analyserModel->equation(199)->nlaSiblings().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->nlaSibling(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->nlaSibling(analyserModel->equation(199)->nlaSiblingCount()));
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->variableCount());
-    EXPECT_NE(size_t(0), analyserModel->equation(199)->variables().size());
-    EXPECT_NE(nullptr, analyserModel->equation(199)->variable(0));
-    EXPECT_EQ(nullptr, analyserModel->equation(199)->variable(analyserModel->equation(199)->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(210));
+    EXPECT_NE(size_t(0), analyserModel->equation(210)->dependencyCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(210)->dependencies().size());
+    EXPECT_NE(nullptr, analyserModel->equation(210)->dependency(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(210)->dependency(analyserModel->equation(210)->dependencyCount()));
+    EXPECT_EQ(size_t(1), analyserModel->equation(210)->nlaSiblingCount());
+    EXPECT_EQ(size_t(1), analyserModel->equation(210)->nlaSiblings().size());
+    EXPECT_NE(nullptr, analyserModel->equation(210)->nlaSibling(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(210)->nlaSibling(analyserModel->equation(210)->nlaSiblingCount()));
+    EXPECT_NE(size_t(0), analyserModel->equation(210)->variableCount());
+    EXPECT_NE(size_t(0), analyserModel->equation(210)->variables().size());
+    EXPECT_NE(nullptr, analyserModel->equation(210)->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(210)->variable(analyserModel->equation(210)->variableCount()));
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     for (const auto &equation : analyserModel->equations()) {
@@ -624,7 +626,7 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->variableCount(); ++i) {
-        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206)) {
+        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 183) || (i == 184) || (i == 187) || (i == 216) || (i == 217)) {
             EXPECT_TRUE(analyserModel->variable(i)->initialisingVariable() != nullptr);
         }
     }
@@ -904,6 +906,53 @@ TEST(Coverage, generator)
     generator->implementationCode();
 
     libcellml::Generator::equationCode(analyser->model()->equation(0)->ast());
+}
+
+TEST(Coverage, interpreter)
+{
+    // Get an interpreter for the HH52 model.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("coverage/generator/model.cellml"));
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
+    auto analyserModel = analyser->model();
+    auto interpreter = libcellml::Interpreter::create();
+
+    // Make sure that Interpreter::model() works as expected and that our interpreter can be evaluated and that its
+    // results are what we expect.
+
+    EXPECT_EQ(nullptr, interpreter->model());
+
+    interpreter->setModel(analyserModel);
+
+    EXPECT_EQ(analyserModel, interpreter->model());
+
+    static const auto INF = std::numeric_limits<double>::infinity();
+    static const auto NAN = std::numeric_limits<double>::quiet_NaN();
+
+    auto *states = new double[analyserModel->stateCount()];
+    auto *rates = new double[analyserModel->stateCount()];
+    auto *variables = new double[analyserModel->variableCount()];
+
+    interpreter->initialiseVariablesForDifferentialModel(states, rates, variables);
+    interpreter->computeComputedConstants(variables);
+    interpreter->computeRates(0.0, states, rates, variables);
+    interpreter->computeVariablesForDifferentialModel(0.0, states, rates, variables);
+
+    EXPECT_EQ_VALUES(std::vector<double>({0.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({1.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({0.0, 1.0, 2.0, 1.0, 1.0, 1.0, 3.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 3.0, 6.0, 1.0, 1.0, -1.0, 1.0, -6.0, -2.0, 3.0, 7.0, -1.0, -1.0, 2.0, 6.0, 0.0, 0.0, 0.0, -0.0, -0.0, 7.0, 3.0, -1.0, -3.0, 0.5000000000000, 1.0, 3.0, 1.0, -1.0, -1.0, 0.1428571428571, 0.3333333333333, -1.0, -0.3333333333333, 0.0833333333333, 1.3333333333333, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 3.0, 1.0, -1.0, -1.0, 2.0, 0.5000000000000, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.7182818284590, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 1.0, 0.8414709848079, 0.5403023058681, 1.5574077246549, 1.8508157176809, 1.1883951057781, 0.6420926159343, 1.1752011936438, 1.5430806348152, 0.7615941559558, 0.6480542736639, 0.8509181282393, 1.3130352854993, 1.5707963267949, 0.0, 0.7853981633974, 0.0, 1.5707963267949, 0.7853981633974, 0.8813735870195, 0.0, 0.5493061443341, 0.0, 0.8813735870195, 0.5493061443341, NAN, NAN, 1.0, 1.0, 3.0, NAN, 5.0, 6.0, 1.0, 7.0, 7.0, NAN, 124.0, 123.0, 123.4567890000000, 122999999999999992825511813039543286439366983265988099874998185415242667014177361275155540361558884352.0, 123456788999999994484262021807589179008641698391664322400772966218228802243136080981312758589637525504.0, 1.0, 1.0, 0.0, 2.7182818284590, 3.1415926535898, INF, NAN, NAN, 9.0, NAN, 1.0, NAN, 20.0, NAN, 1.2500000000000, 0.0, 1.0, 1.0, 1.0, 1.0, NAN, -3.0, 1.0, 2.0, 1.0, 3.0}), variables, analyserModel->variableCount());
+
+    delete[] states;
+    delete[] rates;
+    delete[] variables;
+
+    interpreter->setModel(nullptr);
+
+    EXPECT_EQ(nullptr, interpreter->model());
 }
 
 TEST(CoverageValidator, degreeElementWithOneSibling)
