@@ -60,9 +60,6 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml)
     xmlFreeDoc(doc);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
-#if LIBXML_VERSION < 21200
-    xmlCleanupGlobals();
-#endif
 }
 
 TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
@@ -84,9 +81,6 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
-#if LIBXML_VERSION < 21200
-    xmlCleanupGlobals();
-#endif
 
     EXPECT_EQ(nullptr, doc);
 }

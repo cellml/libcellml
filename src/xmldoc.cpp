@@ -95,9 +95,6 @@ void XmlDoc::parse(const std::string &input)
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
-#if LIBXML_VERSION < 21200
-    xmlCleanupGlobals();
-#endif
 }
 
 std::string decompressMathMLDTD()
@@ -137,9 +134,6 @@ void XmlDoc::parseMathML(const std::string &input)
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
-#if LIBXML_VERSION < 21200
-    xmlCleanupGlobals();
-#endif
 }
 
 std::string XmlDoc::prettyPrint() const
