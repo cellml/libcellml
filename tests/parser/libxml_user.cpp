@@ -24,7 +24,13 @@ limitations under the License.
 
 #include <libxml/parser.h>
 
-void structuredErrorCallback(void *userData, xmlErrorPtr error)
+#if LIBXML_VERSION >= 21200
+#    define XmlErrorPtr const xmlError *
+#else
+#    define XmlErrorPtr xmlErrorPtr
+#endif
+
+void structuredErrorCallback(void *userData, XmlErrorPtr error)
 {
     if (userData != nullptr && error != nullptr) {
         // Suppress any error messages raised from using LibXml2.
@@ -54,7 +60,9 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml)
     xmlFreeDoc(doc);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
+#if LIBXML_VERSION < 21200
     xmlCleanupGlobals();
+#endif
 }
 
 TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
@@ -76,7 +84,9 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
+#if LIBXML_VERSION < 21200
     xmlCleanupGlobals();
+#endif
 
     EXPECT_EQ(nullptr, doc);
 }

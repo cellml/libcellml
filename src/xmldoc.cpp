@@ -42,7 +42,13 @@ namespace libcellml {
  *
  * @param error The @c xmlErrorPtr to the error raised by libxml.
  */
-void structuredErrorCallback(void *userData, xmlErrorPtr error)
+#if LIBXML_VERSION >= 21200
+#    define XmlErrorPtr const xmlError *
+#else
+#    define XmlErrorPtr xmlErrorPtr
+#endif
+
+void structuredErrorCallback(void *userData, XmlErrorPtr error)
 {
     static const std::regex newLineRegex("\\n");
     // Swap libxml2 carriage return for a period.
@@ -89,7 +95,9 @@ void XmlDoc::parse(const std::string &input)
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
+#if LIBXML_VERSION < 21200
     xmlCleanupGlobals();
+#endif
 }
 
 std::string decompressMathMLDTD()
@@ -129,7 +137,9 @@ void XmlDoc::parseMathML(const std::string &input)
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
+#if LIBXML_VERSION < 21200
     xmlCleanupGlobals();
+#endif
 }
 
 std::string XmlDoc::prettyPrint() const

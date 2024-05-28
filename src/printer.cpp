@@ -140,7 +140,6 @@ std::string Printer::PrinterImpl::printMath(const std::string &math)
     static const std::regex xmlDeclaration(R"|(<\?xml[[:space:]]+version=.*\?>)|");
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-    xmlKeepBlanksDefault(0);
     // Remove any XML declarations from the string.
     std::string normalisedMath = std::regex_replace(math, xmlDeclaration, "");
     xmlDoc->parse("<" + wrapElementName + ">" + normalisedMath + "</" + wrapElementName + ">");
@@ -592,7 +591,6 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds)
     // See http://www.xmlsoft.org/html/libxml-tree.html#xmlDocDumpFormatMemoryEnc
     // for details.
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-    xmlKeepBlanksDefault(0);
     xmlDoc->parse(repr);
     return xmlDoc->prettyPrint();
 }

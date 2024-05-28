@@ -53,15 +53,27 @@ TEST(Parser, invalidXMLElements)
         "LibXml2 error: EndTag: '</' not found.",
         "Could not get a valid XML root node from the provided input.",
     };
+    const std::vector<std::string> expectedIssues_2_12 = {
+        "LibXml2 error: Specification mandates value for attribute bearded.",
+        "LibXml2 error: Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
+        "LibXml2 error: Opening and ending tag mismatch: Elf line 6 and fellows.",
+        "Could not get a valid XML root node from the provided input.",
+    };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
 
-    EXPECT_EQ(expectedIssues_2_2.size(), p->issueCount());
+    EXPECT_TRUE((expectedIssues_2_2.size() == p->issueCount())
+                || (expectedIssues_2_9_10.size() == p->issueCount())
+                || (expectedIssues_2_12.size() == p->issueCount()));
 
     for (size_t i = 0; i < p->issueCount(); ++i) {
         auto message = p->issue(i)->description();
-        EXPECT_TRUE((expectedIssues_2_2.at(i) == message) || (expectedIssues_2_9_10.at(i) == message));
+        EXPECT_TRUE((expectedIssues_2_2.at(i) == message)
+                    || (expectedIssues_2_9_10.at(i) == message)
+                    || (expectedIssues_2_12.at(i) == message));
     }
 }
 
@@ -1861,13 +1873,17 @@ TEST(Parser, parseResets)
     EXPECT_EQ("variable2", v2->name());
 
     std::string testValueString = r->testValue();
-    std::string t =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply/></math>\n";
+    const std::string t =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          <apply/>\n"
+        "        </math>\n";
     EXPECT_EQ(t, testValueString);
 
     std::string resetValueString = r->resetValue();
-    std::string rt =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply/></math>\n";
+    const std::string rt =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          <apply/>\n"
+        "        </math>\n";
     EXPECT_EQ(rt, resetValueString);
 }
 
