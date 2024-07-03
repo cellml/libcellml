@@ -1261,8 +1261,8 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
 
     INITIALISE_INTERPRETED_DIFFERENTIAL_MODEL(analyserModel);
 
-    EXPECT_EQ_VALUES(std::vector<double>({3.0, 7.0}), states, analyserModel->stateCount());
-    EXPECT_EQ_VALUES(std::vector<double>({5.0, 9000.0}), rates, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({3.0, 7.0, 11.0}), states, analyserModel->stateCount());
+    EXPECT_EQ_VALUES(std::vector<double>({5.0, 9000.0, 0.013}), rates, analyserModel->stateCount());
     EXPECT_EQ_VALUES(NO_VALUES, variables, analyserModel->variableCount());
 
     FINALISE_MODEL();
