@@ -2453,7 +2453,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
                 auto astGrandparent = astParent->parent();
 
                 if (astGrandparent->mPimpl->mType == AnalyserEquationAst::Type::EQUALITY) {
-                    scaleAst(astGrandparent->mPimpl->mOwnedRightChild, astGrandparent, 1.0 / scalingFactor);
+                    scaleAst(astGrandparent->mPimpl->mOwnedRightChild, astGrandparent, scalingFactor);
                 } else {
                     scaleAst(astParent, astGrandparent, 1.0 / scalingFactor);
                 }
