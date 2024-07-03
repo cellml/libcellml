@@ -165,19 +165,14 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode());
 
     auto interpreter = libcellml::Interpreter::create();
-printf(">>> 00\n"); fflush(stdout);
 
     interpreter->setModel(analyserModel);
-printf(">>> 01\n"); fflush(stdout);
 
     INITIALISE_INTERPRETED_ALGEBRAIC_MODEL(analyserModel);
-printf(">>> 02 [%zu]\n", analyserModel->variableCount()); fflush(stdout);
 
     EXPECT_EQ_VALUES(std::vector<double>({1.0, 1.0}), variables, analyserModel->variableCount());
-printf(">>> 03\n"); fflush(stdout);
 
     FINALISE_MODEL();
-printf(">>> 04\n"); fflush(stdout);
 }
 
 TEST(Generator, algebraicEqnComputedVarOnRhsWithComputedConstantAsExternalVariable)
