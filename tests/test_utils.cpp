@@ -260,6 +260,41 @@ void expectEqualIssuesCellmlElementTypesLevelsReferenceRulesUrls(const std::vect
     }
 }
 
+double roundValue(double value, int precision)
+{
+    return std::round(value * std::pow(10.0, precision)) / std::pow(10.0, precision);
+}
+
+testing::AssertionResult areEqualValues(const char *evExpr, const char *vExpr, const char *ndxExpr,
+                                        const void *ev, const void *v, const void *ndx)
+{
+    static const auto PRECISION = 12;
+
+    auto expectedValues = *(static_cast<const std::vector<double> *>(ev));
+    auto values = static_cast<const double *>(v);
+    auto i = *(static_cast<const size_t *>(ndx));
+
+    if ((std::isnan(expectedValues[i]) && std::isnan(values[i]))
+        || areNearlyEqual(roundValue(expectedValues[i], PRECISION), roundValue(values[i], PRECISION))) {
+        return testing::AssertionSuccess();
+    }
+
+    return testing::AssertionFailure() << "Expected equality of these values:" << std::endl
+                                       << "  expectedValues[" << i << "]" << std::endl
+                                       << "    Which is: " << expectedValues[i] << std::endl
+                                       << "  values[" << i << "]" << std::endl
+                                       << "    Which is: " << values[i];
+}
+
+void expectEqualValues(const std::vector<double> &expectedValues, double *values, size_t valueCount)
+{
+    EXPECT_EQ(expectedValues.size(), valueCount);
+
+    for (size_t i = 0; i < valueCount; ++i) {
+        EXPECT_PRED_FORMAT3(areEqualValues, &expectedValues, values, &i);
+    }
+}
+
 libcellml::ModelPtr createModel(const std::string &name)
 {
     libcellml::ModelPtr model = libcellml::Model::create();

@@ -27,6 +27,8 @@ set(TEST_SRCS
   generator.test.js
   generatorprofile.test.js
   importsource.test.js
+  #---GRY--- TO BE UNCOMMENTED ONCE WE HAVE BINDINGS FOR Interpreter.
+  # interpreter.test.js
   model.test.js
   namedentity.test.js
   parentedentity.test.js
