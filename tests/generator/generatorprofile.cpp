@@ -279,8 +279,14 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("extern const size_t STATE_COUNT;\n", generatorProfile->interfaceStateCountString());
     EXPECT_EQ("const size_t STATE_COUNT = [STATE_COUNT];\n", generatorProfile->implementationStateCountString());
 
-    EXPECT_EQ("extern const size_t VARIABLE_COUNT;\n", generatorProfile->interfaceVariableCountString());
-    EXPECT_EQ("const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n", generatorProfile->implementationVariableCountString());
+    EXPECT_EQ("extern const size_t CONSTANT_COUNT;\n", generatorProfile->interfaceConstantCountString());
+    EXPECT_EQ("const size_t CONSTANT_COUNT = [CONSTANT_COUNT];\n", generatorProfile->implementationConstantCountString());
+
+    EXPECT_EQ("extern const size_t COMPUTED_CONSTANT_COUNT;\n", generatorProfile->interfaceComputedConstantCountString());
+    EXPECT_EQ("const size_t COMPUTED_CONSTANT_COUNT = [COMPUTED_CONSTANT_COUNT];\n", generatorProfile->implementationComputedConstantCountString());
+
+    EXPECT_EQ("extern const size_t ALGEBRAIC_COUNT;\n", generatorProfile->interfaceAlgebraicCountString());
+    EXPECT_EQ("const size_t ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT];\n", generatorProfile->implementationAlgebraicCountString());
 
     EXPECT_EQ("typedef enum {\n"
               "    CONSTANT,\n"
@@ -485,9 +491,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(true, true));
 
-    EXPECT_EQ("void computeComputedConstants(double *variables);\n",
+    EXPECT_EQ("void computeComputedConstants(double *computedConstants);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString());
-    EXPECT_EQ("void computeComputedConstants(double *variables)\n"
+    EXPECT_EQ("void computeComputedConstants(double *computedConstants)\n"
               "{\n"
               "[CODE]"
               "}\n",
@@ -865,8 +871,14 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceStateCountString(value);
     generatorProfile->setImplementationStateCountString(value);
 
-    generatorProfile->setInterfaceVariableCountString(value);
-    generatorProfile->setImplementationVariableCountString(value);
+    generatorProfile->setInterfaceConstantCountString(value);
+    generatorProfile->setImplementationConstantCountString(value);
+
+    generatorProfile->setInterfaceComputedConstantCountString(value);
+    generatorProfile->setImplementationComputedConstantCountString(value);
+
+    generatorProfile->setInterfaceAlgebraicCountString(value);
+    generatorProfile->setImplementationAlgebraicCountString(value);
 
     generatorProfile->setVariableTypeObjectString(false, false, value);
     generatorProfile->setVariableTypeObjectString(false, true, value);
@@ -994,8 +1006,14 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceStateCountString());
     EXPECT_EQ(value, generatorProfile->implementationStateCountString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceVariableCountString());
-    EXPECT_EQ(value, generatorProfile->implementationVariableCountString());
+    EXPECT_EQ(value, generatorProfile->interfaceConstantCountString());
+    EXPECT_EQ(value, generatorProfile->implementationConstantCountString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceComputedConstantCountString());
+    EXPECT_EQ(value, generatorProfile->implementationComputedConstantCountString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAlgebraicCountString());
+    EXPECT_EQ(value, generatorProfile->implementationAlgebraicCountString());
 
     EXPECT_EQ(value, generatorProfile->variableTypeObjectString(false, false));
     EXPECT_EQ(value, generatorProfile->variableTypeObjectString(false, true));

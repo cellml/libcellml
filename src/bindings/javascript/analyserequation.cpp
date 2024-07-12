@@ -45,9 +45,12 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequation)
         .function("nlaSiblings", &libcellml::AnalyserEquation::nlaSiblings)
         .function("nlaSibling", &libcellml::AnalyserEquation::nlaSibling)
         .function("isStateRateBased", &libcellml::AnalyserEquation::isStateRateBased)
-        .function("variableCount", &libcellml::AnalyserEquation::variableCount)
-        .function("variables", &libcellml::AnalyserEquation::variables)
-        .function("variable", &libcellml::AnalyserEquation::variable)
+        .function("computedConstantCount", &libcellml::AnalyserEquation::computedConstantCount)
+        .function("computedConstants", &libcellml::AnalyserEquation::computedConstants)
+        .function("computedConstant", &libcellml::AnalyserEquation::computedConstant)
+        .function("algebraicCount", &libcellml::AnalyserEquation::algebraicCount)
+        .function("algebraicVariables", select_overload<std::vector<libcellml::AnalyserVariablePtr>() const>(&libcellml::AnalyserEquation::algebraic))
+        .function("algebraicVariable", select_overload<libcellml::AnalyserVariablePtr(size_t) const>(&libcellml::AnalyserEquation::algebraic))
     ;
 
     EM_ASM(

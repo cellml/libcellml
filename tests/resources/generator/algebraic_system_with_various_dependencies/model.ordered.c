@@ -8,7 +8,9 @@
 const char VERSION[] = "0.5.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 6;
+const size_t CONSTANT_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 6;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"a", "dimensionless", "my_algebraic_system", COMPUTED_CONSTANT},
@@ -75,7 +77,7 @@ void initialiseVariables(double *variables)
     variables[4] = 1.0;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *computedConstants)
 {
     variables[0] = 3.0*variables[1]+variables[2];
 }

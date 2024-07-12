@@ -8,7 +8,9 @@ __version__ = "0.4.0"
 LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 15
-VARIABLE_COUNT = 185
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 185
 
 
 class VariableType(Enum):
@@ -372,7 +374,7 @@ def initialise_variables(states, rates, variables):
     states[14] = 0.03889291759
 
 
-def compute_computed_constants(variables):
+def compute_computed_constants(computed_constants):
     variables[0] = 1.07*(3.0*variables[1]-0.1)/(3.0*(1.0+0.7745*exp(-(3.0*variables[1]-2.05)/0.295))) if eq_func(variables[2], 0.0) else variables[3]*variables[1]/(1.0+0.7745*exp(-(3.0*variables[1]-2.05)/0.295)) if eq_func(variables[2], 1.0) else 1.07*29.0*variables[1]/(30.0*(1.0+0.7745*exp(-(29.0*variables[1]-24.5)/1.95)))
     variables[4] = variables[5]+variables[0]*(variables[6]-variables[5])
     variables[25] = variables[26]+variables[0]*(variables[27]-variables[26]) if eq_func(variables[2], 0.0) else variables[30]+variables[0]*(variables[31]-variables[30]) if eq_func(variables[2], 1.0) else variables[28]+variables[0]*(variables[29]-variables[28])

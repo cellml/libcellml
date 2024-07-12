@@ -9,6 +9,6 @@ double * createVariablesArray();
 void deleteArray(double *array);
 
 void initialiseVariables(double *states, double *rates, double *variables);
-void computeComputedConstants(double *variables);
+void computeComputedConstants(double *computedConstants);
 void computeRates(double voi, double *states, double *rates, double *variables);
 void computeVariables(double voi, double *states, double *rates, double *variables);

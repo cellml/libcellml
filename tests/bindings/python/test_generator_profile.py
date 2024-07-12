@@ -761,7 +761,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *variables)\n{\n[CODE]}\n',
+        self.assertEqual('void computeComputedConstants(double *computedConstants)\n{\n[CODE]}\n',
                          g.implementationComputeComputedConstantsMethodString())
         g.setImplementationComputeComputedConstantsMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeComputedConstantsMethodString())
@@ -907,14 +907,32 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setImplementationStateInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationStateInfoString())
 
-    def test_implementation_variable_count_string(self):
+    def test_implementation_constant_count_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual('const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n', g.implementationVariableCountString())
-        g.setImplementationVariableCountString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationVariableCountString())
+        self.assertEqual('const size_t CONSTANT_COUNT = [CONSTANT_COUNT];\n', g.implementationConstantCountString())
+        g.setImplementationConstantCountString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationConstantCountString())
+
+    def test_implementation_computed_constant_count_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('const size_t COMPUTED_CONSTANT_COUNT = [COMPUTED_CONSTANT_COUNT];\n', g.implementationComputedConstantCountString())
+        g.setImplementationComputedConstantCountString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputedConstantCountString())
+
+    def test_implementation_algebraic_count_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('const size_t ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT];\n', g.implementationAlgebraicCountString())
+        g.setImplementationAlgebraicCountString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationAlgebraicCountString())
 
     def test_implementation_variable_info_string(self):
         from libcellml import GeneratorProfile
@@ -967,7 +985,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *variables);\n',
+        self.assertEqual('void computeComputedConstants(double *computedConstants);\n',
                          g.interfaceComputeComputedConstantsMethodString())
         g.setInterfaceComputeComputedConstantsMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeComputedConstantsMethodString())
@@ -1115,14 +1133,32 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setInterfaceStateInfoString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceStateInfoString())
 
-    def test_interface_variable_count_string(self):
+    def test_interface_constant_count_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual('extern const size_t VARIABLE_COUNT;\n', g.interfaceVariableCountString())
-        g.setInterfaceVariableCountString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceVariableCountString())
+        self.assertEqual('extern const size_t CONSTANT_COUNT;\n', g.interfaceConstantCountString())
+        g.setInterfaceConstantCountString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceConstantCountString())
+
+    def test_interface_computed_constant_count_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern const size_t COMPUTED_CONSTANT_COUNT;\n', g.interfaceComputedConstantCountString())
+        g.setInterfaceComputedConstantCountString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputedConstantCountString())
+
+    def test_interface_algebraic_count_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern const size_t ALGEBRAIC_COUNT;\n', g.interfaceAlgebraicCountString())
+        g.setInterfaceAlgebraicCountString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceAlgebraicCountString())
 
     def test_interface_variable_info_string(self):
         from libcellml import GeneratorProfile

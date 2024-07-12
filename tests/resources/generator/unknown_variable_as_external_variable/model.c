@@ -8,7 +8,9 @@
 const char VERSION[] = "0.5.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 10;
+const size_t CONSTANT_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 10;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"v", "fmol_per_sec", "SLC_template3_ss", ALGEBRAIC},
@@ -52,7 +54,7 @@ void initialiseVariables(double *variables, ExternalVariable externalVariable)
     variables[9] = externalVariable(variables, 9);
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *computedConstants)
 {
 }
 
