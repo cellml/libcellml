@@ -35,7 +35,8 @@ struct AnalyserEquation::AnalyserEquationImpl
     size_t mNlaSystemIndex;
     std::vector<AnalyserEquationWeakPtr> mNlaSiblings;
     bool mIsStateRateBased = false;
-    std::vector<AnalyserVariablePtr> mVariables;
+    std::vector<AnalyserVariablePtr> mComputedConstants;
+    std::vector<AnalyserVariablePtr> mAlgebraic;
 
     static AnalyserEquationPtr create();
 
@@ -44,7 +45,8 @@ struct AnalyserEquation::AnalyserEquationImpl
                   const std::vector<AnalyserEquationPtr> &dependencies,
                   size_t nlaSystemIndex,
                   const std::vector<AnalyserEquationPtr> &nlaSiblings,
-                  const std::vector<AnalyserVariablePtr> &variables);
+                  const std::vector<AnalyserVariablePtr> &computedConstants,
+                  const std::vector<AnalyserVariablePtr> &algebraic);
 
     static bool isEmptyDependency(const AnalyserEquationWeakPtr &dependency);
 

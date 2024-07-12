@@ -35,7 +35,9 @@ struct AnalyserModel::AnalyserModelImpl
 
     AnalyserVariablePtr mVoi;
     std::vector<AnalyserVariablePtr> mStates;
-    std::vector<AnalyserVariablePtr> mVariables;
+    std::vector<AnalyserVariablePtr> mConstants;
+    std::vector<AnalyserVariablePtr> mComputedConstants;
+    std::vector<AnalyserVariablePtr> mAlgebraic;
     std::vector<AnalyserEquationPtr> mEquations;
 
     bool mNeedEqFunction = false;

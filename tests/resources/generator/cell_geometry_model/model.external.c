@@ -8,7 +8,9 @@
 const char VERSION[] = "0.5.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 4;
+const size_t CONSTANT_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 4;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"vcell", "microlitre", "cell_geometry", ALGEBRAIC},
@@ -39,7 +41,7 @@ void initialiseVariables(double *variables, ExternalVariable externalVariable)
     variables[2] = externalVariable(variables, 2);
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *computedConstants)
 {
 }
 

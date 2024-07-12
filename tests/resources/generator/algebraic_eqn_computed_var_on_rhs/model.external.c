@@ -8,7 +8,9 @@
 const char VERSION[] = "0.5.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 2;
+const size_t CONSTANT_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 2;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"x", "dimensionless", "my_algebraic_eqn", ALGEBRAIC},
@@ -36,7 +38,7 @@ void initialiseVariables(double *variables, ExternalVariable externalVariable)
     variables[1] = externalVariable(variables, 1);
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *computedConstants)
 {
 }
 

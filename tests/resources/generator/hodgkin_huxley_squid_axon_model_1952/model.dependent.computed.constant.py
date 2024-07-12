@@ -8,7 +8,9 @@ __version__ = "0.4.0"
 LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 4
-VARIABLE_COUNT = 18
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 18
 
 
 class VariableType(Enum):
@@ -84,7 +86,7 @@ def initialise_variables(voi, states, rates, variables, external_variable):
     variables[5] = external_variable(voi, states, rates, variables, 5)
 
 
-def compute_computed_constants(variables):
+def compute_computed_constants(computed_constants):
     pass
 
 

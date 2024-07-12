@@ -684,17 +684,41 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationStateCountString("something")
     expect(x.implementationStateCountString()).toBe("something")
   });
-  test("Checking GeneratorProfile.interfaceVariableCountString.", () => {
+  test("Checking GeneratorProfile.interfaceConstantCountString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setInterfaceVariableCountString("something")
-    expect(x.interfaceVariableCountString()).toBe("something")
+    x.setInterfaceConstantCountString("something")
+    expect(x.interfaceConstantCountString()).toBe("something")
   });
-  test("Checking GeneratorProfile.implementationVariableCountString.", () => {
+  test("Checking GeneratorProfile.implementationConstantCountString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setImplementationVariableCountString("something")
-    expect(x.implementationVariableCountString()).toBe("something")
+    x.setImplementationConstantCountString("something")
+    expect(x.implementationConstantCountString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.interfaceComputedConstantCountString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setInterfaceComputedConstantCountString("something")
+    expect(x.interfaceComputedConstantCountString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.implementationComputedConstantCountString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setImplementationComputedConstantCountString("something")
+    expect(x.implementationComputedConstantCountString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.interfaceAlgebraicCountString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setInterfaceAlgebraicCountString("something")
+    expect(x.interfaceAlgebraicCountString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.implementationAlgebraicCountString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setImplementationAlgebraicCountString("something")
+    expect(x.implementationAlgebraicCountString()).toBe("something")
   });
   test("Checking GeneratorProfile.variableTypeObjectString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

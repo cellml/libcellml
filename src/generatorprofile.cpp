@@ -184,8 +184,14 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceStateCountString;
     std::string mImplementationStateCountString;
 
-    std::string mInterfaceVariableCountString;
-    std::string mImplementationVariableCountString;
+    std::string mInterfaceConstantCountString;
+    std::string mImplementationConstantCountString;
+
+    std::string mInterfaceComputedConstantCountString;
+    std::string mImplementationComputedConstantCountString;
+
+    std::string mInterfaceAlgebraicCountString;
+    std::string mImplementationAlgebraicCountString;
 
     std::string mVariableTypeObjectFamWoevString;
     std::string mVariableTypeObjectFamWevString;
@@ -505,8 +511,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceStateCountString = "extern const size_t STATE_COUNT;\n";
         mImplementationStateCountString = "const size_t STATE_COUNT = [STATE_COUNT];\n";
 
-        mInterfaceVariableCountString = "extern const size_t VARIABLE_COUNT;\n";
-        mImplementationVariableCountString = "const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n";
+        mInterfaceConstantCountString = "extern const size_t CONSTANT_COUNT;\n";
+        mImplementationConstantCountString = "const size_t CONSTANT_COUNT = [CONSTANT_COUNT];\n";
+
+        mInterfaceComputedConstantCountString = "extern const size_t COMPUTED_CONSTANT_COUNT;\n";
+        mImplementationComputedConstantCountString = "const size_t COMPUTED_CONSTANT_COUNT = [COMPUTED_CONSTANT_COUNT];\n";
+
+        mInterfaceAlgebraicCountString = "extern const size_t ALGEBRAIC_COUNT;\n";
+        mImplementationAlgebraicCountString = "const size_t ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT];\n";
 
         mVariableTypeObjectFamWoevString = "typedef enum {\n"
                                            "    CONSTANT,\n"
@@ -677,8 +689,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                                "[CODE]"
                                                                "}\n";
 
-        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables);\n";
-        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n"
+        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *computedConstants);\n";
+        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *computedConstants)\n"
                                                               "{\n"
                                                               "[CODE]"
                                                               "}\n";
@@ -934,8 +946,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceStateCountString = "";
         mImplementationStateCountString = "STATE_COUNT = [STATE_COUNT]\n";
 
-        mInterfaceVariableCountString = "";
-        mImplementationVariableCountString = "VARIABLE_COUNT = [VARIABLE_COUNT]\n";
+        mInterfaceConstantCountString = "";
+        mImplementationConstantCountString = "CONSTANT_COUNT = [CONSTANT_COUNT]\n";
+
+        mInterfaceComputedConstantCountString = "";
+        mImplementationComputedConstantCountString = "COMPUTED_CONSTANT_COUNT = [COMPUTED_CONSTANT_COUNT]\n";
+
+        mInterfaceAlgebraicCountString = "";
+        mImplementationAlgebraicCountString = "ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT]\n";
 
         mVariableTypeObjectFamWoevString = "\n"
                                            "class VariableType(Enum):\n"
@@ -1074,7 +1092,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeComputedConstantsMethodString = "";
         mImplementationComputeComputedConstantsMethodString = "\n"
-                                                              "def compute_computed_constants(variables):\n"
+                                                              "def compute_computed_constants(computed_constants):\n"
                                                               "[CODE]";
 
         mInterfaceComputeRatesMethodWoevString = "";
@@ -2250,24 +2268,64 @@ void GeneratorProfile::setImplementationStateCountString(const std::string &impl
     mPimpl->mImplementationStateCountString = implementationStateCountString;
 }
 
-std::string GeneratorProfile::interfaceVariableCountString() const
+std::string GeneratorProfile::interfaceConstantCountString() const
 {
-    return mPimpl->mInterfaceVariableCountString;
+    return mPimpl->mInterfaceConstantCountString;
 }
 
-void GeneratorProfile::setInterfaceVariableCountString(const std::string &interfaceVariableCountString)
+void GeneratorProfile::setInterfaceConstantCountString(const std::string &interfaceConstantCountString)
 {
-    mPimpl->mInterfaceVariableCountString = interfaceVariableCountString;
+    mPimpl->mInterfaceConstantCountString = interfaceConstantCountString;
 }
 
-std::string GeneratorProfile::implementationVariableCountString() const
+std::string GeneratorProfile::implementationConstantCountString() const
 {
-    return mPimpl->mImplementationVariableCountString;
+    return mPimpl->mImplementationConstantCountString;
 }
 
-void GeneratorProfile::setImplementationVariableCountString(const std::string &implementationVariableCountString)
+void GeneratorProfile::setImplementationConstantCountString(const std::string &implementationConstantCountString)
 {
-    mPimpl->mImplementationVariableCountString = implementationVariableCountString;
+    mPimpl->mImplementationConstantCountString = implementationConstantCountString;
+}
+
+std::string GeneratorProfile::interfaceComputedConstantCountString() const
+{
+    return mPimpl->mInterfaceComputedConstantCountString;
+}
+
+void GeneratorProfile::setInterfaceComputedConstantCountString(const std::string &interfaceComputedConstantCountString)
+{
+    mPimpl->mInterfaceComputedConstantCountString = interfaceComputedConstantCountString;
+}
+
+std::string GeneratorProfile::implementationComputedConstantCountString() const
+{
+    return mPimpl->mImplementationComputedConstantCountString;
+}
+
+void GeneratorProfile::setImplementationComputedConstantCountString(const std::string &implementationComputedConstantCountString)
+{
+    mPimpl->mImplementationComputedConstantCountString = implementationComputedConstantCountString;
+}
+
+std::string GeneratorProfile::interfaceAlgebraicCountString() const
+{
+    return mPimpl->mInterfaceAlgebraicCountString;
+}
+
+void GeneratorProfile::setInterfaceAlgebraicCountString(const std::string &interfaceAlgebraicCountString)
+{
+    mPimpl->mInterfaceAlgebraicCountString = interfaceAlgebraicCountString;
+}
+
+std::string GeneratorProfile::implementationAlgebraicCountString() const
+{
+    return mPimpl->mImplementationAlgebraicCountString;
+}
+
+void GeneratorProfile::setImplementationAlgebraicCountString(const std::string &implementationAlgebraicCountString)
+{
+    mPimpl->mImplementationAlgebraicCountString = implementationAlgebraicCountString;
 }
 
 std::string GeneratorProfile::variableTypeObjectString(bool forDifferentialModel,

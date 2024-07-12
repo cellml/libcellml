@@ -166,33 +166,62 @@ public:
     bool isStateRateBased() const;
 
     /**
-     * @brief Get the number of variables computed by this @ref AnalyserEquation.
+     * @brief Get the number of computed constants computed by this @ref AnalyserEquation.
      *
-     * Return the number of variables computed by this @ref AnalyserEquation.
+     * Return the number of computed constants computed by this @ref AnalyserEquation.
      *
-     * @return The number of variables.
+     * @return The number of computed constants.
      */
-    size_t variableCount() const;
+    size_t computedConstantCount() const;
 
     /**
-     * @brief Get the variables computed by this @ref AnalyserEquation.
+     * @brief Get the computed constants computed by this @ref AnalyserEquation.
      *
-     * Return the variables computed by this @ref AnalyserEquation.
+     * Return the computed constants computed by this @ref AnalyserEquation.
      *
-     * @return The variables as a @c std::vector.
+     * @return The computed constants as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> variables() const;
+    std::vector<AnalyserVariablePtr> computedConstants() const;
 
     /**
-     * @brief Get the variable, at @p index, computed by this @ref AnalyserEquation.
+     * @brief Get the computed constant, at @p index, computed by this @ref AnalyserEquation.
      *
-     * Return the variable, at @p index, computed by this @ref AnalyserEquation.
+     * Return the computed constant, at @p index, computed by this @ref AnalyserEquation.
      *
-     * @param index The index of the variable to return.
+     * @param index The index of the computed constant to return.
      *
-     * @return The variable, at @p index, on success, @c nullptr on failure.
+     * @return The computed constant, at @p index, on success, @c nullptr on failure.
      */
-    AnalyserVariablePtr variable(size_t index) const;
+    AnalyserVariablePtr computedConstant(size_t index) const;
+
+    /**
+     * @brief Get the number of algebraic variables computed by this @ref AnalyserEquation.
+     *
+     * Return the number of algebraic variables computed by this @ref AnalyserEquation.
+     *
+     * @return The number of algebraic variables.
+     */
+    size_t algebraicCount() const;
+
+    /**
+     * @brief Get the algebraic variables computed by this @ref AnalyserEquation.
+     *
+     * Return the algebraic variables computed by this @ref AnalyserEquation.
+     *
+     * @return The algebraic variables as a @c std::vector.
+     */
+    std::vector<AnalyserVariablePtr> algebraic() const;
+
+    /**
+     * @brief Get the algebraic variable, at @p index, computed by this @ref AnalyserEquation.
+     *
+     * Return the algebraic variable, at @p index, computed by this @ref AnalyserEquation.
+     *
+     * @param index The index of the algebraic variable to return.
+     *
+     * @return The algebraic variable, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserVariablePtr algebraic(size_t index) const;
 
 private:
     AnalyserEquation(); /**< Constructor, @private. */

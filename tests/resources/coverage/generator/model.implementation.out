@@ -172,7 +172,7 @@ void initialiseVariables(double *states, double *rates, double *variables)
     states[0] = 0.0;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *computedConstants)
 {
     variables[0] = eq(variables[1], variables[2]);
     variables[3] = variables[1]/eq(variables[2], variables[2]);

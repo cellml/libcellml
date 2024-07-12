@@ -142,34 +142,94 @@ public:
     AnalyserVariablePtr state(size_t index) const;
 
     /**
-     * @brief Get the number of variables.
+     * @brief Get the number of constants.
      *
-     * Return the number of variables in the @ref AnalyserModel.
+     * Return the number of constants in the @ref AnalyserModel.
      *
-     * @return The number of variables.
+     * @return The number of constants.
      */
-    size_t variableCount() const;
+    size_t constantCount() const;
 
     /**
-     * @brief Get the variables.
+     * @brief Get the constants.
      *
-     * Return the variables in the @ref AnalyserModel.
+     * Return the constants in the @ref AnalyserModel.
      *
-     * @return The variables as a @c std::vector.
+     * @return The constants as a @c std::vector.
      */
-    std::vector<AnalyserVariablePtr> variables() const;
+    std::vector<AnalyserVariablePtr> constants() const;
 
     /**
-     * @brief Get the variable at @p index.
+     * @brief Get the constant at @p index.
      *
-     * Return the variable at the index @p index for the @ref AnalyserModel.
+     * Return the constant at the index @p index for the @ref AnalyserModel.
      *
-     * @param index The index of the variable to return.
+     * @param index The index of the constant to return.
      *
-     * @return The variable at the given @p index on success, @c nullptr on
+     * @return The constant at the given @p index on success, @c nullptr on
      * failure.
      */
-    AnalyserVariablePtr variable(size_t index) const;
+    AnalyserVariablePtr constant(size_t index) const;
+
+    /**
+     * @brief Get the number of computed constants.
+     *
+     * Return the number of computed constants in the @ref AnalyserModel.
+     *
+     * @return The number of computed constants.
+     */
+    size_t computedConstantCount() const;
+
+    /**
+     * @brief Get the computed constants.
+     *
+     * Return the computed constants in the @ref AnalyserModel.
+     *
+     * @return The computed constants as a @c std::vector.
+     */
+    std::vector<AnalyserVariablePtr> computedConstants() const;
+
+    /**
+     * @brief Get the computed constant at @p index.
+     *
+     * Return the computed constant at the index @p index for the @ref AnalyserModel.
+     *
+     * @param index The index of the computed constant to return.
+     *
+     * @return The computed constant at the given @p index on success, @c nullptr on
+     * failure.
+     */
+    AnalyserVariablePtr computedConstant(size_t index) const;
+
+    /**
+     * @brief Get the number of algebraic variables.
+     *
+     * Return the number of algebraic variables in the @ref AnalyserModel.
+     *
+     * @return The number of algebraic variables.
+     */
+    size_t algebraicCount() const;
+
+    /**
+     * @brief Get the algebraic variables.
+     *
+     * Return the algebraic variables in the @ref AnalyserModel.
+     *
+     * @return The algebraic variables as a @c std::vector.
+     */
+    std::vector<AnalyserVariablePtr> algebraic() const;
+
+    /**
+     * @brief Get the algebraic variable at @p index.
+     *
+     * Return the algebraic variable at the index @p index for the @ref AnalyserModel.
+     *
+     * @param index The index of the algebraic variable to return.
+     *
+     * @return The algebraic variable at the given @p index on success, @c nullptr on
+     * failure.
+     */
+    AnalyserVariablePtr algebraic(size_t index) const;
 
     /**
      * @brief Get the number of equations.

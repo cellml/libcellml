@@ -9,7 +9,9 @@ const char VERSION[] = "0.5.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 2;
-const size_t VARIABLE_COUNT = 10;
+const size_t CONSTANT_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 10;
 
 const VariableInfo VOI_INFO = {"t", "second", "main", VARIABLE_OF_INTEGRATION};
 
@@ -129,7 +131,7 @@ void initialiseVariables(double *states, double *rates, double *variables)
     states[1] = 0.0;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *computedConstants)
 {
 }
 

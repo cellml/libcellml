@@ -7,7 +7,9 @@ from math import *
 __version__ = "0.4.0"
 LIBCELLML_VERSION = "0.5.0"
 
-VARIABLE_COUNT = 6
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 6
 
 
 class VariableType(Enum):
@@ -62,7 +64,7 @@ def initialise_variables(variables):
     variables[4] = 1.0
 
 
-def compute_computed_constants(variables):
+def compute_computed_constants(computed_constants):
     variables[0] = 3.0*variables[1]+variables[2]
 
 

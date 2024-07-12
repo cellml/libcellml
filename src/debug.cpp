@@ -85,14 +85,24 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
 
         Debug() << "\nType: " << AnalyserEquation::typeAsString(eqn->type());
 
-        if (eqn->variableCount() != 0) {
-            Debug() << "\nVariables:";
+        if (eqn->computedConstantCount() != 0) {
+            Debug() << "\nComputed constants:";
 
-            for (const auto &var : eqn->variables()) {
+            for (const auto &var : eqn->computedConstants()) {
                 Debug() << " - " << var->variable()->name();
             }
         } else {
-            Debug() << "\nNo variables";
+            Debug() << "\nNo computed constants";
+        }
+
+        if (eqn->algebraicCount() != 0) {
+            Debug() << "\nAlgebraic variables:";
+
+            for (const auto &var : eqn->algebraic()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo algebraic variables";
         }
 
         if (eqn->dependencyCount() != 0) {
@@ -102,7 +112,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
                 if (dep->ast() != nullptr) {
                     Debug() << " - " << astAsCode(dep->ast());
                 } else if (dep->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << dep->variable(0)->variable()->name() << "'";
+                    Debug() << " - External equation for '" << dep->algebraic(0)->variable()->name() << "'";
                 } else {
                     Debug() << " - ??? [" << AnalyserEquation::typeAsString(dep->type()) << "]";
                 }
@@ -119,7 +129,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
                     if (nlaSibling->ast() != nullptr) {
                         Debug() << " - " << astAsCode(nlaSibling->ast());
                     } else if (nlaSibling->type() == AnalyserEquation::Type::EXTERNAL) {
-                        Debug() << " - External equation for '" << nlaSibling->variable(0)->variable()->name() << "'";
+                        Debug() << " - External equation for '" << nlaSibling->algebraic(0)->variable()->name() << "'";
                     } else {
                         Debug() << " - ??? [" << AnalyserEquation::typeAsString(nlaSibling->type()) << "]";
                     }
@@ -133,12 +143,12 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
     Debug() << "\n---------------------------------------[END]\n";
 }
 
-void printAnalyserModelVariables(const AnalyserModelPtr &model)
+void printAnalyserModelVariables(const std::vector<AnalyserVariablePtr> &variables)
 {
     size_t varNb = 0;
 
-    for (const auto &var : model->variables()) {
-        Debug() << "\n---------------------------------------[API variable " << ++varNb << "]";
+    for (const auto &var : variables) {
+        Debug() << "\n---------------------------------------[API variable #" << ++varNb << "]";
         Debug() << "\nName: " << var->variable()->name();
         Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());
 
@@ -149,7 +159,7 @@ void printAnalyserModelVariables(const AnalyserModelPtr &model)
                 if (eqn->ast() != nullptr) {
                     Debug() << " - " << astAsCode(eqn->ast());
                 } else if (eqn->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << eqn->variable(0)->variable()->name() << "'";
+                    Debug() << " - External equation for '" << eqn->algebraic(0)->variable()->name() << "'";
                 } else {
                     Debug() << " - ??? [" << AnalyserEquation::typeAsString(eqn->type()) << "]";
                 }
@@ -158,6 +168,13 @@ void printAnalyserModelVariables(const AnalyserModelPtr &model)
             Debug() << "\nNo equations";
         }
     }
+}
+
+void printAnalyserModelVariables(const AnalyserModelPtr &model)
+{
+    printAnalyserModelVariables(model->constants());
+    printAnalyserModelVariables(model->computedConstants());
+    printAnalyserModelVariables(model->algebraic());
 }
 
 void printHistory(const History &history)

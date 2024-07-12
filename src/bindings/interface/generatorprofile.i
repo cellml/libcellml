@@ -677,18 +677,44 @@ used respectively.";
 "Sets the string for the implementation of the state count constant. To be useful, the string should contain the
 <STATE_COUNT> tag, which will be replaced with the number of states in the model.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceVariableCountString
-"Returns the string for the interface of the variable count constant.";
+%feature("docstring") libcellml::GeneratorProfile::interfaceConstantCountString
+"Returns the string for the interface of the constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceVariableCountString
-"Sets the string for the interface of the variable count constant.";
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceConstantCountString
+"Sets the string for the interface of the constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationVariableCountString
-"Returns the string for the implementation of the variable count constant.";
+%feature("docstring") libcellml::GeneratorProfile::implementationConstantCountString
+"Returns the string for the implementation of the constant count constant.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationVariableCountString
-"Sets the string for the implementation of the variable count constant. To be useful, the string should contain
-the <VARIABLE_COUNT> tag, which will be replaced with the number of states in the model.";
+%feature("docstring") libcellml::GeneratorProfile::setImplementationConstantCountString
+"Sets the string for the implementation of the constant count constant. To be useful, the string should contain
+the <CONSTANT_COUNT> tag, which will be replaced with the number of states in the model.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceComputedConstantCountString
+"Returns the string for the interface of the computed constant count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceComputedConstantCountString
+"Sets the string for the interface of the computed constant count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationComputedConstantCountString
+"Returns the string for the implementation of the computed constant count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationComputedConstantCountString
+"Sets the string for the implementation of the computed constant count constant. To be useful, the string should contain
+the <COMPUTED_CONSTANT_COUNT> tag, which will be replaced with the number of states in the model.";
+
+%feature("docstring") libcellml::GeneratorProfile::interfaceAlgebraicCountString
+"Returns the string for the interface of the algebraic count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceAlgebraicCountString
+"Sets the string for the interface of the algebraic count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationAlgebraicCountString
+"Returns the string for the implementation of the algebraic count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationAlgebraicCountString
+"Sets the string for the implementation of the algebraic count constant. To be useful, the string should contain
+the <ALGEBRAIC_COUNT> tag, which will be replaced with the number of states in the model.";
 
 %feature("docstring") libcellml::GeneratorProfile::variableTypeObjectString
 "Returns the string for the data structure for the variable type object.";

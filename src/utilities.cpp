@@ -26,6 +26,8 @@ limitations under the License.
 #include <sstream>
 #include <vector>
 
+#include "libcellml/analyserequation.h"
+#include "libcellml/analysermodel.h"
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
@@ -1310,6 +1312,36 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
         if ((res != nullptr) && res->isMathmlElement()) {
             ++childNodeIndex;
         }
+    }
+
+    return res;
+}
+
+std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
+{
+    auto res = model->constants();
+    auto computedConstants = model->computedConstants();
+
+    if (!computedConstants.empty()) {
+        res.insert(res.end(), computedConstants.begin(), computedConstants.end());
+    }
+
+    auto algebraic = model->algebraic();
+
+    if (!algebraic.empty()) {
+        res.insert(res.end(), algebraic.begin(), algebraic.end());
+    }
+
+    return res;
+}
+
+std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation)
+{
+    auto res = equation->computedConstants();
+    auto algebraic = equation->algebraic();
+
+    if (!algebraic.empty()) {
+        res.insert(res.end(), algebraic.begin(), algebraic.end());
     }
 
     return res;
