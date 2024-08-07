@@ -463,7 +463,7 @@ def compute_computed_constants(constants, computed_constants):
     variables[213] = (3.5988-0.025641)/(1.0+0.0000012155/pow(1.0*variables[0], 1.6951))+0.025641
 
 
-def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
     variables[5] = states[1]
     variables[142] = variables[3]*log((variables[4]+0.12*variables[7])/(variables[5]+0.12*variables[8]))
     variables[121] = variables[123] if and_func(gt_func(voi, variables[124]), lt_func(voi, variables[124]+variables[125])) else variables[126]
@@ -595,7 +595,7 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[32] = (variables[215]-states[32])/variables[216]
 
 
-def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
     variables[5] = states[1]
     variables[2] = variables[3]*log(variables[4]/variables[5])
     variables[9] = 0.5*variables[3]*log(variables[10]/states[0])

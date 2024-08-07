@@ -36,5 +36,5 @@ def compute_computed_constants(constants, computed_constants):
     variables[1] = variables[0]
 
 
-def compute_variables(constants, computedConstants, algebraic):
+def compute_variables(constants, computed_constants, algebraic):
     pass

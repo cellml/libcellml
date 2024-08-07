@@ -465,7 +465,7 @@ def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
     find_root_0(voi, states, rates, variables)
     find_root_2(voi, states, rates, variables)
     find_root_3(voi, states, rates, variables)
@@ -485,7 +485,7 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     find_root_1(voi, states, rates, variables)
 
 
-def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
     find_root_0(voi, states, rates, variables)
     find_root_2(voi, states, rates, variables)
     find_root_3(voi, states, rates, variables)

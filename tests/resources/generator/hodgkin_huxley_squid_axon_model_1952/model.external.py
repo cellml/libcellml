@@ -93,7 +93,7 @@ def compute_computed_constants(constants, computed_constants):
     variables[15] = variables[6]+12.0
 
 
-def compute_rates(voi, states, rates, constants, computedConstants, algebraic, external_variable):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic, external_variable):
     variables[1] = external_variable(voi, states, rates, variables, 1)
     variables[11] = 0.1*(variables[1]+25.0)/(exp((variables[1]+25.0)/10.0)-1.0)
     variables[12] = 4.0*exp(variables[1]/18.0)
@@ -106,7 +106,7 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic, e
     rates[2] = variables[17]*(1.0-states[2])-variables[18]*states[2]
 
 
-def compute_variables(voi, states, rates, constants, computedConstants, algebraic, external_variable):
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic, external_variable):
     variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     variables[1] = external_variable(voi, states, rates, variables, 1)
     variables[2] = variables[8]*(variables[1]-variables[7])

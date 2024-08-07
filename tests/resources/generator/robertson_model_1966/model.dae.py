@@ -82,12 +82,12 @@ def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
     find_root_0(voi, states, rates, variables)
     rates[0] = -variables[0]*states[0]+variables[1]*states[1]*variables[2]
     rates[1] = variables[0]*states[0]-variables[3]*pow(states[1], 2.0)-variables[1]*states[1]*variables[2]
 
 
-def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
     find_root_0(voi, states, rates, variables)
     variables[4] = 10000.0*states[1]

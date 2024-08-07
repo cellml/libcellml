@@ -40,7 +40,7 @@ def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_variables(constants, computedConstants, algebraic, external_variable):
+def compute_variables(constants, computed_constants, algebraic, external_variable):
     variables[1] = external_variable(variables, 1)
     variables[2] = external_variable(variables, 2)
     variables[0] = 1000.0*3.14*variables[2]*variables[2]*variables[1]
