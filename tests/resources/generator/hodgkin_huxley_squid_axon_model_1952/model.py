@@ -90,7 +90,7 @@ def compute_computed_constants(computed_constants):
     variables[14] = variables[5]+12.0
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     variables[1] = variables[7]*(states[0]-variables[6])
     variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14])

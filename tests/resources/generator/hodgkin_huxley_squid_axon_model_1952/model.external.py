@@ -93,7 +93,7 @@ def compute_computed_constants(computed_constants):
     variables[15] = variables[6]+12.0
 
 
-def compute_rates(voi, states, rates, variables, external_variable):
+def compute_rates(voi, states, rates, constants, computedConstants, algebraic, external_variable):
     variables[1] = external_variable(voi, states, rates, variables, 1)
     variables[11] = 0.1*(variables[1]+25.0)/(exp((variables[1]+25.0)/10.0)-1.0)
     variables[12] = 4.0*exp(variables[1]/18.0)

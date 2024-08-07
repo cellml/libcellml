@@ -400,7 +400,7 @@ def compute_computed_constants(computed_constants):
     variables[176] = variables[177]+variables[0]*(variables[178]-variables[177]) if eq_func(variables[2], 0.0) else variables[181]+variables[0]*(variables[182]-variables[181]) if eq_func(variables[2], 1.0) else variables[179]+variables[0]*(variables[180]-variables[179])
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     variables[9] = variables[62]*pow(variables[56]/(variables[71]+variables[56]), 3.0)*pow(variables[69]/(variables[70]+variables[69]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0))
     variables[10] = variables[49]*(pow(variables[56], 3.0)*variables[58]*exp(0.03743*states[0]*variables[57])-pow(variables[59], 3.0)*variables[60]*exp(0.0374*states[0]*(variables[57]-1.0)))/(1.0+variables[61]*(variables[60]*pow(variables[59], 3.0)+variables[58]*pow(variables[56], 3.0))) if eq_func(variables[2], 0.0) else variables[49]*(pow(variables[56], 3.0)*variables[58]*exp(0.03743*states[0]*variables[57])-pow(variables[59], 3.0)*variables[60]*exp(0.03743*states[0]*(variables[57]-1.0)))/(1.0+variables[61]*(variables[60]*pow(variables[59], 3.0)+variables[58]*pow(variables[56], 3.0)))
     variables[14] = variables[176]*states[14]*(states[0]-variables[40]) if neq_func(variables[2], 2.0) else variables[176]*states[14]*(states[0]+102.0)

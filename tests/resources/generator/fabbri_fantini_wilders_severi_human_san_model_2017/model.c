@@ -455,7 +455,7 @@ void computeComputedConstants(double *computedConstants)
     variables[213] = (3.5988-0.025641)/(1.0+0.0000012155/pow(1.0*variables[0], 1.6951))+0.025641;
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     variables[5] = states[1];
     variables[142] = variables[3]*log((variables[4]+0.12*variables[7])/(variables[5]+0.12*variables[8]));

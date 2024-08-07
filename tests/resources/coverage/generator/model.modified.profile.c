@@ -595,7 +595,7 @@ void computeComputedConstants(double *computedConstants)
     variables[204] = -(variables[1] && variables[2])+-((variables[6] > variables[18])?variables[2]:NAN);
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     rates[0] = 1.0;
 }

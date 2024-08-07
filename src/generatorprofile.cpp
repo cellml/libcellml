@@ -695,13 +695,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                               "[CODE]"
                                                               "}\n";
 
-        mInterfaceComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+        mInterfaceComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n"
                                                       "[CODE]"
                                                       "}\n";
 
-        mInterfaceComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n";
-        mImplementationComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n"
+        mInterfaceComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
+        mImplementationComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n{\n"
                                                      "[CODE]"
                                                      "}\n";
 
@@ -1097,12 +1097,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeRatesMethodWoevString = "";
         mImplementationComputeRatesMethodWoevString = "\n"
-                                                      "def compute_rates(voi, states, rates, variables):\n"
+                                                      "def compute_rates(voi, states, rates, constants, computedConstants, algebraic):\n"
                                                       "[CODE]";
 
         mInterfaceComputeRatesMethodWevString = "";
         mImplementationComputeRatesMethodWevString = "\n"
-                                                     "def compute_rates(voi, states, rates, variables, external_variable):\n"
+                                                     "def compute_rates(voi, states, rates, constants, computedConstants, algebraic, external_variable):\n"
                                                      "[CODE]";
 
         mInterfaceComputeVariablesMethodFamWoevString = "";

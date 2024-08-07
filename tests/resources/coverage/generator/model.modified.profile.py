@@ -594,7 +594,7 @@ def compute_computed_constants(computed_constants):
     variables[204] = -and_func(variables[1], variables[2])+-(variables[2] if gt_func(variables[6], variables[18]) else nan)
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[0] = 1.0
 
 

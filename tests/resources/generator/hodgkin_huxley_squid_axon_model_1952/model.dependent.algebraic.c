@@ -92,7 +92,7 @@ void computeComputedConstants(double *computedConstants)
     variables[14] = variables[5]+12.0;
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
     variables[17] = externalVariable(voi, states, rates, variables, 17);
     variables[0] = externalVariable(voi, states, rates, variables, 0);
