@@ -1097,32 +1097,32 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeRatesMethodWoevString = "";
         mImplementationComputeRatesMethodWoevString = "\n"
-                                                      "def compute_rates(voi, states, rates, constants, computedConstants, algebraic):\n"
+                                                      "def compute_rates(voi, states, rates, constants, computed_constants, algebraic):\n"
                                                       "[CODE]";
 
         mInterfaceComputeRatesMethodWevString = "";
         mImplementationComputeRatesMethodWevString = "\n"
-                                                     "def compute_rates(voi, states, rates, constants, computedConstants, algebraic, external_variable):\n"
+                                                     "def compute_rates(voi, states, rates, constants, computed_constants, algebraic, external_variable):\n"
                                                      "[CODE]";
 
         mInterfaceComputeVariablesMethodFamWoevString = "";
         mImplementationComputeVariablesMethodFamWoevString = "\n"
-                                                             "def compute_variables(constants, computedConstants, algebraic):\n"
+                                                             "def compute_variables(constants, computed_constants, algebraic):\n"
                                                              "[CODE]";
 
         mInterfaceComputeVariablesMethodFamWevString = "";
         mImplementationComputeVariablesMethodFamWevString = "\n"
-                                                            "def compute_variables(constants, computedConstants, algebraic, external_variable):\n"
+                                                            "def compute_variables(constants, computed_constants, algebraic, external_variable):\n"
                                                             "[CODE]";
 
         mInterfaceComputeVariablesMethodFdmWoevString = "";
         mImplementationComputeVariablesMethodFdmWoevString = "\n"
-                                                             "def compute_variables(voi, states, rates, constants, computedConstants, algebraic):\n"
+                                                             "def compute_variables(voi, states, rates, constants, computed_constants, algebraic):\n"
                                                              "[CODE]";
 
         mInterfaceComputeVariablesMethodFdmWevString = "";
         mImplementationComputeVariablesMethodFdmWevString = "\n"
-                                                            "def compute_variables(voi, states, rates, constants, computedConstants, algebraic, external_variable):\n"
+                                                            "def compute_variables(voi, states, rates, constants, computed_constants, algebraic, external_variable):\n"
                                                             "[CODE]";
 
         mEmptyMethodString = "pass\n";

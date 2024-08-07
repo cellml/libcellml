@@ -53,6 +53,6 @@ def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_variables(constants, computedConstants, algebraic, external_variable):
+def compute_variables(constants, computed_constants, algebraic, external_variable):
     variables[9] = external_variable(variables, 9)
     variables[0] = variables[1]*(variables[2]*variables[3]-variables[4]*variables[5])/(variables[6]*variables[5]+variables[9]*variables[3]+variables[8]*variables[5]*variables[3]+variables[7])

@@ -68,6 +68,6 @@ def compute_computed_constants(constants, computed_constants):
     variables[0] = 3.0*variables[1]+variables[2]
 
 
-def compute_variables(constants, computedConstants, algebraic):
+def compute_variables(constants, computed_constants, algebraic):
     find_root_0(variables)
     variables[5] = variables[4]+variables[3]
