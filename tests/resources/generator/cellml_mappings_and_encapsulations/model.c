@@ -68,7 +68,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     rates[0] = states[1]*1.0;
 }
 
-void computeVariables(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     variables[0] = states[0]+5.0*states[0]/3.0+1.0*exp(states[0]/2.0);
     variables[1] = 2.0*states[1];

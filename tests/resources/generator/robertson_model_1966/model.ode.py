@@ -64,5 +64,5 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[1] = variables[2]*pow(states[2], 2.0)
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
     variables[3] = 10000.0*states[2]

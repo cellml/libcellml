@@ -52,5 +52,5 @@ def compute_computed_constants(computed_constants):
     variables[0] = variables[1]*(variables[2]*variables[3]-variables[4]*variables[5])/(variables[6]*variables[5]+variables[9]*variables[3]+variables[8]*variables[5]*variables[3]+variables[7])
 
 
-def compute_variables(variables):
+def compute_variables(constants, computedConstants, algebraic):
     pass

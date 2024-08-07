@@ -543,7 +543,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     findRoot1(voi, states, rates, variables);
 }
 
-void computeVariables(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     findRoot0(voi, states, rates, variables);
     findRoot2(voi, states, rates, variables);

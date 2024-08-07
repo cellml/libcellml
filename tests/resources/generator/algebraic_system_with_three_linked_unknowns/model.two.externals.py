@@ -97,7 +97,7 @@ def compute_computed_constants(computed_constants):
     pass
 
 
-def compute_variables(variables, external_variable):
+def compute_variables(constants, computedConstants, algebraic, external_variable):
     variables[0] = external_variable(variables, 0)
     variables[2] = external_variable(variables, 2)
     find_root_0(variables)

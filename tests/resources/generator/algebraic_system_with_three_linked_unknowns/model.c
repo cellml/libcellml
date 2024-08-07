@@ -81,7 +81,7 @@ void computeComputedConstants(double *computedConstants)
 {
 }
 
-void computeVariables(double *variables)
+void computeVariables(double *constants, double *computedConstants, double *algebraic)
 {
     findRoot0(variables);
 }

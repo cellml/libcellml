@@ -31,4 +31,4 @@ void deleteArray(double *array);
 
 void initialiseVariables(double *constants);
 void computeComputedConstants(double *computedConstants);
-void computeVariables(double *variables);
+void computeVariables(double *constants, double *computedConstants, double *algebraic);

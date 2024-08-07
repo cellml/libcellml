@@ -41,4 +41,4 @@ typedef double (* ExternalVariable)(double voi, double *states, double *rates, d
 void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable);
 void computeComputedConstants(double *computedConstants);
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);
-void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);

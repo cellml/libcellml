@@ -72,7 +72,7 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[0] = cos(voi)
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
     variables[0] = sin(voi)
     variables[9] = voi*variables[4]-0.5 if lt_func(voi, variables[6]) else (3.14159265358979-voi)*variables[4]-0.5 if lt_func(voi, variables[7]) else (voi-3.14159265358979)*variables[4]-0.5 if lt_func(voi, variables[8]) else (variables[5]-voi)*variables[4]-0.5
     variables[2] = -variables[9]*variables[9]+variables[3]+variables[9] if lt_func(voi, variables[6]) else -variables[9]*variables[9]+variables[3]+variables[9] if lt_func(voi, variables[7]) else variables[9]*variables[9]-variables[3]-variables[9] if lt_func(voi, variables[8]) else variables[9]*variables[9]-variables[3]-variables[9]

@@ -515,33 +515,33 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationComputeRatesMethodString(true));
 
-    EXPECT_EQ("void computeVariables(double *variables);\n",
+    EXPECT_EQ("void computeVariables(double *constants, double *computedConstants, double *algebraic);\n",
               generatorProfile->interfaceComputeVariablesMethodString(false, false));
-    EXPECT_EQ("void computeVariables(double *variables)\n"
+    EXPECT_EQ("void computeVariables(double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeVariablesMethodString(false, false));
 
-    EXPECT_EQ("void computeVariables(double *variables, ExternalVariable externalVariable);\n",
+    EXPECT_EQ("void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceComputeVariablesMethodString(false, true));
-    EXPECT_EQ("void computeVariables(double *variables, ExternalVariable externalVariable)\n"
+    EXPECT_EQ("void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeVariablesMethodString(false, true));
 
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables);\n",
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n",
               generatorProfile->interfaceComputeVariablesMethodString(true, false));
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables)\n"
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
               "{\n"
               "[CODE]"
               "}\n",
               generatorProfile->implementationComputeVariablesMethodString(true, false));
 
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n",
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n",
               generatorProfile->interfaceComputeVariablesMethodString(true, true));
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n"
               "{\n"
               "[CODE]"
               "}\n",

@@ -53,6 +53,6 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[0] = 1.23
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
     variables[0] = 1000.0*rates[0]+1000.0*rates[0]
     variables[1] = 1000.0*0.001*rates[0]+1000.0*0.001*rates[0]

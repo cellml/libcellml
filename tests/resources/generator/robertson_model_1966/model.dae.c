@@ -110,7 +110,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     rates[1] = variables[0]*states[0]-variables[3]*pow(states[1], 2.0)-variables[1]*states[1]*variables[2];
 }
 
-void computeVariables(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     findRoot0(voi, states, rates, variables);
     variables[4] = 10000.0*states[1];
