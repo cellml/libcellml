@@ -91,7 +91,7 @@ def compute_computed_constants(computed_constants):
     variables[14] = variables[5]+12.0
 
 
-def compute_rates(voi, states, rates, variables, external_variable):
+def compute_rates(voi, states, rates, constants, computedConstants, algebraic, external_variable):
     variables[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     variables[9] = external_variable(voi, states, rates, variables, 9)
     variables[4] = external_variable(voi, states, rates, variables, 4)

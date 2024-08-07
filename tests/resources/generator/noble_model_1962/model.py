@@ -75,7 +75,7 @@ def compute_computed_constants(computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     variables[6] = pow(states[1], 3.0)*states[2]*variables[7]
     variables[0] = (variables[6]+0.14)*(states[0]-variables[8])
     variables[1] = variables[4]*(states[0]-variables[5])

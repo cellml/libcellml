@@ -404,7 +404,7 @@ void computeComputedConstants(double *computedConstants)
     variables[176] = (variables[2] == 0.0)?variables[177]+variables[0]*(variables[178]-variables[177]):(variables[2] == 1.0)?variables[181]+variables[0]*(variables[182]-variables[181]):variables[179]+variables[0]*(variables[180]-variables[179]);
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     variables[9] = variables[62]*pow(variables[56]/(variables[71]+variables[56]), 3.0)*pow(variables[69]/(variables[70]+variables[69]), 2.0)*1.6/(1.5+exp(-(states[0]+60.0)/40.0));
     variables[10] = (variables[2] == 0.0)?variables[49]*(pow(variables[56], 3.0)*variables[58]*exp(0.03743*states[0]*variables[57])-pow(variables[59], 3.0)*variables[60]*exp(0.0374*states[0]*(variables[57]-1.0)))/(1.0+variables[61]*(variables[60]*pow(variables[59], 3.0)+variables[58]*pow(variables[56], 3.0))):variables[49]*(pow(variables[56], 3.0)*variables[58]*exp(0.03743*states[0]*variables[57])-pow(variables[59], 3.0)*variables[60]*exp(0.03743*states[0]*(variables[57]-1.0)))/(1.0+variables[61]*(variables[60]*pow(variables[59], 3.0)+variables[58]*pow(variables[56], 3.0)));

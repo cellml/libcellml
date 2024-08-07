@@ -62,7 +62,7 @@ void computeComputedConstants(double *computedConstants)
 {
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     rates[0] = 1.0;
     rates[1] = variables[0];

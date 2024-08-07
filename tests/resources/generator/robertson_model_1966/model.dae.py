@@ -82,7 +82,7 @@ def compute_computed_constants(computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     find_root_0(voi, states, rates, variables)
     rates[0] = -variables[0]*states[0]+variables[1]*states[1]*variables[2]
     rates[1] = variables[0]*states[0]-variables[3]*pow(states[1], 2.0)-variables[1]*states[1]*variables[2]
