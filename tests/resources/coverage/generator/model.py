@@ -598,5 +598,5 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[0] = 1.0
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
     find_root_0(voi, states, rates, variables)

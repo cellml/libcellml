@@ -595,7 +595,7 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[32] = (variables[215]-states[32])/variables[216]
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
     variables[5] = states[1]
     variables[2] = variables[3]*log(variables[4]/variables[5])
     variables[9] = 0.5*variables[3]*log(variables[10]/states[0])

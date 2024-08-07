@@ -82,7 +82,7 @@ void computeComputedConstants(double *computedConstants)
     variables[3] = 3.0*variables[4]+variables[5];
 }
 
-void computeVariables(double *variables)
+void computeVariables(double *constants, double *computedConstants, double *algebraic)
 {
     findRoot0(variables);
     variables[0] = variables[1]+variables[2];

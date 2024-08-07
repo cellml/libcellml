@@ -121,7 +121,7 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[1] = variables[6]/variables[9]
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
     variables[2] = states[1]+variables[3]
     find_root_0(voi, states, rates, variables)
     variables[4] = states[0]/variables[7]

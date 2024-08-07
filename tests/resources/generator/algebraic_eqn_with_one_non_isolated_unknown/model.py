@@ -62,5 +62,5 @@ def compute_computed_constants(computed_constants):
     pass
 
 
-def compute_variables(variables):
+def compute_variables(constants, computedConstants, algebraic):
     find_root_0(variables)

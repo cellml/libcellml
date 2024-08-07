@@ -45,6 +45,6 @@ void computeComputedConstants(double *computedConstants)
     variables[2] = 0.001*variables[0]+0.001*variables[0];
 }
 
-void computeVariables(double *variables)
+void computeVariables(double *constants, double *computedConstants, double *algebraic)
 {
 }

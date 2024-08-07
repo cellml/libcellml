@@ -38,4 +38,4 @@ void deleteArray(double *array);
 void initialiseVariables(double *states, double *rates, double *constants);
 void computeComputedConstants(double *computedConstants);
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);
-void computeVariables(double voi, double *states, double *rates, double *variables);
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);

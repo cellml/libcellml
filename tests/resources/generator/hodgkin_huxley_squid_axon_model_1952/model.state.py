@@ -106,7 +106,7 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic, e
     rates[2] = variables[17]*(1.0-states[2])-variables[18]*states[2]
 
 
-def compute_variables(voi, states, rates, variables, external_variable):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic, external_variable):
     variables[1] = variables[7]*(states[0]-variables[6])
     variables[10] = external_variable(voi, states, rates, variables, 10)
     variables[3] = variables[9]*pow(variables[10], 3.0)*states[1]*(states[0]-variables[8])

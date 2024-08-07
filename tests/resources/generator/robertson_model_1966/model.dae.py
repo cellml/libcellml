@@ -88,6 +88,6 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[1] = variables[0]*states[0]-variables[3]*pow(states[1], 2.0)-variables[1]*states[1]*variables[2]
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
     find_root_0(voi, states, rates, variables)
     variables[4] = 10000.0*states[1]

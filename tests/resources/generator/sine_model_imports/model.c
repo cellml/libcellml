@@ -80,7 +80,7 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
     rates[0] = cos(voi);
 }
 
-void computeVariables(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     variables[0] = sin(voi);
     variables[9] = (voi < variables[6])?voi*variables[4]-0.5:(voi < variables[7])?(3.14159265358979-voi)*variables[4]-0.5:(voi < variables[8])?(voi-3.14159265358979)*variables[4]-0.5:(variables[5]-voi)*variables[4]-0.5;

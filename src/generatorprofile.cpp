@@ -705,26 +705,26 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                      "[CODE]"
                                                      "}\n";
 
-        mInterfaceComputeVariablesMethodFamWoevString = "void computeVariables(double *variables);\n";
-        mImplementationComputeVariablesMethodFamWoevString = "void computeVariables(double *variables)\n"
+        mInterfaceComputeVariablesMethodFamWoevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeVariablesMethodFamWoevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic)\n"
                                                              "{\n"
                                                              "[CODE]"
                                                              "}\n";
 
-        mInterfaceComputeVariablesMethodFamWevString = "void computeVariables(double *variables, ExternalVariable externalVariable);\n";
-        mImplementationComputeVariablesMethodFamWevString = "void computeVariables(double *variables, ExternalVariable externalVariable)\n"
+        mInterfaceComputeVariablesMethodFamWevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
+        mImplementationComputeVariablesMethodFamWevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
 
-        mInterfaceComputeVariablesMethodFdmWoevString = "void computeVariables(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeVariablesMethodFdmWoevString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n"
+        mInterfaceComputeVariablesMethodFdmWoevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeVariablesMethodFdmWoevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
                                                              "{\n"
                                                              "[CODE]"
                                                              "}\n";
 
-        mInterfaceComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n";
-        mImplementationComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
+        mInterfaceComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
+        mImplementationComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
@@ -1107,22 +1107,22 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeVariablesMethodFamWoevString = "";
         mImplementationComputeVariablesMethodFamWoevString = "\n"
-                                                             "def compute_variables(variables):\n"
+                                                             "def compute_variables(constants, computedConstants, algebraic):\n"
                                                              "[CODE]";
 
         mInterfaceComputeVariablesMethodFamWevString = "";
         mImplementationComputeVariablesMethodFamWevString = "\n"
-                                                            "def compute_variables(variables, external_variable):\n"
+                                                            "def compute_variables(constants, computedConstants, algebraic, external_variable):\n"
                                                             "[CODE]";
 
         mInterfaceComputeVariablesMethodFdmWoevString = "";
         mImplementationComputeVariablesMethodFdmWoevString = "\n"
-                                                             "def compute_variables(voi, states, rates, variables):\n"
+                                                             "def compute_variables(voi, states, rates, constants, computedConstants, algebraic):\n"
                                                              "[CODE]";
 
         mInterfaceComputeVariablesMethodFdmWevString = "";
         mImplementationComputeVariablesMethodFdmWevString = "\n"
-                                                            "def compute_variables(voi, states, rates, variables, external_variable):\n"
+                                                            "def compute_variables(voi, states, rates, constants, computedConstants, algebraic, external_variable):\n"
                                                             "[CODE]";
 
         mEmptyMethodString = "pass\n";

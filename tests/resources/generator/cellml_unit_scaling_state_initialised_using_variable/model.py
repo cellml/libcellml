@@ -58,5 +58,5 @@ def compute_rates(voi, states, rates, constants, computedConstants, algebraic):
     rates[1] = 7.89
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computedConstants, algebraic):
     pass
