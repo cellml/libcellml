@@ -761,7 +761,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *computedConstants)\n{\n[CODE]}\n',
+        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants)\n{\n[CODE]}\n',
                          g.implementationComputeComputedConstantsMethodString())
         g.setImplementationComputeComputedConstantsMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeComputedConstantsMethodString())
@@ -985,7 +985,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void computeComputedConstants(double *computedConstants);\n',
+        self.assertEqual('void computeComputedConstants(double *constants, double *computedConstants);\n',
                          g.interfaceComputeComputedConstantsMethodString())
         g.setInterfaceComputeComputedConstantsMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeComputedConstantsMethodString())

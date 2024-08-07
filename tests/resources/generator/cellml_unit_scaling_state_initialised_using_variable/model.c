@@ -60,7 +60,7 @@ void initialiseVariables(double *states, double *rates, double *constants)
     states[1] = 0.001*variables[1];
 }
 
-void computeComputedConstants(double *computedConstants)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 

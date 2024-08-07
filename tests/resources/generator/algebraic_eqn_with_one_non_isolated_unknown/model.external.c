@@ -43,7 +43,7 @@ void initialiseVariables(double *constants, ExternalVariable externalVariable)
     variables[3] = externalVariable(variables, 3);
 }
 
-void computeComputedConstants(double *computedConstants)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 

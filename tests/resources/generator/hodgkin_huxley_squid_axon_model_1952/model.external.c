@@ -85,7 +85,7 @@ void initialiseVariables(double voi, double *states, double *rates, double *cons
     variables[4] = externalVariable(voi, states, rates, variables, 4);
 }
 
-void computeComputedConstants(double *computedConstants)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
     variables[7] = variables[6]-10.613;
     variables[9] = variables[6]-115.0;

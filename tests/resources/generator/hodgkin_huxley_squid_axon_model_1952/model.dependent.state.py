@@ -85,7 +85,7 @@ def initialise_variables(voi, states, rates, constants, external_variable):
     variables[11] = external_variable(voi, states, rates, variables, 11)
 
 
-def compute_computed_constants(computed_constants):
+def compute_computed_constants(constants, computed_constants):
     variables[7] = variables[6]-10.613
     variables[9] = variables[6]-115.0
     variables[16] = variables[6]+12.0

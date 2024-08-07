@@ -58,7 +58,7 @@ def initialise_variables(constants):
     variables[2] = 7.0
 
 
-def compute_computed_constants(computed_constants):
+def compute_computed_constants(constants, computed_constants):
     pass
 
 

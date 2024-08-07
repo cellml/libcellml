@@ -689,8 +689,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                                "[CODE]"
                                                                "}\n";
 
-        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *computedConstants);\n";
-        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *computedConstants)\n"
+        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants);\n";
+        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants)\n"
                                                               "{\n"
                                                               "[CODE]"
                                                               "}\n";
@@ -1092,7 +1092,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeComputedConstantsMethodString = "";
         mImplementationComputeComputedConstantsMethodString = "\n"
-                                                              "def compute_computed_constants(computed_constants):\n"
+                                                              "def compute_computed_constants(constants, computed_constants):\n"
                                                               "[CODE]";
 
         mInterfaceComputeRatesMethodWoevString = "";
