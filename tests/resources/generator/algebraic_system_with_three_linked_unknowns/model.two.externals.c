@@ -104,7 +104,7 @@ void findRoot2(double *variables)
     variables[1] = u[0];
 }
 
-void initialiseVariables(double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double *constants, ExternalVariable externalVariable)
 {
     variables[1] = 1.0;
     variables[0] = externalVariable(variables, 0);

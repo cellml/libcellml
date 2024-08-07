@@ -432,7 +432,7 @@ def find_root_16(voi, states, rates, variables):
     rates[3] = u[0]
 
 
-def initialise_variables(states, rates, variables):
+def initialise_variables(states, rates, constants):
     variables[0] = 0.0
     variables[1] = 0.0
     variables[2] = 0.0

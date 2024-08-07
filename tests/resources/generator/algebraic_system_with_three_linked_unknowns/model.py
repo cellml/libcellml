@@ -58,7 +58,7 @@ def find_root_0(variables):
     variables[2] = u[2]
 
 
-def initialise_variables(variables):
+def initialise_variables(constants):
     variables[0] = 1.0
     variables[1] = 1.0
     variables[2] = 1.0

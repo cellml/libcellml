@@ -59,7 +59,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *rates, double *variables)
+void initialiseVariables(double *states, double *rates, double *constants)
 {
     variables[1] = 0.0;
     variables[3] = 0.75;

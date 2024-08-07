@@ -34,7 +34,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double *constants, ExternalVariable externalVariable)
 {
     variables[0] = externalVariable(variables, 0);
     variables[1] = externalVariable(variables, 1);
