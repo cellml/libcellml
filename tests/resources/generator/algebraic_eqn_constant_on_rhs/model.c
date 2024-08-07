@@ -34,7 +34,7 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *constants)
 {
-    variables[0] = 1.0;
+    computedConstants[0] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

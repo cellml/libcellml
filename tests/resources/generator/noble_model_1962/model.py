@@ -60,11 +60,11 @@ def create_variables_array():
 
 
 def initialise_variables(states, rates, constants):
-    variables[3] = 12.0
-    variables[4] = 0.075
-    variables[5] = -60.0
-    variables[7] = 400.0
-    variables[8] = 40.0
+    constants[3] = 12.0
+    constants[4] = 0.075
+    constants[5] = -60.0
+    constants[7] = 400.0
+    constants[8] = 40.0
     states[0] = -87.0
     states[1] = 0.01
     states[2] = 0.8
@@ -76,34 +76,34 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
-    variables[6] = pow(states[1], 3.0)*states[2]*variables[7]
-    variables[0] = (variables[6]+0.14)*(states[0]-variables[8])
-    variables[1] = variables[4]*(states[0]-variables[5])
-    variables[13] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
-    variables[14] = 1.2*pow(states[3], 4.0)
-    variables[2] = (variables[13]+variables[14])*(states[0]+100.0)
-    rates[0] = -(variables[0]+variables[2]+variables[1])/variables[3]
-    variables[9] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
-    variables[10] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
-    rates[1] = variables[9]*(1.0-states[1])-variables[10]*states[1]
-    variables[11] = 0.17*exp((-states[0]-90.0)/20.0)
-    variables[12] = 1.0/(1.0+exp((-states[0]-42.0)/10.0))
-    rates[2] = variables[11]*(1.0-states[2])-variables[12]*states[2]
-    variables[15] = 0.0001*(-states[0]-50.0)/(exp((-states[0]-50.0)/10.0)-1.0)
-    variables[16] = 0.002*exp((-states[0]-90.0)/80.0)
-    rates[3] = variables[15]*(1.0-states[3])-variables[16]*states[3]
+    algebraic[6] = pow(states[1], 3.0)*states[2]*constants[7]
+    algebraic[0] = (algebraic[6]+0.14)*(states[0]-constants[8])
+    algebraic[1] = constants[4]*(states[0]-constants[5])
+    algebraic[13] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
+    algebraic[14] = 1.2*pow(states[3], 4.0)
+    algebraic[2] = (algebraic[13]+algebraic[14])*(states[0]+100.0)
+    rates[0] = -(algebraic[0]+algebraic[2]+algebraic[1])/constants[3]
+    algebraic[9] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
+    algebraic[10] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
+    rates[1] = algebraic[9]*(1.0-states[1])-algebraic[10]*states[1]
+    algebraic[11] = 0.17*exp((-states[0]-90.0)/20.0)
+    algebraic[12] = 1.0/(1.0+exp((-states[0]-42.0)/10.0))
+    rates[2] = algebraic[11]*(1.0-states[2])-algebraic[12]*states[2]
+    algebraic[15] = 0.0001*(-states[0]-50.0)/(exp((-states[0]-50.0)/10.0)-1.0)
+    algebraic[16] = 0.002*exp((-states[0]-90.0)/80.0)
+    rates[3] = algebraic[15]*(1.0-states[3])-algebraic[16]*states[3]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    variables[1] = variables[4]*(states[0]-variables[5])
-    variables[6] = pow(states[1], 3.0)*states[2]*variables[7]
-    variables[0] = (variables[6]+0.14)*(states[0]-variables[8])
-    variables[9] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
-    variables[10] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
-    variables[11] = 0.17*exp((-states[0]-90.0)/20.0)
-    variables[12] = 1.0/(1.0+exp((-states[0]-42.0)/10.0))
-    variables[13] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
-    variables[14] = 1.2*pow(states[3], 4.0)
-    variables[2] = (variables[13]+variables[14])*(states[0]+100.0)
-    variables[15] = 0.0001*(-states[0]-50.0)/(exp((-states[0]-50.0)/10.0)-1.0)
-    variables[16] = 0.002*exp((-states[0]-90.0)/80.0)
+    algebraic[1] = constants[4]*(states[0]-constants[5])
+    algebraic[6] = pow(states[1], 3.0)*states[2]*constants[7]
+    algebraic[0] = (algebraic[6]+0.14)*(states[0]-constants[8])
+    algebraic[9] = 0.1*(-states[0]-48.0)/(exp((-states[0]-48.0)/15.0)-1.0)
+    algebraic[10] = 0.12*(states[0]+8.0)/(exp((states[0]+8.0)/5.0)-1.0)
+    algebraic[11] = 0.17*exp((-states[0]-90.0)/20.0)
+    algebraic[12] = 1.0/(1.0+exp((-states[0]-42.0)/10.0))
+    algebraic[13] = 1.2*exp((-states[0]-90.0)/50.0)+0.015*exp((states[0]+90.0)/60.0)
+    algebraic[14] = 1.2*pow(states[3], 4.0)
+    algebraic[2] = (algebraic[13]+algebraic[14])*(states[0]+100.0)
+    algebraic[15] = 0.0001*(-states[0]-50.0)/(exp((-states[0]-50.0)/10.0)-1.0)
+    algebraic[16] = 0.002*exp((-states[0]-90.0)/80.0)

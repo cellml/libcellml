@@ -810,7 +810,11 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 for (i = 0; i < variablesCount; ++i) {
                     auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->variablesArrayString();
+                                       (variables[i]->type() == AnalyserVariable::Type::CONSTANT) ?
+                                           mProfile->constantsArrayString() :
+                                       (variables[i]->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
+                                           mProfile->computedConstantsArrayString() :
+                                           mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
                                   + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
@@ -851,7 +855,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 for (i = 0; i < variablesCount; ++i) {
                     auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->variablesArrayString();
+                                           mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
                                   + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
@@ -871,7 +875,7 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 for (i = 0; i < variablesCount; ++i) {
                     auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                           mProfile->variablesArrayString();
+                                           mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
                                   + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
@@ -923,7 +927,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
     auto initValueVariable = owningComponent(variable)->variable(variable->initialValue());
     auto analyserInitialValueVariable = analyserVariable(initValueVariable);
 
-    return mProfile->variablesArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
+    return mProfile->constantsArrayString() + mProfile->openArrayString() + convertToString(analyserInitialValueVariable->index()) + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
@@ -950,8 +954,12 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
         arrayName = state ?
                         mProfile->statesArrayString() :
                         mProfile->ratesArrayString();
+    } else if (analyserVariable->type() == AnalyserVariable::Type::CONSTANT) {
+        arrayName = mProfile->constantsArrayString();
+    } else if (analyserVariable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
+        arrayName = mProfile->computedConstantsArrayString();
     } else {
-        arrayName = mProfile->variablesArrayString();
+        arrayName = mProfile->algebraicArrayString();
     }
 
     return arrayName + mProfile->openArrayString() + convertToString(analyserVariable->index()) + mProfile->closeArrayString();

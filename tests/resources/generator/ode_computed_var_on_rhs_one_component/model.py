@@ -41,7 +41,7 @@ def create_variables_array():
 
 
 def initialise_variables(states, rates, constants):
-    variables[0] = 1.0
+    computed_constants[0] = 1.0
     states[0] = 1.0
 
 
@@ -50,7 +50,7 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
-    rates[0] = variables[0]
+    rates[0] = computed_constants[0]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):

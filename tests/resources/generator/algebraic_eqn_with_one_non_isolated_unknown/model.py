@@ -36,26 +36,26 @@ from nlasolver import nla_solve
 def objective_function_0(u, f, data):
     variables = data[0]
 
-    variables[3] = u[0]
+    algebraic[3] = u[0]
 
-    f[0] = variables[3]+variables[0]-(variables[1]+variables[2])
+    f[0] = algebraic[3]+computed_constants[0]-(computed_constants[1]+computed_constants[2])
 
 
 def find_root_0(variables):
     u = [nan]*1
 
-    u[0] = variables[3]
+    u[0] = algebraic[3]
 
     u = nla_solve(objective_function_0, u, 1, [variables])
 
-    variables[3] = u[0]
+    algebraic[3] = u[0]
 
 
 def initialise_variables(constants):
-    variables[3] = 1.0
-    variables[0] = 3.0
-    variables[1] = 5.0
-    variables[2] = 7.0
+    algebraic[3] = 1.0
+    computed_constants[0] = 3.0
+    computed_constants[1] = 5.0
+    computed_constants[2] = 7.0
 
 
 def compute_computed_constants(constants, computed_constants):

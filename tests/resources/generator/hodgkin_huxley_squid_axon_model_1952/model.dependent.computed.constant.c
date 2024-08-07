@@ -72,16 +72,16 @@ void deleteArray(double *array)
 
 void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable)
 {
-    variables[4] = 1.0;
-    variables[7] = 0.3;
-    variables[9] = 120.0;
-    variables[15] = 36.0;
+    constants[4] = 1.0;
+    constants[7] = 0.3;
+    constants[9] = 120.0;
+    constants[15] = 36.0;
     states[0] = 0.0;
     states[1] = 0.6;
     states[2] = 0.05;
     states[3] = 0.325;
-    variables[14] = externalVariable(voi, states, rates, variables, 14);
-    variables[5] = externalVariable(voi, states, rates, variables, 5);
+    algebraic[14] = externalVariable(voi, states, rates, variables, 14);
+    algebraic[5] = externalVariable(voi, states, rates, variables, 5);
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
@@ -90,39 +90,39 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
-    variables[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
-    variables[14] = externalVariable(voi, states, rates, variables, 14);
-    variables[5] = externalVariable(voi, states, rates, variables, 5);
-    variables[6] = variables[5]-10.613;
-    variables[1] = variables[7]*(states[0]-variables[6]);
-    variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14]);
-    variables[8] = variables[5]-115.0;
-    variables[3] = variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8]);
-    rates[0] = -(-variables[0]+variables[3]+variables[2]+variables[1])/variables[4];
-    variables[10] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
-    variables[11] = 4.0*exp(states[0]/18.0);
-    rates[2] = variables[10]*(1.0-states[2])-variables[11]*states[2];
-    variables[12] = 0.07*exp(states[0]/20.0);
-    variables[13] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
-    rates[1] = variables[12]*(1.0-states[1])-variables[13]*states[1];
-    variables[16] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
-    variables[17] = 0.125*exp(states[0]/80.0);
-    rates[3] = variables[16]*(1.0-states[3])-variables[17]*states[3];
+    algebraic[0] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
+    algebraic[14] = externalVariable(voi, states, rates, variables, 14);
+    algebraic[5] = externalVariable(voi, states, rates, variables, 5);
+    algebraic[6] = algebraic[5]-10.613;
+    algebraic[1] = constants[7]*(states[0]-algebraic[6]);
+    algebraic[2] = constants[15]*pow(states[3], 4.0)*(states[0]-algebraic[14]);
+    algebraic[8] = algebraic[5]-115.0;
+    algebraic[3] = constants[9]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[8]);
+    rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/constants[4];
+    algebraic[10] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    algebraic[11] = 4.0*exp(states[0]/18.0);
+    rates[2] = algebraic[10]*(1.0-states[2])-algebraic[11]*states[2];
+    algebraic[12] = 0.07*exp(states[0]/20.0);
+    algebraic[13] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
+    rates[1] = algebraic[12]*(1.0-states[1])-algebraic[13]*states[1];
+    algebraic[16] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
+    algebraic[17] = 0.125*exp(states[0]/80.0);
+    rates[3] = algebraic[16]*(1.0-states[3])-algebraic[17]*states[3];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
-    variables[14] = externalVariable(voi, states, rates, variables, 14);
-    variables[5] = externalVariable(voi, states, rates, variables, 5);
-    variables[6] = variables[5]-10.613;
-    variables[1] = variables[7]*(states[0]-variables[6]);
-    variables[8] = variables[5]-115.0;
-    variables[3] = variables[9]*pow(states[2], 3.0)*states[1]*(states[0]-variables[8]);
-    variables[10] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
-    variables[11] = 4.0*exp(states[0]/18.0);
-    variables[12] = 0.07*exp(states[0]/20.0);
-    variables[13] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
-    variables[2] = variables[15]*pow(states[3], 4.0)*(states[0]-variables[14]);
-    variables[16] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
-    variables[17] = 0.125*exp(states[0]/80.0);
+    algebraic[14] = externalVariable(voi, states, rates, variables, 14);
+    algebraic[5] = externalVariable(voi, states, rates, variables, 5);
+    algebraic[6] = algebraic[5]-10.613;
+    algebraic[1] = constants[7]*(states[0]-algebraic[6]);
+    algebraic[8] = algebraic[5]-115.0;
+    algebraic[3] = constants[9]*pow(states[2], 3.0)*states[1]*(states[0]-algebraic[8]);
+    algebraic[10] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0);
+    algebraic[11] = 4.0*exp(states[0]/18.0);
+    algebraic[12] = 0.07*exp(states[0]/20.0);
+    algebraic[13] = 1.0/(exp((states[0]+30.0)/10.0)+1.0);
+    algebraic[2] = constants[15]*pow(states[3], 4.0)*(states[0]-algebraic[14]);
+    algebraic[16] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0);
+    algebraic[17] = 0.125*exp(states[0]/80.0);
 }

@@ -41,8 +41,8 @@ def create_variables_array():
 
 
 def initialise_variables(states, rates, constants):
-    variables[0] = 7.0
-    states[0] = variables[0]
+    constants[0] = 7.0
+    states[0] = constants[0]
 
 
 def compute_computed_constants(constants, computed_constants):

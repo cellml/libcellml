@@ -833,11 +833,23 @@ and units of a variable respectively.";
 %feature("docstring") libcellml::GeneratorProfile::setRatesArrayString
 "Sets the string for the name of the rates array.";
 
-%feature("docstring") libcellml::GeneratorProfile::variablesArrayString
-"Returns the string for the name of the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::constantsArrayString
+"Returns the string for the name of the constants array.";
 
-%feature("docstring") libcellml::GeneratorProfile::setVariablesArrayString
-"Sets the string for the name of the variables array.";
+%feature("docstring") libcellml::GeneratorProfile::setConstantsArrayString
+"Sets the string for the name of the constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::computedConstantsArrayString
+"Returns the string for the name of the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setComputedConstantsArrayString
+"Sets the string for the name of the computed constants array.";
+
+%feature("docstring") libcellml::GeneratorProfile::algebraicArrayString
+"Returns the string for the name of the algebraic array.";
+
+%feature("docstring") libcellml::GeneratorProfile::setAlgebraicArrayString
+"Sets the string for the name of the algebraic array.";
 
 %feature("docstring") libcellml::GeneratorProfile::externalVariableMethodTypeDefinitionString
 "Returns the string for the type definition of an external variable method.";
