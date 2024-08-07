@@ -46,9 +46,9 @@ void objectiveFunction0(double *u, double *f, void *data)
 {
     double *variables = ((RootFindingInfo *) data)->variables;
 
-    variables[3] = u[0];
+    algebraic[3] = u[0];
 
-    f[0] = variables[3]+variables[0]-(variables[1]+variables[2]);
+    f[0] = algebraic[3]+computedConstants[0]-(computedConstants[1]+computedConstants[2]);
 }
 
 void findRoot0(double *variables)
@@ -56,19 +56,19 @@ void findRoot0(double *variables)
     RootFindingInfo rfi = { variables };
     double u[1];
 
-    u[0] = variables[3];
+    u[0] = algebraic[3];
 
     nlaSolve(objectiveFunction0, u, 1, &rfi);
 
-    variables[3] = u[0];
+    algebraic[3] = u[0];
 }
 
 void initialiseVariables(double *constants)
 {
-    variables[3] = 1.0;
-    variables[0] = 3.0;
-    variables[1] = 5.0;
-    variables[2] = 7.0;
+    algebraic[3] = 1.0;
+    computedConstants[0] = 3.0;
+    computedConstants[1] = 5.0;
+    computedConstants[2] = 7.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

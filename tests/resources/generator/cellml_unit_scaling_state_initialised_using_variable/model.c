@@ -54,10 +54,10 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *constants)
 {
-    variables[0] = 123.0;
-    variables[1] = 789.0;
-    states[0] = variables[0];
-    states[1] = 0.001*variables[1];
+    constants[0] = 123.0;
+    constants[1] = 789.0;
+    states[0] = constants[0];
+    states[1] = 0.001*constants[1];
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

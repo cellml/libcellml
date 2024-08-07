@@ -897,11 +897,23 @@ describe("GeneratorProfile tests", () => {
     x.setRatesArrayString("something")
     expect(x.ratesArrayString()).toBe("something")
   });
-  test("Checking GeneratorProfile.variablesArrayString.", () => {
+  test("Checking GeneratorProfile.constantsArrayString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 
-    x.setVariablesArrayString("something")
-    expect(x.variablesArrayString()).toBe("something")
+    x.setConstantsArrayString("something")
+    expect(x.constantsArrayString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.computedConstantsArrayString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setComputedConstantsArrayString("something")
+    expect(x.computedConstantsArrayString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.algebraicArrayString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setAlgebraicArrayString("something")
+    expect(x.algebraicArrayString()).toBe("something")
   });
   test("Checking GeneratorProfile.externalVariableMethodTypeDefinitionString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)

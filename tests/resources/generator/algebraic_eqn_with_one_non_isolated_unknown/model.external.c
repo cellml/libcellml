@@ -37,10 +37,10 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *constants, ExternalVariable externalVariable)
 {
-    variables[0] = 3.0;
-    variables[1] = 5.0;
-    variables[2] = 7.0;
-    variables[3] = externalVariable(variables, 3);
+    computedConstants[0] = 3.0;
+    computedConstants[1] = 5.0;
+    computedConstants[2] = 7.0;
+    algebraic[3] = externalVariable(variables, 3);
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
@@ -49,5 +49,5 @@ void computeComputedConstants(double *constants, double *computedConstants)
 
 void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
-    variables[3] = externalVariable(variables, 3);
+    algebraic[3] = externalVariable(variables, 3);
 }

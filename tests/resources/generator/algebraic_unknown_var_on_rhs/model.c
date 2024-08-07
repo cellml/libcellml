@@ -35,12 +35,12 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *constants)
 {
-    variables[0] = 1.0;
+    computedConstants[0] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    variables[1] = variables[0];
+    computedConstants[1] = computedConstants[0];
 }
 
 void computeVariables(double *constants, double *computedConstants, double *algebraic)

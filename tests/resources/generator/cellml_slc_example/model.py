@@ -37,19 +37,19 @@ def create_variables_array():
 
 
 def initialise_variables(constants):
-    variables[1] = 1.1
-    variables[2] = 21262500.0
-    variables[3] = 150.0
-    variables[4] = 3402000.0
-    variables[5] = 2.0
-    variables[6] = 2902500.0
-    variables[7] = 810000.0
-    variables[8] = 247140.0
-    variables[9] = 2902500.0
+    constants[1] = 1.1
+    constants[2] = 21262500.0
+    constants[3] = 150.0
+    constants[4] = 3402000.0
+    constants[5] = 2.0
+    constants[6] = 2902500.0
+    constants[7] = 810000.0
+    constants[8] = 247140.0
+    constants[9] = 2902500.0
 
 
 def compute_computed_constants(constants, computed_constants):
-    variables[0] = variables[1]*(variables[2]*variables[3]-variables[4]*variables[5])/(variables[6]*variables[5]+variables[9]*variables[3]+variables[8]*variables[5]*variables[3]+variables[7])
+    computed_constants[0] = constants[1]*(constants[2]*constants[3]-constants[4]*constants[5])/(constants[6]*constants[5]+constants[9]*constants[3]+constants[8]*constants[5]*constants[3]+constants[7])
 
 
 def compute_variables(constants, computed_constants, algebraic):

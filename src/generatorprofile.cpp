@@ -222,7 +222,9 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mStatesArrayString;
     std::string mRatesArrayString;
-    std::string mVariablesArrayString;
+    std::string mConstantsArrayString;
+    std::string mComputedConstantsArrayString;
+    std::string mAlgebraicArrayString;
 
     std::string mExternalVariableMethodTypeDefinitionFamString;
     std::string mExternalVariableMethodTypeDefinitionFdmString;
@@ -580,7 +582,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
-        mVariablesArrayString = "variables";
+        mConstantsArrayString = "constants";
+        mComputedConstantsArrayString = "computedConstants";
+        mAlgebraicArrayString = "algebraic";
 
         mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
         mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
@@ -1014,7 +1018,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
-        mVariablesArrayString = "variables";
+        mConstantsArrayString = "constants";
+        mComputedConstantsArrayString = "computed_constants";
+        mAlgebraicArrayString = "algebraic";
 
         mExternalVariableMethodTypeDefinitionFamString = "";
         mExternalVariableMethodTypeDefinitionFdmString = "";
@@ -2535,14 +2541,34 @@ void GeneratorProfile::setRatesArrayString(const std::string &ratesArrayString)
     mPimpl->mRatesArrayString = ratesArrayString;
 }
 
-std::string GeneratorProfile::variablesArrayString() const
+std::string GeneratorProfile::constantsArrayString() const
 {
-    return mPimpl->mVariablesArrayString;
+    return mPimpl->mConstantsArrayString;
 }
 
-void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
+void GeneratorProfile::setConstantsArrayString(const std::string &constantsArrayString)
 {
-    mPimpl->mVariablesArrayString = variablesArrayString;
+    mPimpl->mConstantsArrayString = constantsArrayString;
+}
+
+std::string GeneratorProfile::computedConstantsArrayString() const
+{
+    return mPimpl->mComputedConstantsArrayString;
+}
+
+void GeneratorProfile::setComputedConstantsArrayString(const std::string &computedConstantsArrayString)
+{
+    mPimpl->mComputedConstantsArrayString = computedConstantsArrayString;
+}
+
+std::string GeneratorProfile::algebraicArrayString() const
+{
+    return mPimpl->mAlgebraicArrayString;
+}
+
+void GeneratorProfile::setAlgebraicArrayString(const std::string &algebraicArrayString)
+{
+    mPimpl->mAlgebraicArrayString = algebraicArrayString;
 }
 
 std::string GeneratorProfile::externalVariableMethodTypeDefinitionString(bool forDifferentialModel) const

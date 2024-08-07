@@ -1607,14 +1607,32 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setVariableTypeObjectString(True, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString(True, True))
 
-    def test_variables_array_string(self):
+    def test_constants_array_string(self):
         from libcellml import GeneratorProfile
 
         g = GeneratorProfile()
 
-        self.assertEqual('variables', g.variablesArrayString())
-        g.setVariablesArrayString(GeneratorProfileTestCase.VALUE)
-        self.assertEqual(GeneratorProfileTestCase.VALUE, g.variablesArrayString())
+        self.assertEqual('constants', g.constantsArrayString())
+        g.setConstantsArrayString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.constantsArrayString())
+
+    def test_computed_constants_array_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('computedConstants', g.computedConstantsArrayString())
+        g.setComputedConstantsArrayString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.computedConstantsArrayString())
+
+    def test_algebraic_array_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('algebraic', g.algebraicArrayString())
+        g.setAlgebraicArrayString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.algebraicArrayString())
 
     def test_external_variable_method_type_definition_string(self):
         from libcellml import GeneratorProfile

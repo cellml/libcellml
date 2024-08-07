@@ -3034,23 +3034,61 @@ public:
     void setRatesArrayString(const std::string &ratesArrayString);
 
     /**
-     * @brief Get the @c std::string for the name of the variables array.
+     * @brief Get the @c std::string for the name of the constants array.
      *
-     * Return the @c std::string for the name of the variables array.
+     * Return the @c std::string for the name of the constants array.
      *
-     * @return The @c std::string for the name of the variables array.
+     * @return The @c std::string for the name of the constants array.
      */
-    std::string variablesArrayString() const;
+    std::string constantsArrayString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the variables array.
+     * @brief Set the @c std::string for the name of the constants array.
      *
-     * Set the @c std::string for the name of the variables array.
+     * Set the @c std::string for the name of the constants array.
      *
-     * @param variablesArrayString The @c std::string to use for the name of the
-     * variables array.
+     * @param constantsArrayString The @c std::string to use for the name of the
+     * constants array.
      */
-    void setVariablesArrayString(const std::string &variablesArrayString);
+    void setConstantsArrayString(const std::string &constantsArrayString);
+
+    /**
+     * @brief Get the @c std::string for the name of the computed constants array.
+     *
+     * Return the @c std::string for the name of the computed constants array.
+     *
+     * @return The @c std::string for the name of the computed constants array.
+     */
+    std::string computedConstantsArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the computed constants array.
+     *
+     * Set the @c std::string for the name of the computed constants array.
+     *
+     * @param computedConstantsArrayString The @c std::string to use for the name of the
+     * computed constants array.
+     */
+    void setComputedConstantsArrayString(const std::string &computedConstantsArrayString);
+
+    /**
+     * @brief Get the @c std::string for the name of the algebraic array.
+     *
+     * Return the @c std::string for the name of the algebraic array.
+     *
+     * @return The @c std::string for the name of the algebraic array.
+     */
+    std::string algebraicArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the algebraic array.
+     *
+     * Set the @c std::string for the name of the algebraic array.
+     *
+     * @param algebraicArrayString The @c std::string to use for the name of the
+     * algebraic array.
+     */
+    void setAlgebraicArrayString(const std::string &algebraicArrayString);
 
     /**
      * @brief Get the @c std::string for the type definition of an external

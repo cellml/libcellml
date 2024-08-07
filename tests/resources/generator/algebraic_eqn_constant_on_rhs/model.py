@@ -28,7 +28,7 @@ def create_variables_array():
 
 
 def initialise_variables(constants):
-    variables[0] = 1.0
+    computed_constants[0] = 1.0
 
 
 def compute_computed_constants(constants, computed_constants):
