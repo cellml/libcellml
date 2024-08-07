@@ -69,7 +69,7 @@ def find_root_0(voi, states, rates, variables):
     variables[2] = u[0]
 
 
-def initialise_variables(states, rates, variables):
+def initialise_variables(states, rates, constants):
     variables[0] = 0.04
     variables[1] = 1.0e4
     variables[2] = 0.0

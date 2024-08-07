@@ -308,7 +308,7 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_variables(states, rates, variables):
+def initialise_variables(states, rates, constants):
     variables[0] = 0.0
     variables[1] = 0.0
     variables[4] = 140.0

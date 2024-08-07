@@ -69,7 +69,7 @@ void findRoot0(double *variables)
     variables[1] = u[1];
 }
 
-void initialiseVariables(double *variables)
+void initialiseVariables(double *constants)
 {
     variables[1] = 1.0;
     variables[2] = 1.0;

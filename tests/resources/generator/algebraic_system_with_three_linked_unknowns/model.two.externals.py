@@ -87,7 +87,7 @@ def find_root_2(variables):
     variables[1] = u[0]
 
 
-def initialise_variables(variables, external_variable):
+def initialise_variables(constants, external_variable):
     variables[1] = 1.0
     variables[0] = external_variable(variables, 0)
     variables[2] = external_variable(variables, 2)

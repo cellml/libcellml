@@ -35,7 +35,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *variables)
+void initialiseVariables(double *constants)
 {
     variables[1] = 0.01;
     variables[2] = 0.0011;

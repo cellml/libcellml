@@ -859,22 +859,22 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void initialiseVariables(double *variables)\n{\n[CODE]}\n',
+        self.assertEqual('void initialiseVariables(double *constants)\n{\n[CODE]}\n',
                          g.implementationInitialiseVariablesMethodString(False, False))
         g.setImplementationInitialiseVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(False, False))
 
-        self.assertEqual('void initialiseVariables(double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+        self.assertEqual('void initialiseVariables(double *constants, ExternalVariable externalVariable)\n{\n[CODE]}\n',
                          g.implementationInitialiseVariablesMethodString(False, True))
         g.setImplementationInitialiseVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(False, True))
 
-        self.assertEqual('void initialiseVariables(double *states, double *rates, double *variables)\n{\n[CODE]}\n',
+        self.assertEqual('void initialiseVariables(double *states, double *rates, double *constants)\n{\n[CODE]}\n',
                          g.implementationInitialiseVariablesMethodString(True, False))
         g.setImplementationInitialiseVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True, False))
 
-        self.assertEqual('void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n[CODE]}\n',
+        self.assertEqual('void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable)\n{\n[CODE]}\n',
                          g.implementationInitialiseVariablesMethodString(True, True))
         g.setImplementationInitialiseVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationInitialiseVariablesMethodString(True, True))
@@ -1086,22 +1086,22 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual('void initialiseVariables(double *variables);\n',
+        self.assertEqual('void initialiseVariables(double *constants);\n',
                          g.interfaceInitialiseVariablesMethodString(False, False))
         g.setInterfaceInitialiseVariablesMethodString(False, False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(False, False))
 
-        self.assertEqual('void initialiseVariables(double *variables, ExternalVariable externalVariable);\n',
+        self.assertEqual('void initialiseVariables(double *constants, ExternalVariable externalVariable);\n',
                          g.interfaceInitialiseVariablesMethodString(False, True))
         g.setInterfaceInitialiseVariablesMethodString(False, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(False, True))
 
-        self.assertEqual('void initialiseVariables(double *states, double *rates, double *variables);\n',
+        self.assertEqual('void initialiseVariables(double *states, double *rates, double *constants);\n',
                          g.interfaceInitialiseVariablesMethodString(True, False))
         g.setInterfaceInitialiseVariablesMethodString(True, False, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True, False))
 
-        self.assertEqual('void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n',
+        self.assertEqual('void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable);\n',
                          g.interfaceInitialiseVariablesMethodString(True, True))
         g.setInterfaceInitialiseVariablesMethodString(True, True, GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceInitialiseVariablesMethodString(True, True))
