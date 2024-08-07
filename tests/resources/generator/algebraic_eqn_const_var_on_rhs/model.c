@@ -38,7 +38,7 @@ void initialiseVariables(double *constants)
     variables[1] = 1.0;
 }
 
-void computeComputedConstants(double *computedConstants)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
     variables[0] = variables[1];
 }

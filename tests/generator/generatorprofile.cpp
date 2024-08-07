@@ -491,9 +491,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationInitialiseVariablesMethodString(true, true));
 
-    EXPECT_EQ("void computeComputedConstants(double *computedConstants);\n",
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString());
-    EXPECT_EQ("void computeComputedConstants(double *computedConstants)\n"
+    EXPECT_EQ("void computeComputedConstants(double *constants, double *computedConstants)\n"
               "{\n"
               "[CODE]"
               "}\n",

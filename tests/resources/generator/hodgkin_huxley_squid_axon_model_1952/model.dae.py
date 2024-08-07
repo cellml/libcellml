@@ -461,7 +461,7 @@ def initialise_variables(states, rates, constants):
     rates[3] = 0.0
 
 
-def compute_computed_constants(computed_constants):
+def compute_computed_constants(constants, computed_constants):
     pass
 
 

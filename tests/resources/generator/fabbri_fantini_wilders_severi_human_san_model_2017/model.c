@@ -426,7 +426,7 @@ void initialiseVariables(double *states, double *rates, double *constants)
     states[32] = 0.00277;
 }
 
-void computeComputedConstants(double *computedConstants)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
     variables[3] = variables[119]*variables[120]/variables[17];
     variables[6] = variables[3]*log(variables[7]/variables[8]);

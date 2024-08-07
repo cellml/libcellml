@@ -49,7 +49,7 @@ def initialise_variables(states, rates, constants):
     states[1] = 0.001*variables[1]
 
 
-def compute_computed_constants(computed_constants):
+def compute_computed_constants(constants, computed_constants):
     pass
 
 

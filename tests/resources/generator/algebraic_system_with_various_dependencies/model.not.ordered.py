@@ -64,7 +64,7 @@ def initialise_variables(constants):
     variables[5] = 5.0
 
 
-def compute_computed_constants(computed_constants):
+def compute_computed_constants(constants, computed_constants):
     variables[3] = 3.0*variables[4]+variables[5]
 
 

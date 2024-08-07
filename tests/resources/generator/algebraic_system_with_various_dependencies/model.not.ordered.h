@@ -30,5 +30,5 @@ double * createVariablesArray();
 void deleteArray(double *array);
 
 void initialiseVariables(double *constants);
-void computeComputedConstants(double *computedConstants);
+void computeComputedConstants(double *constants, double *computedConstants);
 void computeVariables(double *constants, double *computedConstants, double *algebraic);

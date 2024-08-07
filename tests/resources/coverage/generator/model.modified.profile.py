@@ -403,7 +403,7 @@ def initialise_variables(states, rates, constants):
     states[0] = 0.0
 
 
-def compute_computed_constants(computed_constants):
+def compute_computed_constants(constants, computed_constants):
     variables[0] = eq_func(variables[1], variables[2])
     variables[3] = variables[1]/eq_func(variables[2], variables[2])
     variables[4] = neq_func(variables[1], variables[2])
