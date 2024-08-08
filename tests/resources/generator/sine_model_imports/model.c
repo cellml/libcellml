@@ -61,14 +61,14 @@ void deleteArray(double *array)
 
 void initialiseVariables(double *states, double *rates, double *constants)
 {
-    constants[1] = 0.0;
-    constants[3] = 0.75;
-    computedConstants[4] = 2.0/3.14159265358979;
-    computedConstants[5] = 2.0*3.14159265358979;
-    computedConstants[6] = 3.14159265358979/2.0;
-    computedConstants[7] = 3.14159265358979;
-    computedConstants[8] = 3.0*3.14159265358979/2.0;
-    states[0] = constants[1];
+    constants[0] = 0.0;
+    constants[1] = 0.75;
+    computedConstants[0] = 2.0/3.14159265358979;
+    computedConstants[1] = 2.0*3.14159265358979;
+    computedConstants[2] = 3.14159265358979/2.0;
+    computedConstants[3] = 3.14159265358979;
+    computedConstants[4] = 3.0*3.14159265358979/2.0;
+    states[0] = constants[0];
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
@@ -83,6 +83,6 @@ void computeRates(double voi, double *states, double *rates, double *constants, 
 void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     algebraic[0] = sin(voi);
-    algebraic[9] = (voi < computedConstants[6])?voi*computedConstants[4]-0.5:(voi < computedConstants[7])?(3.14159265358979-voi)*computedConstants[4]-0.5:(voi < computedConstants[8])?(voi-3.14159265358979)*computedConstants[4]-0.5:(computedConstants[5]-voi)*computedConstants[4]-0.5;
-    algebraic[2] = (voi < computedConstants[6])?-algebraic[9]*algebraic[9]+constants[3]+algebraic[9]:(voi < computedConstants[7])?-algebraic[9]*algebraic[9]+constants[3]+algebraic[9]:(voi < computedConstants[8])?algebraic[9]*algebraic[9]-constants[3]-algebraic[9]:algebraic[9]*algebraic[9]-constants[3]-algebraic[9];
+    algebraic[2] = (voi < computedConstants[2])?voi*computedConstants[0]-0.5:(voi < computedConstants[3])?(3.14159265358979-voi)*computedConstants[0]-0.5:(voi < computedConstants[4])?(voi-3.14159265358979)*computedConstants[0]-0.5:(computedConstants[1]-voi)*computedConstants[0]-0.5;
+    algebraic[1] = (voi < computedConstants[2])?-algebraic[2]*algebraic[2]+constants[1]+algebraic[2]:(voi < computedConstants[3])?-algebraic[2]*algebraic[2]+constants[1]+algebraic[2]:(voi < computedConstants[4])?algebraic[2]*algebraic[2]-constants[1]-algebraic[2]:algebraic[2]*algebraic[2]-constants[1]-algebraic[2];
 }

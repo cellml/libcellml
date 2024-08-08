@@ -208,7 +208,8 @@ struct AnalyserInternalEquation
     bool variableOnRhs(const AnalyserInternalVariablePtr &variable);
     bool variableOnLhsOrRhs(const AnalyserInternalVariablePtr &variable);
 
-    bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &variableIndex, bool checkNlaSystems);
+    bool check(const AnalyserModelPtr &model, size_t &stateIndex, size_t &constantIndex,
+               size_t &computedConstantIndex, size_t &algebraicIndex, bool checkNlaSystems);
 };
 
 AnalyserInternalEquationPtr AnalyserInternalEquation::create(const ComponentPtr &component)
@@ -321,7 +322,8 @@ bool AnalyserInternalEquation::variableOnLhsOrRhs(const AnalyserInternalVariable
 }
 
 bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
-                                     size_t &stateIndex, size_t &variableIndex,
+                                     size_t &stateIndex, size_t &constantIndex,
+                                     size_t &computedConstantIndex, size_t &algebraicIndex,
                                      bool checkNlaSystems)
 {
     // Nothing to check if the equation has a known type.
@@ -437,7 +439,12 @@ bool AnalyserInternalEquation::check(const AnalyserModelPtr &model,
             case AnalyserInternalVariable::Type::ALGEBRAIC:
                 variable->mIndex = (variable->mType == AnalyserInternalVariable::Type::STATE) ?
                                        ++stateIndex :
-                                       ++variableIndex;
+                                   (variable->mType == AnalyserInternalVariable::Type::CONSTANT) ?
+                                       ++constantIndex :
+                                   ((variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+                                    || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) ?
+                                       ++computedConstantIndex :
+                                       ++algebraicIndex;
 
                 mUnknownVariables.push_back(variable);
 
@@ -2748,7 +2755,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     //       model valid).
 
     auto stateIndex = MAX_SIZE_T;
-    auto variableIndex = MAX_SIZE_T;
+    auto constantIndex = MAX_SIZE_T;
+    auto computedConstantIndex = MAX_SIZE_T;
+    auto algebraicIndex = MAX_SIZE_T;
     auto loopNumber = 1;
     bool relevantCheck;
     auto checkNlaSystems = false;
@@ -2757,7 +2766,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         relevantCheck = false;
 
         for (const auto &internalEquation : mInternalEquations) {
-            relevantCheck = internalEquation->check(mModel, stateIndex, variableIndex, checkNlaSystems)
+            relevantCheck = internalEquation->check(mModel, stateIndex, constantIndex, computedConstantIndex,
+                                                    algebraicIndex, checkNlaSystems)
                             || relevantCheck;
         }
 
@@ -2802,7 +2812,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         case AnalyserInternalVariable::Type::INITIALISED:
             // The variable is (still) initialised so it has to be a constant.
 
-            internalVariable->makeConstant(variableIndex);
+            internalVariable->makeConstant(constantIndex);
 
             break;
         case AnalyserInternalVariable::Type::OVERCONSTRAINED:
@@ -3058,7 +3068,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     std::map<VariablePtr, AnalyserVariablePtr> v2avMappings;
 
     stateIndex = MAX_SIZE_T;
-    variableIndex = MAX_SIZE_T;
+    constantIndex = MAX_SIZE_T;
+    computedConstantIndex = MAX_SIZE_T;
+    algebraicIndex = MAX_SIZE_T;
 
     for (const auto &internalVariable : mInternalVariables) {
         // Determine the type of the variable.
@@ -3108,7 +3120,11 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         variable->mPimpl->populate(type,
                                    (type == AnalyserVariable::Type::STATE) ?
                                        ++stateIndex :
-                                       ++variableIndex,
+                                   (type == AnalyserVariable::Type::CONSTANT) ?
+                                       ++constantIndex :
+                                   (type == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
+                                       ++computedConstantIndex :
+                                       ++algebraicIndex,
                                    (type == AnalyserVariable::Type::EXTERNAL) ?
                                        nullptr :
                                        internalVariable->mInitialisingVariable,

@@ -55,4 +55,4 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
-    algebraic[1] = 2.0*states[0]
+    algebraic[0] = 2.0*states[0]

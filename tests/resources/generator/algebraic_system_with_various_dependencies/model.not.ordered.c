@@ -51,8 +51,8 @@ void objectiveFunction0(double *u, double *f, void *data)
     algebraic[2] = u[0];
     algebraic[1] = u[1];
 
-    f[0] = 3.0*computedConstants[3]+2.0*algebraic[1]+algebraic[2]-57.0;
-    f[1] = computedConstants[3]+3.0*algebraic[1]-algebraic[2]-19.0;
+    f[0] = 3.0*computedConstants[0]+2.0*algebraic[1]+algebraic[2]-57.0;
+    f[1] = computedConstants[0]+3.0*algebraic[1]-algebraic[2]-19.0;
 }
 
 void findRoot0(double *variables)
@@ -73,13 +73,13 @@ void initialiseVariables(double *constants)
 {
     algebraic[1] = 1.0;
     algebraic[2] = 1.0;
-    constants[4] = 3.0;
-    constants[5] = 5.0;
+    constants[0] = 3.0;
+    constants[1] = 5.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    computedConstants[3] = 3.0*constants[4]+constants[5];
+    computedConstants[0] = 3.0*constants[0]+constants[1];
 }
 
 void computeVariables(double *constants, double *computedConstants, double *algebraic)

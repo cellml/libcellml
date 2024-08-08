@@ -38,15 +38,15 @@ def create_variables_array():
 
 
 def initialise_variables(constants, external_variable):
-    constants[1] = 1.1
-    constants[2] = 21262500.0
-    constants[3] = 150.0
-    constants[4] = 3402000.0
-    constants[5] = 2.0
-    constants[6] = 2902500.0
-    constants[7] = 810000.0
-    constants[8] = 247140.0
-    algebraic[9] = external_variable(variables, 9)
+    constants[0] = 1.1
+    constants[1] = 21262500.0
+    constants[2] = 150.0
+    constants[3] = 3402000.0
+    constants[4] = 2.0
+    constants[5] = 2902500.0
+    constants[6] = 810000.0
+    constants[7] = 247140.0
+    algebraic[1] = external_variable(variables, 1)
 
 
 def compute_computed_constants(constants, computed_constants):
@@ -54,5 +54,5 @@ def compute_computed_constants(constants, computed_constants):
 
 
 def compute_variables(constants, computed_constants, algebraic, external_variable):
-    algebraic[9] = external_variable(variables, 9)
-    algebraic[0] = constants[1]*(constants[2]*constants[3]-constants[4]*constants[5])/(constants[6]*constants[5]+algebraic[9]*constants[3]+constants[8]*constants[5]*constants[3]+constants[7])
+    algebraic[1] = external_variable(variables, 1)
+    algebraic[0] = constants[0]*(constants[1]*constants[2]-constants[3]*constants[4])/(constants[5]*constants[4]+algebraic[1]*constants[2]+constants[7]*constants[4]*constants[2]+constants[6])

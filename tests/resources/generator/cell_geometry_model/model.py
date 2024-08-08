@@ -31,13 +31,13 @@ def create_variables_array():
 
 
 def initialise_variables(constants):
-    constants[1] = 0.01
-    constants[2] = 0.0011
+    constants[0] = 0.01
+    constants[1] = 0.0011
 
 
 def compute_computed_constants(constants, computed_constants):
-    computed_constants[0] = 1000.0*3.14*constants[2]*constants[2]*constants[1]
-    computed_constants[3] = 0.02*computed_constants[0]
+    computed_constants[0] = 1000.0*3.14*constants[1]*constants[1]*constants[0]
+    computed_constants[1] = 0.02*computed_constants[0]
 
 
 def compute_variables(constants, computed_constants, algebraic):
