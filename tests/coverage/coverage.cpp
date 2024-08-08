@@ -666,8 +666,8 @@ TEST(Coverage, generator)
     generator->setModel(analyserModel);
 
     EXPECT_EQ(analyserModel, generator->model());
-    EXPECT_EQ(fileContents("coverage/generator/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.c", generator->implementationCode());
 
     auto profile = generator->profile();
 
@@ -683,8 +683,8 @@ TEST(Coverage, generator)
                                                             "    return res;\n"
                                                             "}\n");
 
-    EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.c"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.h", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.c", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -751,7 +751,7 @@ TEST(Coverage, generator)
     profile->setImplementationComputeVariablesMethodString(true, true, "");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.out"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.out", generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create();
 
@@ -824,20 +824,20 @@ TEST(Coverage, generator)
 
     profile->setVariableInfoEntryString("");
 
-    EXPECT_EQ(fileContents("coverage/generator/model.interface.out"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.implementation.out"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.interface.out", generator->interfaceCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.implementation.out", generator->implementationCode());
 
     profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.py", generator->implementationCode());
 
     profile->setImplementationCreateStatesArrayMethodString("\n"
                                                             "def create_states_vector():\n"
                                                             "    return [nan]*STATE_COUNT\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("coverage/generator/model.modified.profile.py"), generator->implementationCode());
+    EXPECT_EQ_FILE_CONTENTS("coverage/generator/model.modified.profile.py", generator->implementationCode());
 
     // Coverage for the case where mProfile is equal to nullptr in Generator.
 
