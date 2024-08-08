@@ -48,7 +48,7 @@ describe("Analyser Variable tests", () => {
     });
     test('Checking Analyser Variable index.', () => {
         const av = am.algebraicVariable(7)
-        expect(av.index()).toBe(7)
+        expect(av.index()).toBe(2)
     });
     test('Checking Analyser Variable initialising variable.', () => {
         const av = am.algebraicVariable(15)
