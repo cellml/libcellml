@@ -31,24 +31,17 @@ struct AnalyserEquation::AnalyserEquationImpl
 {
     AnalyserEquation::Type mType = AnalyserEquation::Type::ALGEBRAIC;
     AnalyserEquationAstPtr mAst;
-    std::vector<AnalyserEquationWeakPtr> mDependencies;
     size_t mNlaSystemIndex;
-    std::vector<AnalyserEquationWeakPtr> mNlaSiblings;
     bool mIsStateRateBased = false;
+
     std::vector<AnalyserVariablePtr> mComputedConstants;
     std::vector<AnalyserVariablePtr> mAlgebraic;
     std::vector<AnalyserVariablePtr> mExternals;
 
-    static AnalyserEquationPtr create();
+    std::vector<AnalyserEquationWeakPtr> mDependencies;
+    std::vector<AnalyserEquationWeakPtr> mNlaSiblings;
 
-    void populate(AnalyserEquation::Type type,
-                  const AnalyserEquationAstPtr &ast,
-                  const std::vector<AnalyserEquationPtr> &dependencies,
-                  size_t nlaSystemIndex,
-                  const std::vector<AnalyserEquationPtr> &nlaSiblings,
-                  const std::vector<AnalyserVariablePtr> &computedConstants,
-                  const std::vector<AnalyserVariablePtr> &algebraic,
-                  const std::vector<AnalyserVariablePtr> &externals);
+    static AnalyserEquationPtr create();
 
     static bool isEmptyDependency(const AnalyserEquationWeakPtr &dependency);
 

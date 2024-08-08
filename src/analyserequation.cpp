@@ -28,26 +28,6 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
     return std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
 }
 
-void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
-                                                      const AnalyserEquationAstPtr &ast,
-                                                      const std::vector<AnalyserEquationPtr> &dependencies,
-                                                      size_t nlaSystemIndex,
-                                                      const std::vector<AnalyserEquationPtr> &nlaSiblings,
-                                                      const std::vector<AnalyserVariablePtr> &computedConstants,
-                                                      const std::vector<AnalyserVariablePtr> &algebraic,
-                                                      const std::vector<AnalyserVariablePtr> &externals)
-{
-    mType = type;
-    mAst = ast;
-    mNlaSystemIndex = nlaSystemIndex;
-
-    std::copy(dependencies.begin(), dependencies.end(), back_inserter(mDependencies));
-    std::copy(nlaSiblings.begin(), nlaSiblings.end(), back_inserter(mNlaSiblings));
-    std::copy(computedConstants.begin(), computedConstants.end(), back_inserter(mComputedConstants));
-    std::copy(algebraic.begin(), algebraic.end(), back_inserter(mAlgebraic));
-    std::copy(externals.begin(), externals.end(), back_inserter(mExternals));
-}
-
 bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
 {
     auto computedConstants = dependency.lock()->computedConstants();

@@ -3144,46 +3144,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     // Make our internal equations available through our API.
 
     for (const auto &internalEquation : mInternalEquations) {
-        // Determine all the variables computed by the equation, as well as
-        // whether the equation is an external one.
+        // Determine whether the equation is an external one.
 
-        AnalyserVariablePtrs computedConstants;
-        AnalyserVariablePtrs algebraic;
-        AnalyserVariablePtrs externals;
         auto externalEquation = true;
 
         for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
-            auto variable = aiv2avMappings[unknownVariable];
-
-            switch (variable->type()) {
-            case AnalyserVariable::Type::STATE:
-                algebraic.push_back(variable); //---GRY--- states.push_back(variable);
-
-                break;
-            case AnalyserVariable::Type::CONSTANT:
-                algebraic.push_back(variable); //---GRY--- constants.push_back(variable);
-
-                break;
-            case AnalyserVariable::Type::COMPUTED_CONSTANT:
-                computedConstants.push_back(variable);
-
-                break;
-            case AnalyserVariable::Type::ALGEBRAIC:
-                algebraic.push_back(variable);
-
-                break;
-            case AnalyserVariable::Type::EXTERNAL:
-                externals.push_back(variable);
-
-                break;
-            default: // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
-                // This is the variable of integration, which cannot be computed.
-
-                break;
-            }
-
-            if (variable->type() != AnalyserVariable::Type::EXTERNAL) {
+            if (aiv2avMappings[unknownVariable]->type() != AnalyserVariable::Type::EXTERNAL) {
                 externalEquation = false;
+
+                break;
             }
         }
 
@@ -3300,16 +3269,45 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         auto equation = aie2aeMappings[internalEquation];
 
-        equation->mPimpl->populate(type,
-                                   (type == AnalyserEquation::Type::EXTERNAL) ?
-                                       nullptr :
-                                       internalEquation->mAst,
-                                   equationDependencies,
-                                   internalEquation->mNlaSystemIndex,
-                                   equationNlaSiblings,
-                                   computedConstants,
-                                   algebraic,
-                                   externals);
+        equation->mPimpl->mType = type;
+        equation->mPimpl->mAst = (type == AnalyserEquation::Type::EXTERNAL) ?
+                                     nullptr :
+                                     internalEquation->mAst;
+        equation->mPimpl->mNlaSystemIndex = internalEquation->mNlaSystemIndex;
+
+        for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
+            auto variable = aiv2avMappings[unknownVariable];
+
+            switch (variable->type()) {
+            case AnalyserVariable::Type::STATE:
+                equation->mPimpl->mAlgebraic.push_back(variable); //---GRY--- equation->mPimpl->mStates.push_back(variable);
+
+                break;
+            case AnalyserVariable::Type::CONSTANT:
+                equation->mPimpl->mAlgebraic.push_back(variable); //---GRY--- equation->mPimpl->mConstants.push_back(variable);
+
+                break;
+            case AnalyserVariable::Type::COMPUTED_CONSTANT:
+                equation->mPimpl->mComputedConstants.push_back(variable);
+
+                break;
+            case AnalyserVariable::Type::ALGEBRAIC:
+                equation->mPimpl->mAlgebraic.push_back(variable);
+
+                break;
+            case AnalyserVariable::Type::EXTERNAL:
+                equation->mPimpl->mExternals.push_back(variable);
+
+                break;
+            default: // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
+                // This is the variable of integration, which cannot be computed.
+
+                break;
+            }
+        }
+
+        std::copy(equationDependencies.begin(), equationDependencies.end(), back_inserter(equation->mPimpl->mDependencies));
+        std::copy(equationNlaSiblings.begin(), equationNlaSiblings.end(), back_inserter(equation->mPimpl->mNlaSiblings));
 
         mModel->mPimpl->mEquations.push_back(equation);
     }

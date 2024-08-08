@@ -1897,7 +1897,9 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
 
         // Initialise our true constants.
 
-        for (const auto &equation : mModel->equations()) {
+        auto equations = mModel->equations();
+
+        for (const auto &equation : equations) {
             if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
@@ -1921,14 +1923,13 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         // Initialise our external variables.
 
         if (mModel->hasExternalVariables()) {
-            auto equations = mModel->equations();
             std::vector<AnalyserEquationPtr> remainingExternalEquations;
 
             std::copy_if(equations.begin(), equations.end(),
                          std::back_inserter(remainingExternalEquations),
                          [](const AnalyserEquationPtr &equation) { return equation->type() == AnalyserEquation::Type::EXTERNAL; });
 
-            for (const auto &equation : mModel->equations()) {
+            for (const auto &equation : equations) {
                 if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
                     methodBody += generateEquationCode(equation, remainingExternalEquations);
                 }
