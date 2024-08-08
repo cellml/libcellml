@@ -594,9 +594,9 @@ TEST(Coverage, generator)
     EXPECT_EQ("dae", libcellml::AnalyserModel::typeAsString(analyserModel->type()));
 
     EXPECT_EQ(size_t(1), analyserModel->stateCount());
-    EXPECT_EQ(size_t(0), analyserModel->constantCount());
-    EXPECT_EQ(size_t(0), analyserModel->computedConstantCount());
-    EXPECT_EQ(size_t(209), analyserModel->algebraicCount());
+    EXPECT_EQ(size_t(7), analyserModel->constantCount());
+    EXPECT_EQ(size_t(200), analyserModel->computedConstantCount());
+    EXPECT_EQ(size_t(2), analyserModel->algebraicCount());
     EXPECT_EQ(size_t(203), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
@@ -608,9 +608,9 @@ TEST(Coverage, generator)
     EXPECT_NE(size_t(0), analyserModel->state(0)->equations().size());
     EXPECT_NE(nullptr, analyserModel->state(0)->equation(0));
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
-    EXPECT_EQ(nullptr, analyserModel->constant(0));
+    EXPECT_NE(nullptr, analyserModel->constant(0));
     EXPECT_EQ(nullptr, analyserModel->constant(analyserModel->constantCount()));
-    EXPECT_EQ(nullptr, analyserModel->computedConstant(0));
+    EXPECT_NE(nullptr, analyserModel->computedConstant(0));
     EXPECT_EQ(nullptr, analyserModel->computedConstant(analyserModel->computedConstantCount()));
     EXPECT_NE(nullptr, analyserModel->algebraic(0));
     EXPECT_EQ(nullptr, analyserModel->algebraic(analyserModel->algebraicCount()));
@@ -652,27 +652,11 @@ TEST(Coverage, generator)
     }
 
     for (size_t i = 0; i < analyserModel->constantCount(); ++i) {
-        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206)) {
-            EXPECT_TRUE(analyserModel->constant(i)->initialisingVariable() != nullptr);
-        }
-    }
-
-    for (size_t i = 0; i < analyserModel->computedConstantCount(); ++i) {
-        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206)) {
-            EXPECT_TRUE(analyserModel->computedConstant(i)->initialisingVariable() != nullptr);
-        }
+        EXPECT_NE(nullptr, analyserModel->constant(i)->initialisingVariable());
     }
 
     for (size_t i = 0; i < analyserModel->algebraicCount(); ++i) {
-        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206)) {
-            EXPECT_TRUE(analyserModel->algebraic(i)->initialisingVariable() != nullptr);
-        }
-    }
-
-    for (size_t i = 0; i < analyserModel->externalCount(); ++i) {
-        if ((i == 1) || (i == 2) || (i == 6) || (i == 18) || (i == 179) || (i == 180) || (i == 182) || (i == 205) || (i == 206)) {
-            EXPECT_TRUE(analyserModel->external(i)->initialisingVariable() != nullptr);
-        }
+        EXPECT_NE(nullptr, analyserModel->algebraic(i)->initialisingVariable());
     }
 
     EXPECT_EQ(nullptr, generator->model());

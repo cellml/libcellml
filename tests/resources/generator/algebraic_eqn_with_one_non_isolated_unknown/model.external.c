@@ -9,9 +9,9 @@ const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t CONSTANT_COUNT = 0;
-const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 4;
-const size_t EXTERNAL_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 3;
+const size_t ALGEBRAIC_COUNT = 0;
+const size_t EXTERNAL_COUNT = 1;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"b", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},

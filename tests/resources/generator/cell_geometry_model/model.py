@@ -7,10 +7,9 @@ from math import *
 __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
-CONSTANT_COUNT = 0
-COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 4
-EXTERNAL_COUNT = 0
+CONSTANT_COUNT = 2
+COMPUTED_CONSTANT_COUNT = 2
+ALGEBRAIC_COUNT = 0
 
 
 class VariableType(Enum):
@@ -20,9 +19,9 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "L", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT},
     {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.CONSTANT},
+    {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.COMPUTED_CONSTANT}
 ]
 

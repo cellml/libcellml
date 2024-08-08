@@ -9,10 +9,10 @@ const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 4;
-const size_t CONSTANT_COUNT = 0;
-const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 18;
-const size_t EXTERNAL_COUNT = 0;
+const size_t CONSTANT_COUNT = 3;
+const size_t COMPUTED_CONSTANT_COUNT = 3;
+const size_t ALGEBRAIC_COUNT = 10;
+const size_t EXTERNAL_COUNT = 2;
 
 const VariableInfo VOI_INFO = {"time", "millisecond", "environment", VARIABLE_OF_INTEGRATION};
 
@@ -24,24 +24,24 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo VARIABLE_INFO[] = {
+    {"E_R", "millivolt", "membrane", CONSTANT},
+    {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
+    {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
+    {"E_L", "millivolt", "leakage_current", COMPUTED_CONSTANT},
+    {"E_Na", "millivolt", "sodium_channel", COMPUTED_CONSTANT},
+    {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
     {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
     {"i_L", "microA_per_cm2", "leakage_current", ALGEBRAIC},
     {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
     {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
-    {"Cm", "microF_per_cm2", "membrane", EXTERNAL},
-    {"E_R", "millivolt", "membrane", CONSTANT},
-    {"E_L", "millivolt", "leakage_current", COMPUTED_CONSTANT},
-    {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
-    {"E_Na", "millivolt", "sodium_channel", COMPUTED_CONSTANT},
-    {"g_Na", "milliS_per_cm2", "sodium_channel", EXTERNAL},
     {"alpha_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"beta_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"alpha_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
     {"beta_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
-    {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
-    {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
+    {"Cm", "microF_per_cm2", "membrane", EXTERNAL},
+    {"g_Na", "milliS_per_cm2", "sodium_channel", EXTERNAL}
 };
 
 double * createStatesArray()
