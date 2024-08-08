@@ -3147,13 +3147,40 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // Determine all the variables computed by the equation, as well as
         // whether the equation is an external one.
 
+        AnalyserVariablePtrs computedConstants;
         AnalyserVariablePtrs algebraic;
+        AnalyserVariablePtrs externals;
         auto externalEquation = true;
 
         for (const auto &unknownVariable : internalEquation->mUnknownVariables) {
             auto variable = aiv2avMappings[unknownVariable];
 
-            algebraic.push_back(variable);
+            switch (variable->type()) {
+            case AnalyserVariable::Type::STATE:
+                algebraic.push_back(variable); //---GRY--- states.push_back(variable);
+
+                break;
+            case AnalyserVariable::Type::CONSTANT:
+                algebraic.push_back(variable); //---GRY--- constants.push_back(variable);
+
+                break;
+            case AnalyserVariable::Type::COMPUTED_CONSTANT:
+                computedConstants.push_back(variable);
+
+                break;
+            case AnalyserVariable::Type::ALGEBRAIC:
+                algebraic.push_back(variable);
+
+                break;
+            case AnalyserVariable::Type::EXTERNAL:
+                externals.push_back(variable);
+
+                break;
+            default: // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
+                // This is the variable of integration, which cannot be computed.
+
+                break;
+            }
 
             if (variable->type() != AnalyserVariable::Type::EXTERNAL) {
                 externalEquation = false;
@@ -3280,9 +3307,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                    equationDependencies,
                                    internalEquation->mNlaSystemIndex,
                                    equationNlaSiblings,
-                                   {},
+                                   computedConstants,
                                    algebraic,
-                                   {});
+                                   externals);
 
         mModel->mPimpl->mEquations.push_back(equation);
     }
