@@ -514,9 +514,8 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
         && !mProfile->algebraicVariableTypeString().empty()
         && !mProfile->externalVariableTypeString().empty()) {
         std::string infoElementsCode;
-        auto variables = libcellml::variables(mModel);
 
-        for (const auto &variable : variables) {
+        for (const auto &variable : variables(mModel)) {
             if (!infoElementsCode.empty()) {
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
@@ -805,21 +804,20 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
                 std::string methodBody;
                 auto i = MAX_SIZE_T;
                 auto variables = libcellml::variables(equation);
-                auto variablesCount = variables.size();
 
-                for (i = 0; i < variablesCount; ++i) {
-                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                for (const auto &variable : variables) {
+                    auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
-                                       (variables[i]->type() == AnalyserVariable::Type::CONSTANT) ?
+                                       (variable->type() == AnalyserVariable::Type::CONSTANT) ?
                                            mProfile->constantsArrayString() :
-                                       (variables[i]->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
+                                       (variable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) ?
                                            mProfile->computedConstantsArrayString() :
                                            mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
+                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
@@ -852,17 +850,21 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 methodBody = {};
 
-                for (i = 0; i < variablesCount; ++i) {
-                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                i = MAX_SIZE_T;
+
+                for (const auto &variable : variables) {
+                    auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
                                            mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
-                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
+                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
+
+                auto variablesCount = variables.size();
 
                 methodBody += newLineIfNeeded()
                               + mProfile->indentString()
@@ -872,15 +874,17 @@ void Generator::GeneratorImpl::addNlaSystemsCode()
 
                 methodBody += newLineIfNeeded();
 
-                for (i = 0; i < variablesCount; ++i) {
-                    auto arrayString = (variables[i]->type() == AnalyserVariable::Type::STATE) ?
+                i = MAX_SIZE_T;
+
+                for (const auto &variable : variables) {
+                    auto arrayString = (variable->type() == AnalyserVariable::Type::STATE) ?
                                            mProfile->ratesArrayString() :
                                            mProfile->algebraicArrayString();
 
                     methodBody += mProfile->indentString()
-                                  + arrayString + mProfile->openArrayString() + convertToString(variables[i]->index()) + mProfile->closeArrayString()
+                                  + arrayString + mProfile->openArrayString() + convertToString(variable->index()) + mProfile->closeArrayString()
                                   + mProfile->equalityString()
-                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(i) + mProfile->closeArrayString()
+                                  + mProfile->uArrayString() + mProfile->openArrayString() + convertToString(++i) + mProfile->closeArrayString()
                                   + mProfile->commandSeparatorString() + "\n";
                 }
 
@@ -1772,11 +1776,9 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
         // Generate the equation code itself, based on the equation type.
 
-        auto variables = libcellml::variables(equation);
-
         switch (equation->type()) {
         case AnalyserEquation::Type::EXTERNAL:
-            for (const auto &variable : variables) {
+            for (const auto &variable : variables(equation)) {
                 res += mProfile->indentString()
                        + generateVariableNameCode(variable->variable())
                        + mProfile->equalityString()
@@ -1864,9 +1866,8 @@ void Generator::GeneratorImpl::addImplementationInitialiseVariablesMethodCode(st
         //       such an NLA system has only one solution.
 
         std::string methodBody;
-        auto variables = libcellml::variables(mModel);
 
-        for (const auto &variable : variables) {
+        for (const auto &variable : variables(mModel)) {
             switch (variable->type()) {
             case AnalyserVariable::Type::CONSTANT:
                 methodBody += generateInitialisationCode(variable);
@@ -1963,11 +1964,10 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             // or RHS of the equation.
 
             auto variables = libcellml::variables(equation);
-            auto variablesCount = variables.size();
 
             if ((equation->type() == AnalyserEquation::Type::ODE)
                 || ((equation->type() == AnalyserEquation::Type::NLA)
-                    && (variablesCount == 1)
+                    && (variables.size() == 1)
                     && (variables[0]->type() == AnalyserVariable::Type::STATE))) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
