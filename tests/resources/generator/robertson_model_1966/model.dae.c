@@ -9,10 +9,9 @@ const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 2;
-const size_t CONSTANT_COUNT = 0;
+const size_t CONSTANT_COUNT = 3;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 5;
-const size_t EXTERNAL_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 2;
 
 const VariableInfo VOI_INFO = {"t", "dimensionless", "main", VARIABLE_OF_INTEGRATION};
 
@@ -24,8 +23,8 @@ const VariableInfo STATE_INFO[] = {
 const VariableInfo VARIABLE_INFO[] = {
     {"k1", "dimensionless", "main", CONSTANT},
     {"k3", "dimensionless", "main", CONSTANT},
-    {"y3", "dimensionless", "main", ALGEBRAIC},
     {"k2", "dimensionless", "main", CONSTANT},
+    {"y3", "dimensionless", "main", ALGEBRAIC},
     {"y2_scaled", "dimensionless", "main", ALGEBRAIC}
 };
 
@@ -94,8 +93,8 @@ void initialiseVariables(double *states, double *rates, double *constants)
 {
     constants[0] = 0.04;
     constants[1] = 1.0e4;
-    algebraic[0] = 0.0;
     constants[2] = 3.0e7;
+    algebraic[0] = 0.0;
     states[0] = 1.0;
     states[1] = 0.0;
 }

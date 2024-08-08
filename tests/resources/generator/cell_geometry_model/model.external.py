@@ -9,8 +9,8 @@ LIBCELLML_VERSION = "0.5.0"
 
 CONSTANT_COUNT = 0
 COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 4
-EXTERNAL_COUNT = 0
+ALGEBRAIC_COUNT = 2
+EXTERNAL_COUNT = 2
 
 
 class VariableType(Enum):
@@ -22,9 +22,9 @@ class VariableType(Enum):
 
 VARIABLE_INFO = [
     {"name": "vcell", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC},
+    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC},
     {"name": "L", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL},
-    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL},
-    {"name": "vss", "units": "microlitre", "component": "cell_geometry", "type": VariableType.ALGEBRAIC}
+    {"name": "rad", "units": "centimeter", "component": "cell_geometry", "type": VariableType.EXTERNAL}
 ]
 
 

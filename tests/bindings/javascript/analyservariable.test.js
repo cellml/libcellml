@@ -37,9 +37,9 @@ describe("Analyser Variable tests", () => {
 
         am = a.model()
 
-        expect(am.constantCount()).toBe(0)
-        expect(am.computedConstantCount()).toBe(0)
-        expect(am.algebraicCount()).toBe(18)
+        expect(am.constantCount()).toBe(5)
+        expect(am.computedConstantCount()).toBe(3)
+        expect(am.algebraicCount()).toBe(10)
     });
     test('Checking Analyser Variable type.', () => {
         const av = am.algebraicVariable(0)
@@ -48,26 +48,26 @@ describe("Analyser Variable tests", () => {
     });
     test('Checking Analyser Variable index.', () => {
         const av = am.algebraicVariable(7)
-        expect(av.index()).toBe(2)
+        expect(av.index()).toBe(7)
     });
     test('Checking Analyser Variable initialising variable.', () => {
-        const av = am.algebraicVariable(15)
-        expect(av.initialisingVariable().name()).toBe("g_K")
+        const av = am.constant(3)
+        expect(av.initialisingVariable().name()).toBe("g_Na")
     });
     test('Checking Analyser Variable variable.', () => {
-        const av = am.algebraicVariable(10)
-        expect(av.variable().name()).toBe("alpha_m")
+        const av = am.algebraicVariable(3)
+        expect(av.variable().name()).toBe("i_Na")
     });
     test('Checking Analyser Equation equationCount.', () => {
-        const av = am.algebraicVariable(14)
+        const av = am.computedConstant(1)
         expect(av.equationCount()).toBe(1)
     });
     test('Checking Analyser Variable equations.', () => {
-        const av = am.algebraicVariable(14)
+        const av = am.computedConstant(1)
         expect(av.equations().size()).toBe(1)
     });
     test('Checking Analyser Variable equation.', () => {
-        const av = am.algebraicVariable(14)
+        const av = am.computedConstant(1)
         expect(av.equation(0).type().value).toBe(libcellml.AnalyserEquation.Type.VARIABLE_BASED_CONSTANT.value)
     });
  })

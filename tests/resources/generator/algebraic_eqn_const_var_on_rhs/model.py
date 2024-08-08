@@ -7,10 +7,9 @@ from math import *
 __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
-CONSTANT_COUNT = 0
-COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 2
-EXTERNAL_COUNT = 0
+CONSTANT_COUNT = 1
+COMPUTED_CONSTANT_COUNT = 1
+ALGEBRAIC_COUNT = 0
 
 
 class VariableType(Enum):
@@ -20,8 +19,8 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.CONSTANT}
+    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.CONSTANT},
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn", "type": VariableType.COMPUTED_CONSTANT}
 ]
 
 

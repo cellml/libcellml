@@ -9,10 +9,9 @@ const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 1;
-const size_t CONSTANT_COUNT = 0;
-const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 209;
-const size_t EXTERNAL_COUNT = 0;
+const size_t CONSTANT_COUNT = 7;
+const size_t COMPUTED_CONSTANT_COUNT = 200;
+const size_t ALGEBRAIC_COUNT = 2;
 
 const VariableInfo VOI_INFO = {"t", "second", "my_component", VARIABLE_OF_INTEGRATION};
 
@@ -21,13 +20,17 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"eqnEq", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"m", "dimensionless", "my_component", CONSTANT},
     {"n", "dimensionless", "my_component", CONSTANT},
+    {"o", "dimensionless", "my_component", CONSTANT},
+    {"p", "dimensionless", "my_component", CONSTANT},
+    {"q", "dimensionless", "my_component", CONSTANT},
+    {"r", "dimensionless", "my_component", CONSTANT},
+    {"s", "dimensionless", "my_component", CONSTANT},
+    {"eqnEq", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnEqCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNeq", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnNeqCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"o", "dimensionless", "my_component", CONSTANT},
     {"eqnLt", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnLtCoverageParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnLeq", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -39,7 +42,6 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnAnd", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndMultiple", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndParentheses", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"p", "dimensionless", "my_component", CONSTANT},
     {"eqnAndParenthesesLeftPlusWith", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndParenthesesLeftPlusWithout", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnAndParenthesesLeftMinusWith", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -200,10 +202,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnPiecewisePiece", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewisePieceOtherwise", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnPiecewisePiecePiecePiece", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"q", "dimensionless", "my_component", CONSTANT},
-    {"r", "dimensionless", "my_component", CONSTANT},
     {"eqnPiecewisePiecePiecePieceOtherwise", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"s", "dimensionless", "my_component", CONSTANT},
     {"eqnWithPiecewise", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCnInteger", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCnDouble", "dimensionless", "my_component", COMPUTED_CONSTANT},
@@ -226,10 +225,10 @@ const VariableInfo VARIABLE_INFO[] = {
     {"eqnCoverageForPowerOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForRootOperator", "dimensionless", "my_component", COMPUTED_CONSTANT},
     {"eqnCoverageForMinusUnary", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnNlaVariable1", "dimensionless", "my_component", ALGEBRAIC},
-    {"eqnNlaVariable2", "dimensionless", "my_component", ALGEBRAIC},
     {"eqnComputedConstant1", "dimensionless", "my_component", COMPUTED_CONSTANT},
-    {"eqnComputedConstant2", "dimensionless", "my_component", COMPUTED_CONSTANT}
+    {"eqnComputedConstant2", "dimensionless", "my_component", COMPUTED_CONSTANT},
+    {"eqnNlaVariable1", "dimensionless", "my_component", ALGEBRAIC},
+    {"eqnNlaVariable2", "dimensionless", "my_component", ALGEBRAIC}
 };
 
 double xor(double x, double y)

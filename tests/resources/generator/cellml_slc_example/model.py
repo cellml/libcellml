@@ -7,10 +7,9 @@ from math import *
 __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
-CONSTANT_COUNT = 0
-COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 10
-EXTERNAL_COUNT = 0
+CONSTANT_COUNT = 9
+COMPUTED_CONSTANT_COUNT = 1
+ALGEBRAIC_COUNT = 0
 
 
 class VariableType(Enum):
@@ -20,7 +19,6 @@ class VariableType(Enum):
 
 
 VARIABLE_INFO = [
-    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "E", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
     {"name": "P_0", "units": "per_fmol_sec4", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
     {"name": "q_Ao", "units": "fmol", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
@@ -29,7 +27,8 @@ VARIABLE_INFO = [
     {"name": "P_2", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
     {"name": "P_5", "units": "per_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
     {"name": "P_4", "units": "per_fmol2_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
-    {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT}
+    {"name": "P_3", "units": "per_fmol_sec3", "component": "SLC_template3_ss", "type": VariableType.CONSTANT},
+    {"name": "v", "units": "fmol_per_sec", "component": "SLC_template3_ss", "type": VariableType.COMPUTED_CONSTANT}
 ]
 
 

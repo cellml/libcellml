@@ -9,10 +9,9 @@ const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 1;
-const size_t CONSTANT_COUNT = 0;
-const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 10;
-const size_t EXTERNAL_COUNT = 0;
+const size_t CONSTANT_COUNT = 2;
+const size_t COMPUTED_CONSTANT_COUNT = 5;
+const size_t ALGEBRAIC_COUNT = 3;
 
 const VariableInfo VOI_INFO = {"x", "dimensionless", "main", VARIABLE_OF_INTEGRATION};
 
@@ -21,15 +20,15 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
     {"deriv_approx_initial_value", "dimensionless", "main", CONSTANT},
-    {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
     {"C", "dimensionless", "main", CONSTANT},
     {"k2_oPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"k2Pi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_2", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_32", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
+    {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
+    {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
     {"z", "dimensionless", "parabolic_approx_sin", ALGEBRAIC}
 };
 

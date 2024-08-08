@@ -8,10 +8,9 @@ __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 2
-CONSTANT_COUNT = 0
+CONSTANT_COUNT = 3
 COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 5
-EXTERNAL_COUNT = 0
+ALGEBRAIC_COUNT = 2
 
 
 class VariableType(Enum):
@@ -32,8 +31,8 @@ STATE_INFO = [
 VARIABLE_INFO = [
     {"name": "k1", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
     {"name": "k3", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "y3", "units": "dimensionless", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "k2", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
+    {"name": "y3", "units": "dimensionless", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "y2_scaled", "units": "dimensionless", "component": "main", "type": VariableType.ALGEBRAIC}
 ]
 
@@ -73,8 +72,8 @@ def find_root_0(voi, states, rates, variables):
 def initialise_variables(states, rates, constants):
     constants[0] = 0.04
     constants[1] = 1.0e4
-    algebraic[0] = 0.0
     constants[2] = 3.0e7
+    algebraic[0] = 0.0
     states[0] = 1.0
     states[1] = 0.0
 

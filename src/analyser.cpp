@@ -3134,10 +3134,31 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         aiv2avMappings.emplace(internalVariable, variable);
         v2avMappings.emplace(internalVariable->mVariable, variable);
 
-        if (type == AnalyserVariable::Type::STATE) {
+        switch (type) {
+        case AnalyserVariable::Type::STATE:
             mModel->mPimpl->mStates.push_back(variable);
-        } else {
+
+            break;
+        case AnalyserVariable::Type::CONSTANT:
+            mModel->mPimpl->mConstants.push_back(variable);
+
+            break;
+        case AnalyserVariable::Type::COMPUTED_CONSTANT:
+            mModel->mPimpl->mComputedConstants.push_back(variable);
+
+            break;
+        case AnalyserVariable::Type::ALGEBRAIC:
             mModel->mPimpl->mAlgebraic.push_back(variable);
+
+            break;
+        case AnalyserVariable::Type::EXTERNAL:
+            mModel->mPimpl->mExternals.push_back(variable);
+
+            break;
+        default: // AnalyserVariable::Type::VARIABLE_OF_INTEGRATION.
+            // This is the variable of integration, so skip it.
+
+            break;
         }
     }
 
