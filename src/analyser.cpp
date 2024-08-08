@@ -3300,16 +3300,18 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         auto equation = aie2aeMappings[internalEquation];
 
-        equation->mPimpl->populate(type,
-                                   (type == AnalyserEquation::Type::EXTERNAL) ?
-                                       nullptr :
-                                       internalEquation->mAst,
-                                   equationDependencies,
-                                   internalEquation->mNlaSystemIndex,
-                                   equationNlaSiblings,
-                                   computedConstants,
-                                   algebraic,
-                                   externals);
+        equation->mPimpl->mType = type;
+        equation->mPimpl->mAst = (type == AnalyserEquation::Type::EXTERNAL) ?
+                                     nullptr :
+                                     internalEquation->mAst;
+        equation->mPimpl->mNlaSystemIndex = internalEquation->mNlaSystemIndex;
+
+        std::copy(computedConstants.begin(), computedConstants.end(), back_inserter(equation->mPimpl->mComputedConstants));
+        std::copy(algebraic.begin(), algebraic.end(), back_inserter(equation->mPimpl->mAlgebraic));
+        std::copy(externals.begin(), externals.end(), back_inserter(equation->mPimpl->mExternals));
+
+        std::copy(equationDependencies.begin(), equationDependencies.end(), back_inserter(equation->mPimpl->mDependencies));
+        std::copy(equationNlaSiblings.begin(), equationNlaSiblings.end(), back_inserter(equation->mPimpl->mNlaSiblings));
 
         mModel->mPimpl->mEquations.push_back(equation);
     }
