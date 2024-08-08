@@ -1344,6 +1344,12 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation)
         res.insert(res.end(), algebraic.begin(), algebraic.end());
     }
 
+    auto externals = equation->externals();
+
+    if (!externals.empty()) {
+        res.insert(res.end(), externals.begin(), externals.end());
+    }
+
     return res;
 }
 
