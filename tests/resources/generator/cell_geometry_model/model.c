@@ -8,15 +8,14 @@
 const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t CONSTANT_COUNT = 0;
-const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 4;
-const size_t EXTERNAL_COUNT = 0;
+const size_t CONSTANT_COUNT = 2;
+const size_t COMPUTED_CONSTANT_COUNT = 2;
+const size_t ALGEBRAIC_COUNT = 0;
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"vcell", "microlitre", "cell_geometry", COMPUTED_CONSTANT},
     {"L", "centimeter", "cell_geometry", CONSTANT},
     {"rad", "centimeter", "cell_geometry", CONSTANT},
+    {"vcell", "microlitre", "cell_geometry", COMPUTED_CONSTANT},
     {"vss", "microlitre", "cell_geometry", COMPUTED_CONSTANT}
 };
 

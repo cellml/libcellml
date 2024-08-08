@@ -8,10 +8,9 @@ __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 1
-CONSTANT_COUNT = 0
-COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 10
-EXTERNAL_COUNT = 0
+CONSTANT_COUNT = 2
+COMPUTED_CONSTANT_COUNT = 5
+ALGEBRAIC_COUNT = 3
 
 
 class VariableType(Enum):
@@ -29,15 +28,15 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"name": "sin", "units": "dimensionless", "component": "actual_sin", "type": VariableType.ALGEBRAIC},
     {"name": "deriv_approx_initial_value", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "sin", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.ALGEBRAIC},
     {"name": "C", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
     {"name": "k2_oPi", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "k2Pi", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "kPi_2", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "kPi", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "kPi_32", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "sin", "units": "dimensionless", "component": "actual_sin", "type": VariableType.ALGEBRAIC},
+    {"name": "sin", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.ALGEBRAIC},
     {"name": "z", "units": "dimensionless", "component": "parabolic_approx_sin", "type": VariableType.ALGEBRAIC}
 ]
 

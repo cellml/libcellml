@@ -62,18 +62,18 @@ describe("Analyser Model tests", () => {
         expect(am.state(2).variable().name()).toBe("m")
     });
     test('Checking Analyser Model constants related API.', () => {
-        expect(am.constantCount()).toBe(0)
-        expect(am.constants().size()).toBe(0)
-        expect(am.constant(2)).toBeNull()
+        expect(am.constantCount()).toBe(5)
+        expect(am.constants().size()).toBe(5)
+        expect(am.constant(2).variable().name()).toBe("g_L")
     });
     test('Checking Analyser Model computed constants related API.', () => {
-        expect(am.computedConstantCount()).toBe(0)
-        expect(am.computedConstants().size()).toBe(0)
-        expect(am.computedConstant(2)).toBeNull()
+        expect(am.computedConstantCount()).toBe(3)
+        expect(am.computedConstants().size()).toBe(3)
+        expect(am.computedConstant(2).variable().name()).toBe("E_K")
     });
     test('Checking Analyser Model algebraic variables related API.', () => {
-        expect(am.algebraicCount()).toBe(18)
-        expect(am.algebraicVariables().size()).toBe(18)
+        expect(am.algebraicCount()).toBe(10)
+        expect(am.algebraicVariables().size()).toBe(10)
         expect(am.algebraicVariable(2).variable().name()).toBe("i_K")
     });
     test('Checking Analyser Model need* API.', () => {

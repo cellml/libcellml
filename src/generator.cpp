@@ -95,15 +95,7 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         res = doAnalyserVariable(variable, mModel->states());
 
         if (res == nullptr) {
-            res = doAnalyserVariable(variable, mModel->constants());
-        }
-
-        if (res == nullptr) {
-            res = doAnalyserVariable(variable, mModel->computedConstants());
-        }
-
-        if (res == nullptr) {
-            res = doAnalyserVariable(variable, mModel->algebraic());
+            res = doAnalyserVariable(variable, variables(mModel));
         }
     }
 
@@ -357,8 +349,9 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
                             "[ALGEBRAIC_COUNT]", std::to_string(mModel->algebraicCount()));
     }
 
-    if ((interface && !mProfile->interfaceExternalCountString().empty())
-        || (!interface && !mProfile->implementationExternalCountString().empty())) {
+    if ((mModel->externalCount() != 0)
+        && ((interface && !mProfile->interfaceExternalCountString().empty())
+            || (!interface && !mProfile->implementationExternalCountString().empty()))) {
         code += interface ?
                     mProfile->interfaceExternalCountString() :
                     replace(mProfile->implementationExternalCountString(),

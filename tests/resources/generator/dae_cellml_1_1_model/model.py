@@ -8,10 +8,9 @@ __version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 2
-CONSTANT_COUNT = 0
+CONSTANT_COUNT = 5
 COMPUTED_CONSTANT_COUNT = 0
-ALGEBRAIC_COUNT = 10
-EXTERNAL_COUNT = 0
+ALGEBRAIC_COUNT = 5
 
 
 class VariableType(Enum):
@@ -30,16 +29,16 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"name": "v_1", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "v_in", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "v_2", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "v_out", "units": "C_per_s", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "u_1", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "u_2", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
-    {"name": "u_3", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "C", "units": "C2_per_J", "component": "main", "type": VariableType.CONSTANT},
     {"name": "R", "units": "Js_per_C2", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "L", "units": "Js2_per_C2", "component": "main", "type": VariableType.CONSTANT}
+    {"name": "L", "units": "Js2_per_C2", "component": "main", "type": VariableType.CONSTANT},
+    {"name": "v_1", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
+    {"name": "v_2", "units": "C_per_s", "component": "main", "type": VariableType.ALGEBRAIC},
+    {"name": "u_1", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
+    {"name": "u_2", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC},
+    {"name": "u_3", "units": "J_per_C", "component": "main", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -97,13 +96,13 @@ def find_root_1(voi, states, rates, variables):
 
 
 def initialise_variables(states, rates, constants):
-    algebraic[0] = 0.0
     constants[0] = 1.0
     constants[1] = 1.0
-    algebraic[4] = 0.0
     constants[2] = 20.0
     constants[3] = 2.0
     constants[4] = 10.0
+    algebraic[0] = 0.0
+    algebraic[4] = 0.0
     states[0] = 1.0
     states[1] = 0.0
 

@@ -1332,6 +1332,12 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
         res.insert(res.end(), algebraic.begin(), algebraic.end());
     }
 
+    auto externals = model->externals();
+
+    if (!externals.empty()) {
+        res.insert(res.end(), externals.begin(), externals.end());
+    }
+
     return res;
 }
 

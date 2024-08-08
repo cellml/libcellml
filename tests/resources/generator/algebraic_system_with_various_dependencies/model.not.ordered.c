@@ -8,18 +8,17 @@
 const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t CONSTANT_COUNT = 0;
-const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 6;
-const size_t EXTERNAL_COUNT = 0;
+const size_t CONSTANT_COUNT = 2;
+const size_t COMPUTED_CONSTANT_COUNT = 1;
+const size_t ALGEBRAIC_COUNT = 3;
 
 const VariableInfo VARIABLE_INFO[] = {
+    {"x", "dimensionless", "my_algebraic_system", CONSTANT},
+    {"y", "dimensionless", "my_algebraic_system", CONSTANT},
+    {"a", "dimensionless", "my_algebraic_system", COMPUTED_CONSTANT},
     {"d", "dimensionless", "my_algebraic_system", ALGEBRAIC},
     {"b", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"c", "dimensionless", "my_algebraic_system", ALGEBRAIC},
-    {"a", "dimensionless", "my_algebraic_system", COMPUTED_CONSTANT},
-    {"x", "dimensionless", "my_algebraic_system", CONSTANT},
-    {"y", "dimensionless", "my_algebraic_system", CONSTANT}
+    {"c", "dimensionless", "my_algebraic_system", ALGEBRAIC}
 };
 
 double * createVariablesArray()
@@ -72,10 +71,10 @@ void findRoot0(double *variables)
 
 void initialiseVariables(double *constants)
 {
-    algebraic[1] = 1.0;
-    algebraic[2] = 1.0;
     constants[0] = 3.0;
     constants[1] = 5.0;
+    algebraic[1] = 1.0;
+    algebraic[2] = 1.0;
 }
 
 void computeComputedConstants(double *constants, double *computedConstants)

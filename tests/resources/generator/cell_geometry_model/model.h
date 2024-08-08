@@ -10,7 +10,6 @@ extern const char LIBCELLML_VERSION[];
 extern const size_t CONSTANT_COUNT;
 extern const size_t COMPUTED_CONSTANT_COUNT;
 extern const size_t ALGEBRAIC_COUNT;
-extern const size_t EXTERNAL_COUNT;
 
 typedef enum {
     CONSTANT,

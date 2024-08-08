@@ -9,10 +9,9 @@ const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 2;
-const size_t CONSTANT_COUNT = 0;
+const size_t CONSTANT_COUNT = 5;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
-const size_t ALGEBRAIC_COUNT = 10;
-const size_t EXTERNAL_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 5;
 
 const VariableInfo VOI_INFO = {"t", "second", "main", VARIABLE_OF_INTEGRATION};
 
@@ -22,16 +21,16 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"v_1", "C_per_s", "main", ALGEBRAIC},
     {"v_in", "C_per_s", "main", CONSTANT},
-    {"v_2", "C_per_s", "main", ALGEBRAIC},
     {"v_out", "C_per_s", "main", CONSTANT},
-    {"u_1", "J_per_C", "main", ALGEBRAIC},
-    {"u_2", "J_per_C", "main", ALGEBRAIC},
-    {"u_3", "J_per_C", "main", ALGEBRAIC},
     {"C", "C2_per_J", "main", CONSTANT},
     {"R", "Js_per_C2", "main", CONSTANT},
-    {"L", "Js2_per_C2", "main", CONSTANT}
+    {"L", "Js2_per_C2", "main", CONSTANT},
+    {"v_1", "C_per_s", "main", ALGEBRAIC},
+    {"v_2", "C_per_s", "main", ALGEBRAIC},
+    {"u_1", "J_per_C", "main", ALGEBRAIC},
+    {"u_2", "J_per_C", "main", ALGEBRAIC},
+    {"u_3", "J_per_C", "main", ALGEBRAIC}
 };
 
 double * createStatesArray()
@@ -121,13 +120,13 @@ void findRoot1(double voi, double *states, double *rates, double *variables)
 
 void initialiseVariables(double *states, double *rates, double *constants)
 {
-    algebraic[0] = 0.0;
     constants[0] = 1.0;
     constants[1] = 1.0;
-    algebraic[4] = 0.0;
     constants[2] = 20.0;
     constants[3] = 2.0;
     constants[4] = 10.0;
+    algebraic[0] = 0.0;
+    algebraic[4] = 0.0;
     states[0] = 1.0;
     states[1] = 0.0;
 }
