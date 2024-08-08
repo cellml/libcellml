@@ -51,6 +51,9 @@ EMSCRIPTEN_BINDINGS(libcellml_analyserequation)
         .function("algebraicCount", &libcellml::AnalyserEquation::algebraicCount)
         .function("algebraicVariables", select_overload<std::vector<libcellml::AnalyserVariablePtr>() const>(&libcellml::AnalyserEquation::algebraic))
         .function("algebraicVariable", select_overload<libcellml::AnalyserVariablePtr(size_t) const>(&libcellml::AnalyserEquation::algebraic))
+        .function("externalCount", &libcellml::AnalyserEquation::externalCount)
+        .function("externals", select_overload<std::vector<libcellml::AnalyserVariablePtr>() const>(&libcellml::AnalyserEquation::externals))
+        .function("external", select_overload<libcellml::AnalyserVariablePtr(size_t) const>(&libcellml::AnalyserEquation::external))
     ;
 
     EM_ASM(

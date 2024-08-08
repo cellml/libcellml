@@ -716,6 +716,19 @@ the <COMPUTED_CONSTANT_COUNT> tag, which will be replaced with the number of sta
 "Sets the string for the implementation of the algebraic count constant. To be useful, the string should contain
 the <ALGEBRAIC_COUNT> tag, which will be replaced with the number of states in the model.";
 
+%feature("docstring") libcellml::GeneratorProfile::interfaceExternalCountString
+"Returns the string for the interface of the external count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceExternalCountString
+"Sets the string for the interface of the external count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::implementationExternalCountString
+"Returns the string for the implementation of the external count constant.";
+
+%feature("docstring") libcellml::GeneratorProfile::setImplementationExternalCountString
+"Sets the string for the implementation of the external count constant. To be useful, the string should contain
+the <EXTERNAL_COUNT> tag, which will be replaced with the number of states in the model.";
+
 %feature("docstring") libcellml::GeneratorProfile::variableTypeObjectString
 "Returns the string for the data structure for the variable type object.";
 

@@ -11,6 +11,7 @@ const char LIBCELLML_VERSION[] = "0.5.0";
 const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 10;
+const size_t EXTERNAL_COUNT = 0;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"v", "fmol_per_sec", "SLC_template3_ss", ALGEBRAIC},

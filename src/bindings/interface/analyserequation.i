@@ -61,6 +61,15 @@
 %feature("docstring") libcellml::AnalyserEquation::algebraic
 "Returns the algebraic variable, at the given index, computed by this :class:`AnalyserEquation` object.";
 
+%feature("docstring") libcellml::AnalyserEquation::externalCount
+"Returns the number of external variables computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::externals
+"Returns the external variables computed by this :class:`AnalyserEquation` object.";
+
+%feature("docstring") libcellml::AnalyserEquation::external
+"Returns the external variable, at the given index, computed by this :class:`AnalyserEquation` object.";
+
 %{
 #include "libcellml/analyserequation.h"
 %}

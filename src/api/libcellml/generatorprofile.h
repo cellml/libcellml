@@ -2606,6 +2606,54 @@ public:
     void setImplementationAlgebraicCountString(const std::string &implementationAlgebraicCountString);
 
     /**
+     * @brief Get the @c std::string for the interface of the external count
+     * constant.
+     *
+     * Return the @c std::string for the interface of the external count
+     * constant.
+     *
+     * @return The @c std::string for the interface of the external count
+     * constant.
+     */
+    std::string interfaceExternalCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the external count
+     * constant.
+     *
+     * Set the @c std::string for the interface of the external count constant.
+     *
+     * @param interfaceExternalCountString The @c std::string to use for the
+     * interface of the external count constant.
+     */
+    void setInterfaceExternalCountString(const std::string &interfaceExternalCountString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the external
+     * count constant.
+     *
+     * Return the @c std::string for the implementation of the external count
+     * constant.
+     *
+     * @return The @c std::string for the implementation of the external count
+     * constant.
+     */
+    std::string implementationExternalCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the external
+     * count constant.
+     *
+     * Set the @c std::string for the implementation of the external count
+     * constant. To be useful, the string should contain the [EXTERNAL_COUNT]
+     * tag, which will be replaced with the number of states in the model.
+     *
+     * @param implementationExternalCountString The @c std::string to use for
+     * the implementation of the external count constant.
+     */
+    void setImplementationExternalCountString(const std::string &implementationExternalCountString);
+
+    /**
      * @brief Get the @c std::string for the data structure for the variable
      * type object.
      *

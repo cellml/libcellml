@@ -720,6 +720,18 @@ describe("GeneratorProfile tests", () => {
     x.setImplementationAlgebraicCountString("something")
     expect(x.implementationAlgebraicCountString()).toBe("something")
   });
+  test("Checking GeneratorProfile.interfaceExternalCountString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setInterfaceExternalCountString("something")
+    expect(x.interfaceExternalCountString()).toBe("something")
+  });
+  test("Checking GeneratorProfile.implementationExternalCountString.", () => {
+    const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
+
+    x.setImplementationExternalCountString("something")
+    expect(x.implementationExternalCountString()).toBe("something")
+  });
   test("Checking GeneratorProfile.variableTypeObjectString.", () => {
     const x = new libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.C)
 

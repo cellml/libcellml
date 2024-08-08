@@ -11,6 +11,7 @@ const char LIBCELLML_VERSION[] = "0.5.0";
 const size_t CONSTANT_COUNT = 0;
 const size_t COMPUTED_CONSTANT_COUNT = 0;
 const size_t ALGEBRAIC_COUNT = 6;
+const size_t EXTERNAL_COUNT = 0;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"a", "dimensionless", "my_algebraic_system", COMPUTED_CONSTANT},

@@ -34,7 +34,8 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
                                                       size_t nlaSystemIndex,
                                                       const std::vector<AnalyserEquationPtr> &nlaSiblings,
                                                       const std::vector<AnalyserVariablePtr> &computedConstants,
-                                                      const std::vector<AnalyserVariablePtr> &algebraic)
+                                                      const std::vector<AnalyserVariablePtr> &algebraic,
+                                                      const std::vector<AnalyserVariablePtr> &externals)
 {
     mType = type;
     mAst = ast;
@@ -44,6 +45,7 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
     std::copy(nlaSiblings.begin(), nlaSiblings.end(), back_inserter(mNlaSiblings));
     std::copy(computedConstants.begin(), computedConstants.end(), back_inserter(mComputedConstants));
     std::copy(algebraic.begin(), algebraic.end(), back_inserter(mAlgebraic));
+    std::copy(externals.begin(), externals.end(), back_inserter(mExternals));
 }
 
 bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
@@ -57,6 +59,12 @@ bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEqu
     auto algebraic = dependency.lock()->algebraic();
 
     if (std::any_of(algebraic.begin(), algebraic.end(), [](const auto &v) { return v != nullptr; })) {
+        return false;
+    }
+
+    auto externals = dependency.lock()->externals();
+
+    if (std::any_of(externals.begin(), externals.end(), [](const auto &v) { return v != nullptr; })) {
         return false;
     }
 
@@ -197,6 +205,25 @@ AnalyserVariablePtr AnalyserEquation::algebraic(size_t index) const
     }
 
     return mPimpl->mAlgebraic[index];
+}
+
+size_t AnalyserEquation::externalCount() const
+{
+    return mPimpl->mExternals.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::externals() const
+{
+    return mPimpl->mExternals;
+}
+
+AnalyserVariablePtr AnalyserEquation::external(size_t index) const
+{
+    if (index >= mPimpl->mExternals.size()) {
+        return {};
+    }
+
+    return mPimpl->mExternals[index];
 }
 
 } // namespace libcellml

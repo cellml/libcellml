@@ -202,6 +202,33 @@ AnalyserVariablePtr AnalyserModel::algebraic(size_t index) const
     return mPimpl->mAlgebraic[index];
 }
 
+size_t AnalyserModel::externalCount() const
+{
+    if (!isValid()) {
+        return 0;
+    }
+
+    return mPimpl->mExternals.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserModel::externals() const
+{
+    if (!isValid()) {
+        return {};
+    }
+
+    return mPimpl->mExternals;
+}
+
+AnalyserVariablePtr AnalyserModel::external(size_t index) const
+{
+    if (!isValid() || (index >= mPimpl->mExternals.size())) {
+        return {};
+    }
+
+    return mPimpl->mExternals[index];
+}
+
 size_t AnalyserModel::equationCount() const
 {
     if (!isValid()) {
