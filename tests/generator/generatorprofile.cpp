@@ -288,6 +288,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("extern const size_t ALGEBRAIC_COUNT;\n", generatorProfile->interfaceAlgebraicCountString());
     EXPECT_EQ("const size_t ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT];\n", generatorProfile->implementationAlgebraicCountString());
 
+    EXPECT_EQ("extern const size_t EXTERNAL_COUNT;\n", generatorProfile->interfaceExternalCountString());
+    EXPECT_EQ("const size_t EXTERNAL_COUNT = [EXTERNAL_COUNT];\n", generatorProfile->implementationExternalCountString());
+
     EXPECT_EQ("typedef enum {\n"
               "    CONSTANT,\n"
               "    COMPUTED_CONSTANT,\n"
@@ -882,6 +885,9 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceAlgebraicCountString(value);
     generatorProfile->setImplementationAlgebraicCountString(value);
 
+    generatorProfile->setInterfaceExternalCountString(value);
+    generatorProfile->setImplementationExternalCountString(value);
+
     generatorProfile->setVariableTypeObjectString(false, false, value);
     generatorProfile->setVariableTypeObjectString(false, true, value);
     generatorProfile->setVariableTypeObjectString(true, false, value);
@@ -1018,6 +1024,9 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->interfaceAlgebraicCountString());
     EXPECT_EQ(value, generatorProfile->implementationAlgebraicCountString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceExternalCountString());
+    EXPECT_EQ(value, generatorProfile->implementationExternalCountString());
 
     EXPECT_EQ(value, generatorProfile->variableTypeObjectString(false, false));
     EXPECT_EQ(value, generatorProfile->variableTypeObjectString(false, true));

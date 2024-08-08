@@ -192,6 +192,9 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(1, ae.algebraicCount())
         self.assertIsNotNone(ae.algebraic())
         self.assertIsNotNone(ae.algebraic(0))
+        self.assertEqual(0, ae.externalCount())
+        self.assertIsNotNone(ae.externals())
+        self.assertIsNone(ae.external(0))
 
         # Check Analyser Equation type with invalid values.
 

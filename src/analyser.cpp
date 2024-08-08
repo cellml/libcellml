@@ -3281,7 +3281,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                    internalEquation->mNlaSystemIndex,
                                    equationNlaSiblings,
                                    {},
-                                   algebraic);
+                                   algebraic,
+                                   {});
 
         mModel->mPimpl->mEquations.push_back(equation);
     }

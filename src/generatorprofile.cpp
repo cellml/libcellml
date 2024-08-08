@@ -193,6 +193,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceAlgebraicCountString;
     std::string mImplementationAlgebraicCountString;
 
+    std::string mInterfaceExternalCountString;
+    std::string mImplementationExternalCountString;
+
     std::string mVariableTypeObjectFamWoevString;
     std::string mVariableTypeObjectFamWevString;
     std::string mVariableTypeObjectFdmWoevString;
@@ -521,6 +524,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceAlgebraicCountString = "extern const size_t ALGEBRAIC_COUNT;\n";
         mImplementationAlgebraicCountString = "const size_t ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT];\n";
+
+        mInterfaceExternalCountString = "extern const size_t EXTERNAL_COUNT;\n";
+        mImplementationExternalCountString = "const size_t EXTERNAL_COUNT = [EXTERNAL_COUNT];\n";
 
         mVariableTypeObjectFamWoevString = "typedef enum {\n"
                                            "    CONSTANT,\n"
@@ -958,6 +964,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceAlgebraicCountString = "";
         mImplementationAlgebraicCountString = "ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT]\n";
+
+        mInterfaceExternalCountString = "";
+        mImplementationExternalCountString = "EXTERNAL_COUNT = [EXTERNAL_COUNT]\n";
 
         mVariableTypeObjectFamWoevString = "\n"
                                            "class VariableType(Enum):\n"
@@ -2332,6 +2341,26 @@ std::string GeneratorProfile::implementationAlgebraicCountString() const
 void GeneratorProfile::setImplementationAlgebraicCountString(const std::string &implementationAlgebraicCountString)
 {
     mPimpl->mImplementationAlgebraicCountString = implementationAlgebraicCountString;
+}
+
+std::string GeneratorProfile::interfaceExternalCountString() const
+{
+    return mPimpl->mInterfaceExternalCountString;
+}
+
+void GeneratorProfile::setInterfaceExternalCountString(const std::string &interfaceExternalCountString)
+{
+    mPimpl->mInterfaceExternalCountString = interfaceExternalCountString;
+}
+
+std::string GeneratorProfile::implementationExternalCountString() const
+{
+    return mPimpl->mImplementationExternalCountString;
+}
+
+void GeneratorProfile::setImplementationExternalCountString(const std::string &implementationExternalCountString)
+{
+    mPimpl->mImplementationExternalCountString = implementationExternalCountString;
 }
 
 std::string GeneratorProfile::variableTypeObjectString(bool forDifferentialModel,

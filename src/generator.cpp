@@ -357,6 +357,14 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
                             "[ALGEBRAIC_COUNT]", std::to_string(mModel->algebraicCount()));
     }
 
+    if ((interface && !mProfile->interfaceExternalCountString().empty())
+        || (!interface && !mProfile->implementationExternalCountString().empty())) {
+        code += interface ?
+                    mProfile->interfaceExternalCountString() :
+                    replace(mProfile->implementationExternalCountString(),
+                            "[EXTERNAL_COUNT]", std::to_string(mModel->externalCount()));
+    }
+
     if (!code.empty()) {
         mCode += "\n";
     }

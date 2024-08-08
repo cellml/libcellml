@@ -451,6 +451,9 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceAlgebraicCountString()
                        + generatorProfile->implementationAlgebraicCountString();
 
+    profileContents += generatorProfile->interfaceExternalCountString()
+                       + generatorProfile->implementationExternalCountString();
+
     profileContents += generatorProfile->variableTypeObjectString(false, false);
     profileContents += generatorProfile->variableTypeObjectString(false, true);
     profileContents += generatorProfile->variableTypeObjectString(true, false);

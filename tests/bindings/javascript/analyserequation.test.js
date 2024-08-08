@@ -88,6 +88,15 @@ describe("Analyser Equation tests", () => {
     test('Checking Analyser Equation algebraicVariable.', () => {
         expect(eqn.algebraicVariable(0).variable().name()).toBe("x")
     });
+    test('Checking Analyser Equation externalCount.', () => {
+        expect(eqn.externalCount()).toBe(0)
+    });
+    test('Checking Analyser Equation externals.', () => {
+        expect(eqn.externals().size()).toBe(0)
+    });
+    test('Checking Analyser Equation external.', () => {
+        expect(eqn.external(0)).toBeNull()
+    });
     test('Checking Analyser Equation AST.', () => {
         expect(eqn.ast().value()).toBe("")
     });

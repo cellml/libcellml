@@ -934,6 +934,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g.setImplementationAlgebraicCountString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationAlgebraicCountString())
 
+    def test_implementation_external_count_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('const size_t EXTERNAL_COUNT = [EXTERNAL_COUNT];\n', g.implementationExternalCountString())
+        g.setImplementationExternalCountString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationExternalCountString())
+
     def test_implementation_variable_info_string(self):
         from libcellml import GeneratorProfile
 
@@ -1159,6 +1168,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual('extern const size_t ALGEBRAIC_COUNT;\n', g.interfaceAlgebraicCountString())
         g.setInterfaceAlgebraicCountString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceAlgebraicCountString())
+
+    def test_interface_external_count_string(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertEqual('extern const size_t EXTERNAL_COUNT;\n', g.interfaceExternalCountString())
+        g.setInterfaceExternalCountString(GeneratorProfileTestCase.VALUE)
+        self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceExternalCountString())
 
     def test_interface_variable_info_string(self):
         from libcellml import GeneratorProfile

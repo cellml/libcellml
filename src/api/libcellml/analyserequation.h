@@ -223,6 +223,35 @@ public:
      */
     AnalyserVariablePtr algebraic(size_t index) const;
 
+    /**
+     * @brief Get the number of external variables computed by this @ref AnalyserEquation.
+     *
+     * Return the number of external variables computed by this @ref AnalyserEquation.
+     *
+     * @return The number of external variables.
+     */
+    size_t externalCount() const;
+
+    /**
+     * @brief Get the external variables computed by this @ref AnalyserEquation.
+     *
+     * Return the external variables computed by this @ref AnalyserEquation.
+     *
+     * @return The external variables as a @c std::vector.
+     */
+    std::vector<AnalyserVariablePtr> externals() const;
+
+    /**
+     * @brief Get the external variable, at @p index, computed by this @ref AnalyserEquation.
+     *
+     * Return the external variable, at @p index, computed by this @ref AnalyserEquation.
+     *
+     * @param index The index of the external variable to return.
+     *
+     * @return The external variable, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserVariablePtr external(size_t index) const;
+
 private:
     AnalyserEquation(); /**< Constructor, @private. */
 
