@@ -54,14 +54,14 @@ def create_variables_array():
 
 
 def initialise_variables(states, rates, constants):
-    constants[1] = 0.0
-    constants[3] = 0.75
-    computed_constants[4] = 2.0/3.14159265358979
-    computed_constants[5] = 2.0*3.14159265358979
-    computed_constants[6] = 3.14159265358979/2.0
-    computed_constants[7] = 3.14159265358979
-    computed_constants[8] = 3.0*3.14159265358979/2.0
-    states[0] = constants[1]
+    constants[0] = 0.0
+    constants[1] = 0.75
+    computed_constants[0] = 2.0/3.14159265358979
+    computed_constants[1] = 2.0*3.14159265358979
+    computed_constants[2] = 3.14159265358979/2.0
+    computed_constants[3] = 3.14159265358979
+    computed_constants[4] = 3.0*3.14159265358979/2.0
+    states[0] = constants[0]
 
 
 def compute_computed_constants(constants, computed_constants):
@@ -74,5 +74,5 @@ def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
     algebraic[0] = sin(voi)
-    algebraic[9] = voi*computed_constants[4]-0.5 if lt_func(voi, computed_constants[6]) else (3.14159265358979-voi)*computed_constants[4]-0.5 if lt_func(voi, computed_constants[7]) else (voi-3.14159265358979)*computed_constants[4]-0.5 if lt_func(voi, computed_constants[8]) else (computed_constants[5]-voi)*computed_constants[4]-0.5
-    algebraic[2] = -algebraic[9]*algebraic[9]+constants[3]+algebraic[9] if lt_func(voi, computed_constants[6]) else -algebraic[9]*algebraic[9]+constants[3]+algebraic[9] if lt_func(voi, computed_constants[7]) else algebraic[9]*algebraic[9]-constants[3]-algebraic[9] if lt_func(voi, computed_constants[8]) else algebraic[9]*algebraic[9]-constants[3]-algebraic[9]
+    algebraic[2] = voi*computed_constants[0]-0.5 if lt_func(voi, computed_constants[2]) else (3.14159265358979-voi)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[3]) else (voi-3.14159265358979)*computed_constants[0]-0.5 if lt_func(voi, computed_constants[4]) else (computed_constants[1]-voi)*computed_constants[0]-0.5
+    algebraic[1] = -algebraic[2]*algebraic[2]+constants[1]+algebraic[2] if lt_func(voi, computed_constants[2]) else -algebraic[2]*algebraic[2]+constants[1]+algebraic[2] if lt_func(voi, computed_constants[3]) else algebraic[2]*algebraic[2]-constants[1]-algebraic[2] if lt_func(voi, computed_constants[4]) else algebraic[2]*algebraic[2]-constants[1]-algebraic[2]

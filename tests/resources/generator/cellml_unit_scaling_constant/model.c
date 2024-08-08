@@ -41,8 +41,8 @@ void initialiseVariables(double *constants)
 
 void computeComputedConstants(double *constants, double *computedConstants)
 {
-    computedConstants[1] = constants[0]+constants[0];
-    computedConstants[2] = 0.001*constants[0]+0.001*constants[0];
+    computedConstants[0] = constants[0]+constants[0];
+    computedConstants[1] = 0.001*constants[0]+0.001*constants[0];
 }
 
 void computeVariables(double *constants, double *computedConstants, double *algebraic)

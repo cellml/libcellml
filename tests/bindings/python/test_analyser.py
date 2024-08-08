@@ -163,7 +163,7 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
         self.assertEqual("constant", AnalyserVariable.typeAsString(av.type()))
         self.assertEqual("constant", AnalyserVariable_typeAsString(av.type()))
-        self.assertEqual(3, av.index())
+        self.assertEqual(0, av.index())
         self.assertIsNotNone(av.initialisingVariable())
         self.assertIsNotNone(av.variable())
         self.assertEqual(1, av.equationCount())

@@ -74,46 +74,46 @@ def create_variables_array():
 
 
 def initialise_variables(voi, states, rates, constants, external_variable):
-    constants[4] = 1.0
-    constants[5] = 0.0
-    constants[7] = 0.3
-    constants[9] = 120.0
-    constants[16] = 36.0
+    constants[0] = 1.0
+    constants[1] = 0.0
+    constants[2] = 0.3
+    constants[3] = 120.0
+    constants[4] = 36.0
     states[0] = 0.0
     states[1] = 0.6
     states[2] = 0.325
-    algebraic[10] = external_variable(voi, states, rates, variables, 10)
+    algebraic[4] = external_variable(voi, states, rates, variables, 4)
 
 
 def compute_computed_constants(constants, computed_constants):
-    computed_constants[6] = constants[5]-10.613
-    computed_constants[8] = constants[5]-115.0
-    computed_constants[15] = constants[5]+12.0
+    computed_constants[0] = constants[1]-10.613
+    computed_constants[1] = constants[1]-115.0
+    computed_constants[2] = constants[1]+12.0
 
 
 def compute_rates(voi, states, rates, constants, computed_constants, algebraic, external_variable):
     algebraic[0] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    algebraic[1] = constants[7]*(states[0]-computed_constants[6])
-    algebraic[2] = constants[16]*pow(states[2], 4.0)*(states[0]-computed_constants[15])
-    algebraic[10] = external_variable(voi, states, rates, variables, 10)
-    algebraic[3] = constants[9]*pow(algebraic[10], 3.0)*states[1]*(states[0]-computed_constants[8])
-    rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/constants[4]
-    algebraic[13] = 0.07*exp(states[0]/20.0)
-    algebraic[14] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
-    rates[1] = algebraic[13]*(1.0-states[1])-algebraic[14]*states[1]
-    algebraic[17] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
-    algebraic[18] = 0.125*exp(states[0]/80.0)
-    rates[2] = algebraic[17]*(1.0-states[2])-algebraic[18]*states[2]
+    algebraic[1] = constants[2]*(states[0]-computed_constants[0])
+    algebraic[2] = constants[4]*pow(states[2], 4.0)*(states[0]-computed_constants[2])
+    algebraic[4] = external_variable(voi, states, rates, variables, 4)
+    algebraic[3] = constants[3]*pow(algebraic[4], 3.0)*states[1]*(states[0]-computed_constants[1])
+    rates[0] = -(-algebraic[0]+algebraic[3]+algebraic[2]+algebraic[1])/constants[0]
+    algebraic[7] = 0.07*exp(states[0]/20.0)
+    algebraic[8] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
+    rates[1] = algebraic[7]*(1.0-states[1])-algebraic[8]*states[1]
+    algebraic[9] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
+    algebraic[10] = 0.125*exp(states[0]/80.0)
+    rates[2] = algebraic[9]*(1.0-states[2])-algebraic[10]*states[2]
 
 
 def compute_variables(voi, states, rates, constants, computed_constants, algebraic, external_variable):
-    algebraic[1] = constants[7]*(states[0]-computed_constants[6])
-    algebraic[10] = external_variable(voi, states, rates, variables, 10)
-    algebraic[3] = constants[9]*pow(algebraic[10], 3.0)*states[1]*(states[0]-computed_constants[8])
-    algebraic[11] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
-    algebraic[12] = 4.0*exp(states[0]/18.0)
-    algebraic[13] = 0.07*exp(states[0]/20.0)
-    algebraic[14] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
-    algebraic[2] = constants[16]*pow(states[2], 4.0)*(states[0]-computed_constants[15])
-    algebraic[17] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
-    algebraic[18] = 0.125*exp(states[0]/80.0)
+    algebraic[1] = constants[2]*(states[0]-computed_constants[0])
+    algebraic[4] = external_variable(voi, states, rates, variables, 4)
+    algebraic[3] = constants[3]*pow(algebraic[4], 3.0)*states[1]*(states[0]-computed_constants[1])
+    algebraic[5] = 0.1*(states[0]+25.0)/(exp((states[0]+25.0)/10.0)-1.0)
+    algebraic[6] = 4.0*exp(states[0]/18.0)
+    algebraic[7] = 0.07*exp(states[0]/20.0)
+    algebraic[8] = 1.0/(exp((states[0]+30.0)/10.0)+1.0)
+    algebraic[2] = constants[4]*pow(states[2], 4.0)*(states[0]-computed_constants[2])
+    algebraic[9] = 0.01*(states[0]+10.0)/(exp((states[0]+10.0)/10.0)-1.0)
+    algebraic[10] = 0.125*exp(states[0]/80.0)

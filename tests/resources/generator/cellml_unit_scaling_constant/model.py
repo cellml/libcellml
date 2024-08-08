@@ -34,8 +34,8 @@ def initialise_variables(constants):
 
 
 def compute_computed_constants(constants, computed_constants):
-    computed_constants[1] = constants[0]+constants[0]
-    computed_constants[2] = 0.001*constants[0]+0.001*constants[0]
+    computed_constants[0] = constants[0]+constants[0]
+    computed_constants[1] = 0.001*constants[0]+0.001*constants[0]
 
 
 def compute_variables(constants, computed_constants, algebraic):

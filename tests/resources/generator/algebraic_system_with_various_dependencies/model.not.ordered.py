@@ -41,8 +41,8 @@ def objective_function_0(u, f, data):
     algebraic[2] = u[0]
     algebraic[1] = u[1]
 
-    f[0] = 3.0*computed_constants[3]+2.0*algebraic[1]+algebraic[2]-57.0
-    f[1] = computed_constants[3]+3.0*algebraic[1]-algebraic[2]-19.0
+    f[0] = 3.0*computed_constants[0]+2.0*algebraic[1]+algebraic[2]-57.0
+    f[1] = computed_constants[0]+3.0*algebraic[1]-algebraic[2]-19.0
 
 
 def find_root_0(variables):
@@ -60,12 +60,12 @@ def find_root_0(variables):
 def initialise_variables(constants):
     algebraic[1] = 1.0
     algebraic[2] = 1.0
-    constants[4] = 3.0
-    constants[5] = 5.0
+    constants[0] = 3.0
+    constants[1] = 5.0
 
 
 def compute_computed_constants(constants, computed_constants):
-    computed_constants[3] = 3.0*constants[4]+constants[5]
+    computed_constants[0] = 3.0*constants[0]+constants[1]
 
 
 def compute_variables(constants, computed_constants, algebraic):
