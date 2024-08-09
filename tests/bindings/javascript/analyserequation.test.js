@@ -80,13 +80,13 @@ describe("Analyser Equation tests", () => {
         expect(eqn.computedConstant(0)).toBeNull()
     });
     test('Checking Analyser Equation algebraicCount.', () => {
-        expect(eqn.algebraicCount()).toBe(1)
+        expect(eqn.algebraicCount()).toBe(0)
     });
     test('Checking Analyser Equation algebraicVariables.', () => {
-        expect(eqn.algebraicVariables().size()).toBe(1)
+        expect(eqn.algebraicVariables().size()).toBe(0)
     });
     test('Checking Analyser Equation algebraicVariable.', () => {
-        expect(eqn.algebraicVariable(0).variable().name()).toBe("x")
+        expect(eqn.algebraicVariable(0)).toBeNull()
     });
     test('Checking Analyser Equation externalCount.', () => {
         expect(eqn.externalCount()).toBe(0)

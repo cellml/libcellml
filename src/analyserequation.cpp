@@ -20,6 +20,7 @@ limitations under the License.
 #include <iterator>
 
 #include "analyserequation_p.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -30,21 +31,9 @@ AnalyserEquationPtr AnalyserEquation::AnalyserEquationImpl::create()
 
 bool AnalyserEquation::AnalyserEquationImpl::isEmptyDependency(const AnalyserEquationWeakPtr &dependency)
 {
-    auto computedConstants = dependency.lock()->computedConstants();
+    auto variables = libcellml::variables(dependency.lock());
 
-    if (std::any_of(computedConstants.begin(), computedConstants.end(), [](const auto &v) { return v != nullptr; })) {
-        return false;
-    }
-
-    auto algebraic = dependency.lock()->algebraic();
-
-    if (std::any_of(algebraic.begin(), algebraic.end(), [](const auto &v) { return v != nullptr; })) {
-        return false;
-    }
-
-    auto externals = dependency.lock()->externals();
-
-    if (std::any_of(externals.begin(), externals.end(), [](const auto &v) { return v != nullptr; })) {
+    if (std::any_of(variables.begin(), variables.end(), [](const auto &v) { return v != nullptr; })) {
         return false;
     }
 
@@ -147,6 +136,44 @@ AnalyserEquationPtr AnalyserEquation::nlaSibling(size_t index) const
 bool AnalyserEquation::isStateRateBased() const
 {
     return mPimpl->mIsStateRateBased;
+}
+
+size_t AnalyserEquation::stateCount() const
+{
+    return mPimpl->mStates.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::states() const
+{
+    return mPimpl->mStates;
+}
+
+AnalyserVariablePtr AnalyserEquation::state(size_t index) const
+{
+    if (index >= mPimpl->mStates.size()) {
+        return {};
+    }
+
+    return mPimpl->mStates[index];
+}
+
+size_t AnalyserEquation::constantCount() const
+{
+    return mPimpl->mConstants.size();
+}
+
+std::vector<AnalyserVariablePtr> AnalyserEquation::constants() const
+{
+    return mPimpl->mConstants;
+}
+
+AnalyserVariablePtr AnalyserEquation::constant(size_t index) const
+{
+    if (index >= mPimpl->mConstants.size()) {
+        return {};
+    }
+
+    return mPimpl->mConstants[index];
 }
 
 size_t AnalyserEquation::computedConstantCount() const

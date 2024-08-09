@@ -166,6 +166,64 @@ public:
     bool isStateRateBased() const;
 
     /**
+     * @brief Get the number of states computed by this @ref AnalyserEquation.
+     *
+     * Return the number of states computed by this @ref AnalyserEquation.
+     *
+     * @return The number of states.
+     */
+    size_t stateCount() const;
+
+    /**
+     * @brief Get the states computed by this @ref AnalyserEquation.
+     *
+     * Return the states computed by this @ref AnalyserEquation.
+     *
+     * @return The states as a @c std::vector.
+     */
+    std::vector<AnalyserVariablePtr> states() const;
+
+    /**
+     * @brief Get the state, at @p index, computed by this @ref AnalyserEquation.
+     *
+     * Return the state, at @p index, computed by this @ref AnalyserEquation.
+     *
+     * @param index The index of the state to return.
+     *
+     * @return The state, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserVariablePtr state(size_t index) const;
+
+    /**
+     * @brief Get the number of constant computed by this @ref AnalyserEquation.
+     *
+     * Return the number of constants computed by this @ref AnalyserEquation.
+     *
+     * @return The number of constants.
+     */
+    size_t constantCount() const;
+
+    /**
+     * @brief Get the constants computed by this @ref AnalyserEquation.
+     *
+     * Return the constants computed by this @ref AnalyserEquation.
+     *
+     * @return The constants as a @c std::vector.
+     */
+    std::vector<AnalyserVariablePtr> constants() const;
+
+    /**
+     * @brief Get the constant, at @p index, computed by this @ref AnalyserEquation.
+     *
+     * Return the constant, at @p index, computed by this @ref AnalyserEquation.
+     *
+     * @param index The index of the constant to return.
+     *
+     * @return The constant, at @p index, on success, @c nullptr on failure.
+     */
+    AnalyserVariablePtr constant(size_t index) const;
+
+    /**
      * @brief Get the number of computed constants computed by this @ref AnalyserEquation.
      *
      * Return the number of computed constants computed by this @ref AnalyserEquation.
