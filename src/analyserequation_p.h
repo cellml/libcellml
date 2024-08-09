@@ -34,6 +34,8 @@ struct AnalyserEquation::AnalyserEquationImpl
     size_t mNlaSystemIndex;
     bool mIsStateRateBased = false;
 
+    std::vector<AnalyserVariablePtr> mStates;
+    std::vector<AnalyserVariablePtr> mConstants;
     std::vector<AnalyserVariablePtr> mComputedConstants;
     std::vector<AnalyserVariablePtr> mAlgebraic;
     std::vector<AnalyserVariablePtr> mExternals;

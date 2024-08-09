@@ -92,11 +92,7 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
         && mModel->areEquivalentVariables(variable, modelVoiVariable)) {
         res = modelVoi;
     } else {
-        res = doAnalyserVariable(variable, mModel->states());
-
-        if (res == nullptr) {
-            res = doAnalyserVariable(variable, variables(mModel));
-        }
+        res = doAnalyserVariable(variable, variables(mModel));
     }
 
     return res;
@@ -382,24 +378,8 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
-    if (modelHasOdes()) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mModel->voi());
-
-        for (const auto &state : mModel->states()) {
-            updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
-        }
-    }
-
-    for (const auto &constant : mModel->constants()) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, constant);
-    }
-
-    for (const auto &computedConstant : mModel->computedConstants()) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, computedConstant);
-    }
-
-    for (const auto &algebraicVariable : mModel->algebraic()) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, algebraicVariable);
+    for (const auto &variable : variables(mModel)) {
+        updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
     }
 
     return replace(replace(replace(objectString,
@@ -536,20 +516,24 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
                 variableType = mProfile->algebraicVariableTypeString();
 
                 break;
-            default: // AnalyserVariable::Type::EXTERNAL.
+            case AnalyserVariable::Type::EXTERNAL:
                 variableType = mProfile->externalVariableTypeString();
 
                 break;
+            default: // Other types we don't care about.
+                break;
             }
 
-            auto variableVariable = variable->variable();
+            if (!variableType.empty()) {
+                auto variableVariable = variable->variable();
 
-            infoElementsCode += mProfile->indentString()
-                                + replace(replace(replace(replace(mProfile->variableInfoEntryString(),
-                                                                  "[NAME]", variableVariable->name()),
-                                                          "[UNITS]", variableVariable->units()->name()),
-                                                  "[COMPONENT]", owningComponent(variableVariable)->name()),
-                                          "[TYPE]", variableType);
+                infoElementsCode += mProfile->indentString()
+                                    + replace(replace(replace(replace(mProfile->variableInfoEntryString(),
+                                                                      "[NAME]", variableVariable->name()),
+                                                              "[UNITS]", variableVariable->units()->name()),
+                                                      "[COMPONENT]", owningComponent(variableVariable)->name()),
+                                              "[TYPE]", variableType);
+            }
         }
 
         if (!infoElementsCode.empty()) {

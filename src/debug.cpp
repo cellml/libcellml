@@ -26,9 +26,10 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 
-#include "libcellml/undefines.h"
-
 #include "commonutils.h"
+#include "utilities.h"
+
+#include "libcellml/undefines.h"
 
 namespace libcellml {
 
@@ -85,6 +86,26 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
 
         Debug() << "\nType: " << AnalyserEquation::typeAsString(eqn->type());
 
+        if (eqn->stateCount() != 0) {
+            Debug() << "\nStates:";
+
+            for (const auto &var : eqn->states()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo states";
+        }
+
+        if (eqn->constantCount() != 0) {
+            Debug() << "\nConstants:";
+
+            for (const auto &var : eqn->constants()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo constants";
+        }
+
         if (eqn->computedConstantCount() != 0) {
             Debug() << "\nComputed constants:";
 
@@ -105,6 +126,16 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
             Debug() << "\nNo algebraic variables";
         }
 
+        if (eqn->algebraicCount() != 0) {
+            Debug() << "\nExternal variables:";
+
+            for (const auto &var : eqn->externals()) {
+                Debug() << " - " << var->variable()->name();
+            }
+        } else {
+            Debug() << "\nNo external variables";
+        }
+
         if (eqn->dependencyCount() != 0) {
             Debug() << "\nDependencies:";
 
@@ -112,7 +143,7 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
                 if (dep->ast() != nullptr) {
                     Debug() << " - " << astAsCode(dep->ast());
                 } else if (dep->type() == AnalyserEquation::Type::EXTERNAL) {
-                    Debug() << " - External equation for '" << dep->algebraic(0)->variable()->name() << "'";
+                    Debug() << " - External equation for '" << dep->external(0)->variable()->name() << "'";
                 } else {
                     Debug() << " - ??? [" << AnalyserEquation::typeAsString(dep->type()) << "]";
                 }
@@ -143,11 +174,11 @@ void printAnalyserModelEquations(const AnalyserModelPtr &model)
     Debug() << "\n---------------------------------------[END]\n";
 }
 
-void printAnalyserModelVariables(const std::vector<AnalyserVariablePtr> &variables)
+void printAnalyserModelVariables(const AnalyserModelPtr &model)
 {
     size_t varNb = 0;
 
-    for (const auto &var : variables) {
+    for (const auto &var : variables(model)) {
         Debug() << "\n---------------------------------------[API variable #" << ++varNb << "]";
         Debug() << "\nName: " << var->variable()->name();
         Debug() << "Type: " << AnalyserVariable::typeAsString(var->type());
@@ -168,13 +199,6 @@ void printAnalyserModelVariables(const std::vector<AnalyserVariablePtr> &variabl
             Debug() << "\nNo equations";
         }
     }
-}
-
-void printAnalyserModelVariables(const AnalyserModelPtr &model)
-{
-    printAnalyserModelVariables(model->constants());
-    printAnalyserModelVariables(model->computedConstants());
-    printAnalyserModelVariables(model->algebraic());
 }
 
 void printHistory(const History &history)

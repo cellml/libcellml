@@ -1319,7 +1319,24 @@ XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index)
 
 std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
 {
-    auto res = model->constants();
+    std::vector<AnalyserVariablePtr> res;
+
+    if (model->voi() != nullptr) {
+        res.push_back(model->voi());
+    }
+
+    auto states = model->states();
+
+    if (!states.empty()) {
+        res.insert(res.end(), states.begin(), states.end());
+    }
+
+    auto constants = model->constants();
+
+    if (!constants.empty()) {
+        res.insert(res.end(), constants.begin(), constants.end());
+    }
+
     auto computedConstants = model->computedConstants();
 
     if (!computedConstants.empty()) {
@@ -1343,7 +1360,19 @@ std::vector<AnalyserVariablePtr> variables(const AnalyserModelPtr &model)
 
 std::vector<AnalyserVariablePtr> variables(const AnalyserEquationPtr &equation)
 {
-    auto res = equation->computedConstants();
+    auto res = equation->states();
+    auto constants = equation->constants();
+
+    if (!constants.empty()) {
+        res.insert(res.end(), constants.begin(), constants.end());
+    }
+
+    auto computedConstants = equation->computedConstants();
+
+    if (!computedConstants.empty()) {
+        res.insert(res.end(), computedConstants.begin(), computedConstants.end());
+    }
+
     auto algebraic = equation->algebraic();
 
     if (!algebraic.empty()) {

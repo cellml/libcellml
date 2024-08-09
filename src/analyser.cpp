@@ -2509,8 +2509,8 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equatio
 
         if ((dependency->type() == AnalyserEquation::Type::ODE)
             || ((dependency->type() == AnalyserEquation::Type::NLA)
-                && (dependency->algebraicCount() == 1)
-                && (dependency->algebraic(0)->type() == AnalyserVariable::Type::STATE))
+                && (dependency->stateCount() == 1)
+                && (dependency->state(0)->type() == AnalyserVariable::Type::STATE))
             || isStateRateBased(dependency, checkedEquations)) {
             return true;
         }
@@ -3301,11 +3301,11 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             switch (variable->type()) {
             case AnalyserVariable::Type::STATE:
-                equation->mPimpl->mAlgebraic.push_back(variable); //---GRY--- equation->mPimpl->mStates.push_back(variable);
+                equation->mPimpl->mStates.push_back(variable);
 
                 break;
             case AnalyserVariable::Type::CONSTANT:
-                equation->mPimpl->mAlgebraic.push_back(variable); //---GRY--- equation->mPimpl->mConstants.push_back(variable);
+                equation->mPimpl->mConstants.push_back(variable);
 
                 break;
             case AnalyserVariable::Type::COMPUTED_CONSTANT:

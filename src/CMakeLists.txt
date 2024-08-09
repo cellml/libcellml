@@ -193,13 +193,7 @@ else()
   target_include_directories(cellml PUBLIC ${ZLIB_INCLUDE_DIRS})
 endif()
 
-if(HAVE_LIBXML2_CONFIG)
-  target_link_libraries(cellml PUBLIC ${LIBXML2_TARGET_NAME})
-else()
-  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR} ${ZLIB_INCLUDE_DIRS})
-  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES} ${ZLIB_LIBRARIES})
-  target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
-endif()
+apply_libxml2_settings(cellml)
 
 # Use target compile features to propagate features to consuming projects.
 target_compile_features(cellml PUBLIC cxx_std_17)
@@ -230,6 +224,8 @@ target_include_directories(cellml_debug_utilities
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
 )
+
+apply_libxml2_settings(cellml_debug_utilities)
 
 set_target_properties(cellml_debug_utilities PROPERTIES
   CXX_VISIBILITY_PRESET hidden
