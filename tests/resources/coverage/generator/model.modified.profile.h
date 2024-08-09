@@ -8,7 +8,9 @@ extern const char VERSION[];
 extern const char LIBCELLML_VERSION[];
 
 extern const size_t STATE_COUNT;
-extern const size_t VARIABLE_COUNT;
+extern const size_t CONSTANT_COUNT;
+extern const size_t COMPUTED_CONSTANT_COUNT;
+extern const size_t ALGEBRAIC_COUNT;
 
 typedef enum {
     VARIABLE_OF_INTEGRATION,
@@ -33,7 +35,7 @@ double * createStatesVector();
 double * createVariablesArray();
 void deleteArray(double *array);
 
-void initialiseVariables(double *states, double *rates, double *variables);
-void computeComputedConstants(double *variables);
-void computeRates(double voi, double *states, double *rates, double *variables);
-void computeVariables(double voi, double *states, double *rates, double *variables);
+void initialiseVariables(double *states, double *rates, double *constants);
+void computeComputedConstants(double *constants, double *computedConstants);
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);

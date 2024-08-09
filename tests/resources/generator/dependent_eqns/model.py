@@ -4,11 +4,13 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 1
-VARIABLE_COUNT = 2
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 2
 
 
 class VariableType(Enum):
@@ -39,18 +41,18 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_variables(states, rates, variables):
+def initialise_variables(states, rates, constants):
     states[0] = 0.0
 
 
-def compute_computed_constants(variables):
+def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
     rates[0] = 1.0
 
 
-def compute_variables(voi, states, rates, variables):
-    variables[1] = 2.0*voi
-    variables[0] = 3.0*variables[1]
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
+    algebraic[1] = 2.0*voi
+    algebraic[0] = 3.0*algebraic[1]

@@ -5,10 +5,12 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 3;
+const size_t CONSTANT_COUNT = 1;
+const size_t COMPUTED_CONSTANT_COUNT = 2;
+const size_t ALGEBRAIC_COUNT = 0;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"k", "mM", "constants", CONSTANT},
@@ -32,17 +34,17 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *variables)
+void initialiseVariables(double *constants)
 {
-    variables[0] = 123.0;
+    constants[0] = 123.0;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
-    variables[1] = variables[0]+variables[0];
-    variables[2] = 0.001*variables[0]+0.001*variables[0];
+    computedConstants[0] = constants[0]+constants[0];
+    computedConstants[1] = 0.001*constants[0]+0.001*constants[0];
 }
 
-void computeVariables(double *variables)
+void computeVariables(double *constants, double *computedConstants, double *algebraic)
 {
 }

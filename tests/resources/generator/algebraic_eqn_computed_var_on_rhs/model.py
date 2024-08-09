@@ -4,10 +4,12 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
-VARIABLE_COUNT = 2
+CONSTANT_COUNT = 0
+COMPUTED_CONSTANT_COUNT = 2
+ALGEBRAIC_COUNT = 0
 
 
 class VariableType(Enum):
@@ -26,13 +28,13 @@ def create_variables_array():
     return [nan]*VARIABLE_COUNT
 
 
-def initialise_variables(variables):
-    variables[1] = 1.0
+def initialise_variables(constants):
+    computed_constants[1] = 1.0
 
 
-def compute_computed_constants(variables):
-    variables[0] = variables[1]
+def compute_computed_constants(constants, computed_constants):
+    computed_constants[0] = computed_constants[1]
 
 
-def compute_variables(variables):
+def compute_variables(constants, computed_constants, algebraic):
     pass

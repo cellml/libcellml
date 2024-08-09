@@ -2462,52 +2462,196 @@ public:
     void setImplementationStateCountString(const std::string &implementationStateCountString);
 
     /**
-     * @brief Get the @c std::string for the interface of the variable count
+     * @brief Get the @c std::string for the interface of the constant count
      * constant.
      *
-     * Return the @c std::string for the interface of the variable count
+     * Return the @c std::string for the interface of the constant count
      * constant.
      *
-     * @return The @c std::string for the interface of the variable count
+     * @return The @c std::string for the interface of the constant count
      * constant.
      */
-    std::string interfaceVariableCountString() const;
+    std::string interfaceConstantCountString() const;
 
     /**
-     * @brief Set the @c std::string for the interface of the variable count
+     * @brief Set the @c std::string for the interface of the constant count
      * constant.
      *
-     * Set the @c std::string for the interface of the variable count constant.
+     * Set the @c std::string for the interface of the constant count constant.
      *
-     * @param interfaceVariableCountString The @c std::string to use for the
-     * interface of the variable count constant.
+     * @param interfaceConstantCountString The @c std::string to use for the
+     * interface of the constant count constant.
      */
-    void setInterfaceVariableCountString(const std::string &interfaceVariableCountString);
+    void setInterfaceConstantCountString(const std::string &interfaceConstantCountString);
 
     /**
-     * @brief Get the @c std::string for the implementation of the variable
+     * @brief Get the @c std::string for the implementation of the constant
      * count constant.
      *
-     * Return the @c std::string for the implementation of the variable count
+     * Return the @c std::string for the implementation of the constant count
      * constant.
      *
-     * @return The @c std::string for the implementation of the variable count
+     * @return The @c std::string for the implementation of the constant count
      * constant.
      */
-    std::string implementationVariableCountString() const;
+    std::string implementationConstantCountString() const;
 
     /**
-     * @brief Set the @c std::string for the implementation of the variable
+     * @brief Set the @c std::string for the implementation of the constant
      * count constant.
      *
-     * Set the @c std::string for the implementation of the variable count
-     * constant. To be useful, the string should contain the [VARIABLE_COUNT]
+     * Set the @c std::string for the implementation of the constant count
+     * constant. To be useful, the string should contain the [CONSTANT_COUNT]
      * tag, which will be replaced with the number of states in the model.
      *
-     * @param implementationVariableCountString The @c std::string to use for
-     * the implementation of the variable count constant.
+     * @param implementationConstantCountString The @c std::string to use for
+     * the implementation of the constant count constant.
      */
-    void setImplementationVariableCountString(const std::string &implementationVariableCountString);
+    void setImplementationConstantCountString(const std::string &implementationConstantCountString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the computed constant count
+     * constant.
+     *
+     * Return the @c std::string for the interface of the computed constant count
+     * constant.
+     *
+     * @return The @c std::string for the interface of the computed constant count
+     * constant.
+     */
+    std::string interfaceComputedConstantCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the computed constant count
+     * constant.
+     *
+     * Set the @c std::string for the interface of the computed constant count constant.
+     *
+     * @param interfaceComputedConstantCountString The @c std::string to use for the
+     * interface of the computed constant count constant.
+     */
+    void setInterfaceComputedConstantCountString(const std::string &interfaceComputedConstantCountString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the computed constant
+     * count constant.
+     *
+     * Return the @c std::string for the implementation of the computed constant count
+     * constant.
+     *
+     * @return The @c std::string for the implementation of the computed constant count
+     * constant.
+     */
+    std::string implementationComputedConstantCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the computed constant
+     * count constant.
+     *
+     * Set the @c std::string for the implementation of the computed constant count
+     * constant. To be useful, the string should contain the [COMPUTED_CONSTANT_COUNT]
+     * tag, which will be replaced with the number of states in the model.
+     *
+     * @param implementationComputedConstantCountString The @c std::string to use for
+     * the implementation of the computed constant count constant.
+     */
+    void setImplementationComputedConstantCountString(const std::string &implementationComputedConstantCountString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the algebraic count
+     * constant.
+     *
+     * Return the @c std::string for the interface of the algebraic count
+     * constant.
+     *
+     * @return The @c std::string for the interface of the algebraic count
+     * constant.
+     */
+    std::string interfaceAlgebraicCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the algebraic count
+     * constant.
+     *
+     * Set the @c std::string for the interface of the algebraic count constant.
+     *
+     * @param interfaceAlgebraicCountString The @c std::string to use for the
+     * interface of the algebraic count constant.
+     */
+    void setInterfaceAlgebraicCountString(const std::string &interfaceAlgebraicCountString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the algebraic
+     * count constant.
+     *
+     * Return the @c std::string for the implementation of the algebraic count
+     * constant.
+     *
+     * @return The @c std::string for the implementation of the algebraic count
+     * constant.
+     */
+    std::string implementationAlgebraicCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the algebraic
+     * count constant.
+     *
+     * Set the @c std::string for the implementation of the algebraic count
+     * constant. To be useful, the string should contain the [ALGEBRAIC_COUNT]
+     * tag, which will be replaced with the number of states in the model.
+     *
+     * @param implementationAlgebraicCountString The @c std::string to use for
+     * the implementation of the algebraic count constant.
+     */
+    void setImplementationAlgebraicCountString(const std::string &implementationAlgebraicCountString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the external count
+     * constant.
+     *
+     * Return the @c std::string for the interface of the external count
+     * constant.
+     *
+     * @return The @c std::string for the interface of the external count
+     * constant.
+     */
+    std::string interfaceExternalCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the external count
+     * constant.
+     *
+     * Set the @c std::string for the interface of the external count constant.
+     *
+     * @param interfaceExternalCountString The @c std::string to use for the
+     * interface of the external count constant.
+     */
+    void setInterfaceExternalCountString(const std::string &interfaceExternalCountString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the external
+     * count constant.
+     *
+     * Return the @c std::string for the implementation of the external count
+     * constant.
+     *
+     * @return The @c std::string for the implementation of the external count
+     * constant.
+     */
+    std::string implementationExternalCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the external
+     * count constant.
+     *
+     * Set the @c std::string for the implementation of the external count
+     * constant. To be useful, the string should contain the [EXTERNAL_COUNT]
+     * tag, which will be replaced with the number of states in the model.
+     *
+     * @param implementationExternalCountString The @c std::string to use for
+     * the implementation of the external count constant.
+     */
+    void setImplementationExternalCountString(const std::string &implementationExternalCountString);
 
     /**
      * @brief Get the @c std::string for the data structure for the variable
@@ -2938,23 +3082,61 @@ public:
     void setRatesArrayString(const std::string &ratesArrayString);
 
     /**
-     * @brief Get the @c std::string for the name of the variables array.
+     * @brief Get the @c std::string for the name of the constants array.
      *
-     * Return the @c std::string for the name of the variables array.
+     * Return the @c std::string for the name of the constants array.
      *
-     * @return The @c std::string for the name of the variables array.
+     * @return The @c std::string for the name of the constants array.
      */
-    std::string variablesArrayString() const;
+    std::string constantsArrayString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the variables array.
+     * @brief Set the @c std::string for the name of the constants array.
      *
-     * Set the @c std::string for the name of the variables array.
+     * Set the @c std::string for the name of the constants array.
      *
-     * @param variablesArrayString The @c std::string to use for the name of the
-     * variables array.
+     * @param constantsArrayString The @c std::string to use for the name of the
+     * constants array.
      */
-    void setVariablesArrayString(const std::string &variablesArrayString);
+    void setConstantsArrayString(const std::string &constantsArrayString);
+
+    /**
+     * @brief Get the @c std::string for the name of the computed constants array.
+     *
+     * Return the @c std::string for the name of the computed constants array.
+     *
+     * @return The @c std::string for the name of the computed constants array.
+     */
+    std::string computedConstantsArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the computed constants array.
+     *
+     * Set the @c std::string for the name of the computed constants array.
+     *
+     * @param computedConstantsArrayString The @c std::string to use for the name of the
+     * computed constants array.
+     */
+    void setComputedConstantsArrayString(const std::string &computedConstantsArrayString);
+
+    /**
+     * @brief Get the @c std::string for the name of the algebraic array.
+     *
+     * Return the @c std::string for the name of the algebraic array.
+     *
+     * @return The @c std::string for the name of the algebraic array.
+     */
+    std::string algebraicArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the algebraic array.
+     *
+     * Set the @c std::string for the name of the algebraic array.
+     *
+     * @param algebraicArrayString The @c std::string to use for the name of the
+     * algebraic array.
+     */
+    void setAlgebraicArrayString(const std::string &algebraicArrayString);
 
     /**
      * @brief Get the @c std::string for the type definition of an external

@@ -5,10 +5,13 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 4;
+const size_t CONSTANT_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 3;
+const size_t ALGEBRAIC_COUNT = 0;
+const size_t EXTERNAL_COUNT = 1;
 
 const VariableInfo VARIABLE_INFO[] = {
     {"b", "dimensionless", "my_algebraic_eqn", COMPUTED_CONSTANT},
@@ -33,19 +36,19 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double *constants, ExternalVariable externalVariable)
 {
-    variables[0] = 3.0;
-    variables[1] = 5.0;
-    variables[2] = 7.0;
-    variables[3] = externalVariable(variables, 3);
+    computedConstants[0] = 3.0;
+    computedConstants[1] = 5.0;
+    computedConstants[2] = 7.0;
+    algebraic[0] = externalVariable(variables, 0);
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeVariables(double *variables, ExternalVariable externalVariable)
+void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
-    variables[3] = externalVariable(variables, 3);
+    algebraic[0] = externalVariable(variables, 0);
 }

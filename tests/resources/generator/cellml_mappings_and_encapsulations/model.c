@@ -5,11 +5,13 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 2;
-const size_t VARIABLE_COUNT = 2;
+const size_t CONSTANT_COUNT = 0;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 2;
 
 const VariableInfo VOI_INFO = {"t", "ms", "environment", VARIABLE_OF_INTEGRATION};
 
@@ -50,24 +52,24 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *rates, double *variables)
+void initialiseVariables(double *states, double *rates, double *constants)
 {
     states[0] = 1.0;
     states[1] = 0.0;
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     rates[1] = -states[0]*1.0;
     rates[0] = states[1]*1.0;
 }
 
-void computeVariables(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    variables[0] = states[0]+5.0*states[0]/3.0+1.0*exp(states[0]/2.0);
-    variables[1] = 2.0*states[1];
+    algebraic[0] = states[0]+5.0*states[0]/3.0+1.0*exp(states[0]/2.0);
+    algebraic[1] = 2.0*states[1];
 }

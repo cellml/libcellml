@@ -5,13 +5,15 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
-const size_t VARIABLE_COUNT = 10;
+const size_t CONSTANT_COUNT = 8;
+const size_t COMPUTED_CONSTANT_COUNT = 0;
+const size_t ALGEBRAIC_COUNT = 1;
+const size_t EXTERNAL_COUNT = 1;
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"v", "fmol_per_sec", "SLC_template3_ss", ALGEBRAIC},
     {"E", "fmol", "SLC_template3_ss", CONSTANT},
     {"P_0", "per_fmol_sec4", "SLC_template3_ss", CONSTANT},
     {"q_Ao", "fmol", "SLC_template3_ss", CONSTANT},
@@ -20,6 +22,7 @@ const VariableInfo VARIABLE_INFO[] = {
     {"P_2", "per_fmol_sec3", "SLC_template3_ss", CONSTANT},
     {"P_5", "per_sec3", "SLC_template3_ss", CONSTANT},
     {"P_4", "per_fmol2_sec3", "SLC_template3_ss", CONSTANT},
+    {"v", "fmol_per_sec", "SLC_template3_ss", ALGEBRAIC},
     {"P_3", "per_fmol_sec3", "SLC_template3_ss", EXTERNAL}
 };
 
@@ -39,25 +42,25 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *variables, ExternalVariable externalVariable)
+void initialiseVariables(double *constants, ExternalVariable externalVariable)
 {
-    variables[1] = 1.1;
-    variables[2] = 21262500.0;
-    variables[3] = 150.0;
-    variables[4] = 3402000.0;
-    variables[5] = 2.0;
-    variables[6] = 2902500.0;
-    variables[7] = 810000.0;
-    variables[8] = 247140.0;
-    variables[9] = externalVariable(variables, 9);
+    constants[0] = 1.1;
+    constants[1] = 21262500.0;
+    constants[2] = 150.0;
+    constants[3] = 3402000.0;
+    constants[4] = 2.0;
+    constants[5] = 2902500.0;
+    constants[6] = 810000.0;
+    constants[7] = 247140.0;
+    algebraic[1] = externalVariable(variables, 1);
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeVariables(double *variables, ExternalVariable externalVariable)
+void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)
 {
-    variables[9] = externalVariable(variables, 9);
-    variables[0] = variables[1]*(variables[2]*variables[3]-variables[4]*variables[5])/(variables[6]*variables[5]+variables[9]*variables[3]+variables[8]*variables[5]*variables[3]+variables[7]);
+    algebraic[1] = externalVariable(variables, 1);
+    algebraic[0] = constants[0]*(constants[1]*constants[2]-constants[3]*constants[4])/(constants[5]*constants[4]+algebraic[1]*constants[2]+constants[7]*constants[4]*constants[2]+constants[6]);
 }

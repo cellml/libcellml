@@ -7,7 +7,9 @@
 extern const char VERSION[];
 extern const char LIBCELLML_VERSION[];
 
-extern const size_t VARIABLE_COUNT;
+extern const size_t CONSTANT_COUNT;
+extern const size_t COMPUTED_CONSTANT_COUNT;
+extern const size_t ALGEBRAIC_COUNT;
 
 typedef enum {
     CONSTANT,
@@ -27,6 +29,6 @@ extern const VariableInfo VARIABLE_INFO[];
 double * createVariablesArray();
 void deleteArray(double *array);
 
-void initialiseVariables(double *variables);
-void computeComputedConstants(double *variables);
-void computeVariables(double *variables);
+void initialiseVariables(double *constants);
+void computeComputedConstants(double *constants, double *computedConstants);
+void computeVariables(double *constants, double *computedConstants, double *algebraic);

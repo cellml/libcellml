@@ -5,11 +5,13 @@
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.5.0";
+const char VERSION[] = "0.6.0";
 const char LIBCELLML_VERSION[] = "0.5.0";
 
 const size_t STATE_COUNT = 1;
-const size_t VARIABLE_COUNT = 10;
+const size_t CONSTANT_COUNT = 2;
+const size_t COMPUTED_CONSTANT_COUNT = 5;
+const size_t ALGEBRAIC_COUNT = 3;
 
 const VariableInfo VOI_INFO = {"x", "dimensionless", "main", VARIABLE_OF_INTEGRATION};
 
@@ -18,15 +20,15 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfo VARIABLE_INFO[] = {
-    {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
     {"deriv_approx_initial_value", "dimensionless", "main", CONSTANT},
-    {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
     {"C", "dimensionless", "main", CONSTANT},
     {"k2_oPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"k2Pi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_2", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_32", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
+    {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
+    {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
     {"z", "dimensionless", "parabolic_approx_sin", ALGEBRAIC}
 };
 
@@ -57,30 +59,30 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initialiseVariables(double *states, double *rates, double *variables)
+void initialiseVariables(double *states, double *rates, double *constants)
 {
-    variables[1] = 0.0;
-    variables[3] = 0.75;
-    variables[4] = 2.0/3.14159265358979;
-    variables[5] = 2.0*3.14159265358979;
-    variables[6] = 3.14159265358979/2.0;
-    variables[7] = 3.14159265358979;
-    variables[8] = 3.0*3.14159265358979/2.0;
-    states[0] = variables[1];
+    constants[0] = 0.0;
+    constants[1] = 0.75;
+    computedConstants[0] = 2.0/3.14159265358979;
+    computedConstants[1] = 2.0*3.14159265358979;
+    computedConstants[2] = 3.14159265358979/2.0;
+    computedConstants[3] = 3.14159265358979;
+    computedConstants[4] = 3.0*3.14159265358979/2.0;
+    states[0] = constants[0];
 }
 
-void computeComputedConstants(double *variables)
+void computeComputedConstants(double *constants, double *computedConstants)
 {
 }
 
-void computeRates(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
     rates[0] = cos(voi);
 }
 
-void computeVariables(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)
 {
-    variables[0] = sin(voi);
-    variables[9] = (voi < variables[6])?voi*variables[4]-0.5:(voi < variables[7])?(3.14159265358979-voi)*variables[4]-0.5:(voi < variables[8])?(voi-3.14159265358979)*variables[4]-0.5:(variables[5]-voi)*variables[4]-0.5;
-    variables[2] = (voi < variables[6])?-variables[9]*variables[9]+variables[3]+variables[9]:(voi < variables[7])?-variables[9]*variables[9]+variables[3]+variables[9]:(voi < variables[8])?variables[9]*variables[9]-variables[3]-variables[9]:variables[9]*variables[9]-variables[3]-variables[9];
+    algebraic[0] = sin(voi);
+    algebraic[2] = (voi < computedConstants[2])?voi*computedConstants[0]-0.5:(voi < computedConstants[3])?(3.14159265358979-voi)*computedConstants[0]-0.5:(voi < computedConstants[4])?(voi-3.14159265358979)*computedConstants[0]-0.5:(computedConstants[1]-voi)*computedConstants[0]-0.5;
+    algebraic[1] = (voi < computedConstants[2])?-algebraic[2]*algebraic[2]+constants[1]+algebraic[2]:(voi < computedConstants[3])?-algebraic[2]*algebraic[2]+constants[1]+algebraic[2]:(voi < computedConstants[4])?algebraic[2]*algebraic[2]-constants[1]-algebraic[2]:algebraic[2]*algebraic[2]-constants[1]-algebraic[2];
 }

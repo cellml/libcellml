@@ -4,11 +4,13 @@ from enum import Enum
 from math import *
 
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 LIBCELLML_VERSION = "0.5.0"
 
 STATE_COUNT = 2
-VARIABLE_COUNT = 5
+CONSTANT_COUNT = 3
+COMPUTED_CONSTANT_COUNT = 0
+ALGEBRAIC_COUNT = 2
 
 
 class VariableType(Enum):
@@ -29,8 +31,8 @@ STATE_INFO = [
 VARIABLE_INFO = [
     {"name": "k1", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
     {"name": "k3", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
-    {"name": "y3", "units": "dimensionless", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "k2", "units": "dimensionless", "component": "main", "type": VariableType.CONSTANT},
+    {"name": "y3", "units": "dimensionless", "component": "main", "type": VariableType.ALGEBRAIC},
     {"name": "y2_scaled", "units": "dimensionless", "component": "main", "type": VariableType.ALGEBRAIC}
 ]
 
@@ -52,40 +54,40 @@ def objective_function_0(u, f, data):
     rates = data[2]
     variables = data[3]
 
-    variables[2] = u[0]
+    algebraic[0] = u[0]
 
-    f[0] = 1.0-(states[0]+states[1]+variables[2])
+    f[0] = 1.0-(states[0]+states[1]+algebraic[0])
 
 
 def find_root_0(voi, states, rates, variables):
     u = [nan]*1
 
-    u[0] = variables[2]
+    u[0] = algebraic[0]
 
     u = nla_solve(objective_function_0, u, 1, [voi, states, rates, variables])
 
-    variables[2] = u[0]
+    algebraic[0] = u[0]
 
 
-def initialise_variables(states, rates, variables):
-    variables[0] = 0.04
-    variables[1] = 1.0e4
-    variables[2] = 0.0
-    variables[3] = 3.0e7
+def initialise_variables(states, rates, constants):
+    constants[0] = 0.04
+    constants[1] = 1.0e4
+    constants[2] = 3.0e7
+    algebraic[0] = 0.0
     states[0] = 1.0
     states[1] = 0.0
 
 
-def compute_computed_constants(variables):
+def compute_computed_constants(constants, computed_constants):
     pass
 
 
-def compute_rates(voi, states, rates, variables):
+def compute_rates(voi, states, rates, constants, computed_constants, algebraic):
     find_root_0(voi, states, rates, variables)
-    rates[0] = -variables[0]*states[0]+variables[1]*states[1]*variables[2]
-    rates[1] = variables[0]*states[0]-variables[3]*pow(states[1], 2.0)-variables[1]*states[1]*variables[2]
+    rates[0] = -constants[0]*states[0]+constants[1]*states[1]*algebraic[0]
+    rates[1] = constants[0]*states[0]-constants[2]*pow(states[1], 2.0)-constants[1]*states[1]*algebraic[0]
 
 
-def compute_variables(voi, states, rates, variables):
+def compute_variables(voi, states, rates, constants, computed_constants, algebraic):
     find_root_0(voi, states, rates, variables)
-    variables[4] = 10000.0*states[1]
+    algebraic[1] = 10000.0*states[1]

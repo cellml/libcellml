@@ -184,8 +184,17 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceStateCountString;
     std::string mImplementationStateCountString;
 
-    std::string mInterfaceVariableCountString;
-    std::string mImplementationVariableCountString;
+    std::string mInterfaceConstantCountString;
+    std::string mImplementationConstantCountString;
+
+    std::string mInterfaceComputedConstantCountString;
+    std::string mImplementationComputedConstantCountString;
+
+    std::string mInterfaceAlgebraicCountString;
+    std::string mImplementationAlgebraicCountString;
+
+    std::string mInterfaceExternalCountString;
+    std::string mImplementationExternalCountString;
 
     std::string mVariableTypeObjectFamWoevString;
     std::string mVariableTypeObjectFamWevString;
@@ -216,7 +225,9 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mStatesArrayString;
     std::string mRatesArrayString;
-    std::string mVariablesArrayString;
+    std::string mConstantsArrayString;
+    std::string mComputedConstantsArrayString;
+    std::string mAlgebraicArrayString;
 
     std::string mExternalVariableMethodTypeDefinitionFamString;
     std::string mExternalVariableMethodTypeDefinitionFdmString;
@@ -497,7 +508,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <stdlib.h>\n";
 
         mInterfaceVersionString = "extern const char VERSION[];\n";
-        mImplementationVersionString = "const char VERSION[] = \"0.5.0\";\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.6.0\";\n";
 
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"[LIBCELLML_VERSION]\";\n";
@@ -505,8 +516,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceStateCountString = "extern const size_t STATE_COUNT;\n";
         mImplementationStateCountString = "const size_t STATE_COUNT = [STATE_COUNT];\n";
 
-        mInterfaceVariableCountString = "extern const size_t VARIABLE_COUNT;\n";
-        mImplementationVariableCountString = "const size_t VARIABLE_COUNT = [VARIABLE_COUNT];\n";
+        mInterfaceConstantCountString = "extern const size_t CONSTANT_COUNT;\n";
+        mImplementationConstantCountString = "const size_t CONSTANT_COUNT = [CONSTANT_COUNT];\n";
+
+        mInterfaceComputedConstantCountString = "extern const size_t COMPUTED_CONSTANT_COUNT;\n";
+        mImplementationComputedConstantCountString = "const size_t COMPUTED_CONSTANT_COUNT = [COMPUTED_CONSTANT_COUNT];\n";
+
+        mInterfaceAlgebraicCountString = "extern const size_t ALGEBRAIC_COUNT;\n";
+        mImplementationAlgebraicCountString = "const size_t ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT];\n";
+
+        mInterfaceExternalCountString = "extern const size_t EXTERNAL_COUNT;\n";
+        mImplementationExternalCountString = "const size_t EXTERNAL_COUNT = [EXTERNAL_COUNT];\n";
 
         mVariableTypeObjectFamWoevString = "typedef enum {\n"
                                            "    CONSTANT,\n"
@@ -568,7 +588,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
-        mVariablesArrayString = "variables";
+        mConstantsArrayString = "constants";
+        mComputedConstantsArrayString = "computedConstants";
+        mAlgebraicArrayString = "algebraic";
 
         mExternalVariableMethodTypeDefinitionFamString = "typedef double (* ExternalVariable)(double *variables, size_t index);\n";
         mExternalVariableMethodTypeDefinitionFdmString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);\n";
@@ -653,66 +675,66 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *variables);\n";
-        mImplementationInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *variables)\n"
+        mInterfaceInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *constants);\n";
+        mImplementationInitialiseVariablesMethodFamWoevString = "void initialiseVariables(double *constants)\n"
                                                                 "{\n"
                                                                 "[CODE]"
                                                                 "}\n";
 
-        mInterfaceInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *variables, ExternalVariable externalVariable);\n";
-        mImplementationInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *variables, ExternalVariable externalVariable)\n"
+        mInterfaceInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *constants, ExternalVariable externalVariable);\n";
+        mImplementationInitialiseVariablesMethodFamWevString = "void initialiseVariables(double *constants, ExternalVariable externalVariable)\n"
                                                                "{\n"
                                                                "[CODE]"
                                                                "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *variables);\n";
-        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *variables)\n"
+        mInterfaceInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *constants);\n";
+        mImplementationInitialiseVariablesMethodFdmWoevString = "void initialiseVariables(double *states, double *rates, double *constants)\n"
                                                                 "{\n"
                                                                 "[CODE]"
                                                                 "}\n";
 
-        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n";
-        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
+        mInterfaceInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable);\n";
+        mImplementationInitialiseVariablesMethodFdmWevString = "void initialiseVariables(double voi, double *states, double *rates, double *constants, ExternalVariable externalVariable)\n"
                                                                "{\n"
                                                                "[CODE]"
                                                                "}\n";
 
-        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables);\n";
-        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n"
+        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants);\n";
+        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *constants, double *computedConstants)\n"
                                                               "{\n"
                                                               "[CODE]"
                                                               "}\n";
 
-        mInterfaceComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+        mInterfaceComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeRatesMethodWoevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n{\n"
                                                       "[CODE]"
                                                       "}\n";
 
-        mInterfaceComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n";
-        mImplementationComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n{\n"
+        mInterfaceComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
+        mImplementationComputeRatesMethodWevString = "void computeRates(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n{\n"
                                                      "[CODE]"
                                                      "}\n";
 
-        mInterfaceComputeVariablesMethodFamWoevString = "void computeVariables(double *variables);\n";
-        mImplementationComputeVariablesMethodFamWoevString = "void computeVariables(double *variables)\n"
+        mInterfaceComputeVariablesMethodFamWoevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeVariablesMethodFamWoevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic)\n"
                                                              "{\n"
                                                              "[CODE]"
                                                              "}\n";
 
-        mInterfaceComputeVariablesMethodFamWevString = "void computeVariables(double *variables, ExternalVariable externalVariable);\n";
-        mImplementationComputeVariablesMethodFamWevString = "void computeVariables(double *variables, ExternalVariable externalVariable)\n"
+        mInterfaceComputeVariablesMethodFamWevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
+        mImplementationComputeVariablesMethodFamWevString = "void computeVariables(double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
 
-        mInterfaceComputeVariablesMethodFdmWoevString = "void computeVariables(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeVariablesMethodFdmWoevString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n"
+        mInterfaceComputeVariablesMethodFdmWoevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic);\n";
+        mImplementationComputeVariablesMethodFdmWoevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic)\n"
                                                              "{\n"
                                                              "[CODE]"
                                                              "}\n";
 
-        mInterfaceComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);\n";
-        mImplementationComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable)\n"
+        mInterfaceComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable);\n";
+        mImplementationComputeVariablesMethodFdmWevString = "void computeVariables(double voi, double *states, double *rates, double *constants, double *computedConstants, double *algebraic, ExternalVariable externalVariable)\n"
                                                             "{\n"
                                                             "[CODE]"
                                                             "}\n";
@@ -926,7 +948,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n";
 
         mInterfaceVersionString = "";
-        mImplementationVersionString = "__version__ = \"0.4.0\"\n";
+        mImplementationVersionString = "__version__ = \"0.5.0\"\n";
 
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"[LIBCELLML_VERSION]\"\n";
@@ -934,8 +956,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceStateCountString = "";
         mImplementationStateCountString = "STATE_COUNT = [STATE_COUNT]\n";
 
-        mInterfaceVariableCountString = "";
-        mImplementationVariableCountString = "VARIABLE_COUNT = [VARIABLE_COUNT]\n";
+        mInterfaceConstantCountString = "";
+        mImplementationConstantCountString = "CONSTANT_COUNT = [CONSTANT_COUNT]\n";
+
+        mInterfaceComputedConstantCountString = "";
+        mImplementationComputedConstantCountString = "COMPUTED_CONSTANT_COUNT = [COMPUTED_CONSTANT_COUNT]\n";
+
+        mInterfaceAlgebraicCountString = "";
+        mImplementationAlgebraicCountString = "ALGEBRAIC_COUNT = [ALGEBRAIC_COUNT]\n";
+
+        mInterfaceExternalCountString = "";
+        mImplementationExternalCountString = "EXTERNAL_COUNT = [EXTERNAL_COUNT]\n";
 
         mVariableTypeObjectFamWoevString = "\n"
                                            "class VariableType(Enum):\n"
@@ -996,7 +1027,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
-        mVariablesArrayString = "variables";
+        mConstantsArrayString = "constants";
+        mComputedConstantsArrayString = "computed_constants";
+        mAlgebraicArrayString = "algebraic";
 
         mExternalVariableMethodTypeDefinitionFamString = "";
         mExternalVariableMethodTypeDefinitionFdmString = "";
@@ -1054,57 +1087,57 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceInitialiseVariablesMethodFamWoevString = "";
         mImplementationInitialiseVariablesMethodFamWoevString = "\n"
-                                                                "def initialise_variables(variables):\n"
+                                                                "def initialise_variables(constants):\n"
                                                                 "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFamWevString = "";
         mImplementationInitialiseVariablesMethodFamWevString = "\n"
-                                                               "def initialise_variables(variables, external_variable):\n"
+                                                               "def initialise_variables(constants, external_variable):\n"
                                                                "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFdmWoevString = "";
         mImplementationInitialiseVariablesMethodFdmWoevString = "\n"
-                                                                "def initialise_variables(states, rates, variables):\n"
+                                                                "def initialise_variables(states, rates, constants):\n"
                                                                 "[CODE]";
 
         mInterfaceInitialiseVariablesMethodFdmWevString = "";
         mImplementationInitialiseVariablesMethodFdmWevString = "\n"
-                                                               "def initialise_variables(voi, states, rates, variables, external_variable):\n"
+                                                               "def initialise_variables(voi, states, rates, constants, external_variable):\n"
                                                                "[CODE]";
 
         mInterfaceComputeComputedConstantsMethodString = "";
         mImplementationComputeComputedConstantsMethodString = "\n"
-                                                              "def compute_computed_constants(variables):\n"
+                                                              "def compute_computed_constants(constants, computed_constants):\n"
                                                               "[CODE]";
 
         mInterfaceComputeRatesMethodWoevString = "";
         mImplementationComputeRatesMethodWoevString = "\n"
-                                                      "def compute_rates(voi, states, rates, variables):\n"
+                                                      "def compute_rates(voi, states, rates, constants, computed_constants, algebraic):\n"
                                                       "[CODE]";
 
         mInterfaceComputeRatesMethodWevString = "";
         mImplementationComputeRatesMethodWevString = "\n"
-                                                     "def compute_rates(voi, states, rates, variables, external_variable):\n"
+                                                     "def compute_rates(voi, states, rates, constants, computed_constants, algebraic, external_variable):\n"
                                                      "[CODE]";
 
         mInterfaceComputeVariablesMethodFamWoevString = "";
         mImplementationComputeVariablesMethodFamWoevString = "\n"
-                                                             "def compute_variables(variables):\n"
+                                                             "def compute_variables(constants, computed_constants, algebraic):\n"
                                                              "[CODE]";
 
         mInterfaceComputeVariablesMethodFamWevString = "";
         mImplementationComputeVariablesMethodFamWevString = "\n"
-                                                            "def compute_variables(variables, external_variable):\n"
+                                                            "def compute_variables(constants, computed_constants, algebraic, external_variable):\n"
                                                             "[CODE]";
 
         mInterfaceComputeVariablesMethodFdmWoevString = "";
         mImplementationComputeVariablesMethodFdmWoevString = "\n"
-                                                             "def compute_variables(voi, states, rates, variables):\n"
+                                                             "def compute_variables(voi, states, rates, constants, computed_constants, algebraic):\n"
                                                              "[CODE]";
 
         mInterfaceComputeVariablesMethodFdmWevString = "";
         mImplementationComputeVariablesMethodFdmWevString = "\n"
-                                                            "def compute_variables(voi, states, rates, variables, external_variable):\n"
+                                                            "def compute_variables(voi, states, rates, constants, computed_constants, algebraic, external_variable):\n"
                                                             "[CODE]";
 
         mEmptyMethodString = "pass\n";
@@ -2250,24 +2283,84 @@ void GeneratorProfile::setImplementationStateCountString(const std::string &impl
     mPimpl->mImplementationStateCountString = implementationStateCountString;
 }
 
-std::string GeneratorProfile::interfaceVariableCountString() const
+std::string GeneratorProfile::interfaceConstantCountString() const
 {
-    return mPimpl->mInterfaceVariableCountString;
+    return mPimpl->mInterfaceConstantCountString;
 }
 
-void GeneratorProfile::setInterfaceVariableCountString(const std::string &interfaceVariableCountString)
+void GeneratorProfile::setInterfaceConstantCountString(const std::string &interfaceConstantCountString)
 {
-    mPimpl->mInterfaceVariableCountString = interfaceVariableCountString;
+    mPimpl->mInterfaceConstantCountString = interfaceConstantCountString;
 }
 
-std::string GeneratorProfile::implementationVariableCountString() const
+std::string GeneratorProfile::implementationConstantCountString() const
 {
-    return mPimpl->mImplementationVariableCountString;
+    return mPimpl->mImplementationConstantCountString;
 }
 
-void GeneratorProfile::setImplementationVariableCountString(const std::string &implementationVariableCountString)
+void GeneratorProfile::setImplementationConstantCountString(const std::string &implementationConstantCountString)
 {
-    mPimpl->mImplementationVariableCountString = implementationVariableCountString;
+    mPimpl->mImplementationConstantCountString = implementationConstantCountString;
+}
+
+std::string GeneratorProfile::interfaceComputedConstantCountString() const
+{
+    return mPimpl->mInterfaceComputedConstantCountString;
+}
+
+void GeneratorProfile::setInterfaceComputedConstantCountString(const std::string &interfaceComputedConstantCountString)
+{
+    mPimpl->mInterfaceComputedConstantCountString = interfaceComputedConstantCountString;
+}
+
+std::string GeneratorProfile::implementationComputedConstantCountString() const
+{
+    return mPimpl->mImplementationComputedConstantCountString;
+}
+
+void GeneratorProfile::setImplementationComputedConstantCountString(const std::string &implementationComputedConstantCountString)
+{
+    mPimpl->mImplementationComputedConstantCountString = implementationComputedConstantCountString;
+}
+
+std::string GeneratorProfile::interfaceAlgebraicCountString() const
+{
+    return mPimpl->mInterfaceAlgebraicCountString;
+}
+
+void GeneratorProfile::setInterfaceAlgebraicCountString(const std::string &interfaceAlgebraicCountString)
+{
+    mPimpl->mInterfaceAlgebraicCountString = interfaceAlgebraicCountString;
+}
+
+std::string GeneratorProfile::implementationAlgebraicCountString() const
+{
+    return mPimpl->mImplementationAlgebraicCountString;
+}
+
+void GeneratorProfile::setImplementationAlgebraicCountString(const std::string &implementationAlgebraicCountString)
+{
+    mPimpl->mImplementationAlgebraicCountString = implementationAlgebraicCountString;
+}
+
+std::string GeneratorProfile::interfaceExternalCountString() const
+{
+    return mPimpl->mInterfaceExternalCountString;
+}
+
+void GeneratorProfile::setInterfaceExternalCountString(const std::string &interfaceExternalCountString)
+{
+    mPimpl->mInterfaceExternalCountString = interfaceExternalCountString;
+}
+
+std::string GeneratorProfile::implementationExternalCountString() const
+{
+    return mPimpl->mImplementationExternalCountString;
+}
+
+void GeneratorProfile::setImplementationExternalCountString(const std::string &implementationExternalCountString)
+{
+    mPimpl->mImplementationExternalCountString = implementationExternalCountString;
 }
 
 std::string GeneratorProfile::variableTypeObjectString(bool forDifferentialModel,
@@ -2477,14 +2570,34 @@ void GeneratorProfile::setRatesArrayString(const std::string &ratesArrayString)
     mPimpl->mRatesArrayString = ratesArrayString;
 }
 
-std::string GeneratorProfile::variablesArrayString() const
+std::string GeneratorProfile::constantsArrayString() const
 {
-    return mPimpl->mVariablesArrayString;
+    return mPimpl->mConstantsArrayString;
 }
 
-void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
+void GeneratorProfile::setConstantsArrayString(const std::string &constantsArrayString)
 {
-    mPimpl->mVariablesArrayString = variablesArrayString;
+    mPimpl->mConstantsArrayString = constantsArrayString;
+}
+
+std::string GeneratorProfile::computedConstantsArrayString() const
+{
+    return mPimpl->mComputedConstantsArrayString;
+}
+
+void GeneratorProfile::setComputedConstantsArrayString(const std::string &computedConstantsArrayString)
+{
+    mPimpl->mComputedConstantsArrayString = computedConstantsArrayString;
+}
+
+std::string GeneratorProfile::algebraicArrayString() const
+{
+    return mPimpl->mAlgebraicArrayString;
+}
+
+void GeneratorProfile::setAlgebraicArrayString(const std::string &algebraicArrayString)
+{
+    mPimpl->mAlgebraicArrayString = algebraicArrayString;
 }
 
 std::string GeneratorProfile::externalVariableMethodTypeDefinitionString(bool forDifferentialModel) const

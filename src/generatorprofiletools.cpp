@@ -442,8 +442,17 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
     profileContents += generatorProfile->interfaceStateCountString()
                        + generatorProfile->implementationStateCountString();
 
-    profileContents += generatorProfile->interfaceVariableCountString()
-                       + generatorProfile->implementationVariableCountString();
+    profileContents += generatorProfile->interfaceConstantCountString()
+                       + generatorProfile->implementationConstantCountString();
+
+    profileContents += generatorProfile->interfaceComputedConstantCountString()
+                       + generatorProfile->implementationComputedConstantCountString();
+
+    profileContents += generatorProfile->interfaceAlgebraicCountString()
+                       + generatorProfile->implementationAlgebraicCountString();
+
+    profileContents += generatorProfile->interfaceExternalCountString()
+                       + generatorProfile->implementationExternalCountString();
 
     profileContents += generatorProfile->variableTypeObjectString(false, false);
     profileContents += generatorProfile->variableTypeObjectString(false, true);
@@ -474,7 +483,9 @@ std::string generatorProfileAsString(const GeneratorProfilePtr &generatorProfile
 
     profileContents += generatorProfile->statesArrayString()
                        + generatorProfile->ratesArrayString()
-                       + generatorProfile->variablesArrayString();
+                       + generatorProfile->constantsArrayString()
+                       + generatorProfile->computedConstantsArrayString()
+                       + generatorProfile->algebraicArrayString();
 
     profileContents += generatorProfile->externalVariableMethodTypeDefinitionString(false)
                        + generatorProfile->externalVariableMethodTypeDefinitionString(true);
